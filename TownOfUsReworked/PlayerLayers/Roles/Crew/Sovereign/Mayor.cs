@@ -9,12 +9,16 @@ public class Mayor : Crew, IRevealer
     [ToggleOption]
     public static bool MayorButton = true;
 
+    [ToggleOption]
+    public static bool MayorDirectSpawn = true;
+
+    [ToggleOption]
+    public static bool RoundOneNoReveal = true;
+
     // This is cursed
-    public bool Revealed
-    {
-        get => true;
-        set {}
-    }
+    public bool Revealed { get; set; }
+    public bool RoundOne { get; set; }
+    private CustomButton RevealButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mayor : FactionColor;
     public override LayerEnum Type => LayerEnum.Mayor;
@@ -24,8 +28,22 @@ public class Mayor : Crew, IRevealer
     protected override void Init()
     {
         base.Init();
+        Revealed = !MayorDirectSpawn;
         Alignment = Alignment.Sovereign;
+
+        if (!Revealed)
+            RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, "REVEAL");
     }
+
+    public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoReveal;
+
+    private void Reveal()
+    {
+        CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
+        PublicReveal(Player);
+    }
+
+    private bool Usable() => !RoundOne && !GetLayers<Mayor>().Any(x => !x.TrulyDead && x.Revealed);
 
     public override void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {

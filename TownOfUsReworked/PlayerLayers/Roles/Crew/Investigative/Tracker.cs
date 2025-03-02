@@ -56,4 +56,13 @@ public class Tracker : Crew
         TrackerArrows.Values.DestroyAll();
         TrackerArrows.Clear();
     }
+
+    public override void Reset(bool meeting, bool start)
+    {
+        if (ResetOnNewRound)
+        {
+            TrackButton.Uses = TrackButton.MaxUses;
+            ClearArrows();
+        }
+    }
 }

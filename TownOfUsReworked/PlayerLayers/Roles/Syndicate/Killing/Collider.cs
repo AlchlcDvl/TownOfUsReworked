@@ -51,6 +51,8 @@ public class Collider : Syndicate
             new Duration(ChargeDur), (EndFunc)EndEffect);
     }
 
+    public override void Reset(bool meeting, bool start) => Positive = Negative = null;
+
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
         if (Positive == player)

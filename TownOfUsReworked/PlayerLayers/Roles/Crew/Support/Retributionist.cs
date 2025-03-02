@@ -63,19 +63,35 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     }
     public override bool RoleBlockImmune => RevivedRole?.RoleBlockImmune ?? false;
 
+    public override void Reset(bool meeting, bool start)
+    {
+        BuggedPlayers.Clear();
+        BlockTarget = null;
+        MediateArrows.Values.DestroyAll();
+        MediateArrows.Clear();
+        MediatedPlayers.Clear();
+
+        if (Operative.BugsRemoveOnNewRound && meeting)
+        {
+            Bugs.ForEach(x => x?.gameObject?.Destroy());
+            Bugs.Clear();
+        }
+
+        if (Tracker.ResetOnNewRound)
+        {
+            TrackerArrows.Values.DestroyAll();
+            TrackerArrows.Clear();
+            TrackButton.Uses = TrackButton.MaxUses;
+        }
+    }
+
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
         if (ShieldedPlayer == player && Medic.ShowShielded.Contains(ShieldOptions.Medic))
-        {
             name += " <#006600FF>✚</color>";
-            color = Color;
-        }
 
         if (Trapped.Contains(player.PlayerId))
-        {
             name += " <#BE1C8CFF>∮</color>";
-            color = Color;
-        }
 
         if (Reported.Contains(player.PlayerId) && !revealed && meeting)
         {
@@ -526,9 +542,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
     private void Mediate()
     {
         MediateButton.StartCooldown();
-        var playersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
+        var playersDead = KilledPlayers.Clone();
 
-        if (playersDead.Count == 0)
+        if (!playersDead.Any())
             return;
 
         var bodies = AllBodies();
@@ -548,9 +564,9 @@ public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, 
             default:
             {
                 if (Medium.DeadRevealed == DeadRevealed.Newest)
-                    playersDead.Reverse();
+                    playersDead = playersDead.Reverse();
 
-                MediatePlayer(playersDead[0], bodies);
+                MediatePlayer(playersDead.First(), bodies);
                 break;
             }
         }

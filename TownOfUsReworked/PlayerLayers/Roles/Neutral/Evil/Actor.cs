@@ -44,6 +44,12 @@ public class Actor : Evil
         PretendRoles.Clear();
     }
 
+    public override void Reset(bool meeting, bool start)
+    {
+        if (meeting && !Targeted)
+            Rounds++;
+    }
+
     public string PretendListString()
     {
         var text = $"{PretendRoles[0].Name}, ";
@@ -78,7 +84,7 @@ public class Actor : Evil
             LayerEnum.Dictator => new Dictator(),
             LayerEnum.Engineer => new Engineer(),
             LayerEnum.Escort => new Escort(),
-            LayerEnum.Mayor => new Mayor(),
+            LayerEnum.Mayor or LayerEnum.Democrat => new Democrat(),
             LayerEnum.Medic => new Medic(),
             LayerEnum.Medium => new Medium(),
             LayerEnum.Monarch => new Monarch(),

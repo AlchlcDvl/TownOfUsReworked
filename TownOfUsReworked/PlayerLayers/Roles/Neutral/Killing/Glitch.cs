@@ -51,6 +51,8 @@ public class Glitch : NKilling, IBlocker
             new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);
     }
 
+    public override void Reset(bool meeting, bool start) => MimicTarget = HackTarget = null;
+
     private void UnHack()
     {
         if (HackTarget.AmOwner)

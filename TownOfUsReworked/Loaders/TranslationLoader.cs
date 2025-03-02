@@ -7,7 +7,7 @@ public class TranslationLoader : AssetLoader<Language>
     protected override string Manifest => "Languages";
     protected override string DirectoryInfo => TownOfUsReworked.Other;
 
-    protected override IEnumerator LoadAssets(Language[] response)
+    protected override void AfterLoading(List<Language> response)
     {
         foreach (var language in response)
         {
@@ -17,8 +17,5 @@ public class TranslationLoader : AssetLoader<Language>
             language.IDs?.ForEach(id => AllTranslations[id] = language);
             language.Values?.ForEach(lang => language.Modules[lang.Name] = lang.Value);
         }
-
-        Message($"Found {AllTranslations.Count} translations");
-        yield return EndFrame();
     }
 }

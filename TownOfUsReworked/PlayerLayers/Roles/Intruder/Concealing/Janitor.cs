@@ -43,6 +43,8 @@ public class Janitor : Intruder, IDragger
             (UsableFunc)Usable1);
     }
 
+    public override void Reset(bool meeting, bool start) => CurrentlyDragging = null;
+
     private void Clean(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));

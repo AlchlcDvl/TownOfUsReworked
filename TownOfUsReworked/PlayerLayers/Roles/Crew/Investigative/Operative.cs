@@ -47,6 +47,17 @@ public class Operative : Crew, IBugger
             (ConditionFunc)Condition);
     }
 
+    public override void Reset(bool meeting, bool start)
+    {
+        BuggedPlayers.Clear();
+
+        if (BugsRemoveOnNewRound && meeting)
+        {
+            Bugs.ForEach(x => x.gameObject.Destroy());
+            Bugs.Clear();
+        }
+    }
+
     protected override void Deinit()
     {
         base.Deinit();

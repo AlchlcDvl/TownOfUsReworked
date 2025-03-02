@@ -69,6 +69,12 @@ public class GuardianAngel : Neutral
         Rounds = 0;
     }
 
+    public override void Reset(bool meeting, bool start)
+    {
+        if (meeting && !TargetPlayer)
+            Rounds++;
+    }
+
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
         if (player != TargetPlayer)

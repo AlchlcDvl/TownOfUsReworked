@@ -9,6 +9,7 @@ public abstract class AssetLoader
     protected virtual string DirectoryInfo => "";
     protected virtual string FileExtension => "";
     protected virtual bool Downloading => false;
+    protected virtual bool HasStreamAssets => false;
 
     protected IEnumerator CoDownloadAssets(IEnumerable<string> files)
     {

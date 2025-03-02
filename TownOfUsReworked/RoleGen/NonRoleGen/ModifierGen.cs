@@ -87,7 +87,7 @@ public class ModifierGen : BaseGen
                 LayerEnum.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && (!Mayor.MayorButton || !Democrat.DemocratButton)) || (x.Is<Jester>() && !Jester.JesterButton) ||
                     (x.Is<Swapper>() && !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() &&
                     !Executioner.ExecutionerButton) || (x.Is<Politician>() && !Politician.PoliticianButton) ||  x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) ||
-                    (!Monarch.MonarchButton && x.Is<Monarch>()))),
+                    (!Monarch.MonarchButton && x.Is<Monarch>()) || (x.Is<Mayor>() && !Mayor.MayorButton))),
                 _ => GlobalMod.Contains(id) ? playerList.FirstOrDefault() : null
             };
 

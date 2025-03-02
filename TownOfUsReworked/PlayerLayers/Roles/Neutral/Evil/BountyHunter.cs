@@ -60,6 +60,12 @@ public class BountyHunter : Evil
         Letters.Clear();
     }
 
+    public override void Reset(bool meeting, bool start)
+    {
+        if (meeting && !TargetPlayer)
+            Rounds++;
+    }
+
     public override void PostAssignment()
     {
         if (BountyHunterCanPickTargets || !TargetPlayer)

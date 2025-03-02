@@ -39,6 +39,6 @@ public static class Generate
 
         OptionAttribute.LoadPreset("LastUsed", null);
 
-        Success($"There exist {OptionAttribute.AllOptions.Count(x => x is not BaseHeaderOptionAttribute)} total options lmao out of {OptionAttribute.AllOptions.Count} (number jumpscare)");
+        Success($"There exist {OptionAttribute.AllOptions.Count(x => x is not BaseHeaderOptionAttribute)} total options out of {OptionAttribute.AllOptions.Count} (number jumpscare lmao)");
     }
 }

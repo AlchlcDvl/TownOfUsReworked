@@ -95,7 +95,7 @@ public class AbilityGen : BaseGen
                 LayerEnum.Tunneler => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),
                 LayerEnum.ButtonBarry => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && (!Mayor.MayorButton || !Democrat.DemocratButton)) || (x.Is<Jester>() && !Jester.JesterButton) ||
                     (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) || (!Monarch.MonarchButton &&
-                    x.Is<Monarch>()) || (x.Is<Dictator>() && !Dictator.DictatorButton))),
+                    x.Is<Monarch>()) || (x.Is<Dictator>() && !Dictator.DictatorButton) || (x.Is<Mayor>() && !Mayor.MayorButton))),
                 LayerEnum.Politician => playerList.FirstOrDefault(x => !(x.Is(Alignment.Evil) || x.Is(Alignment.Benign) || x.Is(Alignment.Neophyte))),
                 LayerEnum.Ruthless => playerList.FirstOrDefault(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.Is(Alignment.Neophyte) || x.Is<Corrupted>() ||
                     (x.Is(Faction.Neutral, Alignment.Killing) && !x.Is<Juggernaut>()) || x.Is(Faction.Crew, Alignment.Killing)),

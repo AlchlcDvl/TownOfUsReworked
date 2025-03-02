@@ -67,8 +67,9 @@ public class Jester : Evil
     {
         Player.RpcMurderPlayer(target, DeathReasonEnum.Haunted, false);
         HasHaunted = true;
-        TrulyDead = true;
     }
 
     private bool Usable() => CanHaunt;
+
+    public override void OnKill(PlayerControl victim) => TrulyDead = true;
 }

@@ -1223,8 +1223,6 @@ public static class MiscUtils
 
     public static T GetValue<T>(this FieldInfo field, object obj) => (T)field.GetValue(obj);
 
-    // public static bool IsAny<T>(this T value, params T[] values) => values.Any(x => Equals(x, value));
-
     public static Transform FindRecursive(this Transform self, string exactName) => self.FindRecursive(child => child.name == exactName);
 
     private static Transform FindRecursive(this Transform self, Func<Transform, bool> selector)
@@ -1445,6 +1443,9 @@ public static class MiscUtils
 
     public static void AnimatePortal(PlayerControl player, float duration)
     {
+        if (PortalAnimation.Count == 0)
+            PortalAnimation.AddRange(PortalPaths.Select(LoadDiskSprite));
+
         if (!player.HasDied())
         {
             player.moveable = false;
@@ -1483,29 +1484,29 @@ public static class MiscUtils
         }));
     }
 
-    private static void RenameFolder(string og, string @new)
-    {
-        if (!Directory.Exists(og))
-            return;
+    // private static void RenameFolder(string og, string @new)
+    // {
+    //     if (!Directory.Exists(og))
+    //         return;
 
-        var files = Directory.EnumerateFiles(og);
-        var newFiles = files.Select(x => x.Replace(og, @new));
-        (files, newFiles).ForEach(File.Move);
-        Directory.Delete(og);
-    }
+    //     var files = Directory.EnumerateFiles(og);
+    //     var newFiles = files.Select(x => x.Replace(og, @new));
+    //     (files, newFiles).ForEach(File.Move);
+    //     Directory.Delete(og);
+    // }
 
-    public static void RenameAssetFolders()
-    {
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomHats"), TownOfUsReworked.Hats);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomVisors"), TownOfUsReworked.Visors);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomNameplates"), TownOfUsReworked.Nameplates);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomColors"), TownOfUsReworked.Colors);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomOptions"), TownOfUsReworked.Options);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomImages"), TownOfUsReworked.Images);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomSounds"), TownOfUsReworked.Sounds);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "MiscAssets"), TownOfUsReworked.Bundles);
-        RenameFolder(Path.Combine(TownOfUsReworked.Assets, "ModLogs"), TownOfUsReworked.Logs);
-    }
+    // public static void RenameAssetFolders()
+    // {
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomHats"), TownOfUsReworked.Hats);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomVisors"), TownOfUsReworked.Visors);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomNameplates"), TownOfUsReworked.Nameplates);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomColors"), TownOfUsReworked.Colors);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomOptions"), TownOfUsReworked.Options);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomImages"), TownOfUsReworked.Images);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomSounds"), TownOfUsReworked.Sounds);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "MiscAssets"), TownOfUsReworked.Bundles);
+    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "ModLogs"), TownOfUsReworked.Logs);
+    // }
 
     // public static string TrueReplace(this string @string, string former, string latter)
     // {
@@ -1536,4 +1537,7 @@ public static class MiscUtils
     // public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);
 
     // public static bool TryCast(this Il2CppObjectBase obj, Type type, out object result) => (result = obj.TryCast(type)) != null;
+
+    public static IEnumerable<RoleListSlot> GetValues(this IEnumerable<Enum> enums) => enums.Where(x => Enum.TryParse<RoleListSlot>(x.ToString(), out _)).Select(x =>
+        Enum.Parse<RoleListSlot>(x.ToString()));
 }

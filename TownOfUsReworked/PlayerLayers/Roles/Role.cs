@@ -128,7 +128,16 @@ public abstract class Role : PlayerLayer
     private CustomButton PlaceHitButton { get; set; }
     public int BountyTimer { get; set; }
 
-    public bool TrulyDead { get; set; }
+    private bool TrulyDeadPriv;
+    public bool TrulyDead
+    {
+        get=> TrulyDeadPriv;
+        set
+        {
+            TrulyDeadPriv = value;
+            OnTrueDeath();
+        }
+    }
 
     public bool Diseased { get; set; }
 
@@ -286,6 +295,8 @@ public abstract class Role : PlayerLayer
             BountyTimer++;
     }
 
+    protected virtual void OnTrueDeath() {}
+
     /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlatformIsUsed && MapPatches.CurrentMap != 4;
 
     private bool CallUsable()
@@ -369,7 +380,6 @@ public abstract class Role : PlayerLayer
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        TrulyDead = Dead && Type is not (LayerEnum.Jester or LayerEnum.GuardianAngel);
         GetLayers<Role>().ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Arsonist>().ForEach(x => x.Doused.Clear());
 

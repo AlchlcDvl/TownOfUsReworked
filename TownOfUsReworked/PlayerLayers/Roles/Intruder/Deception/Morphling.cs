@@ -39,6 +39,8 @@ public class Morphling : Intruder, IMorpher
             new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
     }
 
+    public override void Reset(bool meeting, bool start) => SampledPlayer = MorphedPlayer = null;
+
     private void Morph() => MiscUtils.Morph(Player, MorphedPlayer);
 
     private void UnMorph()

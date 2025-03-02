@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Monos;
 
 public class CameraEffectHandler : MonoBehaviour
 {
-    private readonly List<Material> Materials = [];
+    private readonly Dictionary<string, Material> Materials = [];
 
     public static void Initialize() => SetInstance(Camera.main.EnsureComponent<CameraEffectHandler>());
 
@@ -13,12 +13,12 @@ public class CameraEffectHandler : MonoBehaviour
         if (Materials.Count == 0)
             Graphics.Blit(source, destination);
         else
-            Materials.ForEach(x => Graphics.Blit(source, destination, x));
+            Materials.Values.ForEach(x => Graphics.Blit(source, destination, x));
     }
 
-    public static void AddEffect(Material material) => Instance.Materials.Add(material);
+    public static void AddEffect(string name) => Instance.Materials.Add(name, GetMaterial(name));
 
-    public static void RemoveEffect(Material material) => Instance.Materials.Remove(material);
+    public static void RemoveEffect(string name) => Instance.Materials.Remove(name);
 
     public static void ClearEffects() => Instance.Materials.Clear();
 }

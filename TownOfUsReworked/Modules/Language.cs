@@ -46,13 +46,7 @@ public class Language : Asset
 
     // public bool HasID(string id) => (ID == id || IDs?.Contains(id) == true) && !IsNullEmptyOrWhiteSpace(id) && Values.Any();
 
-    // public override string ToString()
-    // {
-    //     if (ID != null)
-    //         return TranslationManager.Test(ID);
-    //     else
-    //         return TranslationManager.Test(IDs[0]);
-    // }
+    // public override string ToString() => TranslationManager.Test(ID ?? IDs[0]);
 }
 
 public struct LangModule

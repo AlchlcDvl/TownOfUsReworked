@@ -27,8 +27,6 @@ public readonly struct Number(float num) : IFormattable, IEquatable<Number>
 
     public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
 
-    public static Number operator ^(Number a, Number b) => Mathf.Pow(a.Value, b.Value);
-
     public override int GetHashCode() => Value.GetHashCode();
 
     public bool Equals(Number other) => Value == other.Value;

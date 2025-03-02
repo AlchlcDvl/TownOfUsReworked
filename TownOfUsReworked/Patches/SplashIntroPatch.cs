@@ -123,7 +123,7 @@ public static class UpdateSplashPatch
             Directory.CreateDirectory(TownOfUsReworked.Logs);
 
         Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
-        RenameAssetFolders();
+        // RenameAssetFolders();
 
         PreDataSet = true;
 

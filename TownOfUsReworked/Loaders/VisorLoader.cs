@@ -1,79 +1,48 @@
-using static TownOfUsReworked.Managers.CustomVisorManager;
-
 namespace TownOfUsReworked.Loaders;
 
-public class VisorLoader : AssetLoader<CustomVisor>
+public class VisorLoader : BaseCosmeticLoader<CustomVisor>
 {
+    public static readonly Dictionary<string, CustomVisor> CustomVisorRegistry = [];
+
     protected override string DirectoryInfo => TownOfUsReworked.Visors;
-    protected override bool Downloading => true;
     protected override string Manifest => "Visors";
     protected override string FileExtension => "png";
 
-    protected override IEnumerator BeginDownload(CustomVisor[] response, HashAlgorithm hasher) => CoDownloadAssets(GenerateDownloadList(response, hasher));
-
-    protected override IEnumerator LoadAssets(CustomVisor[] response)
+    protected override void LoadAsset(CustomVisor item, int i)
     {
-        var unregistered = new List<CustomVisor>(response);
+        var path = Path.Combine(TownOfUsReworked.Visors, $"{item.ID}.png");
 
-        if (TownOfUsReworked.IsStream)
-        {
-            var filePath = Path.Combine(TownOfUsReworked.Visors, "Stream", "Visors.json");
+        if (item.StreamOnly)
+            path = Path.Combine(TownOfUsReworked.Visors, "Stream", $"{item.ID}.png");
+        else if (item.TestOnly)
+            path = Path.Combine(TownOfUsReworked.Visors, "Test", $"{item.ID}.png");
 
-            if (File.Exists(filePath))
-            {
-                var data = JsonSerializer.Deserialize<CustomVisor[]>(File.ReadAllText(filePath));
-                data.ForEach(x => x.StreamOnly = true);
-                unregistered.AddRange(data);
-                Array.Clear(data);
-            }
-        }
+        var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
+        viewData.IdleFrame = CreateCosmeticSprite(path, CosmeticTypeEnum.Visor);
+        viewData.FloorFrame = item.FloorID != null ? CreateCosmeticSprite(path, CosmeticTypeEnum.Visor) : viewData.IdleFrame;
+        viewData.LeftIdleFrame = item.FlipID != null ? CreateCosmeticSprite(path, CosmeticTypeEnum.Visor) : null;
+        viewData.ClimbFrame = item.ClimbID != null ? CreateCosmeticSprite(path, CosmeticTypeEnum.Visor) : null;
+        viewData.MatchPlayerColor = item.Adaptive;
 
-        Message($"Found {unregistered.Count} visors");
-        var time = 0f;
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
+        preview.PreviewSprite = viewData.IdleFrame;
 
-        for (var i = 0; i < unregistered.Count; i++)
-        {
-            var file = unregistered[i];
-            CreateVisorBehaviour(file);
-            time += Time.deltaTime;
+        var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
+        visor.name = item.Name;
+        visor.displayOrder = 99;
+        visor.ProductId = "customVisor_" + item.Name.Replace(' ', '_');
+        visor.ChipOffset = new(0f, 0.2f);
+        visor.Free = true;
+        visor.behindHats = !item.InFront;
+        visor.NotInStore = true;
+        visor.PreviewCrewmateColor = item.Adaptive;
+        visor.ViewDataRef = new CustomAddressable<VisorViewData>(viewData, visor.ProductId).Ref;
+        visor.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{visor.ProductId}_preview").Ref;
 
-            if (time < 1f)
-                continue;
+        item.Artist ??= "Unknown";
+        item.ViewData = viewData;
+        item.CosmeticData = visor;
 
-            time = 0f;
-            UpdateSplashPatch.SetText($"Loading Visors ({i + 1}/{unregistered.Count})");
-            yield return EndFrame();
-        }
-
-        unregistered.Clear();
-    }
-
-    protected override IEnumerator GenerateHashes(CustomVisor[] response, HashAlgorithm hasher)
-    {
-        var time = 0f;
-
-        for (var i = 0; i < response.Length; i++)
-        {
-            var visor = response[i];
-            visor.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ID}.png"), hasher);
-
-            if (visor.ClimbID != null)
-                visor.ClimbHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.ClimbID}.png"), hasher);
-
-            if (visor.FlipID != null)
-                visor.FlipHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FlipID}.png"), hasher);
-
-            if (visor.FloorID != null)
-                visor.FloorHash = GenerateHash(Path.Combine(DirectoryInfo, $"{visor.FloorID}.png"), hasher);
-
-            time += Time.deltaTime;
-
-            if (time < 1f)
-                continue;
-
-            time = 0f;
-            UpdateSplashPatch.SetText($"Generating Visor Hashes ({i + 1}/{response.Length})");
-            yield return EndFrame();
-        }
+        CustomVisorRegistry[visor.ProductId] = item;
     }
 }

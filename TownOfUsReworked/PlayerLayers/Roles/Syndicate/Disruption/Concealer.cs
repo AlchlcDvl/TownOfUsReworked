@@ -31,6 +31,8 @@ public class Concealer : Syndicate
             (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal, (EndFunc)EndEffect);
     }
 
+    public override void Reset(bool meeting, bool start) => ConcealedPlayer = null;
+
     private void Conceal()
     {
         if (HoldsDrive)

@@ -29,7 +29,7 @@ public static class MainMenuPatches
         if (ModUpdater.ReworkedUpdate)
         {
             Info("Reworked can be updated");
-            CreatDownloadButton("Reworked", y, pos, "UpdateReworked");
+            CreateDownloadButton("Reworked", y, pos, "UpdateReworked");
             y += 0.5f;
             pos += 0.5f;
         }
@@ -37,7 +37,7 @@ public static class MainMenuPatches
         if (ModUpdater.SubmergedUpdate || ModUpdater.CanDownloadSubmerged)
         {
             Info($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
-            CreatDownloadButton("Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged");
+            CreateDownloadButton("Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged");
             y += 0.5f;
             pos += 0.5f;
         }
@@ -45,7 +45,7 @@ public static class MainMenuPatches
         if (ModUpdater.CanDownloadLevelImpostor)
         {
             Info("LevelImpostor can be downloaded");
-            CreatDownloadButton("LevelImpostor", y, pos, "DownloadLevelImpostor");
+            CreateDownloadButton("LevelImpostor", y, pos, "DownloadLevelImpostor");
         }
 
         if (ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate)
@@ -57,7 +57,7 @@ public static class MainMenuPatches
         }
     }
 
-    private static void CreatDownloadButton(string downloadType, float yValue1, float yValue2, string spriteName)
+    private static void CreateDownloadButton(string downloadType, float yValue1, float yValue2, string spriteName)
     {
         var template = GameObject.Find("ExitGameButton");
         var rightPanel = GameObject.Find("RightPanel")?.transform;

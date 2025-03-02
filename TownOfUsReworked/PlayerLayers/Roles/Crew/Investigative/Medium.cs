@@ -9,6 +9,9 @@ public class Medium : Crew
     // [NumberOption(10f, 60f, 2.5f, Format.Time)]
     // public static Number SeanceCd = 25;
 
+    // [NumberOption(5f, 30f, 1f, Format.Time)]
+    // public static Number SeanceDur = 10;
+
     [ToggleOption]
     public static bool ShowMediatePlayer = true;
 
@@ -42,6 +45,8 @@ public class Medium : Crew
         //     new PostDeath(true));
     }
 
+    public override void Reset(bool meeting, bool start) => ClearArrows();
+
     // private void Seance() { /*Currently blank, gonna work on this later*/ }
     // Can you believe this guy? Over a year and this mofo still hasn't worked on it :skull:
 
@@ -70,9 +75,9 @@ public class Medium : Crew
     private void Mediate()
     {
         MediateButton.StartCooldown();
-        var playersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
+        var playersDead = KilledPlayers.Clone();
 
-        if (playersDead.Count == 0)
+        if (!playersDead.Any())
             return;
 
         var bodies = AllBodies();
@@ -92,9 +97,9 @@ public class Medium : Crew
             default:
             {
                 if (DeadRevealed == DeadRevealed.Newest)
-                    playersDead.Reverse();
+                    playersDead = playersDead.Reverse();
 
-                MediatePlayer(playersDead[0], bodies);
+                MediatePlayer(playersDead.First(), bodies);
                 break;
             }
         }

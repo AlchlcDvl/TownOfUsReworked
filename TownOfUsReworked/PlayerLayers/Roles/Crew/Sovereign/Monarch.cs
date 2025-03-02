@@ -43,6 +43,8 @@ public class Monarch : Crew, ISovereign
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
+    public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoKnighting;
+
     private void Knight(PlayerControl target)
     {
         var cooldown = Interact(Player, target);

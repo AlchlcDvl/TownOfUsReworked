@@ -443,13 +443,12 @@ public static class MeetingPatches
 
         foreach (var role in PlayerLayer.GetLayers<Mayor>())
         {
-            if (!role.Revealed)
-                continue;
+            var id = VoteAreaByPlayer(role.Player).VotedFor;
 
-            if (dictionary.TryGetValue(VoteAreaByPlayer(role.Player).VotedFor, out var num))
-                dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + Mayor.MayorVoteCount;
+            if (dictionary.TryGetValue(id, out var num))
+                dictionary[id] = num + Mayor.MayorVoteCount;
             else
-                dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + Mayor.MayorVoteCount;
+                dictionary[id] = 1 + Mayor.MayorVoteCount;
         }
 
         var knighted = new List<byte>();

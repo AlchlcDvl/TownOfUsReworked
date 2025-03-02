@@ -1,4 +1,4 @@
-using static TownOfUsReworked.Managers.CustomVisorManager;
+using static TownOfUsReworked.Loaders.VisorLoader;
 
 namespace TownOfUsReworked.Patches;
 

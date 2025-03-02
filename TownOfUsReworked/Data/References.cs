@@ -41,12 +41,10 @@ public static class References
         get => BlockExposedPriv;
         set
         {
-            var material = GetMaterial("GlitchedMaterial");
-
             if (value)
-                CameraEffectHandler.AddEffect(material);
+                CameraEffectHandler.AddEffect("GlitchedMaterial");
             else
-                CameraEffectHandler.RemoveEffect(material);
+                CameraEffectHandler.RemoveEffect("GlitchedMaterial");
 
             BlockExposedPriv = value;
         }

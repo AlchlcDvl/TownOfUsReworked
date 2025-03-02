@@ -13,7 +13,7 @@ public partial class TownOfUsReworked : BasePlugin
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    private const int DevBuild = 33;
+    private const int DevBuild = 34;
 
     private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";

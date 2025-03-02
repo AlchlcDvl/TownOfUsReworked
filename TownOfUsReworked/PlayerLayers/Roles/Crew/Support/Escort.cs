@@ -59,4 +59,6 @@ public class Escort : Crew, IBlocker
     public override void ReadRPC(MessageReader reader) => BlockTarget = reader.ReadPlayer();
 
     private bool EndEffect() => Dead || (BlockTarget && BlockTarget.HasDied());
+
+    public override void Reset(bool meeting, bool start) => BlockTarget = null;
 }

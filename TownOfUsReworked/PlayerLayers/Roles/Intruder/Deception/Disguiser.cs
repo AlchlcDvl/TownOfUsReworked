@@ -45,6 +45,8 @@ public class Disguiser : Intruder
         CopiedPlayer = null;
     }
 
+    public override void Reset(bool meeting, bool start) => MeasuredPlayer = DisguisedPlayer = CopiedPlayer = null;
+
     private void Disguise() => Morph(DisguisedPlayer, CopiedPlayer);
 
     private void UnDisguise()

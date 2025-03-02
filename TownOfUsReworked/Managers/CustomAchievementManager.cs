@@ -24,11 +24,20 @@ public static class CustomAchievementManager
         // Special
         new("RekindledPower", eog: true), // Revive a Crew Sovereign role as either a Necromancer or an Altruist (or a Retributionist-Altruist)
         new("EerieSilence", eog: true), // Blackmail a silenced player OR Silence a blackmailed player
+        new("WhoNeedsHorses"), // Win as a Harbinger without turning into an Apocalypse role
+        new("Silence"), // Win as an Intruder without calling a sabotage
+        new("LastLaugh"), // Win as a neutral evil role with less than 5 players remaining
+        new("TotalAnnihilation"), // Win as an Arsonist by only igniting once
+        new("Martyrdom"), // Be the first to die as a Troll
+        new("Perfection"), // Win a game without losing a single member of your team
+        new("ImTheCaptainNow"), // Shift with a Mayor as the Shifter
+        new("Persuasive"), // Reveal as the Mayor by round 3 or earlier
+        new("JustPolitics"), // Win as a Corrupted Mayor
 
         // Hidden
         new("Pacifist", hidden: true, eog: true), // Win as a killing role without actually killing anyone
-        new("Bloodthirsty", hidden: true, eog: true), // Win as a killing role by killing the most number of players
-        new("HiddenAlliance", hidden: true, eog: true), // Knight an unrevealed Dictator or Mayor as the Monarch OR be knighted as an unrevealed Dictator or Mayor
+        new("Bloodthirsty", hidden: true, eog: true), // Win by killing the most number of players
+        new("HiddenAlliance", hidden: true, eog: true), // Knight an unrevealed Sovereign as the Monarch OR be knighted as an unrevealed Sovereign
     ];
 
     public static readonly List<Achievement> QueuedAchievements = [];
@@ -143,12 +152,14 @@ public static class CustomAchievementManager
 
     private static IEnumerator ShowPopup(this HideAndSeekDeathPopup popup, Achievement achievement)
     {
-        if (CustomNameplateManager.CustomNameplateRegistry.TryGetValue(CustomPlayer.Local.Data.DefaultOutfit.NamePlateId, out var cn))
+        var id = CustomPlayer.Local.Data.DefaultOutfit.NamePlateId;
+
+        if (NameplateLoader.CustomNameplateRegistry.TryGetValue(id, out var cn))
             popup.nameplate.background.sprite = cn.ViewData.Image;
         else
         {
-            yield return popup.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance.GetNamePlateById(CustomPlayer.Local.Data.DefaultOutfit.NamePlateId).ViewDataRef,
-                (Action<NamePlateViewData>)(viewData => popup.nameplate.background.sprite = viewData?.Image));
+            yield return popup.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance.GetNamePlateById(id).ViewDataRef, (Action<NamePlateViewData>)(viewData =>
+                popup.nameplate.background.sprite = viewData?.Image));
         }
 
         ActivePopups.Add(popup);

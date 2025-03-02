@@ -39,6 +39,8 @@ public class Teleporter : Intruder, IMover
             (UsableFunc)Usable, (ConditionFunc)Condition2);
     }
 
+    public override void Reset(bool meeting, bool start) => TeleportPoint = Vector2.zero;
+
     private void Mark()
     {
         TeleportPoint = Player.transform.position;
@@ -65,7 +67,7 @@ public class Teleporter : Intruder, IMover
 
     private bool Usable() => TeleportPoint != Vector2.zero;
 
-    private bool Condition2() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
+    private bool Condition2() => Vector2.Distance(Player.transform.position, TeleportPoint) <= 1f && !Moving;
 
     public static IEnumerator TeleportPlayer(Vector2 point, IMover teleporter)
     {

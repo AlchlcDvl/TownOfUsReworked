@@ -61,89 +61,93 @@ public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOpti
             return;
         }
 
-        // Getting rid of potential duplicates
-        if (value == RoleListSlot.CrewKill)
+        // Use a switch expression to handle role alignment buckets
+        var toRemove = value switch
         {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewSupport)
+            // Crew Categories
+            RoleListSlot.CrewKill => RoleGenManager.CK,
+            RoleListSlot.CrewSupport => RoleGenManager.CS,
+            RoleListSlot.CrewInvest => RoleGenManager.CI,
+            RoleListSlot.CrewProt => RoleGenManager.CrP,
+            RoleListSlot.CrewSov => RoleGenManager.CSv,
+            RoleListSlot.CrewUtil => RoleGenManager.CU,
+            RoleListSlot.RegularCrew => RoleGenManager.RegCrew.GetAll(),
+            RoleListSlot.PowerCrew => RoleGenManager.PowerCrew.GetAll(),
+            RoleListSlot.RandomCrew => RoleGenManager.Crew.GetAll(),
+
+            // Neutral Categories
+            RoleListSlot.NeutralBen => RoleGenManager.NB,
+            RoleListSlot.NeutralKill => RoleGenManager.NK,
+            RoleListSlot.RegularNeutral or RoleListSlot.NonCompNeutral => RoleGenManager.RegNeutral.GetAll(),
+
+            // Neutral + Compliance Categories
+            RoleListSlot.NeutralEvil or RoleListSlot.ComplianceKill => RoleGenManager.NK,
+            RoleListSlot.NeutralHarb or RoleListSlot.ComplianceHarb => RoleGenManager.NH,
+            RoleListSlot.NeutralNeo or RoleListSlot.ComplianceNeo => RoleGenManager.NN,
+            RoleListSlot.HarmfulNeutral or RoleListSlot.RandomCompliance => RoleGenManager.HarmNeutral.GetAll(),
+
+            // Intruder Categories
+            RoleListSlot.IntruderSupport => RoleGenManager.IS,
+            RoleListSlot.IntruderConceal => RoleGenManager.IC,
+            RoleListSlot.IntruderDecep => RoleGenManager.ID,
+            RoleListSlot.IntruderKill => RoleGenManager.IK,
+            RoleListSlot.IntruderUtil => RoleGenManager.IU,
+            RoleListSlot.IntruderHead => RoleGenManager.IH,
+            RoleListSlot.RegularIntruder => RoleGenManager.RegIntruders.GetAll(),
+            RoleListSlot.PowerIntruder => RoleGenManager.PowerIntruders.GetAll(),
+
+            // Syndicate Categories
+            RoleListSlot.SyndicateKill => RoleGenManager.SyK,
+            RoleListSlot.SyndicateSupport => RoleGenManager.SSu,
+            RoleListSlot.SyndicateDisrup => RoleGenManager.SD,
+            RoleListSlot.SyndicatePower => RoleGenManager.SP,
+            RoleListSlot.SyndicateUtil => RoleGenManager.SU,
+            RoleListSlot.RegularSyndicate => RoleGenManager.RegSyndicate.GetAll(),
+            RoleListSlot.PowerSyndicate => RoleGenManager.PowerSyndicate.GetAll(),
+
+            // Pandora Categories
+            RoleListSlot.PandoraKill => RoleGenManager.PK,
+            RoleListSlot.PandoraConceal => RoleGenManager.PC,
+            RoleListSlot.PandoraDecep => RoleGenManager.PDe,
+            RoleListSlot.PandoraDisrup => RoleGenManager.PDi,
+            RoleListSlot.PandoraPower => RoleGenManager.PP,
+            RoleListSlot.PandoraSupport => RoleGenManager.PS,
+            RoleListSlot.PandoraUtil => RoleGenManager.PU,
+            RoleListSlot.RegularPandora => RoleGenManager.RegPandorica.GetAll(),
+            RoleListSlot.PowerPandora => RoleGenManager.PowerPandorica.GetAll(),
+
+            // Illuminati Categories
+            RoleListSlot.IlluminatiKill => RoleGenManager.IlK,
+            RoleListSlot.IlluminatiConceal => RoleGenManager.IlC,
+            RoleListSlot.IlluminatiDecep => RoleGenManager.IlDe,
+            RoleListSlot.IlluminatiDisrup => RoleGenManager.IlDi,
+            RoleListSlot.IlluminatiPower => RoleGenManager.IP,
+            RoleListSlot.IlluminatiSupport => RoleGenManager.IlS,
+            RoleListSlot.IlluminatiUtil => RoleGenManager.IlU,
+            RoleListSlot.IlluminatiHead => RoleGenManager.IlHe,
+            RoleListSlot.RegularIlluminati => RoleGenManager.RegIlluminati.GetAll(),
+            RoleListSlot.PowerIlluminati => RoleGenManager.PowerIlluminati.GetAll(),
+
+            // Alignment Categories
+            RoleListSlot.NonCrew => RoleGenManager.NonCrew.GetAll().GetAll(),
+            RoleListSlot.NonNeutral => RoleGenManager.NonNeutral.GetAll().GetAll(),
+            RoleListSlot.NonIntruder => RoleGenManager.NonIntruders.GetAll().GetAll(),
+            RoleListSlot.NonSyndicate => RoleGenManager.NonSyndicate.GetAll().GetAll(),
+            RoleListSlot.NonPandora => RoleGenManager.NonPandorica.GetAll().GetAll(),
+            RoleListSlot.NonIlluminati => RoleGenManager.NonIlluminati.GetAll().GetAll(),
+            RoleListSlot.NonCompliance => RoleGenManager.NonCompliance.GetAll().GetAll(),
+
+            _ => null
+        };
+
+        if (toRemove == null)
         {
-            newValue.RemoveRange(RoleListSlot.Retributionist, RoleListSlot.Escort, RoleListSlot.Chameleon, RoleListSlot.Engineer, RoleListSlot.Shifter, RoleListSlot.Transporter);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewInvest)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else if (value == RoleListSlot.CrewKill)
-        {
-            newValue.RemoveRange(RoleListSlot.Veteran, RoleListSlot.Bastion, RoleListSlot.Vigilante);
-            newValue.Add(value);
-        }
-        else
             base.TrySetValue(value, out newValue);
+            return;
+        }
+
+        newValue.RemoveRange(toRemove.GetValues());
+        newValue.Add(value);
     }
 
     // What the hell is this? What am I even doing man...

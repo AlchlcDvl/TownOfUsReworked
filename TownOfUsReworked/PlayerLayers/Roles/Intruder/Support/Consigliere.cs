@@ -27,6 +27,12 @@ public class Consigliere : Intruder
             (PlayerBodyExclusion)Exception1);
     }
 
+    protected override void OnTrueDeath()
+    {
+        if (DeadSeeEverything())
+            Investigated.Clear();
+    }
+
     private void Investigate(PlayerControl target)
     {
         var cooldown = Interact(Player, target);

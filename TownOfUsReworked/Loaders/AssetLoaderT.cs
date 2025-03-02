@@ -1,6 +1,7 @@
 namespace TownOfUsReworked.Loaders;
 
-public abstract class AssetLoader<T> : AssetLoader where T : Asset
+public abstract class AssetLoader<T> : AssetLoader
+    where T : Asset
 {
     private bool Running;
 
@@ -66,19 +67,37 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
             yield break;
         }
 
+        BeforeLoading();
+        yield return EndFrame();
+
         var response = JsonSerializer.Deserialize<T[]>(jsonText);
+        float time;
 
         if (Downloading)
         {
             if (!ClientOptions.ForceUseLocal)
             {
                 UpdateSplashPatch.SetText($"Downloading {Manifest}");
-                yield return BeginDownload(response, hasher);
+                yield return CoDownloadAssets(GenerateDownloadList(response, hasher));
             }
 
             if (TownOfUsReworked.IsDev)
             {
-                yield return GenerateHashes(response, hasher);
+                time = 0f;
+
+                for (var i = 0; i < response.Length; i++)
+                {
+                    GenerateHash(response[i], hasher);
+                    time += Time.deltaTime;
+
+                    if (time < 1f)
+                        continue;
+
+                    time = 0f;
+                    UpdateSplashPatch.SetText($"Generating {Manifest} Hashes ({i + 1}/{response.Length})");
+                    yield return EndFrame();
+                }
+
                 using var stream = File.OpenWrite(Path.Combine(TownOfUsReworked.Hashes, $"{Manifest}.json"));
                 JsonSerializer.Serialize(stream, response, new JsonSerializerOptions()
                 {
@@ -88,16 +107,53 @@ public abstract class AssetLoader<T> : AssetLoader where T : Asset
             }
         }
 
+        var data = new List<T>(response);
+
+        if (TownOfUsReworked.IsStream && HasStreamAssets)
+            LoadStreamAssets(data);
+
+        yield return EndFrame();
+
         UpdateSplashPatch.SetText($"Loading {Manifest}");
-        yield return LoadAssets(response);
+        Message($"Found {data.Count} {Manifest.ToLower()}");
+
+        if (data.Any())
+        {
+            time = 0f;
+
+            for (var i = 0; i < data.Count; i++)
+            {
+                LoadAsset(data[i], i);
+                time += Time.deltaTime;
+
+                if (time < 1f)
+                    continue;
+
+                time = 0f;
+                UpdateSplashPatch.SetText($"Loading Assets ({i + 1}/{data.Count})");
+                yield return EndFrame();
+            }
+        }
+
+        yield return EndFrame();
+
+        AfterLoading(data);
+        yield return EndFrame();
 
         Array.Clear(response);
+        data.Clear();
         yield return EndFrame();
     }
 
-    protected virtual IEnumerator BeginDownload(T[] response, HashAlgorithm hasher) => EndFrame();
+    protected virtual void LoadAsset(T item, int i) {}
 
-    protected virtual IEnumerator LoadAssets(T[] response) => EndFrame();
+    protected virtual void GenerateHash(T item, HashAlgorithm hasher) {}
 
-    protected virtual IEnumerator GenerateHashes(T[] response, HashAlgorithm hasher) => EndFrame();
+    protected virtual void LoadStreamAssets(List<T> response) {}
+
+    protected virtual void AfterLoading(List<T> response) {}
+
+    protected virtual void BeforeLoading() {}
+
+    protected virtual IEnumerable<string> GenerateDownloadList(T[] response, HashAlgorithm hasher) => [];
 }

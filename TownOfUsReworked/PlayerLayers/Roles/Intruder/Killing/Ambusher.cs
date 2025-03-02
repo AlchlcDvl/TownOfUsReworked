@@ -29,6 +29,8 @@ public class Ambusher : Intruder, IAmbusher
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 
+    public override void Reset(bool meeting, bool start) => AmbushedPlayer = null;
+
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
         if (AmbushedPlayer == player)

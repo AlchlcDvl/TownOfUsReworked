@@ -33,6 +33,8 @@ public class Crusader : Syndicate, ICrusader
             (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
     }
 
+    public override void Reset(bool meeting, bool start) => CrusadedPlayer = null;
+
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
         if (CrusadedPlayer == player)

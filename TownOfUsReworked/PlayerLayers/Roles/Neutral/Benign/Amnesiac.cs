@@ -78,7 +78,7 @@ public class Amnesiac : Neutral
             Dictator => new Dictator(),
             Engineer => new Engineer(),
             Escort => new Escort(),
-            Mayor => new Mayor(),
+            Mayor or Democrat => new Democrat(),
             Medic => new Medic(),
             Medium => new Medium(),
             Monarch => new Monarch(),

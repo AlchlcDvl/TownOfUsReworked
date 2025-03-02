@@ -789,19 +789,7 @@ public static class CrewUtilityRoles
     public static RoleOptionData Crewmate;
 
     [LayerOption("#D3D3D3FF", LayerEnum.Revealer)]
-    private static RoleOptionData RevealerPriv;
-    public static RoleOptionData Revealer
-    {
-        get
-        {
-            var result = RevealerPriv.Clone();
-
-            if (IsRoleList())
-                result.Count = GameModeSettings.RevealerCount;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Revealer;
 }
 
 [AlignmentOption(RoleListSlot.NeutralApoc, true)]
@@ -907,19 +895,7 @@ public static class NeutralProselyteRoles
     public static RoleOptionData Betrayer;
 
     [LayerOption("#662962FF", LayerEnum.Phantom)]
-    private static RoleOptionData PhantomPriv;
-    public static RoleOptionData Phantom
-    {
-        get
-        {
-            var result = PhantomPriv.Clone();
-
-            if (IsRoleList())
-                result.Count = GameModeSettings.PhantomCount;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Phantom;
 }
 
 [AlignmentOption(RoleListSlot.IntruderConceal)]
@@ -988,19 +964,7 @@ public static class IntruderSupportRoles
 public static class IntruderUtilityRoles
 {
     [LayerOption("#F1C40FFF", LayerEnum.Ghoul)]
-    private static RoleOptionData GhoulPriv;
-    public static RoleOptionData Ghoul
-    {
-        get
-        {
-            var result = GhoulPriv.Clone();
-
-            if (IsRoleList())
-                result.Count = GameModeSettings.GhoulCount;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Ghoul;
 
     [LayerOption("#FF1919FF", LayerEnum.Impostor, true)]
     public static RoleOptionData Impostor;
@@ -1071,19 +1035,7 @@ public static class SyndicateUtilityRoles
     public static RoleOptionData Anarchist;
 
     [LayerOption("#E67E22FF", LayerEnum.Banshee)]
-    private static RoleOptionData BansheePriv;
-    public static RoleOptionData Banshee
-    {
-        get
-        {
-            var result = BansheePriv.Clone();
-
-            if (IsRoleList())
-                result.Count = GameModeSettings.BansheeCount;
-
-            return result;
-        }
-    }
+    public static RoleOptionData Banshee;
 }
 
 [AlignmentOption(colorHex: "#7F7F7FFF")]

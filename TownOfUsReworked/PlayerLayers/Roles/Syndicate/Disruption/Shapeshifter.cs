@@ -35,6 +35,8 @@ public class Shapeshifter : Syndicate, IShaper
             (EffectEndVoid)UnShapeshift, new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
     }
 
+    public override void Reset(bool meeting, bool start) => ShapeshiftPlayer1 = ShapeshiftPlayer2 = null;
+
     private void Shift() => Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
 
     public static void Shapeshift(PlayerControl player1, PlayerControl player2, bool drived)

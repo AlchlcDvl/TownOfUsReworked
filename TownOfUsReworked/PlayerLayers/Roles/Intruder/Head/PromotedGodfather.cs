@@ -59,6 +59,19 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
             name += " <#85AA5BFF>ㅇ</color>";
     }
 
+    protected override void OnTrueDeath()
+    {
+        if (DeadSeeEverything())
+            Investigated.Clear();
+    }
+
+    public override void Reset(bool meeting, bool start)
+    {
+        BlackmailedPlayer = BlockTarget = MeasuredPlayer = DisguisedPlayer = CopiedPlayer = SampledPlayer = MorphedPlayer = AmbushedPlayer = BombedPlayer = null;
+        CurrentlyDragging = null;
+        TeleportPoint = Vector2.zero;
+    }
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
@@ -539,7 +552,7 @@ public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmb
 
     private bool TeleUsable2() => IsTele && TeleportPoint != Vector2.zero;
 
-    private bool TeleCondition() => (Vector2)Player.transform.position != TeleportPoint && !Moving;
+    private bool TeleCondition() => Vector2.Distance(Player.transform.position, TeleportPoint) <= 1f && !Moving;
 
     // Ambusher Stuff
     public PlayerControl AmbushedPlayer { get; set; }

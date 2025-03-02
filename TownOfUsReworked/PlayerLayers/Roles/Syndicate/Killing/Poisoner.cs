@@ -32,6 +32,8 @@ public class Poisoner : Syndicate
             new Cooldown(PoisonCd), new Duration(PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
     }
 
+    public override void Reset(bool meeting, bool start) => PoisonedPlayer = null;
+
     private bool EndEffect() => PoisonedPlayer.HasDied() || Dead;
 
     private void UnPoison()

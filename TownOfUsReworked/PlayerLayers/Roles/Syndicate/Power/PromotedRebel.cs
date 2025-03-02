@@ -39,6 +39,19 @@ public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IF
         (!FormerRole ? CommonAbilities : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
     public override bool RoleBlockImmune => FormerRole?.RoleBlockImmune ?? false;
 
+    public override void Reset(bool meeting, bool start)
+    {
+        ShapeshiftPlayer1 = ShapeshiftPlayer2 = PoisonedPlayer = ConcealedPlayer = Positive = Negative = SilencedPlayer = CrusadedPlayer = null;
+
+        if (Bomber.BombsRemoveOnNewRound && meeting)
+        {
+            Bombs.ForEach(x => x?.gameObject?.Destroy());
+            Bombs.Clear();
+        }
+    }
+
+    protected override void OnTrueDeath() => Framed.Clear();
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);

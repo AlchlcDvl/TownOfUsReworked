@@ -20,8 +20,9 @@ public class Democrat : Role, IRevealer
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Democrat : FactionColor;
     public override LayerEnum Type => LayerEnum.Democrat;
-    public override Func<string> StartText => () => "";
-    public override Func<string> Description => () => "";
+    public override Func<string> StartText => () => "Start A Campaign To Get Elected!";
+    public override Func<string> Description => () => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
+        "<#704FA8FF>Mayor</color>";
 
     protected override void Init()
     {
@@ -31,6 +32,8 @@ public class Democrat : Role, IRevealer
         CampaignButton ??= new(this, "CAMPAIGN", new SpriteName("Campaign"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Campaign, new Cooldown(CampaignCd),
             (UsableFunc)Usable, (PlayerBodyExclusion)Exception);
     }
+
+    public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoCampaigning;
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
@@ -61,7 +64,7 @@ public class Democrat : Role, IRevealer
 
     public void OnReveal() => new Mayor().RoleUpdate(this);
 
-    private bool Exception(PlayerControl player) => Campaigned.Contains(player.PlayerId) || player.IsKnighted();
+    private bool Exception(PlayerControl player) => Campaigned.Contains(player.PlayerId);
 
     public override void ReadRPC(MessageReader reader) => Campaigned.Add(reader.ReadByte());
 

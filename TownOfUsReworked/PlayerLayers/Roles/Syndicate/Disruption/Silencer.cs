@@ -35,6 +35,8 @@ public class Silencer : Syndicate, ISilencer
             (PlayerBodyExclusion)Exception1);
     }
 
+    public override void Reset(bool meeting, bool start) => SilencedPlayer = null;
+
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
         if (SilencedPlayer == player)

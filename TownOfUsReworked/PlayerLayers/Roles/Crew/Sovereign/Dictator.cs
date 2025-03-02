@@ -33,6 +33,8 @@ public class Dictator : Crew, IRevealer
         DictMenu = new(Player, "DictActive", "DictDisabled", SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
+    public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoDictReveal;
+
     private void Reveal()
     {
         if (!Revealed && !GetLayers<Dictator>().Any(x => !x.TrulyDead && x.Revealed))

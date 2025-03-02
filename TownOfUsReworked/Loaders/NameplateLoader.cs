@@ -1,70 +1,43 @@
-using static TownOfUsReworked.Managers.CustomNameplateManager;
-
 namespace TownOfUsReworked.Loaders;
 
-public class NameplateLoader : AssetLoader<CustomNameplate>
+public class NameplateLoader : BaseCosmeticLoader<CustomNameplate>
 {
+    public static readonly Dictionary<string, CustomNameplate> CustomNameplateRegistry = [];
+
     protected override string DirectoryInfo => TownOfUsReworked.Nameplates;
-    protected override bool Downloading => true;
     protected override string Manifest => "Nameplates";
     protected override string FileExtension => "png";
 
-    protected override IEnumerator BeginDownload(CustomNameplate[] response, HashAlgorithm hasher) => CoDownloadAssets(GenerateDownloadList(response, hasher));
-
-    protected override IEnumerator LoadAssets(CustomNameplate[] response)
+    protected override void LoadAsset(CustomNameplate item, int i)
     {
-        var unregistered = new List<CustomNameplate>(response);
+        var path = Path.Combine(TownOfUsReworked.Nameplates, $"{item.ID}.png");
 
-        if (TownOfUsReworked.IsStream)
-        {
-            var filePath = Path.Combine(TownOfUsReworked.Nameplates, "Stream", "Nameplates.json");
+        if (item.StreamOnly)
+            path = Path.Combine(TownOfUsReworked.Nameplates, "Stream", $"{item.ID}.png");
+        else if (item.TestOnly)
+            path = Path.Combine(TownOfUsReworked.Nameplates, "Test", $"{item.ID}.png");
 
-            if (File.Exists(filePath))
-            {
-                var data = JsonSerializer.Deserialize<CustomNameplate[]>(File.ReadAllText(filePath));
-                data.ForEach(x => x.StreamOnly = true);
-                unregistered.AddRange(data);
-                Array.Clear(data);
-            }
-        }
+        var viewData = ScriptableObject.CreateInstance<NamePlateViewData>().DontDestroy();
+        viewData.Image = CreateCosmeticSprite(path, CosmeticTypeEnum.Nameplate);
 
-        Message($"Found {unregistered.Count} nameplates");
-        var time = 0f;
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
+        preview.PreviewSprite = viewData.Image;
 
-        for (var i = 0; i < unregistered.Count; i++)
-        {
-            var file = unregistered[i];
-            CreateNameplateBehaviour(file);
-            time += Time.deltaTime;
+        var nameplate = ScriptableObject.CreateInstance<NamePlateData>().DontDestroy();
+        nameplate.PreviewCrewmateColor = false;
+        nameplate.name = item.Name;
+        nameplate.displayOrder = 99;
+        nameplate.ProductId = "customNameplate_" + item.Name.Replace(' ', '_');
+        nameplate.ChipOffset = new(0f, 0.2f);
+        nameplate.Free = true;
+        nameplate.NotInStore = true;
+        nameplate.ViewDataRef = new CustomAddressable<NamePlateViewData>(viewData, nameplate.ProductId).Ref;
+        nameplate.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{nameplate.ProductId}_preview").Ref;
 
-            if (time < 1f)
-                continue;
+        item.Artist ??= "Unknown";
+        item.ViewData = viewData;
+        item.CosmeticData = nameplate;
 
-            time = 0f;
-            UpdateSplashPatch.SetText($"Loading Nameplates ({i + 1}/{unregistered.Count})");
-            yield return EndFrame();
-        }
-
-        unregistered.Clear();
-    }
-
-    protected override IEnumerator GenerateHashes(CustomNameplate[] response, HashAlgorithm hasher)
-    {
-        var time = 0f;
-
-        for (var i = 0; i < response.Length; i++)
-        {
-            var nameplate = response[i];
-            nameplate.MainHash = GenerateHash(Path.Combine(DirectoryInfo, $"{nameplate.ID}.png"), hasher);
-
-            time += Time.deltaTime;
-
-            if (time < 1f)
-                continue;
-
-            time = 0f;
-            UpdateSplashPatch.SetText($"Generating Nameplate Hashes ({i + 1}/{response.Length})");
-            yield return EndFrame();
-        }
+        CustomNameplateRegistry[nameplate.ProductId] = item;
     }
 }

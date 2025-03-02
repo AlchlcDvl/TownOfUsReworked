@@ -34,6 +34,8 @@ public class Enforcer : Intruder
             (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(EnforceDelay), (PlayerBodyExclusion)Exception1, new CanClickAgain(false), (EndFunc)EndEffect);
     }
 
+    public override void Reset(bool meeting, bool start) => BombedPlayer = null;
+
     private void BoomStart()
     {
         if (!BombedPlayer.AmOwner || Dead)

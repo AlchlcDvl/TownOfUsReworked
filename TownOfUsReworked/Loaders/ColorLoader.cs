@@ -2,64 +2,40 @@ using static TownOfUsReworked.Managers.CustomColorManager;
 
 namespace TownOfUsReworked.Loaders;
 
-public class ColorLoader : AssetLoader<CustomColor>
+public class ColorLoader : BaseCosmeticLoader<CustomColor>
 {
     protected override string DirectoryInfo => TownOfUsReworked.Colors;
     protected override string Manifest => "Colors";
+    protected override bool Downloading => false;
 
-    protected override IEnumerator LoadAssets(CustomColor[] response)
+    protected override void BeforeLoading() {} // I don't want the type checking to occur for custom colors because they don't have hashes to compare with
+
+    protected override IEnumerable<string> GenerateDownloadList(CustomColor[] response, HashAlgorithm hasher) => []; // Same here since there's nothing to download
+
+    protected override void LoadAsset(CustomColor item, int i)
     {
-        var colors = new List<CustomColor>(response);
+        item.ColorID = i;
 
-        if (TownOfUsReworked.IsStream)
-        {
-            var filePath = Path.Combine(DirectoryInfo, "Stream", "Colors.json");
+        if (item.MainColorValues != null)
+            item.MainColors = [ .. item.MainColorValues.Select(FromHex) ];
 
-            if (File.Exists(filePath))
-            {
-                var data = JsonSerializer.Deserialize<CustomColor[]>(File.ReadAllText(filePath));
-                data.ForEach(x => x.StreamOnly = true);
-                colors.AddRange(data);
-                Array.Clear(data);
-            }
-        }
+        if (item.ShadowColorValues != null)
+            item.ShadowColors = [ .. item.ShadowColorValues.Select(FromHex) ];
 
-        colors.RemoveAll(x => x.StreamOnly && !TownOfUsReworked.IsStream);
-        Message($"Found {colors.Count} colors");
-        var time = 0f;
+        item.TimeSpeed = item.TimeSpeed == 0f ? 1f : item.TimeSpeed;
 
-        for (var i = 0; i < colors.Count; i++)
-        {
-            var color = colors[i];
-            color.ColorID = i;
+        if (!item.Default)
+            item.StringID = TranslationManager.GetOrAddName($"Colors.{item.Name}");
 
-            if (color.MainColorValues != null)
-                color.MainColors = [ .. color.MainColorValues.Select(FromHex) ];
+        AllColors[item.ColorID] = item;
+    }
 
-            if (color.ShadowColorValues != null)
-                color.ShadowColors = [ .. color.ShadowColorValues.Select(FromHex) ];
-
-            color.TimeSpeed = color.TimeSpeed == 0f ? 1f : color.TimeSpeed;
-
-            if (!color.Default)
-                color.StringID = TranslationManager.GetOrAddName($"Colors.{color.Name}");
-
-            AllColors[color.ColorID] = color;
-            time += Time.deltaTime;
-
-            if (time < 1f)
-                continue;
-
-            time = 0f;
-            UpdateSplashPatch.SetText($"Loading Colors ({i + 1}/{colors.Count})");
-            yield return EndFrame();
-        }
-
-        Palette.ColorNames = colors.Select(x => x.StringID).ToArray();
-        Palette.PlayerColors = colors.Select(x => (Color32)x.GetColor()).ToArray();
-        Palette.ShadowColors = colors.Select(x => (Color32)x.GetShadowColor()).ToArray();
+    protected override void AfterLoading(List<CustomColor> response)
+    {
+        Palette.ColorNames = response.Select(x => x.StringID).ToArray();
+        Palette.PlayerColors = response.Select(x => (Color32)x.GetColor()).ToArray();
+        Palette.ShadowColors = response.Select(x => (Color32)x.GetShadowColor()).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
         Palette.TextColors = Palette.PlayerColors;
-        colors.Clear();
     }
 }

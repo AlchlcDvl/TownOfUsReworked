@@ -64,7 +64,7 @@ public class Volatile : Modifier
                 // Hear random things
                 case 3:
                 {
-                    Play(UnityGetAll<AudioClip>().Random());
+                    Play(GetAll<AudioClip>().Random());
                     break;
                 }
             }

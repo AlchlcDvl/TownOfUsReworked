@@ -30,6 +30,8 @@ public class Consort : Intruder, IBlocker
             new Duration(ConsortDur), (EffectEndVoid)UnBlock, (EffectStartVoid)BlockStart, (EndFunc)EndEffect);
     }
 
+    public override void Reset(bool meeting, bool start) => BlockTarget = null;
+
     public void UnBlock()
     {
         if (BlockTarget.AmOwner)

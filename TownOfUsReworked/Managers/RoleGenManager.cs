@@ -139,11 +139,8 @@ public static class RoleGenManager
 
     public static RoleOptionData GetSpawnItem(LayerEnum id) => id switch
     {
-        LayerEnum.Revealer => CrewUtilityRoles.Revealer,
-        LayerEnum.Ghoul => IntruderUtilityRoles.Ghoul,
-        LayerEnum.Banshee => SyndicateUtilityRoles.Banshee,
-        LayerEnum.Phantom => NeutralProselyteRoles.Phantom,
         LayerEnum.Pestilence => Options.NeutralHarbingerRoles.Plaguebearer,
+        LayerEnum.Mayor => Options.CrewSovereignRoles.Democrat,
         LayerEnum.Linked => Options.Dispositions.Linked,
         LayerEnum.Lovers => Options.Dispositions.Lovers,
         LayerEnum.Rivals => Options.Dispositions.Rivals,
@@ -155,8 +152,8 @@ public static class RoleGenManager
     {
         LayerEnum.Bastion => GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne,
         LayerEnum.Mystic => new[] { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive()),
-        LayerEnum.Seer => new[] { LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac,
-            LayerEnum.Thief, LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter, LayerEnum.Fanatic }.Any(x => GetSpawnItem(x).IsActive()),
+        LayerEnum.Seer => new[] { LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac, LayerEnum.Thief,
+            LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter, LayerEnum.Fanatic }.Any(x => GetSpawnItem(x).IsActive()),
         LayerEnum.Plaguebearer => !NeutralApocalypseSettings.DirectSpawn,
         LayerEnum.Pestilence => NeutralApocalypseSettings.DirectSpawn,
         LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief => !NeutralSettings.AvoidNeutralKingmakers,
@@ -169,6 +166,8 @@ public static class RoleGenManager
         LayerEnum.Lovers => GameData.Instance.PlayerCount > 4,
         LayerEnum.Rivals => GameData.Instance.PlayerCount > 3,
         LayerEnum.Linked => Role.GetRoles(Faction.Neutral).Count() > 1 && GameData.Instance.PlayerCount > 4,
+        LayerEnum.Democrat => !Mayor.MayorDirectSpawn,
+        LayerEnum.Mayor => Mayor.MayorDirectSpawn,
         _ => true
     };
 

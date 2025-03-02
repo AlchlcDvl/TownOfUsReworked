@@ -50,6 +50,15 @@ public class Bomber : Syndicate
             "DETONATE");
     }
 
+    public override void Reset(bool meeting, bool start)
+    {
+        if (BombsRemoveOnNewRound && meeting)
+        {
+            Bombs.ForEach(x => x?.gameObject?.Destroy());
+            Bombs.Clear();
+        }
+    }
+
     protected override void Deinit()
     {
         base.Deinit();

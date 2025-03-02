@@ -81,8 +81,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (Neutrals == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer, x => x != LayerEnum.Betrayer && !(x == LayerEnum.Pestilence && !NeutralApocalypseSettings.DirectSpawn) &&
-            !(x == LayerEnum.Plaguebearer && NeutralApocalypseSettings.DirectSpawn)))
+        foreach (var layer in GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer, x => x != LayerEnum.Betrayer))
         {
             var spawn = GetSpawnItem(layer);
 

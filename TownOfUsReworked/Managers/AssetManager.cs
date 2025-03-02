@@ -3,6 +3,7 @@ namespace TownOfUsReworked.Managers;
 public static class AssetManager
 {
     public static readonly List<Sprite> PortalAnimation = [];
+    public static readonly List<string> PortalPaths = [];
     public static readonly Dictionary<string, AssetBundle> Bundles = [];
     public static readonly Dictionary<string, string> AssetToBundle = [];
     private static readonly Dictionary<string, HashSet<UObject>> LoadedAssets = [];
@@ -41,7 +42,7 @@ public static class AssetManager
             SoundManager.Instance.StopSound(audio);
     }
 
-    public static void StopAll() => UnityGetAll<AudioClip>().ForEach(Stop);
+    public static void StopAll() => GetAll<AudioClip>().ForEach(Stop);
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
 
@@ -59,7 +60,6 @@ public static class AssetManager
             return null;
 
         texture.name = name;
-        texture.hideFlags |= HideFlags.DontSaveInEditor;
         return texture.DontDestroy();
     }
 
@@ -73,7 +73,6 @@ public static class AssetManager
     {
         var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), float.IsNaN(size) ? GetSize(name) : size, 0, meshType);
         sprite.name = name;
-        sprite.hideFlags |= HideFlags.DontSaveInEditor;
         return sprite.DontDestroy();
     }
 
@@ -180,7 +179,7 @@ public static class AssetManager
         return null;
     }
 
-    public static IEnumerable<T> UnityGetAll<T>() where T : UObject => LoadedAssets.Values.GetAll().OfType<T>();
+    public static IEnumerable<T> GetAll<T>() where T : UObject => LoadedAssets.Values.GetAll().OfType<T>();
 
     private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
     {
@@ -249,11 +248,10 @@ public static class AssetManager
 
         var audioClip = AudioClip.Create(name, data.Length, channels, sampleRate, false);
 
-        if (!audioClip.SetData(data, 0))
-            return null;
+        if (audioClip.SetData(data, 0))
+            return audioClip.DontDestroy();
 
-        audioClip.hideFlags |= HideFlags.DontSaveInEditor;
-        return audioClip.DontDestroy();
+        return null;
     }
 
     private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int headerOffset)
