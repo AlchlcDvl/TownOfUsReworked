@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Poisoner : Syndicate
+public sealed class Poisoner : Syndicate
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number PoisonCd = 25;

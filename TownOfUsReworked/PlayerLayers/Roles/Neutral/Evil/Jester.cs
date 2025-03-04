@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Jester : Evil
+public sealed class Jester : Evil
 {
     [ToggleOption]
     public static bool JesterButton = true;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomPlayer
+public sealed class CustomPlayer
 {
     public PlayerControl Player { get; }
     public NetworkedPlayerInfo Data => Player?.Data;

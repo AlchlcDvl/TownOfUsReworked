@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class AllAnyGen : BaseClassicAllAnyGen
+public sealed class AllAnyGen : BaseClassicAllAnyGen
 {
     public override void Filter()
     {

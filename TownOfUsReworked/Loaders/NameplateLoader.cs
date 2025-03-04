@@ -1,29 +1,28 @@
 namespace TownOfUsReworked.Loaders;
 
-public class NameplateLoader : BaseCosmeticLoader<CustomNameplate>
+public sealed class NameplateLoader : BaseCosmeticLoader<CustomNameplate>
 {
     public static readonly Dictionary<string, CustomNameplate> CustomNameplateRegistry = [];
 
     protected override string DirectoryInfo => TownOfUsReworked.Nameplates;
     protected override string Manifest => "Nameplates";
-    protected override string FileExtension => "png";
 
     protected override void LoadAsset(CustomNameplate item, int i)
     {
-        var path = Path.Combine(TownOfUsReworked.Nameplates, $"{item.ID}.png");
+        var path = Path.Combine(DirectoryInfo);
 
         if (item.StreamOnly)
-            path = Path.Combine(TownOfUsReworked.Nameplates, "Stream", $"{item.ID}.png");
+            path = Path.Combine(DirectoryInfo, "Stream");
         else if (item.TestOnly)
-            path = Path.Combine(TownOfUsReworked.Nameplates, "Test", $"{item.ID}.png");
+            path = Path.Combine(DirectoryInfo, "Test");
 
-        var viewData = ScriptableObject.CreateInstance<NamePlateViewData>().DontDestroy();
-        viewData.Image = CreateCosmeticSprite(path, CosmeticTypeEnum.Nameplate);
+        var viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
+        viewData.Image = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Nameplate);
 
-        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>();
         preview.PreviewSprite = viewData.Image;
 
-        var nameplate = ScriptableObject.CreateInstance<NamePlateData>().DontDestroy();
+        var nameplate = ScriptableObject.CreateInstance<NamePlateData>();
         nameplate.PreviewCrewmateColor = false;
         nameplate.name = item.Name;
         nameplate.displayOrder = 99;

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Mayor : Crew, IRevealer
+public sealed class Mayor : Crew, IRevealer
 {
     [NumberOption(1, 10, 1)]
     public static Number MayorVoteCount = 2;

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Rebel : Syndicate
+public sealed class Rebel : Syndicate
 {
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
     public static Number RebPromotionCdDecrease = 0.75f;

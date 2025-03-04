@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class ColorHandler : MonoBehaviour
+public sealed class ColorHandler : MonoBehaviour
 {
     private readonly List<(int, Renderer)> IDToRends = [];
     private readonly List<(UColor, Renderer)> ColorToRends = [];

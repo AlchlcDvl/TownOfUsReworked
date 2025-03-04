@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Werewolf : NKilling
+public sealed class Werewolf : NKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number MaulCd = 25;

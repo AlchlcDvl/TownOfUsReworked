@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-public class Colorblind : Modifier
+public sealed class Colorblind : Modifier
 {
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Colorblind : CustomColorManager.Modifier;
     public override LayerEnum Type => LayerEnum.Colorblind;

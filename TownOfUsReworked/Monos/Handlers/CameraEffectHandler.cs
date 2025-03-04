@@ -2,7 +2,7 @@ using static TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.Came
 
 namespace TownOfUsReworked.Monos;
 
-public class CameraEffectHandler : MonoBehaviour
+public sealed class CameraEffectHandler : MonoBehaviour
 {
     private readonly Dictionary<string, Material> Materials = [];
 
@@ -16,7 +16,7 @@ public class CameraEffectHandler : MonoBehaviour
             Materials.Values.ForEach(x => Graphics.Blit(source, destination, x));
     }
 
-    public static void AddEffect(string name) => Instance.Materials.Add(name, GetMaterial(name));
+    public static void AddEffect(string name) => Instance.Materials.TryAdd(name, GetMaterial(name));
 
     public static void RemoveEffect(string name) => Instance.Materials.Remove(name);
 

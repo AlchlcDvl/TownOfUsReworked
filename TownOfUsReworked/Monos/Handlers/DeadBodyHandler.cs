@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class DeadBodyHandler : NameHandler
+public sealed class DeadBodyHandler : NameHandler
 {
     private DeadBody Body { get; set; }
     private int ColorId { get; set; }

@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Underdog : Ability
+public sealed class Underdog : Ability
 {
     [ToggleOption]
     private static bool UnderdogKnows = true;

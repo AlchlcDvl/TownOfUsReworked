@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Democrat : Role, IRevealer
+public sealed class Democrat : Role, IRevealer
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number CampaignCd = 25;

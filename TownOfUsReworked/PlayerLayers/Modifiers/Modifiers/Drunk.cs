@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Drunk : Modifier
+public sealed class Drunk : Modifier
 {
     [ToggleOption]
     private static bool DrunkControlsSwap = false;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher, IMover, IBlocker, IMorpher
+public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher, IMover, IBlocker, IMorpher
 {
     protected override void Init()
     {

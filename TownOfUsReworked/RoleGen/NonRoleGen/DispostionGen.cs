@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class DispositionGen : BaseGen
+public sealed class DispositionGen : BaseGen
 {
     private static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
     private static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];

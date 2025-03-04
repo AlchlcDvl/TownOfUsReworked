@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Medic : Crew, IShielder
+public sealed class Medic : Crew, IShielder
 {
     [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
     public static MultiSelectValue<ShieldOptions> ShowShielded = ShieldOptions.Medic;

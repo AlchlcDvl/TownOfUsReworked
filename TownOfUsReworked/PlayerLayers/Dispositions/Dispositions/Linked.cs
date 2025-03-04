@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Linked : Disposition
+public sealed class Linked : Disposition
 {
     [ToggleOption]
     public static bool LinkedChat = true;

@@ -8,7 +8,7 @@ public readonly struct PointInTime(Vector3 position)
     public Vector3 Position { get; } = position;
 }
 
-public class GitHubApiObject
+public sealed class GitHubApiObject
 {
     [JsonPropertyName("tag_name")]
     public string Tag { get; set; }
@@ -20,7 +20,7 @@ public class GitHubApiObject
     public GitHubApiAsset[] Assets { get; set; }
 }
 
-public class GitHubApiAsset
+public sealed class GitHubApiAsset
 {
     [JsonPropertyName("browser_download_url")]
     public string URL { get; set; }
@@ -32,7 +32,7 @@ public class Asset
     public string ID { get; set; }
 }
 
-public class DownloadableAsset : Asset
+public sealed class DownloadableAsset : Asset
 {
     [JsonPropertyName("hash")]
     public string Hash { get; set; }
@@ -77,7 +77,7 @@ public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer
     public string Name => TranslationManager.Translate($"Layer.{Layer}");
 }
 
-public class Achievement(string name, bool unlocked = false, bool hidden = false, bool eog = false, string icon = "Placeholder")
+public sealed class Achievement(string name, bool unlocked = false, bool hidden = false, bool eog = false, string icon = "Placeholder")
 {
     public string Name { get; } = name;
     public string Icon { get; } = icon;
@@ -87,7 +87,7 @@ public class Achievement(string name, bool unlocked = false, bool hidden = false
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-public class SortedAttribute(int order) : Attribute
+public sealed class SortedAttribute(int order) : Attribute
 {
     public int Order { get; } = order;
 }

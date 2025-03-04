@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Monarch : Crew, ISovereign
+public sealed class Monarch : Crew, ISovereign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number KnightingCd = 25;

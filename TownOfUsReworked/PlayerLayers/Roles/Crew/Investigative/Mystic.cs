@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Mystic : Crew
+public sealed class Mystic : Crew
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number RevealCd = 25;

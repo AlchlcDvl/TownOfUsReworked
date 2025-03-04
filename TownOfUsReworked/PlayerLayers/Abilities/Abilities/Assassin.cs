@@ -1,21 +1,21 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-public class Bullseye : Assassin
+public sealed class Bullseye : Assassin
 {
     public override LayerEnum Type => LayerEnum.Bullseye;
 }
 
-public class Hitman : Assassin
+public sealed class Hitman : Assassin
 {
     public override LayerEnum Type => LayerEnum.Hitman;
 }
 
-public class Slayer : Assassin
+public sealed class Slayer : Assassin
 {
     public override LayerEnum Type => LayerEnum.Slayer;
 }
 
-public class Sniper : Assassin
+public sealed class Sniper : Assassin
 {
     public override LayerEnum Type => LayerEnum.Sniper;
 }

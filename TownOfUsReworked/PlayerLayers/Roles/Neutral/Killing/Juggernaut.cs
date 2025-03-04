@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Juggernaut : NKilling
+public sealed class Juggernaut : NKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number AssaultCd = 25;

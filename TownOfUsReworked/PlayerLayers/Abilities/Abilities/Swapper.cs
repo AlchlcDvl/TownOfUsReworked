@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Swapper : Ability
+public sealed class Swapper : Ability
 {
     [ToggleOption]
     public static bool SwapperButton = true;

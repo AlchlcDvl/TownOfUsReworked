@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Corrupted : Disposition
+public sealed class Corrupted : Disposition
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number CorruptCd = 25;

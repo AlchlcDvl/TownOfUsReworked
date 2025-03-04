@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Volatile : Modifier
+public sealed class Volatile : Modifier
 {
     [NumberOption(10f, 30f, 1f, Format.Time)]
     private static Number VolatileInterval = 15;

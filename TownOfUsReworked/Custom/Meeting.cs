@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomMeeting
+public sealed class CustomMeeting
 {
     private PlayerControl Owner { get; }
     private OnClick Click { get; }

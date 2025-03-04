@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.CustomColorManager;
 
 namespace TownOfUsReworked.Loaders;
 
-public class ColorLoader : BaseCosmeticLoader<CustomColor>
+public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
 {
     protected override string DirectoryInfo => TownOfUsReworked.Colors;
     protected override string Manifest => "Colors";
@@ -33,9 +33,8 @@ public class ColorLoader : BaseCosmeticLoader<CustomColor>
     protected override void AfterLoading(List<CustomColor> response)
     {
         Palette.ColorNames = response.Select(x => x.StringID).ToArray();
-        Palette.PlayerColors = response.Select(x => (Color32)x.GetColor()).ToArray();
+        Palette.TextColors = Palette.PlayerColors = response.Select(x => (Color32)x.GetColor()).ToArray();
         Palette.ShadowColors = response.Select(x => (Color32)x.GetShadowColor()).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
-        Palette.TextColors = Palette.PlayerColors;
     }
 }

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Snitch : Ability
+public sealed class Snitch : Ability
 {
     [ToggleOption]
     private static bool SnitchKnows = true;

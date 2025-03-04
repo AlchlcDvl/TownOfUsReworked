@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Professional : Modifier
+public sealed class Professional : Modifier
 {
     [ToggleOption]
     private static bool ProfessionalKnows = true;

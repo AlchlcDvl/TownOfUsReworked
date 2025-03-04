@@ -43,13 +43,6 @@ public static class AllMonos
         if (ComponentsAdded)
             return;
 
-        Debugging.AddInstance();
-
-        Hud.AddInstance();
-        Client.AddInstance();
-        Drags.AddInstance();
-        Colors.AddInstance();
-
         LayerHandler.Crewmate = RoleManager.Instance.GetRole(RoleTypes.Crewmate);
         LayerHandler.Impostor = RoleManager.Instance.GetRole(RoleTypes.Impostor);
         LayerHandler.CrewmateGhost = RoleManager.Instance.GetRole(RoleTypes.CrewmateGhost);

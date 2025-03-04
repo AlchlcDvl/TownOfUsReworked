@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Rivals : Disposition
+public sealed class Rivals : Disposition
 {
     [ToggleOption]
     public static bool RivalsChat = true;

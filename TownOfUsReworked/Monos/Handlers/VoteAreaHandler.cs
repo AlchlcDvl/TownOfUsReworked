@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class VoteAreaHandler : NameHandler
+public sealed class VoteAreaHandler : NameHandler
 {
     private PlayerVoteArea VoteArea { get; set; }
 

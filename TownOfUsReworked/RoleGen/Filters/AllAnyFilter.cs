@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.RoleGen;
 
-public class AllAnyFilter : BaseFilter
+public sealed class AllAnyFilter : BaseFilter
 {
     public override void Filter(List<RoleOptionData> spawnList, int count, bool tryUsePlayerCount = false)
     {

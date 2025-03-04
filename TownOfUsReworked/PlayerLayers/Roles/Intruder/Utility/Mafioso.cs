@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Mafioso : Intruder
+public sealed class Mafioso : Intruder
 {
     public Role FormerRole { get; init; }
     public Godfather Godfather { get; init; }

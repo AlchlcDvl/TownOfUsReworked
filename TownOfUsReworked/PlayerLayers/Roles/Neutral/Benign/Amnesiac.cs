@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Amnesiac : Neutral
+public sealed class Amnesiac : Neutral
 {
     [ToggleOption]
     private static bool RememberArrows = false;

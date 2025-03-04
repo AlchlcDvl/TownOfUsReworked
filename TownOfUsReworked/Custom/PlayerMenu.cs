@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomPlayerMenu : CustomMenu
+public sealed class CustomPlayerMenu : CustomMenu
 {
     private PlayerSelect Click { get; }
     private PlayerMultiSelect MultiClick { get; }

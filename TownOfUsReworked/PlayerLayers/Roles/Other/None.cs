@@ -1,3 +1,3 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Roleless : Role;
+public sealed class Roleless : Role;

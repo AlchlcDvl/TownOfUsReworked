@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Medium : Crew
+public sealed class Medium : Crew
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MediateCd = 25;

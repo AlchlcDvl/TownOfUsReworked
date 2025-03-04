@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None, bool noParts = false, string colorHex = null, int priority = -1, MultiMenu menu = MultiMenu.Layer) :
+public sealed class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None, bool noParts = false, string colorHex = null, int priority = -1, MultiMenu menu = MultiMenu.Layer) :
     BaseHeaderOptionAttribute(menu, CustomOptionType.Alignment, priority)
 {
     private RoleListSlot Alignment { get; } = alignment;

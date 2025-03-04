@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Escort : Crew, IBlocker
+public sealed class Escort : Crew, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number EscortCd = 25;

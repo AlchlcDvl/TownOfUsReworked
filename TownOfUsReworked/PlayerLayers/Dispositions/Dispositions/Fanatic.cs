@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Fanatic : Disposition
+public sealed class Fanatic : Disposition
 {
     [ToggleOption]
     private static bool FanaticKnows = true;

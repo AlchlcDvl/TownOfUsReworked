@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Phantom : Neutral, IGhosty
+public sealed class Phantom : Neutral, IGhosty
 {
     [NumberOption(1, 10, 1)]
     public static Number PhantomTasksRemaining = 5;

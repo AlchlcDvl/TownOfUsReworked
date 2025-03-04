@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger
+public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger
 {
     protected override void Init()
     {

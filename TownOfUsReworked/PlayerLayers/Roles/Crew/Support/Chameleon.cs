@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Chameleon : Crew
+public sealed class Chameleon : Crew
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxSwoops = 5;

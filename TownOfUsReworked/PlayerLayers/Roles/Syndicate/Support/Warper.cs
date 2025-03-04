@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Warper : Syndicate, IMover
+public sealed class Warper : Syndicate, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number WarpCd = 25;

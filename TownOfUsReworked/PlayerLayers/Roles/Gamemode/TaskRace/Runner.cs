@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Runner : GameModeRole
+public sealed class Runner : GameModeRole
 {
     public override LayerEnum Type => LayerEnum.Runner;
     public override Func<string> StartText => () => "Speedrun Tasks To Be The Victor";

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomButton
+public sealed class CustomButton
 {
     public static readonly List<CustomButton> AllButtons = [];
 

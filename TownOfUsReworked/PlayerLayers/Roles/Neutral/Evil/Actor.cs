@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Actor : Evil
+public sealed class Actor : Evil
 {
     [ToggleOption]
     public static bool ActorCanPickRole = false;

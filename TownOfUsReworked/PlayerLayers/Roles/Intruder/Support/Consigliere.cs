@@ -2,7 +2,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Consigliere : Intruder
+public sealed class Consigliere : Intruder
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number InvestigateCd = 25;

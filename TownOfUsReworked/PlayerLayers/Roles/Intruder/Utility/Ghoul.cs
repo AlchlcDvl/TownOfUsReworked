@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Ghoul : Intruder, IGhosty
+public sealed class Ghoul : Intruder, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number GhoulMarkCd = 25;

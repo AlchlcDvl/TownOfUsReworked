@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Executioner : Evil
+public sealed class Executioner : Evil
 {
     [ToggleOption]
     public static bool ExecutionerCanPickTargets = false;

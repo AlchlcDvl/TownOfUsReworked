@@ -1,7 +1,11 @@
 namespace TownOfUsReworked.Loaders;
 
-public abstract class BaseDownloader : AssetLoader<DownloadableAsset>
+public class BaseDownloader(string dir, string manifest, string ext) : AssetLoader<DownloadableAsset>
 {
+    protected override string DirectoryInfo { get; } = dir;
+    protected override string Manifest { get; } = manifest;
+    protected override string FileExtension { get; } = ext;
+
     protected override bool Downloading => true;
 
     protected override IEnumerable<string> GenerateDownloadList(DownloadableAsset[] response, HashAlgorithm hasher) => response.Where(x => ShouldDownload(Path.Combine(DirectoryInfo,

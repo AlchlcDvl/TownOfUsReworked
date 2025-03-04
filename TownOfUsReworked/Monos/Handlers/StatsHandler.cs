@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class StatsHandler : MonoBehaviour
+public sealed class StatsHandler : MonoBehaviour
 {
     private StatsPopup Popup { get; set; }
     private int I { get; set; }

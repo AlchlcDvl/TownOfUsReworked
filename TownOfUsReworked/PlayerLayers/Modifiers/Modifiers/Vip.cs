@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Vip : Modifier
+public sealed class Vip : Modifier
 {
     [ToggleOption]
     private static bool VipKnows = true;

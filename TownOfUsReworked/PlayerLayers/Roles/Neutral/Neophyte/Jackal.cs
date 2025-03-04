@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Jackal : Neophyte
+public sealed class Jackal : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number RecruitCd = 25;

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Bait : Modifier
+public sealed class Bait : Modifier
 {
     [ToggleOption]
     private static bool BaitKnows = true;

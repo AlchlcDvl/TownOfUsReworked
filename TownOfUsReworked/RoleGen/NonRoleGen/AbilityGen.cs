@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class AbilityGen : BaseGen
+public sealed class AbilityGen : BaseGen
 {
     private static readonly LayerEnum[] CrewAb = [ LayerEnum.Bullseye, LayerEnum.Swapper ];
     private static readonly LayerEnum[] Tasked = [ LayerEnum.Insider, LayerEnum.Multitasker ];

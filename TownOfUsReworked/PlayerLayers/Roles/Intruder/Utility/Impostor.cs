@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Impostor : Intruder
+public sealed class Impostor : Intruder
 {
     public override LayerEnum Type => LayerEnum.Impostor;
     public override Func<string> StartText => () => "Sabotage And Kill Everyone";

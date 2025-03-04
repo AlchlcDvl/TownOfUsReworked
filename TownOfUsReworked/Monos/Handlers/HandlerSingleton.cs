@@ -2,9 +2,19 @@
 
 public static class HandlerSingleton<T> where T : MonoBehaviour
 {
-    public static T Instance { get; private set; }
+    private static T InstancePriv;
+    public static T Instance
+    {
+        get
+        {
+            if (!InstancePriv)
+                AddInstance();
+
+            return InstancePriv;
+        }
+    }
 
     public static void AddInstance() => SetInstance(TownOfUsReworked.ModInstance.AddComponent<T>());
 
-    public static void SetInstance(T instance) => Instance = instance;
+    public static void SetInstance(T instance) => InstancePriv = instance;
 }

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Diseased : Modifier
+public sealed class Diseased : Modifier
 {
     [ToggleOption]
     private static bool DiseasedKnows = true;

@@ -5,8 +5,8 @@ public abstract class AssetLoader
     protected static readonly string RepositoryUrl = $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
 
     protected abstract string Manifest { get; }
+    protected abstract string DirectoryInfo { get; }
 
-    protected virtual string DirectoryInfo => "";
     protected virtual string FileExtension => "";
     protected virtual bool Downloading => false;
     protected virtual bool HasStreamAssets => false;
@@ -19,11 +19,9 @@ public abstract class AssetLoader
             yield break;
 
         Message($"Downloading {count} files");
-        var i = 0;
 
-        foreach (var fileName in files)
+        foreach (var (i, fileName) in files.Indexed())
         {
-            i++;
             UpdateSplashPatch.SetText($"Downloading {Manifest} ({i}/{count})");
             var trueName = fileName.Replace(" ", "%20") + (IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}");
             Message($"Downloading: {Manifest}/{fileName}");
@@ -34,8 +32,7 @@ public abstract class AssetLoader
                 Error(www.error);
             else
             {
-                var filePath = Path.Combine(DirectoryInfo, trueName);
-                filePath = filePath.Replace("%20", " ");
+                var filePath = Path.Combine(DirectoryInfo, trueName).Replace("%20", " ");
                 var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
 
                 while (!persistTask.IsCompleted)
@@ -64,10 +61,10 @@ public abstract class AssetLoader
         yield return new VisorLoader().CoFetch(hasher);
         yield return new NameplateLoader().CoFetch(hasher);
         yield return new ColorLoader().CoFetch(hasher);
-        yield return new PresetLoader().CoFetch(hasher);
-        yield return new ImageLoader().CoFetch(hasher);
+        yield return new BaseDownloader(TownOfUsReworked.Options, "Presets", "txt").CoFetch(hasher);
+        yield return new BaseDownloader(TownOfUsReworked.Images, "Images", "png").CoFetch(hasher);
         yield return new PortalLoader().CoFetch(hasher);
-        yield return new SoundLoader().CoFetch(hasher);
+        yield return new BaseDownloader(TownOfUsReworked.Sounds, "Sounds", "wav").CoFetch(hasher);
         yield return new BundleLoader().CoFetch(hasher);
     }
 

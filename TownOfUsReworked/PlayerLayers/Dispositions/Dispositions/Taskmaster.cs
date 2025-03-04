@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Taskmaster : Disposition
+public sealed class Taskmaster : Disposition
 {
     [NumberOption(1, 5, 1)]
     public static Number TMTasksRemaining = 1;

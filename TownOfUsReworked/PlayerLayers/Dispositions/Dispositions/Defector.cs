@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Defector : Disposition
+public sealed class Defector : Disposition
 {
     [ToggleOption]
     private static bool DefectorKnows = true;

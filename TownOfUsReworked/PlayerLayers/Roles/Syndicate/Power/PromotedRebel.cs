@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper, ITimeLord, IDrunkard
+public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper, ITimeLord, IDrunkard
 {
     protected override void Init()
     {

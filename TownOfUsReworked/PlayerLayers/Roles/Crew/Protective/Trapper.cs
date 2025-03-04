@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Trapper : Crew, ITrapper
+public sealed class Trapper : Crew, ITrapper
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTraps = 5;

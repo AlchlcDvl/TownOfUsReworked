@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOptionType.Toggle)
+public sealed class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOptionType.Toggle)
 {
     private void Toggle() => Set(!Get());
 

@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class ModifierGen : BaseGen
+public sealed class ModifierGen : BaseGen
 {
     private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.Vip, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
         LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];

@@ -1,7 +1,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace TownOfUsReworked.Modules;
 
-public class Language : Asset
+public sealed class Language : Asset
 {
     [JsonPropertyName("values")]
     public LangModule[] Values { get; set; }

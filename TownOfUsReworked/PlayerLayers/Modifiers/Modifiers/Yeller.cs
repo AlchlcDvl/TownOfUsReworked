@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-public class Yeller : Modifier
+public sealed class Yeller : Modifier
 {
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Yeller : CustomColorManager.Modifier;
     public override LayerEnum Type => LayerEnum.Yeller;

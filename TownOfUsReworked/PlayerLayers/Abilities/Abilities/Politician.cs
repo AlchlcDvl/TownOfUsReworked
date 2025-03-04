@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Politician : Ability
+public sealed class Politician : Ability
 {
     [NumberOption(0, 10, 1)]
     public static Number PoliticianVoteBank = 0;

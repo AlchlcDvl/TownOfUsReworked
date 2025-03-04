@@ -29,7 +29,7 @@ public static class MapBehaviourPatches
         if (CustomPlayer.Local.IsBlocked())
             return false;
 
-        var notmodified = true;
+        var notModified = true;
 
         if (opts.Mode is MapOptions.Modes.Normal or MapOptions.Modes.Sabotage)
         {
@@ -39,13 +39,13 @@ public static class MapBehaviourPatches
                 __instance.ShowNormalMap();
 
             __instance.taskOverlay.gameObject.SetActive(!IsTaskRace() && !IsCustomHnS());
-            notmodified = false;
+            notModified = false;
         }
 
         PlayerLayer.LocalLayers().ForEach(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
         CustomPlayer.Local.DisableButtons();
-        return notmodified;
+        return notModified;
     }
 
     [HarmonyPatch(nameof(MapBehaviour.Show)), HarmonyPostfix]
@@ -471,10 +471,13 @@ public static class WaitForFinishPatch
 [HarmonyPatch(typeof(FollowerCamera), nameof(FollowerCamera.Update))]
 public static class FollowerCameraPatches
 {
-    public static void Postfix(FollowerCamera __instance)
+    public static bool Prefix(FollowerCamera __instance)
     {
-        if (!__instance.Target || __instance.Locked || !ClientOptions.LockCameraSway)
-            return;
+        if (!ClientOptions.LockCameraSway)
+            return true;
+
+        if (!__instance.Target || __instance.Locked)
+            return false;
 
         var v = (Vector2)__instance.Target.transform.position + __instance.Offset;
 
@@ -488,6 +491,7 @@ public static class FollowerCameraPatches
         }
 
         __instance.transform.position = v;
+        return false;
     }
 }
 

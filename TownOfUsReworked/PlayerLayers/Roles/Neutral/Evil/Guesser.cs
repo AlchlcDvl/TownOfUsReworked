@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Guesser : Evil, IGuesser
+public sealed class Guesser : Evil, IGuesser
 {
     [ToggleOption]
     public static bool GuesserCanPickTargets = false;

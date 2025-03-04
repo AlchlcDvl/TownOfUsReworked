@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Giant : Modifier
+public sealed class Giant : Modifier
 {
     [NumberOption(0.5f, 1f, 0.05f, Format.Multiplier)]
     public static Number GiantSpeed = 0.75f;

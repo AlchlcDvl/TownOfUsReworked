@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Modules;
 
-public class DeadPlayer(byte killer, byte player)
+public sealed class DeadPlayer(byte killer, byte player)
 {
     public byte KillerId { get; } = killer;
     public byte PlayerId { get; } = player;

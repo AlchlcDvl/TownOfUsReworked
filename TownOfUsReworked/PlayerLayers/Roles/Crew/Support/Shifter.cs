@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Shifter : Crew
+public sealed class Shifter : Crew
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ShiftCd = 25;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class MenuPagingBehaviour : BasePagingBehaviour
+public sealed class MenuPagingBehaviour : BasePagingBehaviour
 {
     [HideFromIl2Cpp]
     public IEnumerable<ShapeshifterPanel> Targets => [ .. Menu.potentialVictims ];

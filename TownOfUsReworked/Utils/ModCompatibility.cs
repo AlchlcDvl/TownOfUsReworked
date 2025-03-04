@@ -9,8 +9,6 @@ public static class ModCompatibility
         SubLoaded = InitializeSubmerged();
         LiLoaded = InitializeLevelImpostor();
 
-        Application.add_logMessageReceived((Action<string, string, LogType>)RedirectLoggerPatch2.UnityLog);
-
         // TryCastMethod = AccessTools.Method(typeof(Il2CppObjectBase), nameof(Il2CppObjectBase.TryCast));
     }
 
@@ -72,8 +70,7 @@ public static class ModCompatibility
             RpcRequestChangeFloorMethod = AccessTools.Method(floorHandlerType, "RpcRequestChangeFloor");
             RegisterFloorOverrideMethod = AccessTools.Method(floorHandlerType, "RegisterFloorOverride");
 
-            var ventPatchDataType = SubTypes["VentPatchData"];
-            InTransitionProperty = AccessTools.Property(ventPatchDataType, "InTransition");
+            InTransitionProperty = AccessTools.Property(SubTypes["VentPatchData"], "InTransition");
 
             var customTaskTypesType = SubTypes["CustomTaskTypes"];
             var retrieveOxygenMaskField = AccessTools.Field(customTaskTypesType, "RetrieveOxygenMask");
@@ -84,16 +81,14 @@ public static class ModCompatibility
             SubmarineOxygenSystemInstanceProperty = AccessTools.Property(submarineOxygenSystemType, "Instance");
             RepairDamageMethod = AccessTools.Method(submarineOxygenSystemType, "RepairDamage");
 
-            var submergedExileControllerType = SubTypes["SubmergedExileController"];
-            var submergedExileWrapUpMethod = AccessTools.Method(submergedExileControllerType, "WrapUpAndSpawn");
+            var submergedExileWrapUpMethod = AccessTools.Method(SubTypes["SubmergedExileController"], "WrapUpAndSpawn");
 
             var submarineElevatorType = SubTypes["SubmarineElevator"];
             GetInElevatorMethod = AccessTools.Method(submarineElevatorType, "GetInElevator", [ typeof(PlayerControl) ]);
             GetMovementStageFromTimeMethod = AccessTools.Method(submarineElevatorType, "GetMovementStageFromTime");
             GetSubElevatorSystemField = AccessTools.Field(submarineElevatorType, "system");
 
-            var submarineElevatorSystemType = SubTypes["SubmarineElevatorSystem"];
-            UpperDeckIsTargetFloorField = AccessTools.Field(submarineElevatorSystemType, "upperDeckIsTargetFloor");
+            UpperDeckIsTargetFloorField = AccessTools.Field(SubTypes["SubmarineElevatorSystem"], "upperDeckIsTargetFloor");
 
             SpawnInStateType = SubTypes["SpawnInState"];
 
@@ -101,14 +96,11 @@ public static class ModCompatibility
             var getReadyPlayerAmountMethod = AccessTools.Method(subSpawnSystemType, "GetReadyPlayerAmount");
             CurrentStateField = AccessTools.Field(subSpawnSystemType, "currentState");
 
-            var elevatorConsoleType = SubTypes["ElevatorConsole"];
-            var canUseMethod = AccessTools.Method(elevatorConsoleType, "CanUse");
+            var canUseMethod = AccessTools.Method(SubTypes["ElevatorConsole"], "CanUse");
 
-            var submarineSelectSpawnType = SubTypes["SubmarineSelectSpawn"];
-            var startMethod = AccessTools.Method(submarineSelectSpawnType, "Start");
+            var startMethod = AccessTools.Method(SubTypes["SubmarineSelectSpawn"], "Start");
 
-            var customPlayerDataType = SubTypes["CustomPlayerData"];
-            var hasMapGetter = AccessTools.PropertyGetter(customPlayerDataType, "HasMap");
+            var hasMapGetter = AccessTools.PropertyGetter(SubTypes["CustomPlayerData"], "HasMap");
 
             // Why do the following patches even exist in submerged??
             var lightFlickerPatchesType = SubTypes["LightFlickerPatches"];
@@ -327,8 +319,7 @@ public static class ModCompatibility
             LiAssembly = LiPlugin!.GetType().Assembly;
             LiTypes = AccessTools.GetTypesFromAssembly(LiAssembly).ToDictionary(x => x.Name, x => x);
 
-            var triggerConsoleType = LiTypes["TriggerConsole"];
-            var canUseMethod = AccessTools.Method(triggerConsoleType, "CanUse");
+            var canUseMethod = AccessTools.Method(LiTypes["TriggerConsole"], "CanUse");
 
             var compatType = typeof(ModCompatibility);
 

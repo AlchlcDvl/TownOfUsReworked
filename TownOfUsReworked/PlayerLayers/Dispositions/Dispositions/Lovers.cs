@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Lovers : Disposition
+public sealed class Lovers : Disposition
 {
     [ToggleOption]
     public static bool BothLoversDie = true;

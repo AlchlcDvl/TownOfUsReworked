@@ -1,33 +1,32 @@
 namespace TownOfUsReworked.Loaders;
 
-public class VisorLoader : BaseCosmeticLoader<CustomVisor>
+public sealed class VisorLoader : BaseCosmeticLoader<CustomVisor>
 {
     public static readonly Dictionary<string, CustomVisor> CustomVisorRegistry = [];
 
     protected override string DirectoryInfo => TownOfUsReworked.Visors;
     protected override string Manifest => "Visors";
-    protected override string FileExtension => "png";
 
     protected override void LoadAsset(CustomVisor item, int i)
     {
-        var path = Path.Combine(TownOfUsReworked.Visors, $"{item.ID}.png");
+        var path = Path.Combine(DirectoryInfo);
 
         if (item.StreamOnly)
-            path = Path.Combine(TownOfUsReworked.Visors, "Stream", $"{item.ID}.png");
+            path = Path.Combine(DirectoryInfo, "Stream");
         else if (item.TestOnly)
-            path = Path.Combine(TownOfUsReworked.Visors, "Test", $"{item.ID}.png");
+            path = Path.Combine(DirectoryInfo, "Test");
 
-        var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
-        viewData.IdleFrame = CreateCosmeticSprite(path, CosmeticTypeEnum.Visor);
-        viewData.FloorFrame = item.FloorID != null ? CreateCosmeticSprite(path, CosmeticTypeEnum.Visor) : viewData.IdleFrame;
-        viewData.LeftIdleFrame = item.FlipID != null ? CreateCosmeticSprite(path, CosmeticTypeEnum.Visor) : null;
-        viewData.ClimbFrame = item.ClimbID != null ? CreateCosmeticSprite(path, CosmeticTypeEnum.Visor) : null;
+        var viewData = ScriptableObject.CreateInstance<VisorViewData>();
+        viewData.IdleFrame = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Visor);
+        viewData.FloorFrame = item.FloorID != null ? CreateCosmeticSprite(path, item.FloorID, CosmeticTypeEnum.Visor) : viewData.IdleFrame;
+        viewData.LeftIdleFrame = item.FlipID != null ? CreateCosmeticSprite(path, item.FlipID, CosmeticTypeEnum.Visor) : null;
+        viewData.ClimbFrame = item.ClimbID != null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Visor) : null;
         viewData.MatchPlayerColor = item.Adaptive;
 
-        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>();
         preview.PreviewSprite = viewData.IdleFrame;
 
-        var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
+        var visor = ScriptableObject.CreateInstance<VisorData>();
         visor.name = item.Name;
         visor.displayOrder = 99;
         visor.ProductId = "customVisor_" + item.Name.Replace(' ', '_');

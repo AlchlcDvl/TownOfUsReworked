@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Hunter : HideAndSeek
+public sealed class Hunter : HideAndSeek
 {
     public override LayerEnum Type => LayerEnum.Hunter;
     public override Func<string> StartText => () => "Hunt Them All Down";

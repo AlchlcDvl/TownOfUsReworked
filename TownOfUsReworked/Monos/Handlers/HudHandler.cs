@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class HudHandler : MonoBehaviour
+public sealed class HudHandler : MonoBehaviour
 {
     private bool CommsEnabled;
     public bool CamouflagerEnabled;

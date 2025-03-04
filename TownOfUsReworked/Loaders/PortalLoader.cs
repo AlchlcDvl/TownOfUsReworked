@@ -1,10 +1,6 @@
 namespace TownOfUsReworked.Loaders;
 
-public class PortalLoader : BaseDownloader
+public sealed class PortalLoader() : BaseDownloader(TownOfUsReworked.Portal, "Portal", "png")
 {
-    protected override string DirectoryInfo => TownOfUsReworked.Portal;
-    protected override string Manifest => "Portal";
-    protected override string FileExtension => "png";
-
     protected override void LoadAsset(DownloadableAsset item, int i) => PortalPaths.Add(Path.Combine(DirectoryInfo, $"{item.ID}.png"));
 }

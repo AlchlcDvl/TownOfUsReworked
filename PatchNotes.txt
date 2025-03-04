@@ -88,6 +88,7 @@ Fixes!
 - General: Fixed conversions being inconsistent
 - General: Fixed meeting announcements using "PlayerControl" instead of the player's actual name
 - General: Fixed the buttons not behaving as intended*
+- General: Fixed cosmetic loading not actually loading all of the parts as needed (idk how it went undetected for so long)
 
 Known Bugs :(
 - Critically low FPS for everyone, with the host having it the worst; a fix is in progress, and the severity has been considerably reduced since discovery

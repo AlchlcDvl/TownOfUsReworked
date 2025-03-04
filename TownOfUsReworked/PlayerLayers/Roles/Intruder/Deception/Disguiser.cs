@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Disguiser : Intruder
+public sealed class Disguiser : Intruder
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number DisguiseCd = 25;

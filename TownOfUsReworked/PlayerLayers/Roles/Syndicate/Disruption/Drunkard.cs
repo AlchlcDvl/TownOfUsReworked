@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Drunkard : Syndicate, IDrunkard
+public sealed class Drunkard : Syndicate, IDrunkard
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ConfuseCd = 25;

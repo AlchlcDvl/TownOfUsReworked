@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Teleporter : Intruder, IMover
+public sealed class Teleporter : Intruder, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number TeleportCd = 25;

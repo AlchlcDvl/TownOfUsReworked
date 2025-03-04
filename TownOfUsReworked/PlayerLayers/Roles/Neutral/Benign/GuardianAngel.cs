@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class GuardianAngel : Neutral
+public sealed class GuardianAngel : Neutral
 {
     [ToggleOption]
     public static bool GuardianAngelCanPickTargets = false;

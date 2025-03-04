@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class DragHandler : MonoBehaviour
+public sealed class DragHandler : MonoBehaviour
 {
     public static readonly Dictionary<byte, byte> Dragging = [];
 

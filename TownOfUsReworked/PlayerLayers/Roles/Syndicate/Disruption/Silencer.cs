@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Silencer : Syndicate, ISilencer
+public sealed class Silencer : Syndicate, ISilencer
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SilenceCd = 25;

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Overlord : Disposition
+public sealed class Overlord : Disposition
 {
     [ToggleOption]
     public static bool OverlordKnows = true;

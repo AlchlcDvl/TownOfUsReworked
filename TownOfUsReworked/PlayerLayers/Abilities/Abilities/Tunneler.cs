@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Tunneler : Ability
+public sealed class Tunneler : Ability
 {
     [ToggleOption]
     private static bool TunnelerKnows = true;

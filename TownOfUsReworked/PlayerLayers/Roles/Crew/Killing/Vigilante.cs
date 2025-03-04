@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Vigilante : Crew
+public sealed class Vigilante : Crew
 {
     [ToggleOption]
     private static bool MisfireKillsInno = true;

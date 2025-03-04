@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Thief : Neutral, IGuesser
+public sealed class Thief : Neutral, IGuesser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number StealCd = 25;

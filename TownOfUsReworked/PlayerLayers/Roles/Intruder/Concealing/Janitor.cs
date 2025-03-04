@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Janitor : Intruder, IDragger
+public sealed class Janitor : Intruder, IDragger
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number CleanCd = 25;

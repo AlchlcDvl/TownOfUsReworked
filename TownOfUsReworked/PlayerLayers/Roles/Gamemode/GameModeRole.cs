@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class GameModeRole : Role
+public abstract class GameModeRole : Role
 {
     protected override void Init()
     {

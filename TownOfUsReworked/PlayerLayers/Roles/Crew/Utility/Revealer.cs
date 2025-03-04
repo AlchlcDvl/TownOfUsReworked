@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Revealer : Crew, IGhosty
+public sealed class Revealer : Crew, IGhosty
 {
     [NumberOption(1, 10, 1)]
     public static Number RevealerTasksRemainingClicked = 5;

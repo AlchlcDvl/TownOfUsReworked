@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Dwarf : Modifier
+public sealed class Dwarf : Modifier
 {
     [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
     public static Number DwarfSpeed = 1.5f;

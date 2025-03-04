@@ -59,7 +59,7 @@ public abstract class TopCosmetic<TView, TData> : CustomCosmetic<TView, TData>
     public bool Adaptive { get; set; }
 }
 
-public class CustomHat : TopCosmetic<HatViewData, HatData>
+public sealed class CustomHat : TopCosmetic<HatViewData, HatData>
 {
     [JsonPropertyName("backid")]
     public string BackID { get; set; }
@@ -89,15 +89,15 @@ public class CustomHat : TopCosmetic<HatViewData, HatData>
     public bool NoBounce { get; set; }
 }
 
-public class CustomVisor : TopCosmetic<VisorViewData, VisorData>
+public sealed class CustomVisor : TopCosmetic<VisorViewData, VisorData>
 {
     [JsonPropertyName("infront")]
     public bool InFront { get; set; }
 }
 
-public class CustomNameplate : CustomCosmetic<NamePlateViewData, NamePlateData>; // Simplifying the class definition
+public sealed class CustomNameplate : CustomCosmetic<NamePlateViewData, NamePlateData>; // Simplifying the definition
 
-public class CustomColor : CustomCosmetic // There's no view or data for this, so we don't need to specify them
+public sealed class CustomColor : CustomCosmetic // There's no view or data for this, so we don't need to specify them
 {
     [JsonPropertyName("stringid")]
     public StringNames StringID { get; set; }

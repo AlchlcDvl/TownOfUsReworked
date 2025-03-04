@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class LayerHandler : RoleBehaviour
+public sealed class LayerHandler : RoleBehaviour
 {
     public override bool IsDead => Player.HasDied();
     public override bool IsAffectedByComms => false;

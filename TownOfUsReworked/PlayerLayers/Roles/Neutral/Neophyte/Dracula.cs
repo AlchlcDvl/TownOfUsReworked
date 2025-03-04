@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Dracula : Neophyte
+public sealed class Dracula : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number BiteCd = 25;

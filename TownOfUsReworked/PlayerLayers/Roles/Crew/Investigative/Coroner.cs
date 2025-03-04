@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Coroner : Crew, IExaminer
+public sealed class Coroner : Crew, IExaminer
 {
     [NumberOption(0f, 2f, 0.05f, Format.Time)]
     public static Number CoronerArrowDur = 0.1f;

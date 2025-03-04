@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Banshee : Syndicate, IGhosty
+public sealed class Banshee : Syndicate, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ScreamCd = 25;

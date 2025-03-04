@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class VitalsPagingBehaviour : BasePagingBehaviour
+public sealed class VitalsPagingBehaviour : BasePagingBehaviour
 {
     [HideFromIl2Cpp]
     public IEnumerable<VitalsPanel> Targets => [..Menu.vitals];

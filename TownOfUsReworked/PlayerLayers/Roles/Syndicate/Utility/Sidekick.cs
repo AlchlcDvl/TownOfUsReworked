@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Sidekick : Syndicate
+public sealed class Sidekick : Syndicate
 {
     public Syndicate FormerRole { get; init; }
     public Rebel Rebel { get; init; }

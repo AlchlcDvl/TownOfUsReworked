@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-public class Shy : Modifier
+public sealed class Shy : Modifier
 {
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Shy : CustomColorManager.Modifier;
     public override LayerEnum Type => LayerEnum.Shy;

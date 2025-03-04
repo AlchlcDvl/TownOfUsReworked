@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Tiebreaker : Ability
+public sealed class Tiebreaker : Ability
 {
     [ToggleOption]
     private static bool TiebreakerKnows = true;

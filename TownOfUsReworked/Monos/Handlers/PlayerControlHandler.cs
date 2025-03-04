@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class PlayerControlHandler : NameHandler
+public sealed class PlayerControlHandler : NameHandler
 {
     private TextMeshPro Name { get; set; }
     private TextMeshPro Color { get; set; }

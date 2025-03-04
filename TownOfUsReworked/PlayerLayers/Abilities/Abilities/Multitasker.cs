@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Multitasker : Ability
+public sealed class Multitasker : Ability
 {
     [NumberOption(10f, 80f, 5f, Format.Percent)]
     public static Number Transparency = 50;

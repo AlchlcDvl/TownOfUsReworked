@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Allied : Disposition
+public sealed class Allied : Disposition
 {
     [StringOption<AlliedFaction>]
     public static AlliedFaction AlliedFaction = AlliedFaction.Random;

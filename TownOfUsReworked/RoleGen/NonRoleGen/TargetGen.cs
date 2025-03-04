@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class TargetGen : BaseGen
+public sealed class TargetGen : BaseGen
 {
     public override void Assign()
     {

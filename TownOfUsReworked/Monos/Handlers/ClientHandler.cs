@@ -2,7 +2,7 @@ using static TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.Clie
 
 namespace TownOfUsReworked.Monos;
 
-public class ClientHandler : MonoBehaviour
+public sealed class ClientHandler : MonoBehaviour
 {
     public PassiveButton ZoomButton;
     public bool Zooming;

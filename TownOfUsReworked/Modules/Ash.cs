@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Modules;
 
-public class Ash
+public sealed class Ash
 {
     private static readonly List<Ash> AllPiles = [];
     private GameObject Pile { get; set; }

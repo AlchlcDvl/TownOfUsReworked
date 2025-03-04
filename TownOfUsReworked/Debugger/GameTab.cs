@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Debugger;
 
-public class GameTab : BaseTab
+public sealed class GameTab : BaseTab
 {
     public override string Name => "Game";
 

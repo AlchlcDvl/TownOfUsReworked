@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-public class Ninja : Ability
+public sealed class Ninja : Ability
 {
     public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Ninja : CustomColorManager.Ability;
     public override LayerEnum Type => LayerEnum.Ninja;

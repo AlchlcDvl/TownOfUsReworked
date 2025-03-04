@@ -3,7 +3,7 @@ using PowerTools;
 namespace TownOfUsReworked.Monos;
 
 // Taken from Submerged going open source recently
-public class CustomKillAnimationPlayer : MonoBehaviour
+public sealed class CustomKillAnimationPlayer : MonoBehaviour
 {
     private const string DeathAnim =
         "0,0,4,0,0;" +

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-public class Coward : Modifier
+public sealed class Coward : Modifier
 {
     public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Coward : CustomColorManager.Modifier;
     public override LayerEnum Type => LayerEnum.Coward;

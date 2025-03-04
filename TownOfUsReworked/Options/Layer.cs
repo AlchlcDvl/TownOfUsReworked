@@ -1,7 +1,7 @@
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace TownOfUsReworked.Options;
 
-public class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15) : OptionAttribute<RoleOptionData>(CustomOptionType.Layer)
+public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15) : OptionAttribute<RoleOptionData>(CustomOptionType.Layer)
 {
     private byte CachedCount { get; set; }
     private byte CachedChance { get; set; }

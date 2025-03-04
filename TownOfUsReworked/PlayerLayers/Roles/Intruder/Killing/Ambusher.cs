@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Ambusher : Intruder, IAmbusher
+public sealed class Ambusher : Intruder, IAmbusher
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number AmbushCd = 25;

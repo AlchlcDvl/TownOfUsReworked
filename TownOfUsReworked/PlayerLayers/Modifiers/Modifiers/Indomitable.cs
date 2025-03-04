@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Indomitable : Modifier
+public sealed class Indomitable : Modifier
 {
     [ToggleOption]
     private static bool IndomitableKnows = true;

@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Monos;
 
-public class Bomb : Range
+public sealed class Bomb : Range
 {
     public void Detonate()
     {

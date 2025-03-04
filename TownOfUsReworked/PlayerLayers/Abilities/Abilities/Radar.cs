@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-public class Radar : Ability
+public sealed class Radar : Ability
 {
     private CustomArrow RadarArrow { get; set; }
 

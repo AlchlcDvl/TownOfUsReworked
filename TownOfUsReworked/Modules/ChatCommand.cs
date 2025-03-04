@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Modules;
 
-public class ChatCommand
+public sealed class ChatCommand
 {
     private string[] Aliases { get; }
     private string[] Parameters { get; }

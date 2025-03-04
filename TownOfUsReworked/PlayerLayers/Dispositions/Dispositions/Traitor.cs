@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Traitor : Disposition
+public sealed class Traitor : Disposition
 {
     [ToggleOption]
     private static bool TraitorKnows = true;

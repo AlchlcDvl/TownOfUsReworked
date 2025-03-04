@@ -5,6 +5,7 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
 {
     protected override bool HasStreamAssets => true;
     protected override bool Downloading => true;
+    protected override string FileExtension => "png";
 
     private readonly Dictionary<PropertyInfo, PropertyInfo> IDsAndHashes = [];
 
@@ -26,7 +27,7 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
         if (IDsAndHashes.Count > 0)
             return;
 
-        var props = AccessTools.GetDeclaredProperties(typeof(T));
+        var props = typeof(T).GetProperties(AccessTools.all);
         var ids = props.Where(x => x.Name.EndsWith("ID") && x.Name != "ID");
         var hashes = props.Where(x => x.Name.EndsWith("Hash"));
 
@@ -67,9 +68,9 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
 
     protected override void AfterLoading(List<T> response) => IDsAndHashes.Clear();
 
-    protected static Sprite CreateCosmeticSprite(string path, CosmeticTypeEnum cosmetic)
+    protected static Sprite CreateCosmeticSprite(string dir, string path, CosmeticTypeEnum cosmetic)
     {
-        var texture = LoadDiskTexture(path);
+        var texture = LoadDiskTexture(Path.Combine(dir, $"{path}.png"));
         return LoadSprite(texture, path.SanitisePath(), cosmetic switch
         {
             CosmeticTypeEnum.Hat or CosmeticTypeEnum.Visor => 100f,

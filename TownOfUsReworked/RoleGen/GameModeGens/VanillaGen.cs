@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public class VanillaGen : BaseRoleGen
+public sealed class VanillaGen : BaseRoleGen
 {
     public override bool AllowNonRoles => false;
     public override bool HasTargets => false;

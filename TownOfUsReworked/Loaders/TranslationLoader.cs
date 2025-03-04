@@ -2,20 +2,17 @@ using static TownOfUsReworked.Managers.TranslationManager;
 
 namespace TownOfUsReworked.Loaders;
 
-public class TranslationLoader : AssetLoader<Language>
+public sealed class TranslationLoader : AssetLoader<Language>
 {
     protected override string Manifest => "Languages";
     protected override string DirectoryInfo => TownOfUsReworked.Other;
 
-    protected override void AfterLoading(List<Language> response)
+    protected override void LoadAsset(Language item, int i)
     {
-        foreach (var language in response)
-        {
-            if (language.ID != null)
-                AllTranslations[language.ID] = language;
+        if (item.ID != null)
+            AllTranslations[item.ID] = item;
 
-            language.IDs?.ForEach(id => AllTranslations[id] = language);
-            language.Values?.ForEach(lang => language.Modules[lang.Name] = lang.Value);
-        }
+        item.IDs?.ForEach(id => AllTranslations[id] = item);
+        item.Values?.ForEach(lang => item.Modules[lang.Name] = lang.Value);
     }
 }

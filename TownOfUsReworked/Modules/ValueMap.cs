@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Modules;
 
 // Yoinked this lovely piece of code from Daemon at https://github.com/DaemonBeast/Mitochondria/blob/main/Mitochondria.Core/Utilities/Structures/Map.cs albeit with a few changes of my own
-public class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<T1, T2> where T1: notnull where T2 : notnull
+public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<T1, T2> where T1: notnull where T2 : notnull
 {
     public ValueMap<T2, T1> Reverse { get; }
 

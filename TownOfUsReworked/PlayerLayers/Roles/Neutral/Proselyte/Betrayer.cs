@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Betrayer : Neutral
+public sealed class Betrayer : Neutral
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number BetrayCd = 25;

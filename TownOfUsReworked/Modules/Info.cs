@@ -21,7 +21,7 @@ public abstract class Info(string id, UColor color, bool footer = false)
 
 public abstract class LayerInfo(LayerEnum layer, bool footer = false, UColor color = default) : Info($"{layer}", color == default ? LayerDictionary[layer].Color : color, footer);
 
-public class RoleInfo(LayerEnum role, Alignment alignmentEnum, Faction faction, bool footer = false, UColor color = default) : LayerInfo(role, footer, color)
+public sealed class RoleInfo(LayerEnum role, Alignment alignmentEnum, Faction faction, bool footer = false, UColor color = default) : LayerInfo(role, footer, color)
 {
     private string Alignment { get; } = $"Wiki.Alignment.{alignmentEnum}";
     private string WinCon { get; } = TranslationManager.IdExists($"Wiki.{faction}.WinCon") ? $"Wiki.{faction}.WinCon" : $"Wiki.{role}.WinCon";
@@ -43,7 +43,7 @@ public class RoleInfo(LayerEnum role, Alignment alignmentEnum, Faction faction, 
     }
 }
 
-public class FactionInfo(Faction faction, bool footer = false) : Info($"{faction}", faction switch
+public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{faction}", faction switch
 {
     Faction.Syndicate => CustomColorManager.Syndicate,
     Faction.Crew => CustomColorManager.Crew,
@@ -65,7 +65,7 @@ public class FactionInfo(Faction faction, bool footer = false) : Info($"{faction
     }
 }
 
-public class SubFactionInfo(SubFaction sub, bool footer = false) : Info($"{sub}", sub switch
+public sealed class SubFactionInfo(SubFaction sub, bool footer = false) : Info($"{sub}", sub switch
 {
     SubFaction.Undead => CustomColorManager.Undead,
     SubFaction.Reanimated => CustomColorManager.Reanimated,
@@ -93,7 +93,7 @@ public class SubFactionInfo(SubFaction sub, bool footer = false) : Info($"{sub}"
     }
 }
 
-public class AlignmentInfo(Alignment alignmentEnum, bool footer = false) : Info($"{alignmentEnum}", CustomColorManager.Alignment, footer)
+public sealed class AlignmentInfo(Alignment alignmentEnum, bool footer = false) : Info($"{alignmentEnum}", CustomColorManager.Alignment, footer)
 {
     public override string WikiEntry()
     {
@@ -104,7 +104,7 @@ public class AlignmentInfo(Alignment alignmentEnum, bool footer = false) : Info(
     }
 }
 
-public class ModifierInfo(LayerEnum modifier, bool footer = false, UColor color = default) : LayerInfo(modifier, footer, color)
+public sealed class ModifierInfo(LayerEnum modifier, bool footer = false, UColor color = default) : LayerInfo(modifier, footer, color)
 {
     private string AppliesTo { get; } = $"Wiki.{modifier}.AppliesTo";
 
@@ -118,7 +118,7 @@ public class ModifierInfo(LayerEnum modifier, bool footer = false, UColor color 
     }
 }
 
-public class DispositionInfo(LayerEnum disposition, string symbol, bool footer = false, UColor color = default) : LayerInfo(disposition, footer, color)
+public sealed class DispositionInfo(LayerEnum disposition, string symbol, bool footer = false, UColor color = default) : LayerInfo(disposition, footer, color)
 {
     private string AppliesTo { get; } = $"Wiki.{disposition}.AppliesTo";
     private string WinCon { get; } = $"Wiki.{disposition}.WinCon";
@@ -136,7 +136,7 @@ public class DispositionInfo(LayerEnum disposition, string symbol, bool footer =
     }
 }
 
-public class AbilityInfo(LayerEnum ability, bool footer = false, UColor color = default) : LayerInfo(ability, footer, color)
+public sealed class AbilityInfo(LayerEnum ability, bool footer = false, UColor color = default) : LayerInfo(ability, footer, color)
 {
     private string AppliesTo { get; } = $"Wiki.{ability}.AppliesTo";
 
@@ -150,7 +150,7 @@ public class AbilityInfo(LayerEnum ability, bool footer = false, UColor color = 
     }
 }
 
-public class OtherInfo(string id, UColor color, string otherNotes = "", bool footer = false) : Info(id, color, footer)
+public sealed class OtherInfo(string id, UColor color, string otherNotes = "", bool footer = false) : Info(id, color, footer)
 {
     private string OtherNotes { get; } = $"Wiki.{otherNotes}.Notes";
 
@@ -164,7 +164,7 @@ public class OtherInfo(string id, UColor color, string otherNotes = "", bool foo
     }
 }
 
-public class GameModeInfo(GameMode mode, bool footer = false) : Info($"{mode}", mode switch
+public sealed class GameModeInfo(GameMode mode, bool footer = false) : Info($"{mode}", mode switch
 {
     GameMode.Vanilla => UColor.white,
     GameMode.Classic => CustomColorManager.Classic,
@@ -184,7 +184,7 @@ public class GameModeInfo(GameMode mode, bool footer = false) : Info($"{mode}", 
     }
 }
 
-public class SymbolInfo(string id, string symbol, UColor color, bool footer = false) : Info(id, color, footer)
+public sealed class SymbolInfo(string id, string symbol, UColor color, bool footer = false) : Info(id, color, footer)
 {
     public string Symbol { get; } = symbol;
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<RoleListSlot>(CustomOptionType.Entry, RoleListSlot.Any, RoleListSlot.None)
+public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<RoleListSlot>(CustomOptionType.Entry, RoleListSlot.Any, RoleListSlot.None)
 {
     public PlayerLayerEnum EntryType { get; } = entryType;
     public bool IsBan { get; private set; }

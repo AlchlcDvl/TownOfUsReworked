@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Ruthless : Ability
+public sealed class Ruthless : Ability
 {
     [ToggleOption]
     private static bool RuthlessKnows = true;

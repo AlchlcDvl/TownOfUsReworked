@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class BountyHunter : Evil
+public sealed class BountyHunter : Evil
 {
     [ToggleOption]
     public static bool BountyHunterCanPickTargets = false;

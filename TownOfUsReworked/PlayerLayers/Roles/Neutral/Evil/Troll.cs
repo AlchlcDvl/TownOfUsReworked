@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Troll : Evil
+public sealed class Troll : Evil
 {
     [ToggleOption]
     private static bool CanInteract = true;

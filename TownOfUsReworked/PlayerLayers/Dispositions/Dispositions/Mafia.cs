@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Mafia : Disposition
+public sealed class Mafia : Disposition
 {
     [ToggleOption]
     public static bool MafiaRoles = true;

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Insider : Ability
+public sealed class Insider : Ability
 {
     [ToggleOption]
     private static bool InsiderKnows = true;

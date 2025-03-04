@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(CustomOptionType.String) where T : struct, Enum
+public sealed class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(CustomOptionType.String) where T : struct, Enum
 {
     private int Index { get; set; }
     private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);

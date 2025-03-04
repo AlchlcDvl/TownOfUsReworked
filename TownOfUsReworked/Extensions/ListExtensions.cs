@@ -318,6 +318,20 @@ public static class ListExtensions
         return -1;
     }
 
+    public static IEnumerable<T3> Select<T1, T2, T3>(this (IEnumerable<T1>, IEnumerable<T2>) source, Func<T1, T2, T3> selector)
+    {
+        var c1 = source.Item1.Count();
+        var c2 = source.Item2.Count();
+
+        if (c1 != c2)
+            throw new ArgumentOutOfRangeException(nameof(source), "The elements must be equal in size");
+
+        var count = (c1 + c2) / 2;
+
+        for (var i = 0; i < count; i++)
+            yield return selector(source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
+    }
+
     public static int RemoveRange<T>(this List<T> list, IEnumerable<T> list2)
     {
         var result = 0;

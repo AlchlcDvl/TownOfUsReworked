@@ -14,7 +14,7 @@ public abstract class AssetLoader<T> : AssetLoader
         UpdateSplashPatch.SetText($"Fetching {Manifest}");
         yield return EndFrame();
 
-        if (!IsNullEmptyOrWhiteSpace(DirectoryInfo) && !Directory.Exists(DirectoryInfo))
+        if (!Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
         string jsonText;
@@ -23,7 +23,6 @@ public abstract class AssetLoader<T> : AssetLoader
             jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
         else
         {
-            Message($"Downloading manifest at: {RepositoryUrl}/{Manifest}.json");
             var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}.json");
             yield return www.SendWebRequest();
 
@@ -85,9 +84,9 @@ public abstract class AssetLoader<T> : AssetLoader
             {
                 time = 0f;
 
-                for (var i = 0; i < response.Length; i++)
+                foreach (var (i, item) in response.Indexed())
                 {
-                    GenerateHash(response[i], hasher);
+                    GenerateHash(item, hasher);
                     time += Time.deltaTime;
 
                     if (time < 1f)
@@ -121,16 +120,16 @@ public abstract class AssetLoader<T> : AssetLoader
         {
             time = 0f;
 
-            for (var i = 0; i < data.Count; i++)
+            foreach (var (i, item) in data.Indexed())
             {
-                LoadAsset(data[i], i);
+                LoadAsset(item, i);
                 time += Time.deltaTime;
 
                 if (time < 1f)
                     continue;
 
                 time = 0f;
-                UpdateSplashPatch.SetText($"Loading Assets ({i + 1}/{data.Count})");
+                UpdateSplashPatch.SetText($"Loading {Manifest} ({i + 1}/{data.Count})");
                 yield return EndFrame();
             }
         }

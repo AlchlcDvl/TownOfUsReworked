@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [HeaderOption(MultiMenu.LayerSubOptions)]
-public class Transporter : Crew, IMover
+public sealed class Transporter : Crew, IMover
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTransports = 5;

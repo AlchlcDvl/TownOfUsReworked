@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomRolesMenu(PlayerControl owner, RoleSelect click) : CustomMenu(owner, "Guessing")
+public sealed class CustomRolesMenu(PlayerControl owner, RoleSelect click) : CustomMenu(owner, "Guessing")
 {
     private RoleSelect Click { get; } = click;
     private PlayerControl Selected { get; set; }

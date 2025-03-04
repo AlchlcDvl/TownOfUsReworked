@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public class PlayerArrow : CustomArrow
+public sealed class PlayerArrow : CustomArrow
 {
     private PlayerControl TargetPlayer { get; }
     private bool SkipBody { get; }

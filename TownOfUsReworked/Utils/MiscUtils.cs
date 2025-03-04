@@ -1,4 +1,6 @@
-﻿namespace TownOfUsReworked.Utils;
+﻿using System.Threading.Tasks;
+
+namespace TownOfUsReworked.Utils;
 
 public static class MiscUtils
 {
@@ -1093,6 +1095,11 @@ public static class MiscUtils
         path = path.Replace(".json", "");
         path = path.Replace(".anim", "");
         path = path.Replace(".shader", "");
+#if ANDROID
+        path = path.Replace(".bundle_android", "");
+#else
+        path = path.Replace(".bundle_pc", "");
+#endif
         path = path.TrueSplit('/')[^1];
         path = path.TrueSplit('\\')[^1];
         return path.TrueSplit('.')[^1];
@@ -1540,4 +1547,12 @@ public static class MiscUtils
 
     public static IEnumerable<RoleListSlot> GetValues(this IEnumerable<Enum> enums) => enums.Where(x => Enum.TryParse<RoleListSlot>(x.ToString(), out _)).Select(x =>
         Enum.Parse<RoleListSlot>(x.ToString()));
+
+    // public static IEnumerator WaitUntil(Func<bool> predicate)
+    // {
+    //     while (!predicate())
+    //         yield return EndFrame();
+    // }
+
+    // public static IEnumerator WaitUntil(Task task) => WaitUntil(() => task.IsCompleted);
 }

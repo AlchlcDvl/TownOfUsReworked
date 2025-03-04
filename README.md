@@ -61,25 +61,25 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 | [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Runner](#runner)             |
 | [Consigliere](#consigliere)        | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              |                               |
 | [Consort](#consort)                | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |                               |
-| [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |                               |
-| [Enforcer](#enforcer)              | [Drunkard](#drunkard)         | [Dictator](#dictator)             | [Cryomaniac](#cryomaniac)         |                               |
-| [Ghoul](#ghoul)                    | [Framer](#framer)             | [Engineer](#engineer)             | [Dracula](#dracula)               |                               |
-| [Godfather](#godfather)            | [Poisoner](#poisoner)         | [Escort](#escort)                 | [Executioner](#executioner)       |                               |
-| [Grenadier](#grenadier)            | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Glitch](#glitch)                 |                               |
-| [Impostor](#impostor)              | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |                               |
-| [Janitor](#janitor)                | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guesser](#guesser)               |                               |
-| [Mafioso](#mafioso)                | [Silencer](#silencer)         | [Monarch](#monarch)               | [Jackal](#jackal)                 |                               |
-| [Miner/Herbalist](#minerherbalist) | [Spellslinger](#spellslinger) | [Mystic](#mystic)                 | [Jester](#jester)                 |                               |
-| [Morphling](#morphling)            | [Stalker](#stalker)           | [Operative](#operative)           | [Juggernaut](#juggernaut)         |                               |
-| [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Retributionist](#retributionist) | [Murderer](#murderer)             |                               |
-| [Wraith](#wraith)                  | [Warper](#warper)             | [Revealer](#revealer)             | [Necromancer](#necromancer)       |                               |
-|                                    |                               | [Seer](#seer)                     | [Pestilence](#pestilence)         |                               |
-|                                    |                               | [Sheriff](#sheriff)               | [Phantom](#phantom)               |                               |
-|                                    |                               | [Shifter](#shifter)               | [Plaguebearer](#plaguebearer)     |                               |
-|                                    |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |                               |
-|                                    |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |                               |
-|                                    |                               | [Trapper](#trapper)               | [Thief](#thief)                   |                               |
-|                                    |                               | [Trickster](#trickster)           | [Troll](#troll)                   |                               |
+| [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Democrat](#democrat)             | [Cannibal](#cannibal)             |                               |
+| [Enforcer](#enforcer)              | [Drunkard](#drunkard)         | [Detective](#detective)           | [Cryomaniac](#cryomaniac)         |                               |
+| [Ghoul](#ghoul)                    | [Framer](#framer)             | [Dictator](#dictator)             | [Dracula](#dracula)               |                               |
+| [Godfather](#godfather)            | [Poisoner](#poisoner)         | [Engineer](#engineer)             | [Executioner](#executioner)       |                               |
+| [Grenadier](#grenadier)            | [Rebel](#rebel)               | [Escort](#escort)                 | [Glitch](#glitch)                 |                               |
+| [Impostor](#impostor)              | [Shapeshifter](#shapeshifter) | [Mayor](#mayor)                   | [Guardian Angel](#guardian-angel) |                               |
+| [Janitor](#janitor)                | [Sidekick](#sidekick)         | [Medic](#medic)                   | [Guesser](#guesser)               |                               |
+| [Mafioso](#mafioso)                | [Silencer](#silencer)         | [Medium](#medium)                 | [Jackal](#jackal)                 |                               |
+| [Miner/Herbalist](#minerherbalist) | [Spellslinger](#spellslinger) | [Monarch](#monarch)               | [Jester](#jester)                 |                               |
+| [Morphling](#morphling)            | [Stalker](#stalker)           | [Mystic](#mystic)                 | [Juggernaut](#juggernaut)         |                               |
+| [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Operative](#operative)           | [Murderer](#murderer)             |                               |
+| [Wraith](#wraith)                  | [Warper](#warper)             | [Retributionist](#retributionist) | [Necromancer](#necromancer)       |                               |
+|                                    |                               | [Revealer](#revealer)             | [Pestilence](#pestilence)         |                               |
+|                                    |                               | [Seer](#seer)                     | [Phantom](#phantom)               |                               |
+|                                    |                               | [Sheriff](#sheriff)               | [Plaguebearer](#plaguebearer)     |                               |
+|                                    |                               | [Shifter](#shifter)               | [Serial Killer](#serial-killer)   |                               |
+|                                    |                               | [Tracker](#tracker)               | [Survivor](#survivor)             |                               |
+|                                    |                               | [Transporter](#transporter)       | [Thief](#thief)                   |                               |
+|                                    |                               | [Trapper](#trapper)               | [Troll](#troll)                   |                               |
 |                                    |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
 |                                    |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
 
@@ -231,7 +231,7 @@ Each member has a special ability which determines who’s who and can help weed
 
 **Origin**: Town Of Us, based off of the original Retributionist in Town Of Salem
 
-The Altruist is capable of reviving dead players at a cost. The Altruist can extract mana from dead bodies, cleaning them as a result. The Altruist can then use this gained mana to revive other bodies. This reviving takes time and if it's interuppted by a meeting, then the body stays dead forever.
+The Altruist is capable of reviving dead players at a cost. The Altruist can extract mana from dead bodies, cleaning them as a result. The Altruist can then use this gained mana to revive other bodies. This reviving takes time and if it's interrupted by a meeting, then the body stays dead forever.
 
 **Game Options**
 
@@ -294,9 +294,19 @@ The Coroner gets an alert when someone dies and briefly gets an arrow pointing i
 
 **Origin**: Among Us
 
-Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
+Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Classic/Role List mode.
 
 <br>
+
+## Democrat
+
+<img align="right" width="" height="200" src="./Images/Democrat.png">
+
+**Alignment**: Crew (Sovereign)
+
+**Origin**: Town Of Us
+
+The Democrat can campaign players to gain their electoral vote. When all alive players have been campaigned, the Democrat can reveal themselves to be the [Mayor](#mayor).
 
 ## Detective
 
@@ -383,7 +393,7 @@ The Mayor can reveal themselves as the Mayor to other players. Upon doing so, th
 
 **Origin**: Town Of Us
 
-The Medic can give any player a shield that will grant them Powerful defense. The Medic can choose who they give thier shield to, and can take their shield back if needed. Shielded players have a green ✚ next to their names.
+The Medic can give any player a shield that will grant them Powerful defense. The Medic can choose who they give their shield to, and can take their shield back if needed. Shielded players have a green ✚ next to their names.
 
 **Game Options**
 
@@ -582,15 +592,7 @@ The Transporter can swap the locations of two players at will. Being transported
 
 **Attack**: Powerful when the trap attacks
 
-The Trapper can build traps and place them on other players. These traps will either register an interacter's role, or attack an attacker. At the start of the next meeting, the Trapper is told whether they attacked someone or not. If not, the Trapper gets a list of roles that interacted with the trapped targets in a random order. Trapped players have a pink ∮ next to their names.
-
-## Trickster
-
-<img align="right" width="" height="200" src="./Images/Trickster.png">
-
-**Alignment**: Crew (Protective)
-
-During a meeting, the Trickster can choose to redirect all interactions from one player to another. Each time a redirection takes place, the Trickster will be notified. However, each time the Trickster redirects a player, they will interact with both targets and the interactor, making them easily susceptible to interaction sensitive roles. During the round, the Trickster can choose to nullify the redirection for a short time, making it so that the interactions return to normal for a short while.
+The Trapper can build traps and place them on other players. These traps will either register an interactor's role, or attack an attacker. At the start of the next meeting, the Trapper is told whether they attacked someone or not. If not, the Trapper gets a list of roles that interacted with the trapped targets in a random order. Trapped players have a pink ∮ next to their names.
 
 ## Veteran
 
@@ -719,7 +721,7 @@ The Arsonist can douse players with gasoline. After dousing, the Arsonist can ch
 
 **Attack**: Basic
 
-The Betrayer is a simple killer, who appears after a turned [Traitor](#traitor)/[Fanatic](#fanatic) was the only member of their new faction remaning. This role does not spawn directly.
+The Betrayer is a simple killer, who appears after a turned [Traitor](#traitor)/[Fanatic](#fanatic) was the only member of their new faction remaining. This role does not spawn directly.
 
 ## Bounty Hunter
 
@@ -727,7 +729,7 @@ The Betrayer is a simple killer, who appears after a turned [Traitor](#traitor)/
 
 **Alignment**: Neutral (Evil)
 
-**Win Condition**: Find and kill thier target
+**Win Condition**: Find and kill their target
 
 **Attack**: Unstoppable
 
@@ -1007,7 +1009,7 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 
 **Defense**: Invincible
 
-When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targetting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Neutral (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
+When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targeting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Neutral (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
 
 **Game Options**
 
@@ -1155,7 +1157,7 @@ The Whisperer can whisper to all players within a certain radius. With each whis
 |------|-------------|------|---------|
 | Whisper Cooldown Increases | Toggles whether the Whisperer's whisper cooldown increases each use | Time | 5s |
 | ┗ Whisper Cooldown Increases By | The increase on the Whisperer's whisper cooldown with each use | Time | 5s |
-| Whisper Rate | The inital rate for each whisper | Percentage | 5% |
+| Whisper Rate | The initial rate for each whisper | Percentage | 5% |
 | Whisper Rate Decreases | Toggles whether the Whisperer's whisper rate decreases each use | Toggle | True |
 | ┗ Whisper Rate Decreases By | The decrease on the Whisperer's whisper rate with each use | Percentage | 5% |
 | Whisper Radius | How far a player must be to avoid a whisper | Factor | 1x |
@@ -1368,7 +1370,7 @@ The Janitor can drag, drop and clean up bodies. Both their Kill and Clean abilit
 
 **Alignment**: Intruder (Utility)
 
-The Mafioso is promoted from a non-Godfather Intruder role. The Mafioso by themself is nothing special, but when the Godfather dies, the Mafioso becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.
+The Mafioso is promoted from a non-Godfather Intruder role. The Mafioso by itself is nothing special, but when the Godfather dies, the Mafioso becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.
 
 ## Miner/Herbalist
 
@@ -1432,7 +1434,7 @@ The Wraith can temporarily turn invisible.
 
 <img align="right" width="" height="200" src="./Images/Syndicate.png">
 
-Each member of this faction has a special ability and then after a certain number of meetings, can also kill. The main theme of this faction is chaos. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. After a certain number of meetings, the Syndicate can retreive the "Chaos Drive" which gives the holder the ability to kill (if they couldn't already) while also enhancing their existing abilities. Chaos Drive holders deal a Basic attack to targets.
+Each member of this faction has a special ability and then after a certain number of meetings, can also kill. The main theme of this faction is chaos. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. After a certain number of meetings, the Syndicate can retrieve the "Chaos Drive" which gives the holder the ability to kill (if they couldn't already) while also enhancing their existing abilities. Chaos Drive holders deal a Basic attack to targets.
 
 ### Syndicate Settings
 
@@ -1507,7 +1509,7 @@ The Concealer can make a player invisible for a short while. With the Chaos Driv
 
 **Attack**: Powerful via radial crusade/Basic via indirect attack
 
-The Crusader can temporaily force anyone to go on alert, killing anyone who interacts with the Crusader's target. With the Chaos Drive, attempting to interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves. Crusades give the target Powerful defense and attack interactors with a Basic attack. A Radial crusade attack via the Chaos Drive deals a Powerful attack to all victims.
+The Crusader can temporarily force anyone to go on alert, killing anyone who interacts with the Crusader's target. With the Chaos Drive, attempting to interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves. Crusades give the target Powerful defense and attack interactors with a Basic attack. A Radial crusade attack via the Chaos Drive deals a Powerful attack to all victims.
 
 **Game Options**
 
@@ -1603,7 +1605,7 @@ The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fel
 
 **Alignment**: Syndicate (Disruption)
 
-The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.
+The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are shuffled.
 
 <br><br>
 
@@ -1631,7 +1633,7 @@ The Sidekick is promoted from a non-Rebel Syndicate role. The Sidekick by themse
 
 **Origin**: Better TOS Banshee
 
-The Silencer can silencer people. Silenced plaeyrs cannot see the messages being sent by others but can still talk. Other players can still talk but can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking. Silencer players have a pale green 乂 next to their names.
+The Silencer can silencer people. Silenced players cannot see the messages being sent by others but can still talk. Other players can still talk but can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking. Silencer players have a pale green 乂 next to their names.
 
 **Game Options**
 
@@ -1782,7 +1784,7 @@ The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On
 
 **Applied To**: Intruders and Syndicate
 
-**Win Condition**: Be the last one of thier faction to switch sides
+**Win Condition**: Be the last one of their faction to switch sides
 
 **Symbol**: ε
 
@@ -2085,7 +2087,7 @@ The Shy player cannot call meetings.
 
 **Origin**: Las Monjas
 
-Everyone is alerted of the VIP's death through a flash of the VIP's role color and will have an arrow poiting towards the VIP's body.
+Everyone is alerted of the VIP's death through a flash of the VIP's role color and will have an arrow pointing towards the VIP's body.
 
 **Game Options**
 
@@ -2138,7 +2140,7 @@ The Assassin can guess the layers of others. If they guess right, the target is 
 | Assassin Multiple Kill | Whether the Assassin can kill more than once per meeting | Toggle | False |
 | Assassin Guess Neutral Evils | Whether the Assassin can Guess Neutral (Evil) roles | Toggle | False |
 | Assassin Guess Neutral Benigns | Whether the Assassin can Guess Neutral (Benign) roles | Toggle | False |
-| Assassin Guess Crew Investigatives | Whether the Assassin can Guess Crew (Investigative) roles | Toggle | False |
+| Assassin Guess Crew Investigators | Whether the Assassin can Guess Crew (Investigative) roles | Toggle | False |
 | Assassin Guess Pestilence | Whether the Assassin can Guess Pestilence | Toggle | False |
 | Assassin Guess Select Modifiers | Whether the Assassin can Guess some non-obvious Modifiers | Toggle | False |
 | Assassin Guess Select Dispositions | Whether the Assassin can Guess some non-obvious Dispositions | Toggle | False |
@@ -2177,7 +2179,7 @@ When doing tasks, the Multitasker's task window is transparent.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Transperency | Decides how well can someone see when opening a task | Percentage | 50% |
+| Transparency | Decides how well can someone see when opening a task | Percentage | 50% |
 
 ## Ninja
 
@@ -2255,7 +2257,7 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 |------|-------------|------|---------|
 | Swapper Can Button | Whether the Swapper can call a meeting | Toggle | True |
 | Swapper Can Swap After Voting | Whether the Swapper can continue players to swap even after they have voted | Toggle | True |
-| Swapper Can Swap Themself | Self descriptive | Toggle | True |
+| Swapper Can Swap Themselves | Self descriptive | Toggle | True |
 
 ## Tiebreaker
 

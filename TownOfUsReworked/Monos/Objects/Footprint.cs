@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos;
 
-public class Footprint : MonoBehaviour
+public sealed class Footprint : MonoBehaviour
 {
     public PlayerControl Player { get; set; }
     public bool IsEven { get; set; }

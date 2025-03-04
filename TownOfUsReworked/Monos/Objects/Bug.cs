@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Monos;
 
-public class Bug : Range
+public sealed class Bug : Range
 {
     [HideFromIl2Cpp]
     private IBugger OwnerBugger { get; set; }
