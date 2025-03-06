@@ -188,7 +188,7 @@ public sealed class LayerHandler : RoleBehaviour
         TasksCountTowardProgress = Player.CanDoTasks() && (CustomRole.Faction == Faction.Crew || CustomRole is Runner or Hunted);
         CanVent = Player.CanVent();
         CanUseKillButton = Player.CanKill();
-        AffectedByLightAffectors = !(CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate);
+        AffectedByLightAffectors = !(CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica);
 
         // CustomLayers.ForEach(x => x.Handler = this);
     }
@@ -223,7 +223,7 @@ public sealed class LayerHandler : RoleBehaviour
 
         SetUpLayers();
 
-        IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole.Faction is Faction.Intruder or Faction.Syndicate ? "Impostor" : "Crewmate")}Intro");
+        IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole is Intruder or Syndicate ? "Impostor" : "Crewmate")}Intro");
 
         InitializeAbilityButton();
 
@@ -235,6 +235,9 @@ public sealed class LayerHandler : RoleBehaviour
                 Faction.Intruder => CustomStatsManager.StatsGamesIntruder,
                 Faction.Neutral => CustomStatsManager.StatsGamesNeutral,
                 Faction.Syndicate => CustomStatsManager.StatsGamesSyndicate,
+                Faction.Pandorica => CustomStatsManager.StatsGamesPandorica,
+                Faction.Compliance => CustomStatsManager.StatsGamesCompliance,
+                Faction.Illuminati => CustomStatsManager.StatsGamesIlluminati,
                 _ => StringNames.None
             });
         }

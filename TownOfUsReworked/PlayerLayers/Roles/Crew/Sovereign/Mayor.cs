@@ -15,7 +15,6 @@ public sealed class Mayor : Crew, IRevealer
     [ToggleOption]
     public static bool RoundOneNoReveal = true;
 
-    // This is cursed
     public bool Revealed { get; set; }
     public bool RoundOne { get; set; }
     private CustomButton RevealButton { get; set; }
@@ -52,4 +51,6 @@ public sealed class Mayor : Crew, IRevealer
         color = Color;
         removeFromConsig = true;
     }
+
+    public void OnReveal() {}
 }

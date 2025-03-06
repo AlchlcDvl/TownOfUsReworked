@@ -4,5 +4,8 @@ public interface IRevealer : ISovereign
 {
     bool Revealed { get; set; }
 
-    void OnReveal() {}
+    /// <summary>
+    /// Performs an action to be done when revealing.
+    /// </summary>
+    void OnReveal();
 }

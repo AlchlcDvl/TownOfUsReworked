@@ -58,7 +58,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         ([ "MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers" ], [ "not+IgnoreLayerCaps" ]),
         ([ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
             "not+IgnoreAlignmentCaps" ]),
-        ([ "ActSwitchVent" ], [ "ActorVent" ])
+        ([ "PandoricaOpens", "OrderOfCompliance" ], [ "not+IlluminatiUnleashed" ])
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else

@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
+// TODO: Remake this from the ground up
 [HarmonyPatch(typeof(LogicGameFlowNormal))]
 public static class CheckEndGame
 {
@@ -84,13 +85,16 @@ public static class CheckEndGame
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
+                Faction.Illuminati => WinLose.IlluminatiWins,
+                Faction.Pandorica => WinLose.PandoricaWins,
+                Faction.Compliance => WinLose.ComplianceWins,
+                Faction.Syndicate => WinLose.SyndicateWins,
                 Faction.Neutral => hexer.LinkedDisposition switch
                 {
                     LayerEnum.Mafia => WinLose.MafiaWins,
                     LayerEnum.Lovers => WinLose.LoveWins,
                     _ => WinLose.DefectorWins
                 },
-                Faction.Syndicate => WinLose.SyndicateWins,
                 _ => WinLose.NobodyWins
             };
 
@@ -108,6 +112,12 @@ public static class CheckEndGame
             WinState = WinLose.CrewWins;
         else if (ApocWins())
             WinState = WinLose.ApocalypseWins;
+        else if (IlluminatiWins())
+            WinState = WinLose.IlluminatiWins;
+        else if (ComplianceWins())
+            WinState = WinLose.ComplianceWins;
+        else if (PandoricaWins())
+            WinState = WinLose.PandoricaWins;
         else
             return;
 
@@ -197,7 +207,12 @@ public static class CheckEndGame
         if (!IntruderSettings.IntrudersCanSabotage)
             return false;
 
-        foreach (var sab in Ship().Systems.values)
+        var ship = Ship();
+
+        if (ship?.Systems == null)
+            return false;
+
+        foreach (var sab in ship.Systems.Values)
         {
             if (sab.TryCast<LifeSuppSystemType>(out var life) && life.Countdown <= 0f)
                 return true;

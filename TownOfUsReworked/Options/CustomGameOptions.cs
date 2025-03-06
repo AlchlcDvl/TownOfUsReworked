@@ -498,13 +498,13 @@ public static class GameModifiers
     public static bool NoVentingUncleanedVents = false;
 
     [ToggleOption]
+    public static bool IlluminatiUnleashed = false;
+
+    [ToggleOption]
     public static bool PandoricaOpens = false;
 
     [ToggleOption]
     public static bool OrderOfCompliance = false;
-
-    [ToggleOption]
-    public static bool IlluminatiUnleashed = false;
 }
 
 [HeaderOption(MultiMenu.Main)]

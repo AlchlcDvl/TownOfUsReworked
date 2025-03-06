@@ -45,7 +45,14 @@ public static class LayerExtensions
             return Faction.None;
 
         var role = player.GetRole();
-        return role?.Faction ?? (player.IsImpostor() ? Faction.Intruder : Faction.Crew);
+        return role?.Faction ??
+            (player.IsImpostor()
+                ? (GameModifiers.IlluminatiUnleashed
+                    ? Faction.Illuminati
+                    : (GameModifiers.PandoricaOpens
+                        ? Faction.Pandorica
+                        : Faction.Intruder))
+                : Faction.Crew);
     }
 
     public static SubFaction GetSubFaction(this PlayerControl player)
@@ -87,7 +94,8 @@ public static class LayerExtensions
         if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace() || !IntruderSettings.IntrudersCanSabotage)
             return false;
 
-        return player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps) && (!player.Data.IsDead || (IntruderSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead)));
+        return (player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && (!player.Data.IsDead ||
+            (IntruderSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead)));
     }
 
     public static bool HasAliveLover(this PlayerControl player) => player.TryGetLayer<Lovers>(out var lovers) && lovers.LoversAlive;
@@ -221,9 +229,17 @@ public static class LayerExtensions
 
     public static bool IsUnturnedFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Crew };
 
+    // private static bool IsIllFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Illuminati };
+
+    // private static bool IsPandFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Pandorica };
+
     private static bool IsIntFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Intruder };
 
     private static bool IsSynFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Syndicate };
+
+    // private static bool IsIllTraitor(this PlayerControl player) => player.GetDisposition() is Traitor { Side: Faction.Illuminati };
+
+    // private static bool IsPandTraitor(this PlayerControl player) => player.GetDisposition() is Traitor { Side: Faction.Pandorica };
 
     private static bool IsIntTraitor(this PlayerControl player) => player.GetDisposition() is Traitor { Side: Faction.Intruder };
 
@@ -243,9 +259,9 @@ public static class LayerExtensions
 
     public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && PlayerLayer.GetILayers<IFlasher>().Any(x => x.FlashedPlayers.Contains(player.PlayerId));
 
-    public static bool SyndicateSided(this PlayerControl player) => player.Is(Faction.Syndicate) && !player.Is<Syndicate>();
+    public static bool SyndicateSided(this PlayerControl player) => player.Is(Faction.Syndicate, Faction.Illuminati, Faction.Pandorica) && !player.Is<Syndicate>();
 
-    public static bool IntruderSided(this PlayerControl player) => player.Is(Faction.Intruder) && !player.Is<Intruder>();
+    public static bool IntruderSided(this PlayerControl player) => player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) && !player.Is<Intruder>();
 
     public static bool CrewSided(this PlayerControl player) => player.Is(Faction.Crew) && !player.Is<Crew>();
 
@@ -563,15 +579,15 @@ public static class LayerExtensions
     public static bool SeemsEvil(this PlayerControl player)
     {
         var role = player.GetRole();
-        var disp = player.GetDisposition();
-        var intruderFlag = role.Faction is Faction.Intruder && disp is not (Traitor or Fanatic) && role is PromotedGodfather;
-        var syndicateFlag = role.Faction is Faction.Syndicate && disp is not (Traitor or Fanatic) && role is PromotedRebel && Syndicate.DriveHolder != player;
+        var intruderFlag = role.Faction is Faction.Intruder or Faction.Illuminati or Faction.Pandorica && role is PromotedGodfather;
+        var syndicateFlag = role.Faction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is PromotedRebel && Syndicate.DriveHolder != player;
         var traitorFlag = player.IsTurnedTraitor() && Traitor.TraitorColourSwap;
         var fanaticFlag = player.IsTurnedFanatic() && Fanatic.FanaticColourSwap;
         var nkFlag = role.Alignment is Alignment.Killing && !Sheriff.NeutKillingRed;
         var neFlag = role.Alignment is Alignment.Evil && !Sheriff.NeutEvilRed;
         var framedFlag = player.IsFramed();
-        return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag;
+        var compFlag = role.Faction == Faction.Compliance;
+        return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag || compFlag;
     }
 
     // public static bool IsBlockImmune(PlayerControl player) => player.GetRole().RoleBlockImmune;

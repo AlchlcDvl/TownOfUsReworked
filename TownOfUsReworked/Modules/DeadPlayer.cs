@@ -34,14 +34,20 @@ public sealed class DeadPlayer(byte killer, byte player)
             {
                 if (Coroner.CoronerReportRole)
                     report += $"\nThey were killed by a {killerRole.Name}!";
-                else if (Killer.Is(Faction.Crew))
-                    report += "\nThe killer is from the Crew!";
-                else if (Killer.Is(Faction.Neutral))
-                    report += "\nThe killer is a Neutral!";
-                else if (Killer.Is(Faction.Intruder))
-                    report += "\nThe killer is an Intruder!";
-                else if (Killer.Is(Faction.Syndicate))
-                    report += "\nThe killer is from the Syndicate!";
+                else
+                {
+                    report += Killer.GetFaction() switch
+                    {
+                        Faction.Crew => "\nThe killer is from the Crew!",
+                        Faction.Intruder => "\nThe killer is an Intruder!",
+                        Faction.Syndicate => "\nThe killer is from the Syndicate!",
+                        Faction.Neutral => "\nThe killer is a Neutral!",
+                        Faction.Pandorica => "\nThe killer is from the Pandorica!",
+                        Faction.Compliance => "\nThe killer is from the Order of Compliance!",
+                        Faction.Illuminati => "\nThe killer is from the Illuminati!",
+                        _ => ""
+                    };
+                }
 
                 report += $"\nThe killer is a {(Killer.Data.DefaultOutfit.ColorId.IsLighter() ? "lighter" : "darker")} color!";
             }

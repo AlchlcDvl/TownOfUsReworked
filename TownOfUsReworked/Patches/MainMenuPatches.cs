@@ -155,13 +155,13 @@ public static class MainMenuPatches
         credObj.transform.localPosition = pos;
         credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Assets");
         credObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
+        credObj.buttonText.text = "Mod Assets";
         __instance.mainButtons.Add(credObj);
         __instance.myAccountButton.ControllerNav.selectOnRight = credObj;
         credObj.ControllerNav.selectOnLeft = __instance.myAccountButton;
         credObj.ControllerNav.selectOnUp = discObj;
         discObj.ControllerNav.selectOnDown = credObj;
         credObj.ControllerNav.selectOnDown = __instance.quitButton;
-        credObj.buttonText.text = "Mod Assets";
         __instance.quitButton.ControllerNav.selectOnUp = credObj;
 
         var prefab = __instance.transform.GetAllComponents<StatsPopup>().First();

@@ -59,7 +59,7 @@ public static class ModCompatibility
             Message(SubVersion);
 
             SubAssembly = SubPlugin!.GetType().Assembly;
-            SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly).ToDictionary(x => x.Name, x => x);
+            SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly).TryToDictionary(x => x.Name, x => x);
 
             var submarineStatusType = SubTypes["SubmarineStatus"];
             SubmergedInstanceField = AccessTools.Field(submarineStatusType, "instance");
@@ -317,13 +317,16 @@ public static class ModCompatibility
             Message(LiVersion);
 
             LiAssembly = LiPlugin!.GetType().Assembly;
-            LiTypes = AccessTools.GetTypesFromAssembly(LiAssembly).ToDictionary(x => x.Name, x => x);
+            LiTypes = AccessTools.GetTypesFromAssembly(LiAssembly).TryToDictionary(x => x.Name, x => x);
 
             var canUseMethod = AccessTools.Method(LiTypes["TriggerConsole"], "CanUse");
+
+            var setMapMethod = AccessTools.Method(LiTypes["ShopManager"], "SelectMap");
 
             var compatType = typeof(ModCompatibility);
 
             TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(TriggerPrefix))), new(AccessTools.Method(compatType, nameof(TriggerPostfix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(setMapMethod, null, new(AccessTools.Method(compatType, nameof(SetMapPostfix))));
 
             Success("LevelImpostor compatibility finished");
             return true;
@@ -338,6 +341,8 @@ public static class ModCompatibility
     private static void TriggerPrefix(NetworkedPlayerInfo playerInfo, ref bool __state) => CanUsePatch.Prefix(playerInfo, ref __state);
 
     private static void TriggerPostfix(NetworkedPlayerInfo playerInfo, ref bool __state) => CanUsePatch.Postfix(playerInfo, ref __state);
+
+    private static void SetMapPostfix() => MapSettings.Map = MapEnum.LevelImpostor;
 
     private static readonly string[] Unsupported = [ "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI" ];
 

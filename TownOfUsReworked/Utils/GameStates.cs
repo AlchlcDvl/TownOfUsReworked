@@ -91,6 +91,32 @@ public static class GameStates
             is NKilling || player.NotOnTheSameSide();
     }
 
+    public static bool IlluminatiWins() => !AllPlayers().Any(x => !x.HasDied() && x.NotIlluminati());
+
+    private static bool NotIlluminati(this PlayerControl player) => player.GetRole().Faction == Faction.Crew || player.NotOnTheSameSide();
+
+    public static bool PandoricaWins() => !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotIntruder()) && AllPlayers().Any(x => x.Is(Faction.Intruder) && x.Is(SubFaction.None));
+
+    private static bool NotPandorica(this PlayerControl player)
+    {
+        var role = player.GetRole();
+        var faction = role.Faction;
+        var alignment = role.Alignment;
+        return faction is Faction.Crew or Faction.Compliance || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or Alignment.Apocalypse || role is NKilling ||
+            player.NotOnTheSameSide();
+    }
+
+    public static bool ComplianceWins() => !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotIntruder()) && AllPlayers().Any(x => x.Is(Faction.Intruder) && x.Is(SubFaction.None));
+
+    private static bool NotCompliance(this PlayerControl player)
+    {
+        var role = player.GetRole();
+        var faction = role.Faction;
+        var alignment = role.Alignment;
+        return faction is Faction.Crew or Faction.Syndicate || alignment is Alignment.Neophyte or Alignment.Harbinger or Alignment.Proselyte or Alignment.Apocalypse || role is NKilling ||
+            player.NotOnTheSameSide();
+    }
+
     public static bool CabalWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Cabal, LayerEnum.Jackal)) && AllPlayers().Any(x => x.Is(SubFaction.Cabal));
 
     public static bool UndeadWin() => !AllPlayers().Any(x => !x.HasDied() && x.NotSubFaction(SubFaction.Undead, LayerEnum.Dracula)) && AllPlayers().Any(x => x.Is(SubFaction.Undead));

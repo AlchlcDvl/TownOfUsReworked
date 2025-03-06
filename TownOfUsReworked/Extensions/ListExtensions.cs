@@ -1,6 +1,9 @@
 namespace TownOfUsReworked.Extensions;
 
-public static class ListExtensions
+/// <summary>
+/// Provides extension methods for various collection types, including <see cref="List{T}"/>, <see cref="IEnumerable{T}"/>, <see cref="ISystem.List{T}"/>, and <see cref="IDictionary{TKey,TValue}"/>.
+/// </summary>
+public static class CollectionExtensions
 {
     public static void Shuffle<T>(this List<T> list)
     {
@@ -57,7 +60,7 @@ public static class ListExtensions
     public static ISystem.List<T> ToIl2Cpp<T>(this IEnumerable<T> list)
     {
         var newList = new ISystem.List<T>();
-        list.ForEach(newList.Add);
+        newList.AddRange(list);
         return newList;
     }
 
@@ -295,6 +298,16 @@ public static class ListExtensions
 
         foreach (var item in source)
             yield return (index++, item);
+    }
+
+    public static Dictionary<T2, T3> TryToDictionary<T1, T2, T3>(this IEnumerable<T1> source, Func<T1, T2> keySelector, Func<T1, T3> valueSelector)
+    {
+        var dict = new Dictionary<T2, T3>();
+
+        foreach (var item in source)
+            dict.TryAdd(keySelector(item), valueSelector(item));
+
+        return dict;
     }
 
     /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)

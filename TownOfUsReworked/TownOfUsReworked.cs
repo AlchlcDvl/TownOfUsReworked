@@ -7,7 +7,7 @@ namespace TownOfUsReworked;
 [BepInIncompatibility("MalumMenu")]
 [ReactorModFlags(ModFlags.RequireOnAllClients | ModFlags.DisableServerAuthority)]
 [BepInProcess("Among Us.exe")]
-public partial class TownOfUsReworked : BasePlugin
+public sealed partial class TownOfUsReworked : BasePlugin
 {
     public static readonly Version ModVer = new(VersionS);
 
