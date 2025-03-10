@@ -174,86 +174,82 @@ public static class BetterAirship
     public static readonly List<byte> SpawnPoints = [];
 
     /// <summary>
-    /// Handles repositioning of various map elements when the Airship map loads.
+    /// Applies all Airship map modifications if enabled.
     /// </summary>
-    [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
-    public static class Repositioning
+    public static void ApplyChanges()
     {
-        public static void Postfix()
+        if (!EnableBetterAirship)
+            return;
+
+        // Moving the admin table
+        if (MoveAdmin != 0)
         {
-            if (!EnableBetterAirship)
-                return;
+            var adminTable = UObject.FindObjectOfType<MapConsole>();
+            var mapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
 
-            // Moving the admin table
-            if (MoveAdmin != 0)
+            switch (MoveAdmin)
             {
-                var adminTable = UObject.FindObjectOfType<MapConsole>();
-                var mapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
-
-                switch (MoveAdmin)
+                case MoveAdmin.Cockpit:
                 {
-                    case MoveAdmin.Cockpit:
-                    {
-                        adminTable.transform.SetPositionAndRotation(new(-17.269f, 1.375f, 0f), Quaternion.Euler(new(0, 0, 350.316f)));
-                        adminTable.transform.localScale = new(1, 1, 1);
+                    adminTable.transform.SetPositionAndRotation(new(-17.269f, 1.375f, 0f), Quaternion.Euler(new(0, 0, 350.316f)));
+                    adminTable.transform.localScale = new(1, 1, 1);
 
-                        mapFloating.transform.SetPositionAndRotation(new(-17.736f, 2.36f, 0f), Quaternion.Euler(new(0, 0, 350)));
-                        mapFloating.transform.localScale = new(1, 1, 1);
-                        break;
-                    }
-                    case MoveAdmin.MainHall: // New Admin
-                    {
-                        adminTable.transform.SetPositionAndRotation(new(5.078f, 3.4f, 1), Quaternion.Euler(new(0, 0, 76.1f)));
-                        adminTable.transform.localScale = new(1.200f, 1.700f, 1);
+                    mapFloating.transform.SetPositionAndRotation(new(-17.736f, 2.36f, 0f), Quaternion.Euler(new(0, 0, 350)));
+                    mapFloating.transform.localScale = new(1, 1, 1);
+                    break;
+                }
+                case MoveAdmin.MainHall: // New Admin
+                {
+                    adminTable.transform.SetPositionAndRotation(new(5.078f, 3.4f, 1), Quaternion.Euler(new(0, 0, 76.1f)));
+                    adminTable.transform.localScale = new(1.200f, 1.700f, 1);
 
-                        mapFloating.transform.localScale = new(0, 0, 0);
-                        break;
-                    }
+                    mapFloating.transform.localScale = new(0, 0, 0);
+                    break;
                 }
             }
-
-            // Moving the electrical panel
-            if (MoveElectrical != 0)
-            {
-                var electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
-
-                switch (MoveElectrical)
-                {
-                    case MoveElectrical.Vault:
-                    {
-                        electrical.transform.position = new(-8.818f, 13.184f, 0f);
-                        electrical.transform.localScale = new(0.909f, 0.818f, 1);
-
-                        var originalSupport = GameObject.Find("Vault/cockpit_comms");
-                        var supportElectrical = UObject.Instantiate(originalSupport, originalSupport.transform);
-
-                        supportElectrical.transform.position = new(-8.792f, 13.242f);
-                        supportElectrical.transform.localScale = new(1, 1, 1);
-                        break;
-                    }
-                    case MoveElectrical.Electrical:
-                    {
-                        electrical.transform.position = new(19.339f, -3.665f, 0f);
-                        break;
-                    }
-                }
-            }
-
-            // Moving the vitals panel
-            if (MoveVitals)
-            {
-                GameObject.Find("Medbay/panel_vitals").transform.position = new(24.55f, -4.780f, 0f);
-                GameObject.Find("Medbay/panel_data").transform.position = new(25.240f, -7.938f, 0f);
-            }
-
-            // Moving the fuel task
-            if (MoveFuel)
-                GameObject.Find("Storage/task_gas").transform.position = new(36.070f, 1.897f, 0f);
-
-            // Moving the divert task
-            if (MoveDivert)
-                GameObject.Find("HallwayMain/DivertRecieve").transform.position = new(13.35f, -1.659f, 0f);
         }
+
+        // Moving the electrical panel
+        if (MoveElectrical != 0)
+        {
+            var electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
+
+            switch (MoveElectrical)
+            {
+                case MoveElectrical.Vault:
+                {
+                    electrical.transform.position = new(-8.818f, 13.184f, 0f);
+                    electrical.transform.localScale = new(0.909f, 0.818f, 1);
+
+                    var originalSupport = GameObject.Find("Vault/cockpit_comms");
+                    var supportElectrical = UObject.Instantiate(originalSupport, originalSupport.transform);
+
+                    supportElectrical.transform.position = new(-8.792f, 13.242f);
+                    supportElectrical.transform.localScale = new(1, 1, 1);
+                    break;
+                }
+                case MoveElectrical.Electrical:
+                {
+                    electrical.transform.position = new(19.339f, -3.665f, 0f);
+                    break;
+                }
+            }
+        }
+
+        // Moving the vitals panel
+        if (MoveVitals)
+        {
+            GameObject.Find("Medbay/panel_vitals").transform.position = new(24.55f, -4.780f, 0f);
+            GameObject.Find("Medbay/panel_data").transform.position = new(25.240f, -7.938f, 0f);
+        }
+
+        // Moving the fuel task
+        if (MoveFuel)
+            GameObject.Find("Storage/task_gas").transform.position = new(36.070f, 1.897f, 0f);
+
+        // Moving the divert task
+        if (MoveDivert)
+            GameObject.Find("HallwayMain/DivertRecieve").transform.position = new(13.35f, -1.659f, 0f);
     }
 
     /// <summary>

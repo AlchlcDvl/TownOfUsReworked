@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public sealed class CustomMeeting
+public sealed class CustomMeeting : IDisposable
 {
     private PlayerControl Owner { get; }
     private OnClick Click { get; }
@@ -19,7 +19,7 @@ public sealed class CustomMeeting
 
     private static Vector3 BasePosition { get; } = new(-0.95f, 0.03f, -1.3f);
 
-    private static readonly List<CustomMeeting> AllCustomMeetings = [];
+    public static readonly List<CustomMeeting> AllCustomMeetings = [];
 
     public CustomMeeting(PlayerControl owner, string active, string disabled, OnClick click, Exemption isExempt = null, Vector3? position = null) : this(owner, active, disabled,
         MeetingTypes.Toggle, click, isExempt, null, position) {}
@@ -122,9 +122,9 @@ public sealed class CustomMeeting
 
     private void Destroy() => HideButtons();
 
-    public static void DestroyAll()
+    public void Dispose()
     {
-        AllCustomMeetings.ForEach(x => x.Destroy());
-        AllCustomMeetings.Clear();
+        Destroy();
+        GC.SuppressFinalize(this);
     }
 }

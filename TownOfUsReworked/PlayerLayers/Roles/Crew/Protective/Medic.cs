@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Medic)]
 public sealed class Medic : Crew, IShielder
 {
     [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
@@ -49,7 +49,7 @@ public sealed class Medic : Crew, IShielder
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
 
-        return player.TryGetILayer<IRevealer>(out var irev) && irev.Revealed;
+        return player.TryGetLayer<IRevealer>(out var irev) && irev.Revealed;
     }
 
     private bool Usable() => !ShieldBroken;

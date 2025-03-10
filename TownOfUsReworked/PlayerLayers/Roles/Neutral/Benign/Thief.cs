@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Thief)]
 public sealed class Thief : Neutral, IGuesser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

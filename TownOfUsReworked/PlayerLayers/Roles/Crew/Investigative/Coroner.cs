@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Coroner)]
 public sealed class Coroner : Crew, IExaminer
 {
     [NumberOption(0f, 2f, 0.05f, Format.Time)]

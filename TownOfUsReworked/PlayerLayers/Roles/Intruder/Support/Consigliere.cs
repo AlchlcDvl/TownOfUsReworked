@@ -1,7 +1,7 @@
 
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Consigliere)]
 public sealed class Consigliere : Intruder
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

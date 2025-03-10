@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Jester)]
 public sealed class Jester : Evil
 {
     [ToggleOption]

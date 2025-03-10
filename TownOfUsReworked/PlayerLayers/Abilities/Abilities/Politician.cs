@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Politician)]
 public sealed class Politician : Ability
 {
     [NumberOption(0, 10, 1)]

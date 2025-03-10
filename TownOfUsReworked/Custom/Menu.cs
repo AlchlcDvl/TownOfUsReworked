@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public abstract class CustomMenu
+public abstract class CustomMenu : IDisposable
 {
     public static readonly List<CustomMenu> AllMenus = [];
 
@@ -48,9 +48,9 @@ public abstract class CustomMenu
         Menu = null;
     }
 
-    public static void DestroyAll()
+    public void Dispose()
     {
-        AllMenus.ForEach(x => x.Destroy());
-        AllMenus.Clear();
+        Destroy();
+        GC.SuppressFinalize(this);
     }
 }

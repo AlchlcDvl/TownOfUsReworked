@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Vip)]
 public sealed class Vip : Modifier
 {
     [ToggleOption]

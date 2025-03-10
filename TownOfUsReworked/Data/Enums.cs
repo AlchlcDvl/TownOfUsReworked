@@ -137,7 +137,8 @@ public enum CustomOptionType : byte
     Layer,
     Entry,
     MultiSelect,
-    Alignment
+    Alignment,
+    LayerHeader
 }
 
 public enum MultiMenu : byte

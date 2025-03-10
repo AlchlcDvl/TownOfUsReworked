@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Diseased)]
 public sealed class Diseased : Modifier
 {
     [ToggleOption]

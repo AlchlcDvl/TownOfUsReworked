@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.ButtonBarry)]
 public sealed class ButtonBarry : Ability
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

@@ -159,3 +159,6 @@ dotnet_diagnostic.RCS1037.severity = warning
 
 # RCS1047: Non-asynchronous method name should not end with 'Async'
 dotnet_diagnostic.RCS1047.severity = none
+
+# RCS1194: Implement exception constructors
+dotnet_diagnostic.RCS1194.severity = none

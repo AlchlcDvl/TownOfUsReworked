@@ -35,7 +35,6 @@
         <PackageReference Include="Roslynator.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.Unity.Analyzers" Version="1.21.0" PrivateAssets="all" />
         <EmbeddedResource Include="Resources\*" />
     </ItemGroup>
 

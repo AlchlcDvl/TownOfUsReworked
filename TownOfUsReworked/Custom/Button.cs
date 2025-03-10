@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public sealed class CustomButton
+public sealed class CustomButton : IDisposable
 {
     public static readonly List<CustomButton> AllButtons = [];
 
@@ -611,10 +611,10 @@ public sealed class CustomButton
     }
 
     public bool Usable() => IsUsable() && (!HasUses || UseCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() &&
-        !NoPlayers() && !IntroCutscene.Instance && !MapBehaviourPatches.MapActive;
+        !NoPlayers() && !HUD().IsIntroDisplayed && !MapBehaviourPatches.MapActive;
 
-    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses -
-        UseDecrement >= 0) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();
+    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses >=
+        UseDecrement) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();
 
     private void SetTarget()
     {
@@ -784,9 +784,9 @@ public sealed class CustomButton
         Begin();
     }
 
-    public static void DestroyAll()
+    public void Dispose()
     {
-        AllButtons.ForEach(x => x.Destroy());
-        AllButtons.Clear();
+        Destroy();
+        GC.SuppressFinalize(this);
     }
 }

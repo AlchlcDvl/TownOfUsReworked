@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Banshee)]
 public sealed class Banshee : Syndicate, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
-public sealed class Altruist : Crew
+[LayerHeaderOption(LayerEnum.Altruist)]
+public sealed class Altruist : Crew, IReviver
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number AltManaCd = 25;
@@ -63,7 +63,6 @@ public sealed class Altruist : Crew
             return;
 
         var targetRole = player.GetRole();
-        var formerKiller = targetRole.KilledBy;
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
@@ -77,7 +76,7 @@ public sealed class Altruist : Crew
             lover.Revive();
         }
 
-        if (Local && player.IIs<ISovereign>())
+        if (Local && player.Is<ISovereign>())
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 

@@ -1,14 +1,17 @@
 namespace TownOfUsReworked.PlayerLayers;
 
-public abstract class PlayerLayer : IPlayerLayer
+public abstract class PlayerLayer : IPlayerLayer, IDisposable
 {
-    public virtual UColor Color => CustomColorManager.Layer;
-    public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
-    public virtual LayerEnum Type => LayerEnum.None;
+    public abstract UColor Color { get; }
+    public abstract PlayerLayerEnum LayerType { get; }
+    public abstract LayerEnum Type { get; }
+
     public virtual Func<string> Description => () => "- None";
     public virtual AttackEnum AttackVal => AttackEnum.None;
     public virtual DefenseEnum DefenseVal => DefenseEnum.None;
     public virtual bool Hidden => false;
+    public virtual bool CanVent => false;
+    public virtual float VisionRange => 0f;
 
     public string Name { get; protected set; }
     // public LayerHandler Handler { get; set; }
@@ -34,8 +37,6 @@ public abstract class PlayerLayer : IPlayerLayer
     public static readonly List<PlayerLayer> AllLayers = [];
 
     protected PlayerLayer() => AllLayers.Add(this);
-
-    ~PlayerLayer() => End();
 
     // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
     public void Start(PlayerControl player)
@@ -144,7 +145,7 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public static bool operator !=(PlayerLayer a, PlayerLayer b) => !(a == b);
 
-    public static implicit operator bool(PlayerLayer exists) => exists != null && exists.Player;
+    public static implicit operator bool(PlayerLayer exists) => exists == null;
 
     private bool Equals(PlayerLayer other) => other.Player == Player && other.LayerType == LayerType && Type == other.Type;
 
@@ -160,9 +161,13 @@ public abstract class PlayerLayer : IPlayerLayer
 
     public override string ToString() => Name;
 
-    public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => !x.Ignore || includeIgnored).OfType<T>();
-
-    public static IEnumerable<T> GetILayers<T>(bool includeIgnored = false) where T : IPlayerLayer => AllLayers.Where(x => !x.Ignore || includeIgnored).OfType<T>();
+    public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : IPlayerLayer => AllLayers.Where(x => !x.Ignore || includeIgnored).OfType<T>();
 
     public static IEnumerable<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
+
+    public void Dispose()
+    {
+        End();
+        GC.SuppressFinalize(this);
+    }
 }

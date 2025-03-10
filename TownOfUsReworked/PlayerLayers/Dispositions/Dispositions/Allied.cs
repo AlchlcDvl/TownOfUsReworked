@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Allied)]
 public sealed class Allied : Disposition
 {
     [StringOption<AlliedFaction>]

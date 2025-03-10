@@ -20,7 +20,7 @@ public sealed class Sniper : Assassin
     public override LayerEnum Type => LayerEnum.Sniper;
 }
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Assassin)]
 public abstract class Assassin : Ability, IGuesser
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

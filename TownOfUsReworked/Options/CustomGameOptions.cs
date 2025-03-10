@@ -526,7 +526,21 @@ public static class GameAnnouncementSettings
 [HeaderOption(MultiMenu.Main)]
 public static class MapSettings
 {
-    public static MapEnum Map;
+    private static MapEnum MapPriv;
+    public static MapEnum Map
+    {
+        get => MapPriv;
+        set
+        {
+            if (value == MapEnum.LevelImpostor && !LiLoaded)
+                value = MapPriv < MapEnum.LevelImpostor ? MapEnum.Random : MapEnum.Submerged;
+
+            if (value == MapEnum.Submerged && !SubLoaded)
+                value = MapPriv < MapEnum.Submerged ? MapEnum.Random : MapEnum.Fungle;
+
+            MapPriv = value;
+        }
+    }
 
     [NumberOption(0, 100, 10, Format.Percent)]
     public static Number RandomMapSkeld = 10;

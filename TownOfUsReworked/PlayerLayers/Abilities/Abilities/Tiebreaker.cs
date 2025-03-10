@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Tiebreaker)]
 public sealed class Tiebreaker : Ability
 {
     [ToggleOption]

@@ -1,6 +1,7 @@
 namespace TownOfUsReworked.Utils;
 
 // Thanks to Town Of Host parts of this code
+// TODO: Finish the rewriting of end game scenarios
 public static class GameStates
 {
     public static bool IsCountDown() => GameStartManager.Instance?.startState == GameStartManager.StartingStates.Countdown;
@@ -91,11 +92,12 @@ public static class GameStates
             is NKilling || player.NotOnTheSameSide();
     }
 
-    public static bool IlluminatiWins() => !AllPlayers().Any(x => !x.HasDied() && x.NotIlluminati());
+    public static bool IlluminatiWins() => GameModifiers.IlluminatiUnleashed && !AllPlayers().Any(x => !x.HasDied() && x.NotIlluminati());
 
     private static bool NotIlluminati(this PlayerControl player) => player.GetRole().Faction == Faction.Crew || player.NotOnTheSameSide();
 
-    public static bool PandoricaWins() => !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotIntruder()) && AllPlayers().Any(x => x.Is(Faction.Intruder) && x.Is(SubFaction.None));
+    public static bool PandoricaWins() => GameModifiers.PandoricaOpens && !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotPandorica()) && AllPlayers().Any(x =>
+        x.Is(Faction.Intruder) && x.Is(SubFaction.None));
 
     private static bool NotPandorica(this PlayerControl player)
     {
@@ -106,7 +108,8 @@ public static class GameStates
             player.NotOnTheSameSide();
     }
 
-    public static bool ComplianceWins() => !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotIntruder()) && AllPlayers().Any(x => x.Is(Faction.Intruder) && x.Is(SubFaction.None));
+    public static bool ComplianceWins() => GameModifiers.OrderOfCompliance && !AllPlayers().Any(x => !x.HasDied() && !x.IntruderSided() && x.NotCompliance()) && AllPlayers().Any(x =>
+        x.Is(Faction.Intruder) && x.Is(SubFaction.None));
 
     private static bool NotCompliance(this PlayerControl player)
     {

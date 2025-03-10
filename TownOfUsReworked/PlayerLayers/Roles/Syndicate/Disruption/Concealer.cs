@@ -1,6 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+// FIXME: Doesn't actually make people invisible
+[LayerHeaderOption(LayerEnum.Concealer)]
 public sealed class Concealer : Syndicate
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

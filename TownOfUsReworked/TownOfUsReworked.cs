@@ -2,6 +2,7 @@ using BepInEx.Logging;
 
 namespace TownOfUsReworked;
 
+// FIXME: Can't call meetings (something I'm patching is rejecting it???)
 [BepInAutoPlugin("me.alchlcdvl.reworked", "Reworked")]
 [BepInDependency(ReactorPlugin.Id)]
 [BepInIncompatibility("MalumMenu")]
@@ -13,7 +14,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
-    private const int DevBuild = 35;
+    private const int DevBuild = 36;
 
     private static string VersionSignature =>  Version.Contains('+') ? Version[Version.IndexOf('+')..] : "";
     private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;

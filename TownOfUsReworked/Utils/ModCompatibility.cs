@@ -1,5 +1,6 @@
 ﻿namespace TownOfUsReworked.Utils;
 
+// FIXME: Submerged messes with the body reporting, causing the report button to be entirely unusable, might have to make a custom report button for that ngl
 public static class ModCompatibility
 {
     // public static MethodInfo TryCastMethod;
@@ -12,7 +13,7 @@ public static class ModCompatibility
         // TryCastMethod = AccessTools.Method(typeof(Il2CppObjectBase), nameof(Il2CppObjectBase.TryCast));
     }
 
-    private const string SmGuid = "Submerged";
+    public const string SmGuid = "Submerged";
     private const ShipStatus.MapType SubmergedMapType = (ShipStatus.MapType)6;
 
     public static SemanticVersioning.Version SubVersion { get; private set; }
@@ -261,10 +262,7 @@ public static class ModCompatibility
 
     public static bool ReadyPlayerAmount(dynamic __instance, ref int __result)
     {
-        if (!SubLoaded)
-            return true;
-
-        if (!TownOfUsReworked.MciActive)
+        if (!SubLoaded || !TownOfUsReworked.MciActive)
             return true;
 
         __result = __instance.GetTotalPlayerAmount();
@@ -292,7 +290,7 @@ public static class ModCompatibility
         return false;
     }
 
-    private const string LiGuid = "com.DigiWorm.LevelImposter";
+    public const string LiGuid = "com.DigiWorm.LevelImposter";
     // private const ShipStatus.MapType LiMapType = (ShipStatus.MapType)7;
 
     private static SemanticVersioning.Version LiVersion { get;  set; }
@@ -328,7 +326,7 @@ public static class ModCompatibility
             TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(TriggerPrefix))), new(AccessTools.Method(compatType, nameof(TriggerPostfix))));
             TownOfUsReworked.ModInstance.Harmony.Patch(setMapMethod, null, new(AccessTools.Method(compatType, nameof(SetMapPostfix))));
 
-            Success("LevelImpostor compatibility finished");
+            Success("LevelImposter compatibility finished");
             return true;
         }
         catch (Exception e)

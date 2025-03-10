@@ -108,8 +108,8 @@ public static class PlayerControlPatches
         return blocked;
     }
 
-    [HarmonyPatch(nameof(PlayerControl.CheckUseZipline))]
-    public static void Prefix(PlayerControl target, ref bool __state) => CanUsePatch.Prefix(target.Data, ref __state);
+    [HarmonyPatch(nameof(PlayerControl.CheckUseZipline)), HarmonyPrefix]
+    public static void CheckUseZiplinePrefix(PlayerControl target, ref bool __state) => CanUsePatch.Prefix(target.Data, ref __state);
 
     [HarmonyPatch(nameof(PlayerControl.CheckUseZipline))]
     public static void Postfix(PlayerControl target, ref bool __state) => CanUsePatch.Postfix(target.Data, ref __state);
@@ -226,13 +226,8 @@ public static class PlayerControlPatches
         }
     }
 
-    [HarmonyPatch(nameof(PlayerControl.CanMove), MethodType.Getter), HarmonyPrefix]
-    public static bool CanMovePrefix(PlayerControl __instance, ref bool __result)
-    {
-        __result = __instance.moveable && !ActiveTask() && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat().IsOpenOrOpening && !HUD().KillOverlay.IsOpen && !Meeting() &&
-            !HUD().GameMenu.IsOpen)) && (!Map() || !Map().IsOpenStopped) && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
-        return false;
-    }
+    [HarmonyPatch(nameof(PlayerControl.CanMove), MethodType.Getter)]
+    public static void Postfix(ref bool __result) => __result &= !HUD().IsIntroDisplayed;
 
     [HarmonyPatch(nameof(PlayerControl.Exiled)), HarmonyPrefix]
     public static bool ExiledPrefix(PlayerControl __instance)
@@ -245,8 +240,8 @@ public static class PlayerControlPatches
         return false;
     }
 
-    [HarmonyPatch(nameof(PlayerControl.Die)), HarmonyPrefix]
-    public static bool DiePrefix(PlayerControl __instance, DeathReason reason)
+    [HarmonyPatch(nameof(PlayerControl.Die))]
+    public static bool Prefix(PlayerControl __instance, DeathReason reason)
     {
         __instance.CustomDie(DeathReasonEnum.Killed, reason: reason);
         return false;

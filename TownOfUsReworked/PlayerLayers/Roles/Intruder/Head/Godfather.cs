@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Godfather)]
 public sealed class Godfather : Intruder
 {
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]

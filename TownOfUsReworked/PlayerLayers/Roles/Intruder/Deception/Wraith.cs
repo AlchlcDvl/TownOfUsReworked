@@ -1,6 +1,8 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+// FIXME: Doesn't actually go invisible
+// FIXME: Somehow Wraith and Poisoner can't kill each other with a dead poisoned Monarch
+[LayerHeaderOption(LayerEnum.Wraith)]
 public sealed class Wraith : Intruder
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

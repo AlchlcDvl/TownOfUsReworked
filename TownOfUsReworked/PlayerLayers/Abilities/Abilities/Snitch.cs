@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Snitch)]
 public sealed class Snitch : Ability
 {
     [ToggleOption]

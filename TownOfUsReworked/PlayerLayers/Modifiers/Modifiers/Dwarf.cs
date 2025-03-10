@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Dwarf)]
 public sealed class Dwarf : Modifier
 {
     [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]

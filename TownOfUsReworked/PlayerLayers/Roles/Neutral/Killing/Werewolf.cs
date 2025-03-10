@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Werewolf)]
 public sealed class Werewolf : NKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

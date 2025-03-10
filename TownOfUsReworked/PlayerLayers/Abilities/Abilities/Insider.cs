@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Insider)]
 public sealed class Insider : Ability
 {
     [ToggleOption]

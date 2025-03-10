@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Bastion)]
 public sealed class Bastion : Crew, IVentBomber
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

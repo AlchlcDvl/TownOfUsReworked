@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Trapper)]
 public sealed class Trapper : Crew, ITrapper
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

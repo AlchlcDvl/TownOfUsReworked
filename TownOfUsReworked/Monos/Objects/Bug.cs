@@ -54,7 +54,7 @@ public sealed class Bug : Range
         var gameObject = CreateRange(CustomColorManager.Operative, Operative.BugRange, "Bug");
         var bug = gameObject.AddComponent<Bug>();
         bug.Owner = owner;
-        bug.OwnerBugger = owner.GetILayer<IBugger>();
+        bug.OwnerBugger = owner.GetLayer<IBugger>();
         bug.Size = Operative.BugRange;
         var position = owner.GetTruePosition();
         gameObject.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);

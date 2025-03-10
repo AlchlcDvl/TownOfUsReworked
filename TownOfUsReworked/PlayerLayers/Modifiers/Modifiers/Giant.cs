@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Giant)]
 public sealed class Giant : Modifier
 {
     [NumberOption(0.5f, 1f, 0.05f, Format.Multiplier)]

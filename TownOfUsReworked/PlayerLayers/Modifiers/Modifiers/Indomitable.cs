@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Indomitable)]
 public sealed class Indomitable : Modifier
 {
     [ToggleOption]

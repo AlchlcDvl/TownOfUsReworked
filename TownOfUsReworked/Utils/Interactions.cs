@@ -19,8 +19,8 @@ public static class Interactions
 
     private static void Trigger(PlayerControl player, PlayerControl target, bool harmful, out PlayerControl trapper)
     {
-        trapper = harmful ? PlayerLayer.GetILayers<ITrapper>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player : null;
-        PlayerLayer.GetILayers<ITrapper>().ForEach(x => x.TriggerTrap(target, player, harmful));
+        trapper = harmful ? PlayerLayer.GetLayers<ITrapper>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player : null;
+        PlayerLayer.GetLayers<ITrapper>().ForEach(x => x.TriggerTrap(target, player, harmful));
     }
 
     public static void Spread(PlayerControl interactor, PlayerControl target)
@@ -187,7 +187,7 @@ public static class Interactions
                 abilityUsed = true;
                 RpcBreakShield(player);
             }
-            else if (PlayerLayer.GetILayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
+            else if (PlayerLayer.GetLayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
                 bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
 
             Role.BastionBomb(target, Bastion.BombRemovedOnKill);

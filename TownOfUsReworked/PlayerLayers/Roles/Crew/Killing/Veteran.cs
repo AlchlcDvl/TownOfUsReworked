@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Veteran)]
 public sealed class Veteran : Crew, IAlerter
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

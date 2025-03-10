@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Engineer)]
 public sealed class Engineer : Crew
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

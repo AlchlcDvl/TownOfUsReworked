@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Corrupted)]
 public sealed class Corrupted : Disposition
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

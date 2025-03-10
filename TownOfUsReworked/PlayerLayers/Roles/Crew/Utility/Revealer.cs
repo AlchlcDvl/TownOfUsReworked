@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Revealer)]
 public sealed class Revealer : Crew, IGhosty
 {
     [NumberOption(1, 10, 1)]

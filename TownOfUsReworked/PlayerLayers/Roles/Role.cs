@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+// TODO: Refactor the usage of linked disposition and stuff and have other ways to check players' allegiances, like for example an external dictionary for modification and stuff
 public abstract class Role : PlayerLayer
 {
     public override UColor Color => CustomColorManager.Role;
@@ -250,7 +251,7 @@ public abstract class Role : PlayerLayer
         else
             DeathReason = Meeting() ? DeathReasonEnum.Misfire : DeathReasonEnum.Suicide;
 
-        if (!GetLayers<Altruist>().Any() && !GetLayers<Necromancer>().Any())
+        if (!GetLayers<IReviver>().Any())
             TrulyDead |= Type != LayerEnum.GuardianAngel;
     }
 
@@ -443,19 +444,19 @@ public abstract class Role : PlayerLayer
 
     public static void PublicReveal(PlayerControl player)
     {
-        if (!player.TryGetILayer<IRevealer>(out var revealer))
+        if (!player.TryGetLayer<IRevealer>(out var revealer))
             return;
 
         revealer.Revealed = true;
         revealer.OnReveal();
         Flash(revealer.Color);
         BreakShield(player, true);
-        GetILayers<ITrapper>().ForEach(x => x.Trapped.Remove(player.PlayerId));
+        GetLayers<ITrapper>().ForEach(x => x.Trapped.Remove(player.PlayerId));
     }
 
     public static void BreakShield(PlayerControl player, bool flag)
     {
-        foreach (var role2 in GetILayers<IShielder>())
+        foreach (var role2 in GetLayers<IShielder>())
         {
             if (role2.ShieldedPlayer != player)
                 continue;
@@ -482,7 +483,7 @@ public abstract class Role : PlayerLayer
 
     public static void BastionBomb(Vent vent, bool flag)
     {
-        foreach (var role2 in GetILayers<IVentBomber>())
+        foreach (var role2 in GetLayers<IVentBomber>())
         {
             if (role2.BombedIDs.Contains(vent.Id) && role2.Local)
                 Flash(role2.Color);

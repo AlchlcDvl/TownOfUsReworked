@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Ambusher)]
 public sealed class Ambusher : Intruder, IAmbusher
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

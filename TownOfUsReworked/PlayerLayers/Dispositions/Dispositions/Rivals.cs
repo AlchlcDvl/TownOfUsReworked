@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Rivals)]
 public sealed class Rivals : Disposition
 {
     [ToggleOption]

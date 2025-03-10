@@ -14,7 +14,7 @@ public sealed class DeadPlayer(byte killer, byte player)
 
     public string ParseBodyReport()
     {
-        if (!Reporter.IIs<IExaminer>())
+        if (!Reporter.Is<IExaminer>())
             return "";
 
         var report = $"{Body.name}'s Report:";

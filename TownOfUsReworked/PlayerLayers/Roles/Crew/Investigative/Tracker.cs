@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Tracker)]
 public sealed class Tracker : Crew
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

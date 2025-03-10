@@ -8,6 +8,12 @@ public static class CalculateLightRadiusPatch
         if (!player)
             return false;
 
+        if (Lobby() || player.IsDead)
+        {
+            __result = __instance.MaxLightRadius;
+            return false;
+        }
+
         if (IsHnS())
         {
             var hns = TownOfUsReworked.HnsOptions;
@@ -25,11 +31,9 @@ public static class CalculateLightRadiusPatch
             return false;
         }
 
-        if (player.IsDead)
-            __result = __instance.MaxLightRadius;
-        else if (role.Faction == Faction.Intruder || (role is NKilling && NeutralKillingSettings.NkHaveImpVision) || pc.Is<Torch>() || (role.Alignment == Alignment.Neophyte &&
-            NeutralNeophyteSettings.NnHaveImpVision) || (role.Alignment == Alignment.Harbinger && NeutralHarbingerSettings.NhHaveImpVision) || (role.Alignment ==
-            Alignment.Evil && NeutralEvilSettings.NeHaveImpVision) || role.Alignment == Alignment.Apocalypse)
+        if (role.Faction == Faction.Intruder || (role is NKilling && NeutralKillingSettings.NkHaveImpVision) || pc.Is<Torch>() || (role.Alignment == Alignment.Neophyte &&
+            NeutralNeophyteSettings.NnHaveImpVision) || (role.Alignment == Alignment.Harbinger && NeutralHarbingerSettings.NhHaveImpVision) || (role.Alignment == Alignment.Evil &&
+            NeutralEvilSettings.NeHaveImpVision) || role.Alignment == Alignment.Apocalypse)
         {
             __result = __instance.MaxLightRadius * IntruderSettings.IntruderVision;
         }
@@ -68,8 +72,8 @@ public static class CalculateLightRadiusPatch
                     {
                         var t = __instance.MaxLightRadius;
 
-                        if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system))
-                            t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, system.Cast<SwitchSystem>().Level);
+                        if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system) && system.TryCast<SwitchSystem>(out var lights))
+                            t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, lights.Level);
 
                         __result = t * (role.Faction == Faction.Neutral ? NeutralSettings.NeutralVision : CrewSettings.CrewVision);
                         break;

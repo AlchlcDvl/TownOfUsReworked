@@ -1,4 +1,5 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable UnusedMember.Global
 namespace TownOfUsReworked.Modules;
 
 public abstract class CustomCosmetic : Asset
@@ -163,15 +164,15 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
             return colors[0];
 
         // Math nerd rambling
-        // Mapping these next 4 lines onto desmos gives a nice little zig-zag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
+        // Mapping these next 4 lines onto desmos gives a nice little zigzag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
         var dx = mul * Time.time;
         var floor = Mathf.FloorToInt(dx);
         var phase = floor % 2; // 0 = forward, 1 = backward
-        var point = Mathf.Clamp((colors.Length - 1) * (((dx - floor) * ((2 * phase) - 1)) + 1 - phase), 0f, colors.Length - 1);
+        var point = (colors.Length - 1) * Mathf.Clamp((((dx - floor) * ((2 * phase) - 1)) + 1 - phase), 0f, 1f);
 
         var index = Mathf.FloorToInt(point);
 
         return UColor.Lerp(colors[index], colors[index + 1], point - index);
-        // Index out of range usually never happens because how the function is set up, and if does happen it's only for a fraction of a second and not perceptible
+        // Index out of range usually never happens because how the function is set up, and if it does happen, it's only for a fraction of a second and not perceptible
     }
 }

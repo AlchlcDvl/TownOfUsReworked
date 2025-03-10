@@ -6,7 +6,6 @@ public sealed class CustomPlayer
     public NetworkedPlayerInfo Data => Player?.Data;
     public Vector3 Position => Player.transform.position;
     public bool Dead => Data?.IsDead ?? true;
-    // public bool Disconnected => Data?.Disconnected ?? true;
     public float SpeedFactor => Player.GetBaseSpeed() * Player.GetModifiedSpeed();
     public float Size => IsLobby() || Dead || HasTask(TaskTypes.MushroomMixupSabotage) ? 1f : Player.GetModifiedSize();
     public NetworkedPlayerInfo.PlayerOutfit DefaultOutfit => Data?.DefaultOutfit;
@@ -22,7 +21,7 @@ public sealed class CustomPlayer
         AllCustomPlayers.Add(this);
     }
 
-    public static CustomPlayer Custom(PlayerControl player) => AllCustomPlayers.Find(x => x.Player == player) ?? new(player);
+    public static CustomPlayer Custom(PlayerControl player) => AllCustomPlayers.TryFinding(x => x.Player == player, out var result) ? result : new(player);
 
     public override string ToString() => Player.name;
 }

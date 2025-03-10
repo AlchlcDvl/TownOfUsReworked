@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
-public sealed class Necromancer : Neophyte
+[LayerHeaderOption(LayerEnum.Necromancer)]
+public sealed class Necromancer : Neophyte, IReviver
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number NecroManaCd = 25;
@@ -68,8 +68,8 @@ public sealed class Necromancer : Neophyte
         ManaButton ??= new(this, "GAIN MANA", new SpriteName("NecroManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(NecroManaCd), (UsableFunc)Usable);
         ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Resurrect, new Cooldown(ResurrectCd), MaxNecroMana, "RESURRECT",
             new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(NecroManaCost));
-        SacrificeButton ??= new(this, new SpriteName("NecroKill"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Kill, new Cooldown(SacrificeCd), "SACRIFICE",
-            (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2, MaxSacrifices);
+        SacrificeButton ??= new(this, new SpriteName("NecroKill"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Kill, new Cooldown(SacrificeCd), "SACRIFICE", MaxSacrifices,
+            (PlayerBodyExclusion)Exception, (DifferenceFunc)Difference2);
     }
 
     private void UponEnd()
@@ -126,7 +126,7 @@ public sealed class Necromancer : Neophyte
                 SacrificeButton.StartCooldown();
         }
 
-        if (Local && player.IIs<ISovereign>())
+        if (Local && player.Is<ISovereign>())
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 

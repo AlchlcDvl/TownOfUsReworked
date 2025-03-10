@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Monarch)]
 public sealed class Monarch : Crew, ISovereign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -54,7 +54,7 @@ public sealed class Monarch : Crew, ISovereign
             ToBeKnighted.Add(target.PlayerId);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
 
-            if (target.TryGetILayer<IRevealer>(out var rev) && !rev.Revealed)
+            if (target.TryGetLayer<IRevealer>(out var rev) && !rev.Revealed)
                 CustomAchievementManager.UnlockAchievement("HiddenAlliance");
         }
 
@@ -68,7 +68,7 @@ public sealed class Monarch : Crew, ISovereign
         var id = reader.ReadByte();
         ToBeKnighted.Add(id);
 
-        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.TryGetILayer<IRevealer>(out var rev) && !rev.Revealed)
+        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.TryGetLayer<IRevealer>(out var rev) && !rev.Revealed)
             CustomAchievementManager.UnlockAchievement("HiddenAlliance");
     }
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Fanatic)]
 public sealed class Fanatic : Disposition
 {
     [ToggleOption]

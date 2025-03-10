@@ -135,6 +135,7 @@ public static class DisconnectHandler
 
         SetPostmortals.RemoveFromPostmortals(player);
         OnGameEndPatches.AddSummaryInfo(player, true);
+        CheckEndGame.CheckPlayerWins();
     }
 }
 

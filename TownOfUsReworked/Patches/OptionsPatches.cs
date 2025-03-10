@@ -139,6 +139,7 @@ public static class SettingsPatches
     public static StringOption MultiSelectPrefab;
     public static ToggleOption MultiOptionPrefab;
     public static CategoryHeaderMasked HeaderPrefab;
+    public static MissingBehaviour LayerHeaderPrefab;
     public static CategoryHeaderEditRole AlignmentPrefab;
     private static PassiveButton ButtonPrefab;
 
@@ -262,7 +263,13 @@ public static class SettingsPatches
         {
             if (!header.Setting)
             {
-                header.Setting = UObject.Instantiate(header.Type == CustomOptionType.Header ? HeaderPrefab : AlignmentPrefab, parent);
+                header.Setting = UObject.Instantiate((MonoBehaviour)(header.Type switch
+                {
+                    CustomOptionType.Header => HeaderPrefab,
+                    CustomOptionType.Alignment => AlignmentPrefab,
+                    CustomOptionType.LayerHeader => LayerHeaderPrefab,
+                    _ =>  throw new ArgumentOutOfRangeException($"There's no header prefab for {header.Type}")
+                }), parent);
                 header.OptionCreated();
                 header.Setting.GetComponentsInChildren<PassiveButton>(true).ForEach(x => x.ClickMask = clickMask);
             }
@@ -450,12 +457,16 @@ public static class SettingsPatches
                     }
 
                     var isHeader = header is HeaderOptionAttribute;
+                    var isLayerHeader = header is LayerHeaderOptionAttribute;
 
                     if (!isHeader)
                         y -= 0.1f;
 
-                    header.Setting.transform.localPosition = new(isHeader ? -0.903f : 4.986f, y, -2f);
+                    header.Setting.transform.localPosition = new(isHeader ? -0.903f : (isLayerHeader ? 3.986f : 4.986f), y, -2f);
                     y -= isHeader ? 0.53f : 0.525f;
+
+                    if (isLayerHeader && header.Get())
+                        y -= 0.5f;
 
                     foreach (var option in header.GroupMembers.Where(option => option.Setting))
                     {
@@ -466,8 +477,8 @@ public static class SettingsPatches
                         if (!flag2)
                             continue;
 
-                        option.Setting.transform.localPosition = new(isHeader ? 0.952f : -0.15f, y, -2f);
-                        y -= isHeader ? 0.45f : 0.43f;
+                        option.Setting.transform.localPosition = new(isHeader || isLayerHeader ? 0.952f : -0.15f, y, -2f);
+                        y -= isHeader || isLayerHeader ? 0.45f : 0.43f;
 
                         if (option.Setting is OptionBehaviour setting)
                             __instance.RoleSettingsTab.advancedSettingChildren.Add(setting);
@@ -654,13 +665,13 @@ public static class SettingsPatches
 
         MapSettings.Map = map;
 
-        if (!CustomPlayer.Local)
+        if (!CustomPlayer.Local || MapSettings.Map == map)
             return;
 
-        TownOfUsReworked.NormalOptions.MapId = (byte)map;
+        TownOfUsReworked.NormalOptions.MapId = (byte)MapSettings.Map;
         OnValueChanged();
 
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[(int)map]}</font>";
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[TownOfUsReworked.NormalOptions.MapId]}</font>";
 
         if (MapChangeNotif)
             MapChangeNotif.UpdateMessage(changed);

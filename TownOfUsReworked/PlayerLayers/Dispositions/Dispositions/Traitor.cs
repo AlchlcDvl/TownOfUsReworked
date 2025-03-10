@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Traitor)]
 public sealed class Traitor : Disposition
 {
     [ToggleOption]

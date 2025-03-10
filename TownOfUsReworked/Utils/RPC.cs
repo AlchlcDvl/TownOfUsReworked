@@ -131,8 +131,8 @@ public static class RPC
     /// </summary>
     /// <param name="reader">Network message containing settings data</param>
     /// <typeparam name="T">Type to cast layer to</typeparam>
-    /// <returns><c>PlayerLayer</c> as specified type</returns>
-    public static T ReadLayer<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayer() as T;
+    /// <returns>The <c>PlayerLayer</c> as specified type</returns>
+    public static T ReadLayer<T>(this MessageReader reader) where T : IPlayerLayer => (T)(object)reader.ReadLayer();
 
     /// <summary>
     /// Reads a byte array from a network message.
@@ -160,7 +160,7 @@ public static class RPC
     /// <param name="reader">Network message containing settings data</param>
     /// <typeparam name="T">Type to cast layers to</typeparam>
     /// <returns><c>IEnumerable</c> of PlayerLayers as specified type</returns>
-    public static IEnumerable<T> ReadLayers<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayerList().Cast<T>();
+    public static IEnumerable<T> ReadLayers<T>(this MessageReader reader) where T : IPlayerLayer => reader.ReadLayerList().Cast<T>();
 
     /// <summary>
     /// Reads role option data from a network message.

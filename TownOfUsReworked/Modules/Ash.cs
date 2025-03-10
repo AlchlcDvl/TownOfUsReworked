@@ -1,8 +1,9 @@
 namespace TownOfUsReworked.Modules;
 
-public sealed class Ash
+public sealed class Ash : IDisposable
 {
-    private static readonly List<Ash> AllPiles = [];
+    public static readonly List<Ash> AllPiles = [];
+
     private GameObject Pile { get; set; }
 
     private Ash(Vector2 position)
@@ -35,10 +36,10 @@ public sealed class Ash
         Pile = null;
     }
 
-    public static void DestroyAll()
+    public void Dispose()
     {
-        AllPiles.ForEach(x => x.Destroy());
-        AllPiles.Clear();
+        Destroy();
+        GC.SuppressFinalize(this);
     }
 
     public static void CreateAsh(DeadBody body)

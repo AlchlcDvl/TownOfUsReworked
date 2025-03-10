@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Guesser)]
 public sealed class Guesser : Evil, IGuesser
 {
     [ToggleOption]

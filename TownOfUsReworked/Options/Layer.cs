@@ -31,7 +31,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
     private GameObject CenterCheck { get; set; }
     private GameObject CenterCross { get; set; }
     public LayerEnum Layer { get; } = layer;
-    public HeaderOptionAttribute GroupHeader { get; private set; }
+    public LayerHeaderOptionAttribute GroupHeader { get; private set; }
 
     private static Vector3 Left;
     private static Vector3 Right;
@@ -318,7 +318,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         else
             Value = value;
 
-        GroupHeader = GetOptions<HeaderOptionAttribute>().Find(x => x.Name.Contains($"{Layer}"));
+        GroupHeader = GetOptions<LayerHeaderOptionAttribute>().Find(x => x.Layer == Layer);
     }
 
     private void SetUpOptionsMenu()

@@ -26,6 +26,7 @@ public static class VotePatches
         SetPostmortals.RemoveFromPostmortals(pc);
         MarkMeetingDead(pc);
         OnGameEndPatches.AddSummaryInfo(pc, true);
+        CheckEndGame.CheckPlayerWins();
     }
 
     [HarmonyPatch(nameof(MeetingHud.Confirm))]

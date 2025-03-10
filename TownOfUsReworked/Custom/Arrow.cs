@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Custom;
 
-public class CustomArrow
+public class CustomArrow : IDisposable
 {
     protected ArrowBehaviour Arrow { get; set; }
     private SpriteRenderer Render { get; set; }
@@ -22,15 +22,15 @@ public class CustomArrow
         Interval = interval;
         ArrowColor = color;
         Time = UnityEngine.Time.time;
-        Instantiate();
         Disabled = !Owner.AmOwner;
         Target = target;
+        Instantiate();
         AllArrows.Add(this);
     }
 
     private void Instantiate()
     {
-        if (!Owner.AmOwner)
+        if (!Owner.AmOwner || Disabled)
             return;
 
         ArrowObj = new("CustomArrow") { layer = 5 };
@@ -85,10 +85,6 @@ public class CustomArrow
     {
         Point?.Destroy();
         ArrowObj?.Destroy();
-        ArrowObj = null;
-        Arrow = null;
-        Render = null;
-        Point = null;
     }
 
     private void Enable()
@@ -120,9 +116,9 @@ public class CustomArrow
         PlayerMaterial.SetColors(ArrowColor, Point);
     }
 
-    public static void DestroyAll()
+    public void Dispose()
     {
-        AllArrows.ForEach(x => x.Destroy());
-        AllArrows.Clear();
+        Destroy();
+        GC.SuppressFinalize(this);
     }
 }

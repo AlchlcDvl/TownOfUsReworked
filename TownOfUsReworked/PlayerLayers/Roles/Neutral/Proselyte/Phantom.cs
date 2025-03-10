@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Phantom)]
 public sealed class Phantom : Neutral, IGhosty
 {
     [NumberOption(1, 10, 1)]

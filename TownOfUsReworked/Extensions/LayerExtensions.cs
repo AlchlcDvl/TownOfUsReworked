@@ -14,10 +14,7 @@ public static class LayerExtensions
     private static readonly string AttackColorString = $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
     private static readonly string DefenseColorString = $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
-    public static bool Is<T>(this PlayerControl player) where T : PlayerLayer => player.TryGetLayer<T>(out _);
-
-    // ReSharper disable once InconsistentNaming
-    public static bool IIs<T>(this PlayerControl player) where T : IPlayerLayer => player.TryGetILayer<T>(out _);
+    public static bool Is<T>(this PlayerControl player) where T : IPlayerLayer => player.TryGetLayer<T>(out _);
 
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
 
@@ -146,13 +143,13 @@ public static class LayerExtensions
 
     public static Neophyte GetNeophyte(this PlayerControl player) => PlayerLayer.GetLayers<Neophyte>().Find(role => role.Members.Contains(player.PlayerId));
 
-    public static bool IsShielded(this PlayerControl player) => PlayerLayer.GetILayers<IShielder>().Any(role => player == role.ShieldedPlayer);
+    public static bool IsShielded(this PlayerControl player) => PlayerLayer.GetLayers<IShielder>().Any(role => player == role.ShieldedPlayer);
 
-    public static bool IsTrapped(this PlayerControl player) => PlayerLayer.GetILayers<ITrapper>().Any(role => role.Trapped.Contains(player.PlayerId));
+    public static bool IsTrapped(this PlayerControl player) => PlayerLayer.GetLayers<ITrapper>().Any(role => role.Trapped.Contains(player.PlayerId));
 
     public static bool IsKnighted(this PlayerControl player) => PlayerLayer.GetLayers<Monarch>().Any(role => role.Knighted.Contains(player.PlayerId));
 
-    public static bool IsSpellbound(this PlayerControl player) => PlayerLayer.GetILayers<IHexer>().Any(role => role.Spelled.Contains(player.PlayerId));
+    public static bool IsSpellbound(this PlayerControl player) => PlayerLayer.GetLayers<IHexer>().Any(role => role.Spelled.Contains(player.PlayerId));
 
     public static bool IsArsoDoused(this PlayerControl player) => PlayerLayer.GetLayers<Arsonist>().Any(role => role.Doused.Contains(player.PlayerId));
 
@@ -194,13 +191,13 @@ public static class LayerExtensions
 
     // public static bool IsFaithful(this PlayerControl player) => player.GetRole()?.Faithful ?? false;
 
-    public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetILayers<IBlackmailer>().Any(role => role.BlackmailedPlayer == player);
+    public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetLayers<IBlackmailer>().Any(role => role.BlackmailedPlayer == player);
 
-    public static bool IsSilenced(this PlayerControl player) => PlayerLayer.GetILayers<ISilencer>().Any(role => role.SilencedPlayer == player);
+    public static bool IsSilenced(this PlayerControl player) => PlayerLayer.GetLayers<ISilencer>().Any(role => role.SilencedPlayer == player);
 
-    public static bool SilenceActive(this PlayerControl player) => !player.IsSilenced() && PlayerLayer.GetILayers<ISilencer>().Any(role => role.HoldsDrive);
+    public static bool SilenceActive(this PlayerControl player) => !player.IsSilenced() && PlayerLayer.GetLayers<ISilencer>().Any(role => role.HoldsDrive);
 
-    public static bool IsOnAlert(this PlayerControl player) => PlayerLayer.GetILayers<IAlerter>().Any(role => role.Player == player && role.AlertButton?.EffectActive == true);
+    public static bool IsOnAlert(this PlayerControl player) => PlayerLayer.GetLayers<IAlerter>().Any(role => role.Player == player && role.AlertButton?.EffectActive == true);
 
     public static bool IsVesting(this PlayerControl player) => PlayerLayer.GetLayers<Survivor>().Any(role => role.VestButton.EffectActive && player == role.Player);
 
@@ -208,18 +205,18 @@ public static class LayerExtensions
 
     public static bool IsCampaigned(this PlayerControl player) => PlayerLayer.GetLayers<Democrat>().Any(role => role.Campaigned.Contains(player.PlayerId));
 
-    public static bool IsAmbushed(this PlayerControl player) => PlayerLayer.GetILayers<IAmbusher>().Any(role => player == role.AmbushedPlayer && role.AmbushButton.EffectActive);
+    public static bool IsAmbushed(this PlayerControl player) => PlayerLayer.GetLayers<IAmbusher>().Any(role => player == role.AmbushedPlayer && role.AmbushButton.EffectActive);
 
-    public static bool IsCrusaded(this PlayerControl player) => PlayerLayer.GetILayers<ICrusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive);
+    public static bool IsCrusaded(this PlayerControl player) => PlayerLayer.GetLayers<ICrusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive);
 
-    public static bool CrusadeActive(this PlayerControl player) => PlayerLayer.GetILayers<ICrusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive &&
+    public static bool CrusadeActive(this PlayerControl player) => PlayerLayer.GetLayers<ICrusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive &&
         role.HoldsDrive);
 
     public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => role.Protecting && player == role.TargetPlayer);
 
     public static bool IsInfected(this PlayerControl player) => PlayerLayer.GetLayers<Plaguebearer>().Any(role => role.Infected.Contains(player.PlayerId) || player == role.Player);
 
-    public static bool IsFramed(this PlayerControl player) => PlayerLayer.GetILayers<IFramer>().Any(role => role.Framed.Contains(player.PlayerId));
+    public static bool IsFramed(this PlayerControl player) => PlayerLayer.GetLayers<IFramer>().Any(role => role.Framed.Contains(player.PlayerId));
 
     public static bool IsWinningRival(this PlayerControl player) => PlayerLayer.GetLayers<Rivals>().Any(x => x.Player == player && x.IsWinningRival);
 
@@ -257,7 +254,7 @@ public static class LayerExtensions
 
     public static bool IsOtherLink(this PlayerControl player, PlayerControl refPlayer) => player.GetOtherLink() == refPlayer;
 
-    public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && PlayerLayer.GetILayers<IFlasher>().Any(x => x.FlashedPlayers.Contains(player.PlayerId));
+    public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && PlayerLayer.GetLayers<IFlasher>().Any(x => x.FlashedPlayers.Contains(player.PlayerId));
 
     public static bool SyndicateSided(this PlayerControl player) => player.Is(Faction.Syndicate, Faction.Illuminati, Faction.Pandorica) && !player.Is<Syndicate>();
 
@@ -273,14 +270,14 @@ public static class LayerExtensions
         return role is Intruder or Syndicate || role?.Alignment is Alignment.Killing or Alignment.Harbinger or Alignment.Apocalypse || player.GetDisposition() is Corrupted or Fanatic or Traitor;
     }
 
-    public static bool IsPostmortal(this PlayerControl player) => player.HasDied() && player.IIs<IGhosty>();
+    public static bool IsPostmortal(this PlayerControl player) => player.HasDied() && player.Is<IGhosty>();
 
     public static bool Caught(this PlayerControl player)
     {
         if (!player.IsPostmortal())
             return true;
 
-        return !player.TryGetILayer<IGhosty>(out var iGhost) || iGhost.Caught;
+        return !player.TryGetLayer<IGhosty>(out var iGhost) || iGhost.Caught;
     }
 
     public static bool IsLinkedTo(this PlayerControl player, PlayerControl refPlayer) => player.IsOtherRival(refPlayer) || player.IsOtherLover(refPlayer) || player.IsOtherLink(refPlayer) ||
@@ -303,7 +300,7 @@ public static class LayerExtensions
         if (player.HasDied() || Lobby() || (Hud.Instance.IsCamoed && BetterSabotages.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
             return result;
 
-        if (IntroCutscene.Instance)
+        if (HUD().IsIntroDisplayed)
             return 0f;
 
         if (player.TryGetLayer<Hunter>(out var hunt))
@@ -319,16 +316,16 @@ public static class LayerExtensions
         if (DragHandler.Dragging.ContainsKey(player.PlayerId))
             result *= Janitor.DragModifier;
 
-        if (PlayerLayer.GetILayers<IDrunkard>().Any(x => x.ConfuseButton?.EffectActive == true && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))
+        if (PlayerLayer.GetLayers<IDrunkard>().Any(x => x.ConfuseButton?.EffectActive == true && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))
             result *= -1;
 
-        if (PlayerLayer.GetILayers<ITimeLord>().Any(x => x.TimeButton.EffectActive))
+        if (PlayerLayer.GetLayers<ITimeLord>().Any(x => x.TimeButton.EffectActive))
         {
             if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && !Timekeeper.TimeFreezeImmunity))
                 result = 0f;
         }
 
-        if (player.TryGetILayer<ITrapper>(out var trap))
+        if (player.TryGetLayer<ITrapper>(out var trap))
             result *= trap.Building ? 0f : 1f;
 
         if (Ship() && Ship().Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
@@ -367,7 +364,7 @@ public static class LayerExtensions
         return 1f;
     }
 
-    private static bool TryGetShaper(this PlayerControl player, out IShaper shaper) => PlayerLayer.GetILayers<IShaper>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
+    private static bool TryGetShaper(this PlayerControl player, out IShaper shaper) => PlayerLayer.GetLayers<IShaper>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
         out shaper);
 
     public static bool IsMimicking(this PlayerControl player, out PlayerControl mimicked)
@@ -383,7 +380,7 @@ public static class LayerExtensions
         if (mimicked != player)
             return false;
 
-        if (player.TryGetILayer<IMorpher>(out var morph) && morph.MorphedPlayer)
+        if (player.TryGetLayer<IMorpher>(out var morph) && morph.MorphedPlayer)
             mimicked = morph.MorphedPlayer;
         else if (player.TryGetShaper(out var ss))
             mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer2 : ss.ShapeshiftPlayer1;
@@ -573,7 +570,7 @@ public static class LayerExtensions
         };
     }
 
-    public static bool IsBlocked(this PlayerControl player) => PlayerLayer.GetILayers<IBlocker>().Any(x => x.BlockTarget == player) || PlayerLayer.GetLayers<Banshee>().Any(x =>
+    public static bool IsBlocked(this PlayerControl player) => PlayerLayer.GetLayers<IBlocker>().Any(x => x.BlockTarget == player) || PlayerLayer.GetLayers<Banshee>().Any(x =>
         x.Blocked.Contains(player.PlayerId));
 
     public static bool SeemsEvil(this PlayerControl player)
@@ -798,7 +795,7 @@ public static class LayerExtensions
         return result;
     }
 
-    public static bool IsBombed(this Vent vent) => PlayerLayer.GetILayers<IVentBomber>().Any(x => x.BombedIDs.Contains(vent.Id));
+    public static bool IsBombed(this Vent vent) => PlayerLayer.GetLayers<IVentBomber>().Any(x => x.BombedIDs.Contains(vent.Id));
 
     public static PlayerLayerEnum GetLayerType(this LayerEnum layer) => layer switch
     {
@@ -866,24 +863,14 @@ public static class LayerExtensions
         return player.GetLayersFromList();
     }
 
-    private static T GetLayerFromList<T>(this PlayerControl player) where T : PlayerLayer => PlayerLayer.GetLayers<T>().Find(x => x.Player == player);
+    private static T GetLayerFromList<T>(this PlayerControl player) where T : IPlayerLayer => PlayerLayer.GetLayers<T>().Find(x => x.Player == player);
 
-    private static T GetILayerFromList<T>(this PlayerControl player) where T : IPlayerLayer => PlayerLayer.GetILayers<T>().Find(x => x.Player == player);
-
-    public static T GetLayer<T>(this PlayerControl player) where T : PlayerLayer
+    public static T GetLayer<T>(this PlayerControl player) where T : IPlayerLayer
     {
         if (player?.Data?.Role is LayerHandler handler)
             return handler.GetLayer<T>();
 
         return player.GetLayerFromList<T>();
-    }
-
-    public static T GetILayer<T>(this PlayerControl player) where T : IPlayerLayer
-    {
-        if (player?.Data?.Role is LayerHandler handler)
-            return handler.GetILayer<T>();
-
-        return player.GetILayerFromList<T>();
     }
 
     public static Role GetRoleFromList(this PlayerControl player) => player.GetLayerFromList<Role>();
@@ -926,9 +913,7 @@ public static class LayerExtensions
         return player.GetAbilityFromList();
     }
 
-    public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : PlayerLayer => layer = player.GetLayer<T>();
-
-    public static bool TryGetILayer<T>(this PlayerControl player, out T iLayer) where T : IPlayerLayer => (iLayer = player.GetILayer<T>()) != null;
+    public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : IPlayerLayer => (layer = player.GetLayer<T>()) != null;
 
     public static void AssignChaosDrive()
     {

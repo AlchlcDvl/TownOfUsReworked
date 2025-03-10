@@ -40,7 +40,7 @@ public static class CrowdedPatches
             foreach (var playerButton in __instance.MaxPlayerButtons)
             {
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 236);
+                var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 235);
                 tmp.text = $"{newValue}";
             }
 
@@ -62,16 +62,7 @@ public static class CrowdedPatches
     }
 
     [HarmonyPatch(nameof(CreateOptionsPicker.SetMap))]
-    public static void Prefix(ref int mapId)
-    {
-        if (mapId == 6 && !SubLoaded)
-            mapId = LiLoaded ? 7 : 5;
-
-        if (mapId == 7 && !LiLoaded)
-            mapId = SubLoaded ? 6 : 5;
-
-        MapSettings.Map = (MapEnum)mapId;
-    }
+    public static void Prefix(ref int mapId) => MapSettings.Map = (MapEnum)mapId;
 
     [HarmonyPatch(nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
     public static void Postfix(int maxPlayers) => OptionAttribute.GetOption<NumberOptionAttribute>("LobbySize").Set(maxPlayers, false);
@@ -99,7 +90,6 @@ public static class CrowdedPatches
     {
         var options = __instance.GetTargetOptions();
         __instance.UpdateMaxPlayersButtons(options);
-        __instance.UpdateImpostorsButtons(options.NumImpostors);
         __instance.UpdateLanguageButton((uint)options.Keywords);
         __instance.MapMenu.UpdateMapButtons(options.MapId);
         __instance.GameModeText.text = TranslationController.Instance.GetString(GameModesHelpers.ModeToName[GameOptionsManager.Instance.CurrentGameOptions.GameMode]);
@@ -120,7 +110,7 @@ public static class InnerNetSerer_HandleNewGameJoin
 
         if (__instance.HostId == -1)
         {
-            __instance.HostId = __instance.Clients.ToArray()[0].Id;
+            __instance.HostId = __instance.Clients[0].Id;
 
             if (__instance.HostId == client.Id)
                 client.LimboState = LimboStates.NotLimbo;

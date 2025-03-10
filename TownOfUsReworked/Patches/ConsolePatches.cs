@@ -14,8 +14,10 @@ public static class CanUsePatches
         yield return AccessTools.Method(typeof(Console), nameof(Console.CanUse));
     }
 
+    [HarmonyBefore(LiGuid)]
     public static void Prefix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Prefix(pc, ref __state);
 
+    [HarmonyAfter(LiGuid)]
     public static void Postfix(NetworkedPlayerInfo pc, ref bool __state) => CanUsePatch.Postfix(pc, ref __state);
 }
 
@@ -133,7 +135,7 @@ public static class CanUsePatch
     {
         __state = false;
 
-        if (!player.Object.IsPostmortal() || player.Object.Caught())
+        if (!IsInGame() || !player.Object.IsPostmortal() || player.Object.Caught())
             return;
 
         player.IsDead = false;

@@ -13,8 +13,6 @@ public static class SpawnPatches
 
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
-        ShowRolePatch.Starting = false;
-
         if (intro)
         {
             if (CustomPlayer.Local?.Data?.Role is LayerHandler handler)

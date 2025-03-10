@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Transporter)]
 public sealed class Transporter : Crew, IMover
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

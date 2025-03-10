@@ -66,6 +66,7 @@ Fixes!
 - Modifier + Compatibility: Fixed Astral not working on Submerged
 - Compatibility: Fixed certain consoles not being properly usable for postmortal roles
 - Compatibility: Fixed MCI not working on Submerged after testing it once
+- Compatibility: Fixed switching to custom LI maps not registering as a switch
 - Cosmetic: Fixed visors not being properly equipped or visible
 - Cosmetic: Fixed nameplates behaving weirdly in the nameplates tab
 - Visual: Fixed the HUD buttons appearing when kicking out bots in local
@@ -80,7 +81,8 @@ Fixes!
 - Visual: Fixed the downloader not correctly displaying the result of the download
 - Visual: Fixed the visibility of options not being correctly altered based on toggle settings
 - Visual: Fixed the texts being misaligned the first time you open settings
-- General: Fixed needing to increase the count in Custom/Classic game modes to be able to spawn roles in All Any
+- General: Fixed opening the option menu resetting the map option to Skeld
+- General: Fixed needing to increase the count in Custom (now Classic) mode to be able to spawn roles in All Any
 - General: Fixed All Any role generation being a bit broken in some aspects
 - General: Fixed fake players not spawning in locations correctly on Airship and Submerged
 - General: Fixed some instances of layer assignment breaking

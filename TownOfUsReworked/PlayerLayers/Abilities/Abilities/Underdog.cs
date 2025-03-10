@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Underdog)]
 public sealed class Underdog : Ability
 {
     [ToggleOption]

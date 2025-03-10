@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Dictator)]
 public sealed class Dictator : Crew, IRevealer
 {
     [ToggleOption]

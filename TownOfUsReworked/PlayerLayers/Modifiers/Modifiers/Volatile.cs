@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Volatile)]
 public sealed class Volatile : Modifier
 {
     [NumberOption(10f, 30f, 1f, Format.Time)]
@@ -25,7 +25,7 @@ public sealed class Volatile : Modifier
 
     public override void UpdateHud(HudManager __instance)
     {
-        if (ActiveTask() || IntroCutscene.Instance || ShowRolePatch.Starting || Dead)
+        if (ActiveTask() || HUD().IsIntroDisplayed || Dead)
             return;
 
         Time += UnityEngine.Time.deltaTime;

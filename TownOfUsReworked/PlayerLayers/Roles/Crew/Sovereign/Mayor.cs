@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Mayor)]
 public sealed class Mayor : Crew, IRevealer
 {
     [NumberOption(1, 10, 1)]

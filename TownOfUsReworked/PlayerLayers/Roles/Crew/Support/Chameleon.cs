@@ -1,6 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+// FIXME: Doesn't actually go invisible
+[LayerHeaderOption(LayerEnum.Chameleon)]
 public sealed class Chameleon : Crew
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]

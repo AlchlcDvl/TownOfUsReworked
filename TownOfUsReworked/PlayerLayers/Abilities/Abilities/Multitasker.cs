@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Multitasker)]
 public sealed class Multitasker : Ability
 {
     [NumberOption(10f, 80f, 5f, Format.Percent)]

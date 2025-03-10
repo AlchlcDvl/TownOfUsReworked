@@ -105,18 +105,7 @@ public static class MiscUtils
             case CustomPlayerOutfitType.Invis:
             {
                 var a = player.cosmetics.GetPhantomRoleAlpha();
-                yield return PerformTimedAction(1, p =>
-                {
-                    player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(a, 1, p));
-
-                    if (player.AmOwner)
-                        return;
-
-                    var text = player.NameText();
-                    text.color = new(text.color.a, text.color.a, text.color.a, p);
-                    var cbText = player.ColorBlindText();
-                    cbText.color = new(cbText.color.a, cbText.color.a, cbText.color.a, p);
-                });
+                yield return PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(a, 1, p), !player.AmOwner));
                 break;
             }
             case CustomPlayerOutfitType.Camouflage:
@@ -229,18 +218,23 @@ public static class MiscUtils
 
         var ca = condition || CustomPlayer.LocalCustom.Dead || player.AmOwner || CustomPlayer.Local.Is<Torch>() ? 0.1f : 0f;
         player.SetOutfit(CustomPlayerOutfitType.Invis, CurrentOutfit(player));
-        Coroutines.Start(PerformTimedAction(1, p =>
-        {
-            player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(1, ca, p));
+        Coroutines.Start(PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(1, ca, p), !player.AmOwner)));
+    }
 
-            if (player.AmOwner)
-                return;
+    public static void SetAlpha(this PlayerControl player, float alpha, bool setName = true)
+    {
+        player.SetHatAndVisorAlpha(alpha);
+        player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(alpha);
+        player.cosmetics.currentPet.renderers.ForEach(x => x.color = x.color.SetAlpha(alpha));
+        player.cosmetics.currentPet.shadows.ForEach(x => x.color = x.color.SetAlpha(alpha));
+        player.cosmetics.PettingHand.HandSprite.color = player.cosmetics.PettingHand.HandSprite.color.SetAlpha(alpha);
+        player.cosmetics.currentBodySprite.BodySprite.color = player.cosmetics.currentBodySprite.BodySprite.color.SetAlpha(alpha);
 
-            var text = player.NameText();
-            text.color = new(text.color.r, text.color.g, text.color.b, 1 - p);
-            var cbText = player.ColorBlindText();
-            cbText.color = new(cbText.color.r, cbText.color.g, cbText.color.b, 1 - p);
-        }));
+        if (!setName)
+            return;
+
+        player.cosmetics.nameText.color = player.cosmetics.nameText.color.SetAlpha(alpha);
+        player.cosmetics.colorBlindText.color = player.cosmetics.colorBlindText.color.SetAlpha(alpha);
     }
 
     public static IEnumerator Wait(float duration)
@@ -363,10 +357,6 @@ public static class MiscUtils
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);
 
         GameData.Instance.RecomputeTaskCounts();
-
-        if (killer.AmOwner || target.AmOwner)
-            Play("Kill");
-
         Coroutines.Start(CoPerformKill(killer.KillAnimations.Random(), killer, target, reason, lunge));
     }
 
@@ -398,7 +388,7 @@ public static class MiscUtils
             }
             else if (target.TryGetLayer<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
-            else if (target.TryGetILayer<IGuesser>(out var assassin))
+            else if (target.TryGetLayer<IGuesser>(out var assassin))
             {
                 assassin.GuessingMenu.Close();
                 assassin.GuessMenu.HideButtons();
@@ -406,7 +396,7 @@ public static class MiscUtils
         }
         else if (!CustomPlayer.LocalCustom.Dead)
         {
-            if (CustomPlayer.Local.TryGetILayer<IGuesser>(out var assassin))
+            if (CustomPlayer.Local.TryGetLayer<IGuesser>(out var assassin))
             {
                 assassin.GuessingMenu.Close();
                 assassin.GuessMenu.HideSingle(target.PlayerId);
@@ -448,7 +438,7 @@ public static class MiscUtils
 
         if (TalkingPatches.CachedOverlay)
         {
-            foreach (var role in PlayerLayer.GetILayers<IIntimidator>())
+            foreach (var role in PlayerLayer.GetLayers<IIntimidator>())
             {
                 if (target != role.Target)
                     continue;
@@ -514,7 +504,7 @@ public static class MiscUtils
         return result;
     }
 
-    public static void StopDragging(byte id) => PlayerLayer.GetILayers<IDragger>().Where(x => x.CurrentlyDragging?.ParentId == id).ForEach(x => x.Drop());
+    public static void StopDragging(byte id) => PlayerLayer.GetLayers<IDragger>().Where(x => x.CurrentlyDragging?.ParentId == id).ForEach(x => x.Drop());
 
     private static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
     {
@@ -647,7 +637,7 @@ public static class MiscUtils
 
     private static IEnumerator CoFlash(UColor color, float duration, float a)
     {
-        if (IntroCutscene.Instance || ShowRolePatch.Starting || !HudManager.InstanceExists)
+        if (HUD().IsIntroDisplayed || !HudManager.InstanceExists)
             yield break;
 
         color.a = a;
@@ -662,7 +652,7 @@ public static class MiscUtils
 
     private static IEnumerator CoTransitionFlash(UColor color, float duration, float a, float transitionDur)
     {
-        if (IntroCutscene.Instance || ShowRolePatch.Starting || !HudManager.InstanceExists)
+        if (HUD().IsIntroDisplayed || !HudManager.InstanceExists)
             yield break;
 
         if (2 * transitionDur > duration)
@@ -1157,7 +1147,7 @@ public static class MiscUtils
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
 
-            if (player.TryGetILayer<IDragger>(out var dragger))
+            if (player.TryGetLayer<IDragger>(out var dragger))
                 dragger.Drop();
         }
 
@@ -1250,11 +1240,11 @@ public static class MiscUtils
         return null;
     }
 
+    public static IEnumerable<T> GetAllComponents<T>(this Component self) where T : Component => self.transform.GetAllComponents<T>();
+
     public static IEnumerable<T> GetAllComponents<T>(this Transform self) where T : Component
     {
-        var comp = self.GetComponent<T>();
-
-        if (comp)
+        if (self.TryGetComponent<T>(out var comp))
             yield return comp;
 
         for (var i = 0; i < self.childCount; i++)
@@ -1393,6 +1383,7 @@ public static class MiscUtils
 
         if (isParticipant)
         {
+            Play("Kill");
             CustomPlayer.Local.isKilling = true;
             killer.isKilling = true;
         }

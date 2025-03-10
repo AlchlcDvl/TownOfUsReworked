@@ -8,7 +8,6 @@ public static class ShowTeamPatch
         if (IsHnS())
             return;
 
-        ShowRolePatch.Starting = true;
         var role = CustomPlayer.Local.GetRole();
         __instance.__4__this.TeamTitle.text = role.FactionName;
         __instance.__4__this.TeamTitle.color = role.FactionColor;
@@ -21,14 +20,11 @@ public static class ShowTeamPatch
 [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__41), nameof(IntroCutscene._ShowRole_d__41.MoveNext))]
 public static class ShowRolePatch
 {
-    public static bool Starting;
-
     public static void Postfix(IntroCutscene._ShowRole_d__41 __instance)
     {
         if (IsHnS())
             return;
 
-        Starting = true;
         var role = CustomPlayer.Local.GetRole();
         var modifier = CustomPlayer.Local.GetModifier();
         var disposition = CustomPlayer.Local.GetDisposition();
@@ -103,6 +99,11 @@ public static class IntroCutscenePatches
             case 2:
             {
                 BetterPolus.ApplyChanges();
+                break;
+            }
+            case 4:
+            {
+                BetterAirship.ApplyChanges();
                 break;
             }
         }

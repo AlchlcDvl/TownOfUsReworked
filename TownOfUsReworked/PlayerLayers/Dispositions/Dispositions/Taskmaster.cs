@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Taskmaster)]
 public sealed class Taskmaster : Disposition
 {
     [NumberOption(1, 5, 1)]

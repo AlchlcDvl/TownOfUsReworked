@@ -27,7 +27,7 @@ public sealed class ClientHandler : MonoBehaviour
     public bool LoreActive;
     public bool SelectionActive;
     private readonly List<string> Entry = [];
-    // Max page line limit is 20
+    // The max page line limit is 20
 
     public PassiveButton ClientOptionsButton;
     public bool SettingsActive;
@@ -327,9 +327,38 @@ public sealed class ClientHandler : MonoBehaviour
             prefabs.Add(SettingsPatches.AlignmentPrefab);
         }
 
+        if (!SettingsPatches.LayerHeaderPrefab)
+        {
+            // Using MissingBehaviour because it literally does nothing and I need a MonoBehaviour reference for the layer header prefabs
+
+            // Label = Itself, Header Text = 0, Info = 1, Desc = 2, Collapse = 3
+            var prefab = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(0)).DontDestroy().DontUnload();
+            prefab.name = "LayerHeaderPrefab";
+
+            var info = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(1), prefab.transform);
+            info.GetComponent<RectTransform>().sizeDelta = new(1.8f, 0.2201f);
+            info.localPosition += new Vector3(0f, 0.08f, 0f);
+
+            Instantiate(roles.AdvancedRolesSettings.transform.GetChild(3), prefab.transform).localPosition = new(-5.696f, -0.2f, 0f);
+
+            var desc = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(4), prefab.transform);
+            desc.localPosition = new(-3.028f, -0.4478f, 0f);
+            desc.localScale = new(0.1135f, 0.1494f, 0.5687f);
+            desc.GetChild(0).localScale = new(10f, 6.6931f, 1.7584f);
+
+            var newButton = Instantiate(SettingsPatches.StringPrefab.PlusBtn, prefab.transform);
+            newButton.transform.localScale *= 0.4f;
+            newButton.transform.localPosition = new(-2.1f, 0f, 0f);
+            newButton.OverrideOnClickListeners(BlankVoid);
+            newButton.name = "Collapse";
+
+            SettingsPatches.LayerHeaderPrefab = prefab.AddComponent<MissingBehaviour>();
+            prefabs.Add(SettingsPatches.LayerHeaderPrefab);
+        }
+
         foreach (var mono in prefabs)
         {
-            foreach (var obj in mono.GetComponentsInChildren<SpriteRenderer>(true))
+            foreach (var obj in mono.GetAllComponents<SpriteRenderer>())
             {
                 obj.material.SetInt(PlayerMaterial.MaskLayer, 20);
                 obj.material.SetFloat(StencilComp, 3f);
@@ -337,7 +366,7 @@ public sealed class ClientHandler : MonoBehaviour
                 obj.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
             }
 
-            foreach (var obj in mono.GetComponentsInChildren<TextMeshPro>(true))
+            foreach (var obj in mono.GetAllComponents<TextMeshPro>())
             {
                 obj.fontMaterial.SetFloat(StencilComp, 3f);
                 obj.fontMaterial.SetFloat(Stencil, 20);

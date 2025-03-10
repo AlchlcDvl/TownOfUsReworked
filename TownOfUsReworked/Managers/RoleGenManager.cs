@@ -390,12 +390,11 @@ public static class RoleGenManager
 
         // Role.IsLeft = false;
 
-        CustomMeeting.DestroyAll();
-        CustomArrow.DestroyAll();
-        CustomMenu.DestroyAll();
-        CustomButton.DestroyAll();
-
-        Ash.DestroyAll();
+        CustomMeeting.AllCustomMeetings.Clear();
+        CustomArrow.AllArrows.Clear();
+        CustomMenu.AllMenus.Clear();
+        CustomButton.AllButtons.Clear();
+        Ash.AllPiles.Clear();
 
         Client.Instance.CloseMenus();
 

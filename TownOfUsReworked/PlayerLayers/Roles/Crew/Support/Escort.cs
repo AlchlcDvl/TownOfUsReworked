@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Escort)]
 public sealed class Escort : Crew, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]

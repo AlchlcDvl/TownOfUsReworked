@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[HeaderOption(MultiMenu.LayerSubOptions)]
+[LayerHeaderOption(LayerEnum.Lovers)]
 public sealed class Lovers : Disposition
 {
     [ToggleOption]

@@ -23,7 +23,7 @@ public interface IGhosty : IPlayerLayer
         if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
             Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
 
-        Player.cosmetics.SetPhantomRoleAlpha(Mathf.Lerp(0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f), 0, distPercent));
+        Player.SetAlpha(Mathf.Lerp(0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f), 0, distPercent));
         Player.NameText().color = Player.cosmetics.colorBlindText.color = UColor.clear;
 
         if (Local)
