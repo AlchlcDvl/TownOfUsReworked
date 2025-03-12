@@ -26,7 +26,7 @@ public sealed class GitHubApiAsset
     public string URL { get; set; }
 }
 
-public class Asset
+public abstract class Asset
 {
     [JsonPropertyName("id")]
     public string ID { get; set; }

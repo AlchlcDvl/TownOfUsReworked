@@ -9,7 +9,7 @@ public sealed class HatLoader : BaseCosmeticLoader<CustomHat>
 
     protected override void LoadAsset(CustomHat item, int i)
     {
-        var path = Path.Combine(DirectoryInfo);
+        var path = DirectoryInfo;
 
         if (item.StreamOnly)
             path = Path.Combine(DirectoryInfo, "Stream");

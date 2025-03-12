@@ -35,6 +35,7 @@ Changes!
 - Change: Button Barry now only fixes critical sabotages when calling a meeting
 - Change: Actor and Betrayer (via Traitor or Fanatic turning) can now spawn in role-list mode
 - Change: Role List slots can now have multiple entries to allow the creation of custom buckets
+- Change: Options now have a newer look
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Nerf: Engineer can no longer vent (you now need the Tunneler ability to do so as a crewmate)
 - Improvement: Improved the mod's loaders

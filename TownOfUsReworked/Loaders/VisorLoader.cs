@@ -9,7 +9,7 @@ public sealed class VisorLoader : BaseCosmeticLoader<CustomVisor>
 
     protected override void LoadAsset(CustomVisor item, int i)
     {
-        var path = Path.Combine(DirectoryInfo);
+        var path = DirectoryInfo;
 
         if (item.StreamOnly)
             path = Path.Combine(DirectoryInfo, "Stream");

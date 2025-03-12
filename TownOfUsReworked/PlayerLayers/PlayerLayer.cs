@@ -30,13 +30,15 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
     public int TasksLeft => Data?.Tasks?.Count(x => !x.Complete) ?? -1;
     public int TasksCompleted => Data?.Tasks?.Count(x => x.Complete) ?? -1;
     public int TotalTasks => Data?.Tasks?.Count ?? -1;
-    public bool TasksDone => Player.CanDoTasks() && (TasksLeft == 0 || TasksCompleted >= TotalTasks);
+    public bool TasksDone => (Player?.CanDoTasks() ?? false) && (TasksLeft == 0 || TasksCompleted >= TotalTasks);
 
     public string ColorString => $"<#{Color.ToHtmlStringRGBA()}>";
 
     public static readonly List<PlayerLayer> AllLayers = [];
 
     protected PlayerLayer() => AllLayers.Add(this);
+
+    ~PlayerLayer() => End();
 
     // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
     public void Start(PlayerControl player)
@@ -145,7 +147,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
 
     public static bool operator !=(PlayerLayer a, PlayerLayer b) => !(a == b);
 
-    public static implicit operator bool(PlayerLayer exists) => exists == null;
+    public static implicit operator bool(PlayerLayer exists) => exists != null;
 
     private bool Equals(PlayerLayer other) => other.Player == Player && other.LayerType == LayerType && Type == other.Type;
 
@@ -167,7 +169,9 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
 
     public void Dispose()
     {
-        End();
+        if (!Ignore)
+           End();
+
         GC.SuppressFinalize(this);
     }
 }

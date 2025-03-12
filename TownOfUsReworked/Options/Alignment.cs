@@ -51,7 +51,7 @@ public sealed class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSl
         var collapse = header.transform.FindChild("Collapse");
         collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
         ButtonText = collapse.GetComponentInChildren<TextMeshPro>();
-        ButtonText.text = Get() ? "-" : "+";
+        ButtonText.text = Value ? "-" : "+";
 
         var color = Alignment switch
         {
@@ -77,7 +77,6 @@ public sealed class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSl
         }
 
         SavedMode = GameMode.None;
-        Update();
     }
 
     private bool ChildrenActive() => GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true;
@@ -91,12 +90,11 @@ public sealed class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSl
         Button.SelectButton(Value);
 
         SavedMode = GameMode.None;
-        ViewUpdate();
     }
 
     public void Toggle()
     {
-        Value = !Get();
+        Value = !Value;
         GroupHeader?.Toggle();
 
         if (Setting)
@@ -117,6 +115,15 @@ public sealed class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSl
         var flag = ChildrenActive();
         Cog.SetActive(flag);
         PlsMnsBtn.localPosition = flag ? DefaultPos : new(-5.539f, -0.45f, -2f);
+
+        if (!Value)
+        {
+            Left.gameObject.SetActive(false);
+            Right.gameObject.SetActive(false);
+            Center.gameObject.SetActive(false);
+            Single.gameObject.SetActive(true);
+            return;
+        }
 
         if (SavedMode == GameModeSettings.GameMode)
             return;

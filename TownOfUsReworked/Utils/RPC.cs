@@ -364,7 +364,7 @@ public static class RPC
             if (data[0] is Enum)
                 @enum = data[0] as Enum;
 
-            data.ForEach((x, y) => writer.Write(x, rpc, y, @enum));
+            data.ForEach((x, y) => writer.Write(y, rpc, x, @enum));
         }
 
         return writer;

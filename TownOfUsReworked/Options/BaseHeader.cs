@@ -41,7 +41,11 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu, CustomOptionType
             GroupMembers.Add(att);
         }
 
-        GroupMembers.ForEach(x => x.Header = this);
+        foreach (var opt in GroupMembers)
+        {
+            opt.Header = this;
+            opt.ClientOnly = ClientOnly;
+        }
     }
 
     private static IEnumerable<MemberInfo> GetOrderedMembers(Type type)

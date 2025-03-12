@@ -104,13 +104,7 @@ public static class CollectionExtensions
             action(item);
     }
 
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> indexedAction)
-    {
-        var num = 0;
-
-        foreach (var item in source)
-            indexedAction(item, num++);
-    }
+    public static void ForEach<T>(this IEnumerable<T> source, Action<int, T> indexedAction) => source.Indexed().ForEach(x => indexedAction(x.Item1, x.Item2));
 
     public static List<List<T>> Split<T>(this IEnumerable<T> list, int splitCount)
     {

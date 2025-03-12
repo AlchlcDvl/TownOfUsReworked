@@ -196,19 +196,6 @@ public sealed class ClientHandler : MonoBehaviour
             prefabs.Add(SettingsPatches.TogglePrefab);
         }
 
-        if (!SettingsPatches.MultiOptionPrefab)
-        {
-            SettingsPatches.MultiOptionPrefab = Instantiate(SettingsPatches.TogglePrefab, null).DontUnload().DontDestroy();
-            SettingsPatches.MultiOptionPrefab.name = "MultiSelectOptionPrefab";
-            SettingsPatches.MultiOptionPrefab.TitleText.fontSize = 2f;
-
-            var background = SettingsPatches.MultiOptionPrefab.transform.GetChild(2);
-            background.localScale = new(1.75f, 1f, 1f);
-            background.localPosition = new(-1.5232f, -0.0619f, 0f);
-
-            prefabs.Add(SettingsPatches.MultiOptionPrefab);
-        }
-
         if (!SettingsPatches.MultiSelectPrefab)
         {
             // Background = 0, Value Text = 1, Title = 2, < = 3, > = 4, Value Box = 5, Button = 6
@@ -230,12 +217,42 @@ public sealed class ClientHandler : MonoBehaviour
             prefabs.Add(SettingsPatches.MultiSelectPrefab);
         }
 
+        if (!SettingsPatches.MultiOptionPrefab)
+        {
+            // PassiveButton = 0, Text = 1, Box = 2
+            SettingsPatches.MultiOptionPrefab = new GameObject("MultiSelectOptionPrefab").DontUnload().DontDestroy().AddComponent<MissingBehaviour>();
+
+            var toggle = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(6).GetComponent<PassiveButton>(), SettingsPatches.MultiOptionPrefab.transform);
+            toggle.name = "Button";
+            toggle.transform.localPosition = Vector3.zero;
+            toggle.transform.DestroyChildren();
+            toggle.OverrideOnClickListeners(BlankVoid);
+
+            var collider = toggle.GetComponent<BoxCollider2D>();
+            collider.offset = Vector3.zero;
+            collider.size = new(1.8f, 0.5292f);
+
+            var text = Instantiate(SettingsPatches.MultiSelectPrefab.ValueText, SettingsPatches.MultiOptionPrefab.transform);
+            text.transform.localPosition = Vector3.zero;
+            text.transform.localScale = new(0.6f, 0.6f, 1f);
+            text.text = "ValueText";
+
+            var box = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(5), SettingsPatches.MultiOptionPrefab.transform);
+            box.localPosition = Vector3.zero;
+            box.localScale = new(0.5f, 0.5f, 1f);
+            box.name = "ValueBox";
+
+            prefabs.Add(SettingsPatches.MultiOptionPrefab);
+        }
+
         if (!SettingsPatches.HeaderPrefab)
         {
             SettingsPatches.HeaderPrefab = Instantiate(settings.categoryHeaderOrigin).DontDestroy().DontUnload();
             SettingsPatches.HeaderPrefab.name = "HeaderPrefab";
             SettingsPatches.HeaderPrefab.transform.localScale = new(0.63f, 0.63f, 0.63f);
             SettingsPatches.HeaderPrefab.Background.transform.localScale += new Vector3(0.7f, 0f, 0f);
+
+            SettingsPatches.HeaderPrefab.transform.GetChild(1).gameObject.SetActive(false);
 
             var newButton = Instantiate(SettingsPatches.StringPrefab.PlusBtn, SettingsPatches.HeaderPrefab.transform);
             newButton.transform.localScale *= 0.7f;
@@ -292,7 +309,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (!SettingsPatches.AlignmentPrefab)
         {
             // Header Label = 0, Header Text = 1, Quota Header = 2, Collapse = 3, Cog = 4
-            //                                    ┗---------------- Dark Label = 0, Left = 1, Left Label = 2, Right Label = 3, Right = 4, Long Label = 5, Center = 6
+            //                                    ┗--------------- Dark Label = 0, Left = 1, Left Label = 2, Right Label = 3, Right = 4, Long Label = 5, Center = 6
             SettingsPatches.AlignmentPrefab = Instantiate(roles.categoryHeaderEditRoleOrigin).DontDestroy().DontUnload();
             SettingsPatches.AlignmentPrefab.name = "AlignmentPrefab";
             SettingsPatches.AlignmentPrefab.transform.GetChild(0).gameObject.SetActive(false);
@@ -331,28 +348,41 @@ public sealed class ClientHandler : MonoBehaviour
         {
             // Using MissingBehaviour because it literally does nothing and I need a MonoBehaviour reference for the layer header prefabs
 
-            // Label = Itself, Header Text = 0, Info = 1, Desc = 2, Collapse = 3
-            var prefab = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(0)).DontDestroy().DontUnload();
-            prefab.name = "LayerHeaderPrefab";
+            // Label = 0, Title = 1, Info = 2, Desc = 3, Collapse = 4
+            //                       ┗---------┗------- Text = 0
+            SettingsPatches.LayerHeaderPrefab = new GameObject("LayerHeaderPrefab").DontDestroy().DontUnload().AddComponent<MissingBehaviour>();
 
-            var info = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(1), prefab.transform);
-            info.GetComponent<RectTransform>().sizeDelta = new(1.8f, 0.2201f);
-            info.localPosition += new Vector3(0f, 0.08f, 0f);
+            var label = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(0), SettingsPatches.LayerHeaderPrefab.transform);
+            label.localPosition += new Vector3(0.12f, 0.08f, 0f);
+            label.name = "Label";
 
-            Instantiate(roles.AdvancedRolesSettings.transform.GetChild(3), prefab.transform).localPosition = new(-5.696f, -0.2f, 0f);
+            var title = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(1), SettingsPatches.LayerHeaderPrefab.transform);
+            title.GetComponent<RectTransform>().sizeDelta = new(1.8f, 0.2201f);
+            title.localPosition += new Vector3(0f, 0.08f, 0f);
+            title.name = "Title";
 
-            var desc = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(4), prefab.transform);
+            var info = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(3), SettingsPatches.LayerHeaderPrefab.transform);
+            info.localPosition = new(-5.7f, -0.2f, 0f);
+            info.name = "Info";
+
+            var desc = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(4), SettingsPatches.LayerHeaderPrefab.transform);
             desc.localPosition = new(-3.028f, -0.4478f, 0f);
             desc.localScale = new(0.1135f, 0.1494f, 0.5687f);
-            desc.GetChild(0).localScale = new(10f, 6.6931f, 1.7584f);
+            desc.name = "Desc";
 
-            var newButton = Instantiate(SettingsPatches.StringPrefab.PlusBtn, prefab.transform);
+            var descText = desc.GetChild(0);
+            descText.localScale = new(10f, 6.6931f, 1.7584f);
+            descText.name = "Text";
+
+            var newButton = Instantiate(SettingsPatches.StringPrefab.PlusBtn, SettingsPatches.LayerHeaderPrefab.transform);
             newButton.transform.localScale *= 0.4f;
             newButton.transform.localPosition = new(-2.1f, 0f, 0f);
             newButton.OverrideOnClickListeners(BlankVoid);
             newButton.name = "Collapse";
 
-            SettingsPatches.LayerHeaderPrefab = prefab.AddComponent<MissingBehaviour>();
+            LayerHeaderOptionAttribute.OgLabel = label.GetComponent<SpriteRenderer>().sprite;
+            LayerHeaderOptionAttribute.OgPosition = label.localPosition;
+
             prefabs.Add(SettingsPatches.LayerHeaderPrefab);
         }
 

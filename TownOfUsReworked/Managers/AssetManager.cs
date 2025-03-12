@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Managers;
 
 public static class AssetManager
 {
-    public static readonly List<Sprite> PortalAnimation = [];
-    public static readonly List<string> PortalPaths = [];
+    public static readonly Sprite[] PortalAnimation = new Sprite[205];
+    public static readonly string[] PortalPaths = new string[205];
     public static readonly Dictionary<string, AssetBundle> Bundles = [];
     public static readonly Dictionary<string, string> AssetToBundle = [];
     private static readonly Dictionary<string, HashSet<UObject>> LoadedAssets = [];
@@ -107,7 +107,6 @@ public static class AssetManager
 
     public static void LoadAssets()
     {
-        PortalAnimation.Clear();
         TownOfUsReworked.Core.GetManifestResourceNames().ForEach(x => AddPath(x.SanitisePath(), x));
         Cursor.SetCursor(GetSprite("Cursor").texture, CursorMode.Auto);
     }
@@ -311,4 +310,21 @@ public static class AssetManager
 
         return data;
     }
+
+    // public static void Dump(this Sprite sprite, string path) => File.WriteAllBytes(path, sprite.texture.Decompress().EncodeToPNG());
+
+    // public static Texture2D Decompress(this Texture2D source)
+    // {
+    //     var renderTex = RenderTexture.GetTemporary(source.width, source.height, 0, RenderTextureFormat.Default, RenderTextureReadWrite.Linear);
+    //     Graphics.Blit(source, renderTex);
+    //     var previous = RenderTexture.active;
+    //     RenderTexture.active = renderTex;
+    //     var readableText = new Texture2D(source.width, source.height);
+    //     readableText.ReadPixels(new(0, 0, renderTex.width, renderTex.height), 0, 0);
+    //     readableText.Apply();
+    //     RenderTexture.active = previous;
+    //     RenderTexture.ReleaseTemporary(renderTex);
+    //     readableText.name = source.name;
+    //     return readableText;
+    // }
 }

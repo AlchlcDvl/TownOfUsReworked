@@ -2,6 +2,8 @@
 // ReSharper disable UnusedMember.Global
 namespace TownOfUsReworked.Modules;
 
+// Json stuff for deserializing cosmetics
+
 public abstract class CustomCosmetic : Asset
 {
     [JsonPropertyName("name")]
@@ -27,11 +29,11 @@ public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
     [JsonIgnore]
     public TData CosmeticData { get; set; }
 
-    [JsonPropertyName("mainhash")]
-    public string MainHash { get; set; }
-
     [JsonIgnore]
     public string MainID => ID; // For reflection purposes
+
+    [JsonPropertyName("mainhash")]
+    public string MainHash { get; set; }
 }
 
 public abstract class TopCosmetic<TView, TData> : CustomCosmetic<TView, TData>
@@ -142,7 +144,7 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
     [JsonIgnore]
     private UColor ShadowColor { get; set; }
 
-    public UColor GetColor()
+    public UColor GetMainColor()
     {
         if (MainColorValues == null || MainColorValues.Length == 0)
             return MainColor = ShadowColor.Light();
@@ -168,9 +170,9 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
         var dx = mul * Time.time;
         var floor = Mathf.FloorToInt(dx);
         var phase = floor % 2; // 0 = forward, 1 = backward
-        var point = (colors.Length - 1) * Mathf.Clamp((((dx - floor) * ((2 * phase) - 1)) + 1 - phase), 0f, 1f);
+        var point = (colors.Length - 1) * Mathf.Clamp(((dx - floor) * ((2 * phase) - 1)) + 1 - phase, 0f, 1f);
 
-        var index = Mathf.FloorToInt(point);
+        var index = Mathf.Clamp(Mathf.FloorToInt(point), 0, colors.Length - 2);
 
         return UColor.Lerp(colors[index], colors[index + 1], point - index);
         // Index out of range usually never happens because how the function is set up, and if it does happen, it's only for a fraction of a second and not perceptible

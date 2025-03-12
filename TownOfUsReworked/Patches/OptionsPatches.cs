@@ -137,7 +137,7 @@ public static class SettingsPatches
     public static ToggleOption TogglePrefab;
     public static StringOption StringPrefab;
     public static StringOption MultiSelectPrefab;
-    public static ToggleOption MultiOptionPrefab;
+    public static MissingBehaviour MultiOptionPrefab;
     public static CategoryHeaderMasked HeaderPrefab;
     public static MissingBehaviour LayerHeaderPrefab;
     public static CategoryHeaderEditRole AlignmentPrefab;
@@ -393,6 +393,9 @@ public static class SettingsPatches
                     header.Setting.transform.localPosition = new(-0.903f, y, -2f);
                     y -= 0.53f;
 
+                    if (!header.Get())
+                        y += 0.2f;
+
                     foreach (var option in header.GroupMembers.Where(option => option.Setting))
                     {
                         var flag2 = option.Active();
@@ -442,7 +445,7 @@ public static class SettingsPatches
                         continue;
                     }
 
-                    var flag = header.Menu == menu && (SelectedSubOptions == null || header == SelectedSubOptions) && header.Active() && header.PartiallyActive();
+                    var flag = header.Menu == menu && (SelectedSubOptions == null || header == SelectedSubOptions) && header.Active() && header.GroupMembers.Any(x => x.PartiallyActive());
                     header.Setting.gameObject.SetActive(flag);
                     header.Update();
 
@@ -464,9 +467,12 @@ public static class SettingsPatches
 
                     header.Setting.transform.localPosition = new(isHeader ? -0.903f : (isLayerHeader ? 3.986f : 4.986f), y, -2f);
                     y -= isHeader ? 0.53f : 0.525f;
+                    var get = header.Get();
 
-                    if (isLayerHeader && header.Get())
-                        y -= 0.5f;
+                    if (isLayerHeader)
+                        y += get ? -0.5f : 0.3f;
+                    else if (isHeader && !get)
+                        y += 0.2f;
 
                     foreach (var option in header.GroupMembers.Where(option => option.Setting))
                     {
@@ -483,14 +489,21 @@ public static class SettingsPatches
                         if (option.Setting is OptionBehaviour setting)
                             __instance.RoleSettingsTab.advancedSettingChildren.Add(setting);
 
-                        if (option is not IMultiSelectOption multiSelect)
+                        if (option is not IMultiSelectOption multiSelect || !multiSelect.Options.Any())
                             continue;
 
-                        foreach (var button in multiSelect.Options)
+                        y -= 0.2f;
+
+                        foreach (var (i, button) in multiSelect.Options.Indexed())
                         {
-                            button.transform.localPosition = new(0.952f, y, -2f);
-                            y -= 0.45f;
+                            var col = i % 3;
+                            button.transform.localPosition = new(-1f + (2f * col), y, -2f);
+
+                            if (col == 2)
+                                y -= 0.65f;
                         }
+
+                        y -= 0.6f;
                     }
                 }
 
@@ -600,12 +613,6 @@ public static class SettingsPatches
                 });
             }
 
-            if (SubLoaded)
-            {
-                while (__instance.AllMapIcons.Count(x => x.Name == (MapNames)6) > 1)
-                    __instance.AllMapIcons.Remove(__instance.AllMapIcons.Find(x => x.Name == (MapNames)6));
-            }
-
             __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
             __instance.mapButtons.Clear();
             __instance.transform.GetChild(1).localPosition = new(-1.134f, 0.733f, -1);
@@ -660,14 +667,10 @@ public static class SettingsPatches
 
     public static void SetMap(MapEnum map)
     {
-        if (IsInGame())
+        if (IsInGame() || !CustomPlayer.Local || MapSettings.Map == map)
             return;
 
         MapSettings.Map = map;
-
-        if (!CustomPlayer.Local || MapSettings.Map == map)
-            return;
-
         TownOfUsReworked.NormalOptions.MapId = (byte)MapSettings.Map;
         OnValueChanged();
 

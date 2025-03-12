@@ -10,3 +10,4 @@ packages.lock.json
 TownOfUsReworkedDev*/
 Test*/
 *.DotSettings.user
+.qodo

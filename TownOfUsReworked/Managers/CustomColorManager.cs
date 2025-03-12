@@ -7,7 +7,7 @@ public static class CustomColorManager
     public static void SetColor(Renderer rend, int id)
     {
         if (AllColors.TryGetValue(id, out var color))
-            SetColor(rend, color.GetColor(), color.GetShadowColor());
+            SetColor(rend, color.GetMainColor(), color.GetShadowColor());
     }
 
     public static void SetColor(Renderer rend, UColor color, UColor? shadow = null)
@@ -26,7 +26,7 @@ public static class CustomColorManager
 
     public static bool IsDefault(this int id) => AllColors.TryGetValue(id, out var color) && color.Default;
 
-    public static UColor GetColor(this int id, bool shadow) => AllColors.TryGetValue(id, out var color) ? (shadow ? color.GetShadowColor() : color.GetColor()) : UColor.white;
+    public static UColor GetColor(this int id, bool shadow) => AllColors.TryGetValue(id, out var color) ? (shadow ? color.GetShadowColor() : color.GetMainColor()) : UColor.white;
 
     public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r - val), Mathf.Clamp01(color.g - val), Mathf.Clamp01(color.b - val), color.a);
 

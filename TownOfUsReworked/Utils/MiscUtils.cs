@@ -1441,8 +1441,11 @@ public static class MiscUtils
 
     public static void AnimatePortal(PlayerControl player, float duration)
     {
-        if (PortalAnimation.Count == 0)
-            PortalAnimation.AddRange(PortalPaths.Select(LoadDiskSprite));
+        if (PortalPaths.Length > 0 && !IsNullEmptyOrWhiteSpace(PortalPaths[0]))
+        {
+            PortalPaths.Select(LoadDiskSprite).ForEach((x, y) => PortalAnimation[x] = y);
+            Array.Clear(PortalPaths);
+        }
 
         if (!player.HasDied())
         {
@@ -1470,7 +1473,7 @@ public static class MiscUtils
                 anim.sprite = PortalAnimation[0];
             else
             {
-                anim.sprite = PortalAnimation[Mathf.Clamp((int)(p * PortalAnimation.Count), 0, PortalAnimation.Count - 1)];
+                anim.sprite = PortalAnimation[Mathf.Clamp((int)(p * PortalAnimation.Length), 0, PortalAnimation.Length - 1)];
                 player.SetPlayerMaterialColors(anim);
             }
 

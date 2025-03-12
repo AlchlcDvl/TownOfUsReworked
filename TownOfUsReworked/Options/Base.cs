@@ -76,7 +76,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         ([ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
             MapEnum.LevelImpostor ]),
         ([ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ]),
-        ([ "BetterMiraHQ" ], [ MapEnum.MiraHq, MapEnum.Random ]),
+        ([ "BetterMiraHq" ], [ MapEnum.MiraHq, MapEnum.Random ]),
         ([ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ]),
         ([ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ]),
         ([ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ]),

@@ -2,10 +2,10 @@ namespace TownOfUsReworked.Options;
 
 public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T allValue, T noneValue) : OptionAttribute<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
 {
-    protected ValueMap<ToggleOption, T> Buttons { get; } = [];
+    protected ValueMap<MissingBehaviour, T> Buttons { get; } = [];
     private T NoneValue { get; } = noneValue;
     private T AllValue { get; } = allValue;
-    public IEnumerable<ToggleOption> Options => Buttons.Keys;
+    public IEnumerable<MissingBehaviour> Options => Buttons.Keys;
 
     public override void OptionCreated()
     {
@@ -33,20 +33,25 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
     public override void Update() => Setting.Cast<StringOption>().ValueText.text = Format();
 
-    protected ToggleOption CreateButton(T value, string name)
+    protected MissingBehaviour CreateButton(T value, string name)
     {
         var behaviour = UObject.Instantiate(SettingsPatches.MultiOptionPrefab, Setting.transform.parent);
-        behaviour.TitleText.text = TranslationManager.Translate(name);
+        behaviour.GetComponentInChildren<TextMeshPro>().text = TranslationManager.Translate(name);
         behaviour.name = name;
         var button = behaviour.GetComponentInChildren<PassiveButton>();
+        var rend = behaviour.GetComponentInChildren<SpriteRenderer>();
 
         if ((!AmongUsClient.Instance.AmHost || IsInGame()) && !(ClientOnly || TownOfUsReworked.MciActive))
             button.enabled = false;
         else
+        {
             button.OverrideOnClickListeners(() => SetValue(value));
+            button.OverrideOnMouseOutListeners(() => rend.color = Value.Contains(value) ? CustomColorManager.AcceptedTeal : UColor.white);
+            button.OverrideOnMouseOverListeners(() => rend.color = Value.Contains(value) ? UColor.white : CustomColorManager.AcceptedTeal);
+        }
 
         behaviour.gameObject.SetActive(true);
-        behaviour.CheckMark.enabled = Value.Contains(value);
+        rend.color = Value.Contains(value) ? CustomColorManager.AcceptedTeal : UColor.white;
         return behaviour;
     }
 
@@ -85,7 +90,7 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
     {
         TrySetValue(value, out var newValue);
         Set(newValue);
-        Buttons.ForEach((x, y) => x.CheckMark.enabled = Value.Contains(y));
+        Buttons.ForEach((x, y) => x.GetComponentInChildren<SpriteRenderer>().color = Value.Contains(y) ? CustomColorManager.AcceptedTeal : UColor.white);
     }
 
     public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadString(), false);
@@ -99,5 +104,5 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
 public interface IMultiSelectOption
 {
-    IEnumerable<ToggleOption> Options { get; }
+    IEnumerable<MissingBehaviour> Options { get; }
 }

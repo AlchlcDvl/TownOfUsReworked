@@ -8,21 +8,26 @@ public sealed class LayerHeaderOptionAttribute(LayerEnum layer, int priority = -
     private GameObject Info { get; set; }
     private GameObject Desc { get; set; }
     private TextMeshPro ButtonText { get; set; }
+    private SpriteRenderer Label { get; set; }
+    public static Sprite OgLabel;
+    public static Vector3 OgPosition;
 
     public override void OptionCreated()
     {
         base.OptionCreated();
-        var titleText = Setting.transform.GetChild(0).GetComponent<TextMeshPro>();
+        var titleText = Setting.transform.FindChild("Title").GetComponent<TextMeshPro>();
         titleText.text = $"<b>{TranslationManager.Translate(ID)}</b>";
-        titleText.color = (Setting.GetComponent<SpriteRenderer>().color = LayerDictionary[Layer].Color).Alternate();
-        Setting.transform.GetChild(2).GetChild(0).GetComponent<TextMeshPro>().text = TranslationManager.Translate($"ShortDesc.{Layer}");
         Collapse = Setting.transform.FindChild("Collapse").gameObject;
         Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
         Collapse.SetActive(GroupMembers.Any(x => x.PartiallyActive()));
         ButtonText = Collapse.GetComponentInChildren<TextMeshPro>();
         ButtonText.text = Get() ? "-" : "+";
-        Info = Setting.transform.GetChild(1).gameObject;
-        Desc = Setting.transform.GetChild(2).gameObject;
+        Info = Setting.transform.FindChild("Info").gameObject;
+        Info.GetComponentInChildren<TextMeshPro>().text = TranslationManager.Translate($"ShortDesc.{Layer}");
+        Desc = Setting.transform.FindChild("Desc").gameObject;
+        Label = Setting.transform.FindChild("Label").GetComponent<SpriteRenderer>();
+        titleText.color = (Label.color = LayerDictionary[Layer].Color).Alternate();
+        Label.sprite = Value ? OgLabel : GetSprite("Unopened");
     }
 
     public override void ViewOptionCreated()
@@ -56,5 +61,11 @@ public sealed class LayerHeaderOptionAttribute(LayerEnum layer, int priority = -
         Collapse.SetActive(GroupMembers.Any(x => x.PartiallyActive()));
         Info.SetActive(Value);
         Desc.SetActive(Value);
+        Label.sprite = Value ? OgLabel : GetSprite("Unopened");
+
+        if (Value)
+            Label.transform.localPosition = OgPosition;
+        else
+            Label.transform.SetLocalX(-1.1706f);
     }
 }

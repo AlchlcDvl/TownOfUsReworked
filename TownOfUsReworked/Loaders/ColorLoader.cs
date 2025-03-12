@@ -7,6 +7,7 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
     protected override string DirectoryInfo => TownOfUsReworked.Colors;
     protected override string Manifest => "Colors";
     protected override bool Downloading => false;
+    protected override string FileExtension => "";
 
     protected override void BeforeLoading() {} // I don't want the type checking to occur for custom colors because they don't have hashes to compare with
 
@@ -33,7 +34,7 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
     protected override void AfterLoading(List<CustomColor> response)
     {
         Palette.ColorNames = response.Select(x => x.StringID).ToArray();
-        Palette.TextColors = Palette.PlayerColors = response.Select(x => (Color32)x.GetColor()).ToArray();
+        Palette.TextColors = Palette.PlayerColors = response.Select(x => (Color32)x.GetMainColor()).ToArray();
         Palette.ShadowColors = response.Select(x => (Color32)x.GetShadowColor()).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
     }

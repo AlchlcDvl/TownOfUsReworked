@@ -56,12 +56,6 @@ public sealed class NumberOptionAttribute(float min, float max, float increment,
         };
     }
 
-    public override void ViewOptionCreated()
-    {
-        base.ViewOptionCreated();
-        ViewUpdate();
-    }
-
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();

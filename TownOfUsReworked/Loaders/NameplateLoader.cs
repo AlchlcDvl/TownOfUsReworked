@@ -9,7 +9,7 @@ public sealed class NameplateLoader : BaseCosmeticLoader<CustomNameplate>
 
     protected override void LoadAsset(CustomNameplate item, int i)
     {
-        var path = Path.Combine(DirectoryInfo);
+        var path = DirectoryInfo;
 
         if (item.StreamOnly)
             path = Path.Combine(DirectoryInfo, "Stream");

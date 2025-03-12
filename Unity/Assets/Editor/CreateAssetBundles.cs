@@ -2,7 +2,7 @@ using UnityEditor;
 using System.IO;
 using System.Linq;
 
-public class CreateAssetBundles
+public sealed class CreateAssetBundles
 {
     [MenuItem("AssetBundle/Build")]
     static void BuildAllAssetBundlesWin()
