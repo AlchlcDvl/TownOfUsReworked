@@ -1,3 +1,5 @@
+using Cpp2IL.Core.Extensions;
+
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Warper)]
@@ -268,7 +270,7 @@ public sealed class Warper : Syndicate, IMover
             return;
 
         if (!Moving && WarpMenu.Selected.Count > 0)
-            WarpMenu.Selected.TakeLast();
+            WarpMenu.Selected.RemoveAndReturn(WarpMenu.Selected.Count - 1);
 
         Message("Removed a target");
     }

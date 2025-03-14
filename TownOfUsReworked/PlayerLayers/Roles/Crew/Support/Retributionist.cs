@@ -181,7 +181,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             if (KeyboardJoystick.player.GetButtonDown("Delete"))
             {
                 if (!Moving && TransportMenu.Selected.Count > 0)
-                    TransportMenu.Selected.TakeLast();
+                    TransportMenu.Selected.RemoveAt(TransportMenu.Selected.Count - 1);
 
                 Message("Removed a target");
             }

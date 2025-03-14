@@ -19,20 +19,6 @@ public static class CollectionExtensions
         }
     }
 
-    public static T TakeLast<T>(this List<T> list)
-    {
-        try
-        {
-            var item = list[^1];
-            list.RemoveAt(list.Count - 1);
-            return item;
-        }
-        catch
-        {
-            return default;
-        }
-    }
-
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
 
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);

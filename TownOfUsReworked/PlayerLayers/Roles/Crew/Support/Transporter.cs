@@ -1,3 +1,5 @@
+using Cpp2IL.Core.Extensions;
+
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Transporter)]
@@ -223,7 +225,7 @@ public sealed class Transporter : Crew, IMover
         if (KeyboardJoystick.player.GetButtonDown("Delete"))
         {
             if (!Moving && TransportMenu.Selected.Count > 0)
-                TransportMenu.Selected.TakeLast();
+                TransportMenu.Selected.RemoveAndReturn(TransportMenu.Selected.Count - 1);
 
             Message("Removed a target");
         }
