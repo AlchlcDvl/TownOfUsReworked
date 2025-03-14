@@ -1,5 +1,5 @@
 // ReSharper disable UnusedMember.Local
-namespace TownOfUsReworked.BetterMaps;
+namespace TownOfUsReworked.Patches.BetterStuff;
 
 /// <summary>
 /// Provides enhanced functionality and customization options for the Airship map.

@@ -126,7 +126,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
         Button = view.transform.Find("Toggle").GetComponent<PassiveButton>();
         Button.gameObject.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);
-        Button.SelectButton(GroupHeader?.Get() == true);
+        Button.SelectButton(GroupHeader?.Value == true);
         Button.OverrideOnClickListeners(Toggle);
 
         view.background.sprite = view.chanceBackground.sprite = CenterBackground.sprite = view.disabledCube;
@@ -141,9 +141,9 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         SavedMode = GameMode.None;
     }
 
-    private byte GetChance() => IsClassic() ? Get().Chance : (byte)0;
+    private byte GetChance() => IsClassic() ? Value.Chance : (byte)0;
 
-    private byte GetCount() => IsClassic() ? Get().Count : (IsRoleList() ? (byte)GetOptions<ListEntryAttribute>().Count(x => x.Get().Equals(Layer) && !x.IsBan) : (byte)1);
+    private byte GetCount() => IsClassic() ? Value.Count : (IsRoleList() ? (byte)GetOptions<ListEntryAttribute>().Count(x => x.Value.Equals(Layer) && !x.IsBan) : (byte)1);
 
     private void IncreaseCount()
     {
@@ -162,7 +162,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         if (count.IsInRange(0, Min))
             count = Min;
 
-        var val = Get();
+        var val = Value;
         val.Count = count;
         val.Chance = chance;
         Set(val);
@@ -185,7 +185,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         if (count.IsInRange(0, Min))
             count = 0;
 
-        var val = Get();
+        var val = Value;
         val.Count = count;
         val.Chance = chance;
         Set(val);
@@ -204,7 +204,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
 
-        var val = Get();
+        var val = Value;
         val.Count = count;
         val.Chance = chance;
         Set(val);
@@ -223,7 +223,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
 
-        var val = Get();
+        var val = Value;
         val.Count = count;
         val.Chance = chance;
         Set(val);
@@ -231,7 +231,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     public override void Update()
     {
-        var data = Get();
+        var data = Value;
         var role = Setting.Cast<RoleOptionSetting>();
         role.chanceText.text = $"{data.Chance}%";
         role.countText.text = $"x{data.Count}";
@@ -272,7 +272,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     private void ToggleActive()
     {
-        var val = Get();
+        var val = Value;
         val.Active = !val.Active;
         CachedCount = val.Count;
         val.Count = 1;
@@ -282,7 +282,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     private void ToggleUnique()
     {
-        var val = Get();
+        var val = Value;
         val.Unique = !val.Unique;
         UniqueCheck.enabled = val.Unique;
         Set(val);
@@ -290,7 +290,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     protected override string Format()
     {
-        var val = Get();
+        var val = Value;
         return GameModeSettings.GameMode switch
         {
             GameMode.Classic => $"{val.Chance}% x{val.Count}",
@@ -343,7 +343,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     public override void ViewUpdate()
     {
-        var data = Get();
+        var data = Value;
         var view = ViewSetting.Cast<ViewSettingsInfoPanelRoleVariant>();
 
         Button.gameObject.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);

@@ -2,12 +2,11 @@ namespace TownOfUsReworked.Options;
 
 public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribute(type)
 {
-    protected T Value { get; set; }
     protected Type TargetType { get; } = typeof(T);
 
     public static implicit operator T(OptionAttribute<T> opt) => opt.Value;
 
-    public T Get() => Value;
+    public T Value { get; protected set; }
 
     public override void SetProperty(PropertyInfo property)
     {

@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.BetterMaps;
+namespace TownOfUsReworked.Patches.BetterStuff;
 
 /// <summary>
 /// Provides enhanced functionality and customization options for the Fungle map's sabotage systems.

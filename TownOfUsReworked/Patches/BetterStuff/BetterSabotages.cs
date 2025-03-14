@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.BetterStuff;
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update)), HeaderOption(MultiMenu.Main, priority: 0)]
 public static class BetterSabotages

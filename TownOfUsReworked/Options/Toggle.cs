@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Options;
 
 public sealed class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOptionType.Toggle)
 {
-    private void Toggle() => Set(!Get());
+    private void Toggle() => Set(!Value);
 
-    protected override string Format() => Get() ? "On" : "Off";
+    protected override string Format() => Value ? "On" : "Off";
 
     public override void OptionCreated()
     {
@@ -23,14 +23,14 @@ public sealed class ToggleOptionAttribute() : OptionAttribute<bool>(CustomOption
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
         viewSettingsInfoPanel.settingText.text = "";
-        viewSettingsInfoPanel.checkMark.gameObject.SetActive(Get());
-        viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Get());
+        viewSettingsInfoPanel.checkMark.gameObject.SetActive(Value);
+        viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Value);
     }
 
     public override void Update()
     {
         var toggle = Setting.Cast<ToggleOption>();
-        var newValue = Get();
+        var newValue = Value;
         toggle.oldValue = newValue;
 
         if (toggle.CheckMark)

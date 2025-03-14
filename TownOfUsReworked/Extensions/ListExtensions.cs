@@ -1,3 +1,5 @@
+using Cpp2IL.Core.Extensions;
+
 namespace TownOfUsReworked.Extensions;
 
 /// <summary>
@@ -14,20 +16,6 @@ public static class CollectionExtensions
         {
             var r = URandom.RandomRangeInt(0, i + 1);
             (list[r], list[i]) = (list[i], list[r]);
-        }
-    }
-
-    public static T TakeFirst<T>(this List<T> list)
-    {
-        try
-        {
-            var item = list[0];
-            list.RemoveAt(0);
-            return item;
-        }
-        catch
-        {
-            return default;
         }
     }
 

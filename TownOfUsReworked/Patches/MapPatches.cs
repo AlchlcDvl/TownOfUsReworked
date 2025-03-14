@@ -161,7 +161,7 @@ public static class MapPatches
         foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cd") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
         {
             if (option is NumberOptionAttribute number)
-                number.Set(new(number.Get() + change));
+                number.Set(new(number.Value + change));
         }
     }
 

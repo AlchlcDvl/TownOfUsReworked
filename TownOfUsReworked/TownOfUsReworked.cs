@@ -10,13 +10,17 @@ namespace TownOfUsReworked;
 [BepInProcess("Among Us.exe")]
 public sealed partial class TownOfUsReworked : BasePlugin
 {
+    public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
+    public const string GitHubLink = "https://github.com/AlchlcDvl/TownOfUsReworked";
+    public const string AssetsLink = "https://github.com/AlchlcDvl/ReworkedAssets";
+
     public static readonly Version ModVer = new(VersionS);
 
     public static readonly bool IsDev = true;
     public static readonly bool IsStream = true;
     private const int DevBuild = 36;
 
-    private static string VersionSignature =>  Version.Contains('+') ? Version[Version.IndexOf('+')..] : "";
+    private static string VersionSignature => Version.Contains('+') ? Version[Version.IndexOf('+')..] : "";
     private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string StreamString => IsStream ? "s" : "";
@@ -39,10 +43,6 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static readonly string Other = Path.Combine(Assets, "Other");
     public static readonly string Hashes = Path.Combine(Assets, "Hashes");
     public static readonly string ModsFolder = Path.Combine(DataPath, "BepInEx", "plugins");
-
-    public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
-    public const string GitHubLink = "https://github.com/AlchlcDvl/TownOfUsReworked";
-    public const string AssetsLink = "https://github.com/AlchlcDvl/ReworkedAssets";
 
     public static readonly Assembly Core = typeof(TownOfUsReworked).Assembly;
 

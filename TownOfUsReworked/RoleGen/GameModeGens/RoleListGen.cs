@@ -13,7 +13,7 @@ public sealed class RoleListGen : BaseRoleGen
 
         foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role))
         {
-            foreach (var id in entry.Get())
+            foreach (var id in entry.Value)
             {
                 if (id == RoleListSlot.None)
                     break;

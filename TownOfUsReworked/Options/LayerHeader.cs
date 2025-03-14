@@ -21,7 +21,7 @@ public sealed class LayerHeaderOptionAttribute(LayerEnum layer, int priority = -
         Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
         Collapse.SetActive(GroupMembers.Any(x => x.PartiallyActive()));
         ButtonText = Collapse.GetComponentInChildren<TextMeshPro>();
-        ButtonText.text = Get() ? "-" : "+";
+        ButtonText.text = Value ? "-" : "+";
         Info = Setting.transform.FindChild("Info").gameObject;
         Info.GetComponentInChildren<TextMeshPro>().text = TranslationManager.Translate($"ShortDesc.{Layer}");
         Desc = Setting.transform.FindChild("Desc").gameObject;
@@ -41,7 +41,7 @@ public sealed class LayerHeaderOptionAttribute(LayerEnum layer, int priority = -
 
     public void Toggle()
     {
-        Value = !Get();
+        Value = !Value;
 
         if (Setting)
         {
