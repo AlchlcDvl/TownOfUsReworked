@@ -14,7 +14,8 @@ public static class LayerExtensions
     private static readonly string AttackColorString = $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
     private static readonly string DefenseColorString = $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
-    public static bool Is<T>(this PlayerControl player) where T : IPlayerLayer => player.TryGetLayer<T>(out _);
+    public static bool Is<T>(this PlayerControl player)
+        where T : IPlayerLayer => player.TryGetLayer<T>(out _);
 
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
 
@@ -42,14 +43,20 @@ public static class LayerExtensions
             return Faction.None;
 
         var role = player.GetRole();
-        return role?.Faction ??
-            (player.IsImpostor()
-                ? (GameModifiers.IlluminatiUnleashed
-                    ? Faction.Illuminati
-                    : (GameModifiers.PandoricaOpens
-                        ? Faction.Pandorica
-                        : Faction.Intruder))
-                : Faction.Crew);
+
+        if (role != null)
+            return role.Faction;
+
+        if (!player.IsImpostor())
+            return Faction.Crew;
+
+        if (GameModifiers.IlluminatiUnleashed)
+            return Faction.Illuminati;
+
+        if (GameModifiers.PandoricaOpens)
+            return Faction.Pandorica;
+
+        return Faction.Intruder;
     }
 
     public static SubFaction GetSubFaction(this PlayerControl player)

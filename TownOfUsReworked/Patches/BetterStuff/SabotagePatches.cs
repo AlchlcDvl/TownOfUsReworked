@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.BetterMaps;
+namespace TownOfUsReworked.Patches.BetterStuff;
 
 [HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.UpdateSystem))]
 public static class ReactorPatch

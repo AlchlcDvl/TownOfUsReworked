@@ -165,7 +165,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
             {
                 foreach (var role in GetValuesFromTo(RoleListSlot.Altruist, RoleListSlot.Warper))
                 {
-                    if (!bans.Any(x => x.Get().Contains(role)))
+                    if (!bans.Any(x => x.Value.Contains(role)))
                         yield return role;
                 }
 
@@ -221,7 +221,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
             {
                 foreach (var disp in GetValuesFromTo(RoleListSlot.Allied, RoleListSlot.Traitor))
                 {
-                    if (!bans.Any(x => x.Get().Contains(disp)))
+                    if (!bans.Any(x => x.Value.Contains(disp)))
                         yield return disp;
                 }
 
@@ -231,7 +231,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
             {
                 foreach (var mod in GetValuesFromTo(RoleListSlot.Astral, RoleListSlot.Yeller))
                 {
-                    if (!bans.Any(x => x.Get().Contains(mod)))
+                    if (!bans.Any(x => x.Value.Contains(mod)))
                         yield return mod;
                 }
 
@@ -241,7 +241,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
             {
                 foreach (var ab in GetValuesFromTo(RoleListSlot.Bullseye, RoleListSlot.Underdog))
                 {
-                    if (!bans.Any(x => x.Get().Contains(ab)))
+                    if (!bans.Any(x => x.Value.Contains(ab)))
                         yield return ab;
                 }
 
@@ -253,12 +253,12 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
     public static bool IsAdded(RoleListSlot value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => !x.IsBan);
-        return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Get().Contains(value));
+        return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));
     }
 
     public static bool IsBanned(RoleListSlot value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => x.IsBan);
-        return entry == null ? entries.Any(x => x.Get().Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Get().Contains(value));
+        return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));
     }
 }

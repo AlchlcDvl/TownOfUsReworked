@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace TownOfUsReworked.Utils;
+﻿namespace TownOfUsReworked.Utils;
 
 public static class MiscUtils
 {

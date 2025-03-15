@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.BetterMaps;
+namespace TownOfUsReworked.Patches.BetterStuff;
 
 /// <summary>
 /// Provides enhanced functionality and customization options for the Polus map.<br/>

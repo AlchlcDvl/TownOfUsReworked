@@ -393,7 +393,7 @@ public static class SettingsPatches
                     header.Setting.transform.localPosition = new(-0.903f, y, -2f);
                     y -= 0.53f;
 
-                    if (!header.Get())
+                    if (!header.Value)
                         y += 0.2f;
 
                     foreach (var option in header.GroupMembers.Where(option => option.Setting))
@@ -467,7 +467,7 @@ public static class SettingsPatches
 
                     header.Setting.transform.localPosition = new(isHeader ? -0.903f : (isLayerHeader ? 3.986f : 4.986f), y, -2f);
                     y -= isHeader ? 0.53f : 0.525f;
-                    var get = header.Get();
+                    var get = header.Value;
 
                     if (isLayerHeader)
                         y += get ? -0.5f : 0.3f;

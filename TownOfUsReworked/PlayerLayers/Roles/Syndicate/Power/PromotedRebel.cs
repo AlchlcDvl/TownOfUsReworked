@@ -1,3 +1,5 @@
+using Cpp2IL.Core.Extensions;
+
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper, ITimeLord, IDrunkard
@@ -69,7 +71,7 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
                 else if (ConfusedPlayer && !ConfuseButton.EffectActive)
                     ConfusedPlayer = null;
                 else if (IsWarp && !Moving && WarpMenu.Selected.Count > 0)
-                    WarpMenu.Selected.TakeLast();
+                    WarpMenu.Selected.RemoveAndReturn(WarpMenu.Selected.Count - 1);
             }
             else if (PoisonedPlayer && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;

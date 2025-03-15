@@ -1,3 +1,4 @@
+using Cpp2IL.Core.Extensions;
 using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
@@ -23,7 +24,7 @@ public sealed class ModifierGen : BaseGen
 
         foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier))
         {
-            foreach (var id in entry.Get())
+            foreach (var id in entry.Value)
             {
                 if (id == RoleListSlot.None)
                     break;
@@ -78,7 +79,7 @@ public sealed class ModifierGen : BaseGen
 
         while (playerList.Any() && AllModifiers.Any())
         {
-            var id = AllModifiers.TakeFirst().ID;
+            var id = AllModifiers.RemoveAndReturn(0).ID;
             var assigned = id switch
             {
                 LayerEnum.Bait => playerList.FirstOrDefault(x => !(x.Is<Vigilante>() || x.Is<Shifter>() || x.Is<Thief>() || x.Is<Altruist>() || x.Is<Troll>())),

@@ -21,6 +21,7 @@ global using Reactor.Networking.Attributes;
 global using Reactor.Networking.Extensions;
 
 global using TownOfUsReworked.Data;
+global using TownOfUsReworked.Data.Enums;
 global using TownOfUsReworked.Monos;
 global using TownOfUsReworked.Utils;
 global using TownOfUsReworked.Custom;
@@ -31,7 +32,7 @@ global using TownOfUsReworked.Loaders;
 global using TownOfUsReworked.RoleGen;
 global using TownOfUsReworked.Managers;
 global using TownOfUsReworked.Debugger;
-global using TownOfUsReworked.BetterMaps;
+global using TownOfUsReworked.Patches.BetterStuff;
 global using TownOfUsReworked.Extensions;
 global using TownOfUsReworked.PlayerLayers;
 global using TownOfUsReworked.IPlayerLayers;

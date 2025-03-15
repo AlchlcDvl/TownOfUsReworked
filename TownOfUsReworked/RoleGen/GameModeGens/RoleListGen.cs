@@ -1,3 +1,4 @@
+using Cpp2IL.Core.Extensions;
 using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
@@ -13,7 +14,7 @@ public sealed class RoleListGen : BaseRoleGen
 
         foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role))
         {
-            foreach (var id in entry.Get())
+            foreach (var id in entry.Value)
             {
                 if (id == RoleListSlot.None)
                     break;
@@ -107,7 +108,7 @@ public sealed class RoleListGen : BaseRoleGen
         // Added rate limits to ensure the loops do not go on forever if roles have been set to unique
 
         while (AllRoles.Count > GameData.Instance.PlayerCount)
-            AllRoles.TakeLast();
+            AllRoles.RemoveAndReturn(AllRoles.Count - 1);
 
         // In case if the rate limits and bans disallow the spawning of roles from the role list, vanilla Crewmate should spawn
         while (AllRoles.Count < GameData.Instance.PlayerCount)

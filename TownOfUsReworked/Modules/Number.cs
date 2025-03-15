@@ -1,7 +1,8 @@
 namespace TownOfUsReworked.Modules;
 
 [Serializable]
-public readonly struct Number(float num) : IFormattable, IEquatable<Number>
+public readonly struct Number(float num)
+    : IFormattable, IEquatable<Number>
 {
     public float Value { get; } = num;
 

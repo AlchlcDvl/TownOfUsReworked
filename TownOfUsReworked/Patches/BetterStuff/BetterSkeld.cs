@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.BetterMaps;
+namespace TownOfUsReworked.Patches.BetterStuff;
 
 [HeaderOption(MultiMenu.Main)]
 public static class BetterSkeld

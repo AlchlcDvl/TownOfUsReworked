@@ -15,7 +15,7 @@ public sealed class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : B
         Collapse.GetComponent<PassiveButton>().OverrideOnClickListeners(Toggle);
         Collapse.SetActive(GroupMembers.Any(x => x.PartiallyActive()));
         ButtonText = Collapse.GetComponentInChildren<TextMeshPro>();
-        ButtonText.text = Get() ? "-" : "+";
+        ButtonText.text = Value ? "-" : "+";
     }
 
     public override void ViewOptionCreated()
@@ -29,7 +29,7 @@ public sealed class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : B
 
     public void Toggle()
     {
-        Value = !Get();
+        Value = !Value;
 
         if (Setting)
         {

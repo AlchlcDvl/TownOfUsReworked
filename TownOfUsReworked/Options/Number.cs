@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Options;
 
 // May I know who the fuck thought it was a good idea not to let int be cast to float explicitly??? Implicit casting bloodily works, but explicit doesn't seem to
 // AD from a couple of weeks later: Yeah, fuck this, imma just brute force it instead
-public sealed class NumberOptionAttribute(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false) : OptionAttribute<Number>
-    (CustomOptionType.Number)
+public sealed class NumberOptionAttribute(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false)
+    : OptionAttribute<Number>(CustomOptionType.Number)
 {
     private float Min { get; } = min;
     private float Max { get; } = max;
@@ -12,7 +12,7 @@ public sealed class NumberOptionAttribute(float min, float max, float increment,
     private bool AllowHalf { get; set; } = allowHalf;
     private bool ZeroIsInfinity { get; set; } = zeroIsInf;
 
-    private void Change(bool incrementing) => Set(CycleFloat(Max, Min, Get(), incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f)));
+    private void Change(bool incrementing) => Set(CycleFloat(Max, Min, Value, incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f)));
 
     private void Increase() => Change(true);
 
@@ -44,7 +44,7 @@ public sealed class NumberOptionAttribute(float min, float max, float increment,
 
     protected override string Format()
     {
-        var value = Get();
+        var value = Value;
         var val = value == 0 && ZeroIsInfinity ? "<b>∞</b>" : $"{value:0.##}";
         return FormatEnum switch
         {
@@ -65,7 +65,7 @@ public sealed class NumberOptionAttribute(float min, float max, float increment,
     public override void Update()
     {
         var number = Setting.Cast<NumberOption>();
-        number.Value = number.oldValue = Get();
+        number.Value = number.oldValue = Value;
         number.ValueText.text = Format();
     }
 
