@@ -20,13 +20,14 @@ public sealed class Teleporter : Intruder, IMover
 
     private CustomButton TeleportButton { get; set; }
     private CustomButton MarkButton { get; set; }
-    public Vector2 TeleportPoint { get; set; }
+    private Vector2 TeleportPoint { get; set; }
     public bool Moving { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Teleporter : FactionColor;
     public override LayerEnum Type => LayerEnum.Teleporter;
     public override Func<string> StartText => () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
+    public override bool CanVent => TeleVent;
 
     protected override void Init()
     {

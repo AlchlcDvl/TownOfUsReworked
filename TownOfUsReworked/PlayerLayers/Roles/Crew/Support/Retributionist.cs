@@ -178,13 +178,13 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         }
         else if (IsTrans)
         {
-            if (KeyboardJoystick.player.GetButtonDown("Delete"))
-            {
-                if (!Moving && TransportMenu.Selected.Count > 0)
-                    TransportMenu.Selected.RemoveAt(TransportMenu.Selected.Count - 1);
+            if (!KeyboardJoystick.player.GetButtonDown("Delete"))
+                return;
 
-                Message("Removed a target");
-            }
+            if (!Moving && TransportMenu.Selected.Count > 0)
+                TransportMenu.Selected.TakeLast();
+
+            Message("Removed a target");
         }
     }
 
@@ -490,7 +490,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private CustomButton AutopsyButton { get; set; }
     private CustomButton CompareButton { get; set; }
     private List<DeadPlayer> ReferenceBodies { get; } = [];
-    public List<byte> Reported { get; } = [];
+    private List<byte> Reported { get; } = [];
     private bool IsCor => RevivedRole is Coroner;
 
     private void Autopsy(DeadBody target)
@@ -534,7 +534,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private bool DetUsable() => IsDet;
 
     // Medium Stuff
-    public Dictionary<byte, PlayerArrow> MediateArrows { get; } = [];
+    private Dictionary<byte, PlayerArrow> MediateArrows { get; } = [];
     private CustomButton MediateButton { get; set; }
     public List<byte> MediatedPlayers { get; } = [];
     private bool IsMed => RevivedRole is Medium;
@@ -585,7 +585,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private bool MedUsable() => IsMed;
 
     // Operative Stuff
-    public List<Bug> Bugs { get; } = [];
+    private List<Bug> Bugs { get; } = [];
     public List<LayerEnum> BuggedPlayers { get; } = [];
     private CustomButton BugButton { get; set; }
     public bool IsOp => RevivedRole is Operative;
@@ -621,8 +621,8 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private bool SherUsable() => IsSher;
 
     // Tracker Stuff
-    public Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
-    public CustomButton TrackButton { get; private set; }
+    private Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
+    private CustomButton TrackButton { get; set; }
     private bool IsTrack => RevivedRole is Tracker;
 
     private void Track(PlayerControl target)
@@ -821,7 +821,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private bool SeerUsable() => IsSeer;
 
     // Escort Stuff
-    public PlayerControl BlockTarget { get; set; }
+    public PlayerControl BlockTarget { get; private set; }
     private CustomButton BlockButton { get; set; }
     private bool IsEsc => RevivedRole is Escort;
 
@@ -870,8 +870,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     private string TransLabel() => TransportMenu.Selected.Count switch
     {
-        0 => "FIRST TARGET",
-        1 => "SECOND TARGET",
+        < 2 => "SELECT TARGETS",
         _ =>  "TRANSPORT"
     };
 

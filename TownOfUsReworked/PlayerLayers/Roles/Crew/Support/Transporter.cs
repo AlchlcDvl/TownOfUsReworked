@@ -1,5 +1,3 @@
-using Cpp2IL.Core.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Transporter)]
@@ -37,17 +35,16 @@ public sealed class Transporter : Crew, IMover
 
     private string Label() => TransportMenu.Selected.Count switch
     {
-        0 => "FIRST TARGET",
-        1 => "SECOND TARGET",
+        < 2 => "SELECT TARGETS",
         _ =>  "TRANSPORT"
     };
 
     public static IEnumerator TransportPlayers(PlayerControl transport1, PlayerControl transport2, IMover transporter)
     {
-        var player1Body = (DeadBody)null;
-        var player2Body = (DeadBody)null;
-        var vent1 = (Vent)null;
-        var vent2 = (Vent)null;
+        DeadBody player1Body = null;
+        DeadBody player2Body = null;
+        Vent vent1 = null;
+        Vent vent2 = null;
 
         if (transport1.Data.IsDead)
         {
@@ -222,12 +219,12 @@ public sealed class Transporter : Crew, IMover
     {
         base.UpdateHud(__instance);
 
-        if (KeyboardJoystick.player.GetButtonDown("Delete"))
-        {
-            if (!Moving && TransportMenu.Selected.Count > 0)
-                TransportMenu.Selected.RemoveAndReturn(TransportMenu.Selected.Count - 1);
+        if (!KeyboardJoystick.player.GetButtonDown("Delete"))
+            return;
 
-            Message("Removed a target");
-        }
+        if (!Moving && TransportMenu.Selected.Count > 0)
+            TransportMenu.Selected.TakeLast();
+
+        Message("Removed a target");
     }
 }

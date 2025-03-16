@@ -43,6 +43,8 @@ public sealed class CustomMeeting : IDisposable
         AllCustomMeetings.Add(this);
     }
 
+    ~CustomMeeting() => Destroy();
+
     public void HideButtons()
     {
         Buttons.Keys.ForEach(HideSingle);

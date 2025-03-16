@@ -7,8 +7,7 @@ public static class ModUpdater
     public static bool CanDownloadSubmerged;
     public static bool CanDownloadLevelImpostor;
 
-    private static readonly Dictionary<string, bool> Running = new() { { "Reworked", false }, { "Submerged", false }, { "LevelImpostor", false } };
-    private static readonly Dictionary<string, string> UrLs = [];
+    private static readonly Dictionary<string, string> Urls = [];
     private static GenericPopup Popup;
 
     public static IEnumerator CheckForUpdates()
@@ -16,8 +15,8 @@ public static class ModUpdater
         foreach (var type in new[] { "Reworked", "Submerged", "LevelImpostor" })
             yield return CheckForUpdate(type);
 
-        CanDownloadSubmerged = !SubLoaded && UrLs.ContainsKey("Submerged");
-        CanDownloadLevelImpostor = !LiLoaded && UrLs.ContainsKey("LevelImpostor");
+        CanDownloadSubmerged = !SubLoaded && Urls.ContainsKey("Submerged");
+        CanDownloadLevelImpostor = !LiLoaded && Urls.ContainsKey("LevelImpostor");
     }
 
     private static string GetLink(string tag) => tag switch
@@ -30,10 +29,6 @@ public static class ModUpdater
 
     private static IEnumerator CheckForUpdate(string updateType)
     {
-        if (Running[updateType])
-            yield break;
-
-        Running[updateType] = true;
         UpdateSplashPatch.SetText($"Fetching {updateType} Data");
         Message($"Getting update info for {updateType}");
         yield return EndFrame();
@@ -130,7 +125,7 @@ public static class ModUpdater
             if (asset.URL == null || (data.Description.Contains("[NoUpdate]") && ReworkedUpdate) || !asset.URL.EndsWith(".dll"))
                 continue;
 
-            UrLs[updateType] = asset.URL;
+            Urls[updateType] = asset.URL;
             break;
         }
 
@@ -151,7 +146,7 @@ public static class ModUpdater
         var button = Popup.transform.GetChild(2).gameObject;
         button.SetActive(false);
 
-        if (!UrLs.TryGetValue(updateType, out var link))
+        if (!Urls.TryGetValue(updateType, out var link))
         {
             Failure($"No link found for {updateType}");
             Popup.TextAreaTMP.text = TranslationManager.Translate("Updates.Mod.Manually");

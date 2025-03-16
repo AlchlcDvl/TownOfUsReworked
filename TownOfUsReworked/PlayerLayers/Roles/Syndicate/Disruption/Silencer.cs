@@ -17,8 +17,8 @@ public sealed class Silencer : Syndicate, ISilencer
 
     private CustomButton SilenceButton { get; set; }
     public bool ShookAlready { get; set; }
+    public PlayerControl SilencedPlayer { get; private set; }
     public PlayerControl Target => SilencedPlayer;
-    public PlayerControl SilencedPlayer { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Silencer : FactionColor;
     public override LayerEnum Type => LayerEnum.Silencer;

@@ -13,7 +13,7 @@ public sealed class Thief : Neutral, IGuesser
     private static bool ThiefCanGuess = false;
 
     [ToggleOption]
-    public static bool ThiefVent = false;
+    private static bool ThiefVent = false;
 
     private CustomButton StealButton { get; set; }
     public CustomMeeting GuessMenu { get; private set; }
@@ -24,6 +24,7 @@ public sealed class Thief : Neutral, IGuesser
     public override Func<string> StartText => () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
+    public override bool CanVent => base.CanVent && ThiefVent;
 
     protected override void Init()
     {

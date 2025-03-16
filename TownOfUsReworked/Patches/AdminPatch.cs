@@ -72,8 +72,7 @@ public static class AdminPatch
             {
                 var collider = __instance.buffer[i];
 
-                if (collider.tag == "DeadBody" && ((isOp && (int)Operative.WhoSeesDead is 1) || (!isOp && (int)Operative.WhoSeesDead is 2) || DeadSeeEverything() ||  Operative.WhoSeesDead ==
-                    0))
+                if (collider.tag == "DeadBody" && ((isOp && (int)Operative.WhoSeesDead is 1) || (!isOp && (int)Operative.WhoSeesDead is 2) || DeadSeeEverything() ||  Operative.WhoSeesDead == 0))
                 {
                     var playerId = collider.GetComponent<DeadBody>().ParentId;
                     colorMap.Add(playerId);
@@ -82,12 +81,12 @@ public static class AdminPatch
                 else
                 {
                     var component = collider.GetComponent<PlayerControl>();
-                    var data = component?.Data;
 
-                    if (component.HasDied() || (!__instance.showLivePlayerPosition && component!.AmOwner) || colorMapDuplicate.Contains(data!.PlayerId))
+                    if (component.HasDied() || (!__instance.showLivePlayerPosition && component!.AmOwner) || colorMapDuplicate.Contains(component!.PlayerId))
                         continue;
-                    colorMap.Add(data.PlayerId);
-                    colorMapDuplicate.Add(data.PlayerId);
+
+                    colorMap.Add(component.PlayerId);
+                    colorMapDuplicate.Add(component.PlayerId);
                 }
             }
 

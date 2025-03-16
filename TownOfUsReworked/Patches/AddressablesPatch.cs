@@ -16,7 +16,7 @@ public static class AddressablesPatch
 
     private static LoadAssetAsyncDel Original;
 
-    public unsafe static void Initialize()
+    public static unsafe void Initialize()
     {
         var originalMethodType = AccessTools.Method(typeof(Addressables), nameof(Addressables.LoadAssetAsync), [ typeof(UObject) ]).MakeGenericMethod(typeof(UObject));
 
@@ -29,7 +29,7 @@ public static class AddressablesPatch
         INativeDetour.CreateAndApply(methodPtr, DetourMethod, out Original);
     }
 
-    private unsafe static IntPtr DetourMethod(IntPtr thisPtr, IntPtr keyPtr, Il2CppMethodInfo* methodInfoPtr)
+    private static unsafe IntPtr DetourMethod(IntPtr thisPtr, IntPtr keyPtr, Il2CppMethodInfo* methodInfoPtr)
     {
         var keyClassPtr = IL2CPP.il2cpp_object_get_class(keyPtr);
 

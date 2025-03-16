@@ -20,8 +20,8 @@ public sealed class Radar : Ability
             return Player.transform.position;
 
         var pos = Player.GetTruePosition();
-        var player = GetClosestPlayer(pos, predicate: x => x != Player, ignoreWalls: true, maxDistance: float.MaxValue);
-        var body = GetClosestBody(pos, ignoreWalls: true, maxDistance: float.MaxValue);
+        var player = GetClosestPlayer(pos, maxDistance: float.MaxValue, ignoreWalls: true, predicate: x => x != Player);
+        var body = GetClosestBody(pos, maxDistance: float.MaxValue, ignoreWalls: true);
 
         if (body)
         {

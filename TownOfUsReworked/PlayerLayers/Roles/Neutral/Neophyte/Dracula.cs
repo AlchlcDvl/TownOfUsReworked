@@ -7,7 +7,7 @@ public sealed class Dracula : Neophyte
     private static Number BiteCd = 25;
 
     [ToggleOption]
-    public static bool DracVent = false;
+    private static bool DracVent = false;
 
     [NumberOption(1, 14, 1)]
     private static Number AliveVampCount = 3;
@@ -26,6 +26,7 @@ public sealed class Dracula : Neophyte
     public override Func<string> Description => () => "- You can convert the <#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive" +
         $" <#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override bool CanVent => base.CanVent && DracVent;
 
     protected override void Init()
     {

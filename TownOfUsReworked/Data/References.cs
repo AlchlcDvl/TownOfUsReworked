@@ -35,6 +35,18 @@ public static class References
     public static bool Shapeshifted { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
     public static StringNames ReworkedStart { get; set; }
+    private static bool HiddenBlockPriv;
+    public static bool HiddenBlock
+    {
+        get => HiddenBlockPriv;
+        set
+        {
+            HiddenBlockPriv = value;
+
+            if (!value)
+                BlockExposed = false;
+        }
+    }
     private static bool BlockExposedPriv;
     public static bool BlockExposed
     {
@@ -51,7 +63,7 @@ public static class References
     }
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
         "乂⁂¤∮彡个「」人요〖〗ロ米卄王īl【】·ㅇ°◈◆◇◥◤◢◣《》︵︶☆☀☂☹☺♡♩♪♫♬✓☜☞☟☯☃✿❀÷º¿※⁑∞≠";
-    // As much as I hate to do this, people will take advantage so we're better off doing this early
+    // As much as I hate to do this, people will take advantage, so we're better off doing this early
     public static readonly string[] Profanities = [ "nigg", "whore", "negro", "yiff", "rape", "rapist" ];
     public const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
     public static readonly int Outline = Shader.PropertyToID("_Outline");
@@ -67,9 +79,9 @@ public static class References
     public static readonly IEnumerable<Vector2> SkeldSpawns =
     [
         new(-2.2f, 2.2f), // Cafeteria. Bottom. Top left
-        new(0.7f, 2.2f), // Cafeteria. button. top right
-        new(-2.2f, -0.2f), // Cafeteria. button. bottom left
-        new(0.7f, -0.2f), // Cafeteria. button. bottom right
+        new(0.7f, 2.2f), // Cafeteria. Button. Top right
+        new(-2.2f, -0.2f), // Cafeteria. Button. Bottom left
+        new(0.7f, -0.2f), // Cafeteria. Button. Bottom right
         new(10f, 3f), // Weapons top
         new(9.5f, -1f), // Weapons bottom
         new(6.5f, -3.5f), // O2
@@ -178,10 +190,10 @@ public static class References
     // ReSharper disable once InconsistentNaming
     public static readonly IEnumerable<Vector2> dlekSSpawns =
     [
-        new(2.2f, 2.2f), // Cafeteria. bottom. top left
-        new(-0.7f, 2.2f), // Cafeteria. button. top right
-        new(2.2f, -0.2f), // Cafeteria. button. bottom left
-        new(-0.7f, -0.2f), // Cafeteria. button. bottom right
+        new(2.2f, 2.2f), // Cafeteria. Bottom. Top left
+        new(-0.7f, 2.2f), // Cafeteria. Button. Top right
+        new(2.2f, -0.2f), // Cafeteria. Button. Bottom left
+        new(-0.7f, -0.2f), // Cafeteria. Button. Bottom right
         new(-10, 3f), // Weapons top
         new(-9, 1f), // Weapons bottom
         new(-6.5f, -3.5f), // O2
@@ -372,7 +384,7 @@ public static class References
         "WHO LET BRO COOK?",
         "",
         "Let me introduce you to our sponsor, Raid-",
-        "Push to production is my motto. Bugs? meh public release go brrrr",
+        "Push to production is my motto. Bugs? meh public release go brr",
         "If it's not a bug, it's a feature",
         "My life like a movie",
         "real",

@@ -1,5 +1,3 @@
-using Cpp2IL.Core.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusader, IFramer, IShaper, ITimeLord, IDrunkard
@@ -71,7 +69,7 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
                 else if (ConfusedPlayer && !ConfuseButton.EffectActive)
                     ConfusedPlayer = null;
                 else if (IsWarp && !Moving && WarpMenu.Selected.Count > 0)
-                    WarpMenu.Selected.RemoveAndReturn(WarpMenu.Selected.Count - 1);
+                    WarpMenu.Selected.TakeLast();
             }
             else if (PoisonedPlayer && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;
@@ -394,7 +392,7 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
 
     // Concealer Stuff
     private CustomButton ConcealButton { get; set; }
-    public PlayerControl ConcealedPlayer { get; set; }
+    private PlayerControl ConcealedPlayer { get; set; }
     private CustomPlayerMenu ConcealMenu { get; set; }
     private bool IsConc => FormerRole is Concealer;
 
@@ -492,7 +490,7 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
     // Poisoner Stuff
     private CustomButton PoisonButton { get; set; }
     private CustomButton GlobalPoisonButton { get; set; }
-    public PlayerControl PoisonedPlayer { get; set; }
+    private PlayerControl PoisonedPlayer { get; set; }
     private CustomPlayerMenu PoisonMenu { get; set; }
     private bool IsPois => FormerRole is Poisoner;
 
@@ -501,8 +499,8 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
 
     private void UnPoison()
     {
-        if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is<Pestilence>()))
-            Player.RpcMurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
+        if (!PoisonedPlayer.HasDied() && CanAttack(AttackEnum.Basic, PoisonedPlayer.GetDefenseValue(Player)))
+            Player.MurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
     }
@@ -552,8 +550,8 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
 
     // Shapeshifter Stuff
     private CustomButton ShapeshiftButton { get; set; }
-    public PlayerControl ShapeshiftPlayer1 { get; set; }
-    public PlayerControl ShapeshiftPlayer2 { get; set; }
+    public PlayerControl ShapeshiftPlayer1 { get; private set; }
+    public PlayerControl ShapeshiftPlayer2 { get; private set; }
     private CustomPlayerMenu ShapeshiftMenu1 { get; set; }
     private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
     private bool IsSS => FormerRole is Shapeshifter;
@@ -634,7 +632,7 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
     // Bomber Stuff
     private CustomButton BombButton { get; set; }
     private CustomButton DetonateButton { get; set; }
-    public List<Bomb> Bombs { get; } = [];
+    private List<Bomb> Bombs { get; } = [];
     private bool IsBomb => FormerRole is Bomber;
 
     private void Place()
@@ -744,9 +742,9 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
     }
 
     // Crusader Stuff
-    public PlayerControl CrusadedPlayer { get; set; }
+    public PlayerControl CrusadedPlayer { get; private set; }
     public CustomButton CrusadeButton { get; private set; }
-    public bool IsCrus => FormerRole is Crusader;
+    private bool IsCrus => FormerRole is Crusader;
 
     private bool CrusadeException(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !Crusader.CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !Crusader.CrusadeMates);
@@ -775,8 +773,8 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
     private CustomButton PositiveButton { get; set; }
     private CustomButton NegativeButton { get; set; }
     private CustomButton ChargeButton { get; set; }
-    public PlayerControl Positive { get; set; }
-    public PlayerControl Negative { get; set; }
+    private PlayerControl Positive { get; set; }
+    private PlayerControl Negative { get; set; }
     private float Range => Collider.CollideRange + (HoldsDrive ? Collider.CollideRangeIncrease : 0);
     private bool IsCol => FormerRole is Collider;
 
@@ -947,8 +945,8 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
     private CustomButton SilenceButton { get; set; }
     public bool ShookAlready { get; set; }
     public PlayerControl Target => SilencedPlayer;
-    public PlayerControl SilencedPlayer { get; set; }
-    public bool IsSil => FormerRole is Silencer;
+    public PlayerControl SilencedPlayer { get; private set; }
+    private bool IsSil => FormerRole is Silencer;
 
     private bool SilenceException(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !Silencer.SilenceMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !Silencer.SilenceMates);

@@ -10,10 +10,10 @@ public sealed class Actor : Evil
     public static bool ActorButton = true;
 
     [ToggleOption]
-    public static bool ActorVent = false;
+    private static bool ActorVent = false;
 
     [ToggleOption]
-    public static bool ActSwitchVent = false;
+    private static bool ActSwitchVent = false;
 
     [NumberOption(1, 5, 1)]
     private static Number ActorRoleCount = 3;
@@ -23,9 +23,9 @@ public sealed class Actor : Evil
     public bool Guessed { get; set; }
     public List<Role> PretendRoles { get; } = [];
     private CustomButton PretendButton { get; set; }
-    public int Rounds { get; set; }
+    private int Rounds { get; set; }
     private bool TargetFailed => !Targeted && Rounds > 0;
-    public bool Targeted { get; private set; }
+    private bool Targeted { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Actor : FactionColor;
     public override LayerEnum Type => LayerEnum.Actor;
@@ -33,6 +33,8 @@ public sealed class Actor : Evil
     public override Func<string> Description => () => !Targeted ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you will kill your guesser";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => Guessed;
+    public override bool CanVent => base.CanVent && ActorVent;
+    public override bool CanSwitchVents => ActSwitchVent;
     protected override WinLose EndState => WinLose.ActorWins;
 
     protected override void Init()

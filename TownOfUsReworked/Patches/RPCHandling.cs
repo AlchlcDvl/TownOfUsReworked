@@ -409,9 +409,8 @@ public static class RPCHandling
                     case ActionsRPC.Drop:
                     {
                         var dragger = reader.ReadPlayer();
-                        var dragged1 = BodyById(DragHandler.Dragging[dragger.PlayerId]);
+                        var dragged1 = DragHandler.Dragging[dragger.PlayerId];
                         DragHandler.StopDrag(dragger);
-                        PlayerLayer.GetLayers<IDragger>().Where(x => x.CurrentlyDragging == dragged1).ForEach(x => x.CurrentlyDragging = null);
                         return;
                     }
                     case ActionsRPC.Burn:

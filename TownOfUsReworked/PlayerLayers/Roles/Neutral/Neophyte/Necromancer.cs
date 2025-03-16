@@ -43,7 +43,7 @@ public sealed class Necromancer : Neophyte, IReviver
     private static Number ResurrectDur = 10;
 
     [ToggleOption]
-    public static bool NecroVent = false;
+    private static bool NecroVent = false;
 
     [ToggleOption]
     public static bool ResurrectVent = false;
@@ -59,6 +59,7 @@ public sealed class Necromancer : Neophyte, IReviver
     public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override bool CanVent => base.CanVent && NecroVent;
 
     protected override void Init()
     {

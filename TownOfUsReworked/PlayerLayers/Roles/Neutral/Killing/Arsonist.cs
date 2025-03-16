@@ -22,7 +22,7 @@ public sealed class Arsonist : NKilling
     private static bool IgnitionCremates = false;
 
     [ToggleOption]
-    public static bool ArsoVent = false;
+    private static bool ArsoVent = false;
 
     private CustomButton IgniteButton { get; set; }
     private CustomButton DouseButton { get; set; }
@@ -37,6 +37,7 @@ public sealed class Arsonist : NKilling
         "get doused";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override bool CanVent => base.CanVent && ArsoVent;
 
     protected override void Init()
     {

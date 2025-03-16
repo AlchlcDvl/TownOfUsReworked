@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Patches.BetterStuff;
 
-[HeaderOption(MultiMenu.Main)]
+[HeaderOption(MultiMenu.Main), Sorted(0)]
 public static class BetterSkeld
 {
     [ToggleOption]

@@ -346,7 +346,7 @@ public sealed class ClientHandler : MonoBehaviour
 
         if (!SettingsPatches.LayerHeaderPrefab)
         {
-            // Using MissingBehaviour because it literally does nothing and I need a MonoBehaviour reference for the layer header prefabs
+            // Using MissingBehaviour because it literally does nothing, and I need a MonoBehaviour reference for the layer header prefabs
 
             // Label = 0, Title = 1, Info = 2, Desc = 3, Collapse = 4
             //                       ┗---------┗------- Text = 0
@@ -416,15 +416,26 @@ public sealed class ClientHandler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && !ActiveTask() && !MapBehaviourPatches.MapActive)
             hud?.SettingsButton?.GetComponent<PassiveButton>()?.OnClick?.Invoke();
 
-        if (IsHnS() || !CustomPlayer.Local)
+        if (IsHnS() || !CustomPlayer.Local || !ButtonsParent)
             return;
 
         ResetButtonPos();
         var part2 = !ActiveTask()?.TryCast<HauntMenuMinigame>() && !GameSettingMenu.Instance && !PlayerCustomizationMenu.Instance && !Meeting();
-        WikiRcButton.gameObject.SetActive(part2);
-        ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
-        hud!.MapButton.gameObject.SetActive(IsInGame());
-        ZoomButton.gameObject.SetActive(hud.MapButton.isActiveAndEnabled && CustomPlayer.Local.HasDied() && IsInGame() && part2 && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && !RoleCardActive);
+
+        if (WikiRcButton)
+            WikiRcButton.gameObject.SetActive(part2);
+
+        if (ClientOptionsButton)
+            ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
+
+        if (hud!.MapButton)
+            hud.MapButton.gameObject.SetActive(IsInGame());
+
+        if (ZoomButton)
+        {
+            ZoomButton.gameObject.SetActive(hud.MapButton.isActiveAndEnabled && CustomPlayer.Local.HasDied() && IsInGame() && part2 && !RoleCardActive && (!CustomPlayer.Local.IsPostmortal() ||
+                CustomPlayer.Local.Caught()));
+        }
 
         if (PhoneText)
         {

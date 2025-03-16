@@ -25,13 +25,13 @@ public sealed class GuardianAngel : Neutral
     public static bool ProtectBeyondTheGrave = false;
 
     [ToggleOption]
-    public static bool GaKnowsTargetRole = false;
+    private static bool GaKnowsTargetRole = false;
 
     [ToggleOption]
-    public static bool GaVent = false;
+    private static bool GaVent = false;
 
     [ToggleOption]
-    public static bool GaSwitchVent = false;
+    private static bool GaSwitchVent = false;
 
     [ToggleOption]
     private static bool GaToSurv = true;
@@ -40,7 +40,7 @@ public sealed class GuardianAngel : Neutral
     public bool TargetAlive => !Disconnected && !TargetPlayer.HasDied();
     private CustomButton ProtectButton { get; set; }
     public CustomButton GraveProtectButton { get; private set; }
-    public int Rounds { get; set; }
+    private int Rounds { get; set; }
     private CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? !TargetAlive : Rounds > 2;
     public bool Protecting { get; private set; }
@@ -50,6 +50,8 @@ public sealed class GuardianAngel : Neutral
     public override Func<string> StartText => () => "Find Someone To Protect";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +
         $"\n- If {TargetPlayer?.name} dies, you will become a <#DDDD00FF>Survivor</color>");
+    public override bool CanVent => base.CanVent && GaVent;
+    public override bool CanSwitchVents => GaSwitchVent;
 
     protected override void Init()
     {

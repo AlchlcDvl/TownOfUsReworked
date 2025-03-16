@@ -11,35 +11,34 @@ public sealed class TestingTab : BaseTab
         TownOfUsReworked.BlockBaseGameLogger.Value = GUILayout.Toggle(TownOfUsReworked.BlockBaseGameLogger.Value, "Block AU Logger");
         TownOfUsReworked.RedirectLogger.Value = GUILayout.Toggle(TownOfUsReworked.RedirectLogger.Value, "Redirect Logger");
         TownOfUsReworked.LogFromUnity.Value = GUILayout.Toggle(TownOfUsReworked.LogFromUnity.Value, "Log From Unity");
-        BlockExposed = GUILayout.Toggle(BlockExposed, "Roleblocked");
+        var hiddenBlock = GUILayout.Toggle(HiddenBlock, "Roleblocked");
+
+        if (hiddenBlock != HiddenBlock)
+            HiddenBlock = hiddenBlock;
+
+        BlockExposed = GUILayout.Toggle(BlockExposed, "Roleblocked Exposed");
 
         if (CustomPlayer.Local)
             CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Player Collider");
 
-        if (Lobby())
+        if (Lobby() && IsLocalGame())
         {
-            if (IsLocalGame())
+            if (GUILayout.Button("Spawn Bot") && GameData.Instance.PlayerCount < GameSettings.LobbySize)
             {
-                if (GUILayout.Button("Spawn Bot"))
-                {
-                    if (GameData.Instance.PlayerCount < GameSettings.LobbySize)
-                    {
-                        MciUtils.CleanUpLoad();
-                        MciUtils.CreatePlayerInstance();
-                    }
-                }
+                MciUtils.CleanUpLoad();
+                MciUtils.CreatePlayerInstance();
+            }
 
-                if (GUILayout.Button("Remove Last Bot"))
-                {
-                    MciUtils.RemovePlayer((byte)MciUtils.Clients.Count);
-                    Debugging.Instance.ControllingFigure = 0;
-                }
+            if (GUILayout.Button("Remove Last Bot"))
+            {
+                MciUtils.RemovePlayer((byte)MciUtils.Clients.Count);
+                Debugging.Instance.ControllingFigure = 0;
+            }
 
-                if (GUILayout.Button("Remove All Bots"))
-                {
-                    MciUtils.RemoveAllPlayers();
-                    Debugging.Instance.ControllingFigure = 0;
-                }
+            if (GUILayout.Button("Remove All Bots"))
+            {
+                MciUtils.RemoveAllPlayers();
+                Debugging.Instance.ControllingFigure = 0;
             }
         }
 

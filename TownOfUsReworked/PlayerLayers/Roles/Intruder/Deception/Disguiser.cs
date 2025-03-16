@@ -23,9 +23,9 @@ public sealed class Disguiser : Intruder
 
     private CustomButton DisguiseButton { get; set; }
     private CustomButton MeasureButton { get; set; }
-    public PlayerControl MeasuredPlayer { get; set; }
-    public PlayerControl CopiedPlayer { get; set; }
-    public PlayerControl DisguisedPlayer { get; set; }
+    private PlayerControl MeasuredPlayer { get; set; }
+    private PlayerControl CopiedPlayer { get; set; }
+    private PlayerControl DisguisedPlayer { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Disguiser : FactionColor;
     public override LayerEnum Type => LayerEnum.Disguiser;

@@ -11,7 +11,6 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
     public virtual DefenseEnum DefenseVal => DefenseEnum.None;
     public virtual bool Hidden => false;
     public virtual bool CanVent => false;
-    public virtual float VisionRange => 0f;
 
     public string Name { get; protected set; }
     // public LayerHandler Handler { get; set; }

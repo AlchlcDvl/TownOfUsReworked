@@ -16,7 +16,7 @@ public sealed class Tracker : Crew
     public static Number UpdateInterval = 5;
 
     private Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
-    public CustomButton TrackButton { get; private set; }
+    private CustomButton TrackButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Tracker : FactionColor;
     public override LayerEnum Type => LayerEnum.Tracker;
@@ -32,9 +32,9 @@ public sealed class Tracker : Crew
             (PlayerBodyExclusion)Exception);
     }
 
-    public bool Exception(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
+    private bool Exception(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
 
-    public void Track(PlayerControl target)
+    private void Track(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 
@@ -59,10 +59,10 @@ public sealed class Tracker : Crew
 
     public override void Reset(bool meeting, bool start)
     {
-        if (ResetOnNewRound)
-        {
-            TrackButton.Uses = TrackButton.MaxUses;
-            ClearArrows();
-        }
+        if (!ResetOnNewRound)
+            return;
+
+        TrackButton.Uses = TrackButton.MaxUses;
+        ClearArrows();
     }
 }

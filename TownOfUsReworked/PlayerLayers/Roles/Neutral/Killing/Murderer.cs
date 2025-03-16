@@ -7,7 +7,7 @@ public sealed class Murderer : NKilling
     private static Number MurderCd = 25;
 
     [ToggleOption]
-    public static bool MurdVent = false;
+    private static bool MurdVent = false;
 
     private CustomButton MurderButton { get; set; }
 
@@ -17,6 +17,7 @@ public sealed class Murderer : NKilling
     public override Func<string> Description => () => "- You can kill";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => DefenseEnum.Basic;
+    public override bool CanVent => base.CanVent && MurdVent;
 
     protected override void Init()
     {

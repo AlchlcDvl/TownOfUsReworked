@@ -44,9 +44,13 @@ public static class AssetManager
 
     public static void StopAll() => GetAll<AudioClip>().ForEach(Stop);
 
-    private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true);
+    private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true)
+    {
+        filterMode = FilterMode.Bilinear,
+        wrapMode = TextureWrapMode.Clamp
+    };
 
-    private static Texture2D LoadTexture(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceTexture(path) : LoadDiskTexture(path);
+    // private static Texture2D LoadTexture(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceTexture(path) : LoadDiskTexture(path);
 
     public static Texture2D LoadDiskTexture(string path) => LoadTexture(File.ReadAllBytes(path), path.SanitisePath());
 
@@ -55,12 +59,8 @@ public static class AssetManager
     private static Texture2D LoadTexture(byte[] data, string name)
     {
         var texture = EmptyTexture();
-
-        if (!texture.LoadImage(data, !GetReadable(name)))
-            return null;
-
         texture.name = name;
-        return texture.DontDestroy();
+        return !texture.LoadImage(data, !GetReadable(name)) ? null : texture.DontDestroy();
     }
 
     private static Sprite LoadSprite(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceSprite(path) : LoadDiskSprite(path);
@@ -161,8 +161,8 @@ public static class AssetManager
             result = AddAsset(name, LoadSprite(path));
         else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
             result = AddAsset(name, LoadAudio(path));
-        else if (tType == typeof(Texture2D) && strings.TryFinding(x => x.EndsWith(".png"), out path))
-            result = AddAsset(name, LoadTexture(path));
+        // else if (tType == typeof(Texture2D) && strings.TryFinding(x => x.EndsWith(".png"), out path))
+        //     result = AddAsset(name, LoadTexture(path));
         else
             return null;
 
@@ -236,26 +236,22 @@ public static class AssetManager
         var channels = BitConverter.ToUInt16(fileBytes, 22);
         var sampleRate = BitConverter.ToInt32(fileBytes, 24);
         var bitDepth = BitConverter.ToUInt16(fileBytes, 34);
+        var wavSize = BitConverter.ToInt32(fileBytes, chunk);
         var data = bitDepth switch
         {
-            8 => Convert8BitByteArrayToAudioClipData(fileBytes, chunk),
-            16 => Convert16BitByteArrayToAudioClipData(fileBytes, chunk),
-            24 => Convert24BitByteArrayToAudioClipData(fileBytes, chunk),
-            32 => Convert32BitByteArrayToAudioClipData(fileBytes, chunk),
-            _ => throw new Exception(bitDepth + " bit depth is not supported."),
+            8 => Convert8BitByteArrayToAudioClipData(fileBytes, wavSize),
+            16 => Convert16BitByteArrayToAudioClipData(fileBytes, chunk, wavSize),
+            24 => Convert24BitByteArrayToAudioClipData(fileBytes, chunk, wavSize),
+            32 => Convert32BitByteArrayToAudioClipData(fileBytes, chunk, wavSize),
+            _ => throw new(bitDepth + " bit depth is not supported."),
         };
 
         var audioClip = AudioClip.Create(name, data.Length, channels, sampleRate, false);
-
-        if (audioClip.SetData(data, 0))
-            return audioClip.DontDestroy();
-
-        return null;
+        return audioClip.SetData(data, 0) ? audioClip.DontDestroy() : null;
     }
 
-    private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+    private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int wavSize)
     {
-        var wavSize = BitConverter.ToInt32(source, headerOffset);
         var data = new float[wavSize];
 
         for (var i = 0; i < wavSize; i++)
@@ -264,9 +260,8 @@ public static class AssetManager
         return data;
     }
 
-    private static float[] Convert16BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+    private static float[] Convert16BitByteArrayToAudioClipData(byte[] source, int headerOffset, int wavSize)
     {
-        var wavSize = BitConverter.ToInt32(source, headerOffset);
         headerOffset += sizeof(int);
         const int x = sizeof(short);
         var convertedSize = wavSize / x;
@@ -278,38 +273,36 @@ public static class AssetManager
         return data;
     }
 
-    private static float[] Convert24BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+    private static float[] Convert24BitByteArrayToAudioClipData(byte[] source, int headerOffset, int wavSize)
     {
-        var wavSize = BitConverter.ToInt32(source, headerOffset);
         const int intSize = sizeof(int);
         headerOffset += intSize;
-        const int x = 3; // Block size = 3
-        var convertedSize = wavSize / x;
+        var convertedSize = wavSize / 3;
         var data = new float[convertedSize];
         var block = new byte[intSize]; // Using a 4-byte block for copying 3 bytes, then copy bytes with 1 offset
 
         for (var i = 0; i < convertedSize; i++)
         {
-            Buffer.BlockCopy(source, (i * x) + headerOffset, block, 1, x);
+            Buffer.BlockCopy(source, (i * 3) + headerOffset, block, 1, 3);
             data[i] = (float)BitConverter.ToInt32(block, 0) / int.MaxValue;
         }
 
         return data;
     }
 
-    private static float[] Convert32BitByteArrayToAudioClipData(byte[] source, int headerOffset)
+    private static float[] Convert32BitByteArrayToAudioClipData(byte[] source, int headerOffset, int wavSize)
     {
-        var wavSize = BitConverter.ToInt32(source, headerOffset);
         headerOffset += sizeof(int);
-        const int x = sizeof(float); // Block size = 4
-        var convertedSize = wavSize / x;
+        var convertedSize = wavSize / 4;
         var data = new float[convertedSize];
 
         for (var i = 0; i < convertedSize; i++)
-            data[i] = (float)BitConverter.ToInt32(source, (i * x) + headerOffset) / int.MaxValue;
+            data[i] = (float)BitConverter.ToInt32(source, (i * 4) + headerOffset) / int.MaxValue;
 
         return data;
     }
+
+    // This is all for mainly debugging stuff when I want to dump assets from the main game
 
     // public static void Dump(this Sprite sprite, string path) => File.WriteAllBytes(path, sprite.texture.Decompress().EncodeToPNG());
 

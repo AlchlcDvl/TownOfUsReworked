@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+// TODO: Refactor this to instead use the props and abilities of their former roles directly
 public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigger, IAmbusher, IFlasher, IMover, IBlocker, IMorpher
 {
     protected override void Init()
@@ -39,6 +40,15 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
             return CustomColorManager.Intruder;
         }
     }
+    public override bool CanVent => base.CanVent && FormerRole switch
+    {
+        Janitor => (int)Janitor.JanitorVentOptions is 3 || (CurrentlyDragging && (int)Janitor.JanitorVentOptions is 1) || (!CurrentlyDragging && (int)Janitor.JanitorVentOptions is 2),
+        Morphling => Morphling.MorphlingVent,
+        Wraith => Wraith.WraithVent,
+        Grenadier => Grenadier.GrenadierVent,
+        Teleporter => Teleporter.TeleVent,
+        _ => true
+    };
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
@@ -237,8 +247,8 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
     private CustomButton BlackmailButton { get; set; }
     public bool ShookAlready { get; set; }
     public PlayerControl Target => BlackmailedPlayer;
-    public PlayerControl BlackmailedPlayer { get; set; }
-    public bool IsBm => FormerRole is Blackmailer;
+    public PlayerControl BlackmailedPlayer { get; private set; }
+    private bool IsBm => FormerRole is Blackmailer;
 
     private void Blackmail(PlayerControl target)
     {
@@ -276,7 +286,7 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
     // Grenadier Stuff
     private CustomButton FlashButton { get; set; }
     public IEnumerable<byte> FlashedPlayers { get; private set; }
-    public bool IsGren => FormerRole is Grenadier;
+    private bool IsGren => FormerRole is Grenadier;
 
     private void Flash()
     {
@@ -349,7 +359,6 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
 
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, Player);
         DragHandler.StopDrag(Player);
-        CurrentlyDragging = null;
         DragButton.StartCooldown();
     }
 
@@ -361,9 +370,9 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
 
     // Disguiser Stuff
     private CustomButton DisguiseButton { get; set; }
-    public PlayerControl MeasuredPlayer { get; set; }
-    public PlayerControl DisguisedPlayer { get; set; }
-    public PlayerControl CopiedPlayer { get; set; }
+    private PlayerControl MeasuredPlayer { get; set; }
+    private PlayerControl DisguisedPlayer { get; set; }
+    private PlayerControl CopiedPlayer { get; set; }
     private CustomButton MeasureButton { get; set; }
     private bool IsDisg => FormerRole is Disguiser;
 
@@ -420,10 +429,10 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
 
     // Morphling Stuff
     private CustomButton MorphButton { get; set; }
-    public PlayerControl MorphedPlayer { get; set; }
-    public PlayerControl SampledPlayer { get; set; }
+    public PlayerControl MorphedPlayer { get; private set; }
+    private PlayerControl SampledPlayer { get; set; }
     private CustomButton SampleButton { get; set; }
-    public bool IsMorph => FormerRole is Morphling;
+    private bool IsMorph => FormerRole is Morphling;
 
     private void Morph() => MiscUtils.Morph(Player, MorphedPlayer);
 
@@ -466,7 +475,7 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
 
     // Wraith Stuff
     private CustomButton InvisButton { get; set; }
-    public bool IsWraith => FormerRole is Wraith;
+    private bool IsWraith => FormerRole is Wraith;
 
     private void Invis() => MiscUtils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
@@ -501,7 +510,7 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
     // Consigliere Stuff
     public List<byte> Investigated { get; } = [];
     private CustomButton InvestigateButton { get; set; }
-    public bool IsConsig => FormerRole is Consigliere;
+    private bool IsConsig => FormerRole is Consigliere;
 
     private void Investigate(PlayerControl target)
     {
@@ -521,10 +530,10 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
 
     // Teleporter Stuff
     private CustomButton TeleportButton { get; set; }
-    public Vector2 TeleportPoint { get; set; }
+    private Vector2 TeleportPoint { get; set; }
     private CustomButton MarkButton { get; set; }
     public bool Moving { get; set; }
-    public bool IsTele => FormerRole is Teleporter;
+    private bool IsTele => FormerRole is Teleporter;
 
     private void Mark()
     {
@@ -555,9 +564,9 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
     private bool TeleCondition() => Vector2.Distance(Player.transform.position, TeleportPoint) <= 1f && !Moving;
 
     // Ambusher Stuff
-    public PlayerControl AmbushedPlayer { get; set; }
+    public PlayerControl AmbushedPlayer { get; private set; }
     public CustomButton AmbushButton { get; private set; }
-    public bool IsAmb => FormerRole is Ambusher;
+    private bool IsAmb => FormerRole is Ambusher;
 
     private void UnAmbush() => AmbushedPlayer = null;
 
@@ -584,7 +593,7 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
 
     // Consort Stuff
     private CustomButton BlockButton { get; set; }
-    public PlayerControl BlockTarget { get; set; }
+    public PlayerControl BlockTarget { get; private set; }
     private CustomPlayerMenu BlockMenu { get; set; }
     private bool IsCons => FormerRole is Consort;
 

@@ -20,20 +20,17 @@ public sealed class Sidekick : Syndicate
 
     private void TurnRebel()
     {
-        FormerRole.IsPromoted = true;
         var reb = new PromotedRebel() { FormerRole = FormerRole is PromotedRebel preb ? preb.FormerRole : FormerRole };
+        FormerRole.Promoted = reb;
         reb.RoleUpdate(this);
         reb.OnRoleSelected();
     }
 
-    public override void UpdateHud(HudManager __instance)
+    public override void UpdatePlayer()
     {
-        base.UpdateHud(__instance);
+        base.UpdatePlayer();
 
         if (CanPromote)
-        {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
             TurnRebel();
-        }
     }
 }

@@ -1,8 +1,12 @@
+// ReSharper disable HeuristicUnreachableCode
+#pragma warning disable CS0162 // Unreachable code detected
+
 using BepInEx.Logging;
 
 namespace TownOfUsReworked;
 
 // FIXME: Can't call meetings (something I'm patching is rejecting it???)
+// TODO: Add commenting and documentation for the codebase
 [BepInAutoPlugin("me.alchlcdvl.reworked", "Reworked")]
 [BepInDependency(ReactorPlugin.Id)]
 [BepInIncompatibility("MalumMenu")]
@@ -16,11 +20,11 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static readonly Version ModVer = new(VersionS);
 
-    public static readonly bool IsDev = true;
-    public static readonly bool IsStream = true;
-    private const int DevBuild = 36;
+    public const bool IsDev = true;
+    public const bool IsStream = true;
+    private const int DevBuild = 37;
 
-    private static string VersionSignature => Version.Contains('+') ? Version[Version.IndexOf('+')..] : "";
+    // private static string VersionSignature => Version.Contains('+') ? Version[Version.IndexOf('+')..] : "";
     private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string StreamString => IsStream ? "s" : "";

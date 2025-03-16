@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Patches.BetterStuff;
 /// Provides enhanced functionality and customization options for the Polus map.<br/>
 /// Modifies vent connections, task locations, and sabotage timers.
 /// </summary>
-[HeaderOption(MultiMenu.Main)]
+[HeaderOption(MultiMenu.Main), Sorted(0)]
 public static class BetterPolus
 {
     /// <summary>

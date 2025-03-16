@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Patches.BetterStuff;
 /// <summary>
 /// Provides enhanced functionality and customization options for the Airship map.
 /// </summary>
-[HeaderOption(MultiMenu.Main)]
+[HeaderOption(MultiMenu.Main), Sorted(0)]
 public static class BetterAirship
 {
     /// <summary>
@@ -22,7 +22,6 @@ public static class BetterAirship
     [Sorted(1)]
     public static AirshipSpawnType SpawnType = AirshipSpawnType.Normal;
 
-    private static AirshipSpawnLocation Location1Priv = AirshipSpawnLocation.Engine;
     /// <summary>
     /// Sets the first location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
@@ -32,24 +31,10 @@ public static class BetterAirship
     private static AirshipSpawnLocation Location1
     {
         get => Location1Priv;
-        set
-        {
-            if (value < Location1Priv)
-            {
-                while (value.IsAny(Location2Priv, Location3Priv))
-                    value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, false);
-            }
-            else if (value > Location1Priv)
-            {
-                while (value.IsAny(Location2Priv, Location3Priv))
-                    value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, true);
-            }
-
-            Location1Priv = value;
-        }
+        set => Location1Priv = SetLocation(value, Location3Priv, Location2Priv, Location1Priv);
     }
+    private static AirshipSpawnLocation Location1Priv = AirshipSpawnLocation.Engine;
 
-    private static AirshipSpawnLocation Location2Priv = AirshipSpawnLocation.Kitchen;
     /// <summary>
     /// Sets the second location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
@@ -59,24 +44,10 @@ public static class BetterAirship
     private static AirshipSpawnLocation Location2
     {
         get => Location2Priv;
-        set
-        {
-            if (value < Location2Priv)
-            {
-                while (value.IsAny(Location1Priv, Location3Priv))
-                    value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, false);
-            }
-            else if (value > Location2Priv)
-            {
-                while (value.IsAny(Location1Priv, Location3Priv))
-                    value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, true);
-            }
-
-            Location2Priv = value;
-        }
+        set => Location2Priv = SetLocation(value, Location1Priv, Location3Priv, Location2Priv);
     }
+    private static AirshipSpawnLocation Location2Priv = AirshipSpawnLocation.Kitchen;
 
-    private static AirshipSpawnLocation Location3Priv = AirshipSpawnLocation.VaultRoom;
     /// <summary>
     /// Sets the third location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
@@ -86,22 +57,9 @@ public static class BetterAirship
     private static AirshipSpawnLocation Location3
     {
         get => Location3Priv;
-        set
-        {
-            if (value < Location3Priv)
-            {
-                while (value.IsAny(Location2Priv, Location1Priv))
-                    value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, false);
-            }
-            else if (value > Location3Priv)
-            {
-                while (value.IsAny(Location2Priv, Location1Priv))
-                    value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, true);
-            }
-
-            Location3Priv = value;
-        }
+        set => Location3Priv = SetLocation(value, Location1Priv, Location2Priv, Location3Priv);
     }
+    private static AirshipSpawnLocation Location3Priv = AirshipSpawnLocation.VaultRoom;
 
     /// <summary>
     /// When enabled, moves the Vitals panel to a new location (<c>24.55</c>, <c>-4.780</c>).
@@ -172,6 +130,17 @@ public static class BetterAirship
     /// Stores synchronized random spawn points for all players.
     /// </summary>
     public static readonly List<byte> SpawnPoints = [];
+
+    /// <summary>
+    /// The common setter method that modifies the resulting value to reflect skipping over the other location settings.
+    /// </summary>
+    private static AirshipSpawnLocation SetLocation(AirshipSpawnLocation value, AirshipSpawnLocation loc1, AirshipSpawnLocation loc2, AirshipSpawnLocation prev)
+    {
+        while (value.IsAny(loc1, loc2))
+            value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, value > prev);
+
+        return value;
+    }
 
     /// <summary>
     /// Applies all Airship map modifications if enabled.

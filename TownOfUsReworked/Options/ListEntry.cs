@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<RoleListSlot>(CustomOptionType.Entry, RoleListSlot.Any, RoleListSlot.None)
+public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None)
 {
     public PlayerLayerEnum EntryType { get; } = entryType;
     public bool IsBan { get; private set; }
@@ -51,7 +51,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
         SettingsPatches.OnValueChanged();
     }
 
-    protected override void TrySetValue(RoleListSlot value, out MultiSelectValue<RoleListSlot> newValue)
+    protected override void TrySetValue(ListSlot value, out MultiSelectValue<ListSlot> newValue)
     {
         newValue = Value;
 
@@ -65,77 +65,77 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
         var toRemove = value switch
         {
             // Crew Categories
-            RoleListSlot.CrewKill => RoleGenManager.CK,
-            RoleListSlot.CrewSupport => RoleGenManager.CS,
-            RoleListSlot.CrewInvest => RoleGenManager.CI,
-            RoleListSlot.CrewProt => RoleGenManager.CrP,
-            RoleListSlot.CrewSov => RoleGenManager.CSv,
-            RoleListSlot.CrewUtil => RoleGenManager.CU,
-            RoleListSlot.RegularCrew => RoleGenManager.RegCrew.GetAll(),
-            RoleListSlot.PowerCrew => RoleGenManager.PowerCrew.GetAll(),
-            RoleListSlot.RandomCrew => RoleGenManager.Crew.GetAll(),
+            ListSlot.CrewKill => RoleGenManager.CK,
+            ListSlot.CrewSupport => RoleGenManager.CS,
+            ListSlot.CrewInvest => RoleGenManager.CI,
+            ListSlot.CrewProt => RoleGenManager.CrP,
+            ListSlot.CrewSov => RoleGenManager.CSv,
+            ListSlot.CrewUtil => RoleGenManager.CU,
+            ListSlot.RegularCrew => RoleGenManager.RegCrew.GetAll(),
+            ListSlot.PowerCrew => RoleGenManager.PowerCrew.GetAll(),
+            ListSlot.RandomCrew => RoleGenManager.Crew.GetAll(),
 
             // Neutral Categories
-            RoleListSlot.NeutralBen => RoleGenManager.NB,
-            RoleListSlot.NeutralKill => RoleGenManager.NK,
-            RoleListSlot.RegularNeutral or RoleListSlot.NonCompNeutral => RoleGenManager.RegNeutral.GetAll(),
+            ListSlot.NeutralBen => RoleGenManager.NB,
+            ListSlot.NeutralKill => RoleGenManager.NK,
+            ListSlot.RegularNeutral or ListSlot.NonCompNeutral => RoleGenManager.RegNeutral.GetAll(),
 
             // Neutral + Compliance Categories
-            RoleListSlot.NeutralEvil or RoleListSlot.ComplianceKill => RoleGenManager.NK,
-            RoleListSlot.NeutralHarb or RoleListSlot.ComplianceHarb => RoleGenManager.NH,
-            RoleListSlot.NeutralNeo or RoleListSlot.ComplianceNeo => RoleGenManager.NN,
-            RoleListSlot.HarmfulNeutral or RoleListSlot.RandomCompliance => RoleGenManager.HarmNeutral.GetAll(),
+            ListSlot.NeutralEvil or ListSlot.ComplianceKill => RoleGenManager.NK,
+            ListSlot.NeutralHarb or ListSlot.ComplianceHarb => RoleGenManager.NH,
+            ListSlot.NeutralNeo or ListSlot.ComplianceNeo => RoleGenManager.NN,
+            ListSlot.HarmfulNeutral or ListSlot.RandomCompliance => RoleGenManager.HarmNeutral.GetAll(),
 
             // Intruder Categories
-            RoleListSlot.IntruderSupport => RoleGenManager.IS,
-            RoleListSlot.IntruderConceal => RoleGenManager.IC,
-            RoleListSlot.IntruderDecep => RoleGenManager.ID,
-            RoleListSlot.IntruderKill => RoleGenManager.IK,
-            RoleListSlot.IntruderUtil => RoleGenManager.IU,
-            RoleListSlot.IntruderHead => RoleGenManager.IH,
-            RoleListSlot.RegularIntruder => RoleGenManager.RegIntruders.GetAll(),
-            RoleListSlot.PowerIntruder => RoleGenManager.PowerIntruders.GetAll(),
+            ListSlot.IntruderSupport => RoleGenManager.IS,
+            ListSlot.IntruderConceal => RoleGenManager.IC,
+            ListSlot.IntruderDecep => RoleGenManager.ID,
+            ListSlot.IntruderKill => RoleGenManager.IK,
+            ListSlot.IntruderUtil => RoleGenManager.IU,
+            ListSlot.IntruderHead => RoleGenManager.IH,
+            ListSlot.RegularIntruder => RoleGenManager.RegIntruders.GetAll(),
+            ListSlot.PowerIntruder => RoleGenManager.PowerIntruders.GetAll(),
 
             // Syndicate Categories
-            RoleListSlot.SyndicateKill => RoleGenManager.SyK,
-            RoleListSlot.SyndicateSupport => RoleGenManager.SSu,
-            RoleListSlot.SyndicateDisrup => RoleGenManager.SD,
-            RoleListSlot.SyndicatePower => RoleGenManager.SP,
-            RoleListSlot.SyndicateUtil => RoleGenManager.SU,
-            RoleListSlot.RegularSyndicate => RoleGenManager.RegSyndicate.GetAll(),
-            RoleListSlot.PowerSyndicate => RoleGenManager.PowerSyndicate.GetAll(),
+            ListSlot.SyndicateKill => RoleGenManager.SyK,
+            ListSlot.SyndicateSupport => RoleGenManager.SSu,
+            ListSlot.SyndicateDisrup => RoleGenManager.SD,
+            ListSlot.SyndicatePower => RoleGenManager.SP,
+            ListSlot.SyndicateUtil => RoleGenManager.SU,
+            ListSlot.RegularSyndicate => RoleGenManager.RegSyndicate.GetAll(),
+            ListSlot.PowerSyndicate => RoleGenManager.PowerSyndicate.GetAll(),
 
             // Pandora Categories
-            RoleListSlot.PandoraKill => RoleGenManager.PK,
-            RoleListSlot.PandoraConceal => RoleGenManager.PC,
-            RoleListSlot.PandoraDecep => RoleGenManager.PDe,
-            RoleListSlot.PandoraDisrup => RoleGenManager.PDi,
-            RoleListSlot.PandoraPower => RoleGenManager.PP,
-            RoleListSlot.PandoraSupport => RoleGenManager.PS,
-            RoleListSlot.PandoraUtil => RoleGenManager.PU,
-            RoleListSlot.RegularPandora => RoleGenManager.RegPandorica.GetAll(),
-            RoleListSlot.PowerPandora => RoleGenManager.PowerPandorica.GetAll(),
+            ListSlot.PandoraKill => RoleGenManager.PK,
+            ListSlot.PandoraConceal => RoleGenManager.PC,
+            ListSlot.PandoraDecep => RoleGenManager.PDe,
+            ListSlot.PandoraDisrup => RoleGenManager.PDi,
+            ListSlot.PandoraPower => RoleGenManager.PP,
+            ListSlot.PandoraSupport => RoleGenManager.PS,
+            ListSlot.PandoraUtil => RoleGenManager.PU,
+            ListSlot.RegularPandora => RoleGenManager.RegPandorica.GetAll(),
+            ListSlot.PowerPandora => RoleGenManager.PowerPandorica.GetAll(),
 
             // Illuminati Categories
-            RoleListSlot.IlluminatiKill => RoleGenManager.IlK,
-            RoleListSlot.IlluminatiConceal => RoleGenManager.IlC,
-            RoleListSlot.IlluminatiDecep => RoleGenManager.IlDe,
-            RoleListSlot.IlluminatiDisrup => RoleGenManager.IlDi,
-            RoleListSlot.IlluminatiPower => RoleGenManager.IP,
-            RoleListSlot.IlluminatiSupport => RoleGenManager.IlS,
-            RoleListSlot.IlluminatiUtil => RoleGenManager.IlU,
-            RoleListSlot.IlluminatiHead => RoleGenManager.IlHe,
-            RoleListSlot.RegularIlluminati => RoleGenManager.RegIlluminati.GetAll(),
-            RoleListSlot.PowerIlluminati => RoleGenManager.PowerIlluminati.GetAll(),
+            ListSlot.IlluminatiKill => RoleGenManager.IlK,
+            ListSlot.IlluminatiConceal => RoleGenManager.IlC,
+            ListSlot.IlluminatiDecep => RoleGenManager.IlDe,
+            ListSlot.IlluminatiDisrup => RoleGenManager.IlDi,
+            ListSlot.IlluminatiPower => RoleGenManager.IP,
+            ListSlot.IlluminatiSupport => RoleGenManager.IlS,
+            ListSlot.IlluminatiUtil => RoleGenManager.IlU,
+            ListSlot.IlluminatiHead => RoleGenManager.IlHe,
+            ListSlot.RegularIlluminati => RoleGenManager.RegIlluminati.GetAll(),
+            ListSlot.PowerIlluminati => RoleGenManager.PowerIlluminati.GetAll(),
 
             // Alignment Categories
-            RoleListSlot.NonCrew => RoleGenManager.NonCrew.GetAll().GetAll(),
-            RoleListSlot.NonNeutral => RoleGenManager.NonNeutral.GetAll().GetAll(),
-            RoleListSlot.NonIntruder => RoleGenManager.NonIntruders.GetAll().GetAll(),
-            RoleListSlot.NonSyndicate => RoleGenManager.NonSyndicate.GetAll().GetAll(),
-            RoleListSlot.NonPandora => RoleGenManager.NonPandorica.GetAll().GetAll(),
-            RoleListSlot.NonIlluminati => RoleGenManager.NonIlluminati.GetAll().GetAll(),
-            RoleListSlot.NonCompliance => RoleGenManager.NonCompliance.GetAll().GetAll(),
+            ListSlot.NonCrew => RoleGenManager.NonCrew.GetAll().GetAll(),
+            ListSlot.NonNeutral => RoleGenManager.NonNeutral.GetAll().GetAll(),
+            ListSlot.NonIntruder => RoleGenManager.NonIntruders.GetAll().GetAll(),
+            ListSlot.NonSyndicate => RoleGenManager.NonSyndicate.GetAll().GetAll(),
+            ListSlot.NonPandora => RoleGenManager.NonPandorica.GetAll().GetAll(),
+            ListSlot.NonIlluminati => RoleGenManager.NonIlluminati.GetAll().GetAll(),
+            ListSlot.NonCompliance => RoleGenManager.NonCompliance.GetAll().GetAll(),
 
             _ => null
         };
@@ -151,19 +151,19 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
     }
 
     // What the hell is this? What am I even doing man...
-    private static IEnumerable<RoleListSlot> GetPossibleValues(ListEntryAttribute self)
+    private static IEnumerable<ListSlot> GetPossibleValues(ListEntryAttribute self)
     {
         var bans = GetOptions<ListEntryAttribute>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
-        yield return RoleListSlot.None;
+        yield return ListSlot.None;
 
         if (!self.IsBan)
-            yield return RoleListSlot.Any;
+            yield return ListSlot.Any;
 
         switch (self.EntryType)
         {
             case PlayerLayerEnum.Role:
             {
-                foreach (var role in GetValuesFromTo(RoleListSlot.Altruist, RoleListSlot.Warper))
+                foreach (var role in GetValuesFromTo(ListSlot.Altruist, ListSlot.Warper))
                 {
                     if (!bans.Any(x => x.Value.Contains(role)))
                         yield return role;
@@ -172,46 +172,46 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
                 if (self.IsBan)
                     yield break;
 
-                foreach (var bucket in GetValuesFromTo(RoleListSlot.CrewSupport, RoleListSlot.NonCrew))
+                foreach (var bucket in GetValuesFromTo(ListSlot.CrewSupport, ListSlot.NonCrew))
                     yield return bucket;
 
                 if (GameModifiers.IlluminatiUnleashed)
                 {
-                    foreach (var bucket in GetValuesFromTo(RoleListSlot.IlluminatiKill, RoleListSlot.NonIlluminati))
+                    foreach (var bucket in GetValuesFromTo(ListSlot.IlluminatiKill, ListSlot.NonIlluminati))
                         yield return bucket;
 
-                    yield return RoleListSlot.NeutralBen;
-                    yield return RoleListSlot.NeutralEvil;
+                    yield return ListSlot.NeutralBen;
+                    yield return ListSlot.NeutralEvil;
                 }
                 else
                 {
                     if (GameModifiers.PandoricaOpens)
                     {
-                        foreach (var bucket in GetValuesFromTo(RoleListSlot.PandoraKill, RoleListSlot.NonPandora))
+                        foreach (var bucket in GetValuesFromTo(ListSlot.PandoraKill, ListSlot.NonPandora))
                             yield return bucket;
                     }
                     else
                     {
-                        foreach (var bucket in GetValuesFromTo(RoleListSlot.IntruderSupport, RoleListSlot.NonSyndicate))
+                        foreach (var bucket in GetValuesFromTo(ListSlot.IntruderSupport, ListSlot.NonSyndicate))
                             yield return bucket;
                     }
 
                     if (GameModifiers.OrderOfCompliance)
                     {
-                        foreach (var bucket in GetValuesFromTo(RoleListSlot.ComplianceKill, RoleListSlot.NonCompliance))
+                        foreach (var bucket in GetValuesFromTo(ListSlot.ComplianceKill, ListSlot.NonCompliance))
                             yield return bucket;
 
-                        foreach (var bucket in GetValuesFromTo(RoleListSlot.NeutralBen, RoleListSlot.RegularNeutral))
+                        foreach (var bucket in GetValuesFromTo(ListSlot.NeutralBen, ListSlot.RegularNeutral))
                             yield return bucket;
 
-                        yield return RoleListSlot.NonCompNeutral;
+                        yield return ListSlot.NonCompNeutral;
                     }
                     else
                     {
-                        foreach (var bucket in GetValuesFromTo(RoleListSlot.NeutralKill, RoleListSlot.HarmfulNeutral))
+                        foreach (var bucket in GetValuesFromTo(ListSlot.NeutralKill, ListSlot.HarmfulNeutral))
                             yield return bucket;
 
-                        yield return RoleListSlot.NonNeutral;
+                        yield return ListSlot.NonNeutral;
                     }
                 }
 
@@ -219,7 +219,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
             }
             case PlayerLayerEnum.Disposition:
             {
-                foreach (var disp in GetValuesFromTo(RoleListSlot.Allied, RoleListSlot.Traitor))
+                foreach (var disp in GetValuesFromTo(ListSlot.Allied, ListSlot.Traitor))
                 {
                     if (!bans.Any(x => x.Value.Contains(disp)))
                         yield return disp;
@@ -229,7 +229,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
             }
             case PlayerLayerEnum.Modifier:
             {
-                foreach (var mod in GetValuesFromTo(RoleListSlot.Astral, RoleListSlot.Yeller))
+                foreach (var mod in GetValuesFromTo(ListSlot.Astral, ListSlot.Yeller))
                 {
                     if (!bans.Any(x => x.Value.Contains(mod)))
                         yield return mod;
@@ -239,7 +239,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
             }
             case PlayerLayerEnum.Ability:
             {
-                foreach (var ab in GetValuesFromTo(RoleListSlot.Bullseye, RoleListSlot.Underdog))
+                foreach (var ab in GetValuesFromTo(ListSlot.Bullseye, ListSlot.Underdog))
                 {
                     if (!bans.Any(x => x.Value.Contains(ab)))
                         yield return ab;
@@ -250,13 +250,13 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
         }
     }
 
-    public static bool IsAdded(RoleListSlot value, ListEntryAttribute entry = null)
+    public static bool IsAdded(ListSlot value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => !x.IsBan);
         return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));
     }
 
-    public static bool IsBanned(RoleListSlot value, ListEntryAttribute entry = null)
+    public static bool IsBanned(ListSlot value, ListEntryAttribute entry = null)
     {
         var entries = GetOptions<ListEntryAttribute>().Where(x => x.IsBan);
         return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));

@@ -13,8 +13,8 @@ public sealed class Shapeshifter : Syndicate, IShaper
     public static bool ShapeshiftMates = false;
 
     private CustomButton ShapeshiftButton { get; set; }
-    public PlayerControl ShapeshiftPlayer1 { get; set; }
-    public PlayerControl ShapeshiftPlayer2 { get; set; }
+    public PlayerControl ShapeshiftPlayer1 { get; private set; }
+    public PlayerControl ShapeshiftPlayer2 { get; private set; }
     private CustomPlayerMenu ShapeshiftMenu1 { get; set; }
     private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
 

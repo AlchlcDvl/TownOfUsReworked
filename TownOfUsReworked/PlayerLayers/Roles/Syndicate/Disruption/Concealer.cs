@@ -14,7 +14,7 @@ public sealed class Concealer : Syndicate
     public static bool ConcealMates = false;
 
     private CustomButton ConcealButton { get; set; }
-    public PlayerControl ConcealedPlayer { get; set; }
+    private PlayerControl ConcealedPlayer { get; set; }
     private CustomPlayerMenu ConcealMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Concealer : FactionColor;

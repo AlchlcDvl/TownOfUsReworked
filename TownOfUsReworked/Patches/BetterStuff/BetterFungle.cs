@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches.BetterStuff;
 /// <summary>
 /// Provides enhanced functionality and customization options for the Fungle map's sabotage systems.
 /// </summary>
-[HeaderOption(MultiMenu.Main), HarmonyPatch(typeof(MushroomMixupSabotageSystem))]
+[HeaderOption(MultiMenu.Main), HarmonyPatch(typeof(MushroomMixupSabotageSystem)), Sorted(0)]
 public static class BetterFungle
 {
     /// <summary>
@@ -51,7 +51,7 @@ public static class BetterFungle
             __instance.Host_GenerateRandomOutfits();
             __instance.MushroomMixUp();
 
-            // Update sabotage state with a custom timer
+            // Update the sabotage state with a custom timer
             __instance.currentState = MushroomMixupSabotageSystem.State.JustTriggered;
             __instance.currentSecondsUntilHeal = FungleMixupTimer;
             __instance.IsDirty = true;

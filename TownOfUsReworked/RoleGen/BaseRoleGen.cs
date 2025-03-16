@@ -1,4 +1,3 @@
-using Cpp2IL.Core.Extensions;
 using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
@@ -33,7 +32,7 @@ public abstract class BaseRoleGen : BaseGen
             Message("Roles in the game: " + Join(" ", AllRoles.Select(ab => ab.ID)));
 
         while (players.Any() && AllRoles.Any())
-            Gen(players.RemoveAndReturn(0), AllRoles.RemoveAndReturn(0).ID, PlayerLayerEnum.Role);
+            Gen(players.TakeFirst(), AllRoles.TakeFirst().ID, PlayerLayerEnum.Role);
 
         AllRoles.Clear();
     }

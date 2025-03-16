@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomArrow : IDisposable
 {
-    protected ArrowBehaviour Arrow { get; set; }
+    protected ArrowBehaviour Arrow { get; private set; }
     private SpriteRenderer Render { get; set; }
     private GameObject ArrowObj { get; set; }
     public PlayerControl Owner { get; }
@@ -10,7 +10,7 @@ public class CustomArrow : IDisposable
     private SpriteRenderer Point { get; set; }
     private UColor ArrowColor { get; set; }
     private bool Disabled { get; set; }
-    protected Func<Vector3> Target { get; set; }
+    protected Func<Vector3> Target { get; init; }
 
     private float Time;
 

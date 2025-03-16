@@ -4,7 +4,7 @@ public sealed class Mafioso : Intruder
 {
     public Role FormerRole { get; init; }
     public Godfather Godfather { get; init; }
-    public bool CanPromote => (Godfather.Dead || Godfather.Disconnected) && !Dead;
+    private bool CanPromote => (Godfather.Dead || Godfather.Disconnected) && !Dead;
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Mafioso : FactionColor;
     public override LayerEnum Type => LayerEnum.Mafioso;

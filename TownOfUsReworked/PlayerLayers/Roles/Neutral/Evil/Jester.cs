@@ -7,10 +7,10 @@ public sealed class Jester : Evil
     public static bool JesterButton = true;
 
     [ToggleOption]
-    public static bool JesterVent = false;
+    private static bool JesterVent = false;
 
     [ToggleOption]
-    public static bool JestSwitchVent = false;
+    private static bool JestSwitchVent = false;
 
     [ToggleOption]
     public static bool JestEjectScreen = false;
@@ -27,6 +27,8 @@ public sealed class Jester : Evil
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => VotedOut;
+    public override bool CanVent => base.CanVent && JesterVent;
+    public override bool CanSwitchVents => JestSwitchVent;
     protected override WinLose EndState => WinLose.JesterWins;
 
     protected override void Init()

@@ -23,7 +23,7 @@ public sealed class Godfather : Intruder
         DeclareButton ??= new(this, new SpriteName("Promote"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
-    public void Declare(PlayerControl target)
+    private void Declare(PlayerControl target)
     {
         var allow = true;
 

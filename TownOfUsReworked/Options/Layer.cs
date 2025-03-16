@@ -141,15 +141,11 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         SavedMode = GameMode.None;
     }
 
-    private byte GetChance() => IsClassic() ? Value.Chance : (byte)0;
-
-    private byte GetCount() => IsClassic() ? Value.Count : (IsRoleList() ? (byte)GetOptions<ListEntryAttribute>().Count(x => x.Value.Equals(Layer) && !x.IsBan) : (byte)1);
-
     private void IncreaseCount()
     {
-        var chance = GetChance();
+        var chance = Value.Chance;
         var max = IsClassic() ? Max : Min;
-        var count = CycleByte(max, 0, GetCount(), true);
+        var count = CycleByte(max, 0, Value.Count, true);
 
         if (chance == 0 && count > 0)
             chance = CachedChance == 0 ? (byte)5 : CachedChance;
@@ -170,9 +166,9 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     private void DecreaseCount()
     {
-        var chance = GetChance();
+        var chance = Value.Chance;
         var max = IsClassic() ? Max : Min;
-        var count = CycleByte(max, 0, GetCount(), false);
+        var count = CycleByte(max, 0, Value.Count, false);
 
         if (chance == 0 && count > 0)
             chance = CachedChance == 0 ? (byte)5 : CachedChance;
@@ -193,8 +189,8 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     private void IncreaseChance()
     {
-        var count = GetCount();
-        var chance = CycleByte(100, 0, GetChance(), true, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
+        var count = Value.Count;
+        var chance = CycleByte(100, 0, Value.Chance, true, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
 
         if (chance == 0 && count > 0)
         {
@@ -212,8 +208,8 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
     private void DecreaseChance()
     {
-        var count = GetCount();
-        var chance = CycleByte(100, 0, GetChance(), false, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
+        var count = Value.Count;
+        var chance = CycleByte(100, 0, Value.Chance, false, Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10);
 
         if (chance == 0 && count > 0)
         {
@@ -274,8 +270,6 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
     {
         var val = Value;
         val.Active = !val.Active;
-        CachedCount = val.Count;
-        val.Count = 1;
         ActiveCheck.enabled = val.Active;
         Set(val);
     }
@@ -304,20 +298,8 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
     {
         base.PostLoadSetup();
         var value = new RoleOptionData(0, 0, false, false, Layer);
-
-        if (IsField)
-        {
-            Field.SetValue(null, value);
-            Value = Field.GetValue<RoleOptionData>(null);
-        }
-        else if (IsProperty)
-        {
-            Property.SetValue(null, value);
-            Value = Property.GetValue<RoleOptionData>(null);
-        }
-        else
-            Value = value;
-
+        Member.SetValue(null, value);
+        Value = Member.GetValue<RoleOptionData>(null);
         GroupHeader = GetOptions<LayerHeaderOptionAttribute>().Find(x => x.Layer == Layer);
     }
 

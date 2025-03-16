@@ -58,6 +58,8 @@ public static class MciUtils
         sampleC.Character.SetVisor("visor_EmptyVisor", colorId);
         sampleC.Character.SetHat("hat_NoHat", colorId);
 
+        sampleC.Character.isDummy = true;
+
         Clients.Add(sampleId, sampleC);
         PlayerClientIDs.Add(sampleC.Character.PlayerId, sampleId);
 

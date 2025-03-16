@@ -10,7 +10,7 @@ public sealed class NumberOptionAttribute(float min, float max, float increment,
     private float Increment { get; } = increment;
     private Format FormatEnum { get; } = format;
     private bool AllowHalf { get; set; } = allowHalf;
-    private bool ZeroIsInfinity { get; set; } = zeroIsInf;
+    private bool ZeroIsInfinity { get; } = zeroIsInf;
 
     private void Change(bool incrementing) => Set(CycleFloat(Max, Min, Value, incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f)));
 
@@ -48,10 +48,10 @@ public sealed class NumberOptionAttribute(float min, float max, float increment,
         var val = value == 0 && ZeroIsInfinity ? "<b>∞</b>" : $"{value:0.##}";
         return FormatEnum switch
         {
-            Data.Format.Time => $"{val}s",
-            Data.Format.Distance => $"{val}m",
-            Data.Format.Percent => $"{val:0}%",
-            Data.Format.Multiplier => $"x{val}",
+            Data.Enums.Format.Time => $"{val}s",
+            Data.Enums.Format.Distance => $"{val}m",
+            Data.Enums.Format.Percent => $"{val:0}%",
+            Data.Enums.Format.Multiplier => $"x{val}",
             _ => $"{val}"
         };
     }

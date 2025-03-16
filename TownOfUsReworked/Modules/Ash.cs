@@ -26,6 +26,8 @@ public sealed class Ash : IDisposable
         AllPiles.Add(this);
     }
 
+    ~Ash() => Destroy();
+
     private void Destroy()
     {
         if (!Pile)

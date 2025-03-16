@@ -13,18 +13,20 @@ public sealed class Survivor : Neutral
     private static Number MaxVests = 5;
 
     [ToggleOption]
-    public static bool SurvVent = false;
+    private static bool SurvVent = false;
 
     [ToggleOption]
-    public static bool SurvSwitchVent = false;
+    private static bool SurvSwitchVent = false;
 
     public CustomButton VestButton { get; private set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Survivor : FactionColor;
     public override LayerEnum Type => LayerEnum.Survivor;
     public override Func<string> StartText => () => "Do Whatever It Takes To Live";
-    public override Func<string> Description => () => "- You can put on a vest, which makes you unkillable for a short duration of time";
+    public override Func<string> Description => () => "- You can put on a vest, which gives you basic defense for a short duration of time";
     public override DefenseEnum DefenseVal => VestButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
+    public override bool CanVent => base.CanVent && SurvVent;
+    public override bool CanSwitchVents => SurvSwitchVent;
 
     protected override void Init()
     {

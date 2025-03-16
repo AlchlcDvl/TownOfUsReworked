@@ -25,7 +25,7 @@ public sealed class Whisperer : Neophyte
     private static Number WhisperRateDecrease = 5;
 
     [ToggleOption]
-    public static bool WhispVent = false;
+    private static bool WhispVent = false;
 
     [ToggleOption]
     public static bool PersuadedVent = false;
@@ -42,6 +42,7 @@ public sealed class Whisperer : Neophyte
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <#F995FCFF>Cult</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override bool CanVent => base.CanVent && WhispVent;
 
     protected override void Init()
     {

@@ -31,6 +31,7 @@ public sealed class Janitor : Intruder, IDragger
     public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Necessary";
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
         CommonAbilities;
+    public override bool CanVent => base.CanVent && ((int)JanitorVentOptions is 3 || (CurrentlyDragging && (int)JanitorVentOptions is 1) || (!CurrentlyDragging && (int)JanitorVentOptions is 2));
 
     protected override void Init()
     {
@@ -71,7 +72,6 @@ public sealed class Janitor : Intruder, IDragger
 
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, Player);
         DragHandler.StopDrag(Player);
-        CurrentlyDragging = null;
         DragButton.StartCooldown();
     }
 

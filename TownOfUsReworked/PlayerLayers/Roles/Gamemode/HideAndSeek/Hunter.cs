@@ -5,6 +5,8 @@ public sealed class Hunter : HideAndSeek
     public override LayerEnum Type => LayerEnum.Hunter;
     public override Func<string> StartText => () => "Hunt Them All Down";
     public override UColor Color => CustomColorManager.Hunter;
+    public override float VisionRange => Starting ? 0.001f : GameModeSettings.HunterVision;
+    public override bool CanVent => GameModeSettings.HunterVent;
 
     private CustomButton HuntButton { get; set; }
     private float StartingTimer { get; set; }

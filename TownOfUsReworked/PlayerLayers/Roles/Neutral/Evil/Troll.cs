@@ -10,10 +10,10 @@ public sealed class Troll : Evil
     private static Number InteractCd = 25;
 
     [ToggleOption]
-    public static bool TrollVent = false;
+    private static bool TrollVent = false;
 
     [ToggleOption]
-    public static bool TrollSwitchVent = false;
+    private static bool TrollSwitchVent = false;
 
     public bool Killed => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     private CustomButton InteractButton { get; set; }
@@ -25,6 +25,8 @@ public sealed class Troll : Evil
         + "except spread infection and possibly kill you via touch sensitive roles" : "");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => Killed;
+    public override bool CanVent => base.CanVent && TrollVent;
+    public override bool CanSwitchVents => TrollSwitchVent;
     protected override WinLose EndState => WinLose.TrollWins;
 
     protected override void Init()

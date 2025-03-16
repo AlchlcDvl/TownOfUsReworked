@@ -1,4 +1,3 @@
-using Cpp2IL.Core.Extensions;
 using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
@@ -27,7 +26,7 @@ public sealed class DispositionGen : BaseGen
         {
             foreach (var id in entry.Value)
             {
-                if (id == RoleListSlot.None)
+                if (id == ListSlot.None)
                     break;
 
                 var rateLimit = 0;
@@ -80,7 +79,7 @@ public sealed class DispositionGen : BaseGen
 
         while (playerList.Any() && AllDispositions.Any())
         {
-            var id = AllDispositions.RemoveAndReturn(0).ID;
+            var id = AllDispositions.TakeFirst().ID;
             var assigned = id switch
             {
                 LayerEnum.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),

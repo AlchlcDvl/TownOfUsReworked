@@ -2,22 +2,16 @@ namespace TownOfUsReworked.Options;
 
 public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribute(type)
 {
+    public T Value { get; protected set; }
+
     protected Type TargetType { get; } = typeof(T);
 
     public static implicit operator T(OptionAttribute<T> opt) => opt.Value;
 
-    public T Value { get; protected set; }
-
-    public override void SetProperty(PropertyInfo property)
+    public override void Set(MemberInfo member)
     {
-        base.SetProperty(property);
-        Value = property.GetValue<T>(null);
-    }
-
-    public override void SetField(FieldInfo field)
-    {
-        base.SetField(field);
-        Value = field.GetValue<T>(null);
+        base.Set(member);
+        Value = member.GetValue<T>(null);
     }
 
     public override string ToString() => $"{ID}:{ValueString()}";
@@ -29,18 +23,8 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
         if (IsInGame() && !(ClientOnly || TownOfUsReworked.MciActive))
             return;
 
-        if (IsProperty)
-        {
-            Property.SetValue(null, value);
-            Value = Property.GetValue<T>(null);
-        }
-        else if (IsField)
-        {
-            Field.SetValue(null, value);
-            Value = Field.GetValue<T>(null);
-        }
-        else
-            Value = value;
+        Member.SetValue(null, value);
+        Value = Member.GetValue<T>(null);
 
         if (!CustomPlayer.Local)
             return;

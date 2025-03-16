@@ -16,7 +16,7 @@ public sealed class Cryomaniac : NKilling
     private static Number VaporiseCd = 25;
 
     [ToggleOption]
-    public static bool CryoVent = false;
+    private static bool CryoVent = false;
 
     private CustomButton FreezeButton { get; set; }
     private CustomButton DouseButton { get; set; }
@@ -33,6 +33,7 @@ public sealed class Cryomaniac : NKilling
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override bool CanVent => base.CanVent && CryoVent;
 
     protected override void Init()
     {

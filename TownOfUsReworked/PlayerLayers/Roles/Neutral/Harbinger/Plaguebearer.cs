@@ -7,7 +7,7 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
     private static Number InfectCd = 25;
 
     [ToggleOption]
-    public static bool PbVent = false;
+    private static bool PbVent = false;
 
     public List<byte> Infected { get; } = [];
     private CustomButton InfectButton { get; set; }
@@ -18,6 +18,7 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
     public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <#424242FF>Pestilence</color>\n- Infections can "
         + "spread via interaction between players";
     public override DefenseEnum DefenseVal => Infected.Count < GameData.Instance.PlayerCount / 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override bool CanVent => base.CanVent && PbVent;
 
     protected override void Init()
     {
@@ -40,21 +41,13 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
         if (Infected.Contains(source.PlayerId) == Infected.Contains(target.PlayerId))
             return;
 
-        byte id = 0;
-        var changed = false;
+        byte id;
 
         if (Infected.Contains(source.PlayerId) || source.Is<Plaguebearer>())
-        {
             id = target.PlayerId;
-            changed = true;
-        }
         else if (Infected.Contains(target.PlayerId) || target.Is<Plaguebearer>())
-        {
             id = source.PlayerId;
-            changed = true;
-        }
-
-        if (!changed)
+        else
             return;
 
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, id);

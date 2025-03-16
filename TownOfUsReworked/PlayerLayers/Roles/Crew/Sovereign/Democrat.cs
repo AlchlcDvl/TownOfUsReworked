@@ -1,13 +1,13 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Democrat)]
-public sealed class Democrat : Role, IRevealer
+public sealed class Democrat : Crew, IRevealer
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number CampaignCd = 25;
 
     [ToggleOption]
-    public static bool RoundOneNoCampaigning = false;
+    private static bool RoundOneNoCampaigning = false;
 
     [ToggleOption]
     public static bool DemocratButton = true;
@@ -16,7 +16,7 @@ public sealed class Democrat : Role, IRevealer
     private CustomButton RevealButton { get; set; }
     private CustomButton CampaignButton { get; set; }
     public bool Revealed { get; set; }
-    public bool RoundOne { get; set; }
+    private bool RoundOne { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Democrat : FactionColor;
     public override LayerEnum Type => LayerEnum.Democrat;

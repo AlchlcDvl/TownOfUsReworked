@@ -2,6 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Neophyte : Neutral
 {
+    public override bool AffectedByLights => NeutralNeophyteSettings.NnHaveImpVision;
+
     public List<byte> Members { get; } = [];
 
     protected override void Init()

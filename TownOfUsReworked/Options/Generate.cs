@@ -1,7 +1,13 @@
 namespace TownOfUsReworked.Options;
 
+/// <summary>
+/// The static class to generate option data during game initialisation.
+/// </summary>
 public static class Generate
 {
+    /// <summary>
+    /// Called to generate the necessary data for the game options. This takes place only once and during game initialisation.
+    /// </summary>
     public static void GenerateAll()
     {
         // Might lead to initial performance issues trying to look through like, 200+ types
@@ -16,6 +22,9 @@ public static class Generate
         // Fixing up accidental duped IDs, this ensures that every ID is unique (I hope)
         foreach (var opts in OptionAttribute.AllOptions.SplitBy(x => x.ID))
         {
+            if (opts.Count() == 1)
+                continue;
+
             foreach (var (index, opt) in opts.Indexed())
             {
                 var toAdd = index == 0 ? "" : $"{index}";
@@ -31,14 +40,14 @@ public static class Generate
             option.Debug();
         }
 
-        Enum.GetValues<RoleListSlot>().ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
+        Enum.GetValues<ListSlot>().ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
 
-        OptionAttribute.SortedOptions.AddRange(OptionAttribute.GetOptions<BaseHeaderOptionAttribute>().OrderBy(x => x.Priority)); // Sorting for headers
+        OptionAttribute.SortedOptions.AddRange(OptionAttribute.GetOptions<BaseHeaderOptionAttribute>().OrderBy(x => x.Order)); // Sorting for headers
 
         OptionAttribute.SaveSettings("Default");
 
         OptionAttribute.LoadPreset("LastUsed", null);
 
-        Success($"There exist {OptionAttribute.AllOptions.Count(x => x is not BaseHeaderOptionAttribute)} total options out of {OptionAttribute.AllOptions.Count} (number jumpscare lmao)");
+        Success($"There exist {OptionAttribute.AllOptions.Count - OptionAttribute.SortedOptions.Count} total options with {OptionAttribute.SortedOptions.Count} headers (number jumpscare lmao)");
     }
 }

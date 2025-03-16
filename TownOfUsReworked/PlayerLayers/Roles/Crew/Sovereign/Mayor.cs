@@ -13,10 +13,10 @@ public sealed class Mayor : Crew, IRevealer
     public static bool MayorDirectSpawn = true;
 
     [ToggleOption]
-    public static bool RoundOneNoReveal = true;
+    private static bool RoundOneNoReveal = true;
 
     public bool Revealed { get; set; }
-    public bool RoundOne { get; set; }
+    private bool RoundOne { get; set; }
     private CustomButton RevealButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mayor : FactionColor;

@@ -10,10 +10,10 @@ public sealed class Guesser : Evil, IGuesser
     public static bool GuesserButton = true;
 
     [ToggleOption]
-    public static bool GuessVent = false;
+    private static bool GuessVent = false;
 
     [ToggleOption]
-    public static bool GuessSwitchVent = false;
+    private static bool GuessSwitchVent = false;
 
     [ToggleOption]
     public static bool GuessTargetKnows = false;
@@ -36,7 +36,7 @@ public sealed class Guesser : Evil, IGuesser
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
     private List<string> Letters { get; } = [];
-    public int Rounds { get; set; }
+    private int Rounds { get; set; }
     private CustomButton TargetButton { get; set; }
     private bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
     public CustomMeeting GuessMenu { get; private set; }
@@ -49,6 +49,8 @@ public sealed class Guesser : Evil, IGuesser
         $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetGuessed;
+    public override bool CanVent => base.CanVent && GuessVent;
+    public override bool CanSwitchVents => GuessSwitchVent;
     protected override WinLose EndState => WinLose.GuesserWins;
 
     protected override void Init()

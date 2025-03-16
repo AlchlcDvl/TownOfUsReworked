@@ -1,4 +1,4 @@
-using Cpp2IL.Core.Extensions;
+using LibCpp2IL;
 
 namespace TownOfUsReworked.Extensions;
 
@@ -18,6 +18,10 @@ public static class CollectionExtensions
             (list[r], list[i]) = (list[i], list[r]);
         }
     }
+
+    public static T TakeFirst<T>(this List<T> list) => list.RemoveAndReturn(0);
+
+    public static T TakeLast<T>(this List<T> list) => list.RemoveAndReturn(list.Count - 1);
 
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
 

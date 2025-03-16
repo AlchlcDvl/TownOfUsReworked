@@ -21,7 +21,7 @@ public static class TranslationManager
 
         try
         {
-            var result = AllTranslations[id][language]; // Get and translate the result
+            var result = AllTranslations[id.ToLower()][language]; // Get and translate the result
             toReplace.ForEach(x => result = result.Replace(x.Key, x.Value)); // Replace the placeholders with the given values
             return result;
         }
@@ -38,10 +38,12 @@ public static class TranslationManager
 
     // public static string Translate(string id, string language, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, language);
 
-    public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
+    public static bool IdExists(string id) => AllTranslations.ContainsKey(id.ToLower());
 
     public static void DebugId(string id)
     {
+        id = id.ToLower();
+
         if (IdExists(id) || MissingIds.Contains(id))
             return;
 
@@ -51,6 +53,8 @@ public static class TranslationManager
 
     private static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
+        id = id.ToLower();
+
         if (LastID == -1)
             LastID = NextID = (int)Enum.GetValues<StringNames>().Last(); // Getting the very last enum value and casting it to int
 
@@ -85,6 +89,7 @@ public static class TranslationManager
         if (VanillaToCustomMap.TryGetValue(id, out var customId))
             id = customId;
 
+        // Finding replacements that change in value at certain times or are to be invoked later due to delayed stuff
         (string Key, Func<string> Value)[] replacements = null;
         var hasReplacements = CustomStringNames.TryGetValue(id, out var val) && ReplacementsMap.TryGetValue(val, out replacements);
 

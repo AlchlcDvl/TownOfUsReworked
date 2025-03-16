@@ -86,7 +86,7 @@ public sealed class Achievement(string name, bool unlocked = false, bool hidden 
     public bool Unlocked { get; set; } = unlocked;
 }
 
-[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]
 public sealed class SortedAttribute(int order) : Attribute
 {
     public int Order { get; } = order;

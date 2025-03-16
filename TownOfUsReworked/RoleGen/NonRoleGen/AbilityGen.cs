@@ -1,4 +1,3 @@
-using Cpp2IL.Core.Extensions;
 using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
@@ -27,7 +26,7 @@ public sealed class AbilityGen : BaseGen
         {
             foreach (var id in entry.Value)
             {
-                if (id == RoleListSlot.None)
+                if (id == ListSlot.None)
                     break;
 
                 var rateLimit = 0;
@@ -80,7 +79,7 @@ public sealed class AbilityGen : BaseGen
 
         while (playerList.Any() && AllAbilities.Any())
         {
-            var id = AllAbilities.RemoveAndReturn(0).ID;
+            var id = AllAbilities.TakeFirst().ID;
             var assigned = id switch
             {
                 LayerEnum.Snitch => playerList.FirstOrDefault(x => x.Is(Faction.Crew) && !x.Is<Traitor>() && !x.Is<Fanatic>()),

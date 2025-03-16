@@ -23,70 +23,25 @@ public static class CalculateLightRadiusPatch
         }
 
         var pc = player.Object;
-        var role = pc.GetRole();
+        var t = __instance.MaxLightRadius;
 
-        if (!role)
+        if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system) && system.TryCast<SwitchSystem>(out var lights))
+            t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, lights.Level);
+
+        if (pc.TryGetLayer<Role>(out var role))
         {
-            __result = __instance.MaxLightRadius * (pc.IsImpostor() ? TownOfUsReworked.NormalOptions.ImpostorLightMod : TownOfUsReworked.NormalOptions.CrewLightMod);
-            return false;
+            if (pc.Is<Torch>() || !role.AffectedByLights)
+                t = __instance.MaxLightRadius;
+
+            t *= role.VisionRange;
         }
-
-        if (role.Faction == Faction.Intruder || (role is NKilling && NeutralKillingSettings.NkHaveImpVision) || pc.Is<Torch>() || (role.Alignment == Alignment.Neophyte &&
-            NeutralNeophyteSettings.NnHaveImpVision) || (role.Alignment == Alignment.Harbinger && NeutralHarbingerSettings.NhHaveImpVision) || (role.Alignment == Alignment.Evil &&
-            NeutralEvilSettings.NeHaveImpVision) || role.Alignment == Alignment.Apocalypse)
-        {
-            __result = __instance.MaxLightRadius * IntruderSettings.IntruderVision;
-        }
-        else switch (role.Faction)
-        {
-            case Faction.Syndicate:
-            {
-                __result = __instance.MaxLightRadius * SyndicateSettings.SyndicateVision;
-                break;
-            }
-            case Faction.Neutral when !NeutralSettings.LightsAffectNeutrals:
-            {
-                __result = __instance.MaxLightRadius * NeutralSettings.NeutralVision;
-                break;
-            }
-            default:
-            {
-                switch (role)
-                {
-                    case Runner:
-                    {
-                        __result = __instance.MaxLightRadius;
-                        break;
-                    }
-                    case Hunted:
-                    {
-                        __result = __instance.MaxLightRadius * GameModeSettings.HuntedVision;
-                        break;
-                    }
-                    case Hunter hunter:
-                    {
-                        __result = __instance.MaxLightRadius * (hunter.Starting ? 0.01f : GameModeSettings.HunterVision);
-                        break;
-                    }
-                    default:
-                    {
-                        var t = __instance.MaxLightRadius;
-
-                        if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system) && system.TryCast<SwitchSystem>(out var lights))
-                            t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, lights.Level);
-
-                        __result = t * (role.Faction == Faction.Neutral ? NeutralSettings.NeutralVision : CrewSettings.CrewVision);
-                        break;
-                    }
-                }
-
-                break;
-            }
-        }
+        else
+            t *= (player.IsImpostor() ? TownOfUsReworked.NormalOptions.ImpostorLightMod : TownOfUsReworked.NormalOptions.CrewLightMod);
 
         if (MapPatches.CurrentMap is 0 or 3 or 6 && MapSettings.SmallMapHalfVision && !IsTaskRace() && !IsCustomHnS())
-            __result *= 0.5f;
+            t *= 0.5f;
 
+        __result = t;
         return false;
     }
 }

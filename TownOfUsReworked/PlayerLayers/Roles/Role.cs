@@ -9,6 +9,9 @@ public abstract class Role : PlayerLayer
 
     public virtual Func<string> StartText => () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
+    public virtual float VisionRange => 1f;
+    public virtual bool AffectedByLights => true;
+    public virtual bool CanSwitchVents => true;
 
     public virtual List<PlayerControl> Team()
     {
@@ -31,10 +34,10 @@ public abstract class Role : PlayerLayer
         return team;
     }
 
-    /*private static bool PlatformIsUsed;
-    public static bool IsLeft;
-    private static bool PlayerIsLeft;
-    public CustomButton CallButton { get; set; }*/
+    // private static bool PlatformIsUsed;
+    // public static bool IsLeft;
+    // private static bool PlayerIsLeft;
+    // public CustomButton CallButton { get; set; }
 
     // public static bool RoleWins => WinState is WinLose.SerialKillerWins or WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.MurdererWins or WinLose.BetrayerWins or
     //     WinLose.PhantomWins or WinLose.WerewolfWins or WinLose.ActorWins or WinLose.BountyHunterWins or WinLose.CannibalWins or WinLose.TrollWins or WinLose.ExecutionerWins or
@@ -127,7 +130,7 @@ public abstract class Role : PlayerLayer
     public bool Requesting { get; set; }
     public PlayerControl Requestor { get; set; }
     private CustomButton PlaceHitButton { get; set; }
-    public int BountyTimer { get; set; }
+    private int BountyTimer { get; set; }
 
     private bool TrulyDeadPriv;
     public bool TrulyDead
@@ -172,11 +175,11 @@ public abstract class Role : PlayerLayer
         Positions.Clear();
         YellerArrows.Clear();
 
-        /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
-        {
-            CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
-                (ConditionFunc)CallCondition);
-        }*/
+        // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
+        // {
+        //     CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
+        //         (ConditionFunc)CallCondition);
+        // }
 
         if (GameModeSettings.GameMode is GameMode.HideAndSeek or GameMode.TaskRace)
             return;

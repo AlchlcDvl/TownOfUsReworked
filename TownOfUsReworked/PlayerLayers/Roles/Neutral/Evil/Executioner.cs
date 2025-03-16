@@ -10,16 +10,16 @@ public sealed class Executioner : Evil
     public static bool ExecutionerButton = true;
 
     [ToggleOption]
-    public static bool ExeVent = false;
+    private static bool ExeVent = false;
 
     [ToggleOption]
-    public static bool ExeSwitchVent = false;
+    private static bool ExeSwitchVent = false;
 
     [ToggleOption]
     public static bool ExeTargetKnows = false;
 
     [ToggleOption]
-    public static bool ExeKnowsTargetRole = false;
+    private static bool ExeKnowsTargetRole = false;
 
     [ToggleOption]
     public static bool ExeEjectScreen = false;
@@ -37,7 +37,7 @@ public sealed class Executioner : Evil
     private CustomButton DoomButton { get; set; }
     private bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !NeutralSettings.AvoidNeutralKingmakers;
     private bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
-    public int Rounds { get; set; }
+    private int Rounds { get; set; }
     private CustomButton TargetButton { get; set; }
     private bool TargetFailed => !TargetPlayer && Rounds > 2;
 
@@ -48,6 +48,8 @@ public sealed class Executioner : Evil
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetVotedOut;
+    public override bool CanVent => base.CanVent && ExeVent;
+    public override bool CanSwitchVents => ExeSwitchVent;
     protected override WinLose EndState => WinLose.ExecutionerWins;
 
     protected override void Init()

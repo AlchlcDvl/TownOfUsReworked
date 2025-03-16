@@ -1214,9 +1214,31 @@ public static class MiscUtils
         passive.OnMouseOver = new();
     }
 
-    public static T GetValue<T>(this PropertyInfo prop, object obj) => (T)prop.GetValue(obj);
+    public static T GetValue<T>(this MemberInfo member, object obj) => member switch
+    {
+        FieldInfo field => (T)field.GetValue(obj),
+        PropertyInfo prop => (T)prop.GetValue(obj),
+        _ => throw new ArgumentException($"Either the member doesn't have a defined GetValue method, or the value can't be fetched for this member: {member.GetType().Name}")
+    };
 
-    public static T GetValue<T>(this FieldInfo field, object obj) => (T)field.GetValue(obj);
+    public static void SetValue(this MemberInfo member, object obj, object value)
+    {
+        switch (member)
+        {
+            case PropertyInfo prop:
+            {
+                prop.SetValue(obj, value);
+                break;
+            }
+            case FieldInfo field:
+            {
+                field.SetValue(obj, value);
+                break;
+            }
+            default:
+                throw new ArgumentException($"Either the member doesn't have a defined SetValue method, or the value can't be fetched for this member: {member.GetType().Name}");
+        }
+    }
 
     public static Transform FindRecursive(this Transform self, string exactName) => self.FindRecursive(child => child.name == exactName);
 
@@ -1437,6 +1459,8 @@ public static class MiscUtils
 
     public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
 
+    // public static bool CanCast<T>(this Il2CppObjectBase obj) where T : Il2CppObjectBase => obj.TryCast<T>() != null;
+
     public static void AnimatePortal(PlayerControl player, float duration)
     {
         if (PortalPaths.Length > 0 && !IsNullEmptyOrWhiteSpace(PortalPaths[0]))
@@ -1515,9 +1539,9 @@ public static class MiscUtils
     //     return @string;
     // }
 
-    public static bool TryCastToLayer(this RoleListSlot slot, out LayerEnum layer) => Enum.TryParse($"{slot}", out layer);
+    public static bool TryCastToLayer(this ListSlot slot, out LayerEnum layer) => Enum.TryParse($"{slot}", out layer);
 
-    public static RoleListSlot CastToSlot(this LayerEnum layer) => Enum.Parse<RoleListSlot>($"{layer}");
+    public static ListSlot CastToSlot(this LayerEnum layer) => Enum.Parse<ListSlot>($"{layer}");
 
     public static string Join(char separator, params object[] values) => Join<object>(separator, values);
 
@@ -1537,8 +1561,8 @@ public static class MiscUtils
 
     // public static bool TryCast(this Il2CppObjectBase obj, Type type, out object result) => (result = obj.TryCast(type)) != null;
 
-    public static IEnumerable<RoleListSlot> GetValues(this IEnumerable<Enum> enums) => enums.Where(x => Enum.TryParse<RoleListSlot>(x.ToString(), out _)).Select(x =>
-        Enum.Parse<RoleListSlot>(x.ToString()));
+    public static IEnumerable<ListSlot> GetValues(this IEnumerable<Enum> enums) => enums.Where(x => Enum.TryParse<ListSlot>(x.ToString(), out _)).Select(x =>
+        Enum.Parse<ListSlot>(x.ToString()));
 
     // public static IEnumerator WaitUntil(Func<bool> predicate)
     // {

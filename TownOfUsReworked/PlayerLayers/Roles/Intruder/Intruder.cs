@@ -8,6 +8,8 @@ public abstract class Intruder : Role
 
     public override UColor Color => CustomColorManager.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override float VisionRange => IntruderSettings.IntruderVision;
+    public override bool CanVent => IntruderSettings.IntrudersVent;
 
     protected override void Init()
     {

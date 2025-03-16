@@ -63,16 +63,14 @@ public static class PerformSabotage
         if (!CustomPlayer.Local.CanSabotage())
             return false;
 
-        var blocked = LocalNotBlocked();
-
-        switch (blocked)
+        switch (LocalBlocked())
         {
-            case false:
+            case true:
             {
                 BlockExposed = true;
                 break;
             }
-            case true when !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled():
+            case false when !CustomPlayer.Local.inVent && GameManager.Instance.SabotagesEnabled():
             {
                 HUD().ToggleMapVisible(new() { Mode = MapOptions.Modes.Sabotage });
                 break;
@@ -89,7 +87,7 @@ public static class PerformKill
     public static bool Prefix() => IsHnS();
 }
 
-[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+[HarmonyPatch(typeof(HudManager))]
 public static class Blocked
 {
     private static GameObject UseBlock;
@@ -98,7 +96,36 @@ public static class Blocked
     private static GameObject VentBlock;
     private static GameObject ReportBlock;
 
-    public static void Postfix(HudManager __instance)
+    public static GameObject BlockPrefab;
+
+    [HarmonyPatch(nameof(HudManager.Start)), HarmonyPostfix]
+    public static void StartPostfix(HudManager __instance)
+    {
+        if (!BlockPrefab)
+        {
+            BlockPrefab = new GameObject("BlockPrefab").DontDestroy().DontUnload();
+            BlockPrefab.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+            BlockPrefab.SetActive(false);
+        }
+
+        if (!ReportBlock)
+            ReportBlock = __instance.ReportButton.SetBlock();
+
+        if (!UseBlock)
+            UseBlock = __instance.UseButton.SetBlock();
+
+        if (!PetBlock)
+            PetBlock = __instance.PetButton.SetBlock();
+
+        if (!SaboBlock)
+            SaboBlock = __instance.SabotageButton.SetBlock();
+
+        if (!VentBlock)
+            VentBlock = __instance.ImpostorVentButton.SetBlock();
+    }
+
+    [HarmonyPatch(nameof(HudManager.Update)), HarmonyPostfix]
+    public static void UpdatePostfix(HudManager __instance)
     {
         if (!CustomPlayer.Local || IsLobby() || !Ship())
             return;
@@ -108,105 +135,11 @@ public static class Blocked
         else
             return;
 
-        if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
-        {
-            UseBlock = new("UseBlock");
-            UseBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-            UseBlock.transform.localScale *= 0.75f;
-            UseBlock.transform.localPosition = new(0f, 0f, 5f);
-            UseBlock.transform.SetParent(__instance.UseButton.transform);
-            var passive = __instance.UseButton.GetComponent<PassiveButton>();
-            passive.HoverSound = GetAudio("Hover");
-            passive.ClickSound = GetAudio("Click");
-        }
-
-        if (UseBlock)
-        {
-            var pos = __instance.UseButton.transform.position;
-            pos.z = 50f;
-            UseBlock.transform.position = pos;
-            UseBlock.SetActive(BlockExposed && __instance.UseButton.isActiveAndEnabled);
-        }
-
-        if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
-        {
-            PetBlock = new("PetBlock");
-            PetBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-            PetBlock.transform.localScale *= 0.75f;
-            PetBlock.transform.localPosition = new(0f, 0f, 5f);
-            PetBlock.transform.SetParent(__instance.PetButton.transform);
-            var passive = __instance.PetButton.GetComponent<PassiveButton>();
-            passive.HoverSound = GetAudio("Hover");
-            passive.ClickSound = GetAudio("Click");
-        }
-
-        if (PetBlock)
-        {
-            var pos = __instance.PetButton.transform.position;
-            pos.z = 50f;
-            PetBlock.transform.position = pos;
-            PetBlock.SetActive(BlockExposed && __instance.PetButton.isActiveAndEnabled);
-        }
-
-        if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
-        {
-            SaboBlock = new("SaboBlock");
-            SaboBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-            SaboBlock.transform.localScale *= 0.75f;
-            SaboBlock.transform.localPosition = new(0f, 0f, 5f);
-            SaboBlock.transform.SetParent(__instance.SabotageButton.transform);
-            var passive = __instance.SabotageButton.GetComponent<PassiveButton>();
-            passive.HoverSound = GetAudio("Hover");
-            passive.ClickSound = GetAudio("Click");
-        }
-
-        if (SaboBlock)
-        {
-            var pos = __instance.SabotageButton.transform.position;
-            pos.z = 50f;
-            SaboBlock.transform.position = pos;
-            SaboBlock.SetActive(BlockExposed && __instance.SabotageButton.isActiveAndEnabled);
-        }
-
-        if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
-        {
-            VentBlock = new("VentBlock");
-            VentBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-            VentBlock.transform.localScale *= 0.75f;
-            VentBlock.transform.localPosition = new(0f, 0f, 5f);
-            VentBlock.transform.SetParent(__instance.ImpostorVentButton.transform);
-            var passive = __instance.ImpostorVentButton.GetComponent<PassiveButton>();
-            passive.HoverSound = GetAudio("Hover");
-            passive.ClickSound = GetAudio("Click");
-        }
-
-        if (VentBlock)
-        {
-            var pos = __instance.ImpostorVentButton.transform.position;
-            pos.z = 50f;
-            VentBlock.transform.position = pos;
-            VentBlock.SetActive(BlockExposed && __instance.ImpostorVentButton.isActiveAndEnabled);
-        }
-
-        if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
-        {
-            ReportBlock = new("ReportBlock");
-            ReportBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-            ReportBlock.transform.localScale *= 0.75f;
-            ReportBlock.transform.localPosition = new(0f, 0f, 5f);
-            ReportBlock.transform.SetParent(__instance.ReportButton.transform);
-            var passive = __instance.ReportButton.GetComponent<PassiveButton>();
-            passive.HoverSound = GetAudio("Hover");
-            passive.ClickSound = GetAudio("Click");
-        }
-
-        if (ReportBlock)
-        {
-            var pos = __instance.ReportButton.transform.position;
-            pos.z = 50f;
-            ReportBlock.transform.position = pos;
-            ReportBlock.SetActive(BlockExposed && __instance.ReportButton.isActiveAndEnabled);
-        }
+        UseBlock.SetActive(BlockExposed);
+        PetBlock.SetActive(BlockExposed);
+        SaboBlock.SetActive(BlockExposed);
+        VentBlock.SetActive(BlockExposed);
+        ReportBlock.SetActive(BlockExposed);
 
         if (!IsHnS())
             __instance.KillButton.ToggleVisible(false);
@@ -234,14 +167,14 @@ public static class Blocked
 
         __instance.UseButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "USE";
 
-        if (BlockExposed || CustomPlayer.Local.CannotUse())
+        if (CustomPlayer.Local.CannotUse() || BlockExposed)
             __instance.PetButton.SetDisabled();
         else
             __instance.PetButton.SetEnabled();
 
         __instance.PetButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "PET";
 
-        if (CustomPlayer.Local.CannotUse() || !CustomPlayer.Local.CanSabotage())
+        if (CustomPlayer.Local.CannotUse() || !CustomPlayer.Local.CanSabotage() || BlockExposed)
             __instance.SabotageButton.SetDisabled();
         else
             __instance.SabotageButton.SetEnabled();
@@ -258,5 +191,15 @@ public static class Blocked
 
         __instance.FullScreen.enabled = true;
         __instance.FullScreen.gameObject.SetActive(true);
+    }
+
+    private static GameObject SetBlock(this ActionButton button)
+    {
+        var passive = button.GetComponent<PassiveButton>();
+        passive.HoverSound = GetAudio("Hover");
+        passive.ClickSound = GetAudio("Click");
+        var block = UObject.Instantiate(BlockPrefab, button.transform);
+        block.transform.SetLocalZ(-5f);
+        return block;
     }
 }

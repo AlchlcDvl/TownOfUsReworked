@@ -220,7 +220,6 @@ public static class CustomStatsManager
         if (MapMap.TryGetValue(stat, out var map))
             return GetMapWins(map);
 
-        // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
         switch (stat)
         {
             case StringNames.StatsFastestCrewmateWin_HideAndSeek:

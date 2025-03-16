@@ -37,7 +37,7 @@ public sealed class Bastion : Crew, IVentBomber
         _ => "Metal"
     };
 
-    public bool Exception(Vent vent) => BombedIDs.Contains(vent.Id);
+    private bool Exception(Vent vent) => BombedIDs.Contains(vent.Id);
 
     private void Bomb(Vent target)
     {

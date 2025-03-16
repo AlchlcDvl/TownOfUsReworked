@@ -68,7 +68,7 @@ public abstract class AssetLoader
         yield return new BundleLoader().CoFetch(hasher);
     }
 
-    public static bool ShouldDownload(string file, string hash, HashAlgorithm hasher) => IsNullEmptyOrWhiteSpace(hash) || !File.Exists(file) || GenerateHash(file, hasher) != hash;
+    protected static bool ShouldDownload(string file, string hash, HashAlgorithm hasher) => IsNullEmptyOrWhiteSpace(hash) || !File.Exists(file) || GenerateHash(file, hasher) != hash;
 
     protected static string GenerateHash(string file, HashAlgorithm hasher) => File.Exists(file) ? BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(file))).Replace("-", "")
         .ToLowerInvariant() : null;

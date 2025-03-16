@@ -71,33 +71,33 @@ public static class ChatPatches
         {
             var chat = bubble.Cast<ChatBubble>();
 
-            if (chat.NameText && IsInGame())
+            if (!chat.NameText || !IsInGame())
+                continue;
+
+            foreach (var player in AllPlayers())
             {
-                foreach (var player in AllPlayers())
+                if (!chat.NameText.text.Contains(player.name))
+                    continue;
+
+                var role = player.GetRole();
+
+                if (role)
                 {
-                    if (chat.NameText.text.Contains(player.name))
+                    if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
+                        CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player.AmOwner)
                     {
-                        var role = player.GetRole();
-
-                        if (role)
-                        {
-                            if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
-                                CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player.AmOwner)
-                            {
-                                chat.NameText.color = role.Color;
-                            }
-                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) && !GameModifiers.FactionSeeRoles)
-                                chat.NameText.color = role.FactionColor;
-                            else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !GameModifiers.FactionSeeRoles)
-                                chat.NameText.color = role.SubFactionColor;
-                            else
-                                chat.NameText.color = UColor.white;
-                        }
-
-                        if (GameModifiers.Whispers && !chat.NameText.text.StartsWith($"[#{player.PlayerId}]"))
-                            chat.NameText.text = $"[#{player.PlayerId}] {chat.NameText.text}";
+                        chat.NameText.color = role.Color;
                     }
+                    else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) && !GameModifiers.FactionSeeRoles)
+                        chat.NameText.color = role.FactionColor;
+                    else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !GameModifiers.FactionSeeRoles)
+                        chat.NameText.color = role.SubFactionColor;
+                    else
+                        chat.NameText.color = UColor.white;
                 }
+
+                if (GameModifiers.Whispers && !chat.NameText.text.StartsWith($"[#{player.PlayerId}]"))
+                    chat.NameText.text = $"[#{player.PlayerId}] {chat.NameText.text}";
             }
         }
     }
@@ -132,17 +132,17 @@ public static class ChatPatches
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.DownArrow) && ChatHistory.Any())
-        {
-            CurrentHistorySelection++;
+        if (!Input.GetKeyDown(KeyCode.DownArrow) || !ChatHistory.Any())
+            return;
 
-            if (CurrentHistorySelection < ChatHistory.Count)
-                __instance.freeChatField.textArea.SetText(ChatHistory[CurrentHistorySelection]);
-            else if (CurrentHistorySelection == ChatHistory.Count)
-            {
-                __instance.freeChatField.textArea.SetText("");
-                CurrentHistorySelection = 0;
-            }
+        CurrentHistorySelection++;
+
+        if (CurrentHistorySelection < ChatHistory.Count)
+            __instance.freeChatField.textArea.SetText(ChatHistory[CurrentHistorySelection]);
+        else if (CurrentHistorySelection == ChatHistory.Count)
+        {
+            __instance.freeChatField.textArea.SetText("");
+            CurrentHistorySelection = 0;
         }
     }
 

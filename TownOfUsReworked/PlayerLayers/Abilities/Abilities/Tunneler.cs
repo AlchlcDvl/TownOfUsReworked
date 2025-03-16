@@ -10,4 +10,5 @@ public sealed class Tunneler : Ability
     public override LayerEnum Type => LayerEnum.Tunneler;
     public override Func<string> Description => () => "- You can finish tasks to be able to vent";
     public override bool Hidden => !TunnelerKnows && !TasksDone && !Dead;
+    public override bool CanVent => TasksDone;
 }

@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSlot.None, bool noParts = false, string colorHex = null, int priority = -1, MultiMenu menu = MultiMenu.Layer) :
-    BaseHeaderOptionAttribute(menu, CustomOptionType.Alignment, priority)
+public sealed class AlignmentOptionAttribute(ListSlot alignment = ListSlot.None, bool noParts = false, string colorHex = null, MultiMenu menu = MultiMenu.Layer) :
+    BaseHeaderOptionAttribute(menu, CustomOptionType.Alignment)
 {
-    private RoleListSlot Alignment { get; } = alignment;
+    private ListSlot Alignment { get; } = alignment;
     private bool NoParts { get; } = noParts;
     private UColor Color { get; } = CustomColorManager.FromHex(colorHex ?? "#FFFFFFFF");
     public HeaderOptionAttribute GroupHeader { get; private set; }
@@ -55,10 +55,10 @@ public sealed class AlignmentOptionAttribute(RoleListSlot alignment = RoleListSl
 
         var color = Alignment switch
         {
-            >= RoleListSlot.CrewSupport and <= RoleListSlot.CrewUtil => CustomColorManager.Crew,
-            >= RoleListSlot.IntruderSupport and <= RoleListSlot.IntruderHead => CustomColorManager.Intruder,
-            >= RoleListSlot.NeutralPros and <= RoleListSlot.NeutralEvil => CustomColorManager.Neutral,
-            >= RoleListSlot.SyndicateKill and <= RoleListSlot.SyndicateUtil => CustomColorManager.Syndicate,
+            >= ListSlot.CrewSupport and <= ListSlot.CrewUtil => CustomColorManager.Crew,
+            >= ListSlot.IntruderSupport and <= ListSlot.IntruderHead => CustomColorManager.Intruder,
+            >= ListSlot.NeutralPros and <= ListSlot.NeutralEvil => CustomColorManager.Neutral,
+            >= ListSlot.SyndicateKill and <= ListSlot.SyndicateUtil => CustomColorManager.Syndicate,
             _ => Color
         };
 

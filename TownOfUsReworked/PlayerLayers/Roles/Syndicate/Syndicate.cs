@@ -3,13 +3,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Syndicate : Role
 {
     private CustomButton KillButton { get; set; }
-    protected string CommonAbilities => "<#008000FF>" + (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && Alignment != Alignment.Killing && HoldsDrive ? ("- You can "
-        + "kill players directly") : "- You can kill") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
-    public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive) || GetLayers<PromotedRebel>().Any(x => x.HoldsDrive && IsPromoted);
-    public bool IsPromoted;
+    public PromotedRebel Promoted { get; set; }
+    protected string CommonAbilities => "<#008000FF>" + (this is Anarchist or Sidekick || (Alignment != Alignment.Killing && HoldsDrive) ? ("- You can "
+        + "kill players directly") : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
+    public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive) || Promoted?.HoldsDrive == true;
 
     public override UColor Color => CustomColorManager.Syndicate;
     public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.None;
+    public override float VisionRange => SyndicateSettings.SyndicateVision;
+    public override bool CanVent => (HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
 
     public static bool SyndicateHasChaosDrive { get; set; }
 
@@ -46,7 +48,7 @@ public abstract class Syndicate : Role
         Objectives = () => SyndicateWinCon;
         KillButton ??= new(this, new SpriteName("SyndicateKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
-        IsPromoted = false;
+        Promoted = null;
     }
 
     public override List<PlayerControl> Team()

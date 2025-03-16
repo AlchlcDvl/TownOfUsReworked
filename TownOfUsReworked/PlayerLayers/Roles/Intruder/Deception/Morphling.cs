@@ -20,13 +20,14 @@ public sealed class Morphling : Intruder, IMorpher
 
     private CustomButton MorphButton { get; set; }
     private CustomButton SampleButton { get; set; }
-    public PlayerControl MorphedPlayer { get; set; }
-    public PlayerControl SampledPlayer { get; set; }
+    public PlayerControl MorphedPlayer { get; private set; }
+    private PlayerControl SampledPlayer { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Morphling : FactionColor;
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
+    public override bool CanVent => MorphlingVent;
 
     protected override void Init()
     {

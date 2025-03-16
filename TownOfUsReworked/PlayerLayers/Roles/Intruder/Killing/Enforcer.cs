@@ -16,7 +16,7 @@ public sealed class Enforcer : Intruder
     private static Number EnforceRadius = 1.5f;
 
     private CustomButton BombButton { get; set; }
-    public PlayerControl BombedPlayer { get; set; }
+    public PlayerControl BombedPlayer { get; private set; }
     public bool BombSuccessful { get; set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Enforcer : FactionColor;

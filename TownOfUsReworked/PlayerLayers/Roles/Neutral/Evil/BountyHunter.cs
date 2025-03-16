@@ -47,6 +47,7 @@ public sealed class BountyHunter : Evil
         " become a <#678D36FF>Troll</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetKilled;
+    public override bool CanVent => base.CanVent && BhVent;
     protected override WinLose EndState => WinLose.BountyHunterWins;
 
     protected override void Init()

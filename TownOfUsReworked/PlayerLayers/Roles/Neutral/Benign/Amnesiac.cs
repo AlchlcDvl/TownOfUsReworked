@@ -26,6 +26,8 @@ public sealed class Amnesiac : Neutral
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
     public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
         + " to their body") : "") + "\n- If there are less than 4 players alive, you will become a <#80FF00FF>Thief</color>";
+    public override bool CanVent => base.CanVent && AmneVent;
+    public override bool CanSwitchVents => AmneSwitchVent;
 
     protected override void Init()
     {

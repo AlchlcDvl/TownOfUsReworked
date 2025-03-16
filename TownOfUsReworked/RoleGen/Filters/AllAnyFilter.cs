@@ -1,5 +1,3 @@
-using Cpp2IL.Core.Extensions;
-
 namespace TownOfUsReworked.RoleGen;
 
 public sealed class AllAnyFilter : BaseFilter
@@ -22,7 +20,7 @@ public sealed class AllAnyFilter : BaseFilter
         {
             spawnList.Shuffle();
             var first = spawnList[0];
-            newList.Add(first.Unique ? spawnList.RemoveAndReturn(0) : first.Clone());
+            newList.Add(first.Unique ? spawnList.TakeFirst() : first.Clone());
         }
 
         spawnList.Clear();

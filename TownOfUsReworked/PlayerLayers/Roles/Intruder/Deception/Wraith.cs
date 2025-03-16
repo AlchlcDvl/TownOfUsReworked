@@ -20,6 +20,7 @@ public sealed class Wraith : Intruder
     public override LayerEnum Type => LayerEnum.Wraith;
     public override Func<string> StartText => () => "Sneaky Sneaky";
     public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";
+    public override bool CanVent => WraithVent;
 
     protected override void Init()
     {

@@ -10,7 +10,7 @@ public sealed class Corrupted : Disposition
     public static bool AllCorruptedWin = false;
 
     [ToggleOption]
-    public static bool CorruptedVent = false;
+    private static bool CorruptedVent = false;
 
     private CustomButton CorruptButton { get; set; }
 
@@ -19,6 +19,7 @@ public sealed class Corrupted : Disposition
     public override LayerEnum Type => LayerEnum.Corrupted;
     public override Func<string> Description => () => "- Corrupt everyone";
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override bool CanVent => CorruptedVent;
 
     protected override void Init()
     {

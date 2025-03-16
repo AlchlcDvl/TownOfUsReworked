@@ -10,13 +10,14 @@ public sealed class Pestilence : Apocalypse
     public static Number MaxStacks = 4;
 
     [ToggleOption]
-    public static bool PestVent = true;
+    private static bool PestVent = true;
 
     private CustomButton ObliterateButton { get; set; }
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Pestilence : FactionColor;
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> Description => () => "- You can spread a deadly disease to other players";
+    public override bool CanVent => base.CanVent && PestVent;
 
     public static readonly Dictionary<byte, uint> Infected = [];
 

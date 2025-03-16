@@ -7,7 +7,7 @@ public sealed class Monarch : Crew, ISovereign
     private static Number KnightingCd = 25;
 
     [ToggleOption]
-    public static bool RoundOneNoKnighting = false;
+    private static bool RoundOneNoKnighting = false;
 
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     private static Number KnightCount = 2;
@@ -21,7 +21,7 @@ public sealed class Monarch : Crew, ISovereign
     [ToggleOption]
     public static bool KnightButton = true;
 
-    public bool RoundOne { get; set; }
+    private bool RoundOne { get; set; }
     private CustomButton KnightingButton { get; set; }
     public List<byte> ToBeKnighted { get; } = [];
     public List<byte> Knighted { get; } = [];

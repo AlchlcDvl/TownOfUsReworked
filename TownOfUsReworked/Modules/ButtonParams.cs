@@ -10,6 +10,7 @@ public delegate bool ConditionFunc();
 
 public delegate void DelayVoid();
 public delegate void EffectVoid();
+public delegate void ManualUpdateVoid();
 public delegate void DelayEndVoid();
 public delegate void EffectEndVoid();
 public delegate void OtherDelayVoid();
@@ -35,7 +36,7 @@ public record struct PostDeath(bool Value);
 
 public record struct CanClickAgain(bool Value);
 
-// public record struct Manual(bool Value);
+public record struct Manual(bool Value);
 
 public record struct SpriteName(string Value);
 

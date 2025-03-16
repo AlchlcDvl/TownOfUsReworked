@@ -38,12 +38,15 @@ public sealed class CustomButton : IDisposable
     private string ButtonLabel { get; } = "ABILITY";
     private float Cooldown { get; } = 1f;
     private bool CanClickAgain { get; } = true;
+    private bool IsManual { get; }
     private UColor TextColor { get; }
     private bool PostDeath { get; }
     private float Duration { get; }
     private float Delay { get; }
     private float OtherDelay { get; }
     private int UseDecrement { get; } = 1;
+    public string ID { get; }
+    private ManualUpdateVoid ManualUpdate { get; }
 
     // Other things
     public ActionButton Base { get; private set; }
@@ -53,7 +56,6 @@ public sealed class CustomButton : IDisposable
     public MonoBehaviour Target { get; private set; }
     public bool ClickedAgain { get; set; }
     private GameObject Block { get; set; }
-    public string ID { get; set; }
     public bool Disabled { get; private set; }
     private float EffectTime { get; set; }
     public float DelayTime { get; set; }
@@ -310,6 +312,16 @@ public sealed class CustomButton : IDisposable
                     UseDecrement = usesDecrement.Value;
                     break;
                 }
+                case Manual manual:
+                {
+                    IsManual = manual.Value;
+                    break;
+                }
+                case ManualUpdateVoid manualUpdate:
+                {
+                    ManualUpdate = manualUpdate;
+                    break;
+                }
                 case null:
                 {
                     Warning("Entered a null prop value");
@@ -330,6 +342,8 @@ public sealed class CustomButton : IDisposable
         AllButtons.Add(this);
     }
 
+    ~CustomButton() => Destroy();
+
     private void CreateButton()
     {
         if (!Local)
@@ -343,12 +357,8 @@ public sealed class CustomButton : IDisposable
         var passive = Base.GetComponent<PassiveButton>();
         passive.OverrideOnClickListeners(Clicked);
         passive.HoverSound = GetAudio("Hover");
-        Block = new("Block");
-        Block.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-        Block.transform.localScale *= 0.75f;
-        Block.SetActive(false);
-        Block.transform.SetParent(Base.transform);
-        Block.transform.localPosition = new(0f, 0f, -5f);
+        Block = UObject.Instantiate(Blocked.BlockPrefab, Base.transform);
+        Block.transform.SetLocalZ(-5f);
 
         if (HasUses)
             Base.SetUsesRemaining(UseCount);
@@ -673,16 +683,17 @@ public sealed class CustomButton : IDisposable
         if (!Base || !Owner.Player || Disabled)
             return;
 
-        Base.buttonLabelText.text = Label();
-        Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
-        Block.SetActive(Base.isActiveAndEnabled && BlockExposed && Owner.Player.IsBlocked());
+        Base.buttonLabelText.SetText(Label());
+        Block.SetActive(Base.isActiveAndEnabled && BlockExposed);
 
         if (!Base.isCoolingDown && !Disabled && PostDeath == Owner.Dead)
             SetTarget();
 
         EnableDisable();
 
-        if (DelayActive)
+        if (IsManual)
+            ManualUpdate();
+        else if (DelayActive)
             Base.SetDelay(DelayTime);
         else if (EffectActive)
             Base.SetFillUp(EffectTime, Duration);

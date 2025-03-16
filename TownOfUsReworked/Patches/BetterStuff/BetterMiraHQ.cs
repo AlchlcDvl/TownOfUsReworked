@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches.BetterStuff;
 /// <summary>
 /// Provides enhanced functionality for the Mira HQ map.
 /// </summary>
-[HeaderOption(MultiMenu.Main)]
+[HeaderOption(MultiMenu.Main), Sorted(0)]
 public static class BetterMiraHq
 {
     /// <summary>

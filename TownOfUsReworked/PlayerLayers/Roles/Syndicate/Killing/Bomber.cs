@@ -32,7 +32,7 @@ public sealed class Bomber : Syndicate
 
     private CustomButton BombButton { get; set; }
     private CustomButton DetonateButton { get; set; }
-    public List<Bomb> Bombs { get; } = [];
+    private List<Bomb> Bombs { get; } = [];
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Bomber : FactionColor;
     public override LayerEnum Type => LayerEnum.Bomber;

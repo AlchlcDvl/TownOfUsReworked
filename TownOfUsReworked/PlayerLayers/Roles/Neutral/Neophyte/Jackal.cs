@@ -7,7 +7,7 @@ public sealed class Jackal : Neophyte
     private static Number RecruitCd = 25;
 
     [ToggleOption]
-    public static bool JackalVent = false;
+    private static bool JackalVent = false;
 
     [ToggleOption]
     public static bool RecruitVent = false;
@@ -27,6 +27,7 @@ public sealed class Jackal : Neophyte
         "Syndicate</color>, <#FF1919FF>Intruder</color> or a <#B3B3B3FF>Neutral</color> <#1D7CF2FF>Killer</color>\n- When both recruits die, you can recruit a third" +
         " member into the <#575657FF>Cabal</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override bool CanVent => base.CanVent && JackalVent;
 
     protected override void Init()
     {

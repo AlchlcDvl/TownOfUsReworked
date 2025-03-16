@@ -22,6 +22,7 @@ public static class MapPatches
             foreach (var client in __instance.allClients)
             {
                 client.IsReady = true;
+                client.Character.isDummy = false;
                 client.Character.GetComponent<DummyBehaviour>().enabled = false;
             }
         }

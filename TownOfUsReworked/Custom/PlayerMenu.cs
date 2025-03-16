@@ -1,5 +1,3 @@
-using Cpp2IL.Core.Extensions;
-
 namespace TownOfUsReworked.Custom;
 
 public sealed class CustomPlayerMenu : CustomMenu
@@ -46,7 +44,7 @@ public sealed class CustomPlayerMenu : CustomMenu
             Click(player);
 
         while (Selected.Count > MaxSelected)
-            Selected.RemoveAndReturn(0);
+            Selected.TakeFirst();
 
         PlayerToPanel.ForEach((x, y) => y.Background.color = Selected.Contains(x) ? UColor.red : UColor.white);
 

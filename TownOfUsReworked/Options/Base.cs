@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, Inherited = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public abstract class OptionAttribute(CustomOptionType type) : Attribute
 {
     public static readonly List<OptionAttribute> AllOptions = [];
@@ -12,10 +12,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     public CustomOptionType Type { get; } = type;
     public bool All { get; set; }
     public bool ClientOnly { get; set; }
-    protected PropertyInfo Property { get; private set; }
-    protected FieldInfo Field { get; private set; }
-    protected bool IsProperty => Property != null;
-    protected bool IsField => Field != null;
+    protected MemberInfo Member { get; private set; }
     public string Name { get; set; } // Not actually the setting text, just the member name :]
     public KeyValuePair<byte, byte> RpcId { get; private set; }
 
@@ -62,7 +59,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
-    protected static readonly List<(string[], object[])> OptionParents2 =
+    private static readonly List<(string[], object[])> OptionParents2 =
     [
         ([ "TaskBar" ], [ GameMode.Classic, GameMode.AllAny, GameMode.RoleList, GameMode.Vanilla ]),
         ([ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic ]),
@@ -91,22 +88,10 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     public BaseHeaderOptionAttribute Header { get; set; }
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
-    public virtual void SetProperty(PropertyInfo property)
+    public virtual void Set(MemberInfo member)
     {
-        Property = property;
-        Name = property.Name.Replace("Priv", "");
-        Set();
-    }
-
-    public virtual void SetField(FieldInfo field)
-    {
-        Field = field;
-        Name = field.Name.Replace("Priv", "");
-        Set();
-    }
-
-    private void Set()
-    {
+        Member = member;
+        Name = member.Name.Replace("Priv", "");
         ID = $"CustomOption.{Name}";
         RpcId = new((byte)(AllOptions.Count / 255), (byte)(AllOptions.Count % 255)); // Gotta love being able to theoretically have 2^16 options
         AllOptions.Add(this);
@@ -131,7 +116,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         return result;
     }
 
-    public bool Active() => PartiallyActive() && Header?.Get() != false;
+    public bool Active() => PartiallyActive() && Header?.Value != false;
 
     private bool IsActive(object option) => option switch
     {
@@ -140,6 +125,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         VigiOptions vigiOptions => Vigilante.HowDoesVigilanteDie == vigiOptions,
         string id => GetBoolValue(id),
         AirshipSpawnType spawnType => BetterAirship.SpawnType == spawnType,
+        LayerEnum layer => RoleGenManager.GetSpawnItem(layer).IsActive(),
         _ => true
     };
 
@@ -157,7 +143,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
             result = optionatt.PartiallyActive();
 
             if (optionatt is OptionAttribute<bool> boolOpt)
-                result &= invertVal ? !boolOpt.Get() : boolOpt.Get();
+                result &= invertVal ? !boolOpt.Value : boolOpt.Value;
         }
         else if (!MapToLoaded.TryGetValue(id, out result))
             MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
@@ -285,8 +271,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         while (splitText.Any())
         {
             pos++;
-            var opt = splitText[0];
-            splitText.RemoveAt(0);
+            var opt = splitText.TakeFirst();
             var parts = opt.TrueSplit(':');
             var name = parts[0];
             var value = parts[1];

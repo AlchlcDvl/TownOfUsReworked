@@ -12,7 +12,7 @@ public sealed class Ambusher : Intruder, IAmbusher
     [ToggleOption]
     public static bool AmbushMates = false;
 
-    public PlayerControl AmbushedPlayer { get; set; }
+    public PlayerControl AmbushedPlayer { get; private set; }
     public CustomButton AmbushButton { get; private set; }
 
     public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Ambusher : FactionColor;

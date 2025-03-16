@@ -2,6 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Harbinger : Neutral
 {
+    public override bool AffectedByLights => NeutralHarbingerSettings.NhHaveImpVision;
+
     protected override void Init()
     {
         base.Init();

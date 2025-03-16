@@ -462,6 +462,9 @@ public static class OnGameEndPatches
 
             if (AllPlayers().Count(x => !x.HasDied()) == 1 && !CustomPlayer.Local.HasDied())
                 CustomAchievementManager.UnlockAchievement("LastOneStanding");
+
+            if (CustomPlayer.Local.Is<Corrupted>() && CustomPlayer.Local.Is<Mayor>())
+                CustomAchievementManager.UnlockAchievement("JustPolitics");
         }
     }
 

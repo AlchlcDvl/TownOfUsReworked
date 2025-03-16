@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum RoleListSlot : byte
+public enum ListSlot : byte
 {
     None,
 

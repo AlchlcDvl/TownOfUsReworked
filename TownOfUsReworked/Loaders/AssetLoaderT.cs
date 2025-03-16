@@ -3,14 +3,8 @@ namespace TownOfUsReworked.Loaders;
 public abstract class AssetLoader<T> : AssetLoader
     where T : Asset
 {
-    private bool Running;
-
     public IEnumerator CoFetch(HashAlgorithm hasher)
     {
-        if (Running)
-            yield break;
-
-        Running = true;
         UpdateSplashPatch.SetText($"Fetching {Manifest}");
         yield return EndFrame();
 

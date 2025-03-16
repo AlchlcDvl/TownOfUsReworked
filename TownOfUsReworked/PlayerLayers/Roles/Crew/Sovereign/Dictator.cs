@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Dictator : Crew, IRevealer
 {
     [ToggleOption]
-    public static bool RoundOneNoDictReveal = false;
+    private static bool RoundOneNoDictReveal = false;
 
     [ToggleOption]
     public static bool DictatorButton = true;
@@ -12,7 +12,7 @@ public sealed class Dictator : Crew, IRevealer
     [NumberOption(0, 10, 1, zeroIsInf: true)]
     private static Number MaxTribunals = 2;
 
-    public bool RoundOne { get; set; }
+    private bool RoundOne { get; set; }
     public bool Revealed { get; set; }
     public bool Tribunal { get; set; }
     public PlayerControl ToBeEjected { get; set; }

@@ -5,7 +5,6 @@ public static class UpdateSplashPatch
 {
     private static bool Loading;
     private static TextMeshPro TMP;
-    private static bool DataSet;
 
     public static bool Prefix(SplashManager __instance)
     {
@@ -78,9 +77,6 @@ public static class UpdateSplashPatch
 
     private static IEnumerator LoadModData()
     {
-        if (DataSet)
-            yield break;
-
         SetText("Setting Mod Data");
         Message("Setting mod data");
 
@@ -89,18 +85,11 @@ public static class UpdateSplashPatch
         Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();
 
-        DataSet = true;
-
         yield return EndFrame();
     }
 
-    private static bool PreDataSet;
-
     private static IEnumerator PreLoadModData()
     {
-        if (PreDataSet)
-            yield break;
-
         SetText("Pre-Setting Mod Data");
         Message("Pre-setting mod data");
 
@@ -123,9 +112,6 @@ public static class UpdateSplashPatch
             Directory.CreateDirectory(TownOfUsReworked.Logs);
 
         Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
-        // RenameAssetFolders();
-
-        PreDataSet = true;
 
         yield return EndFrame();
     }

@@ -11,12 +11,12 @@ public sealed class Poisoner : Syndicate
 
     private CustomButton PoisonButton { get; set; }
     private CustomButton GlobalPoisonButton { get; set; }
-    public PlayerControl PoisonedPlayer { get; set; }
+    private PlayerControl PoisonedPlayer { get; set; }
     private CustomPlayerMenu PoisonMenu { get; set; }
 
     public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Poisoner : FactionColor;
     public override LayerEnum Type => LayerEnum.Poisoner;
-    public override Func<string> StartText => () => "Delay A Kill To Decieve The <#8CFFFFFF>Crew</color>";
+    public override Func<string> StartText => () => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" +
         CommonAbilities;
 
@@ -38,8 +38,8 @@ public sealed class Poisoner : Syndicate
 
     private void UnPoison()
     {
-        if (CanAttack(AttackEnum.Basic, PoisonedPlayer.GetDefenseValue(Player)))
-            Player.RpcMurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
+        if (!PoisonedPlayer.HasDied() && CanAttack(AttackEnum.Basic, PoisonedPlayer.GetDefenseValue(Player)))
+            Player.MurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
     }

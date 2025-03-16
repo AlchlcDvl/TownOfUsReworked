@@ -19,13 +19,13 @@ public sealed class Glitch : NKilling, IBlocker
     private static Number NeutraliseCd = 25;
 
     [ToggleOption]
-    public static bool GlitchVent = false;
+    private static bool GlitchVent = false;
 
     private CustomButton HackButton { get; set; }
     private CustomButton MimicButton { get; set; }
     private CustomButton NeutraliseButton { get; set; }
-    public PlayerControl HackTarget { get; set; }
-    public PlayerControl MimicTarget { get; set; }
+    public PlayerControl HackTarget { get; private set; }
+    private PlayerControl MimicTarget { get; set; }
     private CustomPlayerMenu MimicMenu { get; set; }
     public PlayerControl BlockTarget => HackTarget;
 
@@ -37,6 +37,7 @@ public sealed class Glitch : NKilling, IBlocker
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
     public override bool RoleBlockImmune => true;
+    public override bool CanVent => base.CanVent && GlitchVent;
 
     protected override void Init()
     {

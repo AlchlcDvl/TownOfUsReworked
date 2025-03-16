@@ -23,7 +23,7 @@ public sealed class Cannibal : Evil
     public bool Eaten { get; set; }
     private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
     private bool EatWin => EatNeed == 0;
-    private bool CanEat => !Eaten || (Eaten && !NeutralSettings.AvoidNeutralKingmakers);
+    private bool CanEat => !Eaten || !NeutralSettings.AvoidNeutralKingmakers;
 
     public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Cannibal : FactionColor;
     public override LayerEnum Type => LayerEnum.Cannibal;
@@ -31,6 +31,7 @@ public sealed class Cannibal : Evil
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their "
         + "body" : "");
     public override bool HasWon => EatWin;
+    public override bool CanVent => base.CanVent && CannibalVent;
     protected override WinLose EndState => WinLose.CannibalWins;
 
     protected override void Init()

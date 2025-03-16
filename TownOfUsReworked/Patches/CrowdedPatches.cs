@@ -98,7 +98,7 @@ public static class CrowdedPatches
 }
 
 [HarmonyPatch(typeof(InnerNetServer), nameof(InnerNetServer.HandleNewGameJoin))]
-public static class InnerNetSerer_HandleNewGameJoin
+public static class InnerNetSererHandleNewGameJoin
 {
     public static bool Prefix(InnerNetServer __instance, InnerNetServer.Player client)
     {

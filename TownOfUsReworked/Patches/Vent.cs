@@ -42,23 +42,8 @@ public static class VentPatches
     [HarmonyPatch(nameof(Vent.SetButtons))]
     public static bool Prefix(Vent __instance, bool enabled)
     {
-        var player = CustomPlayer.Local;
-        var role = player.GetRole();
-        var flag = !player.IsMoving() && role switch
-        {
-            Jester => Jester.JesterVent && Jester.JestSwitchVent,
-            Executioner => Executioner.ExeVent && Executioner.ExeSwitchVent,
-            Survivor => Survivor.SurvVent && Survivor.SurvSwitchVent,
-            Amnesiac => Amnesiac.AmneVent && Amnesiac.AmneSwitchVent,
-            GuardianAngel => GuardianAngel.GaVent && GuardianAngel.GaSwitchVent,
-            Guesser => Guesser.GuessVent && Guesser.GuessSwitchVent,
-            Troll => Troll.TrollVent && Troll.TrollSwitchVent,
-            Actor => Actor.ActorVent && Actor.ActSwitchVent,
-            _ => !role || !player.IsPostmortal()
-        };
-
-        // Fix for dlekS
-        if (flag)
+        // Fix for dlekS and other things
+        if (!CustomPlayer.Local.IsMoving() && (!CustomPlayer.Local.TryGetLayer<Role>(out var role) || (role.CanVent && role.CanSwitchVents)))
         {
             Vector2 vector;
 
@@ -77,13 +62,13 @@ public static class VentPatches
 
                     if (vent)
                     {
-                        var ventilationSystem = Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
-                        var flag1 = ventilationSystem != null && ventilationSystem.IsVentCurrentlyBeingCleaned(vent.Id);
+                        var ship = Ship();
+                        var ventilationSystem = ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
                         var gameObject = __instance.CleaningIndicators.Any() ? __instance.CleaningIndicators[i] : null;
-                        __instance.ToggleNeighborVentBeingCleaned(flag1 || LocalBlocked(), buttonBehavior, gameObject);
+                        __instance.ToggleNeighborVentBeingCleaned(ventilationSystem?.IsVentCurrentlyBeingCleaned(vent.Id) == true || LocalBlocked(), buttonBehavior, gameObject);
                         var vector2 = vent.transform.position - __instance.transform.position;
                         var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
-                        vector3.x *= Mathf.Sign(Ship().transform.localScale.x);
+                        vector3.x *= Mathf.Sign(ship.transform.localScale.x);
                         vector3.y -= 0.08f;
                         vector3.z = -10f;
                         buttonBehavior.transform.localPosition = vector3;

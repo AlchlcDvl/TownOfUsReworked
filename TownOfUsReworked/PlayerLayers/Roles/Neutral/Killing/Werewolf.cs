@@ -10,9 +10,9 @@ public sealed class Werewolf : NKilling
     private static bool CanStillAttack = false;
 
     [StringOption<WerewolfVentOptions>]
-    public static WerewolfVentOptions WerewolfVent = WerewolfVentOptions.Always;
+    private static WerewolfVentOptions WerewolfVent = WerewolfVentOptions.Always;
 
-    public bool CanMaul => Rounds is not (0 or 2) || CanStillAttack;
+    private bool CanMaul => Rounds is not (0 or 2) || CanStillAttack;
     private CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
@@ -22,6 +22,7 @@ public sealed class Werewolf : NKilling
     public override Func<string> Description => () => $"- You kill everyone within {GameSettings.InteractionDistance}m";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
+    public override bool CanVent => base.CanVent && (WerewolfVent == 0 || (CanMaul && (int)WerewolfVent == 1) || (!CanMaul && (int)Werewolf.WerewolfVent == 2));
 
     protected override void Init()
     {

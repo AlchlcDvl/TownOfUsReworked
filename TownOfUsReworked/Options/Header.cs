@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class HeaderOptionAttribute(MultiMenu menu, int priority = -1) : BaseHeaderOptionAttribute(menu, CustomOptionType.Header, priority)
+public sealed class HeaderOptionAttribute(MultiMenu menu) : BaseHeaderOptionAttribute(menu, CustomOptionType.Header)
 {
     private TextMeshPro ButtonText { get; set; }
     public PassiveButton Button { get; set; }

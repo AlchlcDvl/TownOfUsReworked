@@ -51,11 +51,11 @@ public sealed class Operative : Crew, IBugger
     {
         BuggedPlayers.Clear();
 
-        if (BugsRemoveOnNewRound && meeting)
-        {
-            Bugs.ForEach(x => x.gameObject.Destroy());
-            Bugs.Clear();
-        }
+        if (!BugsRemoveOnNewRound || !meeting)
+            return;
+
+        Bugs.ForEach(x => x.gameObject.Destroy());
+        Bugs.Clear();
     }
 
     protected override void Deinit()

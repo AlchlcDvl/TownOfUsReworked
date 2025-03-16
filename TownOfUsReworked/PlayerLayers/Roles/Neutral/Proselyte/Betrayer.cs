@@ -7,7 +7,7 @@ public sealed class Betrayer : Neutral
     private static Number BetrayCd = 25;
 
     [ToggleOption]
-    public static bool BetrayerVent = true;
+    private static bool BetrayerVent = true;
 
     private CustomButton KillButton { get; set; }
 
@@ -16,6 +16,7 @@ public sealed class Betrayer : Neutral
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override bool CanVent => base.CanVent && BetrayerVent;
 
     protected override void Init()
     {
