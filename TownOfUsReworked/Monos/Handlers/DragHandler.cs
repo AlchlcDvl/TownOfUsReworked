@@ -18,7 +18,7 @@ public sealed class DragHandler : MonoBehaviour
         Dragging[player.PlayerId].transform.position = position;
         Dragging.Remove(player.PlayerId);
 
-        if (player.TryGetLayer<IDragger>(out var dragger))
+        if (player.Is<IDragger>(out var dragger))
             dragger.CurrentlyDragging = null;
     }
 

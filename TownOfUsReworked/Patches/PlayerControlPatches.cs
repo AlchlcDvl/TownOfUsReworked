@@ -219,11 +219,8 @@ public static class PlayerControlPatches
             value = !__instance.inVent;
         else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && !__instance.AmOwner)
             value = !ClientOptions.HideOtherGhosts;
-        else if (((CustomPlayer.Local.TryGetLayer<Medium>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId)) || (CustomPlayer.Local.TryGetLayer<Retributionist>(out var ret) &&
-            ret.MediatedPlayers.Contains(__instance.PlayerId))) && !__instance.AmOwner)
-        {
+        else if ((CustomPlayer.Local.Is<IShaman>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId)) && !__instance.AmOwner)
             value = true;
-        }
     }
 
     [HarmonyPatch(nameof(PlayerControl.CanMove), MethodType.Getter)]

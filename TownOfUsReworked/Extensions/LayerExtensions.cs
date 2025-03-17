@@ -14,13 +14,15 @@ public static class LayerExtensions
     private static readonly string AttackColorString = $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
     private static readonly string DefenseColorString = $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
-    public static bool Is<T>(this PlayerControl player) where T : IPlayerLayer => player.TryGetLayer<T>(out _);
+    public static bool Is<T>(this PlayerControl player, out T layer) where T : IPlayerLayer => (layer = player.GetLayer<T>()) != null;
+
+    public static bool Is<T>(this PlayerControl player) where T : IPlayerLayer => player.Is<T>(out _);
 
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
 
     // public static bool Is(this Disposition disp, LayerEnum dispositionType) => disp?.Type == dispositionType;
 
-    // public static bool Is(this PlayerControl player, Role role) => player.GetRole().Player == role.Player;
+    // public static bool Is(this PlayerControl player, Role role) => player.GetRole() == role;
 
     public static bool Is(this PlayerControl player, SubFaction subFaction) => player.GetRole()?.SubFaction == subFaction;
 
@@ -52,10 +54,7 @@ public static class LayerExtensions
         if (GameModifiers.IlluminatiUnleashed)
             return Faction.Illuminati;
 
-        if (GameModifiers.PandoricaOpens)
-            return Faction.Pandorica;
-
-        return Faction.Intruder;
+        return GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Intruder;
     }
 
     public static SubFaction GetSubFaction(this PlayerControl player)
@@ -101,7 +100,7 @@ public static class LayerExtensions
             (IntruderSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead)));
     }
 
-    public static bool HasAliveLover(this PlayerControl player) => player.TryGetLayer<Lovers>(out var lovers) && lovers.LoversAlive;
+    public static bool HasAliveLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) && lovers.LoversAlive;
 
     public static bool CanDoTasks(this PlayerControl player)
     {
@@ -278,7 +277,7 @@ public static class LayerExtensions
 
     public static bool IsPostmortal(this PlayerControl player) => player.HasDied() && player.Is<IGhosty>();
 
-    public static bool Caught(this PlayerControl player) => player.HasDied() && (!player.TryGetLayer<IGhosty>(out var iGhost) || iGhost.Caught);
+    public static bool Caught(this PlayerControl player) => player.HasDied() && (!player.Is<IGhosty>(out var iGhost) || iGhost.Caught);
 
     public static bool IsLinkedTo(this PlayerControl player, PlayerControl refPlayer) => player.IsOtherRival(refPlayer) || player.IsOtherLover(refPlayer) || player.IsOtherLink(refPlayer) ||
         (player.Is<Mafia>() && refPlayer.Is<Mafia>());
@@ -303,15 +302,19 @@ public static class LayerExtensions
         if (HUD().IsIntroDisplayed)
             return 0f;
 
-        if (player.TryGetLayer<Hunter>(out var hunt))
+        if (player.Is<Hunter>(out var hunt))
             return hunt.Starting ? 0f : GameModeSettings.HunterSpeedModifier;
 
-        if (player.Is<Dwarf>())
-            result *= Dwarf.DwarfSpeed;
-        else if (player.Is<Giant>())
-            result *= Giant.GiantSpeed;
-        else if (player.TryGetLayer<Drunk>(out var drunk))
-            result *= drunk.Modify;
+        if (player.Is<Modifier>(out var mod))
+        {
+            result *= mod switch
+            {
+                Dwarf => Dwarf.DwarfSpeed,
+                Giant => Giant.GiantSpeed,
+                Drunk drunk => drunk.Modify,
+                _ => 1f
+            };
+        }
 
         if (DragHandler.Dragging.ContainsKey(player.PlayerId))
             result *= Janitor.DragModifier;
@@ -325,7 +328,7 @@ public static class LayerExtensions
                 result = 0f;
         }
 
-        if (player.TryGetLayer<ITrapper>(out var trap))
+        if (player.Is<ITrapper>(out var trap))
             result *= trap.Building ? 0f : 1f;
 
         if (Ship() && Ship().Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
@@ -380,7 +383,7 @@ public static class LayerExtensions
         if (mimicked != player)
             return false;
 
-        if (player.TryGetLayer<IMorpher>(out var morph) && morph.MorphedPlayer)
+        if (player.Is<IMorpher>(out var morph) && morph.MorphedPlayer)
             mimicked = morph.MorphedPlayer;
         else if (player.TryGetShaper(out var ss))
             mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer2 : ss.ShapeshiftPlayer1;
@@ -407,7 +410,7 @@ public static class LayerExtensions
         if (playerInfo.IsDead)
             return player.IsPostmortal() && !player.Caught();
 
-        if (!player.TryGetLayer<Role>(out var playerRole))
+        if (!player.Is<Role>(out var playerRole))
             return playerInfo.IsImpostor();
 
         var subFactionFlag = false;
@@ -433,7 +436,6 @@ public static class LayerExtensions
             return true;
 
         var playerInfo = player?.Data;
-        var disp = player.GetDisposition();
 
         if (!player || !playerInfo)
             return false;
@@ -441,7 +443,7 @@ public static class LayerExtensions
         if (playerInfo.IsDead)
             return true;
 
-        return disp switch
+        return player.GetDisposition() switch
         {
             Lovers => Lovers.LoversChat,
             Rivals => Rivals.RivalsChat,
@@ -469,15 +471,15 @@ public static class LayerExtensions
 
     // public static bool IsBlockImmune(PlayerControl player) => player.GetRole().RoleBlockImmune;
 
-    public static PlayerControl GetOtherLover(this PlayerControl player) => player.TryGetLayer<Lovers>(out var lovers) ? lovers.OtherLover : null;
+    public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) ? lovers.OtherLover : null;
 
-    public static PlayerControl GetOtherRival(this PlayerControl player) => player.TryGetLayer<Rivals>(out var rivals) ? rivals.OtherRival : null;
+    public static PlayerControl GetOtherRival(this PlayerControl player) => player.Is<Rivals>(out var rivals) ? rivals.OtherRival : null;
 
-    private static PlayerControl GetOtherLink(this PlayerControl player) => player.TryGetLayer<Linked>(out var linked) ? linked.OtherLink : null;
+    private static PlayerControl GetOtherLink(this PlayerControl player) => player.Is<Linked>(out var linked) ? linked.OtherLink : null;
 
     public static bool IsExcludedNeutral(PlayerControl player)
     {
-        if (!player.TryGetLayer<Role>(out var role))
+        if (!player.Is<Role>(out var role))
             return false;
 
         if (role is GuardianAngel ga)
@@ -644,7 +646,7 @@ public static class LayerExtensions
             Flash(newRole.Color);
         }
 
-        if (CustomPlayer.Local.TryGetLayer<Seer>(out var seer))
+        if (CustomPlayer.Local.Is<Seer>(out var seer))
             Flash(seer.Color);
 
         if (player.Data.Role is LayerHandler layerHandler)
@@ -793,21 +795,19 @@ public static class LayerExtensions
         return player.GetAbilityFromList();
     }
 
-    public static bool TryGetLayer<T>(this PlayerControl player, out T layer) where T : IPlayerLayer => (layer = player.GetLayer<T>()) != null;
-
     public static void AssignChaosDrive()
     {
         if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost)
             return;
 
-        var all = PlayerLayer.GetLayers<Syndicate>().Where(x => x.Faction == Faction.Syndicate && x.Alive);
+        var all = PlayerLayer.GetLayers<Syndicate>().Where(x => x.Faction is Faction.Syndicate or Faction.Pandorica or Faction.Illuminati && x.Alive);
 
         if (!all.Any())
             return;
 
         Role chosen = null;
 
-        if (!Syndicate.DriveHolder || Syndicate.DriveHolder.HasDied())
+        if (Syndicate.DriveHolder.HasDied())
         {
             if (!all.TryFinding(x => x is PromotedRebel, out chosen))
                 chosen = all.Find(x => x.Alignment == Alignment.Disruption);
@@ -883,7 +883,7 @@ public static class LayerExtensions
         else if (CustomPlayer.Local.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
 
-        if (Lovers.ConvertLovers && converted.TryGetLayer<Lovers>(out var lovers) && lovers.OtherLover.Is(SubFaction.None))
+        if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.OtherLover.Is(SubFaction.None))
             ConvertPlayer(lovers.OtherLover.PlayerId, convert, sub, false);
     }
 

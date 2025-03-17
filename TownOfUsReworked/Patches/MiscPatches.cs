@@ -108,6 +108,7 @@ public static class PlayerDataPatch
     [HarmonyPatch(typeof(PlayerData), nameof(PlayerData.FileName), MethodType.Getter)]
     [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
     [HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
+    // ReSharper disable once HeuristicUnreachableCode
     public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
 }
 
@@ -199,7 +200,7 @@ public static class AirshipSpawnInPatch
 {
     public static void Postfix(SpawnInMinigame __instance)
     {
-        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
+        if (CustomPlayer.Local.Is<Astral>(out var ast))
             ast.SetPosition();
 
         HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
@@ -226,7 +227,7 @@ public static class ExitGamePatch
             filePath = Path.Combine(TownOfUsReworked.Logs, $"ReworkedLogs{i}.log");
 
         SaveText($"{filePath.SanitisePath()}.log", SavedLogs, TownOfUsReworked.Logs);
-        OptionAttribute.SaveSettings("LastUsed");
+        Option.SaveSettings("LastUsed");
     }
 }
 

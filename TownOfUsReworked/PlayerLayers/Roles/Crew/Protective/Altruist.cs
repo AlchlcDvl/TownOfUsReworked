@@ -67,7 +67,7 @@ public sealed class Altruist : Crew, IReviver
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (Lovers.BothLoversDie && player.TryGetLayer<Lovers>(out var lovers))
+        if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers))
         {
             var lover = lovers.OtherLover;
             var loverRole = lover.GetRole();

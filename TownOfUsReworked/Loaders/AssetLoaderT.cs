@@ -7,13 +7,14 @@ public abstract class AssetLoader<T> : AssetLoader
     {
         UpdateSplashPatch.SetText($"Fetching {Manifest}");
         yield return EndFrame();
+        var exists = Directory.Exists(DirectoryInfo);
 
-        if (!Directory.Exists(DirectoryInfo))
+        if (!exists)
             Directory.CreateDirectory(DirectoryInfo);
 
         string jsonText;
 
-        if (ClientOptions.ForceUseLocal)
+        if (ClientOptions.ForceUseLocal && exists)
             jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
         else
         {
@@ -68,7 +69,7 @@ public abstract class AssetLoader<T> : AssetLoader
 
         if (Downloading)
         {
-            if (!ClientOptions.ForceUseLocal)
+            if (!ClientOptions.ForceUseLocal || !exists)
             {
                 UpdateSplashPatch.SetText($"Downloading {Manifest}");
                 yield return CoDownloadAssets(GenerateDownloadList(response, hasher));

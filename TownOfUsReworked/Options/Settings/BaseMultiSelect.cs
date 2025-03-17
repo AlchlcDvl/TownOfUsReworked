@@ -1,10 +1,10 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T allValue, T noneValue) : OptionAttribute<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
+public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T allValue, T noneValue) : Option<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
 {
     protected ValueMap<MissingBehaviour, T> Buttons { get; } = [];
-    private T NoneValue { get; } = noneValue;
-    private T AllValue { get; } = allValue;
+    protected T NoneValue { get; } = noneValue;
+    protected T AllValue { get; } = allValue;
     public IEnumerable<MissingBehaviour> Options => Buttons.Keys;
 
     public override void OptionCreated()
@@ -36,7 +36,9 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
     protected MissingBehaviour CreateButton(T value, string name)
     {
         var behaviour = UObject.Instantiate(SettingsPatches.MultiOptionPrefab, Setting.transform.parent);
-        behaviour.GetComponentInChildren<TextMeshPro>().text = TranslationManager.Translate(name);
+        var text = behaviour.GetComponentInChildren<TextMeshPro>();
+        text.text = TranslationManager.Translate(name);
+        text.color = TextColor(value);
         behaviour.name = name;
         var button = behaviour.GetComponentInChildren<PassiveButton>();
         var rend = behaviour.GetComponentInChildren<SpriteRenderer>();
@@ -55,37 +57,6 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
         return behaviour;
     }
 
-    protected virtual void TrySetValue(T value, out MultiSelectValue<T> newValue)
-    {
-        newValue = Value;
-
-        if (value.Equals(AllValue))
-        {
-            var contained = newValue.Contains(value);
-            newValue.Clear();
-            newValue.Add(contained ? NoneValue : AllValue);
-        }
-        else if (value.Equals(NoneValue))
-        {
-            newValue.Clear();
-            newValue.Add(NoneValue);
-        }
-        else
-        {
-            if (newValue.Contains(value))
-                newValue.Remove(value);
-            else
-                newValue.Add(value);
-
-            if (newValue.Count == 0)
-                newValue.Add(NoneValue);
-            else
-                newValue.Remove(NoneValue);
-
-            newValue.Remove(AllValue);
-        }
-    }
-
     private void SetValue(T value)
     {
         TrySetValue(value, out var newValue);
@@ -99,7 +70,11 @@ public abstract class BaseMultiSelectOptionAttribute<T>(CustomOptionType type, T
 
     public override void WriteValueRpc(MessageWriter writer) => writer.Write(ValueString());
 
+    protected virtual UColor TextColor(T value) => UColor.white;
+
     protected abstract void CreateButtons();
+
+    protected abstract void TrySetValue(T value, out MultiSelectValue<T> newValue);
 }
 
 public interface IMultiSelectOption

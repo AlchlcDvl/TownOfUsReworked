@@ -218,7 +218,7 @@ public static class AllInfo
         new(GameMode.Vanilla),
         new(GameMode.Classic),
         new(GameMode.TaskRace),
-        new(GameMode.RoleList),
+        new(GameMode.List),
         new(GameMode.HideAndSeek, true)
     ];
 

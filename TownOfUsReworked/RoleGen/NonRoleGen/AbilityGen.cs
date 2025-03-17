@@ -12,7 +12,7 @@ public sealed class AbilityGen : BaseGen
 
     public override void InitList()
     {
-        if (IsRoleList())
+        if (IsList())
             InitRlList();
         else
             InitRegList();
@@ -22,7 +22,7 @@ public sealed class AbilityGen : BaseGen
     {
         var abilities = GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog);
 
-        foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Ability))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Ability))
         {
             foreach (var id in entry.Value)
             {
@@ -37,7 +37,7 @@ public sealed class AbilityGen : BaseGen
                     if (!id.TryCastToLayer(out var layer))
                         layer = abilities.Random();
 
-                    if (RoleListGen.CannotAdd(layer, AllAbilities))
+                    if (ListGen.CannotAdd(layer, AllAbilities))
                         rateLimit++;
                     else
                         AllAbilities.Add(GetSpawnItem(layer));

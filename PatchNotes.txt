@@ -35,7 +35,7 @@ Changes!
 - Change: Player vision is now more integral to the gameplay
 - Change: Button Barry now only fixes critical sabotages when calling a meeting
 - Change: Actor and Betrayer (via Traitor or Fanatic turning) can now spawn in role-list mode
-- Change: Role List slots can now have multiple entries to allow the creation of custom buckets
+- Change: List slots can now have multiple entries to allow the creation of custom buckets
 - Change: Options now have a newer look
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Nerf: Engineer can no longer vent (you now need the Tunneler ability to do so as a crewmate)
@@ -49,6 +49,7 @@ Changes!
 - Improvement: Changed how player selection menus are handled (like for Transporter and Warper)
 - Improvement: Involved the use of hashing algorithms so that assets remain up to date
 - Rename: The Sect subfaction has been renamed to the Cult
+- Rename: Role List mode is now List mode
 - Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning and being too much of a hassle to actually get working
 - Removed: Removed Vampire Hunter as it's too hard of a counter to the Undead (and I couldn't really think of role names for the other subfaction counters)
 - Removed: Custom and Killing Only as their functionalities have been merged into other modes

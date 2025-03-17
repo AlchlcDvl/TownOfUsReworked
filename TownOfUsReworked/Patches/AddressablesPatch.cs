@@ -20,7 +20,7 @@ public static class AddressablesPatch
     {
         var originalMethodType = AccessTools.Method(typeof(Addressables), nameof(Addressables.LoadAssetAsync), [ typeof(UObject) ]).MakeGenericMethod(typeof(UObject));
 
-        var methodInfoPtr = (Il2CppMethodInfo*)(IntPtr)Il2CppInteropUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(originalMethodType).GetValue(null)!;
+        var methodInfoPtr = (Il2CppMethodInfo*)Il2CppInteropUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(originalMethodType).GetValue<IntPtr>(null)!;
 
         var methodPtr = UnityVersionHandler.Wrap(methodInfoPtr).MethodPointer;
 

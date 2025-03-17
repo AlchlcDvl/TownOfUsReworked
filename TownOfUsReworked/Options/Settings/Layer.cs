@@ -1,15 +1,17 @@
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace TownOfUsReworked.Options;
 
-public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15) : OptionAttribute<RoleOptionData>(CustomOptionType.Layer)
+public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15, byte change = 1) : Option<RoleOptionData>(CustomOptionType.Layer)
 {
-    private byte CachedCount { get; set; }
-    private byte CachedChance { get; set; }
     private byte Max { get; } = max;
     private byte Min { get; } = min;
     private UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
     private bool NoParts { get; } = noParts;
     private string HexCode { get; } = hexCode;
+    public LayerEnum Layer { get; } = layer;
+    private byte Change { get; } = change;
+    private byte CachedCount { get; set; }
+    private byte CachedChance { get; set; }
     private GameObject Unique { get; set; }
     private GameObject Active1 { get; set; }
     private GameObject Divider { get; set; }
@@ -30,8 +32,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
     private GameObject RightCross { get; set; }
     private GameObject CenterCheck { get; set; }
     private GameObject CenterCross { get; set; }
-    public LayerEnum Layer { get; } = layer;
-    public LayerHeaderOptionAttribute GroupHeader { get; private set; }
+    public LayerHeaderOption GroupHeader { get; private set; }
 
     private static Vector3 Left;
     private static Vector3 Right;
@@ -144,8 +145,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
     private void IncreaseCount()
     {
         var chance = Value.Chance;
-        var max = IsClassic() ? Max : Min;
-        var count = CycleByte(max, 0, Value.Count, true);
+        var count = CycleByte(Max, 0, Value.Count, true, Change);
 
         if (chance == 0 && count > 0)
             chance = CachedChance == 0 ? (byte)5 : CachedChance;
@@ -167,8 +167,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
     private void DecreaseCount()
     {
         var chance = Value.Chance;
-        var max = IsClassic() ? Max : Min;
-        var count = CycleByte(max, 0, Value.Count, false);
+        var count = CycleByte(Max, 0, Value.Count, false, Change);
 
         if (chance == 0 && count > 0)
             chance = CachedChance == 0 ? (byte)5 : CachedChance;
@@ -179,7 +178,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         }
 
         if (count.IsInRange(0, Min))
-            count = 0;
+            count = Min;
 
         var val = Value;
         val.Count = count;
@@ -198,7 +197,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
             count = 0;
         }
         else if (count == 0 && chance > 0)
-            count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
+            count = CachedCount == 0 ? Min : CachedCount;
 
         var val = Value;
         val.Count = count;
@@ -217,7 +216,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
             count = 0;
         }
         else if (count == 0 && chance > 0)
-            count = CachedCount == 0 || !IsClassic() ? Min : CachedCount;
+            count = CachedCount == 0 ? Min : CachedCount;
 
         var val = Value;
         val.Count = count;
@@ -247,7 +246,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
         Chance.SetActive(SavedMode is GameMode.Classic);
         Count.SetActive(SavedMode == GameMode.Classic);
-        Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.RoleList);
+        Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.List);
         Active1.SetActive(SavedMode == GameMode.AllAny);
 
         switch (SavedMode)
@@ -258,7 +257,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
                 Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
                 break;
             }
-            case GameMode.RoleList:
+            case GameMode.List:
             {
                 Unique.transform.localPosition = Right + Diff + new Vector3(0.76f, 0f, 0f);
                 break;
@@ -289,7 +288,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         {
             GameMode.Classic => $"{val.Chance}% x{val.Count}",
             GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
-            GameMode.RoleList => $"{(val.Unique ? "" : "Non-")}Unique",
+            GameMode.List => $"{(val.Unique ? "" : "Non-")}Unique",
             _ => "Invalid"
         };
     }
@@ -300,7 +299,7 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         var value = new RoleOptionData(0, 0, false, false, Layer);
         Member.SetValue(null, value);
         Value = Member.GetValue<RoleOptionData>(null);
-        GroupHeader = GetOptions<LayerHeaderOptionAttribute>().Find(x => x.Layer == Layer);
+        GroupHeader = GetOptions<LayerHeaderOption>().Find(x => x.Layer == Layer);
     }
 
     private void SetUpOptionsMenu()
@@ -333,8 +332,8 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
         view.chanceText.text = SavedMode == GameMode.Classic ? $"{data.Chance}%" : "";
         view.settingText.text = SavedMode == GameMode.Classic ? $"x{data.Count}" : "";
 
-        CenterCheck.SetActive(SavedMode == GameMode.RoleList && data.Unique);
-        CenterCross.SetActive(SavedMode == GameMode.RoleList && !data.Unique);
+        CenterCheck.SetActive(SavedMode == GameMode.List && data.Unique);
+        CenterCross.SetActive(SavedMode == GameMode.List && !data.Unique);
         RightCheck.SetActive(SavedMode == GameMode.AllAny && data.Unique);
         RightCross.SetActive(SavedMode == GameMode.AllAny && !data.Unique);
         view.checkMark.gameObject.SetActive(SavedMode == GameMode.AllAny && data.Active);
@@ -356,11 +355,11 @@ public sealed class LayerOptionAttribute(string hexCode, LayerEnum layer, bool n
 
         LeftBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
         RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-        CenterBox.gameObject.SetActive(SavedMode == GameMode.RoleList);
+        CenterBox.gameObject.SetActive(SavedMode == GameMode.List);
 
         CenterTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.RoleList => "Unique",
+            GameMode.List => "Unique",
             _ => ""
         }));
         view.chanceTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch

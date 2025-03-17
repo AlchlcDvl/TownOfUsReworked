@@ -89,7 +89,7 @@ public static class CustomColorManager
     public static readonly UColor TaskRace = FromHex("#1E49CFFF");
     public static readonly UColor HideAndSeek = FromHex("#7500AFFF");
     public static readonly UColor Classic = FromHex("#C02A2CFF");
-    public static readonly UColor RoleList = FromHex("#FA1C79FF");
+    public static readonly UColor List = FromHex("#FA1C79FF");
     public static readonly UColor AllAny = FromHex("#CBD542FF");
 
     // Task Race Colors

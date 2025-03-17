@@ -28,7 +28,7 @@ public static class CalculateLightRadiusPatch
         if (__instance.Systems.TryGetValue(SystemTypes.Electrical, out var system) && system.TryCast<SwitchSystem>(out var lights))
             t = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, lights.Level);
 
-        if (pc.TryGetLayer<Role>(out var role))
+        if (pc.Is<Role>(out var role))
         {
             if (pc.Is<Torch>() || !role.AffectedByLights)
                 t = __instance.MaxLightRadius;

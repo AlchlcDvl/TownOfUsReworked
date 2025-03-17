@@ -447,7 +447,7 @@ public abstract class Role : PlayerLayer
 
     public static void PublicReveal(PlayerControl player)
     {
-        if (!player.TryGetLayer<IRevealer>(out var revealer))
+        if (!player.Is<IRevealer>(out var revealer))
             return;
 
         revealer.Revealed = true;

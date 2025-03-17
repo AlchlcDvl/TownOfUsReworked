@@ -377,20 +377,15 @@ public static class RPCHandling
 
                             if (reader.ReadBoolean())
                             {
-                                var zipline = UObject.FindObjectOfType<ZiplineBehaviour>();
-                                var hand = zipline.playerIdHands[playerid];
+                                var hand = UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerid];
                                 var playerfromid = PlayerById(playerid);
-
-                                if (playerfromid.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly)
-                                    hand.handRenderer.color.SetAlpha(playerfromid.MyRend().color.a);
-                                else if (playerfromid.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
-                                    PlayerMaterial.SetColors(UColor.grey, hand.handRenderer);
-                                else if (playerfromid.GetCustomOutfitType() == CustomPlayerOutfitType.Colorblind)
-                                    hand.handRenderer.color = UColor.grey;
-                                else if (playerfromid.IsMimicking(out var mimicked))
-                                    hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None, mimicked.cosmetics.GetPhantomRoleAlpha());
-                                else
-                                    hand.SetPlayerColor(playerfromid.GetCurrentOutfit(), PlayerMaterial.MaskType.None, playerfromid.cosmetics.GetPhantomRoleAlpha());
+                                PlayerMaterial.SetColors(playerfromid.GetCustomOutfitType() switch
+                                {
+                                    CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly => playerfromid.GetPlayerColor(),
+                                    CustomPlayerOutfitType.Camouflage or CustomPlayerOutfitType.Colorblind => UColor.grey,
+                                    _ => (playerfromid.IsMimicking(out var mimicked) ? mimicked : playerfromid).GetPlayerColor()
+                                }, hand.handRenderer);
+                                hand.handRenderer.color = hand.handRenderer.color.SetAlpha(playerfromid.GetAlpha());
                             }
                         } catch {}
 
@@ -408,9 +403,7 @@ public static class RPCHandling
                     }
                     case ActionsRPC.Drop:
                     {
-                        var dragger = reader.ReadPlayer();
-                        var dragged1 = DragHandler.Dragging[dragger.PlayerId];
-                        DragHandler.StopDrag(dragger);
+                        DragHandler.StopDrag(reader.ReadPlayer());
                         return;
                     }
                     case ActionsRPC.Burn:
@@ -528,12 +521,7 @@ public static class RPCHandling
                         PlayerLayer.GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
                         return;
                     }
-                    case WinLose.TaskmasterWins:
-                    {
-                        reader.ReadLayer().Winner = true;
-                        return;
-                    }
-                    case WinLose.RivalWins:
+                    case WinLose.TaskmasterWins or WinLose.RivalWins:
                     {
                         reader.ReadLayer().Winner = true;
                         return;

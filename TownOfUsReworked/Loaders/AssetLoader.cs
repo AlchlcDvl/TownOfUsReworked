@@ -1,3 +1,4 @@
+// ReSharper disable HeuristicUnreachableCode
 namespace TownOfUsReworked.Loaders;
 
 public abstract class AssetLoader
@@ -11,20 +12,25 @@ public abstract class AssetLoader
     protected virtual bool Downloading => false;
     protected virtual bool HasStreamAssets => false;
 
+    private bool DownloadingFiles;
+
     protected IEnumerator CoDownloadAssets(IEnumerable<string> files)
     {
+        if (DownloadingFiles)
+            yield break;
+
         var count = files.Count();
 
         if (count == 0)
             yield break;
 
+        DownloadingFiles = true;
         Message($"Downloading {count} files");
 
         foreach (var (i, fileName) in files.Indexed())
         {
             UpdateSplashPatch.SetText($"Downloading {Manifest} ({i}/{count})");
             var trueName = fileName.Replace(" ", "%20") + (IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}");
-            Message($"Downloading: {Manifest}/{fileName}");
             var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}/{trueName}");
             yield return www.SendWebRequest();
 

@@ -235,6 +235,8 @@ public static class MiscUtils
         player.cosmetics.colorBlindText.color = player.cosmetics.colorBlindText.color.SetAlpha(alpha);
     }
 
+    public static float GetAlpha(this PlayerControl player) => player.cosmetics.currentBodySprite.BodySprite.color.a;
+
     public static IEnumerator Wait(float duration)
     {
         while (duration > 0)
@@ -371,22 +373,22 @@ public static class MiscUtils
             Meeting().SetForegroundForDead();
             Meeting().ClearVote();
 
-            if (target.TryGetLayer<Swapper>(out var swapper))
+            if (target.Is<Swapper>(out var swapper))
             {
                 swapper.Swap1 = null;
                 swapper.Swap2 = null;
                 swapper.SwapMenu.HideButtons();
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, swapper, 255, 255);
             }
-            else if (target.TryGetLayer<Dictator>(out var dict))
+            else if (target.Is<Dictator>(out var dict))
             {
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected = null;
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, DictActionsRPC.SelectToEject, 255);
             }
-            else if (target.TryGetLayer<Retributionist>(out var ret))
+            else if (target.Is<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
-            else if (target.TryGetLayer<IGuesser>(out var assassin))
+            else if (target.Is<IGuesser>(out var assassin))
             {
                 assassin.GuessingMenu.Close();
                 assassin.GuessMenu.HideButtons();
@@ -394,12 +396,12 @@ public static class MiscUtils
         }
         else if (!CustomPlayer.LocalCustom.Dead)
         {
-            if (CustomPlayer.Local.TryGetLayer<IGuesser>(out var assassin))
+            if (CustomPlayer.Local.Is<IGuesser>(out var assassin))
             {
                 assassin.GuessingMenu.Close();
                 assassin.GuessMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.TryGetLayer<Swapper>(out var swapper))
+            else if (CustomPlayer.Local.Is<Swapper>(out var swapper))
             {
                 if (swapper.SwapMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -414,7 +416,7 @@ public static class MiscUtils
 
                 swapper.SwapMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.TryGetLayer<Dictator>(out var dict))
+            else if (CustomPlayer.Local.Is<Dictator>(out var dict))
             {
                 if (dict.DictMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -1145,7 +1147,7 @@ public static class MiscUtils
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
 
-            if (player.TryGetLayer<IDragger>(out var dragger))
+            if (player.Is<IDragger>(out var dragger))
                 dragger.Drop();
         }
 
@@ -1571,4 +1573,6 @@ public static class MiscUtils
     // }
 
     // public static IEnumerator WaitUntil(Task task) => WaitUntil(() => task.IsCompleted);
+
+    // public static T CoStart<T>(T coroutine) where T : IEnumerator => (T)Coroutines.Start(coroutine);
 }

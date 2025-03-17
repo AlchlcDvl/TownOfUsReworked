@@ -25,7 +25,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     // Retributionist Stuff
     private PlayerVoteArea Selected { get; set; }
     private PlayerControl Revived { get; set; }
-    private Role RevivedRole => Revived ? (Revived.TryGetLayer<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
+    private Role RevivedRole => Revived ? (Revived.Is<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
     public CustomMeeting RetMenu { get; private set; }
 
     public override UColor Color
@@ -694,7 +694,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (Lovers.BothLoversDie && player.TryGetLayer<Lovers>(out var lovers))
+        if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers))
         {
             var lover = lovers.OtherLover;
             var loverRole = lover.GetRole();
@@ -751,7 +751,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
 
-        return player.TryGetLayer<IRevealer>(out var irev) && irev.Revealed;
+        return player.Is<IRevealer>(out var irev) && irev.Revealed;
     }
 
     private bool MedicUsable() => !ShieldBroken && IsMedic;

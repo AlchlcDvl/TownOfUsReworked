@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Medium)]
-public sealed class Medium : Crew
+public sealed class Medium : Crew, IShaman
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MediateCd = 25;
@@ -25,7 +25,6 @@ public sealed class Medium : Crew
     private CustomButton MediateButton { get; set; }
     // private CustomButton SeanceButton { get; set; }
     // public bool HasSeanced { get; set; }
-
     public List<byte> MediatedPlayers { get; } = [];
 
     public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium : FactionColor;

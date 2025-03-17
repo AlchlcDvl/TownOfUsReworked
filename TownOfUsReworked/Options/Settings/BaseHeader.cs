@@ -1,16 +1,14 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Class, Inherited = false)]
-public abstract class BaseHeaderOptionAttribute(MultiMenu menu, CustomOptionType type) : OptionAttribute<bool>(type)
+public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : Option<bool>(type)
 {
     public MultiMenu Menu { get; } = menu;
     public int Order { get; private set; }
-    public readonly List<OptionAttribute> GroupMembers = [];
+    public readonly List<Option> GroupMembers = [];
 
     /// <summary>
     /// Sets up the header and its grouped options based on the provided type.
     /// </summary>
-    /// <param name="type">The type containing the options.</param>
     public void SetTypeAndOptions(Type type)
     {
         Name = type.Name;
@@ -19,24 +17,34 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu, CustomOptionType
         Order = type.GetCustomAttribute<SortedAttribute>()?.Order ?? -1;
         AllOptions.Add(this);
 
-        foreach (var member in GetOrderedMembers(type))
+        foreach (var member in GetOrderedOptions(type))
         {
-            if (member is not (PropertyInfo or FieldInfo))
-                continue;
-
             var att = member.GetCustomAttribute<OptionAttribute>();
+            Option opt;
 
-            if (att == null)
-                continue;
+            if (att != null)
+                opt = att.Set(member, this, ClientOnly);
+            else
+            {
+                var innerType = member switch
+                {
+                    PropertyInfo prop => prop.PropertyType,
+                    FieldInfo field => field.FieldType,
+                    _ => null
+                };
 
-            att.Set(member);
-            att.Header = this;
-            att.ClientOnly = ClientOnly;
-            GroupMembers.Add(att);
+                if (!typeof(Option).IsAssignableFrom(innerType))
+                    continue;
+
+                opt = member.GetValue<Option>(null);
+                opt.Set(member, this, ClientOnly);
+            }
+
+            GroupMembers.Add(opt);
         }
     }
 
-    private static IEnumerable<MemberInfo> GetOrderedMembers(Type type)
+    private static IEnumerable<MemberInfo> GetOrderedOptions(Type type)
     {
         var members = type.GetMembers(AccessTools.all);
         var sortedMembers = members

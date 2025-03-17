@@ -43,7 +43,7 @@ public static class VentPatches
     public static bool Prefix(Vent __instance, bool enabled)
     {
         // Fix for dlekS and other things
-        if (!CustomPlayer.Local.IsMoving() && (!CustomPlayer.Local.TryGetLayer<Role>(out var role) || (role.CanVent && role.CanSwitchVents)))
+        if (!CustomPlayer.Local.IsMoving() && (!CustomPlayer.Local.Is<Role>(out var role) || (role.CanVent && role.CanSwitchVents)))
         {
             Vector2 vector;
 
@@ -94,7 +94,7 @@ public static class VentPatches
     [HarmonyPatch(nameof(Vent.SetOutline))]
     public static void Postfix(Vent __instance, bool mainTarget)
     {
-        if (!CustomPlayer.Local.TryGetLayer<Role>(out var role) || Meeting() || !CustomPlayer.Local.CanVent())
+        if (!CustomPlayer.Local.Is<Role>(out var role) || Meeting() || !CustomPlayer.Local.CanVent())
             return;
 
         __instance.myRend.material.SetColor(OutlineColor, role.Color);

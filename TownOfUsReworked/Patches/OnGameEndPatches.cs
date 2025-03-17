@@ -505,12 +505,11 @@ public static class OnGameEndPatches
 
             var list = EndGameResult.CachedWinners.ToSystem().OrderBy(b => !b.IsYou);
 
-            for (var i = 0; i < list.Count(); i++)
+            foreach (var (i, cachedPlayerData2) in list.Indexed())
             {
-                var cachedPlayerData2 = list.ElementAt(i);
                 var num2 = i % 2 != 0 ? 1 : -1;
                 var num3 = (i + 1) / 2;
-                var t = num3 / (float)8;
+                var t = num3 / 8f;
                 var num4 = Mathf.Lerp(1f, 0.75f, t);
                 var num5 = i == 0 ? -8 : -1;
                 var poolablePlayer = UObject.Instantiate(__instance.PlayerPrefab, __instance.transform);
@@ -537,6 +536,9 @@ public static class OnGameEndPatches
             AddAsset("CrewWin", __instance.CrewStinger);
             AddAsset("IntruderWin", __instance.ImpostorStinger);
             AddAsset("Stalemate", __instance.DisconnectStinger);
+
+            if (!Winners.Any())
+                WinState = WinLose.NobodyWins;
 
             if (WinState == WinLose.NobodyWins)
             {

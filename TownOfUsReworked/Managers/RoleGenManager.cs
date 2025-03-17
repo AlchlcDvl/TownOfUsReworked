@@ -125,7 +125,7 @@ public static class RoleGenManager
     {
         { GameMode.HideAndSeek, new HideAndSeekGen() },
         { GameMode.Classic, new ClassicGen() },
-        { GameMode.RoleList, new RoleListGen() },
+        { GameMode.List, new ListGen() },
         { GameMode.Vanilla, new VanillaGen() },
         { GameMode.AllAny, new AllAnyGen() },
         { GameMode.TaskRace, new TaskRaceGen() }
@@ -141,11 +141,8 @@ public static class RoleGenManager
     {
         LayerEnum.Pestilence => Options.NeutralHarbingerRoles.Plaguebearer,
         LayerEnum.Mayor => Options.CrewSovereignRoles.Democrat,
-        LayerEnum.Linked => Options.Dispositions.Linked,
-        LayerEnum.Lovers => Options.Dispositions.Lovers,
-        LayerEnum.Rivals => Options.Dispositions.Rivals,
         LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
-        _ => OptionAttribute.GetOptions<LayerOptionAttribute>().TryFinding(x => x.Layer == id, out var result) ? result.Value : new(0, 0, false, false, id)
+        _ => Option.GetOptions<LayerOption>().TryFinding(x => x.Layer == id, out var result) ? result.Value : new(0, 0, false, false, id)
     };
 
     public static bool IsValid(this LayerEnum layer, int? relatedCount = null) => layer switch

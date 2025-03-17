@@ -27,7 +27,7 @@ public static class GameStates
 
     public static bool IsClassic() => GameModeSettings.GameMode == GameMode.Classic;
 
-    public static bool IsRoleList() => GameModeSettings.GameMode == GameMode.RoleList;
+    public static bool IsList() => GameModeSettings.GameMode == GameMode.List;
 
     public static bool IsTaskRace() => GameModeSettings.GameMode == GameMode.TaskRace;
 
@@ -50,9 +50,9 @@ public static class GameStates
 
         var otherFlag = false;
 
-        if (CustomPlayer.Local.TryGetLayer<GuardianAngel>(out var ga))
+        if (CustomPlayer.Local.Is<GuardianAngel>(out var ga))
             otherFlag = !ga.Failed && ga.TargetAlive && GuardianAngel.ProtectBeyondTheGrave && ga.GraveProtectButton.Usable();
-        else if (CustomPlayer.Local.TryGetLayer<Jester>(out var jest))
+        else if (CustomPlayer.Local.Is<Jester>(out var jest))
             otherFlag = jest.CanHaunt;
 
         return !otherFlag;

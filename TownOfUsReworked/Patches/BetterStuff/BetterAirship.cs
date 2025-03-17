@@ -134,6 +134,7 @@ public static class BetterAirship
     /// <summary>
     /// The common setter method that modifies the resulting value to reflect skipping over the other location settings.
     /// </summary>
+    /// <returns>The resulting airship spawn location after comparing with other settings and the previous value.</returns>
     private static AirshipSpawnLocation SetLocation(AirshipSpawnLocation value, AirshipSpawnLocation loc1, AirshipSpawnLocation loc2, AirshipSpawnLocation prev)
     {
         while (value.IsAny(loc1, loc2))
@@ -231,7 +232,7 @@ public static class BetterAirship
         public static bool Prefix(SpawnInMinigame __instance)
         {
             // Skip this if the local player has the Astral modifier or is a postmortal role
-            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.TryGetLayer<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
+            if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.Is<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
             {
                 __instance.Close();
                 return false;

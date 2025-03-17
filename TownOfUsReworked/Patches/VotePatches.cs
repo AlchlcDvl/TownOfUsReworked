@@ -40,7 +40,7 @@ public static class VotePatches
     {
         var player = PlayerById(srcPlayerId);
 
-        if (!player.TryGetLayer<Politician>(out var pol))
+        if (!player.Is<Politician>(out var pol))
             return true;
 
         var playerVoteArea = VoteAreaById(srcPlayerId);
@@ -201,7 +201,7 @@ public static class VotePatches
     [HarmonyPatch(nameof(MeetingHud.BloopAVoteIcon))]
     public static bool Prefix(MeetingHud __instance, NetworkedPlayerInfo voterPlayer, int index, Transform parent)
     {
-        var insiderFlag = CustomPlayer.Local.TryGetLayer<Insider>(out var ins) && ins.TasksDone;
+        var insiderFlag = CustomPlayer.Local.Is<Insider>(out var ins) && ins.TasksDone;
         var deadFlag = GameModifiers.DeadSeeEverything && CustomPlayer.LocalCustom.Dead;
 
         if (GameModifiers.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))

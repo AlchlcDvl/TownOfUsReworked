@@ -21,7 +21,7 @@ public abstract class Syndicate : Role
         get => DriveHolderPriv;
         set
         {
-            if (DriveHolderPriv && DriveHolderPriv.TryGetLayer<Syndicate>(out var syndicate1))
+            if (DriveHolderPriv && DriveHolderPriv.Is<Syndicate>(out var syndicate1))
             {
                 syndicate1.OnDriveLost();
 
@@ -31,7 +31,7 @@ public abstract class Syndicate : Role
 
             DriveHolderPriv = value;
 
-            if (!value || !value.TryGetLayer<Syndicate>(out var syndicateRole))
+            if (!value || !value.Is<Syndicate>(out var syndicateRole))
                 return;
 
             syndicateRole.OnDriveReceived();

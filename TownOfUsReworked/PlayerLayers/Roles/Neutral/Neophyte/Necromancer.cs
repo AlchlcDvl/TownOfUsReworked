@@ -92,7 +92,7 @@ public sealed class Necromancer : Neophyte, IReviver
         ConvertPlayer(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
         player.Revive();
 
-        if (!Lovers.BothLoversDie || !player.TryGetLayer<Lovers>(out var lovers))
+        if (!Lovers.BothLoversDie || !player.Is<Lovers>(out var lovers))
             return;
 
         var lover = lovers.OtherLover;

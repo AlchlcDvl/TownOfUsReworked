@@ -2,7 +2,7 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public sealed class RoleListGen : BaseRoleGen
+public sealed class ListGen : BaseRoleGen
 {
     public override void InitList()
     {
@@ -11,7 +11,7 @@ public sealed class RoleListGen : BaseRoleGen
         SetPostmortals.Banshees = GameModeSettings.BansheeCount;
         SetPostmortals.Ghouls = GameModeSettings.GhoulCount;
 
-        foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role))
         {
             foreach (var id in entry.Value)
             {
@@ -114,5 +114,5 @@ public sealed class RoleListGen : BaseRoleGen
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
-    public static bool CannotAdd(LayerEnum id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryAttribute.IsBanned(id.CastToSlot());
+    public static bool CannotAdd(LayerEnum id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryOption.IsBanned(id.CastToSlot());
 }

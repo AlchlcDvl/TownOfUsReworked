@@ -127,7 +127,7 @@ public static class ButtonUtils
         player ??= CustomPlayer.Local;
         player.GetButtons().ForEach(x => x.StartCooldown(cooldown));
 
-        if (player.TryGetLayer<Role>(out var role))
+        if (player.Is<Role>(out var role))
             role.Reset(cooldown == CooldownType.Meeting, cooldown == CooldownType.Start);
     }
 }

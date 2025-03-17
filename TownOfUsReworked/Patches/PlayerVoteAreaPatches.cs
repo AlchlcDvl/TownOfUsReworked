@@ -6,7 +6,7 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.Select)), HarmonyPrefix]
     public static bool SelectPrefix(PlayerVoteArea __instance)
     {
-        if (!CustomPlayer.Local.TryGetLayer<Politician>(out var pol) || CustomPlayer.LocalCustom.Dead || __instance.AmDead || !__instance.Parent ||
+        if (!CustomPlayer.Local.Is<Politician>(out var pol) || CustomPlayer.LocalCustom.Dead || __instance.AmDead || !__instance.Parent ||
             !__instance.Parent.Select(__instance.TargetPlayerId))
         {
             return true;
@@ -19,7 +19,7 @@ public static class PlayerVoteAreaPatches
             Coroutines.Start(PerformTimedAction(0.25f, t => __instance.CancelButton.transform.localPosition = Vector2.Lerp(Vector2.right * startPos, Vector2.right * 1.3f, Effects.ExpOut(t))));
             Coroutines.Start(PerformTimedAction(0.35f, t => __instance.ConfirmButton.transform.localPosition = Vector2.Lerp(Vector2.right * startPos, Vector2.right * 0.65f, Effects.ExpOut(t))));
             var list = new List<UiElement>() { __instance.CancelButton, __instance.ConfirmButton };
-            ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.CancelButton, __instance.ConfirmButton, list.ToIl2Cpp(), false);
+            ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.CancelButton, __instance.ConfirmButton, list.ToIl2Cpp());
         }
 
         return false;
@@ -28,7 +28,7 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.VoteForMe)), HarmonyPrefix]
     public static bool VoteForMePrefix(PlayerVoteArea __instance)
     {
-        if (!CustomPlayer.Local.TryGetLayer<Politician>(out var pol))
+        if (!CustomPlayer.Local.Is<Politician>(out var pol))
             return true;
 
         if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results || !pol.CanVote)
@@ -76,12 +76,12 @@ public static class PlayerVoteAreaPatches
             if (ClientOptions.WhiteNameplates)
                 __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
-            if (ClientOptions.NoLevels)
-            {
-                var level = __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>();
-                level.enabled = false;
-                level.gameObject.SetActive(false);
-            }
+            if (!ClientOptions.NoLevels)
+                return;
+
+            var level = __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>();
+            level.enabled = false;
+            level.gameObject.SetActive(false);
         }
     }
 

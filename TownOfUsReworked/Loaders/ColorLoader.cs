@@ -1,4 +1,6 @@
 using static TownOfUsReworked.Managers.CustomColorManager;
+// ReSharper disable HeuristicUnreachableCode
+#pragma warning disable CS0162 // Unreachable code detected
 
 namespace TownOfUsReworked.Loaders;
 
@@ -15,6 +17,9 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
 
     protected override void LoadAsset(CustomColor item, int i)
     {
+        if (item.StreamOnly && !TownOfUsReworked.IsStream)
+            return;
+
         item.ColorID = i;
 
         if (item.MainColorValues != null)

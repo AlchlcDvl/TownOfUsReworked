@@ -157,14 +157,9 @@ public static class MapPatches
         AdjustCooldowns(MapSettings.LargeMapIncreasedCooldown);
     }
 
-    public static void AdjustCooldowns(float change)
-    {
-        foreach (var option in OptionAttribute.AllOptions.Where(x => x.Name.Contains("Cd") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
-        {
-            if (option is NumberOptionAttribute number)
-                number.Set(new(number.Value + change));
-        }
-    }
+    public static void AdjustCooldowns(float change) => Option.GetOptions<Options.NumberOption>()
+        .Where(x => x.Name.Contains("Cd") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease"))
+        .ForEach(x => x.Set(x.Value + change));
 
     public static void SetDefaults()
     {

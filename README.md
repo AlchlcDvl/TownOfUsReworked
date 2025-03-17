@@ -50,9 +50,8 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 - [**Game Modes**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes)
   - [Vanilla](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#vanilla)
   - [Classic](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#classic)
-  - [Killing Only](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#killing-only)
   - [All Any](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#all-any)
-  - [Role List](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#role-list)
+  - [List](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#role-list)
   - [Hide And Seek](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#hide-and-seek)
   - [Task Race](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#task-race)
 - [**Custom Game Settings**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings)
@@ -79,7 +78,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
   - [Factions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#factions)
   - [Subfactions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#subfactions)
   - [Syndicate Chaos Drive Role Priority](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#syndicate-chaos-drive-role-priority)
-  - [Role List Entries](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#role-list-entries)
+  - [List Entries](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#role-list-entries)
   - [Custom Cosmetics](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#custom-cosmetics)
   - [Bug Reports, Suggestions & Additions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#bug--suggestions--additions)
   - [Layer Explanation And Assignment](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#layer-explanation-and-assignment)
@@ -273,7 +272,7 @@ The Coroner gets an alert when someone dies and briefly gets an arrow pointing i
 
 **Origin**: Among Us
 
-Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Classic/Role List mode.
+Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Classic/List mode.
 
 ## Democrat <img height="17" src="./Images/Democrat.png">
 

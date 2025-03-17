@@ -210,7 +210,7 @@ public sealed class Guesser : Evil, IGuesser
 
     private void TurnAct()
     {
-        Role role = IsRoleList() ? new Jester() : new Actor();
+        Role role = IsList() ? new Jester() : new Actor();
         role.RoleUpdate(this);
     }
 
@@ -384,7 +384,7 @@ public sealed class Guesser : Evil, IGuesser
             {
                 MarkMeetingDead(player, Player);
 
-                if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
+                if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
                     !lovers.OtherLover.Data.IsDead)
                 {
                     RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);

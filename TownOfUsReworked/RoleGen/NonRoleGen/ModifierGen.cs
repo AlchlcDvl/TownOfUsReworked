@@ -11,7 +11,7 @@ public sealed class ModifierGen : BaseGen
 
     public override void InitList()
     {
-        if (IsRoleList())
+        if (IsList())
             InitRlList();
         else
             InitRegList();
@@ -21,7 +21,7 @@ public sealed class ModifierGen : BaseGen
     {
         var abilities = GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller);
 
-        foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier))
         {
             foreach (var id in entry.Value)
             {
@@ -36,7 +36,7 @@ public sealed class ModifierGen : BaseGen
                     if (!id.TryCastToLayer(out var layer))
                         layer = abilities.Random();
 
-                    if (RoleListGen.CannotAdd(layer, AllModifiers))
+                    if (ListGen.CannotAdd(layer, AllModifiers))
                         rateLimit++;
                     else
                         AllModifiers.Add(GetSpawnItem(layer));

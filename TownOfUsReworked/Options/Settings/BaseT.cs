@@ -1,16 +1,16 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribute(type)
+public abstract class Option<T>(CustomOptionType type) : Option(type)
 {
-    public T Value { get; protected set; }
+    public T Value { get; set; }
 
     protected Type TargetType { get; } = typeof(T);
 
-    public static implicit operator T(OptionAttribute<T> opt) => opt.Value;
+    public static implicit operator T(Option<T> opt) => opt.Value;
 
-    public override void Set(MemberInfo member)
+    public override void Set(MemberInfo member, BaseHeaderOption header, bool clientOnly)
     {
-        base.Set(member);
+        base.Set(member, header, clientOnly);
         Value = member.GetValue<T>(null);
     }
 
@@ -23,13 +23,18 @@ public abstract class OptionAttribute<T>(CustomOptionType type) : OptionAttribut
         if (IsInGame() && !(ClientOnly || TownOfUsReworked.MciActive))
             return;
 
-        Member.SetValue(null, value);
-        Value = Member.GetValue<T>(null);
+        if (Member == null)
+            Value = value;
+        else
+        {
+            Member.SetValue(null, value);
+            Value = Member.GetValue<T>(null);
+        }
 
         if (!CustomPlayer.Local)
             return;
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || this is BaseHeaderOptionAttribute))
+        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || this is BaseHeaderOption))
             SendOptionRPC(this);
 
         if (Setting)

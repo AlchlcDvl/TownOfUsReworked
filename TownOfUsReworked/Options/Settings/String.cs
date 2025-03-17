@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<T>(CustomOptionType.String) where T : struct, Enum
+public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionType.String) where T : struct, Enum
 {
     private int Index { get; set; }
     private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
@@ -54,9 +54,8 @@ public sealed class StringOptionAttribute<T>(params T[] ignore) : OptionAttribut
 
     public override void Update()
     {
-        var str = Setting.Cast<StringOption>();
-        str.Value = str.oldValue = Index = Mathf.Clamp(Values.IndexOf(Value), 0, Count);
-        str.ValueText.text = Format();
+        Index = Mathf.Clamp(Values.IndexOf(Value), 0, Count);
+        Setting.Cast<StringOption>().ValueText.text = Format();
     }
 
     public override void Debug()

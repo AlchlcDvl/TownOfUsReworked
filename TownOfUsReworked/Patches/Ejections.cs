@@ -17,7 +17,7 @@ public static class ConfirmEjects
 
         var player = exiled.Object;
 
-        if (!player.TryGetLayer<Role>(out var role))
+        if (!player.Is<Role>(out var role))
             return;
 
         string ejectString;
@@ -48,14 +48,14 @@ public static class ConfirmEjects
         {
             ejectString = $"{player.name} " + (MapPatches.CurrentMap switch
             {
-                1 => "is now learning about free fall",
-                2 => "is now enjoying a hot bath",
-                4 => "is now experiencing gravity",
-                5 => "has decided to leave for a new journey",
-                6 => "is now off to a scuba adventure",
-                7 => "has decided to explore newer frontiers",
-                _ => "is now one with space",
-            }) + ".";
+                1 => "is now learning about free fall.",
+                2 => "is now enjoying a hot bath.",
+                4 => "is now experiencing gravity.",
+                5 => "has decided to leave for a new journey.",
+                6 => "is now off to a scuba adventure.",
+                7 => "has decided to explore newer frontiers.",
+                _ => "is now one with space."
+            });
         }
         else
             ejectString = $"{player.name} was ejected.";

@@ -282,7 +282,9 @@ public static class CollectionExtensions
         return dict;
     }
 
-    /*public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+    /* These methods are unused at the moment, so they've been commented until needed
+
+    public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         if (source == null)
             throw new ArgumentNullException(nameof(source));
@@ -302,6 +304,8 @@ public static class CollectionExtensions
 
         return -1;
     }
+
+    public static bool TryTaking<T>(this List<T> source, Func<T, bool> predicate, out T value) => source.TryFinding(predicate, out value) && source.Remove(value);
 
     public static IEnumerable<T3> Select<T1, T2, T3>(this (IEnumerable<T1>, IEnumerable<T2>) source, Func<T1, T2, T3> selector)
     {

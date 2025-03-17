@@ -9,7 +9,7 @@ public static class SettingsPatches
     private static int SettingsPage3;
     public static string CurrentPreset = "Custom";
     public static Vector3 ScrollerLocation;
-    public static BaseHeaderOptionAttribute SelectedSubOptions;
+    public static BaseHeaderOption SelectedSubOptions;
 
     private static PassiveButton ClientSettingsButton;
 
@@ -259,13 +259,13 @@ public static class SettingsPatches
     {
         var type = (MultiMenu)SettingsPage;
 
-        foreach (var header in SelectedSubOptions == null ? OptionAttribute.SortedOptions.Where(x => x.Menu == type) : [ SelectedSubOptions ])
+        foreach (var header in SelectedSubOptions == null ? Option.SortedOptions.Where(x => x.Menu == type) : [ SelectedSubOptions ])
         {
             if (!header.Setting)
             {
                 header.Setting = UObject.Instantiate((MonoBehaviour)(header.Type switch
                 {
-                    CustomOptionType.Header => HeaderPrefab,
+                    CustomOptionType.Header or CustomOptionType.ListHolder => HeaderPrefab,
                     CustomOptionType.Alignment => AlignmentPrefab,
                     CustomOptionType.LayerHeader => LayerHeaderPrefab,
                     _ =>  throw new ArgumentOutOfRangeException($"There's no header prefab for {header.Type}")
@@ -364,7 +364,7 @@ public static class SettingsPatches
                 if (SettingsPage == 0)
                     __instance.GameSettingsTab.Children.Add(__instance.GameSettingsTab.MapPicker);
 
-                foreach (var header in OptionAttribute.SortedOptions)
+                foreach (var header in Option.SortedOptions)
                 {
                     if (!header.Setting)
                     {
@@ -411,14 +411,21 @@ public static class SettingsPatches
                         if (option.Setting is OptionBehaviour setting)
                             __instance.GameSettingsTab.Children.Add(setting);
 
-                        if (option is not IMultiSelectOption multiSelect)
+                        if (option is not IMultiSelectOption multiSelect || !multiSelect.Options.Any())
                             continue;
 
-                        foreach (var button in multiSelect.Options)
+                        y -= 0.2f;
+
+                        foreach (var (i, button) in multiSelect.Options.Indexed())
                         {
-                            button.transform.localPosition = new(0.952f, y, -2f);
-                            y -= 0.45f;
+                            var col = i % 3;
+                            button.transform.localPosition = new(-1f + (2f * col), y, -2f);
+
+                            if (col == 2)
+                                y -= 0.65f;
                         }
+
+                        y -= 0.6f;
                     }
                 }
 
@@ -433,7 +440,7 @@ public static class SettingsPatches
                 AlignmentsButton.gameObject.SetActive(SettingsPage == 1);
                 __instance.RoleSettingsTab.advancedSettingChildren.Clear();
 
-                foreach (var header in OptionAttribute.SortedOptions)
+                foreach (var header in Option.SortedOptions)
                 {
                     if (!header.Setting)
                     {
@@ -459,8 +466,8 @@ public static class SettingsPatches
                         continue;
                     }
 
-                    var isHeader = header is HeaderOptionAttribute;
-                    var isLayerHeader = header is LayerHeaderOptionAttribute;
+                    var isHeader = header is HeaderOption;
+                    var isLayerHeader = header is LayerHeaderOption;
 
                     if (!isHeader)
                         y -= 0.1f;
@@ -562,6 +569,27 @@ public static class SettingsPatches
         {
             if (!AmongUsClient.Instance || !CustomPlayer.Local || !__instance.myPlayer || IsFreePlay())
                 return;
+
+            if (Holders.EntryCount < GameData.Instance.PlayerCount)
+            {
+                Holders.RolesEntryList.AddEntryForPlayer();
+                Holders.ModifiersEntryList.AddEntryForPlayer();
+                Holders.AbilitiesEntryList.AddEntryForPlayer();
+                Holders.DispositionsEntryList.AddEntryForPlayer();
+
+                if (GameData.Instance.PlayerCount % 3 == 0)
+                {
+                    Holders.RolesBanList.AddEntryForPlayer();
+                    Holders.ModifiersBanList.AddEntryForPlayer();
+                    Holders.AbilitiesBanList.AddEntryForPlayer();
+                    Holders.DispositionsBanList.AddEntryForPlayer();
+                }
+
+                Holders.EntryCount++;
+
+                OnValueChanged();
+                OnValueChangedView();
+            }
 
             if (__instance.myPlayer.AmOwner)
             {
@@ -696,7 +724,7 @@ public static class SettingsPatches
 
         var type = (MultiMenu)page;
 
-        foreach (var header in OptionAttribute.SortedOptions.Where(x => x.Menu == type))
+        foreach (var header in Option.SortedOptions.Where(x => x.Menu == type))
         {
             if (!header.ViewSetting)
             {
@@ -759,7 +787,7 @@ public static class SettingsPatches
 
         __instance ??= LobbyInfoPane.Instance.LobbyViewSettingsPane;
 
-        if (!__instance)
+        if (!__instance || !ClientOptionsButton)
             return;
 
         __instance.taskTabButton.SelectButton(SettingsPage3 == 0);
@@ -775,12 +803,12 @@ public static class SettingsPatches
             {
                 var menu = (MultiMenu)SettingsPage3;
 
-                foreach (var option in OptionAttribute.GetOptions<HeaderOptionAttribute>())
+                foreach (var option in Option.GetOptions<HeaderOption>())
                 {
                     if (!option.ViewSetting)
                         continue;
 
-                    var flag = option.Menu == menu && option.Active();
+                    var flag = option.Menu == menu && option.Active() && option.GroupMembers.Any(x => x.PartiallyActive());
                     option.ViewSetting.gameObject.SetActive(flag);
                     option.ViewUpdate();
 
@@ -829,7 +857,7 @@ public static class SettingsPatches
                 CreateViewOptions(__instance.settingsContainer, 4);
                 CreateViewOptions(__instance.settingsContainer, 3);
 
-                foreach (var option in OptionAttribute.GetOptions<AlignmentOptionAttribute>())
+                foreach (var option in Option.GetOptions<AlignmentOption>())
                 {
                     if (!option.ViewSetting)
                         continue;
@@ -880,7 +908,7 @@ public static class SettingsPatches
                     else
                         y -= 0.543f;
 
-                    foreach (var layer in option.GroupMembers?.Cast<LayerOptionAttribute>()!)
+                    foreach (var layer in option.GroupMembers?.Cast<LayerOption>()!)
                     {
                         layer.ViewUpdate();
                         var active = layer.Active();
@@ -1131,7 +1159,7 @@ public static class SettingsPatches
             if (!Save)
             {
                 Save = UObject.Instantiate(ButtonPrefab, __instance.StandardPresetButton.transform.parent);
-                Save.OverrideOnClickListeners(OptionAttribute.SaveSettings);
+                Save.OverrideOnClickListeners(Option.SaveSettings);
                 Save.name = "SaveSettingsButton";
                 Save.transform.localPosition = new(1.5f, 2.6164f, -2f);
                 Save.buttonText.text = TranslationManager.Translate("ImportExport.Save");
@@ -1192,7 +1220,7 @@ public static class SettingsPatches
             return;
 
         var presetButton = CreateButton(presetName, GameSettingMenu.Instance.PresetsTab.StandardPresetButton.transform.parent);
-        presetButton.OverrideOnClickListeners(() => OptionAttribute.HandlePreset(presetName, presetButton.buttonText));
+        presetButton.OverrideOnClickListeners(() => Option.HandlePreset(presetName, presetButton.buttonText));
         PresetButtons.Add(presetButton);
     }
 

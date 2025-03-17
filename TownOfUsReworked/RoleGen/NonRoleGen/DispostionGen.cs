@@ -12,7 +12,7 @@ public sealed class DispositionGen : BaseGen
 
     public override void InitList()
     {
-        if (IsRoleList())
+        if (IsList())
             InitRlList();
         else
             InitRegList();
@@ -22,7 +22,7 @@ public sealed class DispositionGen : BaseGen
     {
         var abilities = GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor);
 
-        foreach (var entry in OptionAttribute.GetOptions<ListEntryAttribute>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Disposition))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Disposition))
         {
             foreach (var id in entry.Value)
             {
@@ -37,7 +37,7 @@ public sealed class DispositionGen : BaseGen
                     if (!id.TryCastToLayer(out var layer))
                         layer = abilities.Random();
 
-                    if (RoleListGen.CannotAdd(layer, AllDispositions))
+                    if (ListGen.CannotAdd(layer, AllDispositions))
                         rateLimit++;
                     else
                         AllDispositions.Add(GetSpawnItem(layer));

@@ -17,15 +17,15 @@ public static class RPC
     /// <param name="setting">Specific setting to sync, or <c>null</c> for all settings</param>
     /// <param name="targetClientId">Target player ID, or <c>-1</c> for all players</param>
     /// <param name="save">Whether to save settings after sending</param>
-    public static void SendOptionRPC(OptionAttribute setting = null, int targetClientId = -1, bool save = true)
+    public static void SendOptionRPC(Option setting = null, int targetClientId = -1, bool save = true)
     {
         if (save)
-            OptionAttribute.SaveSettings("LastUsed");
+            Option.SaveSettings("LastUsed");
 
         if (TownOfUsReworked.MciActive || !CustomPlayer.Local || GameData.Instance.PlayerCount <= 1)
             return;
 
-        var options = setting != null ? [ setting ] : OptionAttribute.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOptionAttribute);
+        var options = setting != null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
         var split = options.Split(70);
         Info($"Sending {options.Count()} options split to {split.Count} sets to {targetClientId}");
 
@@ -61,7 +61,7 @@ public static class RPC
         {
             var superId = reader.ReadByte();
             var id = reader.ReadByte();
-            var customOption = OptionAttribute.GetOption(superId, id);
+            var customOption = Option.GetOption(superId, id);
 
             if (customOption != null)
             {
@@ -72,7 +72,7 @@ public static class RPC
                 Failure($"No option found for id pair: {superId}:{id}");
         }
 
-        OptionAttribute.SaveSettings("LastUsed");
+        Option.SaveSettings("LastUsed");
     }
 
     /// <summary>

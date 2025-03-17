@@ -198,7 +198,7 @@ public sealed class LayerHandler : RoleBehaviour
             Flash(CustomColorManager.Stalemate);
         else if (CustomPlayer.Local.Is<Coroner>())
             Flash(CustomColorManager.Coroner);
-        else if (CustomPlayer.Local.TryGetLayer<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
+        else if (CustomPlayer.Local.Is<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
             Flash(mon.Color);
 
         TasksCountTowardProgress &= TaskSettings.GhostTasksCountToWin;

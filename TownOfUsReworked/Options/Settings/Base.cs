@@ -1,10 +1,9 @@
 namespace TownOfUsReworked.Options;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-public abstract class OptionAttribute(CustomOptionType type) : Attribute
+public abstract class Option(CustomOptionType type)
 {
-    public static readonly List<OptionAttribute> AllOptions = [];
-    public static readonly List<BaseHeaderOptionAttribute> SortedOptions = [];
+    public static readonly List<Option> AllOptions = [];
+    public static readonly List<BaseHeaderOption> SortedOptions = [];
 
     public string ID { get; set; }
     public MonoBehaviour Setting { get; set; }
@@ -14,7 +13,8 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     public bool ClientOnly { get; set; }
     protected MemberInfo Member { get; private set; }
     public string Name { get; set; } // Not actually the setting text, just the member name :]
-    public KeyValuePair<byte, byte> RpcId { get; private set; }
+    public KeyValuePair<byte, byte> RpcId { get; protected set; }
+    public BaseHeaderOption Header { get; set; }
 
     protected static string LastChangedSetting = "";
     protected static LobbyNotificationMessage LastSettingNotif;
@@ -23,7 +23,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     // This one is for those depending on other options
     private static readonly List<(string[], object[])> OptionParents1 =
     [
-        ([ "EjectionRevealsRoles" ], [ "ConfirmEjects" ]),
+        ([ "EjectionRevealsRoles", "JestEjectScreen", "ExeEjectScreen" ], [ "ConfirmEjects" ]),
         ([ "InitialCooldowns" ], [ "EnableInitialCds" ]),
         ([ "MeetingCooldowns" ], [ "EnableMeetingCds" ]),
         ([ "FailCooldowns" ], [ "EnableFailCds" ]),
@@ -61,7 +61,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
     // This is for everything else
     private static readonly List<(string[], object[])> OptionParents2 =
     [
-        ([ "TaskBar" ], [ GameMode.Classic, GameMode.AllAny, GameMode.RoleList, GameMode.Vanilla ]),
+        ([ "TaskBar" ], [ GameMode.Classic, GameMode.AllAny, GameMode.List, GameMode.Vanilla ]),
         ([ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic ]),
         ([ "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [
             GameMode.HideAndSeek ]),
@@ -77,19 +77,21 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         ([ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ]),
         ([ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ]),
         ([ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ]),
-        ([ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Vanilla, GameMode.RoleList ]),
+        ([ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Vanilla, GameMode.List ]),
         ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ]),
         ([ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ]),
-        ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleListRoles", "RoleListModifiers",
-            "RoleListDispositions", "RoleListAbilities" ], [ GameMode.RoleList ]),
-        ([ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.RoleList, GameMode.AllAny ]),
+        ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleEntryList", "ModifierEntryList", "ModifierBanList",
+            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList" ], [ GameMode.List ]),
+        ([ "RunnerVision" ], [ GameMode.TaskRace ]),
+        ([ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.List, GameMode.AllAny ]),
         ([ "Location1", "Location2", "Location3" ], [ AirshipSpawnType.Fixed ])
     ];
-    public BaseHeaderOptionAttribute Header { get; set; }
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
-    public virtual void Set(MemberInfo member)
+    public virtual void Set(MemberInfo member, BaseHeaderOption header, bool clientOnly)
     {
+        Header = header;
+        ClientOnly = clientOnly;
         Member = member;
         Name = member.Name.Replace("Priv", "");
         ID = $"CustomOption.{Name}";
@@ -113,7 +115,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         if (OptionParents2.TryFindingAll(x => x.Item1.Contains(Name), out parents))
             result &= parents.AllAnyOrEmpty(x => x.Item2.AllAnyOrEmpty(IsActive, All), All);
 
-        return result;
+        return result && Visible();
     }
 
     public bool Active() => PartiallyActive() && Header?.Value != false;
@@ -142,7 +144,7 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         {
             result = optionatt.PartiallyActive();
 
-            if (optionatt is OptionAttribute<bool> boolOpt)
+            if (optionatt is Option<bool> boolOpt)
                 result &= invertVal ? !boolOpt.Value : boolOpt.Value;
         }
         else if (!MapToLoaded.TryGetValue(id, out result))
@@ -185,10 +187,12 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
 
     protected virtual void ReadValueString(string value) {}
 
+    protected virtual bool Visible() => true;
+
     private static string SettingsToString()
     {
         var builder = new StringBuilder();
-        AllOptions.Where(option => option is not BaseHeaderOptionAttribute && !option.ClientOnly && option.ID.Contains("CustomOption")).ForEach(x => builder.AppendLine($"{x}"));
+        AllOptions.Where(option => option is not BaseHeaderOption && !option.ClientOnly && option.ID.Contains("CustomOption")).ForEach(x => builder.AppendLine($"{x}"));
         builder.AppendLine($"Map:{MapSettings.Map}");
         return $"{builder}";
     }
@@ -310,11 +314,11 @@ public abstract class OptionAttribute(CustomOptionType type) : Attribute
         CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
     }
 
-    public static IEnumerable<T> GetOptions<T>() where T : OptionAttribute => AllOptions.OfType<T>();
+    public static IEnumerable<T> GetOptions<T>() where T : Option => AllOptions.OfType<T>();
 
-    private static OptionAttribute GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
+    private static Option GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
 
-    public static OptionAttribute GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);
+    public static Option GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);
 
-    public static T GetOption<T>(string id) where T : OptionAttribute => GetOption(id) as T;
+    public static T GetOption<T>(string id) where T : Option => GetOption(id) as T;
 }

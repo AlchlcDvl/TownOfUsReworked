@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class HeaderOptionAttribute(MultiMenu menu) : BaseHeaderOptionAttribute(menu, CustomOptionType.Header)
+public class HeaderOption(MultiMenu menu, CustomOptionType type = CustomOptionType.Header) : BaseHeaderOption(menu, type)
 {
     private TextMeshPro ButtonText { get; set; }
-    public PassiveButton Button { get; set; }
+    private PassiveButton Button { get; set; }
     private GameObject Collapse { get; set; }
 
     public override void OptionCreated()

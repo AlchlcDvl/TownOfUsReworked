@@ -59,7 +59,8 @@ public enum CustomOptionType : byte
     Entry,
     MultiSelect,
     Alignment,
-    LayerHeader
+    LayerHeader,
+    ListHolder
 }
 
 public enum MultiMenu : byte
@@ -133,7 +134,7 @@ public enum GameMode : byte
 {
     Classic,
     AllAny,
-    RoleList,
+    List,
     HideAndSeek,
     TaskRace,
     Vanilla,

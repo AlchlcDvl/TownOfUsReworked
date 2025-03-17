@@ -1,12 +1,11 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class AlignmentOptionAttribute(ListSlot alignment = ListSlot.None, bool noParts = false, string colorHex = null, MultiMenu menu = MultiMenu.Layer) :
-    BaseHeaderOptionAttribute(menu, CustomOptionType.Alignment)
+public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noParts = false, string colorHex = null) : BaseHeaderOption(MultiMenu.Layer, CustomOptionType.Alignment)
 {
     private ListSlot Alignment { get; } = alignment;
     private bool NoParts { get; } = noParts;
     private UColor Color { get; } = CustomColorManager.FromHex(colorHex ?? "#FFFFFFFF");
-    public HeaderOptionAttribute GroupHeader { get; private set; }
+    public HeaderOption GroupHeader { get; private set; }
     private TextMeshPro Left { get; set; }
     private TextMeshPro Right { get; set; }
     private TextMeshPro Center { get; set; }
@@ -92,7 +91,7 @@ public sealed class AlignmentOptionAttribute(ListSlot alignment = ListSlot.None,
         SavedMode = GameMode.None;
     }
 
-    public void Toggle()
+    private void Toggle()
     {
         Value = !Value;
         GroupHeader?.Toggle();
@@ -135,12 +134,12 @@ public sealed class AlignmentOptionAttribute(ListSlot alignment = ListSlot.None,
 
         Left.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
         Right.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-        Center.gameObject.SetActive(SavedMode == GameMode.RoleList);
+        Center.gameObject.SetActive(SavedMode == GameMode.List);
         Single.SetActive(SavedMode is not (GameMode.Classic or GameMode.AllAny));
 
         Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.RoleList => "Unique",
+            GameMode.List => "Unique",
             _ => ""
         }));
         Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
@@ -160,7 +159,7 @@ public sealed class AlignmentOptionAttribute(ListSlot alignment = ListSlot.None,
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        GroupHeader = GetOption<HeaderOptionAttribute>($"{Name.Replace("Roles", "")}Settings");
+        GroupHeader = GetOption<HeaderOption>($"{Name.Replace("Roles", "")}Settings");
     }
 
     private void SetUpOptionsMenu()

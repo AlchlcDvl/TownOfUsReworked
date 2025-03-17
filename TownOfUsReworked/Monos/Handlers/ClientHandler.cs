@@ -380,8 +380,8 @@ public sealed class ClientHandler : MonoBehaviour
             newButton.OverrideOnClickListeners(BlankVoid);
             newButton.name = "Collapse";
 
-            LayerHeaderOptionAttribute.OgLabel = label.GetComponent<SpriteRenderer>().sprite;
-            LayerHeaderOptionAttribute.OgPosition = label.localPosition;
+            LayerHeaderOption.OgLabel = label.GetComponent<SpriteRenderer>().sprite;
+            LayerHeaderOption.OgPosition = label.localPosition;
 
             prefabs.Add(SettingsPatches.LayerHeaderPrefab);
         }

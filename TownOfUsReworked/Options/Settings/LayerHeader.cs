@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class LayerHeaderOptionAttribute(LayerEnum layer) : BaseHeaderOptionAttribute(MultiMenu.LayerSubOptions, CustomOptionType.LayerHeader)
+public sealed class LayerHeaderOption(LayerEnum layer) : BaseHeaderOption(MultiMenu.LayerSubOptions, CustomOptionType.LayerHeader)
 {
     public LayerEnum Layer { get; } = layer;
     public PassiveButton Button { get; set; }

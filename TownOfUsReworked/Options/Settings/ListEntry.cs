@@ -1,23 +1,24 @@
+
 namespace TownOfUsReworked.Options;
 
-public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSelectOptionAttribute<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None)
+public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int num) : BaseMultiSelectOption<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None)
 {
     public PlayerLayerEnum EntryType { get; } = entryType;
-    public bool IsBan { get; private set; }
-    private string Num { get; set; }
+    public bool IsBan { get; } = isBan;
+    private int Num { get; } = num + 1;
 
     public override void PostLoadSetup()
     {
-        base.PostLoadSetup();
-        IsBan = ID.Contains("Ban");
-        Num = ID.Replace("CustomOption.", "").Replace("Entry", "").Replace("Ban", "").Replace($"{EntryType}", "");
+        Name = $"{EntryType}{(IsBan ? "Ban" : "Entry")}{Num}";
+        ID = $"CustomOption.{Name}";
+        RpcId = new((byte)(AllOptions.Count / 255), (byte)(AllOptions.Count % 255));
+        AllOptions.Add(this);
     }
 
     public override void ViewUpdate()
     {
         base.ViewUpdate();
-        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = Value.First().TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color :
-            UColor.white;
+        ViewSetting.Cast<ViewSettingsInfoPanel>().settingText.color = Value.First().TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
     public override void Update()
@@ -36,7 +37,7 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
         return result;
     }
 
-    protected override string SettingNotif() => base.SettingNotif().Replace("%num%", Num);
+    protected override string SettingNotif() => base.SettingNotif().Replace("%num%", $"{Num}");
 
     protected override void CreateButtons()
     {
@@ -57,7 +58,6 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
 
         if (IsBan)
         {
-            base.TrySetValue(value, out newValue);
             return;
         }
 
@@ -142,7 +142,6 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
 
         if (toRemove == null)
         {
-            base.TrySetValue(value, out newValue);
             return;
         }
 
@@ -150,10 +149,14 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
         newValue.Add(value);
     }
 
+    protected override bool Visible() => Num <= GameData.Instance.PlayerCount / (IsBan ? 3 : 1);
+
+    protected override UColor TextColor(ListSlot value) => value.TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
+
     // What the hell is this? What am I even doing man...
-    private static IEnumerable<ListSlot> GetPossibleValues(ListEntryAttribute self)
+    private static IEnumerable<ListSlot> GetPossibleValues(ListEntryOption self)
     {
-        var bans = GetOptions<ListEntryAttribute>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
+        var bans = GetOptions<ListEntryOption>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
         yield return ListSlot.None;
 
         if (!self.IsBan)
@@ -250,15 +253,15 @@ public sealed class ListEntryAttribute(PlayerLayerEnum entryType) : BaseMultiSel
         }
     }
 
-    public static bool IsAdded(ListSlot value, ListEntryAttribute entry = null)
+    public static bool IsAdded(ListSlot value, ListEntryOption entry = null)
     {
-        var entries = GetOptions<ListEntryAttribute>().Where(x => !x.IsBan);
+        var entries = GetOptions<ListEntryOption>().Where(x => !x.IsBan);
         return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));
     }
 
-    public static bool IsBanned(ListSlot value, ListEntryAttribute entry = null)
+    public static bool IsBanned(ListSlot value, ListEntryOption entry = null)
     {
-        var entries = GetOptions<ListEntryAttribute>().Where(x => x.IsBan);
+        var entries = GetOptions<ListEntryOption>().Where(x => x.IsBan);
         return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));
     }
 }

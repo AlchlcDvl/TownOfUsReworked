@@ -8,7 +8,7 @@ public static class UpdateSplashPatch
 
     public static bool Prefix(SplashManager __instance)
     {
-        if (__instance.doneLoadingRefdata && !__instance.startedSceneLoad && Time.time - __instance.startTime > 4.2f)
+        if (__instance.doneLoadingRefdata && !__instance.startedSceneLoad && Time.time - __instance.startTime > 4.2f && !Loading)
             Coroutines.Start(LoadingScreen(__instance));
 
         return false;

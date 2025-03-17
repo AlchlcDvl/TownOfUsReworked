@@ -65,7 +65,7 @@ public static class ConsoleCanUsePatch
     [HarmonyPatch(nameof(Console.SetOutline))]
     public static void Postfix(Console __instance, bool mainTarget)
     {
-        if (!CustomPlayer.Local.TryGetLayer<Role>(out var role) || Meeting())
+        if (!CustomPlayer.Local.Is<Role>(out var role) || Meeting())
             return;
 
         __instance.Image.material.SetColor(OutlineColor, role.Color);
@@ -86,24 +86,20 @@ public static class ZiplineBehaviourUse
             UninteractablePlayers2.TryAdd(player.PlayerId, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
             CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, UninteractablePlayers2[player.PlayerId], true);
             var hand = __instance.playerIdHands[player.PlayerId];
-
-            if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly)
-                hand.handRenderer.color.SetAlpha(player.MyRend().color.a);
-            else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
-                PlayerMaterial.SetColors(UColor.grey, hand.handRenderer);
-            else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Colorblind)
-                hand.handRenderer.color = UColor.grey;
-            else if (player.IsMimicking(out var mimicked))
-                hand.SetPlayerColor(mimicked.GetCurrentOutfit(), PlayerMaterial.MaskType.None, mimicked.cosmetics.GetPhantomRoleAlpha());
-            else
-                hand.SetPlayerColor(player.GetCurrentOutfit(), PlayerMaterial.MaskType.None, player.cosmetics.GetPhantomRoleAlpha());
+            PlayerMaterial.SetColors(player.GetCustomOutfitType() switch
+            {
+                CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly => player.GetPlayerColor(),
+                CustomPlayerOutfitType.Camouflage or CustomPlayerOutfitType.Colorblind => UColor.grey,
+                _ => (player.IsMimicking(out var mimicked) ? mimicked : player).GetPlayerColor()
+            }, hand.handRenderer);
+            hand.handRenderer.color = hand.handRenderer.color.SetAlpha(player.GetAlpha());
         }
         catch (Exception e)
         {
             Error(e);
         }
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
+        if (CustomPlayer.Local.Is<Astral>(out var ast))
             ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 

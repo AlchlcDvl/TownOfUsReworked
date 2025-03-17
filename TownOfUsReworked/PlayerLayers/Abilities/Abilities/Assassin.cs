@@ -245,7 +245,7 @@ public abstract class Assassin : Ability, IGuesser
             var subfactionflag = $"{player.GetSubFaction()}" == $"{guess}";
             var framedflag = player.IsFramed();
 
-            if (guess != LayerEnum.Actor && player.TryGetLayer<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
+            if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
             {
                 actor.Guessed = true;
                 CallRpc(CustomRPC.WinLose, WinLose.ActorWins, actor);
@@ -297,7 +297,7 @@ public abstract class Assassin : Ability, IGuesser
         if (Local && player == Player)
             GuessMenu.HideButtons();
 
-        if (player.TryGetLayer<Indomitable>(out var ind) && player != Player)
+        if (player.Is<Indomitable>(out var ind) && player != Player)
         {
             if (Local)
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
@@ -308,7 +308,7 @@ public abstract class Assassin : Ability, IGuesser
             ind.AttemptedGuess = true;
         }
 
-        if (Player == player && Player.TryGetLayer<Professional>(out var modifier) && !modifier.LifeUsed)
+        if (Player == player && Player.Is<Professional>(out var modifier) && !modifier.LifeUsed)
         {
             modifier.LifeUsed = true;
             GuessMenu.HideSingle(guessTarget.PlayerId);
@@ -329,7 +329,7 @@ public abstract class Assassin : Ability, IGuesser
             RemainingKills--;
             MarkMeetingDead(player, Player);
 
-            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && (!lovers.OtherLover.Is(Alignment.Apocalypse) || AssassinGuessApoc))
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && (!lovers.OtherLover.Is(Alignment.Apocalypse) || AssassinGuessApoc))
                 RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
         }
 

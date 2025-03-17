@@ -54,7 +54,7 @@ public sealed class Monarch : Crew, ISovereign
             ToBeKnighted.Add(target.PlayerId);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
 
-            if (target.TryGetLayer<IRevealer>(out var rev) && !rev.Revealed)
+            if (target.Is<IRevealer>(out var rev) && !rev.Revealed)
                 CustomAchievementManager.UnlockAchievement("HiddenAlliance");
         }
 
@@ -68,7 +68,7 @@ public sealed class Monarch : Crew, ISovereign
         var id = reader.ReadByte();
         ToBeKnighted.Add(id);
 
-        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.TryGetLayer<IRevealer>(out var rev) && !rev.Revealed)
+        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.Is<IRevealer>(out var rev) && !rev.Revealed)
             CustomAchievementManager.UnlockAchievement("HiddenAlliance");
     }
 

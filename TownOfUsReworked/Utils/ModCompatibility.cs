@@ -273,7 +273,7 @@ public static class ModCompatibility
 
     public static bool SpawnPatch(dynamic __instance)
     {
-        if ((!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && (!CustomPlayer.Local.TryGetLayer<Astral>(out var astral) || astral.LastPosition == Vector3.zero || astral.Dead))
+        if ((!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && (!CustomPlayer.Local.Is<Astral>(out var astral) || astral.LastPosition == Vector3.zero || astral.Dead))
             return true;
 
         HUD().FullScreen.color = HUD().FullScreen.color.SetAlpha(0f);

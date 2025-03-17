@@ -302,7 +302,7 @@ public sealed class Thief : Neutral, IGuesser
         {
             MarkMeetingDead(player, Player);
 
-            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.TryGetLayer<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
                 !lovers.OtherLover.Data.IsDead)
             {
                 RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);

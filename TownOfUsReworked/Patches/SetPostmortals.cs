@@ -10,7 +10,7 @@ public static class SetPostmortals
         if (CustomPlayer.Local.Data.Disconnected)
             return;
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
+        if (CustomPlayer.Local.Is<Astral>(out var ast))
             ast.SetPosition();
 
         foreach (var ghoul in PlayerLayer.GetLayers<Ghoul>())
@@ -21,7 +21,7 @@ public static class SetPostmortals
             {
                 ghoul.MarkedPlayer.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
 
-                if (Lovers.BothLoversDie && ghoul.MarkedPlayer.TryGetLayer<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
+                if (Lovers.BothLoversDie && ghoul.MarkedPlayer.Is<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
                     lover.OtherLover.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
 
                 ghoul.MarkedPlayer = null;
@@ -35,7 +35,7 @@ public static class SetPostmortals
             JesterWin(exiled);
             ExecutionerWin(exiled);
 
-            if (Lovers.BothLoversDie && exiled.TryGetLayer<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
+            if (Lovers.BothLoversDie && exiled.Is<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
                 lover.OtherLover.CustomDie(DeathReasonEnum.Suicide);
         }
 

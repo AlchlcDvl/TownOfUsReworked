@@ -1,41 +1,28 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ClimbLadder))]
-public static class SaveLadderPlayer
+[HarmonyPatch]
+public static class SavePlayer
 {
-    public static void Prefix(PlayerPhysics __instance)
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ClimbLadder))]
+    public static void Prefix(PlayerPhysics __instance) => Handle(__instance.myPlayer);
+
+    [HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.Use))]
+    public static void Prefix() => Handle(CustomPlayer.Local);
+
+    private static void Handle(PlayerControl player)
     {
         try
         {
-            UninteractablePlayers.TryAdd(__instance.myPlayer.PlayerId, Time.time);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local, 6, false);
+            UninteractablePlayers.TryAdd(player.PlayerId, Time.time);
+            UninteractablePlayers2.TryAdd(player.PlayerId, 6);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, 6, false);
         }
         catch (Exception e)
         {
             Error(e);
         }
 
-        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
-            ast.LastPosition = CustomPlayer.LocalCustom.Position;
-    }
-}
-
-[HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.Use))]
-public static class SavePlatformPlayer
-{
-    public static void Prefix()
-    {
-        try
-        {
-            UninteractablePlayers.TryAdd(CustomPlayer.Local.PlayerId, Time.time);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local, 6, false);
-        }
-        catch (Exception e)
-        {
-            Error(e);
-        }
-
-        if (CustomPlayer.Local.TryGetLayer<Astral>(out var ast))
-            ast.LastPosition = CustomPlayer.LocalCustom.Position;
+        if (player.Is<Astral>(out var ast))
+            ast.LastPosition = player.transform.position;
     }
 }

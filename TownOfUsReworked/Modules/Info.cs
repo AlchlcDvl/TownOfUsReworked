@@ -168,7 +168,7 @@ public sealed class GameModeInfo(GameMode mode, bool footer = false) : Info($"{m
 {
     GameMode.Vanilla => UColor.white,
     GameMode.Classic => CustomColorManager.Classic,
-    GameMode.RoleList => CustomColorManager.RoleList,
+    GameMode.List => CustomColorManager.List,
     GameMode.HideAndSeek => CustomColorManager.HideAndSeek,
     GameMode.TaskRace => CustomColorManager.TaskRace,
     GameMode.AllAny => CustomColorManager.AllAny,
