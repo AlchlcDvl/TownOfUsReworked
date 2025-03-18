@@ -69,7 +69,7 @@ public static class VisorsTabOnEnablePatch
             colorChip.ProductId = visor.ProductId;
             colorChip.Tag = visor;
             __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
-            visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+            visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.Local.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             __instance.ColorChips.Add(colorChip);
             yStart = ypos;

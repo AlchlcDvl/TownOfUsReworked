@@ -2,7 +2,7 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IDragger : IRole
 {
-    DeadBody CurrentlyDragging { get; set; }
+    DeadBodyHandler CurrentlyDragging { get; set; }
 
     void Drop();
 }

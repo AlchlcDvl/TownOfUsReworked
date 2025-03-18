@@ -31,7 +31,7 @@ public sealed class Vigilante : Crew
     private CustomButton ShootButton { get; set; }
     private bool RoundOne { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Vigilante : FactionColor;
+    public override UColor MainColor => CustomColorManager.Vigilante;
     public override LayerEnum Type => LayerEnum.Vigilante;
     public override Func<string> StartText => () => "Shoot The <#FF0000FF>Evildoers</color>";
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";

@@ -6,7 +6,7 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.Select)), HarmonyPrefix]
     public static bool SelectPrefix(PlayerVoteArea __instance)
     {
-        if (!CustomPlayer.Local.Is<Politician>(out var pol) || CustomPlayer.LocalCustom.Dead || __instance.AmDead || !__instance.Parent ||
+        if (!CustomPlayer.Local.Is<Politician>(out var pol) || CustomPlayer.Local.HasDied() || __instance.AmDead || !__instance.Parent ||
             !__instance.Parent.Select(__instance.TargetPlayerId))
         {
             return true;

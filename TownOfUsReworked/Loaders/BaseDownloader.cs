@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Loaders;
 
-public class BaseDownloader(string dir, string manifest, string ext)
-    : AssetLoader<DownloadableAsset>
+public class BaseDownloader(string dir, string manifest, string ext) : AssetLoader<DownloadableAsset>
 {
     protected override string DirectoryInfo { get; } = dir;
     protected override string Manifest { get; } = manifest;

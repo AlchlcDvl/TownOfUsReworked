@@ -13,7 +13,7 @@ public sealed class Consort : Intruder, IBlocker
     public PlayerControl BlockTarget { get; set; }
     public CustomPlayerMenu BlockMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Consort : FactionColor;
+    public override UColor MainColor => CustomColorManager.Consort;
     public override LayerEnum Type => LayerEnum.Consort;
     public override Func<string> StartText => () => "Roleblock The <#8CFFFFFF>Crew</color> From Progressing";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +

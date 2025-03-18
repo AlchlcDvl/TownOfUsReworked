@@ -19,7 +19,7 @@ public sealed class Thief : Neutral, IGuesser
     public CustomMeeting GuessMenu { get; private set; }
     public CustomRolesMenu GuessingMenu { get; private set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Thief : FactionColor;
+    public override UColor MainColor => CustomColorManager.Thief;
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";

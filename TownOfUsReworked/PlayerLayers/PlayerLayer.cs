@@ -2,9 +2,11 @@ namespace TownOfUsReworked.PlayerLayers;
 
 public abstract class PlayerLayer : IPlayerLayer, IDisposable
 {
-    public abstract UColor Color { get; }
+    public abstract UColor MainColor { get; }
+    public abstract UColor LayerColor { get; }
     public abstract PlayerLayerEnum LayerType { get; }
     public abstract LayerEnum Type { get; }
+    public abstract bool UseMainColor { get; }
 
     public virtual Func<string> Description => () => "- None";
     public virtual AttackEnum AttackVal => AttackEnum.None;
@@ -22,6 +24,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
     public bool Disconnected => Data?.Disconnected ?? true;
     public bool Alive => !Disconnected && !Dead;
     public bool Local => Player?.AmOwner ?? false;
+    public UColor Color => UseMainColor ? MainColor : LayerColor;
 
     public NetworkedPlayerInfo Data => Player?.Data;
     public string PlayerName => Player?.name ?? Data?.PlayerName ?? "Playerless";

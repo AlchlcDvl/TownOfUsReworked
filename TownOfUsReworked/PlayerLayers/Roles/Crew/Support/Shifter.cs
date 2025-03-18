@@ -12,7 +12,7 @@ public sealed class Shifter : Crew
     private CustomButton ShiftButton { get; set; }
     private CustomPlayerMenu ShifterMenu { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Shifter : FactionColor;
+    public override UColor MainColor => CustomColorManager.Shifter;
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";
     public override Func<string> Description => () => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";

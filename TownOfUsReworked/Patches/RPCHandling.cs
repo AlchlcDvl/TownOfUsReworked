@@ -378,14 +378,14 @@ public static class RPCHandling
                             if (reader.ReadBoolean())
                             {
                                 var hand = UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerid];
-                                var playerfromid = PlayerById(playerid);
-                                PlayerMaterial.SetColors(playerfromid.GetCustomOutfitType() switch
+                                var playerFromId = PlayerById(playerid);
+                                PlayerMaterial.SetColors(playerFromId.GetCustomOutfitType() switch
                                 {
-                                    CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly => playerfromid.GetPlayerColor(),
+                                    CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly => playerFromId.GetPlayerColor(),
                                     CustomPlayerOutfitType.Camouflage or CustomPlayerOutfitType.Colorblind => UColor.grey,
-                                    _ => (playerfromid.IsMimicking(out var mimicked) ? mimicked : playerfromid).GetPlayerColor()
+                                    _ => (playerFromId.IsMimicking(out var mimicked) ? mimicked : playerFromId).GetPlayerColor()
                                 }, hand.handRenderer);
-                                hand.handRenderer.color = hand.handRenderer.color.SetAlpha(playerfromid.GetAlpha());
+                                hand.handRenderer.color = hand.handRenderer.color.SetAlpha(playerFromId.GetAlpha());
                             }
                         } catch {}
 
@@ -403,7 +403,7 @@ public static class RPCHandling
                     }
                     case ActionsRPC.Drop:
                     {
-                        DragHandler.StopDrag(reader.ReadPlayer());
+                        reader.ReadBody().GetComponent<DeadBodyHandler>().StopDrag();
                         return;
                     }
                     case ActionsRPC.Burn:

@@ -14,7 +14,7 @@ public sealed class Pestilence : Apocalypse
 
     private CustomButton ObliterateButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Pestilence : FactionColor;
+    public override UColor MainColor => CustomColorManager.Pestilence;
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> Description => () => "- You can spread a deadly disease to other players";
     public override bool CanVent => base.CanVent && PestVent;

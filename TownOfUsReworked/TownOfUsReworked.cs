@@ -1,5 +1,4 @@
 // ReSharper disable HeuristicUnreachableCode
-#pragma warning disable CS0162 // Unreachable code detected
 
 using BepInEx.Logging;
 
@@ -7,6 +6,10 @@ namespace TownOfUsReworked;
 
 // FIXME: Can't call meetings (something I'm patching is rejecting it???)
 // TODO: Add commenting and documentation for the codebase
+// TODO: Refactor code for handling appearances, sizes and speed
+// TODO: Re-add version handling
+// TODO: Finish adding missing translation keys before the next release
+// TODO: Change how Ret, Reb and GF work by using their substituted roles rather than copy pasted code
 [BepInAutoPlugin("me.alchlcdvl.reworked", "Reworked")]
 [BepInDependency(ReactorPlugin.Id)]
 [BepInIncompatibility("MalumMenu")]
@@ -18,19 +21,13 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public const string GitHubLink = "https://github.com/AlchlcDvl/TownOfUsReworked";
     public const string AssetsLink = "https://github.com/AlchlcDvl/ReworkedAssets";
 
-    public static readonly Version ModVer = new(VersionS);
-
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 37;
-
-    // private static string VersionSignature => Version.Contains('+') ? Version[Version.IndexOf('+')..] : "";
-    private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
-    private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
-    private static string StreamString => IsStream ? "s" : "";
-    public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}";
+    private const int DevBuild = 38;
 
     public const string Resources = "TownOfUsReworked.Resources.";
+
+    public static readonly Version ModVer = new(VersionS);
 
     private static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
     public static readonly string Assets = Path.Combine(DataPath, "ReworkedAssets");
@@ -50,12 +47,17 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static readonly Assembly Core = typeof(TownOfUsReworked).Assembly;
 
+    private static string VersionSignature => Version.Contains('+') ? Version[(Version.IndexOf('+') + 1)..] : "";
+    private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
+    private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
+    private static string StreamString => IsStream ? "s" : "";
+    public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}";
+    public static string VersionFull => $"v{VersionFinal}+{VersionSignature}";
+
     public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV08 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
-
-    public readonly Harmony Harmony = new(Id);
 
     public static ConfigEntry<string> Ip { get; private set; }
     public static ConfigEntry<ushort> Port { get; private set; }
@@ -67,6 +69,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> CustomNeutColors { get; private set; }
     public static ConfigEntry<bool> CustomIntColors { get; private set; }
     public static ConfigEntry<bool> CustomSynColors { get; private set; }
+    public static ConfigEntry<bool> CustomGmColors { get; private set; }
     public static ConfigEntry<bool> CustomModColors { get; private set; }
     public static ConfigEntry<bool> CustomDispColors { get; private set; }
     public static ConfigEntry<bool> CustomAbColors { get; private set; }
@@ -87,6 +90,8 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> SameVote { get; private set; }
 
     public static TownOfUsReworked ModInstance { get; private set; }
+
+    public readonly Harmony Harmony = new(Id);
 
     public override void Load()
     {
@@ -121,7 +126,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         return true;
     }
 
-    public override string ToString() => $"{Id} {Name} {VersionFinal} {Version}";
+    public override string ToString() => $"{Id} {Name} {VersionFull}";
 
     private void SetUpConfigs()
     {
@@ -132,6 +137,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         CustomNeutColors = Config.Bind("Client", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
         CustomIntColors = Config.Bind("Client", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
         CustomSynColors = Config.Bind("Client", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
+        CustomGmColors = Config.Bind("Client", "Custom Game Mode Colors", true, "Enables custom colors for Game Mode roles");
         CustomModColors = Config.Bind("Client", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
         CustomDispColors = Config.Bind("Client", "Custom Disposition Colors", true, "Enables custom colors for Dispositions");
         CustomAbColors = Config.Bind("Client", "Custom Ability Colors", true, "Enables custom colors for Abilities");

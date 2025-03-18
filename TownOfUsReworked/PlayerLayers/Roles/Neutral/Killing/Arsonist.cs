@@ -30,7 +30,7 @@ public sealed class Arsonist : NKilling
         or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; } = [];
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Arsonist : FactionColor;
+    public override UColor MainColor => CustomColorManager.Arsonist;
     public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +

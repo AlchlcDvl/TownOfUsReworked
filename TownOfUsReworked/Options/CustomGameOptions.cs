@@ -284,6 +284,8 @@ public static class GameModifiers
     [ToggleOption]
     public static bool NoVentingUncleanedVents = false;
 
+    // TODO: Finish implementing these
+
     [ToggleOption]
     public static bool IlluminatiUnleashed = false;
 

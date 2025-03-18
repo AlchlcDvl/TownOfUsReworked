@@ -89,7 +89,7 @@ public sealed class GameTab : BaseTab
             Critical(CustomPlayer.Local.name);
             PlayerLayer.LocalLayers().ForEach(x => Critical(x));
             Critical("Is Dead - " + CustomPlayer.Local.HasDied());
-            Critical("Location - " + CustomPlayer.LocalCustom.Position);
+            Critical("Location - " + CustomPlayer.Local.transform.position);
         }
 
         if (!GUILayout.Button("Flash"))

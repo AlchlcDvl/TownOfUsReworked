@@ -202,12 +202,12 @@ public static class ChatPatches
             chatHandled = true;
             Run("<#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         }
-        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.LocalCustom.Dead)
+        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.Local.HasDied())
         {
             chatHandled = true;
             Run("<#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
         }
-        else if (!CustomPlayer.LocalCustom.Dead && !IsNullEmptyOrWhiteSpace(text))
+        else if (!CustomPlayer.Local.HasDied() && !IsNullEmptyOrWhiteSpace(text))
         {
             Notify(CustomPlayer.Local.PlayerId);
             CallRpc(CustomRPC.Misc, MiscRPC.Notify, CustomPlayer.Local.PlayerId);

@@ -8,12 +8,12 @@ public sealed class Allied : Disposition
 
     public Faction Side { get; set; }
 
-    public override UColor Color => Side switch
+    public override UColor MainColor => Side switch
     {
         Faction.Crew => CustomColorManager.Crew,
         Faction.Syndicate => CustomColorManager.Syndicate,
         Faction.Intruder => CustomColorManager.Intruder,
-        _ => ClientOptions.CustomDispColors ? CustomColorManager.Allied : CustomColorManager.Disposition,
+        _ => CustomColorManager.Allied,
     };
     public override string Symbol => "ζ";
     public override LayerEnum Type => LayerEnum.Allied;

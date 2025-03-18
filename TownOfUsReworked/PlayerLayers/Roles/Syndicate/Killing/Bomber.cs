@@ -34,7 +34,7 @@ public sealed class Bomber : Syndicate
     private CustomButton DetonateButton { get; set; }
     private List<Bomb> Bombs { get; } = [];
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Bomber : FactionColor;
+    public override UColor MainColor => CustomColorManager.Bomber;
     public override LayerEnum Type => LayerEnum.Bomber;
     public override Func<string> StartText => () => "Make People Go Boom";
     public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";

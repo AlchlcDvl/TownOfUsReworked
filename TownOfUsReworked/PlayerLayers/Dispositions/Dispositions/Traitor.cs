@@ -13,23 +13,14 @@ public sealed class Traitor : Disposition
     private bool Betrayed { get; set; }
     public Faction Side { get; private set; }
 
-    public override UColor Color
-    {
-        get
+    public override UColor MainColor => Turned
+        ? (Side switch
         {
-            if (Turned)
-            {
-                return Side switch
-                {
-                    Faction.Intruder => CustomColorManager.Intruder,
-                    Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
-                };
-            }
-
-            return ClientOptions.CustomDispColors ? CustomColorManager.Traitor : CustomColorManager.Disposition;
-        }
-    }
+            Faction.Intruder => CustomColorManager.Intruder,
+            Faction.Syndicate => CustomColorManager.Syndicate,
+            _ => CustomColorManager.Fanatic
+        })
+        : CustomColorManager.Fanatic;
     public override string Symbol => "♣";
     public override LayerEnum Type => LayerEnum.Traitor;
     public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";

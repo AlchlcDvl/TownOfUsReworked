@@ -95,27 +95,26 @@ public static class RegionInfoOpenPatch
         var custom = new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, TownOfUsReworked.Ip.Value, new([new("Custom", TownOfUsReworked.Ip.Value, TownOfUsReworked.Port.Value,
             false)])).Cast<IRegionInfo>();
 
-        var iregionInfoArray = new[] { mna, meu, mas, custom };
-        var iregionInfo1 = ServerManager.Instance.CurrentRegion;
+        var iRegionInfo1 = ServerManager.Instance.CurrentRegion;
 
-        foreach (var iregionInfo2 in iregionInfoArray)
+        foreach (var iRegionInfo2 in new[] { mna, meu, mas, custom })
         {
-            if (iregionInfo2 == null)
+            if (iRegionInfo2 == null)
                 Error("Could not add region");
             else
             {
-                if (iregionInfo1 != null && iregionInfo2.Name.Equals(iregionInfo1.Name, StringComparison.OrdinalIgnoreCase))
-                    iregionInfo1 = iregionInfo2;
+                if (iRegionInfo1 != null && iRegionInfo2.Name.Equals(iRegionInfo1.Name, StringComparison.OrdinalIgnoreCase))
+                    iRegionInfo1 = iRegionInfo2;
 
-                ServerManager.Instance.AddOrUpdateRegion(iregionInfo2);
+                ServerManager.Instance.AddOrUpdateRegion(iRegionInfo2);
             }
         }
 
-        if (iregionInfo1 == null)
+        if (iRegionInfo1 == null)
             return;
 
         Info("Resetting previous region");
-        ServerManager.Instance.SetRegion(iregionInfo1);
+        ServerManager.Instance.SetRegion(iRegionInfo1);
     }
 
     [HarmonyPatch(nameof(RegionMenu.ChooseOption))]

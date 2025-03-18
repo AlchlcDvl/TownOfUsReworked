@@ -42,7 +42,7 @@ public sealed class Guesser : Evil, IGuesser
     public CustomMeeting GuessMenu { get; private set; }
     public CustomRolesMenu GuessingMenu { get; private set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Guesser : FactionColor;
+    public override UColor MainColor => CustomColorManager.Guesser;
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :

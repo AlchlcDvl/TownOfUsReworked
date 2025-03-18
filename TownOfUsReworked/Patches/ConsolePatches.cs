@@ -26,7 +26,7 @@ public static class OpenDoorConsolePatches
 {
     public static bool Prefix(OpenDoorConsole __instance)
     {
-        __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
+        __instance.CanUse(CustomPlayer.Local.Data, out var canUse, out _);
 
         if (canUse)
         {
@@ -80,6 +80,9 @@ public static class ZiplineBehaviourUse
     {
         CanUsePatch.Prefix(player.Data, ref __state);
 
+        if (CustomPlayer.Local.Is<Astral>(out var ast))
+            ast.SetPosition();
+
         try
         {
             UninteractablePlayers.TryAdd(player.PlayerId, Time.time);
@@ -98,9 +101,6 @@ public static class ZiplineBehaviourUse
         {
             Error(e);
         }
-
-        if (CustomPlayer.Local.Is<Astral>(out var ast))
-            ast.LastPosition = CustomPlayer.LocalCustom.Position;
     }
 
     public static void Postfix(PlayerControl player, ref bool __state) => CanUsePatch.Postfix(player.Data, ref __state);

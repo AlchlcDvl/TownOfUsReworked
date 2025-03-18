@@ -14,7 +14,7 @@ public sealed class Banshee : Syndicate, IGhosty
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Banshee : FactionColor;
+    public override UColor MainColor => CustomColorManager.Banshee;
     public override LayerEnum Type => LayerEnum.Banshee;
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";

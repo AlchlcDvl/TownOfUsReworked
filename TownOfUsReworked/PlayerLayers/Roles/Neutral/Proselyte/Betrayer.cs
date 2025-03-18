@@ -11,7 +11,7 @@ public sealed class Betrayer : Neutral
 
     private CustomButton KillButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Betrayer : FactionColor;
+    public override UColor MainColor => CustomColorManager.Betrayer;
     public override LayerEnum Type => LayerEnum.Betrayer;
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";

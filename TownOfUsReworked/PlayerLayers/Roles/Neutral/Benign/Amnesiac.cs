@@ -21,7 +21,7 @@ public sealed class Amnesiac : Neutral
     private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
     private CustomButton RememberButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Amnesiac : FactionColor;
+    public override UColor MainColor => CustomColorManager.Amnesiac;
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
     public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"

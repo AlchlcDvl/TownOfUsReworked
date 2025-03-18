@@ -171,7 +171,7 @@ public abstract class Option(CustomOptionType type)
         if (ViewSetting is not ViewSettingsInfoPanel viewSettingsInfoPanel)
             return;
 
-        viewSettingsInfoPanel.titleText.text = TranslationManager.Translate(ID);
+        viewSettingsInfoPanel.titleText.text = SettingNotif();
         viewSettingsInfoPanel.background.gameObject.SetActive(true);
     }
 

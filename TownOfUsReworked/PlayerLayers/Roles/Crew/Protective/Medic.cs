@@ -16,7 +16,7 @@ public sealed class Medic : Crew, IShielder
     public bool ShieldBroken { get; set; }
     private CustomButton ShieldButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medic : FactionColor;
+    public override UColor MainColor => CustomColorManager.Medic;
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
     public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?

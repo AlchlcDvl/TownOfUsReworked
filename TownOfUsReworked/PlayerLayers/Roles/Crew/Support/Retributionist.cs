@@ -28,16 +28,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private Role RevivedRole => Revived ? (Revived.Is<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
     public CustomMeeting RetMenu { get; private set; }
 
-    public override UColor Color
-    {
-        get
-        {
-            if (ClientOptions.CustomCrewColors)
-                return RevivedRole?.Color ?? CustomColorManager.Retributionist;
-
-            return FactionColor;
-        }
-    }
+    public override UColor MainColor => RevivedRole?.Color ?? CustomColorManager.Retributionist;
     public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText => () => "Mimic the Dead";
     public override Func<string> Description => () => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description()}" : "");
@@ -234,7 +225,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
                 var playerid2 = reader.ReadByte();
                 MediatedPlayers.Add(playerid2);
 
-                if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
+                if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.Local.HasDied() && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
                     CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color, skipBody: true));
 
                 break;

@@ -13,23 +13,14 @@ public sealed class Fanatic : Disposition
     private bool Betrayed { get; set; }
     public Faction Side { get; private set; }
 
-    public override UColor Color
-    {
-        get
+    public override UColor MainColor => Turned
+        ? (Side switch
         {
-            if (Turned)
-            {
-                return Side switch
-                {
-                    Faction.Intruder => CustomColorManager.Intruder,
-                    Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition
-                };
-            }
-
-            return ClientOptions.CustomDispColors ? CustomColorManager.Fanatic : CustomColorManager.Disposition;
-        }
-    }
+            Faction.Intruder => CustomColorManager.Intruder,
+            Faction.Syndicate => CustomColorManager.Syndicate,
+            _ => CustomColorManager.Fanatic
+        })
+        : CustomColorManager.Fanatic;
     public override string Symbol => "♠";
     public override LayerEnum Type => LayerEnum.Fanatic;
     public override Func<string> Description => () => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";

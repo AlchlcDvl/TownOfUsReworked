@@ -16,7 +16,7 @@ public sealed class Wraith : Intruder
 
     private CustomButton InvisButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Wraith : FactionColor;
+    public override UColor MainColor => CustomColorManager.Wraith;
     public override LayerEnum Type => LayerEnum.Wraith;
     public override Func<string> StartText => () => "Sneaky Sneaky";
     public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";

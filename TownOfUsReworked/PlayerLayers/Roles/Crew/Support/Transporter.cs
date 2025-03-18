@@ -19,7 +19,7 @@ public sealed class Transporter : Crew, IMover
     private CustomPlayerMenu TransportMenu { get; set; }
     public bool Moving { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Transporter : FactionColor;
+    public override UColor MainColor => CustomColorManager.Transporter;
     public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";

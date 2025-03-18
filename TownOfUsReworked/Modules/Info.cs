@@ -56,15 +56,19 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
     _ => CustomColorManager.Faction
 }, footer)
 {
+    private string WinCon { get; } = $"Wiki.{faction}.WinCon";
+
     public override string WikiEntry()
     {
         var result = "";
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
+        result += $"{TranslationManager.Translate("Wiki.Objectives")}: {TranslationManager.Translate(WinCon)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
         return result;
     }
 }
 
+// This is cursed innit
 public sealed class SubFactionInfo(SubFaction sub, bool footer = false) : Info($"{sub}", sub switch
 {
     SubFaction.Undead => CustomColorManager.Undead,

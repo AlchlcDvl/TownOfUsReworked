@@ -19,7 +19,7 @@ public sealed class Mayor : Crew, IRevealer
     private bool RoundOne { get; set; }
     private CustomButton RevealButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mayor : FactionColor;
+    public override UColor MainColor => CustomColorManager.Mayor;
     public override LayerEnum Type => LayerEnum.Mayor;
     public override Func<string> StartText => () => "Commit Voter Fraud!";
     public override Func<string> Description => () => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";

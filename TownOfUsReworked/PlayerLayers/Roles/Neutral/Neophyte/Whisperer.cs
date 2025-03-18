@@ -36,7 +36,7 @@ public sealed class Whisperer : Neophyte
     public Dictionary<byte, byte> PlayerConversion { get; } = [];
     private int WhisperConversion { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Whisperer : FactionColor;
+    public override UColor MainColor => CustomColorManager.Whisperer;
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +

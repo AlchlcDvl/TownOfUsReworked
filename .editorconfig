@@ -162,3 +162,7 @@ dotnet_diagnostic.RCS1047.severity = none
 
 # RCS1194: Implement exception constructors
 dotnet_diagnostic.RCS1194.severity = none
+
+# Dotnet code style settings:
+[*.{json}]
+indent_size = 2

@@ -168,8 +168,8 @@ public static class AllInfo
 
         new(Faction.Crew),
         new(Faction.Intruder),
-        new(Faction.Neutral),
         new(Faction.Syndicate),
+        new(Faction.Neutral),
         new(Faction.Compliance),
         new(Faction.Pandorica),
         new(Faction.Illuminati),
@@ -217,6 +217,7 @@ public static class AllInfo
 
         new(GameMode.Vanilla),
         new(GameMode.Classic),
+        new(GameMode.AllAny),
         new(GameMode.TaskRace),
         new(GameMode.List),
         new(GameMode.HideAndSeek, true)
@@ -257,7 +258,7 @@ public static class AllInfo
         new("Driven", "Δ", CustomColorManager.Syndicate),
         new("Friend", "ξ", CustomColorManager.Faction),
         new("Marked", "χ", CustomColorManager.Ghoul),
-        new("First Dead", "Γ", CustomColorManager.FirstShield),
+        new("FirstDead", "Γ", CustomColorManager.FirstShield),
         new("Alerting", "σ", CustomColorManager.Veteran),
         new("Crusaded", "τ", CustomColorManager.Crusader),
         new("Ambushed", "人", CustomColorManager.Ambusher),

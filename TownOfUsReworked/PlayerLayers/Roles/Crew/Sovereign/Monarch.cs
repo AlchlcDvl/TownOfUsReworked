@@ -26,7 +26,7 @@ public sealed class Monarch : Crew, ISovereign
     public List<byte> ToBeKnighted { get; } = [];
     public List<byte> Knighted { get; } = [];
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Monarch : FactionColor;
+    public override UColor MainColor => CustomColorManager.Monarch;
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"

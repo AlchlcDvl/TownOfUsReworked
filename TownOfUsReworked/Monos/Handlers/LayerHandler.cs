@@ -194,7 +194,7 @@ public sealed class LayerHandler : RoleBehaviour
 
     public override void OnDeath(DeathReason reason)
     {
-        if (CustomPlayer.LocalCustom.Dead)
+        if (CustomPlayer.Local.HasDied())
             Flash(CustomColorManager.Stalemate);
         else if (CustomPlayer.Local.Is<Coroner>())
             Flash(CustomColorManager.Coroner);

@@ -21,7 +21,7 @@ public sealed class Jester : Evil
     private CustomButton HauntButton { get; set; }
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !NeutralSettings.AvoidNeutralKingmakers;
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Jester : FactionColor;
+    public override UColor MainColor => CustomColorManager.Jester;
     public override LayerEnum Type => LayerEnum.Jester;
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";

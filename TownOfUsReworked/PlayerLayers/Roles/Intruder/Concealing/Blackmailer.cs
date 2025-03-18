@@ -20,7 +20,7 @@ public sealed class Blackmailer : Intruder, IBlackmailer
     public PlayerControl Target => BlackmailedPlayer;
     public PlayerControl BlackmailedPlayer { get; private set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Blackmailer : FactionColor;
+    public override UColor MainColor => CustomColorManager.Blackmailer;
     public override LayerEnum Type => LayerEnum.Blackmailer;
     public override Func<string> StartText => () => "You Know Their Secrets";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say\n" + (BmRevealed ? ("- Everyone will be alerted at the start " +

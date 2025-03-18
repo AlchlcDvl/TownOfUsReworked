@@ -10,9 +10,6 @@ public static class SetPostmortals
         if (CustomPlayer.Local.Data.Disconnected)
             return;
 
-        if (CustomPlayer.Local.Is<Astral>(out var ast))
-            ast.SetPosition();
-
         foreach (var ghoul in PlayerLayer.GetLayers<Ghoul>())
         {
             if (ghoul.Caught)
@@ -67,14 +64,18 @@ public static class SetPostmortals
             }
         }
 
+        if (CustomPlayer.Local.Is<Astral>(out var ast) && !ast.Dead)
+            ast.SetPosition();
+
         BeginPostmortals(exiled, true);
-        AllBodies().ForEach(x => x?.gameObject?.Destroy());
 
         foreach (var player in AllPlayers())
         {
             player.MyPhysics.ResetAnimState();
             player.MyPhysics.ResetMoveState();
         }
+
+        AllBodies().ForEach(x => x?.gameObject?.Destroy());
     }
 
     public static void BeginPostmortals(PlayerControl player, bool ejection)

@@ -122,7 +122,7 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
     public string[] ShadowColorValues { get; set; }
 
     [JsonPropertyName("timeSpeed")]
-    public float TimeSpeed { get; set; }
+    public float TimeSpeed { get; set; } = 1f;
 
     // The ones marked with [JsonIgnore] are serialised elsewhere
 

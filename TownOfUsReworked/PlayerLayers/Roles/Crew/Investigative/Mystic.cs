@@ -9,7 +9,7 @@ public sealed class Mystic : Crew
     private bool ConvertedDead => !AllPlayers().Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
     private CustomButton RevealButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Mystic : FactionColor;
+    public override UColor MainColor => CustomColorManager.Mystic;
     public override LayerEnum Type => LayerEnum.Mystic;
     public override Func<string> StartText => () => "You Know When Converts Happen";
     public override Func<string> Description => () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n-" +

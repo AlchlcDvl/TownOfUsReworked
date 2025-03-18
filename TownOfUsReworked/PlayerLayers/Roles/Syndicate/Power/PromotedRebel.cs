@@ -23,16 +23,7 @@ public sealed class PromotedRebel : Syndicate, ISilencer, IHexer, IMover, ICrusa
     // Rebel Stuff
     public Syndicate FormerRole { get; init; }
 
-    public override UColor Color
-    {
-        get
-        {
-            if (ClientOptions.CustomSynColors)
-                return FormerRole?.Color ?? CustomColorManager.Rebel;
-
-            return CustomColorManager.Syndicate;
-        }
-    }
+    public override UColor MainColor => FormerRole?.Color ?? CustomColorManager.Rebel;
     public override LayerEnum Type => LayerEnum.PromotedRebel;
     public override Func<string> StartText => () => "Lead The <#008000FF>Syndicate</color>";
     public override Func<string> Description => () => "- You have succeeded the former <#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +

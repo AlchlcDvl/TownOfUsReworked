@@ -3,15 +3,10 @@ namespace TownOfUsReworked.Custom;
 public sealed class CustomPlayer
 {
     public PlayerControl Player { get; }
-    public NetworkedPlayerInfo Data => Player?.Data;
-    public Vector3 Position => Player.transform.position;
-    public bool Dead => Data?.IsDead ?? true;
     public float SpeedFactor => Player.GetBaseSpeed() * Player.GetModifiedSpeed();
-    public float Size => IsLobby() || Dead || HasTask(TaskTypes.MushroomMixupSabotage) ? 1f : Player.GetModifiedSize();
-    public NetworkedPlayerInfo.PlayerOutfit DefaultOutfit => Data?.DefaultOutfit;
+    public float Size => IsLobby() || Player.HasDied() || HasTask(TaskTypes.MushroomMixupSabotage) ? 1f : Player.GetModifiedSize();
 
     public static PlayerControl Local => PlayerControl.LocalPlayer;
-    public static CustomPlayer LocalCustom => Custom(Local);
 
     public static readonly List<CustomPlayer> AllCustomPlayers = [];
 

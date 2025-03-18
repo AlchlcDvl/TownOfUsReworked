@@ -214,7 +214,7 @@ public static class MiscUtils
         if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis || player.Data.IsDead)
             return;
 
-        var ca = condition || CustomPlayer.LocalCustom.Dead || player.AmOwner || CustomPlayer.Local.Is<Torch>() ? 0.1f : 0f;
+        var ca = condition || CustomPlayer.Local.HasDied() || player.AmOwner || CustomPlayer.Local.Is<Torch>() ? 0.1f : 0f;
         player.SetOutfit(CustomPlayerOutfitType.Invis, CurrentOutfit(player));
         Coroutines.Start(PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(1, ca, p), !player.AmOwner)));
     }
@@ -353,7 +353,7 @@ public static class MiscUtils
             target.PlayerId);
         lunge &= !killer.Is<Ninja>() && killer != target;
 
-        if (IsCustomHnS() || CustomPlayer.LocalCustom.Dead)
+        if (IsCustomHnS() || CustomPlayer.Local.HasDied())
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);
 
         GameData.Instance.RecomputeTaskCounts();
@@ -394,7 +394,7 @@ public static class MiscUtils
                 assassin.GuessMenu.HideButtons();
             }
         }
-        else if (!CustomPlayer.LocalCustom.Dead)
+        else if (!CustomPlayer.Local.HasDied())
         {
             if (CustomPlayer.Local.Is<IGuesser>(out var assassin))
             {
@@ -504,25 +504,11 @@ public static class MiscUtils
         return result;
     }
 
-    public static void StopDragging(byte id) => PlayerLayer.GetLayers<IDragger>().Where(x => x.CurrentlyDragging?.ParentId == id).ForEach(x => x.Drop());
+    public static void StopDragging(byte id) => BodyById(id)?.GetComponent<DeadBodyHandler>()?.StopDrag();
 
-    private static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
-    {
-        switch (minInclusive)
-        {
-            case true when maxInclusive:
-                return num >= min && num <= max;
-            case true:
-                return num >= min && num < max;
-            default:
-            {
-                if (maxInclusive)
-                    return num > min && num <= max;
-
-                return num > min && num < max;
-            }
-        }
-    }
+    private static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false) =>
+        (minInclusive ? num >= min : num > min) &&
+        (maxInclusive ? num <= max : num < max);
 
     private static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 

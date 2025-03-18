@@ -316,7 +316,7 @@ public static class LayerExtensions
             };
         }
 
-        if (DragHandler.Dragging.ContainsKey(player.PlayerId))
+        if (DeadBodyHandler.Dragging.Contains(player.PlayerId))
             result *= Janitor.DragModifier;
 
         if (PlayerLayer.GetLayers<IDrunkard>().Any(x => x.ConfuseButton?.EffectActive == true && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))

@@ -29,7 +29,7 @@ public sealed class Glitch : NKilling, IBlocker
     private CustomPlayerMenu MimicMenu { get; set; }
     public PlayerControl BlockTarget => HackTarget;
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Glitch : FactionColor;
+    public override UColor MainColor => CustomColorManager.Glitch;
     public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +

@@ -7,9 +7,8 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu) : OptionAttribut
     public bool ClientOnly { get; set; }
 
     /// <summary>
-    /// Sets up the header and its grouped options based on the provided type.
+    /// Sets up the header and its grouped options from the provided type.
     /// </summary>
-    /// <param name="type">The type containing the options.</param>
     public void SetTypeAndOptions(Type type)
     {
         var header = SetUpOption();

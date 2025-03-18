@@ -11,7 +11,6 @@ public static class AllMonos
         // Handlers
         ClassInjector.RegisterTypeInIl2Cpp<HudHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<ClientHandler>();
-        ClassInjector.RegisterTypeInIl2Cpp<DragHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<ColorHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<LayerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<NameHandler>();

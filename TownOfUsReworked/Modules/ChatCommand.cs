@@ -157,7 +157,7 @@ public sealed class ChatCommand
         var message = "";
         PlayerControl whispered = null;
 
-        if (CustomPlayer.LocalCustom.Dead)
+        if (CustomPlayer.Local.HasDied())
             Run("<#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
         else if (CustomPlayer.Local.IsBlackmailed())
             Run("<#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");

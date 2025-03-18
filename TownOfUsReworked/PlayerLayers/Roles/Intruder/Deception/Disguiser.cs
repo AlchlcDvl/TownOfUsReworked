@@ -27,7 +27,7 @@ public sealed class Disguiser : Intruder
     private PlayerControl CopiedPlayer { get; set; }
     private PlayerControl DisguisedPlayer { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Disguiser : FactionColor;
+    public override UColor MainColor => CustomColorManager.Disguiser;
     public override LayerEnum Type => LayerEnum.Disguiser;
     public override Func<string> StartText => () => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
@@ -47,7 +47,11 @@ public sealed class Disguiser : Intruder
 
     public override void Reset(bool meeting, bool start) => MeasuredPlayer = DisguisedPlayer = CopiedPlayer = null;
 
-    private void Disguise() => Morph(DisguisedPlayer, CopiedPlayer);
+    private void Disguise()
+    {
+        if (!DisguisedPlayer.AmOwner)
+            Morph(DisguisedPlayer, CopiedPlayer);
+    }
 
     private void UnDisguise()
     {

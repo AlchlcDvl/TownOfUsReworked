@@ -24,9 +24,9 @@ public sealed class Janitor : Intruder, IDragger
     private CustomButton CleanButton { get; set; }
     private CustomButton DragButton { get; set; }
     private CustomButton DropButton { get; set; }
-    public DeadBody CurrentlyDragging { get; set; }
+    public DeadBodyHandler CurrentlyDragging { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Janitor : FactionColor;
+    public override UColor MainColor => CustomColorManager.Janitor;
     public override LayerEnum Type => LayerEnum.Janitor;
     public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Necessary";
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
@@ -59,10 +59,9 @@ public sealed class Janitor : Intruder, IDragger
 
     private void Drag(DeadBody target)
     {
-        CurrentlyDragging = target;
-        Spread(Player, PlayerByBody(CurrentlyDragging));
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, CurrentlyDragging);
-        DragHandler.StartDrag(Player, CurrentlyDragging);
+        target.GetComponent<DeadBodyHandler>().StartDrag(Player);
+        Spread(Player, PlayerByBody(target));
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
     }
 
     public void Drop()
@@ -70,22 +69,24 @@ public sealed class Janitor : Intruder, IDragger
         if (!CurrentlyDragging)
             return;
 
-        CallRpc(CustomRPC.Action, ActionsRPC.Drop, Player);
-        DragHandler.StopDrag(Player);
+        CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging.Body);
+        CurrentlyDragging.StopDrag();
         DragButton.StartCooldown();
     }
 
-    private bool Usable1() => !DragHandler.Dragging.ContainsKey(PlayerId);
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        if (Local)
+            Drop();
+    }
 
-    private bool Usable2() => DragHandler.Dragging.ContainsKey(PlayerId);
+    private bool Usable1() => !DeadBodyHandler.Dragging.Contains(PlayerId);
+
+    private bool Usable2() => DeadBodyHandler.Dragging.Contains(PlayerId);
 
     private float Difference() => Last(Faction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
-    public override void ReadRPC(MessageReader reader)
-    {
-        CurrentlyDragging = reader.ReadBody();
-        DragHandler.StartDrag(Player, CurrentlyDragging);
-    }
+    public override void ReadRPC(MessageReader reader) => reader.ReadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
 
     protected override void Kill(PlayerControl target)
     {

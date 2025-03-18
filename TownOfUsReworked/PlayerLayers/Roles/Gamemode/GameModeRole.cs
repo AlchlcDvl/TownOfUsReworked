@@ -2,6 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class GameModeRole : Role
 {
+    public override bool UseMainColor => ClientOptions.CustomGmColors;
+
     protected override void Init()
     {
         base.Init();

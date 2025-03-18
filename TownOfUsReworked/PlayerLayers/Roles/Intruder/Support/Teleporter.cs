@@ -23,7 +23,7 @@ public sealed class Teleporter : Intruder, IMover
     private Vector2 TeleportPoint { get; set; }
     public bool Moving { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Teleporter : FactionColor;
+    public override UColor MainColor => CustomColorManager.Teleporter;
     public override LayerEnum Type => LayerEnum.Teleporter;
     public override Func<string> StartText => () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";

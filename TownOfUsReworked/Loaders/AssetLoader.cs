@@ -12,19 +12,13 @@ public abstract class AssetLoader
     protected virtual bool Downloading => false;
     protected virtual bool HasStreamAssets => false;
 
-    private bool DownloadingFiles;
-
     protected IEnumerator CoDownloadAssets(IEnumerable<string> files)
     {
-        if (DownloadingFiles)
-            yield break;
-
         var count = files.Count();
 
         if (count == 0)
             yield break;
 
-        DownloadingFiles = true;
         Message($"Downloading {count} files");
 
         foreach (var (i, fileName) in files.Indexed())

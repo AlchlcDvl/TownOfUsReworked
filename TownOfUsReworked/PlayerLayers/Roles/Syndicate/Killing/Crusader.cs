@@ -18,7 +18,7 @@ public sealed class Crusader : Syndicate, ICrusader
     public PlayerControl CrusadedPlayer { get; private set; }
     public CustomButton CrusadeButton { get; private set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Crusader : FactionColor;
+    public override UColor MainColor => CustomColorManager.Crusader;
     public override LayerEnum Type => LayerEnum.Crusader;
     public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +

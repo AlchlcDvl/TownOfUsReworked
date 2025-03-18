@@ -3,6 +3,8 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(MeetingHud))]
 public static class ShowHostPatches
 {
+    private static NetworkedPlayerInfo CurrentHost;
+
     [HarmonyPatch(nameof(MeetingHud.Update)), HarmonyPostfix]
     public static void UpdatePostfix(MeetingHud __instance)
     {
@@ -11,11 +13,12 @@ public static class ShowHostPatches
 
         var host = GameData.Instance.GetHost();
 
-        if (!host)
+        if (!host || CurrentHost == host)
             return;
 
+        CurrentHost = host;
         PlayerMaterial.SetColors(host.DefaultOutfit.ColorId, __instance.HostIcon);
-        __instance.ProceedButton.gameObject.GetComponentInChildren<TextMeshPro>().text = $"HOST: {host.PlayerName}";
+        __instance.ProceedButton.GetComponentInChildren<TextMeshPro>().text = $"HOST: {host.PlayerName}";
     }
 
     [HarmonyPatch(nameof(MeetingHud.Start)), HarmonyPostfix]
@@ -26,7 +29,7 @@ public static class ShowHostPatches
 
         __instance.ProceedButton.gameObject.transform.localPosition = new(-2.5f, 2.2f, 0);
         __instance.ProceedButton.GetComponent<SpriteRenderer>().enabled = false;
-        __instance.ProceedButton.GetComponent<PassiveButton>().enabled = false;
+        __instance.ProceedButton.enabled = false;
         __instance.HostIcon.enabled = true;
         __instance.HostIcon.gameObject.SetActive(true);
         __instance.ProceedButton.gameObject.SetActive(true);

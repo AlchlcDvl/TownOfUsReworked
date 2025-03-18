@@ -12,25 +12,16 @@ public sealed class Defector : Disposition
     public bool Turned { get; private set; }
     public Faction Side { get; private set; }
 
-    public override UColor Color
-    {
-        get
+    public override UColor MainColor => Turned
+        ? (Side switch
         {
-            if (Turned)
-            {
-                return Side switch
-                {
-                    Faction.Crew => CustomColorManager.Crew,
-                    Faction.Intruder => CustomColorManager.Intruder,
-                    Faction.Neutral => CustomColorManager.Neutral,
-                    Faction.Syndicate => CustomColorManager.Syndicate,
-                    _ => ClientOptions.CustomDispColors ? CustomColorManager.Defector : CustomColorManager.Disposition
-                };
-            }
-
-            return ClientOptions.CustomDispColors ? CustomColorManager.Defector : CustomColorManager.Disposition;
-        }
-    }
+            Faction.Crew => CustomColorManager.Crew,
+            Faction.Intruder => CustomColorManager.Intruder,
+            Faction.Neutral => CustomColorManager.Neutral,
+            Faction.Syndicate => CustomColorManager.Syndicate,
+            _ => CustomColorManager.Defector
+        })
+        : CustomColorManager.Defector;
     public override string Symbol => "ε";
     public override LayerEnum Type => LayerEnum.Defector;
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";

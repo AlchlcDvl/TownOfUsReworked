@@ -297,7 +297,7 @@ public static class HatsTabOnEnablePatch
             colorChip.Button.ClickMask = __instance.scroller.Hitbox;
             colorChip.Inner.SetMaskType(PlayerMaterial.MaskType.SimpleUI);
             __instance.UpdateMaterials(colorChip.Inner.FrontLayer, hat);
-            colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+            colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? CustomPlayer.Local.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
             colorChip.Inner.transform.localPosition = hat.ChipOffset;
             colorChip.Tag = hat;
             colorChip.SelectionHighlight.gameObject.SetActive(false);

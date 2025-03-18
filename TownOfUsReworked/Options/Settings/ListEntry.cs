@@ -37,7 +37,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
         return result;
     }
 
-    protected override string SettingNotif() => base.SettingNotif().Replace("%num%", $"{Num}");
+    protected override string SettingNotif() => TranslationManager.Translate(IsBan ? "CustomOption.Ban" : "CustomOption.Entry", ("%num%", $"{Num}"), ("%type%", $"{EntryType}"));
 
     protected override void CreateButtons()
     {
@@ -52,6 +52,9 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
         SettingsPatches.OnValueChanged();
     }
 
+    public override void Debug() => TranslationManager.DebugId(IsBan ? "CustomOption.Ban" : "CustomOption.Entry");
+
+    // TODO: Redo this to handle value filtering
     protected override void TrySetValue(ListSlot value, out MultiSelectValue<ListSlot> newValue)
     {
         newValue = Value;

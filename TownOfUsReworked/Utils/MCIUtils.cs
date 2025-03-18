@@ -116,7 +116,7 @@ public static class MciUtils
             PlayerLayer.LocalLayers().ForEach(x => x.ExitingLayer());
         }
 
-        CustomPlayer.Local.CustomSnapTo(CustomPlayer.LocalCustom.Position);
+        CustomPlayer.Local.CustomSnapTo(CustomPlayer.Local.transform.position);
         CustomPlayer.Local.MyPhysics.ResetMoveState();
         CustomPlayer.Local.MyPhysics.ResetAnimState();
         CustomPlayer.Local.moveable = false;
@@ -124,7 +124,7 @@ public static class MciUtils
         var light = CustomPlayer.Local.lightSource;
         var savedPlayer = CustomPlayer.Local;
 
-        var pos = CustomPlayer.LocalCustom.Position;
+        var pos = CustomPlayer.Local.transform.position;
         var pos2 = newPlayer.transform.position;
 
         PlayerControl.LocalPlayer = newPlayer;

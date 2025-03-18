@@ -30,16 +30,7 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
     public override Func<string> Description => () => "- You have succeeded the former <#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
         + (!FormerRole ? "" : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
     public override bool RoleBlockImmune => FormerRole?.RoleBlockImmune ?? false;
-    public override UColor Color
-    {
-        get
-        {
-            if (ClientOptions.CustomIntColors)
-                return FormerRole?.Color ?? CustomColorManager.Godfather;
-
-            return CustomColorManager.Intruder;
-        }
-    }
+    public override UColor MainColor => FormerRole?.Color ?? CustomColorManager.Godfather;
     public override bool CanVent => base.CanVent && FormerRole switch
     {
         Janitor => (int)Janitor.JanitorVentOptions is 3 || (CurrentlyDragging && (int)Janitor.JanitorVentOptions is 1) || (!CurrentlyDragging && (int)Janitor.JanitorVentOptions is 2),
@@ -73,6 +64,12 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
     {
         if (DeadSeeEverything())
             Investigated.Clear();
+    }
+
+    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    {
+        if (Local && IsJani)
+            Drop();
     }
 
     public override void Reset(bool meeting, bool start)
@@ -210,8 +207,7 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
             }
             case GfActionsRPC.Drag:
             {
-                CurrentlyDragging = reader.ReadBody();
-                DragHandler.StartDrag(Player, CurrentlyDragging);
+                reader.ReadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
                 break;
             }
             case GfActionsRPC.Ambush:
@@ -330,7 +326,7 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
     private CustomButton CleanButton { get; set; }
     private CustomButton DragButton { get; set; }
     private CustomButton DropButton { get; set; }
-    public DeadBody CurrentlyDragging { get; set; }
+    public DeadBodyHandler CurrentlyDragging { get; set; }
     public bool IsJani => FormerRole is Janitor;
 
     private void Clean(DeadBody target)
@@ -346,10 +342,9 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
 
     private void Drag(DeadBody target)
     {
-        CurrentlyDragging = target;
-        Spread(Player, PlayerByBody(CurrentlyDragging));
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GfActionsRPC.Drag, CurrentlyDragging);
-        DragHandler.StartDrag(Player, CurrentlyDragging);
+        target.GetComponent<DeadBodyHandler>().StartDrag(Player);
+        Spread(Player, PlayerByBody(target));
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, GfActionsRPC.Drag, target);
     }
 
     public void Drop()
@@ -357,14 +352,14 @@ public sealed class PromotedGodfather : Intruder, IBlackmailer, IDragger, IDigge
         if (!CurrentlyDragging)
             return;
 
-        CallRpc(CustomRPC.Action, ActionsRPC.Drop, Player);
-        DragHandler.StopDrag(Player);
+        CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging.Body);
+        CurrentlyDragging.StopDrag();
         DragButton.StartCooldown();
     }
 
-    private bool JaniUsable1() => !CurrentlyDragging && IsJani;
+    private bool JaniUsable1() => !DeadBodyHandler.Dragging.Contains(PlayerId) && IsJani;
 
-    private bool JaniUsable2() => CurrentlyDragging && IsJani;
+    private bool JaniUsable2() => DeadBodyHandler.Dragging.Contains(PlayerId) && IsJani;
 
     private float JaniDifference() => !Dead && Last(Faction) && Janitor.SoloBoost ? -Underdog.UnderdogCdBonus : 0;
 

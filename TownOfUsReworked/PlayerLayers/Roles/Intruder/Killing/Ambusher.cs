@@ -15,7 +15,7 @@ public sealed class Ambusher : Intruder, IAmbusher
     public PlayerControl AmbushedPlayer { get; private set; }
     public CustomButton AmbushButton { get; private set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Ambusher : FactionColor;
+    public override UColor MainColor => CustomColorManager.Ambusher;
     public override LayerEnum Type => LayerEnum.Ambusher;
     public override Func<string> StartText => () => "Spook The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";

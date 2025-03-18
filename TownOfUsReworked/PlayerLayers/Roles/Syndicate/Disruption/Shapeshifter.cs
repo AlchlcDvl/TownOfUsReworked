@@ -18,7 +18,7 @@ public sealed class Shapeshifter : Syndicate, IShaper
     private CustomPlayerMenu ShapeshiftMenu1 { get; set; }
     private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Shapeshifter : FactionColor;
+    public override UColor MainColor => CustomColorManager.Shapeshifter;
     public override LayerEnum Type => LayerEnum.Shapeshifter;
     public override Func<string> StartText => () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";

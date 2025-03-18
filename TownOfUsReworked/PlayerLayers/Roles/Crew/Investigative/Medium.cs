@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+// TODO: Implement seancing
 [LayerHeaderOption(LayerEnum.Medium)]
 public sealed class Medium : Crew, IShaman
 {
@@ -27,7 +28,7 @@ public sealed class Medium : Crew, IShaman
     // public bool HasSeanced { get; set; }
     public List<byte> MediatedPlayers { get; } = [];
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Medium : FactionColor;
+    public override UColor MainColor => CustomColorManager.Medium;
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
     public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
@@ -119,7 +120,7 @@ public sealed class Medium : Crew, IShaman
         var playerid2 = reader.ReadByte();
         MediatedPlayers.Add(playerid2);
 
-        if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.Dead && ShowMediumToDead == ShowMediumToDead.AllDead))
+        if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.Local.HasDied() && ShowMediumToDead == ShowMediumToDead.AllDead))
             CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color, skipBody: true));
     }
 }

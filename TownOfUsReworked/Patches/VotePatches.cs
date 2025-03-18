@@ -202,7 +202,7 @@ public static class VotePatches
     public static bool Prefix(MeetingHud __instance, NetworkedPlayerInfo voterPlayer, int index, Transform parent)
     {
         var insiderFlag = CustomPlayer.Local.Is<Insider>(out var ins) && ins.TasksDone;
-        var deadFlag = GameModifiers.DeadSeeEverything && CustomPlayer.LocalCustom.Dead;
+        var deadFlag = GameModifiers.DeadSeeEverything && CustomPlayer.Local.HasDied();
 
         if (GameModifiers.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))
             return false;

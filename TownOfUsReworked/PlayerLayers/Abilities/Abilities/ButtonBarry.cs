@@ -9,7 +9,7 @@ public sealed class ButtonBarry : Ability
     private bool ButtonUsed { get; set; }
     private CustomButton ButtonButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.ButtonBarry : CustomColorManager.Ability;
+    public override UColor MainColor => CustomColorManager.ButtonBarry;
     public override LayerEnum Type => LayerEnum.ButtonBarry;
     public override Func<string> Description => () => "- You can call a button from anywhere";
 

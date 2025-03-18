@@ -20,7 +20,7 @@ public sealed class Dracula : Neophyte
     private CustomButton BiteButton { get; set; }
     private bool HasConverted { get; set; }
 
-    public override UColor Color => ClientOptions.CustomNeutColors ? CustomColorManager.Dracula : FactionColor;
+    public override UColor MainColor => CustomColorManager.Dracula;
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText => () => "Lead The <#7B8968FF>Undead</color> To Victory";
     public override Func<string> Description => () => "- You can convert the <#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive" +

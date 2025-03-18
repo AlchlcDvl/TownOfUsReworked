@@ -14,7 +14,7 @@ public sealed class Dwarf : Modifier
     private static bool Useless => !Smol && !Sped;
     private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : ""));
 
-    public override UColor Color => !ClientOptions.CustomModColors || Useless ? CustomColorManager.Modifier : CustomColorManager.Dwarf;
+    public override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Dwarf;
     public override LayerEnum Type => LayerEnum.Dwarf;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
 

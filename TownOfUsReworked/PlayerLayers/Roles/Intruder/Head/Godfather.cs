@@ -9,7 +9,7 @@ public sealed class Godfather : Intruder
     private bool HasDeclared { get; set; }
     private CustomButton DeclareButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Godfather : FactionColor;
+    public override UColor MainColor => CustomColorManager.Godfather;
     public override LayerEnum Type => LayerEnum.Godfather;
     public override Func<string> StartText => () => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
     public override Func<string> Description => () => "- You can promote a fellow <#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <#FF1919FF>" +

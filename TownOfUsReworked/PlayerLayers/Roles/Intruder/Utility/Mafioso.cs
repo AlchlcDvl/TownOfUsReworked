@@ -6,7 +6,7 @@ public sealed class Mafioso : Intruder
     public Godfather Godfather { get; init; }
     private bool CanPromote => (Godfather.Dead || Godfather.Disconnected) && !Dead;
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Mafioso : FactionColor;
+    public override UColor MainColor => CustomColorManager.Mafioso;
     public override LayerEnum Type => LayerEnum.Mafioso;
     public override Func<string> StartText => () => "Succeed The <#404C08FF>Godfather</color>";
     public override Func<string> Description => () => "- When the <#404C08FF>Godfather</color> dies, you will become the new <#404C08FF>Godfather</color> with boosted abilities" +

@@ -187,7 +187,7 @@ public static class Blocked
         else if (IsHnS())
             __instance.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor());
         else
-            __instance.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.LocalCustom.Dead);
+            __instance.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.Local.HasDied());
 
         __instance.FullScreen.enabled = true;
         __instance.FullScreen.gameObject.SetActive(true);

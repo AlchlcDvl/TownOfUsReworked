@@ -28,7 +28,7 @@ public sealed class Coroner : Crew, IExaminer
     private List<DeadPlayer> ReferenceBodies { get; } = [];
     private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Coroner : FactionColor;
+    public override UColor MainColor => CustomColorManager.Coroner;
     public override LayerEnum Type => LayerEnum.Coroner;
     public override Func<string> StartText => () => "Examine The Dead For Information";
     public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +

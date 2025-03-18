@@ -11,7 +11,7 @@ public sealed class Camouflager : Intruder
 
     private CustomButton CamouflageButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomIntColors ? CustomColorManager.Camouflager : FactionColor;
+    public override UColor MainColor => CustomColorManager.Camouflager;
     public override LayerEnum Type => LayerEnum.Camouflager;
     public override Func<string> StartText => () => "Hinder The <#8CFFFFFF>Crew</color>'s Recognition";
     public override Func<string> Description => () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey " +

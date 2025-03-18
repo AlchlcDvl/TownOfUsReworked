@@ -8,10 +8,11 @@ public abstract class Syndicate : Role
         + "kill players directly") : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
     public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive) || Promoted?.HoldsDrive == true;
 
-    public override UColor Color => CustomColorManager.Syndicate;
+    public override UColor MainColor => CustomColorManager.Syndicate;
     public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.None;
     public override float VisionRange => SyndicateSettings.SyndicateVision;
     public override bool CanVent => (HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
+    public override bool UseMainColor => ClientOptions.CustomSynColors;
 
     public static bool SyndicateHasChaosDrive { get; set; }
 

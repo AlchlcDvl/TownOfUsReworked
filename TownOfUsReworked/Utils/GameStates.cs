@@ -37,7 +37,7 @@ public static class GameStates
 
     public static bool Last(Faction faction) => AllPlayers().Count(x => x.Is(faction) && !x.HasDied()) == 1;
 
-    public static bool NoPlayers() => !AllPlayers().Any() || !CustomPlayer.Local || !CustomPlayer.LocalCustom.Data || NoLobby();
+    public static bool NoPlayers() => !AllPlayers().Any() || !CustomPlayer.Local || !CustomPlayer.Local.Data || NoLobby();
 
     public static bool LocalBlocked() => CustomPlayer.Local.IsBlocked();
 

@@ -4,7 +4,7 @@ public sealed class Radar : Ability
 {
     private CustomArrow RadarArrow { get; set; }
 
-    public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Radar : CustomColorManager.Ability;
+    public override UColor MainColor => CustomColorManager.Radar;
     public override LayerEnum Type => LayerEnum.Radar;
     public override Func<string> Description => () => "- You are aware of those close to you";
 

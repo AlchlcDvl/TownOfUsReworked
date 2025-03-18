@@ -348,7 +348,7 @@ public static class RoleGenManager
         NameHandler.PlayerNames.Clear();
         NameHandler.ColorNames.Clear();
 
-        DragHandler.Dragging.Clear();
+        DeadBodyHandler.Dragging.Clear();
 
         Monos.Range.AllItems.Clear();
 

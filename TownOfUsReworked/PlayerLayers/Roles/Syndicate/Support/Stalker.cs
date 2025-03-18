@@ -9,7 +9,7 @@ public sealed class Stalker : Syndicate
     private Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
     private CustomButton StalkButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Stalker : FactionColor;
+    public override UColor MainColor => CustomColorManager.Stalker;
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
     public override Func<string> Description => () => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +

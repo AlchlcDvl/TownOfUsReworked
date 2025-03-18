@@ -4,7 +4,7 @@ public sealed class Astral : Modifier
 {
     public Vector3 LastPosition { get; set; }
 
-    public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Astral : CustomColorManager.Modifier;
+    public override UColor MainColor => CustomColorManager.Astral;
     public override LayerEnum Type => LayerEnum.Astral;
     public override Func<string> Description => () => "- You will not teleport to the meeting button";
 
@@ -13,7 +13,7 @@ public sealed class Astral : Modifier
     public override void BeforeMeeting()
     {
         if (!UninteractablePlayers.ContainsKey(PlayerId))
-            LastPosition = CustomPlayer.LocalCustom.Position;
+            LastPosition = Player.transform.position;
     }
 
     public void SetPosition()

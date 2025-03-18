@@ -16,7 +16,7 @@ public sealed class Warper : Syndicate, IMover
     private CustomPlayerMenu WarpMenu { get; set; }
     public bool Moving { get; set; }
 
-    public override UColor Color => ClientOptions.CustomSynColors ? CustomColorManager.Warper : FactionColor;
+    public override UColor MainColor => CustomColorManager.Warper;
     public override LayerEnum Type => LayerEnum.Warper;
     public override Func<string> StartText => () => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :

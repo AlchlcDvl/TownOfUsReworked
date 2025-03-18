@@ -55,7 +55,7 @@ public abstract class Assassin : Ability, IGuesser
     public CustomMeeting GuessMenu { get; private set; }
     public CustomRolesMenu GuessingMenu { get; private set; }
 
-    public override UColor Color => ClientOptions.CustomAbColors ? CustomColorManager.Assassin : CustomColorManager.Ability;
+    public override UColor MainColor => CustomColorManager.Assassin;
     public override Func<string> Description => () => "- You can guess players mid-meetings";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 

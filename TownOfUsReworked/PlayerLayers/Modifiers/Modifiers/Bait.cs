@@ -12,7 +12,7 @@ public sealed class Bait : Modifier
     [NumberOption(0f, 15f, 0.5f, Format.Time)]
     public static Number BaitMaxDelay = 1;
 
-    public override UColor Color => ClientOptions.CustomModColors ? CustomColorManager.Bait : CustomColorManager.Modifier;
+    public override UColor MainColor => CustomColorManager.Bait;
     public override LayerEnum Type => LayerEnum.Bait;
     public override Func<string> Description => () => "- Killing you causes the killer to report your body, albeit with a slight delay";
     public override bool Hidden => !BaitKnows && !Dead;

@@ -23,8 +23,8 @@ public sealed class LayerHeaderOption(LayerEnum layer) : BaseHeaderOption(MultiM
         ButtonText = Collapse.GetComponentInChildren<TextMeshPro>();
         ButtonText.text = Value ? "-" : "+";
         Info = Setting.transform.FindChild("Info").gameObject;
-        Info.GetComponentInChildren<TextMeshPro>().text = TranslationManager.Translate($"ShortDesc.{Layer}");
         Desc = Setting.transform.FindChild("Desc").gameObject;
+        Desc.GetComponentInChildren<TextMeshPro>().text = TranslationManager.Translate($"ShortDesc.{Layer}");
         Label = Setting.transform.FindChild("Label").GetComponent<SpriteRenderer>();
         titleText.color = (Label.color = LayerDictionary[Layer].Color).Alternate();
         Label.sprite = Value ? OgLabel : GetSprite("Unopened");

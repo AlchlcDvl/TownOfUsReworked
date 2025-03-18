@@ -18,7 +18,7 @@ public sealed class Tracker : Crew
     private Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
     private CustomButton TrackButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Tracker : FactionColor;
+    public override UColor MainColor => CustomColorManager.Tracker;
     public override LayerEnum Type => LayerEnum.Tracker;
     public override Func<string> StartText => () => "Track Everyone's Movements";
     public override Func<string> Description => () => "- You can track players which creates arrows that update every now and then with the target's position";

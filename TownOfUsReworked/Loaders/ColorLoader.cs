@@ -1,6 +1,5 @@
-using static TownOfUsReworked.Managers.CustomColorManager;
 // ReSharper disable HeuristicUnreachableCode
-#pragma warning disable CS0162 // Unreachable code detected
+using static TownOfUsReworked.Managers.CustomColorManager;
 
 namespace TownOfUsReworked.Loaders;
 
@@ -27,8 +26,6 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
 
         if (item.ShadowColorValues != null)
             item.ShadowColors = [ .. item.ShadowColorValues.Select(FromHex) ];
-
-        item.TimeSpeed = item.TimeSpeed == 0f ? 1f : item.TimeSpeed;
 
         if (!item.Default)
             item.StringID = TranslationManager.GetOrAddName($"Colors.{item.Name}");

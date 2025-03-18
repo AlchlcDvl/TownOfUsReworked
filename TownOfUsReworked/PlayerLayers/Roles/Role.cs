@@ -3,9 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 // TODO: Refactor the usage of linked disposition and stuff and have other ways to check players' allegiances, like for example an external dictionary for modification and stuff
 public abstract class Role : PlayerLayer
 {
-    public override UColor Color => CustomColorManager.Role;
+    public override UColor MainColor => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
     public override LayerEnum Type => LayerEnum.NoneRole;
+    public override UColor LayerColor => CustomColorManager.Role;
+    public override bool UseMainColor => false;
 
     public virtual Func<string> StartText => () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;

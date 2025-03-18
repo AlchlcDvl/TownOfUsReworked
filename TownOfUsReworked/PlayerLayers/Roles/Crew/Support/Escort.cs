@@ -12,7 +12,7 @@ public sealed class Escort : Crew, IBlocker
     public PlayerControl BlockTarget { get; set; }
     private CustomButton BlockButton { get; set; }
 
-    public override UColor Color => ClientOptions.CustomCrewColors ? CustomColorManager.Escort : FactionColor;
+    public override UColor MainColor => CustomColorManager.Escort;
     public override LayerEnum Type => LayerEnum.Escort;
     public override Func<string> StartText => () => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
