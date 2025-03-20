@@ -3,10 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Syndicate : Role
 {
     private CustomButton KillButton { get; set; }
-    public PromotedRebel Promoted { get; set; }
-    protected string CommonAbilities => "<#008000FF>" + (this is Anarchist or Sidekick || (Alignment != Alignment.Killing && HoldsDrive) ? ("- You can "
-        + "kill players directly") : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
-    public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive) || Promoted?.HoldsDrive == true;
+    public Rebel Promoter { get; set; }
+    public bool IsSidekick { get; set; }
+    public bool IsPromoted { get; set; }
+    protected string CommonAbilities => "<#008000FF>" + (KillUsable() ? "- You can kill players directly" : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
+    public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive);
 
     public override UColor MainColor => CustomColorManager.Syndicate;
     public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.None;
@@ -26,7 +27,7 @@ public abstract class Syndicate : Role
             {
                 syndicate1.OnDriveLost();
 
-                if (DriveHolderPriv.AmOwner)
+                if (DriveHolderPriv.AmOwner || TownOfUsReworked.MciActive)
                     syndicate1.OnDriveLostLocal();
             }
 
@@ -37,7 +38,7 @@ public abstract class Syndicate : Role
 
             syndicateRole.OnDriveReceived();
 
-            if (value.AmOwner)
+            if (value.AmOwner || TownOfUsReworked.MciActive)
                 syndicateRole.OnDriveReceivedLocal();
         }
     }
@@ -49,7 +50,6 @@ public abstract class Syndicate : Role
         Objectives = () => SyndicateWinCon;
         KillButton ??= new(this, new SpriteName("SyndicateKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
-        Promoted = null;
     }
 
     public override List<PlayerControl> Team()
@@ -67,6 +67,20 @@ public abstract class Syndicate : Role
             AssignChaosDrive();
     }
 
+    public override void UpdatePlayer()
+    {
+        base.UpdatePlayer();
+
+        if (!IsPromoted && IsSidekick && (Promoter?.Dead ?? false))
+        {
+            IsPromoted = true;
+            IsSidekick = false;
+            Promoter = null;
+            Name = TranslationManager.Translate("Layer.Rebel");
+            Alignment = Alignment.Power;
+        }
+    }
+
     protected virtual void OnDriveReceivedLocal() {}
 
     protected virtual void OnDriveReceived() {}
@@ -80,5 +94,5 @@ public abstract class Syndicate : Role
     private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
-    private bool KillUsable() => (HoldsDrive && Alignment != Alignment.Killing) || Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel;
+    private bool KillUsable() => ((HoldsDrive && Alignment != Alignment.Killing) || Type is LayerEnum.Anarchist || IsPromoted) && !IsSidekick;
 }

@@ -46,7 +46,7 @@ public static class TalkingPatches
 
         if (Blackmailer.BmRevealed)
         {
-            foreach (var role in PlayerLayer.GetLayers<IBlackmailer>())
+            foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
             {
                 if (role.Target.HasDied())
                     continue;
@@ -69,7 +69,7 @@ public static class TalkingPatches
         if (!Silencer.SilenceRevealed)
             return;
 
-        foreach (var role in PlayerLayer.GetLayers<ISilencer>())
+        foreach (var role in PlayerLayer.GetLayers<Silencer>())
         {
             if (role.Target.HasDied())
                 continue;

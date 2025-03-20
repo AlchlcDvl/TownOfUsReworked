@@ -1,3 +1,3 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IExaminer : IRole;
+public interface IExaminer : IPlayerLayer;

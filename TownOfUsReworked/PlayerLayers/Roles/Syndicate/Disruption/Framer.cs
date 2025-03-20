@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Framer)]
-public sealed class Framer : Syndicate, IFramer
+public sealed class Framer : Syndicate
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number FrameCd = 25f;

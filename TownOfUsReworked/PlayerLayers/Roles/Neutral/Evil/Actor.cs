@@ -177,9 +177,9 @@ public sealed class Actor : Evil
         if ((TargetFailed || (Targeted && Failed)) && !Dead)
         {
             var allRoles = GetLayers<Role>();
-            var target = GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or LayerEnum.Actor or
-                    LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Mafioso or LayerEnum.Betrayer or LayerEnum.Amnesiac) && allRoles.All(y => y.Type != x))
-                    .Random(LayerEnum.Amnesiac);
+            var target = GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or LayerEnum.Actor
+                or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Mafioso or LayerEnum.Betrayer or LayerEnum.Amnesiac) && allRoles.All(y => y.Type !=
+                    x)).Random(LayerEnum.Amnesiac);
 
             if (target == LayerEnum.Amnesiac)
             {

@@ -337,22 +337,8 @@ public abstract class NameHandler : MonoBehaviour
             }
         }
 
-        if (removeFromConsig)
-        {
-            switch (localRole)
-            {
-                case Consigliere consigliere:
-                {
-                    consigliere.Investigated.Remove(player.PlayerId);
-                    break;
-                }
-                case PromotedGodfather godfather:
-                {
-                    godfather.Investigated.Remove(player.PlayerId);
-                    break;
-                }
-            }
-        }
+        if (removeFromConsig && localRole is Consigliere consigliere)
+            consigliere.Investigated.Remove(player.PlayerId);
 
         return (name, color);
     }

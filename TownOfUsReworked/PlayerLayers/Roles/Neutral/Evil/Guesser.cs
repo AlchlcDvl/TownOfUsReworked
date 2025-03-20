@@ -123,12 +123,15 @@ public sealed class Guesser : Evil, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Impostor)))
+            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Mafioso or
+                LayerEnum.Impostor)))
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) &&
-                    GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     GuessingMenu.Mapping.Add(layer);
+
+                    if (layer == LayerEnum.Godfather)
+                        GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
                 }
             }
         }
@@ -137,12 +140,14 @@ public sealed class Guesser : Evil, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Banshee)))
+            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) &&
-                    GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     GuessingMenu.Mapping.Add(layer);
+
+                    if (layer == LayerEnum.Rebel)
+                        GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
                 }
             }
         }
@@ -191,10 +196,14 @@ public sealed class Guesser : Evil, IGuesser
         }
         else
         {
-            var layerflag = player.GetLayers().Any(x => x.Type == guess);
-            var subfactionflag = $"{player.GetSubFaction()}" == $"{guess}";
+            var layerFlag = player.GetLayers().Any(x => x.Type == guess);
+            var subfactionFlag = $"{player.GetSubFaction()}" == $"{guess}";
+            var mafiosoFlag = player.Is<Intruder>(out var intruder) && intruder.IsMafioso;
+            var gfFlag = (intruder?.IsPromoted ?? false) && guess == LayerEnum.Godfather;
+            var sidekickFlag = player.Is<Syndicate>(out var syn) && syn.IsSidekick;
+            var rebFlag = (syn?.IsPromoted ?? false) && guess == LayerEnum.Rebel;
 
-            var flag = layerflag || subfactionflag;
+            var flag = layerFlag || subfactionFlag || mafiosoFlag || gfFlag || rebFlag || sidekickFlag;
             var toDie = flag ? player : Player;
             TargetGuessed = flag;
             RpcMurderPlayer(toDie, guess, player);

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Silencer)]
-public sealed class Silencer : Syndicate, ISilencer
+public sealed class Silencer : Syndicate, IIntimidator
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SilenceCd = 25;
@@ -17,8 +17,7 @@ public sealed class Silencer : Syndicate, ISilencer
 
     private CustomButton SilenceButton { get; set; }
     public bool ShookAlready { get; set; }
-    public PlayerControl SilencedPlayer { get; private set; }
-    public PlayerControl Target => SilencedPlayer;
+    public PlayerControl Target { get; private set; }
 
     public override UColor MainColor => CustomColorManager.Silencer;
     public override LayerEnum Type => LayerEnum.Silencer;
@@ -30,16 +29,16 @@ public sealed class Silencer : Syndicate, ISilencer
     {
         base.Init();
         Alignment = Alignment.Disruption;
-        SilencedPlayer = null;
+        Target = null;
         SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
             (PlayerBodyExclusion)Exception1);
     }
 
-    public override void Reset(bool meeting, bool start) => SilencedPlayer = null;
+    public override void Reset(bool meeting, bool start) => Target = null;
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
-        if (SilencedPlayer == player)
+        if (Target == player)
             name += " <#AAB43EFF>乂</color>";
     }
 
@@ -49,8 +48,8 @@ public sealed class Silencer : Syndicate, ISilencer
 
         if (cooldown != CooldownType.Fail)
         {
-            SilencedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, SilencedPlayer);
+            Target = target;
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Target);
 
             if (target.IsBlackmailed())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");
@@ -59,8 +58,8 @@ public sealed class Silencer : Syndicate, ISilencer
         SilenceButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !SilenceMates) ||
+    private bool Exception1(PlayerControl player) => player == Target || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !SilenceMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !SilenceMates);
 
-    public override void ReadRPC(MessageReader reader) => SilencedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => Target = reader.ReadPlayer();
 }

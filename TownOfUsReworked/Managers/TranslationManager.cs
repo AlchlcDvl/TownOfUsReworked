@@ -17,11 +17,12 @@ public static class TranslationManager
 
     private static string Translate(string id, (string Key, string Value)[] toReplace, string language)
     {
+        id = id.ToLower();
         language ??= DataManager.Settings.Language.CurrentLanguage.ToString(); // Get the current language if none is provided
 
         try
         {
-            var result = AllTranslations[id.ToLower()][language]; // Get and translate the result
+            var result = AllTranslations[id][language]; // Get and translate the result
             toReplace.ForEach(x => result = result.Replace(x.Key, x.Value)); // Replace the placeholders with the given values
             return result;
         }
@@ -123,6 +124,8 @@ public static class TranslationManager
 
     public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
+        id = id.ToLower();
+
         if (CustomStringNames.TryGetKey(id, out var value)) // Try to find a custom string name by the given id
             return value;
 

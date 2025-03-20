@@ -113,12 +113,15 @@ public abstract class Assassin : Ability, IGuesser
             if (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Impostor)))
+            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Mafioso or
+                LayerEnum.Impostor)))
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Mafioso && !GuessingMenu.Mapping.Contains(LayerEnum.Mafioso) &&
-                    GuessingMenu.Mapping.Contains(LayerEnum.Godfather)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     GuessingMenu.Mapping.Add(layer);
+
+                    if (layer == LayerEnum.Godfather)
+                        GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
                 }
             }
         }
@@ -128,12 +131,14 @@ public abstract class Assassin : Ability, IGuesser
             if (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Banshee)))
+            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Sidekick && !GuessingMenu.Mapping.Contains(LayerEnum.Sidekick) &&
-                    GuessingMenu.Mapping.Contains(LayerEnum.Rebel)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
                     GuessingMenu.Mapping.Add(layer);
+
+                    if (layer == LayerEnum.Rebel)
+                        GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
                 }
             }
         }
@@ -241,9 +246,13 @@ public abstract class Assassin : Ability, IGuesser
         }
         else
         {
-            var layerflag = player.GetLayers().Any(x => x.Type == guess);
-            var subfactionflag = $"{player.GetSubFaction()}" == $"{guess}";
-            var framedflag = player.IsFramed();
+            var layerFlag = player.GetLayers().Any(x => x.Type == guess);
+            var subfactionFlag = $"{player.GetSubFaction()}" == $"{guess}";
+            var framedFlag = player.IsFramed();
+            var mafiosoFlag = player.Is<Intruder>(out var intruder) && intruder.IsMafioso;
+            var gfFlag = (intruder?.IsPromoted ?? false) && guess == LayerEnum.Godfather;
+            var sidekickFlag = player.Is<Syndicate>(out var syn) && syn.IsSidekick;
+            var rebFlag = (syn?.IsPromoted ?? false) && guess == LayerEnum.Rebel;
 
             if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
             {
@@ -254,7 +263,7 @@ public abstract class Assassin : Ability, IGuesser
                     RpcMurderPlayer(Player, guess, player);
             }
 
-            var flag = layerflag || subfactionflag || framedflag;
+            var flag = layerFlag || subfactionFlag || framedFlag || mafiosoFlag || gfFlag || rebFlag || sidekickFlag;
             var toDie = flag ? player : Player;
             RpcMurderPlayer(toDie, guess, player);
 
@@ -271,7 +280,7 @@ public abstract class Assassin : Ability, IGuesser
     {
         var player = PlayerByVoteArea(voteArea);
         return player.HasDied() || (voteArea.NameText.text.Contains('\n') && ((Player.GetFaction() != player.GetFaction()) || (Player.GetSubFaction() != player.GetSubFaction()))) || Dead ||
-            (player == Player && Local) || ((Player.GetFaction() == player.GetFaction() && Player.GetFaction() != Faction.Crew) || RemainingKills <= 02) || (Player.GetSubFaction() ==
+            (player == Player && Local) || (Player.GetFaction() == player.GetFaction() && Player.GetFaction() != Faction.Crew) || RemainingKills <= 0 || (Player.GetSubFaction() ==
             player.GetSubFaction() && Player.GetSubFaction() != SubFaction.None) || Player.IsLinkedTo(player);
     }
 

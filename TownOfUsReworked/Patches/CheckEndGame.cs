@@ -61,7 +61,7 @@ public static class CheckEndGame
         PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd());
     }
 
-    public static void CheckSpellWin(IHexer hexer)
+    public static void CheckSpellWin(Spellslinger hexer)
     {
         if (hexer.Player.HasDied())
             return;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IVentBomber : IRole
+public interface IVentBomber : IPlayerLayer
 {
     List<int> BombedIDs { get; }
 }

@@ -255,7 +255,8 @@ public enum AlliedFaction : byte
     Random,
     Crew,
     Intruder,
-    Syndicate
+    Syndicate,
+    Pandorica
 }
 
 public enum SyndicateVentOptions : byte

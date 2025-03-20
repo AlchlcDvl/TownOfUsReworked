@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Miner)]
-public sealed class Miner : Intruder, IDigger
+public sealed class Miner : Intruder
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MineCd = 25;
@@ -36,7 +36,8 @@ public sealed class Miner : Intruder, IDigger
 
     private void Mine()
     {
-        RpcSpawnVent(this);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, (Vector2)Player.transform.position);
+        Vents.Add(SpawnVent(Vents, Player.transform.position, Player.transform.position.z));
         MineButton.StartCooldown();
     }
 
@@ -44,4 +45,49 @@ public sealed class Miner : Intruder, IDigger
         Player.moveable && !GetPlayerElevator(Player).IsInElevator && Vents.All(x => x.transform.position != Player.transform.position);
 
     public static string Label() => MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT";
+
+    public override void ReadRPC(MessageReader reader) => Vents.Add(SpawnVent(Vents, reader.ReadVector2(), Player.transform.position.z));
+
+    private static Vent SpawnVent(List<Vent> vents, Vector2 position, float zAxis)
+    {
+        var ventPrefab = vents.FirstOrDefault() ?? UObject.FindObjectOfType<Vent>();
+        var vent = UObject.Instantiate(ventPrefab, ventPrefab.transform.parent);
+
+        vent.Id = GetAvailableId();
+        vent.transform.position = new(position.x, position.y, zAxis + 0.001f);
+
+        if (vents.Any())
+        {
+            var leftVent = vents[^1];
+            vent.Left = leftVent;
+            leftVent.Right = vent;
+        }
+        else
+            vent.Left = null;
+
+        vent.Right = null;
+        vent.Center = null;
+        vent.name = $"MinerVent{vents.Count}";
+        vent.myAnim?.Stop();
+
+        var allVents = AllMapVents().ToList();
+        allVents.Add(vent);
+        Ship().AllVents = allVents.ToArray();
+
+        if (IsSubmerged())
+        {
+            vent.gameObject.layer = 12;
+            vent.gameObject.AddSubmergedComponent("ElevatorMover"); // Just in case the elevator vent is not blocked
+
+            if (vent.transform.position.y > -7)
+                vent.transform.SetWorldZ(0.03f);
+            else
+            {
+                vent.transform.SetWorldZ(0.0009f);
+                vent.transform.SetLocalZ(-0.003f);
+            }
+        }
+
+        return vent;
+    }
 }

@@ -16,8 +16,12 @@ public static class Generate
 
         // So, this is AD from a couple of weeks after the above 3 comments
         // I thought to myself on the toilet, What if I just used a class for the headers instead of another property?
-        // Then I don't need to add a random getter setter. I don't have to make the string arrays too because I can just get the declared properties and use their names as the array...and then this genius thing was born
-        AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core).ForEach(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
+        // Then I don't need to add a random getter setter. I don't have to make the string arrays too because I can just get the declared properties and use their names as the array...
+            // and then this genius thing was born
+        AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core)
+            // For some reason the attribute is being inherited by the assassin classes, even though I've stated that it shouldn't in the attribute usage
+            .Where(x => !typeof(Assassin).IsAssignableFrom(x) || x == typeof(Assassin))
+            .ForEach(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
 
         foreach (var opts in Option.AllOptions.SplitBy(x => x.ID))
         {

@@ -229,7 +229,7 @@ public static class ModCompatibility
         position.z = position.y / 1000;
 
         transform.position = position;
-        __instance.myPlayer.gameObject.layer = 8;
+        __instance.myPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
     public static void AddSubmergedComponent(this GameObject obj, string typeName)

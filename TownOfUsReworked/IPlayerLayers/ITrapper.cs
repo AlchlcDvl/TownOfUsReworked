@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface ITrapper : IRole
+public interface ITrapper : IPlayerLayer
 {
     List<byte> Trapped { get; }
     bool Building { get; }

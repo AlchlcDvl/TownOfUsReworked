@@ -107,13 +107,14 @@ public static class ButtonUtils
     private static float GetMultiplier(this PlayerControl player)
     {
         var num = 1f;
+        var role = player.GetRole();
 
-        if (player.Is<PromotedGodfather>())
+        if (role is Intruder { IsPromoted: true })
             num *= Godfather.GfPromotionCdDecrease;
-        else if (player.Is<PromotedRebel>())
+        if (role is Syndicate { IsPromoted: true })
             num *= Rebel.RebPromotionCdDecrease;
 
-        if (player.Diseased())
+        if (role.Diseased)
             num *= Diseased.DiseasedMultiplier;
 
         return num;

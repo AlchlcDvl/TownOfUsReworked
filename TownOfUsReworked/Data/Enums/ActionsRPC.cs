@@ -2,7 +2,6 @@
 
 public enum ActionsRPC : byte
 {
-    Mine,
     CallMeeting,
     Drop,
     BaitReport,

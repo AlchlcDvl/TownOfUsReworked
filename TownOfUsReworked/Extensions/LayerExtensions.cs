@@ -154,7 +154,7 @@ public static class LayerExtensions
 
     public static bool IsKnighted(this PlayerControl player) => PlayerLayer.GetLayers<Monarch>().Any(role => role.Knighted.Contains(player.PlayerId));
 
-    public static bool IsSpellbound(this PlayerControl player) => PlayerLayer.GetLayers<IHexer>().Any(role => role.Spelled.Contains(player.PlayerId));
+    public static bool IsSpellbound(this PlayerControl player) => PlayerLayer.GetLayers<Spellslinger>().Any(role => role.Spelled.Contains(player.PlayerId));
 
     public static bool IsArsoDoused(this PlayerControl player) => PlayerLayer.GetLayers<Arsonist>().Any(role => role.Doused.Contains(player.PlayerId));
 
@@ -196,11 +196,11 @@ public static class LayerExtensions
 
     // public static bool IsFaithful(this PlayerControl player) => player.GetRole()?.Faithful ?? false;
 
-    public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetLayers<IBlackmailer>().Any(role => role.BlackmailedPlayer == player);
+    public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetLayers<Blackmailer>().Any(role => role.Target == player);
 
-    public static bool IsSilenced(this PlayerControl player) => PlayerLayer.GetLayers<ISilencer>().Any(role => role.SilencedPlayer == player);
+    public static bool IsSilenced(this PlayerControl player) => PlayerLayer.GetLayers<Silencer>().Any(role => role.Target == player);
 
-    public static bool SilenceActive(this PlayerControl player) => !player.IsSilenced() && PlayerLayer.GetLayers<ISilencer>().Any(role => role.HoldsDrive);
+    public static bool SilenceActive(this PlayerControl player) => !player.IsSilenced() && PlayerLayer.GetLayers<Silencer>().Any(role => role.HoldsDrive);
 
     public static bool IsOnAlert(this PlayerControl player) => PlayerLayer.GetLayers<IAlerter>().Any(role => role.Player == player && role.AlertButton?.EffectActive == true);
 
@@ -210,18 +210,18 @@ public static class LayerExtensions
 
     public static bool IsCampaigned(this PlayerControl player) => PlayerLayer.GetLayers<Democrat>().Any(role => role.Campaigned.Contains(player.PlayerId));
 
-    public static bool IsAmbushed(this PlayerControl player) => PlayerLayer.GetLayers<IAmbusher>().Any(role => player == role.AmbushedPlayer && role.AmbushButton.EffectActive);
+    public static bool IsAmbushed(this PlayerControl player) => PlayerLayer.GetLayers<Ambusher>().Any(role => player == role.AmbushedPlayer && role.AmbushButton.EffectActive);
 
-    public static bool IsCrusaded(this PlayerControl player) => PlayerLayer.GetLayers<ICrusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive);
+    public static bool IsCrusaded(this PlayerControl player) => PlayerLayer.GetLayers<Crusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive);
 
-    public static bool CrusadeActive(this PlayerControl player) => PlayerLayer.GetLayers<ICrusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive &&
+    public static bool CrusadeActive(this PlayerControl player) => PlayerLayer.GetLayers<Crusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive &&
         role.HoldsDrive);
 
     public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => role.Protecting && player == role.TargetPlayer);
 
     public static bool IsInfected(this PlayerControl player) => PlayerLayer.GetLayers<Plaguebearer>().Any(role => role.Infected.Contains(player.PlayerId) || player == role.Player);
 
-    public static bool IsFramed(this PlayerControl player) => PlayerLayer.GetLayers<IFramer>().Any(role => role.Framed.Contains(player.PlayerId));
+    public static bool IsFramed(this PlayerControl player) => PlayerLayer.GetLayers<Framer>().Any(role => role.Framed.Contains(player.PlayerId));
 
     public static bool IsWinningRival(this PlayerControl player) => PlayerLayer.GetLayers<Rivals>().Any(x => x.Player == player && x.IsWinningRival);
 
@@ -259,7 +259,7 @@ public static class LayerExtensions
 
     public static bool IsOtherLink(this PlayerControl player, PlayerControl refPlayer) => player.GetOtherLink() == refPlayer;
 
-    public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && PlayerLayer.GetLayers<IFlasher>().Any(x => x.FlashedPlayers.Contains(player.PlayerId));
+    public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && PlayerLayer.GetLayers<Grenadier>().Any(x => x.FlashedPlayers.Contains(player.PlayerId));
 
     public static bool SyndicateSided(this PlayerControl player) => player.Is(Faction.Syndicate, Faction.Illuminati, Faction.Pandorica) && !player.Is<Syndicate>();
 
@@ -319,10 +319,10 @@ public static class LayerExtensions
         if (DeadBodyHandler.Dragging.Contains(player.PlayerId))
             result *= Janitor.DragModifier;
 
-        if (PlayerLayer.GetLayers<IDrunkard>().Any(x => x.ConfuseButton?.EffectActive == true && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))
+        if (PlayerLayer.GetLayers<Drunkard>().Any(x => x.ConfuseButton.EffectActive && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))
             result *= -1;
 
-        if (PlayerLayer.GetLayers<ITimeLord>().Any(x => x.TimeButton.EffectActive))
+        if (PlayerLayer.GetLayers<Timekeeper>().Any(x => x.TimeButton.EffectActive))
         {
             if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && !Timekeeper.TimeFreezeImmunity))
                 result = 0f;
@@ -367,7 +367,7 @@ public static class LayerExtensions
         return 1f;
     }
 
-    private static bool TryGetShaper(this PlayerControl player, out IShaper shaper) => PlayerLayer.GetLayers<IShaper>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
+    private static bool TryGetShaper(this PlayerControl player, out Shapeshifter shaper) => PlayerLayer.GetLayers<Shapeshifter>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
         out shaper);
 
     public static bool IsMimicking(this PlayerControl player, out PlayerControl mimicked)
@@ -383,7 +383,7 @@ public static class LayerExtensions
         if (mimicked != player)
             return false;
 
-        if (player.Is<IMorpher>(out var morph) && morph.MorphedPlayer)
+        if (player.Is<Morphling>(out var morph) && morph.MorphedPlayer)
             mimicked = morph.MorphedPlayer;
         else if (player.TryGetShaper(out var ss))
             mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer2 : ss.ShapeshiftPlayer1;
@@ -458,8 +458,8 @@ public static class LayerExtensions
     public static bool SeemsEvil(this PlayerControl player)
     {
         var role = player.GetRole();
-        var intruderFlag = role.Faction is Faction.Intruder or Faction.Illuminati or Faction.Pandorica && role is PromotedGodfather;
-        var syndicateFlag = role.Faction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is PromotedRebel && Syndicate.DriveHolder != player;
+        var intruderFlag = role.Faction is Faction.Intruder or Faction.Illuminati or Faction.Pandorica && role is Intruder { IsPromoted: false };
+        var syndicateFlag = role.Faction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is Syndicate { IsPromoted: false, HoldsDrive: false };
         var traitorFlag = player.IsTurnedTraitor() && Traitor.TraitorColourSwap;
         var fanaticFlag = player.IsTurnedFanatic() && Fanatic.FanaticColourSwap;
         var nkFlag = role.Alignment is Alignment.Killing && !Sheriff.NeutKillingRed;
@@ -805,24 +805,24 @@ public static class LayerExtensions
         if (!all.Any())
             return;
 
-        Role chosen = null;
+        Syndicate chosen = null;
 
         if (Syndicate.DriveHolder.HasDied())
         {
-            if (!all.TryFinding(x => x is PromotedRebel, out chosen))
-                chosen = all.Find(x => x.Alignment == Alignment.Disruption);
+            if (!all.TryFinding(x => x.IsPromoted, out chosen))
+                chosen = all.Find(x => x.Alignment == Alignment.Disruption && !x.IsSidekick);
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.Support);
+                chosen = all.Find(x => x.Alignment == Alignment.Support && !x.IsSidekick);
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.Power);
+                chosen = all.Find(x => x.Alignment == Alignment.Power && !x.IsSidekick);
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.Killing);
+                chosen = all.Find(x => x.Alignment == Alignment.Killing && !x.IsSidekick);
 
             if (!chosen)
-                chosen = all.Find(x => x is Anarchist or Rebel or Sidekick);
+                chosen = all.Find(x => x is Anarchist or Rebel || x.IsSidekick);
         }
 
         Syndicate.DriveHolder = chosen?.Player;

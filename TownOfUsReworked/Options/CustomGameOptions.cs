@@ -62,7 +62,18 @@ public static class GameSettings
     public static Number FailCooldowns = 5;
 
     [NumberOption(1, 20, 0.25f, Format.Distance)]
-    public static Number ReportDistance = 3.5f;
+    public static Number ReportDistance
+    {
+        get => ReportDistancePriv;
+        set
+        {
+            ReportDistancePriv = value;
+
+            if (CustomPlayer.Local)
+                CustomPlayer.Local.MaxReportDistance = value;
+        }
+    }
+    private static Number ReportDistancePriv = 3.5f;
 
     [NumberOption(0, 3, 0.1f, Format.Time)]
     public static Number ChatCooldown = 3;
@@ -948,7 +959,7 @@ public static class Abilities
 [AlignmentOption(colorHex: "#DD585BFF")]
 public static class Dispositions
 {
-    [LayerOption("#4545A9FF", LayerEnum.Allied)]
+    [LayerOption("#4545A9FF", LayerEnum.Allied, All = true)]
     public static RoleOptionData Allied;
 
     [LayerOption("#4545FFFF", LayerEnum.Corrupted)]

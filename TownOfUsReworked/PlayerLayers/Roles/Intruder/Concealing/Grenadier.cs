@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Grenadier)]
-public sealed class Grenadier : Intruder, IFlasher
+public sealed class Grenadier : Intruder
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number FlashCd = 25;

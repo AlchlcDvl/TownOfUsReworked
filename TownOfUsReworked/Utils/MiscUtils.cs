@@ -514,13 +514,13 @@ public static class MiscUtils
 
     public static bool IsInRange(this byte num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 
-    public static string GetRandomisedName()
+    public static string GetRandomisedName(string chars = Everything, int maxLength = 11)
     {
-        var length = URandom.RandomRangeInt(1, 11);
+        var length = URandom.RandomRangeInt(0, maxLength);
         var name = "";
 
         while (name.Length < length)
-            name += Everything[URandom.RandomRangeInt(0, Everything.Length)];
+            name += chars[URandom.RandomRangeInt(0, chars.Length)];
 
         return name;
     }
@@ -547,61 +547,6 @@ public static class MiscUtils
             body?.gameObject?.Destroy();
             Cleaned.Add(body.ParentId);
         }));
-    }
-
-    public static void RpcSpawnVent(Role role)
-    {
-        if (role is not IDigger digger)
-            return;
-
-        var position = (Vector2)role.Player.transform.position;
-        CallRpc(CustomRPC.Action, ActionsRPC.Mine, role, position);
-        AddVent(digger, position);
-    }
-
-    public static void AddVent(IDigger digger, Vector2 position) => digger.Vents.Add(SpawnVent(digger.Vents, position, digger.Player.transform.position.z, digger.Name));
-
-    private static Vent SpawnVent(List<Vent> vents, Vector2 position, float zAxis, string name)
-    {
-        var ventPrefab = UObject.FindObjectOfType<Vent>();
-        var vent = UObject.Instantiate(ventPrefab, ventPrefab.transform.parent);
-
-        vent.Id = GetAvailableId();
-        vent.transform.position = new(position.x, position.y, zAxis + 0.001f);
-
-        if (vents.Any())
-        {
-            var leftVent = vents[^1];
-            vent.Left = leftVent;
-            leftVent.Right = vent;
-        }
-        else
-            vent.Left = null;
-
-        vent.Right = null;
-        vent.Center = null;
-        vent.name = $"{name}{vents.Count}";
-        vent.myAnim?.Stop();
-
-        var allVents = AllMapVents().ToList();
-        allVents.Add(vent);
-        Ship().AllVents = allVents.ToArray();
-
-        if (IsSubmerged())
-        {
-            vent.gameObject.layer = 12;
-            vent.gameObject.AddSubmergedComponent("ElevatorMover"); // Just in case the elevator vent is not blocked
-
-            if (vent.transform.position.y > -7)
-                vent.transform.SetWorldZ(0.03f);
-            else
-            {
-                vent.transform.SetWorldZ(0.0009f);
-                vent.transform.SetLocalZ(-0.003f);
-            }
-        }
-
-        return vent;
     }
 
     public static int GetAvailableId()
@@ -1133,8 +1078,8 @@ public static class MiscUtils
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
 
-            if (player.Is<IDragger>(out var dragger))
-                dragger.Drop();
+            if (player.Is<Janitor>(out var jani))
+                jani.Drop();
         }
 
         player.moveable = true;

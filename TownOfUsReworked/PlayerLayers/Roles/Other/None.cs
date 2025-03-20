@@ -1,3 +1,3 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public sealed class Roleless : Role;
+public sealed class Roleless : Role; // In an ideal world, this never gets assigned

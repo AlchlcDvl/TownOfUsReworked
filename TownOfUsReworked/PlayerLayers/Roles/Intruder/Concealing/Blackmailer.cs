@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Blackmailer)]
-public sealed class Blackmailer : Intruder, IBlackmailer
+public sealed class Blackmailer : Intruder, IIntimidator
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number BlackmailCd = 25;
@@ -17,8 +17,7 @@ public sealed class Blackmailer : Intruder, IBlackmailer
 
     private CustomButton BlackmailButton { get; set; }
     public bool ShookAlready { get; set; }
-    public PlayerControl Target => BlackmailedPlayer;
-    public PlayerControl BlackmailedPlayer { get; private set; }
+    public PlayerControl Target { get; private set; }
 
     public override UColor MainColor => CustomColorManager.Blackmailer;
     public override LayerEnum Type => LayerEnum.Blackmailer;
@@ -30,16 +29,16 @@ public sealed class Blackmailer : Intruder, IBlackmailer
     {
         base.Init();
         Alignment = Alignment.Concealing;
-        BlackmailedPlayer = null;
+        Target = null;
         BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd),
             (PlayerBodyExclusion)Exception1);
     }
 
-    public override void Reset(bool meeting, bool start) => BlackmailedPlayer = null;
+    public override void Reset(bool meeting, bool start) => Target = null;
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
-        if (BlackmailedPlayer == player)
+        if (Target == player)
             name += " <#02A752FF>Φ</color>";
     }
 
@@ -49,8 +48,8 @@ public sealed class Blackmailer : Intruder, IBlackmailer
 
         if (cooldown != CooldownType.Fail)
         {
-            BlackmailedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BlackmailedPlayer);
+            Target = target;
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Target);
 
             if (target.IsSilenced())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");
@@ -59,8 +58,8 @@ public sealed class Blackmailer : Intruder, IBlackmailer
         BlackmailButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == BlackmailedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !BlackmailMates) ||
+    private bool Exception1(PlayerControl player) => player == Target || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !BlackmailMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !BlackmailMates);
 
-    public override void ReadRPC(MessageReader reader) => BlackmailedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => Target = reader.ReadPlayer();
 }

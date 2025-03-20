@@ -55,6 +55,7 @@ public abstract class Option(CustomOptionType type)
         ([ "MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers" ], [ "not+IgnoreLayerCaps" ]),
         ([ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
             "not+IgnoreAlignmentCaps" ]),
+        ([ "Allied", "Allied1" ], [ "not+IlluminatiUnleashed", "not+OrderOfCompliance" ]),
         ([ "PandoricaOpens", "OrderOfCompliance" ], [ "not+IlluminatiUnleashed" ])
     ];
     // I need a second one because for some dumb reason the game likes crashing

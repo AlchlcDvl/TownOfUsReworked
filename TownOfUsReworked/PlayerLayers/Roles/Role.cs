@@ -502,7 +502,6 @@ public abstract class Role : PlayerLayer
     {
         var success = Interact(Player, target, true) != CooldownType.Fail;
         GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
-        GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 

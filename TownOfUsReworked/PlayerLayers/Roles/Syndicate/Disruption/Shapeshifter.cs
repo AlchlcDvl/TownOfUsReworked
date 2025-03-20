@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Shapeshifter)]
-public sealed class Shapeshifter : Syndicate, IShaper
+public sealed class Shapeshifter : Syndicate
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ShapeshiftCd = 25f;

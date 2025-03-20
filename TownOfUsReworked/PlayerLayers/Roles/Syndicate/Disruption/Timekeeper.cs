@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Timekeeper)]
-public sealed class Timekeeper : Syndicate, ITimeLord
+public sealed class Timekeeper : Syndicate
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number TimeCd = 25;

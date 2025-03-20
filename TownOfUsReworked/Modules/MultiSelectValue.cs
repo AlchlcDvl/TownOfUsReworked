@@ -23,23 +23,11 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// </summary>
     public readonly int Count => ValuesPriv.Count;
 
-    public static implicit operator string(MultiSelectValue<T> value) => value.Values;
-
-    public static implicit operator T[](MultiSelectValue<T> value) => [ .. value.ValuesPriv ];
-
-    public static implicit operator T(MultiSelectValue<T> value) => value.Count == 1 ? value.ValuesPriv.First() :
-        throw new($"Tried to convert multiple or no values ({value.Values}) to a singular one");
-
-    public static implicit operator MultiSelectValue<T>(T value) => new(value);
-
-    public static implicit operator MultiSelectValue<T>(T[] values) => new(values);
-
-    public static implicit operator MultiSelectValue<T>(string values) => new([ .. values.TrueSplit(',').Select(Enum.Parse<T>) ]);
-
     /// <summary>
     /// Adds a single enum value to the end of the collection.
     /// </summary>
     /// <param name="item">The enum value to add.</param>
+    /// <returns><c>true</c> if successfully added; otherwise, <c>false</c>.</returns>
     public readonly bool Add(T item) => ValuesPriv.Add(item);
 
     /// <summary>
@@ -72,18 +60,7 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// </summary>
     /// <param name="items">The collection of enum values to remove.</param>
     /// <returns>The number of items successfully removed.</returns>
-    public readonly int RemoveRange(IEnumerable<T> items)
-    {
-        var count = 0;
-
-        foreach (var item in items)
-        {
-            if (Remove(item))
-                count++;
-        }
-
-        return count;
-    }
+    public readonly int RemoveRange(IEnumerable<T> items) => items.Count(Remove);
 
     /// <summary>
     /// Determines whether the collection contains the specified enum value.
@@ -119,6 +96,7 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// <summary>
     /// Gets the first value in the collection.
     /// </summary>
+    /// <returns>Returns the first value.</returns>
     public readonly T First() => ValuesPriv.First();
 
     /// <summary>
@@ -127,17 +105,72 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// <returns>A comma-separated string of enum values.</returns>
     public override readonly string ToString() => Values;
 
+    /// <inheritdoc/>
     public override readonly bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
 
-    public override readonly int GetHashCode() =>  Values?.GetHashCode() ?? 0;
+    /// <inheritdoc/>
+    public readonly bool Equals(MultiSelectValue<T> other) => ValuesPriv.SetEquals(other.ValuesPriv);
 
+    /// <inheritdoc/>
+    public override readonly int GetHashCode() => Values?.GetHashCode() ?? 0;
+
+    /// <inheritdoc/>
     public readonly IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)ValuesPriv).GetEnumerator();
 
+    /// <inheritdoc/>
     readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+    /// <summary>
+    /// Converts the current instance to its string representation.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    public static implicit operator string(MultiSelectValue<T> value) => value.Values;
+
+    /// <summary>
+    /// Converts the current instance to its array representation of values.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    public static implicit operator T[](MultiSelectValue<T> value) => [ .. value.ValuesPriv ];
+
+    /// <summary>
+    /// Converts the current instance to one singular value.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <exception cref="ConversionFailException">There were either no values, or more than one value.</exception>
+    public static implicit operator T(MultiSelectValue<T> value) =>
+        value.Count == 1
+            ? value.ValuesPriv.First()
+            : throw new($"Tried to convert multiple or no values ({value.Values}) to a singular one");
+
+    /// <summary>
+    /// Converts the value to an instance of MultiSelectValue.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    public static implicit operator MultiSelectValue<T>(T value) => new(value);
+
+    /// <summary>
+    /// Converts the array of values to an instance of MultiSelectValue.
+    /// </summary>
+    /// <param name="values">The values to convert.</param>
+    public static implicit operator MultiSelectValue<T>(T[] values) => new(values);
+
+    /// <summary>
+    /// Converts the value string to an instance of MultiSelectValue.
+    /// </summary>
+    /// <param name="values">The values to convert.</param>
+    public static implicit operator MultiSelectValue<T>(string values) => new([ .. values.TrueSplit(',').Select(Enum.Parse<T>) ]);
+
+    /// <summary>
+    /// Equality comparison.
+    /// </summary>
+    /// <param name="left">Left.</param>
+    /// <param name="right">Right.</param>
     public static bool operator ==(MultiSelectValue<T> left, MultiSelectValue<T> right) => left.Equals(right);
 
+    /// <summary>
+    /// Inequality comparison.
+    /// </summary>
+    /// <param name="left">Left.</param>
+    /// <param name="right">Right.</param>
     public static bool operator !=(MultiSelectValue<T> left, MultiSelectValue<T> right) => !left.Equals(right);
-
-    public readonly bool Equals(MultiSelectValue<T> other) => ValuesPriv.SetEquals(other.ValuesPriv);
 }

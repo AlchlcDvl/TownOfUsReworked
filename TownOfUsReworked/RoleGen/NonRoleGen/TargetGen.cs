@@ -12,7 +12,14 @@ public sealed class TargetGen : BaseGen
             {
                 var alliedRole = ally.Player.GetRole();
                 var factions = new List<Faction>() { Faction.Crew, Faction.Intruder, Faction.Syndicate };
-                var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions[(int)Allied.AlliedFaction - 1];
+
+                if (GameModifiers.PandoricaOpens)
+                {
+                    factions.RemoveAll(Faction.Intruder, Faction.Syndicate);
+                    factions.Add(Faction.Pandorica);
+                }
+
+                var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());
                 ally.Side = alliedRole.Faction = faction;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
             }

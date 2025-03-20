@@ -7,8 +7,8 @@ public sealed class Seer : Crew
     public static Number SeerCd = 25;
 
     private static bool ChangedDead => !GetLayers<Role>().Any(x => !x.Player.HasDied() && (x.RoleHistory.Any() || x.Type is LayerEnum.Amnesiac or LayerEnum.Thief or LayerEnum.Actor or
-        LayerEnum.Godfather or LayerEnum.Mafioso or LayerEnum.Shifter or LayerEnum.Guesser or LayerEnum.Rebel or LayerEnum.Mystic or LayerEnum.Sidekick or LayerEnum.GuardianAngel or
-        LayerEnum.Executioner or LayerEnum.BountyHunter or LayerEnum.PromotedGodfather or LayerEnum.PromotedRebel || x.LinkedDisposition is LayerEnum.Traitor or LayerEnum.Fanatic));
+        LayerEnum.Godfather or LayerEnum.Shifter or LayerEnum.Guesser or LayerEnum.Rebel or LayerEnum.Mystic or LayerEnum.GuardianAngel or LayerEnum.Executioner or LayerEnum.BountyHunter ||
+        x.LinkedDisposition is LayerEnum.Traitor or LayerEnum.Fanatic));
     private CustomButton SeerButton { get; set; }
 
     public override UColor MainColor => CustomColorManager.Seer;

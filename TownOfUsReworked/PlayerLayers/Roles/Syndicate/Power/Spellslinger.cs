@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Spellslinger)]
-public sealed class Spellslinger : Syndicate, IHexer
+public sealed class Spellslinger : Syndicate
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SpellCd { get; set; } = 25f;

@@ -236,6 +236,7 @@ public sealed class ClientHandler : MonoBehaviour
             text.transform.localPosition = Vector3.zero;
             text.transform.localScale = new(0.6f, 0.6f, 1f);
             text.text = "ValueText";
+            text.GetComponent<RectTransform>().sizeDelta = new(2.75f, 0.4f);
 
             var box = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(5), SettingsPatches.MultiOptionPrefab.transform);
             box.localPosition = Vector3.zero;
@@ -249,7 +250,7 @@ public sealed class ClientHandler : MonoBehaviour
         {
             SettingsPatches.HeaderPrefab = Instantiate(settings.categoryHeaderOrigin).DontDestroy().DontUnload();
             SettingsPatches.HeaderPrefab.name = "HeaderPrefab";
-            SettingsPatches.HeaderPrefab.transform.localScale = new(0.63f, 0.63f, 0.63f);
+            SettingsPatches.HeaderPrefab.transform.localScale = Vector3.one * 0.63f;
             SettingsPatches.HeaderPrefab.Background.transform.localScale += new Vector3(0.7f, 0f, 0f);
 
             SettingsPatches.HeaderPrefab.transform.GetChild(1).gameObject.SetActive(false);
@@ -506,7 +507,6 @@ public sealed class ClientHandler : MonoBehaviour
         PhoneText.enableWordWrapping = false;
         PhoneText.transform.localScale = Vector3.one * 0.4f;
         PhoneText.transform.localPosition = new(0, 0, -50f);
-        PhoneText.gameObject.layer = 5;
         PhoneText.alignment = TextAlignmentOptions.Center;
         PhoneText.name = "PhoneText";
 
@@ -576,19 +576,19 @@ public sealed class ClientHandler : MonoBehaviour
 
         if (!Instance.PagesSet)
         {
-            var clone = Modules.Info.AllInfo.Clone().ToList();
-            clone.RemoveAll(x => x.ID.ContainsAny("Invalid", "None"));
+            var clone = Modules.Info.AllInfo.Where(x => !x.ID.ContainsAny("Invalid", "None"));
+            var count = clone.Count() - 1;
             var i = 0;
             var j = 0;
             var k = 0;
 
-            foreach (var pair in clone)
+            foreach (var (l, pair) in clone.Indexed())
             {
                 Instance.Sorted.Add(j, new(pair is SymbolInfo symbol ? symbol.Symbol : pair.ID, pair));
                 j++;
                 k++;
 
-                if (k >= 28 || (pair.Footer && pair != clone[^1]))
+                if (k >= 28 || (pair.Footer && l < count))
                 {
                     i++;
                     k = 0;

@@ -14,7 +14,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
     public virtual bool Hidden => false;
     public virtual bool CanVent => false;
 
-    public string Name { get; protected set; }
+    public string Name { get; set; }
     // public LayerHandler Handler { get; set; }
     public PlayerControl Player { get; set; }
     public bool Winner { get; set; }
@@ -42,7 +42,11 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
 
     ~PlayerLayer() => End();
 
-    // Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it sorta works
+    /// <summary>
+    /// Starts the layer, ensuring that it's valid and attaches it to a player.
+    /// </summary>
+    /// <param name="player">The player to attach the layer to.</param>
+    /// <remarks>Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it works.</remarks>
     public void Start(PlayerControl player)
     {
         Name = TranslationManager.Translate($"Layer.{Type}");
@@ -54,6 +58,9 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
             EnteringLayer();
     }
 
+    /// <summary>
+    /// Invalids and ends the layer, detaching it from the player it was originally attached to.
+    /// </summary>
     public void End()
     {
         ClearArrows();
@@ -66,66 +73,159 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
         Player = null;
     }
 
+    /// <summary>
+    /// Initialises the layer.
+    /// </summary>
     protected virtual void Init() {}
 
+    /// <summary>
+    /// Denitialises the layer.
+    /// </summary>
     protected virtual void Deinit() {}
 
+    /// <summary>
+    /// Performs an action once the intro cutscene ends (called in <see cref="IntroCutscene.OnDestroy"/>). Runs locally.
+    /// </summary>
     public virtual void OnIntroEnd() {}
 
+    /// <summary>
+    /// Performs an action on <see cref="Player"/> (called in <see cref="PlayerControlHandler.Update"/>). Runs for everyone.
+    /// </summary>
     public virtual void UpdatePlayer() {}
 
+    /// <summary>
+    /// Performs an action on a player (called in <see cref="PlayerControlHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void UpdatePlayer(PlayerControl __instance) {}
 
+    /// <summary>
+    /// Performs an action on the <see cref="PlayerVoteArea"/> that references <see cref="Player"/> (called in <see cref="VoteAreaHandler.Update"/>). Runs for everyone.
+    /// </summary>
     public virtual void UpdateVoteArea() {}
 
-    public virtual void UpdateVoteArea(PlayerVoteArea voteArea) {}
+    /// <summary>
+    /// Performs an action on the <see cref="PlayerVoteArea"/> that references a player (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
+    public virtual void UpdateVoteArea(PlayerVoteArea __instance) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="HudManager.Update"/>). Runs locally.
+    /// </summary>
     public virtual void UpdateHud(HudManager __instance) {}
 
+    /// <summary>
+    /// Performs an action that updates the meeting phone (called in <see cref="MeetingHud.Update"/>). Runs locally.
+    /// </summary>
     public virtual void UpdateMeeting(MeetingHud __instance) {}
 
+    /// <summary>
+    /// Performs an action after vote calculation is complete (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void VoteComplete(MeetingHud __instance) {}
 
+    /// <summary>
+    /// Performs an action before your vote is confirmed (called in <see cref="MeetingHud.VotingComplete"/>). Runs locally.
+    /// </summary>
     public virtual void ConfirmVotePrefix(MeetingHud __instance) {}
 
+    /// <summary>
+    /// Performs an action after your vote is confirmed (called in <see cref="MeetingHud.VotingComplete"/>). Runs locally.
+    /// </summary>
     public virtual void ConfirmVotePostfix(MeetingHud __instance) {}
 
+    /// <summary>
+    /// Performs an action when a vote is cleared (called in <see cref="MeetingHud.ClearVote"/>). Runs locally.
+    /// </summary>
     public virtual void ClearVote(MeetingHud __instance) {}
 
+    /// <summary>
+    /// Performs an action when a vote area is selected, making use of the id (called in <see cref="MeetingHud.Select"/>). Runs locally.
+    /// </summary>
     public virtual void SelectVote(MeetingHud __instance, int id) {}
 
+    /// <summary>
+    /// Performs an action that updates the map (called in <see cref="MapBehaviour.FixedUpdate"/>). Runs locally.
+    /// </summary>
     public virtual void UpdateMap(MapBehaviour __instance) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void ExitingLayer() {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void EnteringLayer() {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void BeforeMeeting() {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void OnMeetingStart(MeetingHud __instance) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void OnMeetingEnd(MeetingHud __instance) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void OnBodyReport(NetworkedPlayerInfo info) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void UponTaskComplete(uint taskId) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void ReadRPC(MessageReader reader) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void OnRevive() {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void PostAssignment() {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void OnKill(PlayerControl victim) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void ClearArrows() {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     protected virtual void CheckWin() {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
 
+    /// <summary>
+    /// Performs an action that updates the hud (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
+    /// </summary>
     public virtual void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
 
     public void GameEnd()
@@ -165,7 +265,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable
 
     public override string ToString() => Name;
 
-    public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : IPlayerLayer => AllLayers.Where(x => !x.Ignore || includeIgnored).OfType<T>();
+    public static IEnumerable<T> GetLayers<T>(bool includeIgnored = false) where T : IPlayerLayer => (includeIgnored ? AllLayers : AllLayers.Where(x => !x.Ignore)).OfType<T>();
 
     public static IEnumerable<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
 

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Morphling)]
-public sealed class Morphling : Intruder, IMorpher
+public sealed class Morphling : Intruder
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MorphCd = 25;

@@ -157,7 +157,7 @@ public static class RoleGenManager
         LayerEnum.Jackal => GameData.Instance.PlayerCount > 6,
         LayerEnum.Actor => new[] { LayerEnum.Bullseye, LayerEnum.Slayer, LayerEnum.Sniper, LayerEnum.Hitman }.Any(x => GetSpawnItem(x).IsActive()),
         LayerEnum.Miner => GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne && (Miner.MinerSpawnOnMira || MapPatches.CurrentMap != 2),
-        LayerEnum.Godfather or LayerEnum.Rebel => relatedCount >= 3,
+        LayerEnum.Godfather or LayerEnum.Rebel => relatedCount >= 3 || TownOfUsReworked.MciActive,
         LayerEnum.Insider => GameModifiers.AnonymousVoting != AnonVotes.Disabled,
         LayerEnum.Tunneler => GameModifiers.WhoCanVent == WhoCanVentOptions.Default && CrewSettings.CrewVent == CrewVenting.Never,
         LayerEnum.Lovers => GameData.Instance.PlayerCount > 4,
@@ -165,6 +165,7 @@ public static class RoleGenManager
         LayerEnum.Linked => Role.GetRoles(Faction.Neutral).Count() > 1 && GameData.Instance.PlayerCount > 4,
         LayerEnum.Democrat => !Mayor.MayorDirectSpawn,
         LayerEnum.Mayor => Mayor.MayorDirectSpawn,
+        LayerEnum.Allied => !GameModifiers.IlluminatiUnleashed && !GameModifiers.OrderOfCompliance,
         _ => true
     };
 

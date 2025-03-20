@@ -354,12 +354,6 @@ public static class RPCHandling
                         var victim = reader.ReadPlayer();
                         var success = reader.ReadBoolean();
                         PlayerLayer.GetLayers<Enforcer>().Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
-                        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
-                        return;
-                    }
-                    case ActionsRPC.Mine:
-                    {
-                        AddVent(reader.ReadLayer<Role>() as IDigger, reader.ReadVector2());
                         return;
                     }
                     case ActionsRPC.Infect:

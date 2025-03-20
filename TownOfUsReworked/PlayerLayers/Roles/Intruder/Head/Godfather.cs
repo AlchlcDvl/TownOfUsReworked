@@ -39,15 +39,14 @@ public sealed class Godfather : Intruder
             return;
 
         HasDeclared = true;
-        var formerRole = target.GetRole();
-        new Mafioso()
-        {
-            FormerRole = formerRole,
-            Godfather = this
-        }.RoleUpdate(formerRole, target);
+        var role = target.GetLayer<Intruder>();
+        role.IsMafioso = true;
+        role.IsPromoted = false;
+        role.Promoter = this;
+        role.Name = TranslationManager.Translate("Layer.Mafioso");
     }
 
-    private bool Exception1(PlayerControl player) => player.GetRole() is PromotedGodfather or Mafioso or Godfather || !player.Is<Intruder>() || !player.Is(Faction);
+    private bool Exception1(PlayerControl player) => !player.Is<Intruder>(out var intruder) || intruder.IsMafioso || intruder.IsPromoted || !player.Is(Faction);
 
     private bool Usable() => !HasDeclared;
 

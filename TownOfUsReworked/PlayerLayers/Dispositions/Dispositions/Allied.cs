@@ -4,7 +4,18 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 public sealed class Allied : Disposition
 {
     [StringOption<AlliedFaction>]
-    public static AlliedFaction AlliedFaction = AlliedFaction.Random;
+    public static AlliedFaction AlliedFaction
+    {
+        get => AlliedFactionPriv;
+        set
+        {
+            if (value is AlliedFaction.Intruder or AlliedFaction.Syndicate && GameModifiers.PandoricaOpens)
+                value = AlliedFaction.Pandorica;
+
+            AlliedFactionPriv = value;
+        }
+    }
+    private static AlliedFaction AlliedFactionPriv;
 
     public Faction Side { get; set; }
 

@@ -282,7 +282,30 @@ public static class CollectionExtensions
         return dict;
     }
 
+    public static void RemoveAll<T>(this List<T> list, params T[] items) => items.ForEach(x => list.Remove(x));
+
     /* These methods are unused at the moment, so they've been commented until needed
+
+    public static int IndexOf<T>(this ISystem.List<T> source, Func<T, bool> predicate)
+    {
+        if (source == null)
+            throw new ArgumentNullException(nameof(source));
+
+        if (predicate == null)
+            throw new ArgumentNullException(nameof(predicate));
+
+        var index = 0;
+
+        foreach (var item in source)
+        {
+            if (predicate(item))
+                return index;
+
+            index++;
+        }
+
+        return -1;
+    }
 
     public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {

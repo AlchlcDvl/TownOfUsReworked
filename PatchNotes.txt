@@ -1,7 +1,7 @@
 ﻿New!
 - New Role: Democrat [Crew (Sovereign)]
 - New Factions: Pandorica, Compliance, Illuminati
-- New Special Game Modifiers: Pandora's Box*, Order of Compliance*, Illuminati Unleashed*
+- New Special Game Modifiers: Pandorica Opens*, Order of Compliance*, Illuminati Unleashed*
 - Mega Addition: The mod now has its own custom stats and achievements
 - Addition: You can now change the keybind to deselect players (default is still Backspace)
 - Addition: More game options
@@ -19,6 +19,7 @@
 
 Changes!
 - Overhaul: Mayor is now a second stage role for the new Democrat role
+- Rework: Mafioso, Sidekick, Promoted Godfather and Promoted Rebel have been completely recoded, Mafiosos and Sidekicks can now use their original abilities, but lose the ability to kill unless they can promote
 - Recode: Overhauled and refactored a lot of the codebase in favour of optimisation and avoiding potential issues
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a single player to eject and have gained ability charges to compensate
 - Rework: Altruist and Necromancer now need to gain mana from bodies (thereby cleaning them) to be able to revive players

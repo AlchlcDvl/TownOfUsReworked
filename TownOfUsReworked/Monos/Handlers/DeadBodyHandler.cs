@@ -43,14 +43,14 @@ public sealed class DeadBodyHandler : NameHandler
         Dragger = player;
         Dragging.Add(player.PlayerId);
 
-        if (player.Is<IDragger>(out var dragger))
-            dragger.CurrentlyDragging = this;
+        if (player.Is<Janitor>(out var jani))
+            jani.CurrentlyDragging = this;
     }
 
     public void StopDrag()
     {
-        if (Dragger.Is<IDragger>(out var dragger))
-            dragger.CurrentlyDragging = null;
+        if (Dragger.Is<Janitor>(out var jani))
+            jani.CurrentlyDragging = null;
 
         Dragging.Remove(Dragger.PlayerId);
         Dragger = null;
