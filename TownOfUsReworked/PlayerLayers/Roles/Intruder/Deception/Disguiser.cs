@@ -102,7 +102,7 @@ public sealed class Disguiser : Intruder
 
     public override void ReadRPC(MessageReader reader)
     {
-        CopiedPlayer = reader.ReadPlayer();
-        DisguisedPlayer = reader.ReadPlayer();
+        CopiedPlayer = reader.Read<PlayerControl>();
+        DisguisedPlayer = reader.Read<PlayerControl>();
     }
 }

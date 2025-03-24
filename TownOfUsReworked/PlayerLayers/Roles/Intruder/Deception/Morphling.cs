@@ -79,5 +79,5 @@ public sealed class Morphling : Intruder
 
     private bool EndEffect() => Dead;
 
-    public override void ReadRPC(MessageReader reader) => MorphedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => MorphedPlayer = reader.Read<PlayerControl>();
 }

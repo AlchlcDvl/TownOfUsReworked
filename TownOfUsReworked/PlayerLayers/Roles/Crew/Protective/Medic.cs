@@ -3,10 +3,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [LayerHeaderOption(LayerEnum.Medic)]
 public sealed class Medic : Crew, IShielder
 {
-    [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
+    [MultiSelectOption<ShieldOptions>([ ShieldOptions.Nobody, ShieldOptions.Everyone ])]
     public static MultiSelectValue<ShieldOptions> ShowShielded = ShieldOptions.Medic;
 
-    [MultiSelectOption<ShieldOptions>(ShieldOptions.Nobody, ShieldOptions.Everyone)]
+    [MultiSelectOption<ShieldOptions>([ ShieldOptions.Nobody, ShieldOptions.Everyone ])]
     public static MultiSelectValue<ShieldOptions> WhoGetsNotification = ShieldOptions.Medic;
 
     [ToggleOption]
@@ -54,11 +54,11 @@ public sealed class Medic : Crew, IShielder
 
     private bool Usable() => !ShieldBroken;
 
-    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.Read<PlayerControl>();
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
-        if (ShieldedPlayer == player && ShowShielded.Contains(ShieldOptions.Medic))
+        if (ShieldedPlayer == player && ShowShielded == ShieldOptions.Medic)
             name += " <#006600FF>✚</color>";
     }
 }

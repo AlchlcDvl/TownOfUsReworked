@@ -223,7 +223,7 @@ public sealed class BountyHunter : Evil
 
     public override void ReadRPC(MessageReader reader)
     {
-        var request = reader.ReadPlayer();
+        var request = reader.Read<PlayerControl>();
         RequestingPlayer = request;
         var role = request.GetRole();
         role.Requesting = true;

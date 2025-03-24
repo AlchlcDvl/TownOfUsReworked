@@ -378,7 +378,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
 
     protected override string SettingNotif() => $"<{HexCode}>{base.SettingNotif()}</color>";
 
-    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadRoleOptionData(), false);
+    public override void ReadValueRpc(MessageReader reader) => Set(reader.Read<RoleOptionData>(), false);
 
     public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
 

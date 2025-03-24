@@ -61,7 +61,7 @@ public sealed class Amnesiac : Neutral
         Remember(player);
     }
 
-    public override void ReadRPC(MessageReader reader) => Remember(reader.ReadPlayer());
+    public override void ReadRPC(MessageReader reader) => Remember(reader.Read<PlayerControl>());
 
     private void Remember(PlayerControl other)
     {

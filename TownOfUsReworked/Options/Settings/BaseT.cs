@@ -1,6 +1,7 @@
 namespace TownOfUsReworked.Options;
 
 public abstract class Option<T>(CustomOptionType type) : Option(type)
+    where T : struct
 {
     public T Value { get; set; }
 
@@ -34,7 +35,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         if (!CustomPlayer.Local)
             return;
 
-        if (AmongUsClient.Instance.AmHost && rpc && !(ClientOnly || !ID.Contains("CustomOption") || this is BaseHeaderOption))
+        if (rpc && AmongUsClient.Instance.AmHost && !(ClientOnly || !ID.Contains("CustomOption") || this is BaseHeaderOption))
             SendOptionRPC(this);
 
         if (Setting)

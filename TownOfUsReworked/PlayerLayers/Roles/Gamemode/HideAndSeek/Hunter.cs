@@ -75,7 +75,7 @@ public sealed class Hunter : HideAndSeek
 
     public override void ReadRPC(MessageReader reader)
     {
-        TurnHunter(reader.ReadPlayer());
+        TurnHunter(reader.Read<PlayerControl>());
 
         if (AmongUsClient.Instance.AmHost)
             CheckWin();

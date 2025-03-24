@@ -32,7 +32,7 @@ public static class SpawnPatches
         }
 
         AllBodies().ForEach(x => x.gameObject.Destroy());
-        ButtonUtils.Reset(CooldownType.Start);
+        ButtonUtils.Reset(intro ? CooldownType.Start : CooldownType.Meeting);
         RandomSpawn(intro, meeting);
         var role = CustomPlayer.Local.GetRole();
         role.UpdateButtons();
@@ -69,15 +69,15 @@ public static class SpawnPatches
 
     private static void RandomSpawn(bool intro, bool meeting)
     {
-        if (!AmongUsClient.Instance.AmHost || GameModifiers.RandomSpawns == RandomSpawning.Disabled || MapPatches.CurrentMap is 4 or 5 || (meeting && GameModifiers.RandomSpawns ==
-            RandomSpawning.GameStart) || (intro && GameModifiers.RandomSpawns == RandomSpawning.PostMeeting))
+        if (!AmongUsClient.Instance.AmHost || MapPatches.CurrentMap is 4 or 5 || (meeting && GameModifiers.RandomSpawns == RandomSpawning.GameStart) || (intro && GameModifiers.RandomSpawns ==
+            RandomSpawning.PostMeeting))
         {
             return;
         }
 
         var allLocations = new List<Vector2>();
         allLocations.AddRange(AllVents().Select(x => (Vector2)x.transform.position));
-        var toadded = MapPatches.CurrentMap switch
+        var toAdd = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
             1 => MiraSpawns,
@@ -86,8 +86,8 @@ public static class SpawnPatches
             _ => null
         };
 
-        if (toadded != null)
-            allLocations.AddRange(toadded);
+        if (toAdd != null)
+            allLocations.AddRange(toAdd);
 
         foreach (var player in AllPlayers())
         {

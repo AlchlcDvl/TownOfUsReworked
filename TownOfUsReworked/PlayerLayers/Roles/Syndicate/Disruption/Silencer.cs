@@ -61,5 +61,5 @@ public sealed class Silencer : Syndicate, IIntimidator
     private bool Exception1(PlayerControl player) => player == Target || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !SilenceMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !SilenceMates);
 
-    public override void ReadRPC(MessageReader reader) => Target = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => Target = reader.Read<PlayerControl>();
 }

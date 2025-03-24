@@ -114,7 +114,7 @@ public static class ModCompatibility
 
             var compatType = typeof(ModCompatibility);
 
-            TownOfUsReworked.ModInstance.Harmony.Patch(submergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(ExileRoleChangePostfix))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(submergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(SetPostmortals.Postfix))));
             TownOfUsReworked.ModInstance.Harmony.Patch(getReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
             TownOfUsReworked.ModInstance.Harmony.Patch(startMethod, new(AccessTools.Method(compatType, nameof(SpawnPatch))));
             TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(ElevatorPrefix))), new(AccessTools.Method(compatType, nameof(ElevatorPostfix))));
@@ -193,8 +193,6 @@ public static class ModCompatibility
 
         return (false, null);
     }
-
-    public static void ExileRoleChangePostfix() => SetPostmortals.Postfix(Ejection());
 
     public static IEnumerator WaitAction(Action next)
     {

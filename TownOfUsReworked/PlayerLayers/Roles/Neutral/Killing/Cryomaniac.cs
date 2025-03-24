@@ -110,7 +110,7 @@ public sealed class Cryomaniac : NKilling
 
     public override void ReadRPC(MessageReader reader)
     {
-        var cryoAction = reader.ReadEnum<DouseActionsRPC>();
+        var cryoAction = reader.Read<DouseActionsRPC>();
 
         switch (cryoAction)
         {

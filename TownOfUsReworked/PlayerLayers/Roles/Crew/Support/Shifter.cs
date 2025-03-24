@@ -89,5 +89,5 @@ public sealed class Shifter : Crew
     private bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&
         player.Is(SubFaction)) || player == Player;
 
-    public override void ReadRPC(MessageReader reader) => Shift(reader.ReadPlayer());
+    public override void ReadRPC(MessageReader reader) => Shift(reader.Read<PlayerControl>());
 }

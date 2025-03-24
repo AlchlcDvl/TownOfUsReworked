@@ -13,7 +13,7 @@ public sealed class Mayor : Crew, IRevealer
     public static bool MayorDirectSpawn = true;
 
     [ToggleOption]
-    private static bool RoundOneNoReveal = true;
+    private static bool RoundOneNoMayorReveal = true;
 
     public bool Revealed { get; set; }
     private bool RoundOne { get; set; }
@@ -34,7 +34,7 @@ public sealed class Mayor : Crew, IRevealer
             RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, "REVEAL");
     }
 
-    public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoReveal;
+    public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoMayorReveal;
 
     private void Reveal()
     {

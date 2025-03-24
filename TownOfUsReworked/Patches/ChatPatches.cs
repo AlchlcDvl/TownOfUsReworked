@@ -165,15 +165,15 @@ public static class ChatPatches
         if (!localPlayer)
             return true;
 
-        var sourcerole = sourcePlayer.GetRole();
-        var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && Lovers.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) || (sourcePlayer.IsOtherRival(localPlayer) &&
-            Rivals.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) && Linked.LinkedChat && sourcerole.CurrentChannel ==
+        var sourceRole = sourcePlayer.GetRole();
+        var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && Lovers.LoversChat && sourceRole.CurrentChannel == ChatChannel.Lovers) || (sourcePlayer.IsOtherRival(localPlayer) &&
+            Rivals.RivalsChat && sourceRole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) && Linked.LinkedChat && sourceRole.CurrentChannel ==
             ChatChannel.Linked);
 
         if (Time.time - MeetingPatches.MeetingStartTime < 1f)
             return shouldSeeMessage;
 
-        return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting() &&
+        return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourceRole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting() &&
             CustomPlayer.Local.IsSilenced());
     }
 

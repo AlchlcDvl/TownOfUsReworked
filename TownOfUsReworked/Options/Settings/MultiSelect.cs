@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class MultiSelectOption<T>(T none, T all, params T[] ignore) : BaseMultiSelectOption<T>(CustomOptionType.MultiSelect, all, none) where T : struct, Enum
+public sealed class MultiSelectOption<T>(T? none, T? all, params T[] ignore) : BaseMultiSelectOption<T>(CustomOptionType.MultiSelect, all, none) where T : struct, Enum
 {
     private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
     private Type InnerType { get; } = typeof(T);
@@ -13,6 +13,9 @@ public sealed class MultiSelectOption<T>(T none, T all, params T[] ignore) : Bas
 
     protected override string Format()
     {
+        if (Value.Count == 0)
+            return TranslationManager.Translate("ValueText.None");
+
         var result = TranslationManager.Translate($"CustomOption.{InnerType.Name}.{Value.First()}");
 
         if (Value.Count > 1)
@@ -40,7 +43,7 @@ public sealed class MultiSelectOption<T>(T none, T all, params T[] ignore) : Bas
 
         if (value.Equals(AllValue))
         {
-            var contained = newValue.Contains(value);
+            var contained = newValue == value;
             newValue.Clear();
             newValue.Add(contained ? NoneValue : AllValue);
         }
@@ -51,17 +54,21 @@ public sealed class MultiSelectOption<T>(T none, T all, params T[] ignore) : Bas
         }
         else
         {
-            if (newValue.Contains(value))
+            if (newValue == value)
                 newValue.Remove(value);
             else
                 newValue.Add(value);
 
-            if (newValue.Count == 0)
-                newValue.Add(NoneValue);
-            else
-                newValue.Remove(NoneValue);
+            if (NoneValue != null)
+            {
+                if (newValue.Count == 0)
+                    newValue.Add(NoneValue);
+                else
+                    newValue.Remove(NoneValue);
+            }
 
-            newValue.Remove(AllValue);
+            if (AllValue != null)
+                newValue.Remove(AllValue);
         }
     }
 }

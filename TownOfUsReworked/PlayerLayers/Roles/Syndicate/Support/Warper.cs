@@ -219,7 +219,7 @@ public sealed class Warper : Syndicate, IMover
 
     public override void ReadRPC(MessageReader reader)
     {
-        var warpAction = reader.ReadEnum<WarpActionsRPC>();
+        var warpAction = reader.Read<WarpActionsRPC>();
 
         switch (warpAction)
         {
@@ -236,7 +236,7 @@ public sealed class Warper : Syndicate, IMover
             }
             case WarpActionsRPC.Single:
             {
-                Coroutines.Start(WarpPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
+                Coroutines.Start(WarpPlayers(reader.Read<PlayerControl>(), reader.Read<PlayerControl>(), this));
                 break;
             }
             default:

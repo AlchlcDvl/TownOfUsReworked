@@ -101,6 +101,6 @@ public sealed class Concealer : Syndicate
     public override void ReadRPC(MessageReader reader)
     {
         if (!HoldsDrive)
-            ConcealedPlayer = reader.ReadPlayer();
+            ConcealedPlayer = reader.Read<PlayerControl>();
     }
 }

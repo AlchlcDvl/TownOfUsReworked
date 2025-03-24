@@ -197,10 +197,10 @@ public abstract class NameHandler : MonoBehaviour
 
         if (amOwner && !deadSeeEverything)
         {
-            if (player.IsShielded() && Medic.ShowShielded.Contains(ShieldOptions.Shielded))
+            if (player.IsShielded() && Medic.ShowShielded == ShieldOptions.Shielded)
                 name += " <#006600FF>✚</color>";
 
-            if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Protected))
+            if (player.IsProtected() && GuardianAngel.ShowProtect == ProtectOptions.Protected)
                 name += " <#FFFFFFFF>η</color>";
 
             if (player.IsBhTarget())
@@ -227,10 +227,10 @@ public abstract class NameHandler : MonoBehaviour
 
         if (deadSeeEverything)
         {
-            if (player.IsShielded() && !Medic.ShowShielded.Contains(ShieldOptions.Everyone))
+            if (player.IsShielded() && Medic.ShowShielded != ShieldOptions.Everyone)
                 name += " <#006600FF>✚</color>";
 
-            if (player.IsProtected() && !GuardianAngel.ShowProtect.Contains(ProtectOptions.Everyone))
+            if (player.IsProtected() && GuardianAngel.ShowProtect != ProtectOptions.Everyone)
                 name += " <#FFFFFFFF>η</color>";
 
             if (player.IsTrapped())
@@ -276,10 +276,10 @@ public abstract class NameHandler : MonoBehaviour
                 name += $" <#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
         }
 
-        if (player.IsShielded() && Medic.ShowShielded.Contains(ShieldOptions.Everyone) && !deadSeeEverything)
+        if (player.IsShielded() && Medic.ShowShielded == ShieldOptions.Everyone && !deadSeeEverything)
             name += " <#006600FF>✚</color>";
 
-        if (player.IsProtected() && GuardianAngel.ShowProtect.Contains(ProtectOptions.Everyone) && !deadSeeEverything)
+        if (player.IsProtected() && GuardianAngel.ShowProtect == ProtectOptions.Everyone && !deadSeeEverything)
             name += " <#FFFFFFFF>η</color>";
 
         if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Syndicate.DriveHolder || (SyndicateSettings.GlobalDrive && Syndicate.SyndicateHasChaosDrive && role.Faction ==

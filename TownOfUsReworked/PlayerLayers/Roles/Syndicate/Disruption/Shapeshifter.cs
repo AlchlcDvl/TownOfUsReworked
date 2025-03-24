@@ -163,7 +163,7 @@ public sealed class Shapeshifter : Syndicate
         if (HoldsDrive)
             return;
 
-        ShapeshiftPlayer1 = reader.ReadPlayer();
-        ShapeshiftPlayer2 = reader.ReadPlayer();
+        ShapeshiftPlayer1 = reader.Read<PlayerControl>();
+        ShapeshiftPlayer2 = reader.Read<PlayerControl>();
     }
 }

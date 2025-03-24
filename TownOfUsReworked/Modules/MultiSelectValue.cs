@@ -6,7 +6,8 @@ namespace TownOfUsReworked.Modules;
 /// <typeparam name="T">The enum type that this collection will store.</typeparam>
 /// <param name="values">One or more enum values to initialize the collection with.</param>
 [Serializable]
-public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatable<MultiSelectValue<T>> where T : struct, Enum
+public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable
+    where T : struct, Enum
 {
     /// <summary>
     /// Gets or sets the underlying comma-separated string representation of enum values.
@@ -14,21 +15,29 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     public string Values
     {
         readonly get => Join(',', ValuesPriv);
-        set => ValuesPriv = [ .. value.TrueSplit(',').Select(Enum.Parse<T>) ];
+        set
+        {
+            ValuesPriv.Clear();
+            ValuesPriv = [ .. value.TrueSplit(',').Select(Enum.Parse<T>) ];
+        }
     }
     private HashSet<T> ValuesPriv = [ .. values ];
 
-    /// <summary>
-    /// Gets the number of values contained within.
-    /// </summary>
+    /// <inheritdoc/>
     public readonly int Count => ValuesPriv.Count;
+
+    /// <inheritdoc/>
+    public readonly bool IsReadOnly => false;
 
     /// <summary>
     /// Adds a single enum value to the end of the collection.
     /// </summary>
     /// <param name="item">The enum value to add.</param>
     /// <returns><c>true</c> if successfully added; otherwise, <c>false</c>.</returns>
-    public readonly bool Add(T item) => ValuesPriv.Add(item);
+    public readonly bool Add(T? item) => item.HasValue && ValuesPriv.Add(item.Value);
+
+    /// <inheritdoc/>
+    public readonly void Add(T item) => ValuesPriv.Add(item);
 
     /// <summary>
     /// Removes the first occurrence of the specified enum value.<br/>
@@ -36,24 +45,30 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// </summary>
     /// <param name="item">The enum value to remove.</param>
     /// <returns><c>true</c> if successfully removed; otherwise, <c>false</c>.</returns>
+    public readonly bool Remove(T? item) => item.HasValue && ValuesPriv.Remove(item.Value);
+
+    /// <inheritdoc/>
     public readonly bool Remove(T item) => ValuesPriv.Remove(item);
 
     /// <summary>
     /// Adds multiple enum values to the end of the collection.
     /// </summary>
     /// <param name="items">The collection of enum values to add.</param>
-    public readonly void AddRange(IEnumerable<T> items)
-    {
-        foreach (var item in items)
-            ValuesPriv.Add(item);
-    }
+    public readonly void AddRange(IEnumerable<T> items) => items.ForEach(Add);
 
     /// <summary>
     /// Removes multiple enum values from the collection.
     /// </summary>
     /// <param name="items">The enum values to remove.</param>
     /// <returns>The number of items successfully removed.</returns>
-    public readonly int RemoveRange(params T[] items) => RemoveRange((IEnumerable<T>)items);
+    public readonly int RemoveRange(params T?[] items) => RemoveRange((IEnumerable<T?>)items);
+
+    /// <summary>
+    /// Removes multiple nullable enum values from the collection.
+    /// </summary>
+    /// <param name="items">The collection of enum values to remove.</param>
+    /// <returns>The number of items successfully removed.</returns>
+    public readonly int RemoveRange(IEnumerable<T?> items) => items.Count(Remove);
 
     /// <summary>
     /// Removes multiple enum values from the collection.
@@ -112,7 +127,13 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     public readonly bool Equals(MultiSelectValue<T> other) => ValuesPriv.SetEquals(other.ValuesPriv);
 
     /// <inheritdoc/>
-    public override readonly int GetHashCode() => Values?.GetHashCode() ?? 0;
+    public override readonly int GetHashCode() => Values.GetHashCode();
+
+    /// <inheritdoc/>
+    public readonly void Dispose() => ValuesPriv.Clear();
+
+    /// <inheritdoc/>
+    public readonly void CopyTo(T[] array, int arrayIndex) => ValuesPriv.CopyTo(array, arrayIndex);
 
     /// <inheritdoc/>
     public readonly IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)ValuesPriv).GetEnumerator();
@@ -136,7 +157,7 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// Converts the current instance to one singular value.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    /// <exception cref="ConversionFailException">There were either no values, or more than one value.</exception>
+    /// <exception cref="Exception">There were either no values, or more than one value.</exception>
     public static implicit operator T(MultiSelectValue<T> value) =>
         value.Count == 1
             ? value.ValuesPriv.First()
@@ -158,7 +179,7 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// Converts the value string to an instance of MultiSelectValue.
     /// </summary>
     /// <param name="values">The values to convert.</param>
-    public static implicit operator MultiSelectValue<T>(string values) => new([ .. values.TrueSplit(',').Select(Enum.Parse<T>) ]);
+    public static implicit operator MultiSelectValue<T>(string values) => new(IsNullEmptyOrWhiteSpace(values) ? [] : [ .. values.TrueSplit(',').Select(Enum.Parse<T>) ]);
 
     /// <summary>
     /// Equality comparison.
@@ -173,4 +194,18 @@ public struct MultiSelectValue<T>(params T[] values) : IEnumerable<T>, IEquatabl
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
     public static bool operator !=(MultiSelectValue<T> left, MultiSelectValue<T> right) => !left.Equals(right);
+
+    /// <summary>
+    /// Equality comparison.
+    /// </summary>
+    /// <param name="left">Left.</param>
+    /// <param name="right">Right.</param>
+    public static bool operator ==(MultiSelectValue<T> left, T right) => left.Contains(right);
+
+    /// <summary>
+    /// Inequality comparison.
+    /// </summary>
+    /// <param name="left">Left.</param>
+    /// <param name="right">Right.</param>
+    public static bool operator !=(MultiSelectValue<T> left, T right) => !left.Contains(right);
 }

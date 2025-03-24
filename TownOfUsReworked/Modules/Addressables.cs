@@ -3,7 +3,8 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace TownOfUsReworked.Modules;
 
-public sealed class CustomAddressable<T>(T item, string guid) : CustomAddressable($"asset/reworked:{guid.ToLower().Trim()}") where T : UObject
+public sealed class CustomAddressable<T>(T item, string guid) : CustomAddressable($"asset/reworked:{guid.ToLower().Trim()}")
+    where T : UObject
 {
     private T Asset { get; } = item;
 

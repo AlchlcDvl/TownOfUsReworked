@@ -466,8 +466,8 @@ public abstract class Role : PlayerLayer
             if (role2.ShieldedPlayer != player)
                 continue;
 
-            if ((role2.Local && Medic.WhoGetsNotification.ContainsAny(ShieldOptions.Medic)) || Medic.WhoGetsNotification.Contains(ShieldOptions.Everyone) || (player.AmOwner &&
-                Medic.WhoGetsNotification.Contains(ShieldOptions.Shielded)))
+            if ((role2.Local && Medic.WhoGetsNotification == ShieldOptions.Medic) || Medic.WhoGetsNotification == ShieldOptions.Everyone || (player.AmOwner && Medic.WhoGetsNotification ==
+                ShieldOptions.Shielded))
             {
                 var roleEffectAnimation = UObject.Instantiate(GetRoleAnim("ProtectAnim"), player.gameObject.transform);
                 roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);

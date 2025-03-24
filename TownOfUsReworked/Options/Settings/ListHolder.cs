@@ -2,6 +2,8 @@ namespace TownOfUsReworked.Options;
 
 public sealed class ListHolderOption(PlayerLayerEnum entryType, bool isBan) : HeaderOption(MultiMenu.Main, CustomOptionType.ListHolder)
 {
+    public static readonly Dictionary<string, string> CachedValues = [];
+
     private PlayerLayerEnum EntryType { get; } = entryType;
     private bool IsBan { get; } = isBan;
 
@@ -63,12 +65,9 @@ public sealed class ListHolderOption(PlayerLayerEnum entryType, bool isBan) : He
 
     public void AddEntryForPlayer()
     {
-        var entry = new ListEntryOption(EntryType, IsBan, GroupMembers.Count)
-        {
-            Value = ListSlot.None,
-            Header = this
-        };
+        var entry = new ListEntryOption(EntryType, IsBan, GroupMembers.Count) { Header = this };
         entry.PostLoadSetup();
+        entry.Set(CachedValues.Remove(ID, out var value) ? value : ListSlot.None);
         entry.Debug();
         GroupMembers.Add(entry);
     }

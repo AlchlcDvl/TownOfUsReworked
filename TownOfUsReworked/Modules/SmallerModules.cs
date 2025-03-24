@@ -69,7 +69,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
         writer.Write(ID);
     }
 
-    public static RoleOptionData Deserialize(MessageReader reader) => new(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean(), reader.ReadEnum<LayerEnum>());
+    public static RoleOptionData Deserialize(MessageReader reader) => new(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean(), reader.Read<LayerEnum>());
 }
 
 public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)

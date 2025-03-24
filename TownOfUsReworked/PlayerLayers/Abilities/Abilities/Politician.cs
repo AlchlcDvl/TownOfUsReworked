@@ -90,7 +90,7 @@ public sealed class Politician : Ability
 
     public override void ReadRPC(MessageReader reader)
     {
-        var polAction = reader.ReadEnum<PoliticianActionsRPC>();
+        var polAction = reader.Read<PoliticianActionsRPC>();
 
         switch(polAction)
         {

@@ -58,5 +58,5 @@ public sealed class Ambusher : Intruder
 
     private bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 
-    public override void ReadRPC(MessageReader reader) => AmbushedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => AmbushedPlayer = reader.Read<PlayerControl>();
 }

@@ -93,7 +93,7 @@ public sealed class Trapper : Crew, ITrapper
 
     public override void ReadRPC(MessageReader reader)
     {
-        var trapAction = reader.ReadEnum<TrapperActionsRPC>();
+        var trapAction = reader.Read<TrapperActionsRPC>();
 
         switch (trapAction)
         {
@@ -104,7 +104,7 @@ public sealed class Trapper : Crew, ITrapper
             }
             case TrapperActionsRPC.Trigger:
             {
-                TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBoolean());
+                TriggerTrap(reader.Read<PlayerControl>(), reader.Read<PlayerControl>(), reader.ReadBoolean());
                 break;
             }
             default:

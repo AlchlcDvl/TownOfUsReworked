@@ -97,7 +97,7 @@ public sealed class Dictator : Crew, IRevealer
 
     public override void ReadRPC(MessageReader reader)
     {
-        var dictAction = reader.ReadEnum<DictActionsRPC>();
+        var dictAction = reader.Read<DictActionsRPC>();
 
         switch (dictAction)
         {
@@ -109,7 +109,7 @@ public sealed class Dictator : Crew, IRevealer
             }
             case DictActionsRPC.SelectToEject:
             {
-                ToBeEjected = reader.ReadPlayer();
+                ToBeEjected = reader.Read<PlayerControl>();
                 break;
             }
             default:

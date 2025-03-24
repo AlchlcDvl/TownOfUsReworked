@@ -171,7 +171,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var role in GetValuesFromTo(ListSlot.Altruist, ListSlot.Warper))
                 {
-                    if (!bans.Any(x => x.Value.Contains(role)))
+                    if (!bans.Any(x => x.Value == role))
                         yield return role;
                 }
 
@@ -227,7 +227,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var disp in GetValuesFromTo(ListSlot.Allied, ListSlot.Traitor))
                 {
-                    if (!bans.Any(x => x.Value.Contains(disp)))
+                    if (!bans.Any(x => x.Value == disp))
                         yield return disp;
                 }
 
@@ -237,7 +237,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var mod in GetValuesFromTo(ListSlot.Astral, ListSlot.Yeller))
                 {
-                    if (!bans.Any(x => x.Value.Contains(mod)))
+                    if (!bans.Any(x => x.Value == mod))
                         yield return mod;
                 }
 
@@ -247,7 +247,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var ab in GetValuesFromTo(ListSlot.Bullseye, ListSlot.Underdog))
                 {
-                    if (!bans.Any(x => x.Value.Contains(ab)))
+                    if (!bans.Any(x => x.Value == ab))
                         yield return ab;
                 }
 
@@ -259,12 +259,12 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
     public static bool IsAdded(ListSlot value, ListEntryOption entry = null)
     {
         var entries = GetOptions<ListEntryOption>().Where(x => !x.IsBan);
-        return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));
+        return entry == null ? entries.Any(x => x.Value == value) : entries.Any(x => x != entry && x.Value == value);
     }
 
     public static bool IsBanned(ListSlot value, ListEntryOption entry = null)
     {
         var entries = GetOptions<ListEntryOption>().Where(x => x.IsBan);
-        return entry == null ? entries.Any(x => x.Value.Contains(value)) : entries.Any(x => !Equals(x, entry) && x.Value.Contains(value));
+        return entry == null ? entries.Any(x => x.Value == value) : entries.Any(x => x != entry && x.Value == value);
     }
 }

@@ -49,7 +49,7 @@ public sealed class Rebel : Syndicate
 
     private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsSidekick || !player.Is(Faction);
 
-    public override void ReadRPC(MessageReader reader) => Sidekick(reader.ReadPlayer());
+    public override void ReadRPC(MessageReader reader) => Sidekick(reader.Read<PlayerControl>());
 
     private bool Usable() => !HasDeclared;
 }

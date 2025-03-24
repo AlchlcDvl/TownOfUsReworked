@@ -431,5 +431,5 @@ public sealed class Guesser : Evil, IGuesser
         GuessingMenu.Close();
     }
 
-    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.ReadPlayer(), reader.ReadEnum<LayerEnum>(), reader.ReadPlayer());
+    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.Read<PlayerControl>(), reader.Read<LayerEnum>(), reader.Read<PlayerControl>());
 }

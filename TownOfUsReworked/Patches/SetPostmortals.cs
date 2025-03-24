@@ -76,6 +76,7 @@ public static class SetPostmortals
         }
 
         AllBodies().ForEach(x => x?.gameObject?.Destroy());
+        PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.OnRoleSelected());
     }
 
     public static void BeginPostmortals(PlayerControl player, bool ejection)

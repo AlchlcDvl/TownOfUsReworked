@@ -104,7 +104,7 @@ public sealed class Bomber : Syndicate
 
     public override void ReadRPC(MessageReader reader)
     {
-        if (reader.ReadEnum<BomberActionsRPC>() == BomberActionsRPC.DropBomb)
+        if (reader.Read<BomberActionsRPC>() == BomberActionsRPC.DropBomb)
         {
             if ((CustomPlayer.Local.GetFaction() is Faction.Syndicate or Faction.Intruder && Faction is Faction.Syndicate or Faction.Intruder) || CustomPlayer.Local.IsOtherLover(Player) ||
                 CustomPlayer.Local.IsOtherLink(Player))

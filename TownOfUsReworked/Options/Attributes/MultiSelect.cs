@@ -1,10 +1,33 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class MultiSelectOptionAttribute<T>(T none, T all, params T[] ignore) : OptionAttribute<MultiSelectOption<T>>() where T : struct, Enum
+public sealed class MultiSelectOptionAttribute<T> : OptionAttribute<MultiSelectOption<T>> where T : struct, Enum
 {
-    private T NoneValue { get; } = none;
-    private T AllValue { get; } = all;
-    private T[] Ignore { get; } = ignore;
+    private T? NoneValue { get; }
+    private T? AllValue { get; }
+    private T[] Ignore { get; }
+
+    public MultiSelectOptionAttribute(T[] allNone = null, T[] ignore = null)
+    {
+        Ignore = ignore ?? [];
+
+        try
+        {
+            NoneValue = allNone[0];
+        }
+        catch
+        {
+            NoneValue = null;
+        }
+
+        try
+        {
+            AllValue = allNone[1];
+        }
+        catch
+        {
+            AllValue = null;
+        }
+    }
 
     protected override MultiSelectOption<T> SetUpOption() => new(NoneValue, AllValue, Ignore);
 }

@@ -128,7 +128,7 @@ public sealed class Arsonist : NKilling
 
     public override void ReadRPC(MessageReader reader)
     {
-        var arsoAction = reader.ReadEnum<DouseActionsRPC>();
+        var arsoAction = reader.Read<DouseActionsRPC>();
 
         switch (arsoAction)
         {

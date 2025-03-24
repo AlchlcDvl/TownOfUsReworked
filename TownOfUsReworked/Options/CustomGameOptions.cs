@@ -283,8 +283,8 @@ public static class GameModifiers
     [ToggleOption]
     public static bool IndicateReportedBodies = false;
 
-    [StringOption<RandomSpawning>]
-    public static RandomSpawning RandomSpawns = RandomSpawning.Disabled;
+    [MultiSelectOption<RandomSpawning>]
+    public static MultiSelectValue<RandomSpawning> RandomSpawns = "";
 
     [ToggleOption]
     public static bool ShowKillerRoleColor = false;
@@ -305,6 +305,9 @@ public static class GameModifiers
 
     [ToggleOption]
     public static bool OrderOfCompliance = false;
+
+    [MultiSelectOption<ComplianceType>]
+    public static MultiSelectValue<ComplianceType> ComplianceType = new[] { Data.Enums.ComplianceType.Neophytes, Data.Enums.ComplianceType.Killers, Data.Enums.ComplianceType.Harbingers };
 }
 
 [HeaderOption(MultiMenu.Main)]

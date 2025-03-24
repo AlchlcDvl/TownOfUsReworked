@@ -211,7 +211,6 @@ public static class MeetingPatches
     public static void ClosePostfix(MeetingHud __instance)
     {
         CustomPlayer.Local.EnableButtons();
-        ButtonUtils.Reset(CooldownType.Meeting);
 
         if (CustomPlayer.Local.Data.Role is LayerHandler handler)
             handler.OnMeetingEnd(__instance);

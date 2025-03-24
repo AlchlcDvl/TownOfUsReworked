@@ -378,15 +378,7 @@ public static class MeetingCooldowns
 {
     public static void Prefix(UObject obj)
     {
-        if (!obj)
-            return;
-
-        if (Ejection() && obj == Ejection().gameObject)
-        {
-            ButtonUtils.Reset(CooldownType.Meeting);
-            PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.OnRoleSelected());
-        }
-        else if (ActiveTask() && obj == ActiveTask().gameObject)
+        if (ActiveTask() && obj == ActiveTask().gameObject)
             CustomPlayer.Local.EnableButtons();
     }
 }

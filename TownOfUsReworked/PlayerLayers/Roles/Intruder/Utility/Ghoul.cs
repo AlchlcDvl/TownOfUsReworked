@@ -37,7 +37,7 @@ public sealed class Ghoul : Intruder, IGhosty
 
     private bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-    public override void ReadRPC(MessageReader reader) => MarkedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => MarkedPlayer = reader.Read<PlayerControl>();
 
     public override void UpdatePlayer()
     {

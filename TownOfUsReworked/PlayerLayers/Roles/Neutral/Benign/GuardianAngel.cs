@@ -15,7 +15,7 @@ public sealed class GuardianAngel : Neutral
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     private static Number MaxProtects = 5;
 
-    [MultiSelectOption<ProtectOptions>(ProtectOptions.Nobody, ProtectOptions.Everyone)]
+    [MultiSelectOption<ProtectOptions>([ ProtectOptions.Nobody, ProtectOptions.Everyone ])]
     public static MultiSelectValue<ProtectOptions> ShowProtect = ProtectOptions.Protected;
 
     [ToggleOption]
@@ -84,7 +84,7 @@ public sealed class GuardianAngel : Neutral
 
         name += " <#FFFFFFFF>★</color>";
 
-        if (player.IsProtected() && ShowProtect.Contains(ProtectOptions.Ga))
+        if (player.IsProtected() && ShowProtect == ProtectOptions.Ga)
             name += " <#FFFFFFFF>η</color>";
 
         if (!GaKnowsTargetRole || revealed)

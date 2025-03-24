@@ -126,8 +126,9 @@ public sealed class ClientHandler : MonoBehaviour
             // Background = 0, Value Text = 1, Title = 2, - = 3, + = 4, Value Box = 5
             SettingsPatches.NumberPrefab = Instantiate(settings.numberOptionOrigin).DontDestroy().DontUnload();
             SettingsPatches.NumberPrefab.name = "NumberPrefab";
-            SettingsPatches.NumberPrefab.transform.GetChild(3).localPosition += new Vector3(0.6f, 0f, 0f);
-            SettingsPatches.NumberPrefab.transform.GetChild(4).localPosition += new Vector3(1.5f, 0f, 0f);
+
+            SettingsPatches.NumberPrefab.MinusBtn.transform.localPosition += new Vector3(0.6f, 0f, 0f);
+            SettingsPatches.NumberPrefab.PlusBtn.transform.localPosition += new Vector3(1.5f, 0f, 0f);
             SettingsPatches.NumberPrefab.PlusBtn.OverrideOnClickListeners(BlankVoid);
             SettingsPatches.NumberPrefab.MinusBtn.OverrideOnClickListeners(BlankVoid);
 
@@ -151,8 +152,6 @@ public sealed class ClientHandler : MonoBehaviour
             // Background = 0, Value Text = 1, Title = 2, < = 3, > = 4, Value Box = 5
             SettingsPatches.StringPrefab = Instantiate(settings.stringOptionOrigin).DontDestroy().DontUnload();
             SettingsPatches.StringPrefab.name = "StringPrefab";
-            SettingsPatches.StringPrefab.PlusBtn.OverrideOnClickListeners(BlankVoid);
-            SettingsPatches.StringPrefab.MinusBtn.OverrideOnClickListeners(BlankVoid);
 
             var background = SettingsPatches.StringPrefab.transform.GetChild(0);
             background.localPosition += new Vector3(-0.8f, 0f, 0f);
@@ -166,10 +165,12 @@ public sealed class ClientHandler : MonoBehaviour
             var minus = SettingsPatches.StringPrefab.MinusBtn;
             minus.ChangeButtonText("<");
             minus.transform.localPosition += new Vector3(0.6f, 0f, 0f);
+            minus.OverrideOnClickListeners(BlankVoid);
 
             var plus = SettingsPatches.StringPrefab.PlusBtn;
             plus.ChangeButtonText(">");
             plus.transform.localPosition += new Vector3(1.5f, 0f, 0f);
+            plus.OverrideOnClickListeners(BlankVoid);
 
             var valueBox = SettingsPatches.StringPrefab.transform.GetChild(5);
             valueBox.localPosition += new Vector3(1.05f, 0f, 0f);

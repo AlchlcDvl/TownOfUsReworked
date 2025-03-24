@@ -129,18 +129,18 @@ public sealed class Glitch : NKilling, IBlocker
 
     public override void ReadRPC(MessageReader reader)
     {
-        var glitchAction = reader.ReadEnum<GlitchActionsRPC>();
+        var glitchAction = reader.Read<GlitchActionsRPC>();
 
         switch (glitchAction)
         {
             case GlitchActionsRPC.Mimic:
             {
-                MimicTarget = reader.ReadPlayer();
+                MimicTarget = reader.Read<PlayerControl>();
                 break;
             }
             case GlitchActionsRPC.Hack:
             {
-                HackTarget = reader.ReadPlayer();
+                HackTarget = reader.Read<PlayerControl>();
 
                 if (HackTarget.AmOwner)
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);

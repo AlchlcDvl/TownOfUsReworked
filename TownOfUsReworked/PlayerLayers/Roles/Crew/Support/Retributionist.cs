@@ -78,7 +78,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
-        if (ShieldedPlayer == player && Medic.ShowShielded.Contains(ShieldOptions.Medic))
+        if (ShieldedPlayer == player && Medic.ShowShielded == ShieldOptions.Medic)
             name += " <#006600FF>✚</color>";
 
         if (Trapped.Contains(player.PlayerId))
@@ -201,23 +201,23 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     public override void ReadRPC(MessageReader reader)
     {
-        var retAction = reader.ReadEnum<RetActionsRPC>();
+        var retAction = reader.Read<RetActionsRPC>();
 
         switch (retAction)
         {
             case RetActionsRPC.Revive:
             {
-                Revived = reader.ReadPlayer();
+                Revived = reader.Read<PlayerControl>();
                 break;
             }
             case RetActionsRPC.Transport:
             {
-                Coroutines.Start(Transporter.TransportPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
+                Coroutines.Start(Transporter.TransportPlayers(reader.Read<PlayerControl>(), reader.Read<PlayerControl>(), this));
                 break;
             }
             case RetActionsRPC.Shield:
             {
-                ShieldedPlayer = reader.ReadPlayer();
+                ShieldedPlayer = reader.Read<PlayerControl>();
                 break;
             }
             case RetActionsRPC.Mediate:
@@ -232,7 +232,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             }
             case RetActionsRPC.Roleblock:
             {
-                BlockTarget = reader.ReadPlayer();
+                BlockTarget = reader.Read<PlayerControl>();
                 break;
             }
             case RetActionsRPC.Bomb:
@@ -247,7 +247,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             }
             case RetActionsRPC.Trigger:
             {
-                TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBoolean());
+                TriggerTrap(reader.Read<PlayerControl>(), reader.Read<PlayerControl>(), reader.ReadBoolean());
                 break;
             }
             case RetActionsRPC.AltRevive:

@@ -56,7 +56,7 @@ public sealed class Escort : Crew, IBlocker
             BlockButton.StartCooldown(cooldown);
     }
 
-    public override void ReadRPC(MessageReader reader) => BlockTarget = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => BlockTarget = reader.Read<PlayerControl>();
 
     private bool EndEffect() => Dead || (BlockTarget && BlockTarget.HasDied());
 

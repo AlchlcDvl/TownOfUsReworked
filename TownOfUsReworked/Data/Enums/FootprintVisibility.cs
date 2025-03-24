@@ -2,7 +2,7 @@
 
 public enum FootprintVisibility : byte
 {
-    OnlyWhenCamouflaged,
     AlwaysVisible,
+    OnlyWhenCamouflaged,
     AlwaysCamouflaged
 }

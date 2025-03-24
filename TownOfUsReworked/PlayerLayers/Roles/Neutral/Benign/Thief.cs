@@ -137,18 +137,18 @@ public sealed class Thief : Neutral, IGuesser
 
     public override void ReadRPC(MessageReader reader)
     {
-        var thiefAction = reader.ReadEnum<ThiefActionsRPC>();
+        var thiefAction = reader.Read<ThiefActionsRPC>();
 
         switch (thiefAction)
         {
             case ThiefActionsRPC.Steal:
             {
-                Steal(reader.ReadPlayer());
+                Steal(reader.Read<PlayerControl>());
                 break;
             }
             case ThiefActionsRPC.Guess:
             {
-                MurderPlayer(reader.ReadPlayer(), reader.ReadEnum<LayerEnum>(), reader.ReadPlayer());
+                MurderPlayer(reader.Read<PlayerControl>(), reader.Read<LayerEnum>(), reader.Read<PlayerControl>());
                 break;
             }
             default:

@@ -89,7 +89,7 @@ public static class RegionInfoOpenPatch
 
     public static void UpdateRegions()
     {
-        var mna = new StaticHttpRegionInfo("Modded NA (MNA)", StringNames.NoTranslation, "www.aumods.us", new([new("Http-1", "https://www.aumods.us", 443, false)])).Cast<IRegionInfo>();
+        var mna = new StaticHttpRegionInfo("Modded NA (MNA)", StringNames.NoTranslation, "www.aumods.org", new([new("Http-1", "https://www.aumods.org", 443, false)])).Cast<IRegionInfo>();
         var meu = new StaticHttpRegionInfo("Modded EU (MEU)", StringNames.NoTranslation, "au-eu.duikbo.at", new([new("Http-1", "https://au-eu.duikbo.at", 443, false)])).Cast<IRegionInfo>();
         var mas = new StaticHttpRegionInfo("Modded Asia (MAS)", StringNames.NoTranslation, "au-as.duikbo.at", new([new("Http-1", "https://au-as.duikbo.at", 443, false)])).Cast<IRegionInfo>();
         var custom = new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, TownOfUsReworked.Ip.Value, new([new("Custom", TownOfUsReworked.Ip.Value, TownOfUsReworked.Port.Value,

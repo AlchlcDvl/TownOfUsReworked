@@ -88,6 +88,6 @@ public sealed class Drunkard : Syndicate
     public override void ReadRPC(MessageReader reader)
     {
         if (!HoldsDrive)
-            ConfusedPlayer = reader.ReadPlayer();
+            ConfusedPlayer = reader.Read<PlayerControl>();
     }
 }

@@ -101,5 +101,5 @@ public sealed class Poisoner : Syndicate
             PoisonMenu.Open();
     }
 
-    public override void ReadRPC(MessageReader reader) => PoisonedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(MessageReader reader) => PoisonedPlayer = reader.Read<PlayerControl>();
 }

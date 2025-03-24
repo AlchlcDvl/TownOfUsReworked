@@ -355,10 +355,10 @@ public static class CustomStatsManager
         var num = reader.ReadUInt32();
 
         while (num-- > 0)
-            dict[reader.ReadEnum<T>()] = reader.ReadUInt32();
+            dict[reader.Read<T>()] = reader.ReadUInt32();
     }
 
-    private static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum
+    private static T Read<T>(this BinaryReader reader) where T : struct, Enum
     {
         if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
             return (T)(object)reader.ReadByte();

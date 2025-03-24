@@ -56,7 +56,9 @@ public abstract class Option(CustomOptionType type)
         ([ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
             "not+IgnoreAlignmentCaps" ]),
         ([ "Allied", "Allied1" ], [ "not+IlluminatiUnleashed", "not+OrderOfCompliance" ]),
-        ([ "PandoricaOpens", "OrderOfCompliance" ], [ "not+IlluminatiUnleashed" ])
+        ([ "PandoricaOpens", "OrderOfCompliance" ], [ "not+IlluminatiUnleashed" ]),
+        ([ "RoundOneNoMayorReveal" ], [ "MayorDirectSpawn" ]),
+        ([ "ComplianceType" ], [ "OrderOfCompliance" ])
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
@@ -270,16 +272,20 @@ public abstract class Option(CustomOptionType type)
 
     private static IEnumerator CoLoadSettings(string settingsData)
     {
-        var splitText = settingsData.TrueSplit('\n').ToList();
-        var pos = 0;
-
-        while (splitText.Any())
+        foreach (var (i, opt) in settingsData.TrueSplit('\n').Indexed())
         {
-            pos++;
-            var opt = splitText.TakeFirst();
             var parts = opt.TrueSplit(':');
             var name = parts[0];
-            var value = parts[1];
+            string value;
+
+            try
+            {
+                value = parts[1];
+            }
+            catch
+            {
+                value = "";
+            }
 
             if (name == "Map")
             {
@@ -291,7 +297,11 @@ public abstract class Option(CustomOptionType type)
 
             if (option == null)
             {
-                Warning($"{opt} doesn't exist");
+                if (name.ContainsAny("Entry", "Ban"))
+                    ListHolderOption.CachedValues[name] = value;
+                else
+                    Warning($"{opt} doesn't exist");
+
                 continue;
             }
 
@@ -304,11 +314,8 @@ public abstract class Option(CustomOptionType type)
                 Failure($"Unable to set - {name}:{value}\n{e}");
             }
 
-            if (pos < 50)
-                continue;
-
-            pos = 0;
-            yield return EndFrame();
+            if (i % 50 == 0)
+                yield return EndFrame();
         }
 
         SendOptionRPC(save: false);
@@ -317,7 +324,11 @@ public abstract class Option(CustomOptionType type)
 
     public static IEnumerable<T> GetOptions<T>() where T : Option => AllOptions.OfType<T>();
 
-    private static Option GetOption(string id) => AllOptions.Find(x => x.ID == $"CustomOption.{id}" || x.Name == id || x.ID == id);
+    private static Option GetOption(string id)
+    {
+        id = id.ToLower();
+        return AllOptions.Find(x => x.ID.ToLower().IsAny($"customOption.{id}", id) || x.Name.ToLower() == id); // To support any case changes
+    }
 
     public static Option GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);
 

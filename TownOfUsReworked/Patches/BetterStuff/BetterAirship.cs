@@ -10,24 +10,21 @@ public static class BetterAirship
     /// <summary>
     /// Enables or disables all BetterAirship modifications.
     /// </summary>
-    [ToggleOption]
-    [Sorted(0)]
+    [ToggleOption, Sorted(0)]
     private static bool EnableBetterAirship = true;
 
     /// <summary>
     /// Controls how players spawn on the Airship map.<br/>
     /// Options: <c>Normal</c>, <c>Meeting</c>, <c>Fixed</c>, <c>RandomSynchronized</c>, <c>Random</c>, <c>Custom</c>
     /// </summary>
-    [StringOption<AirshipSpawnType>]
-    [Sorted(1)]
+    [StringOption<AirshipSpawnType>, Sorted(1)]
     public static AirshipSpawnType SpawnType = AirshipSpawnType.Normal;
 
     /// <summary>
     /// Sets the first location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
     /// </summary>
-    [StringOption<AirshipSpawnLocation>]
-    [Sorted(2)]
+    [StringOption<AirshipSpawnLocation>, Sorted(2)]
     private static AirshipSpawnLocation Location1
     {
         get => Location1Priv;
@@ -39,8 +36,7 @@ public static class BetterAirship
     /// Sets the second location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
     /// </summary>
-    [StringOption<AirshipSpawnLocation>]
-    [Sorted(3)]
+    [StringOption<AirshipSpawnLocation>, Sorted(3)]
     private static AirshipSpawnLocation Location2
     {
         get => Location2Priv;
@@ -52,8 +48,7 @@ public static class BetterAirship
     /// Sets the third location when selecting the custom spawn type.<br/>
     /// Options: <c>Brig</c>, <c>Engine</c>, <c>MainHall</c>, <c>Kitchen</c>, <c>Records</c>, <c>CargoBay</c>, <c>VaultRoom</c>, <c>Medical</c>, <c>Cockpit</c>
     /// </summary>
-    [StringOption<AirshipSpawnLocation>]
-    [Sorted(4)]
+    [StringOption<AirshipSpawnLocation>, Sorted(4)]
     private static AirshipSpawnLocation Location3
     {
         get => Location3Priv;

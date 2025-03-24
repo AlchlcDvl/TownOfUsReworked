@@ -1,10 +1,10 @@
 namespace TownOfUsReworked.Options;
 
-public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T allValue, T noneValue) : Option<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
+public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValue, T? noneValue) : Option<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
 {
     protected ValueMap<MissingBehaviour, T> Buttons { get; } = [];
-    protected T NoneValue { get; } = noneValue;
-    protected T AllValue { get; } = allValue;
+    protected T? NoneValue { get; } = noneValue;
+    protected T? AllValue { get; } = allValue;
     public IEnumerable<MissingBehaviour> Options => Buttons.Keys;
 
     public override void OptionCreated()
@@ -48,12 +48,12 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T allValue
         else
         {
             button.OverrideOnClickListeners(() => SetValue(value));
-            button.OverrideOnMouseOutListeners(() => rend.color = Value.Contains(value) ? CustomColorManager.AcceptedTeal : UColor.white);
-            button.OverrideOnMouseOverListeners(() => rend.color = Value.Contains(value) ? UColor.white : CustomColorManager.AcceptedTeal);
+            button.OverrideOnMouseOutListeners(() => rend.color = Value == value ? CustomColorManager.AcceptedTeal : UColor.white);
+            button.OverrideOnMouseOverListeners(() => rend.color = Value == value ? UColor.white : CustomColorManager.AcceptedTeal);
         }
 
         behaviour.gameObject.SetActive(true);
-        rend.color = Value.Contains(value) ? CustomColorManager.AcceptedTeal : UColor.white;
+        rend.color = Value == value ? CustomColorManager.AcceptedTeal : UColor.white;
         return behaviour;
     }
 
@@ -61,7 +61,7 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T allValue
     {
         TrySetValue(value, out var newValue);
         Set(newValue);
-        Buttons.ForEach((x, y) => x.GetComponentInChildren<SpriteRenderer>().color = Value.Contains(y) ? CustomColorManager.AcceptedTeal : UColor.white);
+        Buttons.ForEach((x, y) => x.GetComponentInChildren<SpriteRenderer>().color = Value == y ? CustomColorManager.AcceptedTeal : UColor.white);
     }
 
     public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadString(), false);
