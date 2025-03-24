@@ -27,6 +27,12 @@ public abstract class Assassin : Ability, IGuesser
     public static Number AssassinKills = 0;
 
     [ToggleOption]
+    private static bool AssassinChance = false;
+
+    [NumberOption(1, 15, 1)]
+    private static Number AssassinChances = 0;
+
+    [ToggleOption]
     private static bool AssassinMultiKill = false;
 
     [ToggleOption]
@@ -54,6 +60,7 @@ public abstract class Assassin : Ability, IGuesser
 
     public CustomMeeting GuessMenu { get; private set; }
     public CustomRolesMenu GuessingMenu { get; private set; }
+    private int Lives { get; set; }
 
     public override UColor MainColor => CustomColorManager.Assassin;
     public override Func<string> Description => () => "- You can guess players mid-meetings";
@@ -63,6 +70,7 @@ public abstract class Assassin : Ability, IGuesser
     {
         GuessMenu = new(Player, "Guess", Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);
+        Lives = AssassinChance ? AssassinChances : 0;
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -198,7 +206,7 @@ public abstract class Assassin : Ability, IGuesser
 
         // Add Modifiers if enabled
         if (AssassinGuessModifiers)
-            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Bait, LayerEnum.Diseased, LayerEnum.Professional, LayerEnum.Vip }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
+            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Bait, LayerEnum.Diseased, LayerEnum.Vip }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
         // Add Dispositions if enabled
         if (AssassinGuessDispositions)
@@ -317,14 +325,14 @@ public abstract class Assassin : Ability, IGuesser
             ind.AttemptedGuess = true;
         }
 
-        if (Player == player && Player.Is<Professional>(out var modifier) && !modifier.LifeUsed)
+        if (Player == player && Lives <= 0)
         {
-            modifier.LifeUsed = true;
+            Lives--;
             GuessMenu.HideSingle(guessTarget.PlayerId);
 
             if (Local)
             {
-                Flash(modifier.Color);
+                Flash(Color);
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
             }
             else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())

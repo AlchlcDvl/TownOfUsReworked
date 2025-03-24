@@ -329,7 +329,6 @@ public static class References
         { LayerEnum.Dwarf, new(typeof(Dwarf), CustomColorManager.Dwarf, LayerEnum.Dwarf) },
         { LayerEnum.Giant, new(typeof(Giant), CustomColorManager.Giant, LayerEnum.Giant) },
         { LayerEnum.Indomitable, new(typeof(Indomitable), CustomColorManager.Indomitable, LayerEnum.Indomitable) },
-        { LayerEnum.Professional, new(typeof(Professional), CustomColorManager.Professional, LayerEnum.Professional) },
         { LayerEnum.Shy, new(typeof(Shy), CustomColorManager.Shy, LayerEnum.Shy) },
         { LayerEnum.Vip, new(typeof(Vip), CustomColorManager.Vip, LayerEnum.Vip) },
         { LayerEnum.Volatile, new(typeof(Volatile), CustomColorManager.Volatile, LayerEnum.Volatile) },

@@ -127,11 +127,11 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 | [Dwarf](#dwarf)               | [Radar](#radar)               | [Mafia](#mafia)               |
 | [Giant](#giant)               | [Ruthless](#ruthless)         | [Overlord](#overlord)         |
 | [Indomitable](#indomitable)   | [Snitch](#snitch)             | [Rivals](#rivals)             |
-| [Professional](#professional) | [Swapper](#swapper)           | [Taskmaster](#taskmaster)     |
-| [Shy](#shy)                   | [Tiebreaker](#tiebreaker)     | [Traitor](#traitor)           |
-| [VIP](#vip)                   | [Torch](#torch)               |                               |
-| [Volatile](#volatile)         | [Tunneler](#tunneler)         |                               |
-| [Yeller](#yeller)             | [Underdog](#underdog)         |                               |
+| [Shy](#shy)                   | [Swapper](#swapper)           | [Taskmaster](#taskmaster)     |
+| [VIP](#vip)                   | [Tiebreaker](#tiebreaker)     | [Traitor](#traitor)           |
+| [Volatile](#volatile)         | [Torch](#torch)               |                               |
+| [Yeller](#yeller)             | [Tunneler](#tunneler)         |                               |
+|                               | [Underdog](#underdog)         |                               |
 
 -----------------------
 
@@ -1832,20 +1832,6 @@ The Indomitable player cannot be guessed.
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Indomitable Knows Who They Are | Whether a player knows they are Indomitable at the start of a game | Toggle | True |
-
-## Professional
-
-**Applied To**: Assassins
-
-**Origin**: Town Of Us Double Shot
-
-The Professional has an extra life when guessing.
-
-**Game Options**
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Professional Knows Who They Are | Whether a player knows they are a Professional at the start of a game | Toggle | True |
 
 ## Shy
 

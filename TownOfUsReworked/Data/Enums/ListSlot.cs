@@ -93,7 +93,6 @@ public enum ListSlot : byte
     Dwarf,
     Giant,
     Indomitable,
-    Professional,
     Shy,
     Vip,
     Volatile,

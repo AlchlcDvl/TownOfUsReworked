@@ -210,7 +210,6 @@ public static class CustomColorManager
     public static readonly UColor Volatile = FromHex("#FFA60AFF");
     public static readonly UColor Vip = FromHex("#DCEE85FF");
     public static readonly UColor Shy = FromHex("#1002C5FF");
-    public static readonly UColor Professional = FromHex("#860B7AFF");
     public static readonly UColor Indomitable = FromHex("#2DE5BEFF");
     public static readonly UColor Astral = FromHex("#612BEFFF");
     public static readonly UColor Yeller = FromHex("#F6AAB7FF");
@@ -264,7 +263,7 @@ public static class CustomColorManager
     // #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C #1E300B #F3A6D3 #F9BFA7
     // #E1E4E4 #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14
     // #20a1b7 #606168 #99007F #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #C0C0C0 #E6956A
-    // #B34D99 #FFC34F #A9A9A9 #8BFDFD #06E00C
+    // #B34D99 #FFC34F #A9A9A9 #8BFDFD #06E00C #860B7A
 
     // Symbol Storage
     // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 王 ī l · ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +

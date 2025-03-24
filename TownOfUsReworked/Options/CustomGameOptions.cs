@@ -8,28 +8,28 @@ namespace TownOfUsReworked.Options;
 [HeaderOption(MultiMenu.Main)]
 public static class GameSettings
 {
-    [NumberOption(0.25f, 10, 0.25f, Format.Multiplier)]
+    [NumberOption(0.25f, 10, 0.25f, Format.Multiplier), Sorted(0)]
     public static Number PlayerSpeed = 1.25f;
 
-    [NumberOption(0.25f, 10, 0.25f, Format.Multiplier)]
+    [NumberOption(0.25f, 10, 0.25f, Format.Multiplier), Sorted(0)]
     public static Number GhostSpeed = 3;
 
-    [NumberOption(0.5f, 5, 0.5f, Format.Distance)]
+    [NumberOption(0.5f, 5, 0.5f, Format.Distance), Sorted(0)]
     public static Number InteractionDistance = 2;
 
-    [NumberOption(0, 100, 1)]
+    [NumberOption(0, 100, 1), Sorted(0)]
     public static Number EmergencyButtonCount = 1;
 
-    [NumberOption(0, 300, 2.5f, Format.Time)]
+    [NumberOption(0, 300, 2.5f, Format.Time), Sorted(0)]
     public static Number EmergencyButtonCooldown = 25;
 
-    [NumberOption(0, 300, 5, Format.Time)]
+    [NumberOption(0, 300, 5, Format.Time), Sorted(0)]
     public static Number DiscussionTime = 30;
 
-    [NumberOption(5, 600, 15, Format.Time)]
+    [NumberOption(5, 600, 15, Format.Time), Sorted(0)]
     public static Number VotingTime = 60;
 
-    [StringOption<TBMode>]
+    [StringOption<TBMode>, Sorted(0)]
     private static TBMode TaskBar = TBMode.MeetingOnly;
     public static TBMode TaskBarMode => GameModeSettings.GameMode switch
     {
@@ -37,40 +37,40 @@ public static class GameSettings
         _ => TaskBar
     }; // I want this to actually change, according to the game modes
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool ConfirmEjects = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool EjectionRevealsRoles = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool EnableInitialCds = true;
 
-    [NumberOption(0, 30, 2.5f, Format.Time)]
+    [NumberOption(0, 30, 2.5f, Format.Time), Sorted(0)]
     public static Number InitialCooldowns = 10;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool EnableMeetingCds = true;
 
-    [NumberOption(0, 30, 2.5f, Format.Time)]
+    [NumberOption(0, 30, 2.5f, Format.Time), Sorted(0)]
     public static Number MeetingCooldowns = 15;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool EnableFailCds = true;
 
-    [NumberOption(0, 30, 2.5f, Format.Time)]
+    [NumberOption(0, 30, 2.5f, Format.Time), Sorted(0)]
     public static Number FailCooldowns = 5;
 
-    [NumberOption(1, 20, 0.25f, Format.Distance)]
+    [NumberOption(1, 10, 0.25f, Format.Distance), Sorted(1)]
     public static Number ReportDistance
     {
         get => ReportDistancePriv;
         set
         {
-            ReportDistancePriv = value;
-
             if (CustomPlayer.Local)
                 CustomPlayer.Local.MaxReportDistance = value;
+
+            ReportDistancePriv = value;
         }
     }
     private static Number ReportDistancePriv = 3.5f;
@@ -884,9 +884,6 @@ public static class Modifiers
 
     [LayerOption("#2DE5BEFF", LayerEnum.Indomitable)]
     public static RoleOptionData Indomitable;
-
-    [LayerOption("#860B7AFF", LayerEnum.Professional)]
-    public static RoleOptionData Professional;
 
     [LayerOption("#1002C5FF", LayerEnum.Shy)]
     public static RoleOptionData Shy;

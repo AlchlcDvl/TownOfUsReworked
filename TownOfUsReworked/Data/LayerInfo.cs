@@ -115,7 +115,6 @@ public static class AllInfo
         new(LayerEnum.Dwarf),
         new(LayerEnum.Giant),
         new(LayerEnum.Indomitable),
-        new(LayerEnum.Professional),
         new(LayerEnum.Shy),
         new(LayerEnum.Vip),
         new(LayerEnum.Volatile),

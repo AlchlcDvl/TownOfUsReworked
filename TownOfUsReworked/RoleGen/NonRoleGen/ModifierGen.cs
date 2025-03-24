@@ -83,7 +83,6 @@ public sealed class ModifierGen : BaseGen
             {
                 LayerEnum.Bait => playerList.FirstOrDefault(x => !(x.Is<Vigilante>() || x.Is<Shifter>() || x.Is<Thief>() || x.Is<Altruist>() || x.Is<Troll>())),
                 LayerEnum.Diseased => playerList.FirstOrDefault(x => !(x.Is<Altruist>() || x.Is<Troll>())),
-                LayerEnum.Professional => playerList.FirstOrDefault(x => x.Is<Assassin>()),
                 LayerEnum.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && (!Mayor.MayorButton || !Democrat.DemocratButton)) || (x.Is<Jester>() && !Jester.JesterButton) ||
                     (x.Is<Swapper>() && !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() &&
                     !Executioner.ExecutionerButton) || (x.Is<Politician>() && !Politician.PoliticianButton) ||  x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) ||

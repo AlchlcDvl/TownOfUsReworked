@@ -223,9 +223,9 @@ public sealed class ClientHandler : MonoBehaviour
             // PassiveButton = 0, Text = 1, Box = 2
             SettingsPatches.MultiOptionPrefab = new GameObject("MultiSelectOptionPrefab").DontUnload().DontDestroy().AddComponent<MissingBehaviour>();
 
-            var toggle = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(6).GetComponent<PassiveButton>(), SettingsPatches.MultiOptionPrefab.transform);
+            var toggle = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(6).GetComponent<PassiveButton>(), Vector3.zero, Quaternion.identity,
+                SettingsPatches.MultiOptionPrefab.transform);
             toggle.name = "Button";
-            toggle.transform.localPosition = Vector3.zero;
             toggle.transform.DestroyChildren();
             toggle.OverrideOnClickListeners(BlankVoid);
 
@@ -233,14 +233,12 @@ public sealed class ClientHandler : MonoBehaviour
             collider.offset = Vector3.zero;
             collider.size = new(1.8f, 0.5292f);
 
-            var text = Instantiate(SettingsPatches.MultiSelectPrefab.ValueText, SettingsPatches.MultiOptionPrefab.transform);
-            text.transform.localPosition = Vector3.zero;
+            var text = Instantiate(SettingsPatches.MultiSelectPrefab.ValueText, Vector3.zero, Quaternion.identity, SettingsPatches.MultiOptionPrefab.transform);
             text.transform.localScale = new(0.6f, 0.6f, 1f);
             text.text = "ValueText";
             text.GetComponent<RectTransform>().sizeDelta = new(2.75f, 0.4f);
 
-            var box = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(5), SettingsPatches.MultiOptionPrefab.transform);
-            box.localPosition = Vector3.zero;
+            var box = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(5), Vector3.zero, Quaternion.identity, SettingsPatches.MultiOptionPrefab.transform);
             box.localScale = new(0.5f, 0.5f, 1f);
             box.name = "ValueBox";
 

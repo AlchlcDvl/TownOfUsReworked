@@ -110,7 +110,6 @@ public enum LayerEnum : byte
     Dwarf,
     Giant,
     Indomitable,
-    Professional,
     Shy,
     Vip,
     Volatile,
