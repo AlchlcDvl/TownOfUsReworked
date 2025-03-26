@@ -567,7 +567,7 @@ public sealed class NetData : IDisposable, INetSerializable
             i++;
         }
 
-        result.InsertRange(0, ToBytes(i));
+        result.InsertRange(0, BitConverter.GetBytes(i));
         return [ .. result ];
     }
 
@@ -583,7 +583,7 @@ public sealed class NetData : IDisposable, INetSerializable
         foreach (var obj in values)
             result.AddRange(ToBytes(obj));
 
-        result.InsertRange(0, ToBytes((uint)values.Length));
+        result.InsertRange(0, BitConverter.GetBytes((uint)values.Length));
         return [ .. result ];
     }
 
