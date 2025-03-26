@@ -23,7 +23,7 @@ public sealed class Trapper : Crew, ITrapper
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Trapper;
+    protected override UColor MainColor => CustomColorManager.Trapper;
     public override LayerEnum Type => LayerEnum.Trapper;
     public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
     public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
@@ -91,7 +91,7 @@ public sealed class Trapper : Crew, ITrapper
         Trapped.Remove(trapped.PlayerId);
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var trapAction = reader.Read<TrapperActionsRPC>();
 
@@ -104,7 +104,7 @@ public sealed class Trapper : Crew, ITrapper
             }
             case TrapperActionsRPC.Trigger:
             {
-                TriggerTrap(reader.Read<PlayerControl>(), reader.Read<PlayerControl>(), reader.ReadBoolean());
+                TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBool());
                 break;
             }
             default:

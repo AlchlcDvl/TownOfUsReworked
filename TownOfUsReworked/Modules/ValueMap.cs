@@ -19,7 +19,7 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
     private readonly Dictionary<T1, T2> Forward;
     private readonly Dictionary<T2, T1> Backward;
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="IDictionary{TKey,TValue}.Count"/>
     public int Count => Forward.Count;
 
     /// <inheritdoc/>
@@ -108,7 +108,7 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
         Backward.Add(value, key);
     }
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="IDictionary{TKey,TValue}.ContainsKey"/>
     public bool ContainsKey(T1 key) => Forward.ContainsKey(key);
 
     /// <summary>
@@ -144,7 +144,7 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
     /// <returns>true if the element is successfully removed; otherwise, false.</returns>
     public bool Remove(T2 value) => Backward.Remove(value, out var key) && Forward.Remove(key);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="IDictionary{TKey,TValue}.TryGetValue"/>
     public bool TryGetValue(T1 key, out T2 value) => Forward.TryGetValue(key, out value);
 
     /// <summary>
@@ -155,7 +155,7 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
     /// <returns>true if the object that implements <see cref="IDictionary{T1, T2}"/> contains an element with the specified value; otherwise, false.</returns>
     public bool TryGetKey(T2 value, out T1 key) => Backward.TryGetValue(value, out key);
 
-    /// <inheritdoc/>
+    /// <inheritdoc cref="IDictionary{TKey,TValue}.this"/>
     public T2 this[T1 key]
     {
         get => Forward[key];

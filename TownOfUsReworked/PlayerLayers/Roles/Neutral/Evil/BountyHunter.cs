@@ -39,7 +39,7 @@ public sealed class BountyHunter : Evil
     public bool Assigned { get; set; }
     public int Rounds { get; set; }
 
-    public override UColor MainColor => CustomColorManager.BountyHunter;
+    protected override UColor MainColor => CustomColorManager.BountyHunter;
     public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText => () => "Find And Kill Your Target";
     public override Func<string> Description => () => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
@@ -221,9 +221,9 @@ public sealed class BountyHunter : Evil
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RequestingPlayer);
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
-        var request = reader.Read<PlayerControl>();
+        var request = reader.ReadPlayer();
         RequestingPlayer = request;
         var role = request.GetRole();
         role.Requesting = true;

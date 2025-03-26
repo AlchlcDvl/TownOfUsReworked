@@ -132,6 +132,9 @@ public static class BetterAirship
     /// <returns>The resulting airship spawn location after comparing with other settings and the previous value.</returns>
     private static AirshipSpawnLocation SetLocation(AirshipSpawnLocation value, AirshipSpawnLocation loc1, AirshipSpawnLocation loc2, AirshipSpawnLocation prev)
     {
+        if (value == prev)
+            return value;
+
         while (value.IsAny(loc1, loc2))
             value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, value > prev);
 

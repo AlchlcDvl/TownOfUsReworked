@@ -26,7 +26,7 @@ public sealed class Janitor : Intruder
     private CustomButton DropButton { get; set; }
     public DeadBodyHandler CurrentlyDragging { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Janitor;
+    protected override UColor MainColor => CustomColorManager.Janitor;
     public override LayerEnum Type => LayerEnum.Janitor;
     public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Necessary";
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
@@ -86,7 +86,7 @@ public sealed class Janitor : Intruder
 
     private float Difference() => Last(Faction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
-    public override void ReadRPC(MessageReader reader) => reader.Read<DeadBody>().GetComponent<DeadBodyHandler>().StartDrag(Player);
+    public override void ReadRPC(NetData reader) => reader.ReadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
 
     protected override void Kill(PlayerControl target)
     {

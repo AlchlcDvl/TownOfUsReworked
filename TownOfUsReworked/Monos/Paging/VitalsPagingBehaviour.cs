@@ -5,7 +5,7 @@ public sealed class VitalsPagingBehaviour : BasePagingBehaviour
     [HideFromIl2Cpp]
     public IEnumerable<VitalsPanel> Targets => [..Menu.vitals];
 
-    public override int MaxPageIndex => (Targets.Count() - 1) / 15;
+    protected override int MaxPageIndex => (Targets.Count() - 1) / 15;
 
     private TextMeshPro PageText;
     public VitalsMinigame Menu;

@@ -6,7 +6,7 @@ public sealed class Multitasker : Ability
     [NumberOption(10f, 80f, 5f, Format.Percent)]
     public static Number Transparency = 50;
 
-    public override UColor MainColor => CustomColorManager.Multitasker;
+    protected override UColor MainColor => CustomColorManager.Multitasker;
     public override LayerEnum Type => LayerEnum.Multitasker;
     public override Func<string> Description => () => "- Your task windows are transparent";
 }

@@ -41,21 +41,17 @@ public static class GameStates
 
     public static bool LocalBlocked() => CustomPlayer.Local.IsBlocked();
 
-    public static bool LocalNotBlocked() => !LocalBlocked();
-
     public static bool DeadSeeEverything()
     {
-        if (!GameModifiers.DeadSeeEverything || !CustomPlayer.Local.HasDied() || !CustomPlayer.Local.GetRole().TrulyDead)
+        if (!GameModifiers.DeadSeeEverything || !CustomPlayer.Local.HasDied() || !CustomPlayer.Local.Is<Role>(out var role) || !role.TrulyDead)
             return false;
 
-        var otherFlag = false;
-
-        if (CustomPlayer.Local.Is<GuardianAngel>(out var ga))
-            otherFlag = !ga.Failed && ga.TargetAlive && GuardianAngel.ProtectBeyondTheGrave && ga.GraveProtectButton.Usable();
-        else if (CustomPlayer.Local.Is<Jester>(out var jest))
-            otherFlag = jest.CanHaunt;
-
-        return !otherFlag;
+        return role switch
+        {
+            Jester jest => !jest.CanHaunt,
+            GuardianAngel ga => ga.Failed || !ga.TargetAlive || !GuardianAngel.ProtectBeyondTheGrave || !ga.GraveProtectButton.Usable(),
+            _ => true
+        };
     }
 
     public static bool CrewWins() => !AllPlayers().Any(x => !x.HasDied() && !x.CrewSided() && x.NotCrew()) && AllPlayers().Any(x => x.Is(Faction.Crew) && x.Is(SubFaction.None));

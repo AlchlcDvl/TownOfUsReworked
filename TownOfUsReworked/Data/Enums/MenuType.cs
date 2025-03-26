@@ -2,6 +2,6 @@
 
 public enum MenuType : byte
 {
-    Single,
-    MultiSelect
+    Player,
+    Guessing
 }

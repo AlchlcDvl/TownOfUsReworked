@@ -5,7 +5,7 @@ public sealed class MenuPagingBehaviour : BasePagingBehaviour
     [HideFromIl2Cpp]
     public IEnumerable<ShapeshifterPanel> Targets => [ .. Menu.potentialVictims ];
 
-    public override int MaxPageIndex => (Targets.Count() - 1) / 15;
+    protected override int MaxPageIndex => (Targets.Count() - 1) / 15;
 
     private TextMeshPro PageText;
     public ShapeshifterMinigame Menu;

@@ -18,7 +18,7 @@ public sealed class Crusader : Syndicate
     public PlayerControl CrusadedPlayer { get; private set; }
     public CustomButton CrusadeButton { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Crusader;
+    protected override UColor MainColor => CustomColorManager.Crusader;
     public override LayerEnum Type => LayerEnum.Crusader;
     public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
@@ -83,5 +83,5 @@ public sealed class Crusader : Syndicate
 
     private bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 
-    public override void ReadRPC(MessageReader reader) => CrusadedPlayer = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => CrusadedPlayer = reader.ReadPlayer();
 }

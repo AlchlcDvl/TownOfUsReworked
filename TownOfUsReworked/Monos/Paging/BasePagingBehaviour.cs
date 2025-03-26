@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Monos;
 
 public abstract class BasePagingBehaviour : MonoBehaviour
 {
-    public virtual int MaxPageIndex { get; }
+    protected virtual int MaxPageIndex => 1;
 
     private int Page;
     public int PageIndex

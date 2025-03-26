@@ -1,5 +1,6 @@
 // ReSharper disable HeuristicUnreachableCode
 using static TownOfUsReworked.Managers.CustomColorManager;
+#pragma warning disable CS0162 // Unreachable code detected
 
 namespace TownOfUsReworked.Loaders;
 

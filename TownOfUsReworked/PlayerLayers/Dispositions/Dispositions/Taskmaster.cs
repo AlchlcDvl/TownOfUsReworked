@@ -6,7 +6,7 @@ public sealed class Taskmaster : Disposition
     [NumberOption(1, 5, 1)]
     public static Number TMTasksRemaining = 1;
 
-    public override UColor MainColor => CustomColorManager.Taskmaster;
+    protected override UColor MainColor => CustomColorManager.Taskmaster;
     public override string Symbol => "µ";
     public override LayerEnum Type => LayerEnum.Taskmaster;
     public override Func<string> Description => () => "- Finish your tasks before the game ends";

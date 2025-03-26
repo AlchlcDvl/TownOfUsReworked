@@ -55,11 +55,7 @@ public static class CustomAchievementManager
             {
                 using var reader = new BinaryReader(File.OpenRead(path));
                 reader.DeserializeCustomAchievements();
-            }
-            catch
-            {
-                // ignored
-            }
+            } catch {}
         }
 
         // Adding in achievements for each type of win (an achievement for 5 wins for each), I was just too lazy to add them all manually to the list

@@ -12,7 +12,7 @@ public sealed class Escort : Crew, IBlocker
     public PlayerControl BlockTarget { get; set; }
     private CustomButton BlockButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Escort;
+    protected override UColor MainColor => CustomColorManager.Escort;
     public override LayerEnum Type => LayerEnum.Escort;
     public override Func<string> StartText => () => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
@@ -56,7 +56,7 @@ public sealed class Escort : Crew, IBlocker
             BlockButton.StartCooldown(cooldown);
     }
 
-    public override void ReadRPC(MessageReader reader) => BlockTarget = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => BlockTarget = reader.ReadPlayer();
 
     private bool EndEffect() => Dead || (BlockTarget && BlockTarget.HasDied());
 

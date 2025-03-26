@@ -26,7 +26,7 @@ public sealed class Monarch : Crew, ISovereign
     public List<byte> ToBeKnighted { get; } = [];
     public List<byte> Knighted { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Monarch;
+    protected override UColor MainColor => CustomColorManager.Monarch;
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"
@@ -63,7 +63,7 @@ public sealed class Monarch : Crew, ISovereign
 
     private bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var id = reader.ReadByte();
         ToBeKnighted.Add(id);

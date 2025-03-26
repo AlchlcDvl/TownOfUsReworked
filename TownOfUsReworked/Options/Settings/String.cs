@@ -64,9 +64,7 @@ public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionT
         Values.ForEach(x => TranslationManager.DebugId($"CustomOption.{TargetType.Name}.{x}"));
     }
 
-    public override void ReadValueRpc(MessageReader reader) => Set(reader.Read<T>(), false);
-
-    public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
+    public override void ReadValueRpc(NetData reader) => Set(reader.Read<T>(), false);
 
     protected override void ReadValueString(string value) => Set(Enum.Parse<T>(value), false);
 }

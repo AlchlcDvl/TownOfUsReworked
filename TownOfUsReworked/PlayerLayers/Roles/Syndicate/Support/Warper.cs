@@ -16,7 +16,7 @@ public sealed class Warper : Syndicate, IMover
     private CustomPlayerMenu WarpMenu { get; set; }
     public bool Moving { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Warper;
+    protected override UColor MainColor => CustomColorManager.Warper;
     public override LayerEnum Type => LayerEnum.Warper;
     public override Func<string> StartText => () => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
@@ -188,7 +188,7 @@ public sealed class Warper : Syndicate, IMover
         if (HoldsDrive)
         {
             var coords = GenerateWarpCoordinates();
-            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.All);
+            var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.All);
 
             if (writer != null)
             {
@@ -200,7 +200,7 @@ public sealed class Warper : Syndicate, IMover
                     writer.Write(pos);
                 }
 
-                writer.CloseRpc();
+                writer.Send();
             }
 
             Coroutines.Start(WarpAll(coords, this));
@@ -217,7 +217,7 @@ public sealed class Warper : Syndicate, IMover
         }
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var warpAction = reader.Read<WarpActionsRPC>();
 
@@ -236,7 +236,7 @@ public sealed class Warper : Syndicate, IMover
             }
             case WarpActionsRPC.Single:
             {
-                Coroutines.Start(WarpPlayers(reader.Read<PlayerControl>(), reader.Read<PlayerControl>(), this));
+                Coroutines.Start(WarpPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
                 break;
             }
             default:

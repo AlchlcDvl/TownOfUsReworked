@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Extensions;
 
+// TODO: Improve and optimise as much as you can before the next update
 public static class LayerExtensions
 {
     private static readonly string RoleColorString = $"<#{CustomColorManager.Role.ToHtmlStringRGBA()}>";
@@ -76,8 +77,6 @@ public static class LayerExtensions
     }
 
     public static bool IsConverted(this Role role) => role.SubFaction != SubFaction.None && role is not Neophyte;
-
-    public static bool Diseased(this PlayerControl player) => player.GetRole().Diseased;
 
     private static bool IsCrewDefect(this PlayerControl player) => player.GetRole().IsCrewDefect;
 
@@ -517,8 +516,7 @@ public static class LayerExtensions
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
             alignment += $"{role.FactionColorString}{role.Faction}({AlignmentColorString}{role.Alignment}</color>)</color>";
             subfaction += $"{role.SubFactionColorString}{role.SubFactionName} {role.SubFactionSymbol}</color>";
-            attdef += $"{Join(",", info.Where(x => x.AttackVal > AttackEnum.None).Select(x => x.AttackVal))}</color>/{DefenseColorString}{Join(", ",
-                info.Where(x => x.DefenseVal > DefenseEnum.None).Select(x => x.DefenseVal))}</color>";
+            attdef += $"{info.Max(x => x.AttackVal)}</color>/{DefenseColorString}{info.Max(x => x.DefenseVal)}</color>";
         }
         else
         {
@@ -827,7 +825,7 @@ public static class LayerExtensions
 
         Syndicate.DriveHolder = chosen?.Player;
         Syndicate.SyndicateHasChaosDrive = chosen;
-        CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen?.Player?.PlayerId ?? 255);
+        CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen?.PlayerId ?? 255);
     }
 
     public static void ConvertPlayer(byte target, byte convert, SubFaction sub, bool skip)

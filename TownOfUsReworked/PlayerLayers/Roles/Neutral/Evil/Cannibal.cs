@@ -25,7 +25,7 @@ public sealed class Cannibal : Evil
     private bool EatWin => EatNeed == 0;
     private bool CanEat => !Eaten || !NeutralSettings.AvoidNeutralKingmakers;
 
-    public override UColor MainColor => CustomColorManager.Cannibal;
+    protected override UColor MainColor => CustomColorManager.Cannibal;
     public override LayerEnum Type => LayerEnum.Cannibal;
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their "

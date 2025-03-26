@@ -41,7 +41,7 @@ public sealed class Executioner : Evil
     private CustomButton TargetButton { get; set; }
     private bool TargetFailed => !TargetPlayer && Rounds > 2;
 
-    public override UColor MainColor => CustomColorManager.Executioner;
+    protected override UColor MainColor => CustomColorManager.Executioner;
     public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText => () => "Find Someone To Eject";
     public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +

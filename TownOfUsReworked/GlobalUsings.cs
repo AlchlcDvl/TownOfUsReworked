@@ -22,6 +22,7 @@ global using Reactor.Networking.Extensions;
 global using Reactor.Networking.Serialization;
 
 global using TownOfUsReworked.Data;
+global using TownOfUsReworked.RPCs;
 global using TownOfUsReworked.Monos;
 global using TownOfUsReworked.Utils;
 global using TownOfUsReworked.Custom;

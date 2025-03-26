@@ -14,7 +14,7 @@ public sealed class Giant : Modifier
     private static bool Useless => !Chonk && !Snail;
     private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : ""));
 
-    public override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Giant;
+    protected override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Giant;
     public override LayerEnum Type => LayerEnum.Giant;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
 

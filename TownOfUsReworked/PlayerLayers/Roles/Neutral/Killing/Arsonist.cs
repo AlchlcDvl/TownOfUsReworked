@@ -30,7 +30,7 @@ public sealed class Arsonist : NKilling
         or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Arsonist;
+    protected override UColor MainColor => CustomColorManager.Arsonist;
     public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +
@@ -126,7 +126,7 @@ public sealed class Arsonist : NKilling
     private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
         Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var arsoAction = reader.Read<DouseActionsRPC>();
 

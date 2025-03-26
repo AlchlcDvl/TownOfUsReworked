@@ -19,7 +19,7 @@ public sealed class Politician : Ability
     public bool CanVote => VoteBank > 0 && !SelfVote;
     public bool CanKill => Player.CanKill();
 
-    public override UColor MainColor => CustomColorManager.Politician;
+    protected override UColor MainColor => CustomColorManager.Politician;
     public override LayerEnum Type => LayerEnum.Politician;
     public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
@@ -88,7 +88,7 @@ public sealed class Politician : Ability
         UpdateButton(__instance);
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var polAction = reader.Read<PoliticianActionsRPC>();
 
@@ -97,13 +97,13 @@ public sealed class Politician : Ability
             case PoliticianActionsRPC.Remove:
             {
                 ExtraVotes.Clear();
-                ExtraVotes.AddRange(reader.ReadByteList());
+                ExtraVotes.AddRange(reader.ReadBytes());
                 VoteBank -= ExtraVotes.Count;
                 break;
             }
             case PoliticianActionsRPC.Add:
             {
-                VoteBank -= reader.ReadPackedInt32();
+                VoteBank -= reader.ReadInt();
                 break;
             }
             default:

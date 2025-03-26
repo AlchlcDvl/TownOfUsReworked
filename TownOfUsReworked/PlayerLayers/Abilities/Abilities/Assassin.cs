@@ -59,10 +59,10 @@ public abstract class Assassin : Ability, IGuesser
     public static int RemainingKills { get; set; }
 
     public CustomMeeting GuessMenu { get; private set; }
-    public CustomRolesMenu GuessingMenu { get; private set; }
+    public CustomGuessingMenu GuessingMenu { get; private set; }
     private int Lives { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Assassin;
+    protected override UColor MainColor => CustomColorManager.Assassin;
     public override Func<string> Description => () => "- You can guess players mid-meetings";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
@@ -87,7 +87,7 @@ public abstract class Assassin : Ability, IGuesser
         GuessingMenu.Close();
     }
 
-    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.Read<PlayerControl>(), reader.Read<LayerEnum>(), reader.Read<PlayerControl>());
+    public override void ReadRPC(NetData reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
 
     private void SetLists()
     {
@@ -319,7 +319,7 @@ public abstract class Assassin : Ability, IGuesser
             if (Local)
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
             else if (player.AmOwner)
-                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
+                Run("<#EC1C45FF>∮ Assassination ∮</color>", "Someone tried to assassinate you!");
 
             Flash(CustomColorManager.Indomitable);
             ind.AttemptedGuess = true;

@@ -19,7 +19,7 @@ public sealed class Silencer : Syndicate, IIntimidator
     public bool ShookAlready { get; set; }
     public PlayerControl Target { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Silencer;
+    protected override UColor MainColor => CustomColorManager.Silencer;
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +
@@ -61,5 +61,5 @@ public sealed class Silencer : Syndicate, IIntimidator
     private bool Exception1(PlayerControl player) => player == Target || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !SilenceMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !SilenceMates);
 
-    public override void ReadRPC(MessageReader reader) => Target = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => Target = reader.ReadPlayer();
 }

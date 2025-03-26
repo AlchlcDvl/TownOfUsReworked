@@ -56,7 +56,7 @@ public static class AllMonos
         prefab.CanUseKillButton = false;
         prefab.CanVent = false;
         prefab.NameColor = UColor.white;
-        prefab.MaxCount = 127;
+        prefab.MaxCount = 250;
         prefab.DefaultGhostRole = (RoleTypes)100;
         prefab.AffectedByLightAffectors = true;
         prefab.IntroSound = null;

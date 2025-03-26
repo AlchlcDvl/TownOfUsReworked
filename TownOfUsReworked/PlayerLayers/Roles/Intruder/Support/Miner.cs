@@ -12,7 +12,7 @@ public sealed class Miner : Intruder
     private CustomButton MineButton { get; set; }
     public List<Vent> Vents { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Miner;
+    protected override UColor MainColor => CustomColorManager.Miner;
     public override LayerEnum Type => LayerEnum.Miner;
     public override Func<string> StartText => () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
         "From The Top, Make It Drop, Boom, That's A Vent";
@@ -46,7 +46,7 @@ public sealed class Miner : Intruder
 
     public static string Label() => MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT";
 
-    public override void ReadRPC(MessageReader reader) => Vents.Add(SpawnVent(Vents, reader.ReadVector2(), Player.transform.position.z));
+    public override void ReadRPC(NetData reader) => Vents.Add(SpawnVent(Vents, reader.ReadVector2(), Player.transform.position.z));
 
     private static Vent SpawnVent(List<Vent> vents, Vector2 position, float zAxis)
     {

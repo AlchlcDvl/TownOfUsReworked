@@ -1,3 +1,5 @@
+using TownOfUsReworked.RPCs;
+
 namespace TownOfUsReworked.Modules;
 
 /// <summary>
@@ -6,7 +8,7 @@ namespace TownOfUsReworked.Modules;
 /// <typeparam name="T">The enum type that this collection will store.</typeparam>
 /// <param name="values">One or more enum values to initialize the collection with.</param>
 [Serializable]
-public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable
+public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable
     where T : struct, Enum
 {
     /// <summary>
@@ -90,18 +92,7 @@ public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatabl
     /// </summary>
     /// <param name="predicate">A function that defines the condition for removing items.</param>
     /// <returns>The number of items removed from the collection.</returns>
-    public readonly int RemoveAll(Func<T, bool> predicate)
-    {
-        var count = 0;
-
-        foreach (var item in this)
-        {
-            if (predicate(item) && Remove(item))
-                count++;
-        }
-
-        return count;
-    }
+    public readonly int RemoveAll(Func<T, bool> predicate) => ValuesPriv.Where(predicate).Count(Remove);
 
     /// <summary>
     /// Removes all enum values from the collection.
@@ -131,6 +122,9 @@ public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatabl
 
     /// <inheritdoc/>
     public readonly void Dispose() => ValuesPriv.Clear();
+
+    /// <inheritdoc/>
+    public readonly byte[] ToBytes() => [ .. ValuesPriv.Select(x => NetData.ToBytes(x)).GetAll() ];
 
     /// <inheritdoc/>
     public readonly void CopyTo(T[] array, int arrayIndex) => ValuesPriv.CopyTo(array, arrayIndex);

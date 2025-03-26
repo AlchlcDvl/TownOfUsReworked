@@ -64,11 +64,9 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
         Buttons.ForEach((x, y) => x.GetComponentInChildren<SpriteRenderer>().color = Value == y ? CustomColorManager.AcceptedTeal : UColor.white);
     }
 
-    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadString(), false);
+    public override void ReadValueRpc(NetData reader) => Set(reader.ReadMultiSelectValue<T>(), false);
 
     protected override void ReadValueString(string value) => Set(value, false);
-
-    public override void WriteValueRpc(MessageWriter writer) => writer.Write(ValueString());
 
     protected virtual UColor TextColor(T value) => UColor.white;
 

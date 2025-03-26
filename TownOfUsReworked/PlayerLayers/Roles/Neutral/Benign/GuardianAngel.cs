@@ -45,7 +45,7 @@ public sealed class GuardianAngel : Neutral
     public bool Failed => TargetPlayer ? !TargetAlive : Rounds > 2;
     public bool Protecting { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.GuardianAngel;
+    protected override UColor MainColor => CustomColorManager.GuardianAngel;
     public override LayerEnum Type => LayerEnum.GuardianAngel;
     public override Func<string> StartText => () => "Find Someone To Protect";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +

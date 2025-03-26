@@ -15,7 +15,7 @@ public sealed class Ambusher : Intruder
     public PlayerControl AmbushedPlayer { get; private set; }
     public CustomButton AmbushButton { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Ambusher;
+    protected override UColor MainColor => CustomColorManager.Ambusher;
     public override LayerEnum Type => LayerEnum.Ambusher;
     public override Func<string> StartText => () => "Spook The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
@@ -58,5 +58,5 @@ public sealed class Ambusher : Intruder
 
     private bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 
-    public override void ReadRPC(MessageReader reader) => AmbushedPlayer = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => AmbushedPlayer = reader.ReadPlayer();
 }

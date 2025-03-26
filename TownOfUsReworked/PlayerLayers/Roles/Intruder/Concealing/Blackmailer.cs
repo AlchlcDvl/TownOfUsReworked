@@ -19,7 +19,7 @@ public sealed class Blackmailer : Intruder, IIntimidator
     public bool ShookAlready { get; set; }
     public PlayerControl Target { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Blackmailer;
+    protected override UColor MainColor => CustomColorManager.Blackmailer;
     public override LayerEnum Type => LayerEnum.Blackmailer;
     public override Func<string> StartText => () => "You Know Their Secrets";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say\n" + (BmRevealed ? ("- Everyone will be alerted at the start " +
@@ -61,5 +61,5 @@ public sealed class Blackmailer : Intruder, IIntimidator
     private bool Exception1(PlayerControl player) => player == Target || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate && !BlackmailMates) ||
         (player.Is(SubFaction) && SubFaction != SubFaction.None && !BlackmailMates);
 
-    public override void ReadRPC(MessageReader reader) => Target = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => Target = reader.ReadPlayer();
 }

@@ -1,5 +1,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable UnusedMember.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 namespace TownOfUsReworked.Modules;
 
 // Json stuff for deserializing cosmetics
@@ -122,7 +124,7 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
     public string[] ShadowColorValues { get; set; }
 
     [JsonPropertyName("timeSpeed")]
-    public float TimeSpeed { get; set; } = 1f;
+    private float TimeSpeed { get; set; } = 1f;
 
     // The ones marked with [JsonIgnore] are serialised elsewhere
 
@@ -172,7 +174,7 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
         var phase = floor % 2; // 0 = forward, 1 = backward
         var point = (colors.Length - 1) * Mathf.Clamp(((dx - floor) * ((2 * phase) - 1)) + 1 - phase, 0f, 1f);
 
-        var index = Mathf.Clamp(Mathf.FloorToInt(point), 0, colors.Length - 2);
+        var index = Mathf.Clamp(Mathf.FloorToInt(point), 0, colors.Length - 2); // Clamping to ensure there's no out of range exception
 
         return UColor.Lerp(colors[index], colors[index + 1], point - index);
         // Index out of range usually never happens because how the function is set up, and if it does happen, it's only for a fraction of a second and not perceptible

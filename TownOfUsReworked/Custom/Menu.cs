@@ -6,11 +6,11 @@ public abstract class CustomMenu : IDisposable
 
     public ShapeshifterMinigame Menu { get; private set; }
     public PlayerControl Owner { get; set; }
-    private string Type { get; }
+    private MenuType Type { get; }
 
     public static bool IsActive;
 
-    protected CustomMenu(PlayerControl owner, string type)
+    protected CustomMenu(PlayerControl owner, MenuType type)
     {
         Owner = owner;
         Type = type;

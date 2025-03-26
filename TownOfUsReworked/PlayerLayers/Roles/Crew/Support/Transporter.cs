@@ -19,7 +19,7 @@ public sealed class Transporter : Crew, IMover
     private CustomPlayerMenu TransportMenu { get; set; }
     public bool Moving { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Transporter;
+    protected override UColor MainColor => CustomColorManager.Transporter;
     public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
@@ -213,7 +213,7 @@ public sealed class Transporter : Crew, IMover
         }
     }
 
-    public override void ReadRPC(MessageReader reader) => Coroutines.Start(TransportPlayers(reader.Read<PlayerControl>(), reader.Read<PlayerControl>(), this));
+    public override void ReadRPC(NetData reader) => Coroutines.Start(TransportPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
 
     public override void UpdateHud(HudManager __instance)
     {

@@ -36,7 +36,7 @@ public sealed class Whisperer : Neophyte
     public Dictionary<byte, byte> PlayerConversion { get; } = [];
     private int WhisperConversion { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Whisperer;
+    protected override UColor MainColor => CustomColorManager.Whisperer;
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
@@ -91,7 +91,7 @@ public sealed class Whisperer : Neophyte
         Members.ForEach(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
-        var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, (byte)PlayerConversion.Count);
+        var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, (byte)PlayerConversion.Count);
 
         if (writer == null)
             return;
@@ -102,12 +102,12 @@ public sealed class Whisperer : Neophyte
             writer.Write(perc);
         }
 
-        writer.CloseRpc();
+        writer.Send();
     }
 
     private float Difference() => WhisperCdIncreases ? (WhisperCdIncrease * WhisperCount) : 0;
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var count = reader.ReadByte();
 

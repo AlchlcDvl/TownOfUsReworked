@@ -26,7 +26,7 @@ public sealed class Cryomaniac : NKilling
     private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
-    public override UColor MainColor => CustomColorManager.Cryomaniac;
+    protected override UColor MainColor => CustomColorManager.Cryomaniac;
     public override LayerEnum Type => LayerEnum.Cryomaniac;
     public override Func<string> StartText => () => "Who Likes Ice Cream?";
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
@@ -108,7 +108,7 @@ public sealed class Cryomaniac : NKilling
 
     private bool Usable() => LastKiller;
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var cryoAction = reader.Read<DouseActionsRPC>();
 

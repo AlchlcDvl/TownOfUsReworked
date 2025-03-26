@@ -5,7 +5,7 @@ public sealed class MeetingPagingBehaviour : BasePagingBehaviour
     [HideFromIl2Cpp]
     public IEnumerable<PlayerVoteArea> Targets => Menu.playerStates.OrderBy(p => p.AmDead);
 
-    public override int MaxPageIndex => (Targets.Count() - 1) / 15;
+    protected override int MaxPageIndex => (Targets.Count() - 1) / 15;
     public MeetingHud Menu;
 
     public override void Update()

@@ -14,7 +14,7 @@ public sealed class Banshee : Syndicate, IGhosty
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Banshee;
+    protected override UColor MainColor => CustomColorManager.Banshee;
     public override LayerEnum Type => LayerEnum.Banshee;
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
@@ -52,7 +52,7 @@ public sealed class Banshee : Syndicate, IGhosty
 
     private bool EndEffect() => Caught;
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         foreach (var player in AllPlayers())
         {

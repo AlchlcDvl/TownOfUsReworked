@@ -2,11 +2,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Neutral : Role
 {
-    public override UColor MainColor => CustomColorManager.Neutral;
+    protected override UColor MainColor => CustomColorManager.Neutral;
     public override float VisionRange => NeutralSettings.NeutralVision;
     public override bool AffectedByLights => NeutralSettings.LightsAffectNeutrals;
     public override bool CanVent => NeutralSettings.NeutralsVent;
-    public override bool UseMainColor => ClientOptions.CustomNeutColors;
+    protected override bool UseMainColor => ClientOptions.CustomNeutColors;
 
     protected override void Init()
     {

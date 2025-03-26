@@ -15,7 +15,7 @@ public sealed class Chameleon : Crew
 
     private CustomButton SwoopButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Chameleon;
+    protected override UColor MainColor => CustomColorManager.Chameleon;
     public override LayerEnum Type => LayerEnum.Chameleon;
     public override Func<string> StartText => () => "Go Invisible To Stalk Players";
     public override Func<string> Description => () => "- You can turn invisible";

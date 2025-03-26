@@ -40,9 +40,9 @@ public sealed class Guesser : Evil, IGuesser
     private CustomButton TargetButton { get; set; }
     private bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
     public CustomMeeting GuessMenu { get; private set; }
-    public CustomRolesMenu GuessingMenu { get; private set; }
+    public CustomGuessingMenu GuessingMenu { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Guesser;
+    protected override UColor MainColor => CustomColorManager.Guesser;
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
@@ -431,5 +431,5 @@ public sealed class Guesser : Evil, IGuesser
         GuessingMenu.Close();
     }
 
-    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.Read<PlayerControl>(), reader.Read<LayerEnum>(), reader.Read<PlayerControl>());
+    public override void ReadRPC(NetData reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
 }

@@ -19,7 +19,7 @@ public sealed class Dictator : Crew, IRevealer
     private CustomButton RevealButton { get; set; }
     public CustomMeeting DictMenu { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Dictator;
+    protected override UColor MainColor => CustomColorManager.Dictator;
     public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText => () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
@@ -95,7 +95,7 @@ public sealed class Dictator : Crew, IRevealer
 
     private bool Usable() => !RoundOne && !Tribunal;
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var dictAction = reader.Read<DictActionsRPC>();
 
@@ -109,7 +109,7 @@ public sealed class Dictator : Crew, IRevealer
             }
             case DictActionsRPC.SelectToEject:
             {
-                ToBeEjected = reader.Read<PlayerControl>();
+                ToBeEjected = reader.ReadPlayer();
                 break;
             }
             default:

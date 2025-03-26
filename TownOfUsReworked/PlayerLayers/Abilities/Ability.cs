@@ -2,11 +2,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public abstract class Ability : PlayerLayer
 {
-    public override UColor MainColor => CustomColorManager.Ability;
+    protected override UColor MainColor => CustomColorManager.Ability;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Ability;
     public override LayerEnum Type => LayerEnum.NoneAbility;
-    public override UColor LayerColor => CustomColorManager.Ability;
-    public override bool UseMainColor => ClientOptions.CustomAbColors;
+    protected override UColor LayerColor => CustomColorManager.Ability;
+    protected override bool UseMainColor => ClientOptions.CustomAbColors;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

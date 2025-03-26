@@ -76,11 +76,7 @@ public static class CollectionExtensions
             action(item);
     }
 
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
-    {
-        foreach (var item in source)
-            action(item);
-    }
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => source.Do(action);
 
     public static void ForEach<T>(this IEnumerable<T> source, Action<int, T> indexedAction) => source.Indexed().ForEach(x => indexedAction(x.Item1, x.Item2));
 
@@ -112,11 +108,8 @@ public static class CollectionExtensions
 
         if (list.Count() <= count)
             temp.AddRange(list);
-        else
-        {
-            while (temp.Count < count)
-                temp.Add(list.Random(x => !temp.Contains(x)));
-        }
+        else while (temp.Count < count)
+            temp.Add(list.Random(x => !temp.Contains(x)));
 
         temp.Shuffle();
         return temp;
@@ -233,34 +226,9 @@ public static class CollectionExtensions
             action(key, value);
     }
 
-    public static void ForEach<T1, T2>(this (IEnumerable<T1>, IEnumerable<T2>) source, Action<T1, T2> action)
-    {
-        var c1 = source.Item1.Count();
-        var c2 = source.Item2.Count();
-
-        if (c1 != c2)
-            throw new ArgumentOutOfRangeException(nameof(source), "The elements must be equal in size");
-
-        var count = (c1 + c2) / 2; // Idk why, I just felt like doing this; no, I am not changing it
-
-        for (var i = 0; i < count; i++)
-            action(source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
-    }
-
     public static bool ContainsAny<T>(this IEnumerable<T> source, params T[] values) => values.Any(source.Contains);
 
     public static IEnumerable<T> GetAll<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(x => x);
-
-    public static T Find<T>(this ISystem.List<T> source, Func<T, bool> predicate)
-    {
-        foreach (var item in source)
-        {
-            if (predicate(item))
-                return item;
-        }
-
-        return default;
-    }
 
     public static IEnumerable<IEnumerable<T1>> SplitBy<T1, T2>(this IEnumerable<T1> source, Func<T1, T2> predicate) => source.GroupBy(predicate).Select(x => x.ToList());
 
@@ -282,9 +250,34 @@ public static class CollectionExtensions
         return dict;
     }
 
-    public static void RemoveAll<T>(this List<T> list, params T[] items) => items.ForEach(x => list.Remove(x));
+    public static int RemoveAll<T>(this List<T> list, params T[] items) => items.Count(list.Remove);
 
     /* These methods are unused at the moment, so they've been commented until needed
+
+    public static void ForEach<T1, T2>(this (IEnumerable<T1>, IEnumerable<T2>) source, Action<T1, T2> action)
+    {
+        var c1 = source.Item1.Count();
+        var c2 = source.Item2.Count();
+
+        if (c1 != c2)
+            throw new ArgumentOutOfRangeException(nameof(source), "The elements must be equal in size");
+
+        var count = (c1 + c2) / 2; // Idk why, I just felt like doing this; no, I am not changing it
+
+        for (var i = 0; i < count; i++)
+            action(source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
+    }
+
+    public static T Find<T>(this ISystem.List<T> source, Func<T, bool> predicate)
+    {
+        foreach (var item in source)
+        {
+            if (predicate(item))
+                return item;
+        }
+
+        return default;
+    }
 
     public static int IndexOf<T>(this ISystem.List<T> source, Func<T, bool> predicate)
     {

@@ -1,4 +1,5 @@
 // ReSharper disable HeuristicUnreachableCode
+#pragma warning disable CS0162 // Unreachable code detected
 
 using BepInEx.Logging;
 
@@ -17,6 +18,9 @@ namespace TownOfUsReworked;
 [BepInProcess("Among Us.exe")]
 public sealed partial class TownOfUsReworked : BasePlugin
 {
+    // A bit of forewarning to whoever dares to look through my horrid codebase, majority of the comments and documentation have been written months,
+    // maybe years after the code was initially written, so my intentions might not be clear enough
+
     public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
     public const string GitHubLink = "https://github.com/AlchlcDvl/TownOfUsReworked";
     public const string AssetsLink = "https://github.com/AlchlcDvl/ReworkedAssets";
@@ -52,7 +56,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
     private static string StreamString => IsStream ? "s" : "";
     public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}";
-    public static string VersionFull => $"v{VersionFinal}+{VersionSignature}";
+    private static string VersionFull => $"v{VersionFinal}+{VersionSignature}";
 
     public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV08 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;

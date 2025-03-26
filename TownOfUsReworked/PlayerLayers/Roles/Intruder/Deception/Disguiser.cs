@@ -27,7 +27,7 @@ public sealed class Disguiser : Intruder
     private PlayerControl CopiedPlayer { get; set; }
     private PlayerControl DisguisedPlayer { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Disguiser;
+    protected override UColor MainColor => CustomColorManager.Disguiser;
     public override LayerEnum Type => LayerEnum.Disguiser;
     public override Func<string> StartText => () => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
@@ -100,9 +100,9 @@ public sealed class Disguiser : Intruder
 
     private bool EndEffect() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead;
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
-        CopiedPlayer = reader.Read<PlayerControl>();
-        DisguisedPlayer = reader.Read<PlayerControl>();
+        CopiedPlayer = reader.ReadPlayer();
+        DisguisedPlayer = reader.ReadPlayer();
     }
 }

@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 // TODO: Refactor the usage of linked disposition and stuff and have other ways to check players' allegiances, like for example an external dictionary for modification and stuff
 public abstract class Role : PlayerLayer
 {
-    public override UColor MainColor => CustomColorManager.Role;
+    protected override UColor MainColor => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
     public override LayerEnum Type => LayerEnum.NoneRole;
-    public override UColor LayerColor => CustomColorManager.Role;
-    public override bool UseMainColor => false;
+    protected override UColor LayerColor => CustomColorManager.Role;
+    protected override bool UseMainColor => false;
 
     public virtual Func<string> StartText => () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
@@ -163,7 +163,7 @@ public abstract class Role : PlayerLayer
     private bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && this is not Syndicate;
     private bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && this is not Neutral;
     public bool Faithful => SubFaction == SubFaction.None && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) && !IsCrewDefect && !IsIntDefect && !IsSynDefect
-        && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Ignore;
+        && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Deinitialised;
 
     protected override void Init()
     {
@@ -505,9 +505,9 @@ public abstract class Role : PlayerLayer
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 
-    public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Ignore);
+    public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Deinitialised);
 
-    public static IEnumerable<Role> GetRoles(Alignment ra) => GetLayers<Role>().Where(x => x.Alignment == ra && !x.Ignore);
+    public static IEnumerable<Role> GetRoles(Alignment ra) => GetLayers<Role>().Where(x => x.Alignment == ra && !x.Deinitialised);
 
-    public static IEnumerable<Role> GetRoles(SubFaction subfaction) => GetLayers<Role>().Where(x => x.SubFaction == subfaction && !x.Ignore);
+    public static IEnumerable<Role> GetRoles(SubFaction subfaction) => GetLayers<Role>().Where(x => x.SubFaction == subfaction && !x.Deinitialised);
 }

@@ -11,7 +11,7 @@ public sealed class Seer : Crew
         x.LinkedDisposition is LayerEnum.Traitor or LayerEnum.Fanatic));
     private CustomButton SeerButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Seer;
+    protected override UColor MainColor => CustomColorManager.Seer;
     public override LayerEnum Type => LayerEnum.Seer;
     public override Func<string> StartText => () => "You Can See People's Histories";
     public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +

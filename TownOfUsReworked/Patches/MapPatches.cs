@@ -188,6 +188,5 @@ public static class MapPatches
         TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
         TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
         TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
-        CustomPlayer.Local.MaxReportDistance = GameSettings.ReportDistance;
     }
 }

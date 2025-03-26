@@ -2,30 +2,30 @@ namespace TownOfUsReworked.Custom;
 
 public sealed class CustomPlayerMenu : CustomMenu
 {
+    public List<byte> Selected { get; } = [];
     private PlayerSelect Click { get; }
     private PlayerMultiSelect MultiClick { get; }
     private PlayerBodyExclusion Exception { get; }
-    private MenuType SelectType { get; }
+    private PlayerMenuType SelectType { get; }
     private int MaxSelected { get; }
     private Dictionary<byte, ShapeshifterPanel> PlayerToPanel { get; } = [];
-    public List<byte> Selected { get; } = [];
 
     private PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
-    private CustomPlayerMenu(PlayerControl owner, MenuType type, PlayerBodyExclusion exception) : base(owner, "Player")
+    private CustomPlayerMenu(PlayerControl owner, PlayerMenuType type, PlayerBodyExclusion exception) : base(owner, MenuType.Player)
     {
         Exception = exception ?? BlankFalse;
         SelectType = type;
     }
 
-    public CustomPlayerMenu(PlayerControl owner, PlayerMultiSelect multiClick, PlayerBodyExclusion exception = null, int max = 2) : this(owner, MenuType.MultiSelect, exception)
+    public CustomPlayerMenu(PlayerControl owner, PlayerMultiSelect multiClick, PlayerBodyExclusion exception = null, int max = 2) : this(owner, PlayerMenuType.MultiSelect, exception)
     {
         Click = BlankVoid;
         MultiClick = multiClick ?? BlankFalse;
         MaxSelected = max;
     }
 
-    public CustomPlayerMenu(PlayerControl owner, PlayerSelect click, PlayerBodyExclusion exception = null) : this(owner, MenuType.Single, exception)
+    public CustomPlayerMenu(PlayerControl owner, PlayerSelect click, PlayerBodyExclusion exception = null) : this(owner, PlayerMenuType.Single, exception)
     {
         Click = click ?? BlankVoid;
         MultiClick = BlankFalse;
@@ -38,7 +38,7 @@ public sealed class CustomPlayerMenu : CustomMenu
 
         if (Selected.Contains(player.PlayerId))
             Selected.RemoveAll(x => x == player.PlayerId);
-        else if (SelectType == MenuType.MultiSelect && MultiClick(player, out shouldClose))
+        else if (SelectType == PlayerMenuType.MultiSelect && MultiClick(player, out shouldClose))
             Selected.Add(player.PlayerId);
         else
             Click(player);
@@ -48,7 +48,7 @@ public sealed class CustomPlayerMenu : CustomMenu
 
         PlayerToPanel.ForEach((x, y) => y.Background.color = Selected.Contains(x) ? UColor.red : UColor.white);
 
-        if (SelectType != MenuType.Single && !shouldClose && Selected.Count < MaxSelected)
+        if (SelectType != PlayerMenuType.Single && !shouldClose && Selected.Count < MaxSelected)
             return;
 
         Menu.Close();

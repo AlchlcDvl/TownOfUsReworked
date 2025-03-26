@@ -23,7 +23,7 @@ public sealed class Morphling : Intruder
     public PlayerControl MorphedPlayer { get; private set; }
     private PlayerControl SampledPlayer { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Morphling;
+    protected override UColor MainColor => CustomColorManager.Morphling;
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
@@ -79,5 +79,5 @@ public sealed class Morphling : Intruder
 
     private bool EndEffect() => Dead;
 
-    public override void ReadRPC(MessageReader reader) => MorphedPlayer = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => MorphedPlayer = reader.ReadPlayer();
 }

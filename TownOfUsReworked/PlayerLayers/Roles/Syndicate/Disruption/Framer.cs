@@ -13,7 +13,7 @@ public sealed class Framer : Syndicate
     private CustomButton RadialFrameButton { get; set; }
     public List<byte> Framed { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Framer;
+    protected override UColor MainColor => CustomColorManager.Framer;
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";
     public override Func<string> Description => () => $"- You can frame a{(HoldsDrive ? $"ll players within a {ChaosDriveFrameRadius}m radius" : " player")}\n- Till you are dead, framed " +
@@ -72,7 +72,7 @@ public sealed class Framer : Syndicate
 
     private bool Usable2() => HoldsDrive;
 
-    public override void ReadRPC(MessageReader reader) => Framed.Add(reader.ReadByte());
+    public override void ReadRPC(NetData reader) => Framed.Add(reader.ReadByte());
 
     protected override void OnTrueDeath() => Framed.Clear();
 }

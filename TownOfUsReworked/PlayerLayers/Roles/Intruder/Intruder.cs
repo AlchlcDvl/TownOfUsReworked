@@ -10,11 +10,11 @@ public abstract class Intruder : Role
     protected string CommonAbilities => "<#FF1919FF>- You can kill players</color>" + (IntruderSettings.IntrudersCanSabotage && (!Dead || IntruderSettings.GhostsCanSabotage) ? ("\n- You can " +
         "call sabotages to distract the <#8CFFFFFF>Crew</color>") : "");
 
-    public override UColor MainColor => CustomColorManager.Intruder;
+    protected override UColor MainColor => CustomColorManager.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override float VisionRange => IntruderSettings.IntruderVision;
     public override bool CanVent => IntruderSettings.IntrudersVent;
-    public override bool UseMainColor => ClientOptions.CustomIntColors;
+    protected override bool UseMainColor => ClientOptions.CustomIntColors;
 
     protected override void Init()
     {

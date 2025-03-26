@@ -13,7 +13,7 @@ public sealed class Swapper : Ability
     public PlayerVoteArea Swap2 { get; set; }
     public CustomMeeting SwapMenu { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Swapper;
+    protected override UColor MainColor => CustomColorManager.Swapper;
     public override LayerEnum Type => LayerEnum.Swapper;
     public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
 
@@ -32,7 +32,7 @@ public sealed class Swapper : Ability
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Swap1, Swap2);
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         Swap1 = reader.Read<PlayerVoteArea>();
         Swap2 = reader.Read<PlayerVoteArea>();

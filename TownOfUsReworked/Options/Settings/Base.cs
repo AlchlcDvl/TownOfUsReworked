@@ -184,9 +184,9 @@ public abstract class Option(CustomOptionType type)
 
     public virtual void Debug() => TranslationManager.DebugId(ID);
 
-    public virtual void ReadValueRpc(MessageReader reader) {}
+    public virtual void ReadValueRpc(NetData reader) {}
 
-    public virtual void WriteValueRpc(MessageWriter writer) {}
+    public virtual void WriteValueRpc(NetData writer) {}
 
     protected virtual void ReadValueString(string value) {}
 

@@ -38,14 +38,15 @@ public static class ButtonUtils
         hud.KillButton.ToggleVisible(false);
         hud.UseButton.ToggleVisible(true);
         hud.PetButton.ToggleVisible(true);
-        hud.SabotageButton.ToggleVisible(player.CanSabotage() && IsInGame());
-        hud.ReportButton.ToggleVisible(!player.Is<Coward>() && !Meeting() && !player.HasDied() && IsInGame());
-        hud.ImpostorVentButton.ToggleVisible(player.CanVent() && IsInGame());
+        var inGame = IsInGame();
+        hud.SabotageButton.ToggleVisible(player.CanSabotage() && inGame);
+        hud.ReportButton.ToggleVisible(!player.Is<Coward>() && !Meeting() && !player.HasDied() && inGame);
+        hud.ImpostorVentButton.ToggleVisible(player.CanVent() && inGame);
 
         if (IsHnS())
-            hud.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor() && IsInGame());
+            hud.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor() && inGame);
         else
-            hud.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && IsInGame() && CustomPlayer.Local.HasDied());
+            hud.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && inGame && CustomPlayer.Local.HasDied());
     }
 
     public static void DisableAllButtons()

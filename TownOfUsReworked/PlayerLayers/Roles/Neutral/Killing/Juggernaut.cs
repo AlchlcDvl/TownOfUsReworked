@@ -14,7 +14,7 @@ public sealed class Juggernaut : NKilling
 
     private CustomButton AssaultButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Juggernaut;
+    protected override UColor MainColor => CustomColorManager.Juggernaut;
     public override LayerEnum Type => LayerEnum.Juggernaut;
     public override Func<string> StartText => () => "Your Power Grows With Every Kill";
     public override Func<string> Description => () => "- With each kill, your kill cooldown decreases" + (KillCounts.GetValueOrDefault(PlayerId) >= 4 ? "\n- You can bypass all forms of protection" : "");

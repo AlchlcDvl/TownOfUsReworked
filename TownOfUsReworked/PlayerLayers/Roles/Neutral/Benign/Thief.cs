@@ -17,9 +17,9 @@ public sealed class Thief : Neutral, IGuesser
 
     private CustomButton StealButton { get; set; }
     public CustomMeeting GuessMenu { get; private set; }
-    public CustomRolesMenu GuessingMenu { get; private set; }
+    public CustomGuessingMenu GuessingMenu { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Thief;
+    protected override UColor MainColor => CustomColorManager.Thief;
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
@@ -135,7 +135,7 @@ public sealed class Thief : Neutral, IGuesser
         GuessMenu.GenButtons(__instance, ThiefCanGuess);
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var thiefAction = reader.Read<ThiefActionsRPC>();
 
@@ -143,12 +143,12 @@ public sealed class Thief : Neutral, IGuesser
         {
             case ThiefActionsRPC.Steal:
             {
-                Steal(reader.Read<PlayerControl>());
+                Steal(reader.ReadPlayer());
                 break;
             }
             case ThiefActionsRPC.Guess:
             {
-                MurderPlayer(reader.Read<PlayerControl>(), reader.Read<LayerEnum>(), reader.Read<PlayerControl>());
+                MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
                 break;
             }
             default:

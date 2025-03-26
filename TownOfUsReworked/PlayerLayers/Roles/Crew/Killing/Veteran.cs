@@ -14,7 +14,7 @@ public sealed class Veteran : Crew, IAlerter
 
     public CustomButton AlertButton { get; private set; }
 
-    public override UColor MainColor => CustomColorManager.Veteran;
+    protected override UColor MainColor => CustomColorManager.Veteran;
     public override LayerEnum Type => LayerEnum.Veteran;
     public override Func<string> StartText => () => "Alert To Kill Anyone Who Dares To Touch You";
     public override Func<string> Description => () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";

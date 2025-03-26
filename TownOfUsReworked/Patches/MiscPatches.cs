@@ -664,9 +664,10 @@ public static class MedScanMinigamePatch
     }
 }
 
-// I have a hate-only relationship with this fucked-up class
-[HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
+[HarmonyPatch]
 public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
 {
+    [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with this fucked-up class
+    [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
     public static Exception Finalizer() => null; // My first use of a finalizer ong
 }

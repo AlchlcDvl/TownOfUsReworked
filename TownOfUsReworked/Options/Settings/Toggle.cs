@@ -29,9 +29,7 @@ public sealed class ToggleOption() : Option<bool>(CustomOptionType.Toggle)
 
     public override void Update() => Setting.Cast<global::ToggleOption>().CheckMark.enabled = Value;
 
-    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadBoolean(), false);
-
-    public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value);
+    public override void ReadValueRpc(NetData reader) => Set(reader.ReadBool(), false);
 
     protected override void ReadValueString(string value) => Set(bool.Parse(value), false);
 }

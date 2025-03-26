@@ -12,7 +12,7 @@ public sealed class Defector : Disposition
     public bool Turned { get; private set; }
     public Faction Side { get; private set; }
 
-    public override UColor MainColor => Turned
+    protected override UColor MainColor => Turned
         ? (Side switch
         {
             Faction.Crew => CustomColorManager.Crew,

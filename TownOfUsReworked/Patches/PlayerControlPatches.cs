@@ -100,12 +100,12 @@ public static class PlayerControlPatches
         if (CustomPlayer.Local.Is<Coward>() || !PerformReport.ReportPressed)
             return false;
 
-        var blocked = LocalNotBlocked();
+        var blocked = LocalBlocked();
 
-        if (!blocked)
+        if (blocked)
             BlockExposed = true;
 
-        return blocked;
+        return !blocked;
     }
 
     [HarmonyPatch(nameof(PlayerControl.CheckUseZipline)), HarmonyPrefix]

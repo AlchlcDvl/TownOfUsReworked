@@ -16,7 +16,7 @@ public sealed class Drunkard : Syndicate
     public PlayerControl ConfusedPlayer { get; private set; }
     private CustomPlayerMenu ConfuseMenu { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Drunkard;
+    protected override UColor MainColor => CustomColorManager.Drunkard;
     public override LayerEnum Type => LayerEnum.Drunkard;
     public override Func<string> StartText => () => "<i>Burp</i>";
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
@@ -53,12 +53,16 @@ public sealed class Drunkard : Syndicate
     {
         if (HoldsDrive || ConfusedPlayer)
         {
-            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConfusedPlayer);
+            var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConfusedPlayer);
 
-            if (ConfusedPlayer)
-                writer.Write(ConfusedPlayer.PlayerId);
+            if (writer != null)
+            {
+                if (ConfusedPlayer)
+                    writer.Write(ConfusedPlayer.PlayerId);
 
-            writer.CloseRpc();
+                writer.Send();
+            }
+
             ConfuseButton.Begin();
         }
         else
@@ -85,9 +89,9 @@ public sealed class Drunkard : Syndicate
         Message("Removed a target");
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         if (!HoldsDrive)
-            ConfusedPlayer = reader.Read<PlayerControl>();
+            ConfusedPlayer = reader.ReadPlayer();
     }
 }

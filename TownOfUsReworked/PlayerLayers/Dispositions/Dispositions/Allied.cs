@@ -19,7 +19,7 @@ public sealed class Allied : Disposition
 
     public Faction Side { get; set; }
 
-    public override UColor MainColor => Side switch
+    protected override UColor MainColor => Side switch
     {
         Faction.Crew => CustomColorManager.Crew,
         Faction.Syndicate => CustomColorManager.Syndicate,

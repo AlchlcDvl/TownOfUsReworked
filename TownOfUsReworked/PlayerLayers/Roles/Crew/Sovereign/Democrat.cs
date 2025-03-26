@@ -18,7 +18,7 @@ public sealed class Democrat : Crew, IRevealer
     public bool Revealed { get; set; }
     private bool RoundOne { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Democrat;
+    protected override UColor MainColor => CustomColorManager.Democrat;
     public override LayerEnum Type => LayerEnum.Democrat;
     public override Func<string> StartText => () => "Start A Campaign To Get Elected!";
     public override Func<string> Description => () => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
@@ -66,7 +66,7 @@ public sealed class Democrat : Crew, IRevealer
 
     private bool Exception(PlayerControl player) => Campaigned.Contains(player.PlayerId);
 
-    public override void ReadRPC(MessageReader reader) => Campaigned.Add(reader.ReadByte());
+    public override void ReadRPC(NetData reader) => Campaigned.Add(reader.ReadByte());
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

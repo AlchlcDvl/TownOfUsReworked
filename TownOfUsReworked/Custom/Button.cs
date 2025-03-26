@@ -1,6 +1,8 @@
+using TownOfUsReworked.RPCs;
+
 namespace TownOfUsReworked.Custom;
 
-public sealed class CustomButton : IDisposable
+public sealed class CustomButton : IDisposable, INetSerializable
 {
     public static readonly List<CustomButton> AllButtons = [];
 
@@ -789,7 +791,7 @@ public sealed class CustomButton : IDisposable
             Disable();
     }
 
-    public void StartEffectRPC(MessageReader reader)
+    public void StartEffectRPC(NetData reader)
     {
         Owner.ReadRPC(reader);
         Begin();
@@ -800,4 +802,6 @@ public sealed class CustomButton : IDisposable
         Destroy();
         GC.SuppressFinalize(this);
     }
+
+    public byte[] ToBytes() => NetData.ToBytes(ID);
 }

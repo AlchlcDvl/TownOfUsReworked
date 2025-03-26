@@ -11,7 +11,7 @@ public sealed class Murderer : NKilling
 
     private CustomButton MurderButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Murderer;
+    protected override UColor MainColor => CustomColorManager.Murderer;
     public override LayerEnum Type => LayerEnum.Murderer;
     public override Func<string> StartText => () => "I Got Murder On My Mind";
     public override Func<string> Description => () => "- You can kill";

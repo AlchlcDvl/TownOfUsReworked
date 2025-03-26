@@ -15,7 +15,7 @@ public sealed class Bastion : Crew, IVentBomber
     private CustomButton BombButton { get; set; }
     public List<int> BombedIDs { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Bastion;
+    protected override UColor MainColor => CustomColorManager.Bastion;
     public override LayerEnum Type => LayerEnum.Bastion;
     public override Func<string> StartText => () => "Place Traps To Deter Venters";
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
@@ -52,5 +52,5 @@ public sealed class Bastion : Crew, IVentBomber
         BombButton.StartCooldown(cooldown);
     }
 
-    public override void ReadRPC(MessageReader reader) => BombedIDs.Add(reader.ReadPackedInt32());
+    public override void ReadRPC(NetData reader) => BombedIDs.Add(reader.ReadInt());
 }

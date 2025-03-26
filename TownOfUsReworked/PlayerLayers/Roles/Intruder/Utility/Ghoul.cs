@@ -11,7 +11,7 @@ public sealed class Ghoul : Intruder, IGhosty
     public bool Faded { get; set; }
     public PlayerControl MarkedPlayer { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Ghoul;
+    protected override UColor MainColor => CustomColorManager.Ghoul;
     public override LayerEnum Type => LayerEnum.Ghoul;
     public override Func<string> StartText => () => "BOO!";
     public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +
@@ -37,7 +37,7 @@ public sealed class Ghoul : Intruder, IGhosty
 
     private bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-    public override void ReadRPC(MessageReader reader) => MarkedPlayer = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => MarkedPlayer = reader.ReadPlayer();
 
     public override void UpdatePlayer()
     {

@@ -2,11 +2,11 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 public abstract class Disposition : PlayerLayer
 {
-    public override UColor MainColor => CustomColorManager.Disposition;
+    protected override UColor MainColor => CustomColorManager.Disposition;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Disposition;
     public override LayerEnum Type => LayerEnum.NoneDisposition;
-    public override UColor LayerColor => CustomColorManager.Disposition;
-    public override bool UseMainColor => ClientOptions.CustomDispColors;
+    protected override UColor LayerColor => CustomColorManager.Disposition;
+    protected override bool UseMainColor => ClientOptions.CustomDispColors;
 
     public virtual string Symbol => "φ";
 

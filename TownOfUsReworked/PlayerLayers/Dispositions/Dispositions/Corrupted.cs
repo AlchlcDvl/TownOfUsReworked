@@ -14,7 +14,7 @@ public sealed class Corrupted : Disposition
 
     private CustomButton CorruptButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Corrupted;
+    protected override UColor MainColor => CustomColorManager.Corrupted;
     public override string Symbol => "δ";
     public override LayerEnum Type => LayerEnum.Corrupted;
     public override Func<string> Description => () => "- Corrupt everyone";

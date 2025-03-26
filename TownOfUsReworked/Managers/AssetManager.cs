@@ -186,12 +186,11 @@ public static class AssetManager
         AddAsset(name, asset);
         AssetToBundle.Remove(name);
 
-        if (!Bundles.Keys.Any(AssetToBundle.Values.Contains))
-        {
-            Bundles.Remove(assetBundle.name);
-            assetBundle.Unload(false);
-        }
+        if (Bundles.Keys.Any(AssetToBundle.Values.Contains))
+            return asset;
 
+        Bundles.Remove(assetBundle.name);
+        assetBundle.Unload(false);
         return asset;
     }
 

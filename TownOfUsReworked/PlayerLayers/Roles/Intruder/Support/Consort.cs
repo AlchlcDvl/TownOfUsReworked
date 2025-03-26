@@ -13,7 +13,7 @@ public sealed class Consort : Intruder, IBlocker
     public PlayerControl BlockTarget { get; set; }
     public CustomPlayerMenu BlockMenu { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Consort;
+    protected override UColor MainColor => CustomColorManager.Consort;
     public override LayerEnum Type => LayerEnum.Consort;
     public override Func<string> StartText => () => "Roleblock The <#8CFFFFFF>Crew</color> From Progressing";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
@@ -87,5 +87,5 @@ public sealed class Consort : Intruder, IBlocker
 
     public bool EndEffect() => (BlockTarget && BlockTarget.HasDied()) || Dead;
 
-    public override void ReadRPC(MessageReader reader) => BlockTarget = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => BlockTarget = reader.ReadPlayer();
 }

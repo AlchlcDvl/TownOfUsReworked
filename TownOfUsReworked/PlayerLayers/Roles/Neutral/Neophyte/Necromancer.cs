@@ -53,7 +53,7 @@ public sealed class Necromancer : Neophyte, IReviver
     private CustomButton SacrificeButton { get; set; }
     private CustomButton ManaButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Necromancer;
+    protected override UColor MainColor => CustomColorManager.Necromancer;
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
     public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
@@ -164,7 +164,7 @@ public sealed class Necromancer : Neophyte, IReviver
 
     private bool EndEffect() => Dead;
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         ParentId = reader.ReadByte();
 

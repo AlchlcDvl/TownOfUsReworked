@@ -19,7 +19,7 @@ public sealed class Enforcer : Intruder
     public PlayerControl BombedPlayer { get; private set; }
     public bool BombSuccessful { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Enforcer;
+    protected override UColor MainColor => CustomColorManager.Enforcer;
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <#8CFFFFFF>Crew</color> To Do Your Bidding";
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
@@ -85,5 +85,5 @@ public sealed class Enforcer : Intruder
 
     private bool EndEffect() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
 
-    public override void ReadRPC(MessageReader reader) => BombedPlayer = reader.Read<PlayerControl>();
+    public override void ReadRPC(NetData reader) => BombedPlayer = reader.ReadPlayer();
 }

@@ -12,7 +12,7 @@ public sealed class Phantom : Neutral, IGhosty
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Phantom;
+    protected override UColor MainColor => CustomColorManager.Phantom;
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText => () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";

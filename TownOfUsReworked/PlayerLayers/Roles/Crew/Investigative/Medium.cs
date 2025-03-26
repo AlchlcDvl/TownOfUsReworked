@@ -28,7 +28,7 @@ public sealed class Medium : Crew, IShaman
     // public bool HasSeanced { get; set; }
     public List<byte> MediatedPlayers { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Medium;
+    protected override UColor MainColor => CustomColorManager.Medium;
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
     public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
@@ -115,7 +115,7 @@ public sealed class Medium : Crew, IShaman
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         var playerid2 = reader.ReadByte();
         MediatedPlayers.Add(playerid2);

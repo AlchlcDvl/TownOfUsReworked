@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public sealed class Ninja : Ability
 {
-    public override UColor MainColor => CustomColorManager.Ninja;
+    protected override UColor MainColor => CustomColorManager.Ninja;
     public override LayerEnum Type => LayerEnum.Ninja;
     public override Func<string> Description => () => "- You do not lunge when killing";
 }

@@ -13,7 +13,7 @@ public sealed class Traitor : Disposition
     private bool Betrayed { get; set; }
     public Faction Side { get; private set; }
 
-    public override UColor MainColor => Turned
+    protected override UColor MainColor => Turned
         ? (Side switch
         {
             Faction.Intruder => CustomColorManager.Intruder,

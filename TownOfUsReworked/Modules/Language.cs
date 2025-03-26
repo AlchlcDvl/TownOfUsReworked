@@ -6,7 +6,7 @@ public sealed class Language : Asset
     [JsonPropertyName("values")]
     public LangModule[] Values { get; set; }
 
-    [JsonPropertyName("isblank")]
+    [JsonPropertyName("isBlank")]
     public bool IsBlank { get; set; } // I need this here to stop the translator from spamming errors for intentionally blank translations
 
     [JsonPropertyName("ids")]

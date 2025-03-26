@@ -34,7 +34,7 @@ public sealed class Bomber : Syndicate
     private CustomButton DetonateButton { get; set; }
     private List<Bomb> Bombs { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Bomber;
+    protected override UColor MainColor => CustomColorManager.Bomber;
     public override LayerEnum Type => LayerEnum.Bomber;
     public override Func<string> StartText => () => "Make People Go Boom";
     public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";
@@ -102,7 +102,7 @@ public sealed class Bomber : Syndicate
 
     private bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         if (reader.Read<BomberActionsRPC>() == BomberActionsRPC.DropBomb)
         {

@@ -36,7 +36,7 @@ public sealed class DeadPlayer(byte killer, byte player)
                     report += $"\nThey were killed by a {killerRole.Name}!";
                 else
                 {
-                    report += Killer.GetFaction() switch
+                    report += killerRole.Faction switch
                     {
                         Faction.Crew => "\nThe killer is from the Crew!",
                         Faction.Intruder => "\nThe killer is an Intruder!",

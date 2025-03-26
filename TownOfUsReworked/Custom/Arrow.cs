@@ -1,18 +1,21 @@
 namespace TownOfUsReworked.Custom;
 
+/// <summary>
+/// A wrapper that implements custom targeting behaviour for <see cref="ArrowBehaviour"/>.
+/// </summary>
 public class CustomArrow : IDisposable
 {
+    public PlayerControl Owner { get; }
     protected ArrowBehaviour Arrow { get; private set; }
+
+    protected Func<Vector3> Target { get; init; }
     private SpriteRenderer Render { get; set; }
     private GameObject ArrowObj { get; set; }
-    public PlayerControl Owner { get; }
     private float Interval { get; }
     private SpriteRenderer Point { get; set; }
     private UColor ArrowColor { get; set; }
     private bool Disabled { get; set; }
-    protected Func<Vector3> Target { get; init; }
-
-    private float Time;
+    private float Time { get; set; }
 
     public static readonly List<CustomArrow> AllArrows = [];
 

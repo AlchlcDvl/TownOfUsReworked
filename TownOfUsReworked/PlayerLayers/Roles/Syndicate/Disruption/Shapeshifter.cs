@@ -18,7 +18,7 @@ public sealed class Shapeshifter : Syndicate
     private CustomPlayerMenu ShapeshiftMenu1 { get; set; }
     private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Shapeshifter;
+    protected override UColor MainColor => CustomColorManager.Shapeshifter;
     public override LayerEnum Type => LayerEnum.Shapeshifter;
     public override Func<string> StartText => () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
@@ -158,12 +158,12 @@ public sealed class Shapeshifter : Syndicate
         return !ShapeshiftPlayer2 ? "SECOND TARGET" : "SHAPESHIFT";
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         if (HoldsDrive)
             return;
 
-        ShapeshiftPlayer1 = reader.Read<PlayerControl>();
-        ShapeshiftPlayer2 = reader.Read<PlayerControl>();
+        ShapeshiftPlayer1 = reader.ReadPlayer();
+        ShapeshiftPlayer2 = reader.ReadPlayer();
     }
 }

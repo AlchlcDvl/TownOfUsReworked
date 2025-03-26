@@ -31,7 +31,7 @@ public sealed class Altruist : Crew, IReviver
     private CustomButton ManaButton { get; set; }
     private byte ParentId { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Altruist;
+    protected override UColor MainColor => CustomColorManager.Altruist;
     public override LayerEnum Type => LayerEnum.Altruist;
     public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
     public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {ReviveDur}s\n- If a meeting is called or you are killed during your revive, " +
@@ -109,7 +109,7 @@ public sealed class Altruist : Crew, IReviver
         ReviveButton.Uses += PassiveAltManaGain;
     }
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         ParentId = reader.ReadByte();
 

@@ -9,7 +9,7 @@ public sealed class Mafia : Disposition
     [ToggleOption]
     private static bool MafVent = false;
 
-    public override UColor MainColor => CustomColorManager.Mafia;
+    protected override UColor MainColor => CustomColorManager.Mafia;
     public override string Symbol => "ω";
     public override LayerEnum Type => LayerEnum.Mafia;
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";

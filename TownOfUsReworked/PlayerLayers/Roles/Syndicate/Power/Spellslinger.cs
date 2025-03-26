@@ -12,7 +12,7 @@ public sealed class Spellslinger : Syndicate
     private CustomButton SpellButton { get; set; }
     public List<byte> Spelled { get; } = [];
 
-    public override UColor MainColor => CustomColorManager.Spellslinger;
+    protected override UColor MainColor => CustomColorManager.Spellslinger;
     public override LayerEnum Type => LayerEnum.Spellslinger;
     public override Func<string> StartText => () => "Place the <#8CFFFFFF>Crew</color> Under A Curse";
     public override Func<string> Description => () => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
@@ -51,7 +51,7 @@ public sealed class Spellslinger : Syndicate
 
     private bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate);
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         Spelled.Add(reader.ReadByte());
 

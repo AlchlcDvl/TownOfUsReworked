@@ -27,7 +27,7 @@ public sealed class Snitch : Ability
     [ToggleOption]
     public static bool SnitchSeesFanatic = true;
 
-    public override UColor MainColor => CustomColorManager.Snitch;
+    protected override UColor MainColor => CustomColorManager.Snitch;
     public override LayerEnum Type => LayerEnum.Snitch;
     public override Func<string> Description => () => "- You can finish your tasks to get information on who's evil";
     public override bool Hidden => !SnitchKnows && !TasksDone && !Dead;

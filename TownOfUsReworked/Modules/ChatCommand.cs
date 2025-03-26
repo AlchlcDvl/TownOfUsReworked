@@ -25,12 +25,12 @@ public sealed class ChatCommand
         new([ "unignore", "ui" ], ToggleIgnore, [ "player id | (player name)" ], "Unignores a player, making their messages start appearing again"),
         new([ "ignore" ], ToggleIgnore, [ "player id | (player name)" ], "Ignores a player, making their messages no longer appear to you"),
         new([ "help" ], Help, [ "command name (optional)" ], "Gets a help menu showing the usable commands, or provides a description of a command if the command name is specified"),
-        // new([ "testargs", "targ" ], TestArgs, ""),
-        // new([ "testargless", "targless" ], TestArgless, ""),
-        // new([ "testargsmessage", "targmess", "tam" ], TestArgsMessage, ""),
-        // new([ "translate" ], Translate, ""),
-        // new([ "rpc" ], SendRPCArgless, ""),
-        // new([ "rpca" ], SendRPCArgs, "")
+        // new([ "testargs", "targ" ], TestArgs, "Test command with arguments"),
+        // new([ "testargless", "targless" ], TestArgless, "Test command without arguments"),
+        // new([ "testargsmessage", "targmess", "tam" ], TestArgsMessage, "Test command with arguments and a message"),
+        // new([ "translate" ], Translate, "Translation argument"),
+        // new([ "rpc" ], SendRPCArgless, "Test command to send an rpc without data"),
+        // new([ "rpca" ], SendRPCArgs, [ "text text" ], "Test command to send an rpc with data")
     ];
 
     private ChatCommand(string[] aliases, string description)
@@ -281,13 +281,13 @@ public sealed class ChatCommand
 
         foreach (var player2 in AllPlayers())
         {
-            if (!player2.AmOwner)
-            {
-                var client = AmongUsClient.Instance.GetClient(player2.OwnerId);
+            if (player2.AmOwner)
+                continue;
 
-                if (client != null)
-                    AmongUsClient.Instance.KickPlayer(client.Id, false);
-            }
+            var client = AmongUsClient.Instance.GetClient(player2.OwnerId);
+
+            if (client != null)
+                AmongUsClient.Instance.KickPlayer(client.Id, false);
         }
 
         Run("<#B148E2FF>◈ Success ◈</color>", "Lobby cleared!");
@@ -322,7 +322,7 @@ public sealed class ChatCommand
         if (byte.TryParse(args[1], out var id))
             allPlayers.TryFinding(x => x.PlayerId == id, out target);
 
-        if (split.Length > 1)
+        if (split.Length > 1 && !target)
             allPlayers.TryFinding(x => x.name == split[1], out target);
 
         if (!target)
@@ -330,7 +330,8 @@ public sealed class ChatCommand
             Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", "Could not find the target.");
             return;
         }
-        else if (target.AmOwner)
+
+        if (target.AmOwner)
         {
             Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Don't {(ban ? "ban" : "kick")} yourself.");
             return;
@@ -400,15 +401,15 @@ public sealed class ChatCommand
     // private static void SendRPCArgs(string[] args)
     // {
     //     var message = "You entered the following params:\n";
-    //     var writer = CallOpenRpc(CustomRPC.Test, TestRPC.Args);
+    //     var writer = GenerateNetData(CustomRPC.Test2);
 
     //     foreach (var arg in args[1..])
     //     {
-    //         writer.Write(arg);
     //         message += $"{arg} ";
     //     }
 
-    //     writer.CloseRpc();
+    //     writer.AppendBytes(message);
+    //     writer.Send();
     //     Success("RPC Sent!");
     //     Run("<#FF00FFFF>⚠ RPC TEST ⚠</color>", $"RPC Sent!\nWith the following message: {message}");
     // }

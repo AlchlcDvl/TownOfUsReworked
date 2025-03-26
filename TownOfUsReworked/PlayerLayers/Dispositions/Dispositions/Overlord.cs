@@ -9,7 +9,7 @@ public sealed class Overlord : Disposition
     [NumberOption(1, 20, 1)]
     public static Number OverlordMeetingWinCount = 3;
 
-    public override UColor MainColor => CustomColorManager.Overlord;
+    protected override UColor MainColor => CustomColorManager.Overlord;
     public override string Symbol => "β";
     public override LayerEnum Type => LayerEnum.Overlord;
     public override Func<string> Description => () => $"- Stay alive for {OverlordMeetingWinCount} rounds";

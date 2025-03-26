@@ -9,7 +9,7 @@ public sealed class Rebel : Syndicate
     private bool HasDeclared { get; set; }
     private CustomButton SidekickButton { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Rebel;
+    protected override UColor MainColor => CustomColorManager.Rebel;
     public override LayerEnum Type => LayerEnum.Rebel;
     public override Func<string> StartText => () => "Promote Your Fellow <#008000FF>Syndicate</color> To Do Better";
     public override Func<string> Description => () => "- You can promote a fellow <#008000FF>Syndicate</color> into becoming your successor\n- Promoting a <#008000FF>" +
@@ -49,7 +49,7 @@ public sealed class Rebel : Syndicate
 
     private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsSidekick || !player.Is(Faction);
 
-    public override void ReadRPC(MessageReader reader) => Sidekick(reader.Read<PlayerControl>());
+    public override void ReadRPC(NetData reader) => Sidekick(reader.ReadPlayer());
 
     private bool Usable() => !HasDeclared;
 }

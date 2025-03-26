@@ -16,7 +16,7 @@ public sealed class Werewolf : NKilling
     private CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Werewolf;
+    protected override UColor MainColor => CustomColorManager.Werewolf;
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
     public override Func<string> Description => () => $"- You kill everyone within {GameSettings.InteractionDistance}m";

@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Options;
 public abstract class Option<T>(CustomOptionType type) : Option(type)
     where T : struct
 {
-    public T Value { get; set; }
+    public T Value { get; protected set; }
 
     protected Type TargetType { get; } = typeof(T);
 
@@ -16,6 +16,8 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
     }
 
     public override string ToString() => $"{ID}:{ValueString()}";
+
+    public override void WriteValueRpc(NetData writer) => writer.Write(Value);
 
     protected virtual string ValueString() => $"{Value}";
 
@@ -57,11 +59,11 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         else
         {
             LastChangedSetting = ID;
-            LastSettingNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, hud.Notifier.transform);
+            LastSettingNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, hud.Notifier.transform);
             LastSettingNotif.transform.localPosition = new(0f, 0f, -2f);
             LastSettingNotif.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(LastSettingNotif)));
-            hud.Notifier.ShiftMessages();
             hud.Notifier.AddMessageToQueue(LastSettingNotif);
+            hud.Notifier.ShiftMessages();
         }
     }
 }

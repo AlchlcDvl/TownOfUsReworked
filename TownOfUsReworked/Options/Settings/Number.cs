@@ -71,9 +71,9 @@ public sealed class NumberOption(float min, float max, float increment, Format f
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
-    public override void ReadValueRpc(MessageReader reader) => Set(reader.ReadSingle());
+    public override void ReadValueRpc(NetData reader) => Set(reader.ReadFloat());
 
-    public override void WriteValueRpc(MessageWriter writer) => writer.Write(Value.Value);
+    public override void WriteValueRpc(NetData writer) => writer.Write(Value.Value);
 
     protected override void ReadValueString(string value) => Set(float.Parse(value), false);
 }

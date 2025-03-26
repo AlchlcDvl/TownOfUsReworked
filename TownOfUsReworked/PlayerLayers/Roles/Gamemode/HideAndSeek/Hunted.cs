@@ -4,7 +4,7 @@ public sealed class Hunted : HideAndSeek
 {
     public override LayerEnum Type => LayerEnum.Hunted;
     public override Func<string> StartText => () => "Run, Hide And Do Tasks";
-    public override UColor MainColor => CustomColorManager.Hunted;
+    protected override UColor MainColor => CustomColorManager.Hunted;
     public override float VisionRange => GameModeSettings.HuntedVision;
 
     protected override void Init()

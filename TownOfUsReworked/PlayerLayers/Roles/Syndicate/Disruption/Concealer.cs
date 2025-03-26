@@ -17,7 +17,7 @@ public sealed class Concealer : Syndicate
     private PlayerControl ConcealedPlayer { get; set; }
     private CustomPlayerMenu ConcealMenu { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Concealer;
+    protected override UColor MainColor => CustomColorManager.Concealer;
     public override LayerEnum Type => LayerEnum.Concealer;
     public override Func<string> StartText => () => "Turn The <#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
@@ -66,12 +66,16 @@ public sealed class Concealer : Syndicate
     {
         if (HoldsDrive || ConcealedPlayer)
         {
-            var writer = CallOpenRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
+            var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
 
-            if (ConcealedPlayer)
-                writer.Write(ConcealedPlayer.PlayerId);
+            if (writer != null)
+            {
+                if (ConcealedPlayer)
+                    writer.Write(ConcealedPlayer.PlayerId);
 
-            writer.CloseRpc();
+                writer.Send();
+            }
+
             ConcealButton.Begin();
         }
         else
@@ -98,9 +102,9 @@ public sealed class Concealer : Syndicate
 
     private bool EndEffect() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead);
 
-    public override void ReadRPC(MessageReader reader)
+    public override void ReadRPC(NetData reader)
     {
         if (!HoldsDrive)
-            ConcealedPlayer = reader.Read<PlayerControl>();
+            ConcealedPlayer = reader.ReadPlayer();
     }
 }

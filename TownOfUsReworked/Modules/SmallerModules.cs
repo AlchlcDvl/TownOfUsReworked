@@ -1,4 +1,6 @@
-// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global\
+using TownOfUsReworked.RPCs;
+
 namespace TownOfUsReworked.Modules;
 
 public record SummaryInfo(string PlayerName, string History, string CachedHistory);
@@ -39,7 +41,7 @@ public sealed class DownloadableAsset : Asset
 }
 
 [Serializable]
-public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer)
+public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable
 {
     public byte Chance { get; set; } = chance;
     public byte Count { get; set; } = count;
@@ -60,16 +62,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsList() && ListEntryOption.IsAdded(ID.CastToSlot()))) &&
         ID.IsValid(relatedCount);
 
-    public readonly void Serialize(MessageWriter writer)
-    {
-        writer.Write(Chance);
-        writer.Write(Count);
-        writer.Write(Unique);
-        writer.Write(Active);
-        writer.Write(ID);
-    }
-
-    public static RoleOptionData Deserialize(MessageReader reader) => new(reader.ReadByte(), reader.ReadByte(), reader.ReadBoolean(), reader.ReadBoolean(), reader.Read<LayerEnum>());
+    public readonly byte[] ToBytes() => [ .. new object[] { Chance, Count, Unique, Active, ID }.Select(NetData.ToBytes).GetAll() ];
 }
 
 public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)

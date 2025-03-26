@@ -23,7 +23,7 @@ public sealed class Teleporter : Intruder, IMover
     private Vector2 TeleportPoint { get; set; }
     public bool Moving { get; set; }
 
-    public override UColor MainColor => CustomColorManager.Teleporter;
+    protected override UColor MainColor => CustomColorManager.Teleporter;
     public override LayerEnum Type => LayerEnum.Teleporter;
     public override Func<string> StartText => () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
@@ -61,7 +61,7 @@ public sealed class Teleporter : Intruder, IMover
             MarkButton.StartCooldown();
     }
 
-    public override void ReadRPC(MessageReader reader) => Coroutines.Start(TeleportPlayer(reader.ReadVector2(), this));
+    public override void ReadRPC(NetData reader) => Coroutines.Start(TeleportPlayer(reader.ReadVector2(), this));
 
     private bool Condition1() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
         Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != (Vector2)Player.transform.position;
