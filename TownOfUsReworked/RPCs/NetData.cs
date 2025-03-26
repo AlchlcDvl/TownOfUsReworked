@@ -22,39 +22,29 @@ public sealed class NetData : IDisposable, INetSerializable
     /// </summary>
     /// <param name="reading">Indicates whether or not it's being read.</param>
     /// <exception cref="InvalidOperationException">Thrown if the instance is in a writing state when reading, or if the instance is in a reading state when writing.</exception>
-    /// <inheritdoc cref="EnsureDataReadable"/>
-    private void ThrowIfIncorrectState(bool reading, int offset)
+    /// <exception cref="ArgumentException">Thrown when either there was 0 data being attempted to be read, or there was an attempt at reading data from a writing <see cref="NetData"/> instance.</exception>
+    /// <exception cref="EndOfStreamException">Thrown if there is insufficient data to read.</exception>
+    private void ThrowIfIncorrectState(bool reading, int readLength)
     {
         if (reading != IsReceived)
             throw new InvalidOperationException("Tried to send or receive bytes from a data array with the incorrect state");
 
-        EnsureDataReadable(offset);
-    }
-
-    /// <summary>
-    /// Ensures that data can be read.
-    /// </summary>
-    /// <param name="offset">The offset of the value being read.</param>
-    /// <exception cref="ArgumentException">Thrown when either there was 0 data being attempted to be read, or there was an attempt at reading data from a writing <see cref="NetData"/> instance.</exception>
-    /// <exception cref="EndOfStreamException">Thrown if there is insufficient data to read.</exception>
-    private void EnsureDataReadable(int offset)
-    {
         if (!IsReceived)
         {
-            if (offset > 0)
-                throw new ArgumentException("This instance of data is for writing, not reading");
+            if (readLength > 0)
+                throw new InvalidOperationException("This instance of data is for writing, not reading");
             else
                 return;
         }
 
-        if (offset == 0)
-            throw new ArgumentException("Must gather some byte data");
+        if (readLength == 0)
+            throw new ArgumentException($"Must gather some byte data. Pos {Position} out of {DataSize}");
 
-        if ((Position + offset) >= ReadBuffer.Length)
-            throw new EndOfStreamException("Tried to read more data than what was available");
+        if ((Position + readLength) > ReadBuffer.Length)
+            throw new EndOfStreamException($"Tried to read more data than what was available. Pos {Position} out of {DataSize} with read length {readLength}");
 
         if (Position >= ReadBuffer.Length)
-            throw new EndOfStreamException("No more data to read");
+            throw new EndOfStreamException($"No more data to read. Pos {Position} out of {DataSize}");
     }
 
     /// <summary>
@@ -66,6 +56,9 @@ public sealed class NetData : IDisposable, INetSerializable
     {
         if (IsReceived)
             throw new InvalidOperationException("Cannot send data that was received");
+
+        if (TownOfUsReworked.MciActive || !CustomPlayer.Local)
+            return;
 
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
         writer.Serialize(this);
@@ -83,9 +76,10 @@ public sealed class NetData : IDisposable, INetSerializable
     /// Initialises an instance of <see cref="NetData"/> for writing byte data, and optionally comes with allowing data to be written in during initialisation.
     /// </summary>
     /// <param name="data">The optional data to serialize during initialisation.</param>
-    public NetData(params object[] data)
+    public NetData(CustomRPC rpc, params object[] data)
     {
-        WriteBuffer = [ .. data.Select(ToBytes).GetAll() ];
+        WriteBuffer = [ (byte)rpc ];
+        WriteBuffer.AddRange(data.Select(ToBytes).GetAll());
         ReadBuffer = [];
         IsReceived = false;
     }
@@ -97,6 +91,9 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <exception cref="InvalidOperationException">Thrown if the instance is not in a writing state.</exception>
     public void Write(object value)
     {
+        if (DataSize > 1000)
+            throw new InvalidOperationException("Writing too much data!");
+
         ThrowIfIncorrectState(false, 0);
         WriteBuffer.AddRange(ToBytes(value));
     }
@@ -161,12 +158,63 @@ public sealed class NetData : IDisposable, INetSerializable
         _ when type == typeof(Vent) => ReadVent(),
         _ when type == typeof(RoleOptionData) => ReadRoleOptionData(),
         _ when type == typeof(CustomButton) => ReadButton(),
-        _ when typeof(IPlayerLayer).IsAssignableFrom(type) => ReadLayer(),
-        _ when typeof(IEnumerable<IPlayerLayer>).IsAssignableFrom(type) => ReadLayers(),
-        _ when typeof(IEnumerable<byte>).IsAssignableFrom(type) => ReadBytes(),
+        _ when type == typeof(Vector2) => ReadVector2(),
         _ when type.IsEnum => ReadEnum(type),
-        _ => throw new ArgumentOutOfRangeException($"Cannot read a {type.Name} from the data and the provided type")
+        _ when typeof(IPlayerLayer).IsAssignableFrom(type) => ReadLayer(),
+        _ when typeof(IEnumerable).IsAssignableFrom(type) => type.IsArray
+            ? ReadArray(type.GetElementType())
+            : ReadValues(type.IsGenericType ? type.GetGenericArguments()[0] : typeof(object)), // Use of generics is enforced in the code base
+        _ when typeof(INetSerializable).IsAssignableFrom(type) => // Allowing the classes to implement their own deserialization methods
+            AccessTools.Method(type, "Read")?.Invoke(null, [ this ]) ??
+            AccessTools.Method(typeof(RpcManager), $"Read{type.Name}")?.Invoke(null, [ this ]) ??
+            throw new ArgumentOutOfRangeException($"Cannot read a {type.Name} from the data and the provided type"),
+        _ => throw new NotSupportedException($"{type.Name} cannot be read")
     };
+
+    /// <summary>
+    /// Reads a casted collection of values from the data, prefixed by a count.
+    /// </summary>
+    /// <typeparam name="T">The type to cast the collection to.</typeparam>
+    /// <returns>A collection of values, casted to <typeparamref name="T"/>.</returns>
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    public IEnumerable<T> ReadValues<T>() => ReadValues(typeof(T)).Cast<T>();
+
+    /// <summary>
+    /// Reads a collection of values from the data, prefixed by a count.
+    /// </summary>
+    /// <returns>A collection of values.</returns>
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    public IEnumerable ReadValues(Type type)
+    {
+        var count = ReadUInt();
+
+        while (count-- > 0)
+            yield return Read(type);
+    }
+
+    /// <summary>
+    /// Reads a casted collection of values from the data, prefixed by a count.
+    /// </summary>
+    /// <typeparam name="T">The type to cast the collection to.</typeparam>
+    /// <returns>A collection of values, casted to <typeparamref name="T"/>.</returns>
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    public T[] ReadArray<T>() => [ .. ReadArray(typeof(T)).Cast<T>() ];
+
+    /// <summary>
+    /// Reads a collection of values from the data, prefixed by a count.
+    /// </summary>
+    /// <returns>A collection of values.</returns>
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    public Array ReadArray(Type type)
+    {
+        var count = ReadUInt();
+        var array = Array.CreateInstance(type, count);
+
+        for (var i = 0; i < count; i++)
+            array.SetValue(Read(type), i);
+
+        return array;
+    }
 
     /// <summary>
     /// Reads a boolean value from the data.
@@ -176,7 +224,9 @@ public sealed class NetData : IDisposable, INetSerializable
     public bool ReadBool()
     {
         ThrowIfIncorrectState(true, 1);
-        return ReadBuffer[Position++] != 0;
+        var result = ReadBuffer[Position] != 0;
+        Position++;
+        return result;
     }
 
     /// <summary>
@@ -187,7 +237,9 @@ public sealed class NetData : IDisposable, INetSerializable
     public byte ReadByte()
     {
         ThrowIfIncorrectState(true, 1);
-        return ReadBuffer[Position++];
+        var result = ReadBuffer[Position];
+        Position++;
+        return result;
     }
 
     /// <summary>
@@ -198,7 +250,9 @@ public sealed class NetData : IDisposable, INetSerializable
     public sbyte ReadSByte()
     {
         ThrowIfIncorrectState(true, 1);
-        return (sbyte)(ReadBuffer[Position++] - sbyte.MaxValue);
+        var result = (sbyte)(ReadBuffer[Position] - sbyte.MaxValue);
+        Position++;
+        return result;
     }
 
     /// <summary>
@@ -299,9 +353,8 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     public string ReadString()
     {
-        ThrowIfIncorrectState(true, 4);
         var length = (int)ReadUInt();
-        EnsureDataReadable(length);
+        ThrowIfIncorrectState(true, length);
         var result = Encoding.UTF8.GetString(ReadBuffer, Position, length);
         Position += length;
         return result;
@@ -322,19 +375,6 @@ public sealed class NetData : IDisposable, INetSerializable
     }
 
     // No need for the ThrowIfIncorrectState for the following methods because it's nested
-
-    /// <summary>
-    /// Reads a collection of bytes from the data, prefixed by a count.
-    /// </summary>
-    /// <returns>An enumerable of deserialized bytes.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public IEnumerable<byte> ReadBytes()
-    {
-        var count = ReadUInt();
-
-        while (count-- > 0)
-            yield return ReadByte();
-    }
 
     /// <summary>
     /// Reads an enum value of the provided type from the data.
@@ -361,26 +401,6 @@ public sealed class NetData : IDisposable, INetSerializable
         var player = ReadByte();
         var type = Read<LayerEnum>();
         return PlayerLayer.AllLayers.Find(x => x.PlayerId == player && x.Type == type);
-    }
-
-    /// <summary>
-    /// Reads multiple player layers from the data, prefixed by a count and casts them to <typeparamref name="T"/>.
-    /// </summary>
-    /// <typeparam name="T">The type to cast to.</typeparam>
-    /// <inheritdoc cref="ReadLayers"/>
-    public IEnumerable<T> ReadLayers<T>() where T : IPlayerLayer => ReadLayers().Cast<T>();
-
-    /// <summary>
-    /// Reads multiple player layers from the data, prefixed by a count.
-    /// </summary>
-    /// <returns>An enumerable of deserialized player layers.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public IEnumerable<IPlayerLayer> ReadLayers()
-    {
-        var count = ReadUInt();
-
-        while (count-- > 0)
-            yield return ReadLayer();
     }
 
     /// <summary>
@@ -451,7 +471,18 @@ public sealed class NetData : IDisposable, INetSerializable
     /// </summary>
     /// <returns>The deserialized vector 2.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public Vector2 ReadVector2() => new(ReadFloat(), ReadFloat());
+    public Vector2 ReadVector2()
+    {
+        var x = ReadUShort() / (float)ushort.MaxValue;
+        var y = ReadUShort() / (float)ushort.MaxValue;
+        return new(Mathf.Lerp(MinPos, MaxPos, x), Mathf.Lerp(MinPos, MaxPos, y));
+    }
+
+    // Some stuff to serialize Vector2 using the game's bounds
+    private const float MinPos = -50f;
+    private const float MaxPos = +50f;
+
+    private static float ReverseLerp(float t) => Mathf.Clamp((t - MinPos) / (MaxPos - MinPos), 0f, 1f);
 
     // Interface stuff
 
@@ -459,14 +490,14 @@ public sealed class NetData : IDisposable, INetSerializable
     public void Dispose()
     {
         if (BytesRemaining > 0)
-            Warning("There was unread data");
+            Warning($"There were {BytesRemaining} bytes of unread data in the rpc {(CustomRPC)ReadBuffer[0]} {ReadBuffer[1]}");
 
         Array.Clear(ReadBuffer); // Explicitly clearing a byte[] just for the ease of my mind
         WriteBuffer.Clear();
     }
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => IsReceived ? ReadBuffer : WriteBuffer.ToArray();
+    public byte[] ToBytes() => IsReceived ? ReadBuffer : [ .. WriteBuffer ];
 
     // Static method helpers
 
@@ -485,6 +516,7 @@ public sealed class NetData : IDisposable, INetSerializable
         uint i => BitConverter.GetBytes(i),
         ulong i => BitConverter.GetBytes(i),
         long i => BitConverter.GetBytes(i),
+        float i => BitConverter.GetBytes(i),
         string i => ToBytes(i), // String needs a custom method because BitConverter apparently can't support it
         Enum i => ToBytes(Convert.ChangeType(i, Enum.GetUnderlyingType(i.GetType()))),
 
@@ -492,16 +524,16 @@ public sealed class NetData : IDisposable, INetSerializable
         PlayerControl i => [ i.PlayerId ],
         DeadBody i => [ i.ParentId ],
         PlayerVoteArea i => [ i.TargetPlayerId ],
-        Vent i => ToBytes(i.Id),
-        Vector2 i => [ .. ToBytes(i.x), .. ToBytes(i.y) ],
+        Vent i => BitConverter.GetBytes(i.Id),
+        Vector2 i => ToBytes(i),
 
         // Custom types using the interface
         INetSerializable i => i.ToBytes(),
 
         // Special cases
-        IEnumerable<byte> i => [ .. ToBytes((uint)i.Count()), .. i ],
-        IEnumerable<IPlayerLayer> i => [ .. ToBytes((uint)i.Count()), .. i.Select(ToBytes).GetAll() ],
-        object[] i => [ .. ToBytes((uint)i.Length), .. i.Select(ToBytes).GetAll() ],
+        Array i => ToBytes(i),
+        // IDictionary i => ToBytes(i), WIP
+        IEnumerable i => ToBytes(i),
 
         // Edge cases
         _ when value == null => throw new ArgumentNullException(nameof(value)),
@@ -517,5 +549,53 @@ public sealed class NetData : IDisposable, INetSerializable
     {
         var bytes = Encoding.UTF8.GetBytes(value);
         return [ .. ToBytes((uint)bytes.Length), .. bytes ];
+    }
+
+    /// <summary>
+    /// Serializes a collection of values to an array of bytes, prefixed by the collection's length.
+    /// </summary>
+    /// <param name="values">The values to serialize.</param>
+    /// <returns>An array of bytes representing the values.</returns>
+    public static byte[] ToBytes(IEnumerable values)
+    {
+        var result = new List<byte>();
+        var i = 0u;
+
+        foreach (var obj in values)
+        {
+            result.AddRange(ToBytes(obj));
+            i++;
+        }
+
+        result.InsertRange(0, ToBytes(i));
+        return [ .. result ];
+    }
+
+    /// <summary>
+    /// Serializes an array of values to an array of bytes, prefixed by the collection's length.
+    /// </summary>
+    /// <param name="values">The values to serialize.</param>
+    /// <returns>An array of bytes representing the values.</returns>
+    public static byte[] ToBytes(Array values)
+    {
+        var result = new List<byte>();
+
+        foreach (var obj in values)
+            result.AddRange(ToBytes(obj));
+
+        result.InsertRange(0, ToBytes((uint)values.Length));
+        return [ .. result ];
+    }
+
+    /// <summary>
+    /// Serializes a 2d vector to an array of bytes, prefixed by the collection's length.
+    /// </summary>
+    /// <param name="value">The value to serialize.</param>
+    /// <returns>An array of bytes representing the value.</returns>
+    public static byte[] ToBytes(Vector2 value)
+    {
+        var x = (ushort)(ReverseLerp(value.x) * ushort.MaxValue);
+        var y = (ushort)(ReverseLerp(value.y) * ushort.MaxValue);
+        return [ .. BitConverter.GetBytes(x), .. BitConverter.GetBytes(y), ];
     }
 }

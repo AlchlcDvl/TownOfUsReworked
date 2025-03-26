@@ -1,5 +1,3 @@
-using TownOfUsReworked.RPCs;
-
 namespace TownOfUsReworked.Custom;
 
 public sealed class CustomButton : IDisposable, INetSerializable

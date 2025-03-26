@@ -1,5 +1,3 @@
-using TownOfUsReworked.RPCs;
-
 namespace TownOfUsReworked.PlayerLayers;
 
 /// <summary>

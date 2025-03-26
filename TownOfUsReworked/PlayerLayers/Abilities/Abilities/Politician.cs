@@ -97,7 +97,7 @@ public sealed class Politician : Ability
             case PoliticianActionsRPC.Remove:
             {
                 ExtraVotes.Clear();
-                ExtraVotes.AddRange(reader.ReadBytes());
+                ExtraVotes.AddRange(reader.ReadValues<byte>());
                 VoteBank -= ExtraVotes.Count;
                 break;
             }

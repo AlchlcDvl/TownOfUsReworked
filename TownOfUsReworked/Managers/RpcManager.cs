@@ -15,7 +15,7 @@ public static class RpcManager
     /// </summary>
     /// <param name="data">The data values to serialize.</param>
     /// <returns>A writer instance of <see cref="NetData"/>.</returns>
-    public static NetData CreateWriter(params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(data);
+    public static NetData CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(rpc, data);
 
     /// <summary>
     /// Sends an RPC message to all players.
@@ -29,7 +29,7 @@ public static class RpcManager
     /// </summary>
     /// <param name="targetClientId">The player to send the data to.</param>
     /// <inheritdoc cref="CallRpc"/>
-    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CreateWriter([ rpc, .. data ])?.Send(targetClientId);
+    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CreateWriter(rpc, data)?.Send(targetClientId);
 
     /// <summary>
     /// Closes and sends the rpc.
@@ -113,11 +113,20 @@ public static class RpcManager
     /// <param name="reader">The reader instance of <see cref="NetData"/> containing byte data.</param>
     public static void HandleRpc(NetData reader)
     {
+        if (reader == null || reader.DataSize == 0)
+        {
+            Warning("Received no data");
+            return;
+        }
+
+        if (TownOfUsReworked.IsDev)
+            Message($"Received rpc with {reader.DataSize} bytes");
+
         var rpc = reader.Read<CustomRPC>();
 
         switch (rpc)
         {
-            // Debugging stuff, uncomment to test
+            // Debugging stuff, uncomment to test features
             // case CustomRPC.Test:
             // {
             //     Message("Received RPC!");
@@ -293,15 +302,13 @@ public static class RpcManager
                         SetPostmortals.Ghouls = reader.ReadByte();
                         RoleGenManager.Pure = reader.ReadPlayer();
                         RoleGenManager.Convertible = reader.ReadByte();
-                        BetterAirship.SpawnPoints.AddRange(reader.ReadBytes());
+                        BetterAirship.SpawnPoints.AddRange(reader.ReadValues<byte>());
                         AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
                         return;
                     }
                     case MiscRPC.SetTarget:
                     {
-                        var layer = reader.Read<PlayerLayer>();
-
-                        switch (layer)
+                        switch (reader.Read<PlayerLayer>())
                         {
                             case Executioner exe:
                             {
@@ -326,7 +333,7 @@ public static class RpcManager
                             case Actor actor:
                             {
                                 actor.PretendRoles.Clear();
-                                actor.PretendRoles.AddRange(reader.ReadLayers<Role>());
+                                actor.PretendRoles.AddRange(reader.ReadValues<Role>());
                                 break;
                             }
                             case Allied ally:
@@ -506,7 +513,7 @@ public static class RpcManager
                     }
                     case ActionsRPC.Burn:
                     {
-                        var disappear = reader.ReadBytes();
+                        var disappear = reader.ReadValues<byte>();
 
                         foreach (var body in AllBodies())
                         {

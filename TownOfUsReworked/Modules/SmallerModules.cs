@@ -1,5 +1,4 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global\
-using TownOfUsReworked.RPCs;
 
 namespace TownOfUsReworked.Modules;
 
@@ -51,18 +50,18 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
 
     public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 
-    public static RoleOptionData Parse(string input)
-    {
-        var parts = input.TrueSplit(',');
-        return new(byte.Parse(parts[0]), byte.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
-    }
-
     public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
 
     public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsList() && ListEntryOption.IsAdded(ID.CastToSlot()))) &&
         ID.IsValid(relatedCount);
 
-    public readonly byte[] ToBytes() => [ .. new object[] { Chance, Count, Unique, Active, ID }.Select(NetData.ToBytes).GetAll() ];
+    public readonly byte[] ToBytes() => [ Chance, Count, (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
+
+    public static RoleOptionData Parse(string input)
+    {
+        var parts = input.TrueSplit(',');
+        return new(byte.Parse(parts[0]), byte.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
+    }
 }
 
 public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)

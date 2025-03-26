@@ -1,14 +1,11 @@
-using TownOfUsReworked.RPCs;
-
 namespace TownOfUsReworked.Modules;
 
 /// <summary>
 /// Represents a collection of enum values that can be stored and manipulated as a comma-separated string.
 /// </summary>
 /// <typeparam name="T">The enum type that this collection will store.</typeparam>
-/// <param name="values">One or more enum values to initialize the collection with.</param>
 [Serializable]
-public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable
+public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable
     where T : struct, Enum
 {
     /// <summary>
@@ -16,30 +13,36 @@ public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatabl
     /// </summary>
     public string Values
     {
-        readonly get => Join(',', ValuesPriv);
+        get => Join(',', ValuesPriv);
         set
         {
             ValuesPriv.Clear();
-            ValuesPriv = [ .. value.TrueSplit(',').Select(Enum.Parse<T>) ];
+            ValuesPriv.AddRange(value.TrueSplit(',').Select(Enum.Parse<T>));
         }
     }
-    private HashSet<T> ValuesPriv = [ .. values ];
+    private readonly HashSet<T> ValuesPriv = [];
+
+    /// <summary>
+    /// Initialises a new instance of <see cref="MultiSelectValue{T}"/> with the provided values.
+    /// </summary>
+    /// <param name="values">One or more enum values to initialize the collection with.</param>
+    public MultiSelectValue(params T[] values) => ValuesPriv.AddRange(values);
 
     /// <inheritdoc/>
-    public readonly int Count => ValuesPriv.Count;
+    public int Count => ValuesPriv.Count;
 
     /// <inheritdoc/>
-    public readonly bool IsReadOnly => false;
+    public bool IsReadOnly => false;
 
     /// <summary>
     /// Adds a single enum value to the end of the collection.
     /// </summary>
     /// <param name="item">The enum value to add.</param>
     /// <returns><c>true</c> if successfully added; otherwise, <c>false</c>.</returns>
-    public readonly bool Add(T? item) => item.HasValue && ValuesPriv.Add(item.Value);
+    public bool Add(T? item) => item.HasValue && ValuesPriv.Add(item.Value);
 
     /// <inheritdoc/>
-    public readonly void Add(T item) => ValuesPriv.Add(item);
+    public void Add(T item) => ValuesPriv.Add(item);
 
     /// <summary>
     /// Removes the first occurrence of the specified enum value.<br/>
@@ -47,44 +50,44 @@ public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatabl
     /// </summary>
     /// <param name="item">The enum value to remove.</param>
     /// <returns><c>true</c> if successfully removed; otherwise, <c>false</c>.</returns>
-    public readonly bool Remove(T? item) => item.HasValue && ValuesPriv.Remove(item.Value);
+    public bool Remove(T? item) => item.HasValue && ValuesPriv.Remove(item.Value);
 
     /// <inheritdoc/>
-    public readonly bool Remove(T item) => ValuesPriv.Remove(item);
+    public bool Remove(T item) => ValuesPriv.Remove(item);
 
     /// <summary>
     /// Adds multiple enum values to the end of the collection.
     /// </summary>
     /// <param name="items">The collection of enum values to add.</param>
-    public readonly void AddRange(IEnumerable<T> items) => items.ForEach(Add);
+    public void AddRange(IEnumerable<T> items) => items.ForEach(Add);
 
     /// <summary>
     /// Removes multiple enum values from the collection.
     /// </summary>
     /// <param name="items">The enum values to remove.</param>
     /// <returns>The number of items successfully removed.</returns>
-    public readonly int RemoveRange(params T?[] items) => RemoveRange((IEnumerable<T?>)items);
+    public int RemoveRange(params T?[] items) => RemoveRange((IEnumerable<T?>)items);
 
     /// <summary>
     /// Removes multiple nullable enum values from the collection.
     /// </summary>
     /// <param name="items">The collection of enum values to remove.</param>
     /// <returns>The number of items successfully removed.</returns>
-    public readonly int RemoveRange(IEnumerable<T?> items) => items.Count(Remove);
+    public int RemoveRange(IEnumerable<T?> items) => items.Count(Remove);
 
     /// <summary>
     /// Removes multiple enum values from the collection.
     /// </summary>
     /// <param name="items">The collection of enum values to remove.</param>
     /// <returns>The number of items successfully removed.</returns>
-    public readonly int RemoveRange(IEnumerable<T> items) => items.Count(Remove);
+    public int RemoveRange(IEnumerable<T> items) => items.Count(Remove);
 
     /// <summary>
     /// Determines whether the collection contains the specified enum value.
     /// </summary>
     /// <param name="item">The enum value to locate.</param>
     /// <returns>true if the item is found in the collection; otherwise, false.</returns>
-    public readonly bool Contains(T item) => ValuesPriv.Contains(item);
+    public bool Contains(T item) => ValuesPriv.Contains(item);
 
     /// <summary>
     /// Removes all enum values that match the specified predicate condition.<br/>
@@ -92,48 +95,48 @@ public struct MultiSelectValue<T>(params T[] values) : ICollection<T>, IEquatabl
     /// </summary>
     /// <param name="predicate">A function that defines the condition for removing items.</param>
     /// <returns>The number of items removed from the collection.</returns>
-    public readonly int RemoveAll(Func<T, bool> predicate) => ValuesPriv.Where(predicate).Count(Remove);
+    public int RemoveAll(Func<T, bool> predicate) => ValuesPriv.Where(predicate).Count(Remove);
 
     /// <summary>
     /// Removes all enum values from the collection.
     /// </summary>
-    public readonly void Clear() => ValuesPriv.Clear();
+    public void Clear() => ValuesPriv.Clear();
 
     /// <summary>
     /// Gets the first value in the collection.
     /// </summary>
     /// <returns>Returns the first value.</returns>
-    public readonly T First() => ValuesPriv.First();
+    public T First() => ValuesPriv.First();
 
     /// <summary>
     /// Converts the collection to its string representation.
     /// </summary>
     /// <returns>A comma-separated string of enum values.</returns>
-    public override readonly string ToString() => Values;
+    public override string ToString() => Values;
 
     /// <inheritdoc/>
-    public override readonly bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
+    public override bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
 
     /// <inheritdoc/>
-    public readonly bool Equals(MultiSelectValue<T> other) => ValuesPriv.SetEquals(other.ValuesPriv);
+    public bool Equals(MultiSelectValue<T> other) => ValuesPriv.SetEquals(other.ValuesPriv);
 
     /// <inheritdoc/>
-    public override readonly int GetHashCode() => Values.GetHashCode();
+    public override int GetHashCode() => Values.GetHashCode();
 
     /// <inheritdoc/>
-    public readonly void Dispose() => ValuesPriv.Clear();
+    public void Dispose() => ValuesPriv.Clear();
 
     /// <inheritdoc/>
-    public readonly byte[] ToBytes() => [ .. ValuesPriv.Select(x => NetData.ToBytes(x)).GetAll() ];
+    public byte[] ToBytes() => [ .. NetData.ToBytes((uint)Count), .. ValuesPriv.Select(x => NetData.ToBytes(x)).GetAll() ];
 
     /// <inheritdoc/>
-    public readonly void CopyTo(T[] array, int arrayIndex) => ValuesPriv.CopyTo(array, arrayIndex);
+    public void CopyTo(T[] array, int arrayIndex) => ValuesPriv.CopyTo(array, arrayIndex);
 
     /// <inheritdoc/>
-    public readonly IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)ValuesPriv).GetEnumerator();
+    public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)ValuesPriv).GetEnumerator();
 
     /// <inheritdoc/>
-    readonly IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     /// <summary>
     /// Converts the current instance to its string representation.

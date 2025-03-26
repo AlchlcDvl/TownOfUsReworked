@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Options;
 
 public abstract class Option<T>(CustomOptionType type) : Option(type)
-    where T : struct
 {
     public T Value { get; protected set; }
 

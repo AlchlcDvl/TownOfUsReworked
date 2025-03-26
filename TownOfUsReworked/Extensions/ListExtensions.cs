@@ -25,6 +25,10 @@ public static class CollectionExtensions
 
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
 
+    public static int AddRange<T>(this HashSet<T> set, params T[] items) => items.Count(set.Add);
+
+    public static int AddRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Add);
+
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
 
     public static void AddRange<T>(this ISystem.List<T> main, IEnumerable<T> items) => items.ForEach(main.Add);

@@ -671,3 +671,16 @@ public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
     public static Exception Finalizer() => null; // My first use of a finalizer ong
 }
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
+public static class RPCHandling
+{
+    public static void Postfix(byte callId, MessageReader reader)
+    {
+        if (callId != CustomRPCCallID)
+            return;
+
+        using var data = new NetData(reader.ReadBytesAndSize());
+        HandleRpc(data);
+    }
+}
