@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Modules;
+namespace TownOfUsReworked.RPCs;
 
 /// <summary>
 /// An interface made to handle the ways in which a custom implemented type can be serialized to bytes for networking.

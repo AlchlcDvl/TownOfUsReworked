@@ -66,7 +66,7 @@ public sealed class Concealer : Syndicate
     {
         if (HoldsDrive || ConcealedPlayer)
         {
-            var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
+            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
 
             if (writer != null)
             {

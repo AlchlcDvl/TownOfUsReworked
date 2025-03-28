@@ -10,5 +10,5 @@ public sealed class NetDataConverter : MessageConverter<NetData>
     public override NetData Read(MessageReader reader, Type objectType) => new(reader.ReadBytesAndSize());
 
     /// <inheritdoc/>
-    public override void Write(MessageWriter writer, NetData value) => writer.WriteBytesAndSize(value.WriteBuffer.ToArray());
+    public override void Write(MessageWriter writer, NetData value) => writer.WriteBytesAndSize(value.ToBytes());
 }

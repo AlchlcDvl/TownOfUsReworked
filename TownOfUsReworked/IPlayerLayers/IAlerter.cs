@@ -6,7 +6,7 @@ namespace TownOfUsReworked.IPlayerLayers;
 public interface IAlerter : IPlayerLayer
 {
     /// <summary>
-    /// The button that dictates whether or not the effect is active or not.
+    /// The button that dictates whether or not the effect is active.
     /// </summary>
     CustomButton AlertButton { get; }
 }

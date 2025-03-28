@@ -23,7 +23,7 @@ public sealed class Lovers : Disposition
     public override LayerEnum Type => LayerEnum.Lovers;
     public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.name}";
 
-    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
         if (BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.Apocalypse))
             OtherLover.Suicide();

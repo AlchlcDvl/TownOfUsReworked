@@ -13,11 +13,11 @@ public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T
     /// </summary>
     public string Values
     {
-        get => Join(',', ValuesPriv);
+        get => Join(',', ValuesPriv.OrderBy(x => x));
         set
         {
             ValuesPriv.Clear();
-            ValuesPriv.AddRange(value.TrueSplit(',').Select(Enum.Parse<T>));
+            ValuesPriv.AddRange(value.TrueSplit(',').Select(Enum.Parse<T>).OrderBy(x => x));
         }
     }
     private readonly HashSet<T> ValuesPriv = [];
@@ -34,23 +34,8 @@ public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T
     /// <inheritdoc/>
     public bool IsReadOnly => false;
 
-    /// <summary>
-    /// Adds a single enum value to the end of the collection.
-    /// </summary>
-    /// <param name="item">The enum value to add.</param>
-    /// <returns><c>true</c> if successfully added; otherwise, <c>false</c>.</returns>
-    public bool Add(T? item) => item.HasValue && ValuesPriv.Add(item.Value);
-
     /// <inheritdoc/>
     public void Add(T item) => ValuesPriv.Add(item);
-
-    /// <summary>
-    /// Removes the first occurrence of the specified enum value.<br/>
-    /// Returns <c>true</c> if the value was found and removed, <c>false</c> otherwise.
-    /// </summary>
-    /// <param name="item">The enum value to remove.</param>
-    /// <returns><c>true</c> if successfully removed; otherwise, <c>false</c>.</returns>
-    public bool Remove(T? item) => item.HasValue && ValuesPriv.Remove(item.Value);
 
     /// <inheritdoc/>
     public bool Remove(T item) => ValuesPriv.Remove(item);
@@ -60,20 +45,6 @@ public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T
     /// </summary>
     /// <param name="items">The collection of enum values to add.</param>
     public void AddRange(IEnumerable<T> items) => items.ForEach(Add);
-
-    /// <summary>
-    /// Removes multiple enum values from the collection.
-    /// </summary>
-    /// <param name="items">The enum values to remove.</param>
-    /// <returns>The number of items successfully removed.</returns>
-    public int RemoveRange(params T?[] items) => RemoveRange((IEnumerable<T?>)items);
-
-    /// <summary>
-    /// Removes multiple nullable enum values from the collection.
-    /// </summary>
-    /// <param name="items">The collection of enum values to remove.</param>
-    /// <returns>The number of items successfully removed.</returns>
-    public int RemoveRange(IEnumerable<T?> items) => items.Count(Remove);
 
     /// <summary>
     /// Removes multiple enum values from the collection.
@@ -118,7 +89,7 @@ public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T
     public override bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
 
     /// <inheritdoc/>
-    public bool Equals(MultiSelectValue<T> other) => ValuesPriv.SetEquals(other.ValuesPriv);
+    public bool Equals(MultiSelectValue<T> other) => other != null && ValuesPriv.SetEquals(other.ValuesPriv);
 
     /// <inheritdoc/>
     public override int GetHashCode() => Values.GetHashCode();
@@ -127,7 +98,7 @@ public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T
     public void Dispose() => ValuesPriv.Clear();
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => [ .. NetData.ToBytes((uint)Count), .. ValuesPriv.Select(x => NetData.ToBytes(x)).GetAll() ];
+    public byte[] ToBytes() => [ (byte)Count, .. ValuesPriv.Select(x => (byte)Convert.ChangeType(x, typeof(byte))) ]; // All enums within the code base use byte
 
     /// <inheritdoc/>
     public void CopyTo(T[] array, int arrayIndex) => ValuesPriv.CopyTo(array, arrayIndex);
@@ -158,7 +129,7 @@ public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T
     public static implicit operator T(MultiSelectValue<T> value) =>
         value.Count == 1
             ? value.ValuesPriv.First()
-            : throw new($"Tried to convert multiple or no values ({value.Values}) to a singular one");
+            : throw new InvalidOperationException($"Tried to convert multiple or no values ({value.Values}) to a singular one");
 
     /// <summary>
     /// Converts the value to an instance of MultiSelectValue.
@@ -183,26 +154,26 @@ public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T
     /// </summary>
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
-    public static bool operator ==(MultiSelectValue<T> left, MultiSelectValue<T> right) => left.Equals(right);
+    public static bool operator ==(MultiSelectValue<T> left, MultiSelectValue<T> right) => left?.Equals(right) == true;
 
     /// <summary>
     /// Inequality comparison.
     /// </summary>
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
-    public static bool operator !=(MultiSelectValue<T> left, MultiSelectValue<T> right) => !left.Equals(right);
+    public static bool operator !=(MultiSelectValue<T> left, MultiSelectValue<T> right) => left?.Equals(right) == false;
 
     /// <summary>
     /// Equality comparison.
     /// </summary>
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
-    public static bool operator ==(MultiSelectValue<T> left, T right) => left.Contains(right);
+    public static bool operator ==(MultiSelectValue<T> left, T right) => left?.Contains(right) == true;
 
     /// <summary>
     /// Inequality comparison.
     /// </summary>
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
-    public static bool operator !=(MultiSelectValue<T> left, T right) => !left.Contains(right);
+    public static bool operator !=(MultiSelectValue<T> left, T right) => left?.Contains(right) == false;
 }

@@ -255,7 +255,7 @@ The Chameleon can go invisible to stalk players and see what they do when no one
 
 **Alignment**: Crew (Investigative)
 
-The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. The Coroner can then compare that information with players to see if they killed the body or not. They also gets body reports from the bodies they report. The report will include the cause and time of death, the body's faction/role, the killer's faction/role and (according to the settings) the killer's name. The Coroner will not get any information if they report a body when blinded by a Grenadier and framed players will always appear to be the killer.
+The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. The Coroner can then compare that information with players to see if they killed the body or not. They also get body reports from the bodies they report. The report will include the cause and time of death, the body's faction/role, the killer's faction/role and (according to the settings) the killer's name. The Coroner will not get any information if they report a body when blinded by a Grenadier and framed players will always appear to be the killer.
 
 **Game Options**
 
@@ -311,8 +311,8 @@ The Dictator has the ability to call tribunals. Upon calling the first tribunal,
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Dictator Cannot Reveal Round One | Self descriptive | Toggle | True |
-| Dictator Can Dictate After Voting | Self descriptive | Toggle | True |
+| Dictator Cannot Reveal Round One | Self-descriptive | Toggle | True |
+| Dictator Can Dictate After Voting | Self-descriptive | Toggle | True |
 | Dictator Can Button | Whether the Dictator can call a meeting | Toggle | True |
 
 ## Engineer <img height="17" src="./Images/Engineer.png">
@@ -344,7 +344,7 @@ The Mayor can reveal themselves as the Mayor to other players. Upon doing so, th
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Mayor Votes Count As | The additional number of votes that are added to the Mayor's vote | Number | 2 |
-| Mayor Cannot Reveal Round One | Self descriptive | Toggle | True |
+| Mayor Cannot Reveal Round One | Self-descriptive | Toggle | True |
 | Mayor Can Button | Whether the Mayor can call a meeting | Toggle | True |
 
 ## Medic <img height="17" src="./Images/Medic.png">
@@ -393,7 +393,7 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Monarch Cannot Knight Round One | Self descriptive | Toggle | True |
+| Monarch Cannot Knight Round One | Self-descriptive | Toggle | True |
 | Knighted Votes Count As | The additional number of votes that are added to a knighted player's vote | Number | 1 |
 | Monarch Can Button | Whether the Monarch can call a meeting | Toggle | True |
 | Knights Can Button | Whether knighted players can call a meeting | Toggle | True |
@@ -435,7 +435,7 @@ The Retributionist can mimic dead crewmates. During meetings, the Retributionist
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Retributionist Can Mimic After Voting | Self descriptive | Toggle | True |
+| Retributionist Can Mimic After Voting | Self-descriptive | Toggle | True |
 
 ## Revealer <img height="17" src="./Images/Revealer.png">
 
@@ -518,7 +518,7 @@ The Transporter can swap the locations of two players at will. Being transported
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Transporter Can Transport Themselves | Self descriptive | Toggle | False |
+| Transporter Can Transport Themselves | Self-descriptive | Toggle | False |
 
 ## Trapper <img height="17" src="./Images/Trapper.png">
 
@@ -558,7 +558,7 @@ The Vigilante can kill. However, if they kill someone they shouldn't, they inste
 |------|-------------|------|---------|
 | Misfire Kills The Target | Whether the target is killed if the Vigilante misfires | Toggle | False |
 | Vigilante Can Kill Again If Target Was Innocent | Whether the Vigilante can continue shooting even after getting a shot wrong | Toggle | False |
-| Vigilante Cannot Shoot Round One | Self descriptive | Toggle | True |
+| Vigilante Cannot Shoot Round One | Self-descriptive | Toggle | True |
 | How Is The Vigilante Notified Of Their Target's Innocence | Whether the Vigilante is notified of their target's innocent upon misfire | String | Never |
 | How Does Vigilante Die | Dictates how does the Vigilante die, should they kill or attempt to kill someone they shouldn't | String | Immediately |
 
@@ -572,7 +572,7 @@ Each member of this faction has their own unique way to win, separate from the o
 |------|-------------|------|---------|
 | Lights Affect Neutral Vision | Whether the lights sabotage affects Neutrals | Toggle | True |
 | Neutrals Together, Strong | Whether Neutrals can win together | String | Never |
-| Vigilante Kills Neutral Benigns | Whether Neutral Benign roles are considered evil for the Vigilante | Toggle | True |
+| Vigilante Kills Neutral Benign Roles | Whether Neutral Benign roles are considered evil for the Vigilante | Toggle | True |
 | Neutral Killers Have Intruder Vision | Whether Neutral (Killing) roles have higher vision or not | Toggle | False |
 | Neutral Killers Know Each Other | If Neutrals can win together, this settings lets Neutral Killers know of each other | Toggle | False |
 
@@ -609,7 +609,7 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Amnesiac Gets Arrows To Dead Bodies | Self descriptive | Toggle | False |
+| Amnesiac Gets Arrows To Dead Bodies | Self-descriptive | Toggle | False |
 | Remember Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
 
 ## Arsonist <img height="17" src="./Images/Arsonist.png">
@@ -653,7 +653,7 @@ The Betrayer is a simple killer, who appears after a turned [Traitor](#traitor)/
 
 **Attack**: Unstoppable
 
-The Bounty Hunter is assigned a target as the start of the game. Alternatively, the Bounty Hunter can request a target from someone. That someone must pick a target with the next two rounds, or else they will become the Bounty Hunter's target instead. Every meeting, the Bounty Hunter is given clue to who their target might be. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter becomes a Troll. The target has a red Θ next to their names.
+The Bounty Hunter is assigned a target as the start of the game. Alternatively, the Bounty Hunter can request a target from someone. That someone must pick a target with the next two rounds, or else they will become the Bounty Hunter's target instead. Every meeting, the Bounty Hunter is given clue to who their target might be. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set number of guesses, the guess button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter becomes a Troll. The target has a red Θ next to their names.
 
 **Game Options**
 
@@ -676,7 +676,7 @@ The Cannibal can eat the body which wipes it away, like the Janitor.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Bodies Needed To Win | Self descriptive | Number | 5 or changes to half the lobby size if not enough players |
+| Bodies Needed To Win | Self-descriptive | Number | 5 or changes to half the lobby size if not enough players |
 | Cannibal Gets Arrows | Whether the Cannibal has arrows pointing to dead bodies | Toggle | False |
 | Hunger Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
 | Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
@@ -737,7 +737,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 | Executioner Can Button | Whether the Executioner can call a meeting | Toggle | True |
 | Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
 | Executioner Knows Target's Role | Whether the Executioner knows their target's role | Toggle | False |
-| Target Ejection Reveals Existence Of Executioner | Decides if the target is ejected, it will reveal the fact that they were an Executioner's target | Toggle | False |
+| Target Ejection Reveals Existence Of Executioner | Determines whether ejecting the target reveals they were an Executioner's target | Toggle | False |
 | Executioner Can Win After Death | Decides if the Executioner can still win if their target has been ejected after they died | Toggle | False |
 | Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
 
@@ -926,7 +926,7 @@ The Phantom spawns when a Neutral player dies without accomplishing their object
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Tasks Remaining When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
+| Tasks Remaining When Phantom Can Be Clicked | The number of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
 | Players Are Alerted When Phantom Is Clickable | Whether players are alerted to the Phantom's existence and clickability | Toggle | False |
 
 ## Plaguebearer <img height="17" src="./Images/Plaguebearer.png">
@@ -977,15 +977,15 @@ The Survivor wins by simply surviving. They can vest which makes them immortal f
 
 **Attack**: Powerful
 
-The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will die. After stealing their target's role, the Thief can now win as whatever role they have become. The Thief can also guess players in-meeting to steal their roles.
+The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill, otherwise the Thief will die. After stealing their target's role, the Thief can now win as whatever role they have become. The Thief can also guess players in-meeting to steal their roles.
 
 **Game Options**
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Thief Assigns Thief Role To Target | Whether the Thief completely steals their target's role or just copies it | Toggle | False |
-| Thief Can Guess To Steal Roles | Self descriptive | Toggle | True |
-| Thief Can Guess After Voting | Self descriptive | Toggle | True |
+| Thief Can Guess To Steal Roles | Self-descriptive | Toggle | True |
+| Thief Can Guess After Voting | Self-descriptive | Toggle | True |
 
 ## Troll <img height="17" src="./Images/Troll.png">
 
@@ -1033,10 +1033,10 @@ The Whisperer can whisper to all players within a certain radius. With each whis
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Whisper Cooldown Increases | Toggles whether the Whisperer's whisper cooldown increases each use | Time | 5s |
+| Whisper Cooldown Increases | Toggles whether the Whisperer's whisper cooldown increases with each use | Time | 5s |
 | ┗ Whisper Cooldown Increases By | The increase on the Whisperer's whisper cooldown with each use | Time | 5s |
 | Whisper Rate | The initial rate for each whisper | Percentage | 5% |
-| Whisper Rate Decreases | Toggles whether the Whisperer's whisper rate decreases each use | Toggle | True |
+| Whisper Rate Decreases | Toggles whether the Whisperer's whisper rate decreases with each use | Toggle | True |
 | ┗ Whisper Rate Decreases By | The decrease on the Whisperer's whisper rate with each use | Percentage | 5% |
 | Whisper Radius | How far a player must be to avoid a whisper | Factor | 1x |
 | Persuaded Can Vent | Toggles the Persuaded's ability to vent, overriding their role's vent settings | Toggle | False |
@@ -1050,8 +1050,8 @@ Each member of this faction has the ability to kill alongside an ability pertain
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Intruder Count | How many Intruders can spawn | Number | 1 |
-| Intruders Can Sabotage | Self descriptive | Toggle | True |
-| Dead Intruders Can Sabotage | Self descriptive | Toggle | False |
+| Intruders Can Sabotage | Self-descriptive | Toggle | True |
+| Dead Intruders Can Sabotage | Self-descriptive | Toggle | False |
 
 ## Ambusher <img height="17" src="./Images/Ambusher.png">
 
@@ -1079,9 +1079,9 @@ The Blackmailer can blackmail people. Blackmailed players cannot speak during th
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Blackmailer Can Read Whispers | Self descriptive | Toggle | False |
-| Blackmailer Can Blackmail Teammates | Self descriptive | Toggle | False |
-| Blackmail Is Revealed To Everyone | Self descriptive | Toggle | False |
+| Blackmailer Can Read Whispers | Self-descriptive | Toggle | False |
+| Blackmailer Can Blackmail Teammates | Self-descriptive | Toggle | False |
+| Blackmail Is Revealed To Everyone | Self-descriptive | Toggle | False |
 
 ## Camouflager <img height="17" src="./Images/Camouflager.png">
 
@@ -1147,7 +1147,7 @@ The Enforcer can plant bombs on players. After a short while, their target will 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Enforce Explosion Radius | Self descriptive | Factor | 0.25m |
+| Enforce Explosion Radius | Self-descriptive | Factor | 0.25m |
 
 ## Ghoul <img height="17" src="./Images/Ghoul.png">
 
@@ -1204,7 +1204,7 @@ The Janitor can drag, drop and clean up bodies. Both their Kill and Clean abilit
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Janitor Has Lower Clean Cooldown When Solo | Self descriptive | Toggle | False |
+| Janitor Has Lower Clean Cooldown When Solo | Self-descriptive | Toggle | False |
 | Kill And Clean Cooldowns Are Linked | Decides whether the Janitor's cooldowns are linked so that killing resets cleaning and vice versa | Toggle | True |
 | Drag Speed | How fast will the Janitor become when dragging a body | Factor | 0.5x |
 
@@ -1267,7 +1267,7 @@ Each member of this faction has a special ability and then after a certain numbe
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Syndicate Count | How many Syndicate can spawn | Number | 1 |
-| Syndicate Replaces Intruders | Self descriptive | Toggle | False |
+| Syndicate Replaces Intruders | Self-descriptive | Toggle | False |
 | Chaos Drive Timer | How many meetings must pass before the Chaos Drive is handed out | Number | 3 |
 | Chaos Drive Is Global | The Chaos Drive is handed out to every member of the Syndicate rather than only one | Toggle | False |
 
@@ -1300,8 +1300,8 @@ The Bomber can place a bomb which can be remotely detonated at any time. Anyone 
 | Bomb Radius | The bomb's radius | Distance | 0.25m |
 | Chaos Drive Bomb Radius Increase | By how much does the range of the bomb increase | Distance | 0.1m |
 | Bomb and Detonate Cooldowns Are Linked | Decides whether the Bomber's cooldowns are linked so that detonating resets placing and vice versa | Toggle | False |
-| Bombs Are Cleared Every Meeting | Self descriptive | Toggle | False |
-| Bombs Detonate When A Meeting Is Called | Self descriptive | Toggle | False |
+| Bombs Are Cleared Every Meeting | Self-descriptive | Toggle | False |
+| Bombs Detonate When A Meeting Is Called | Self-descriptive | Toggle | False |
 
 ## Concealer <img height="17" src="./Images/Concealer.png">
 
@@ -1313,7 +1313,7 @@ The Concealer can make a player invisible for a short while. With the Chaos Driv
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Concealer Can Conceal Teammates | Self descriptive | Toggle | False |
+| Concealer Can Conceal Teammates | Self-descriptive | Toggle | False |
 
 ## Crusader <img height="17" src="./Images/Crusader.png">
 
@@ -1359,7 +1359,7 @@ The Drunkard can reverse a player's controls for a short while. With the Chaos D
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Syndicate Are Immune To Confuse | Self descriptive | Toggle | False |
+| Syndicate Are Immune To Confuse | Self-descriptive | Toggle | False |
 
 ## Framer <img height="17" src="./Images/Framer.png">
 
@@ -1407,7 +1407,7 @@ The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, ev
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Shapeshifter Can Shapeshift Teammates | Self descriptive | Toggle | False |
+| Shapeshifter Can Shapeshift Teammates | Self-descriptive | Toggle | False |
 
 ## Sidekick <img height="17" src="./Images/Sidekick.png">
 
@@ -1429,9 +1429,9 @@ The Silencer can silencer people. Silenced players cannot see the messages being
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Silencer Can Read Whispers | Self descriptive | Toggle | False |
-| Silencer Can Silence Teammates | Self descriptive | Toggle | False |
-| Silence Is Revealed To Everyone | Self descriptive | Toggle | False |
+| Silencer Can Read Whispers | Self-descriptive | Toggle | False |
+| Silencer Can Silence Teammates | Self-descriptive | Toggle | False |
+| Silence Is Revealed To Everyone | Self-descriptive | Toggle | False |
 
 ## Spellslinger <img height="17" src="./Images/Spellslinger.png">
 
@@ -1465,8 +1465,8 @@ The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can fre
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Syndicate Are Immune To Freeze | Self descriptive | Toggle | False |
-| Syndicate Are Immune To Rewind | Self descriptive | Toggle | False |
+| Syndicate Are Immune To Freeze | Self-descriptive | Toggle | False |
+| Syndicate Are Immune To Rewind | Self-descriptive | Toggle | False |
 
 ## Warper <img height="17" src="./Images/Warper.png">
 
@@ -1480,7 +1480,7 @@ The Warper can teleport a player to another player. With the Chaos Drive, the Wa
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Warper Can Warp Themselves | Self descriptive | Toggle | False |
+| Warper Can Warp Themselves | Self-descriptive | Toggle | False |
 
 # Game Mode Roles
 
@@ -1550,7 +1550,7 @@ The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| All Corrupted Win Together | Self descriptive | Toggle | False |
+| All Corrupted Win Together | Self-descriptive | Toggle | False |
 
 ## Defector
 
@@ -1588,7 +1588,7 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 | Fanatic Knows Who They Are | Whether the Fanatic knows who they are | Toggle | True |
 | Snitch Sees Turned Fanatic | Whether the Snitch sees a turned Fanatic | Toggle | True |
 | Revealer Reveals Turned Fanatic | Whether the Revealer reveals a turned Fanatic | Toggle | True |
-| Turned Fanatic Swaps Colours for Investigative Roles | Self descriptive | Toggle | False |
+| Turned Fanatic Swaps Colours for Investigative Roles | Self-descriptive | Toggle | False |
 
 ## Linked
 
@@ -1605,7 +1605,7 @@ The Linked players are a watered down pair of [Lovers](#lovers). They can help t
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Enable Linked Chat | Whether the Linked get a private chat in-between meetings | Toggle | True |
-| Linked Know Each Other's Roles | Self descriptive | Toggle | True |
+| Linked Know Each Other's Roles | Self-descriptive | Toggle | True |
 
 ## Lovers
 
@@ -1625,7 +1625,7 @@ The Lovers are two players who are linked together. They gain the primary object
 |------|-------------|------|---------|
 | Enable Lovers Chat | Whether the Lovers get a private chat in-between meetings | Toggle | True |
 | Both Lovers Die | Whether the a Lover automatically dies if the other does | Toggle | True |
-| Lovers Know Each Other's Roles | Self descriptive | Toggle | True |
+| Lovers Know Each Other's Roles | Self-descriptive | Toggle | True |
 
 ## Mafia
 
@@ -1641,7 +1641,7 @@ The Mafia are a group of players with a linked win condition. They must kill any
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Mafia Know Each Other's Roles | Self descriptive | Toggle | True |
+| Mafia Know Each Other's Roles | Self-descriptive | Toggle | True |
 
 ## Overlord
 
@@ -1675,7 +1675,7 @@ The Rivals cannot do anything to each other and must get the other one killed.
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Enable Rivals Chat | Whether the Rivals get a private chat in-between meetings (this is just a troll setting lol) | Toggle | True |
-| Rivals Know Each Other's Roles | Self descriptive | Toggle | True |
+| Rivals Know Each Other's Roles | Self-descriptive | Toggle | True |
 
 ## Taskmaster
 
@@ -1710,7 +1710,7 @@ The Traitor is a member of the Crew who must finish their tasks to switch sides.
 | Traitor Knows Who They Are | Whether the Traitor knows who they are | Toggle | True |
 | Snitch Sees Turned Traitor | Whether the Snitch sees a turned Traitor | Toggle | True |
 | Revealer Reveals Turned Traitor | Whether the Revealer reveals a turned Traitor | Toggle | True |
-| Turned Traitor Swaps Colours for Investigative Roles | Self descriptive | Toggle | False |
+| Turned Traitor Swaps Colours for Investigative Roles | Self-descriptive | Toggle | False |
 
 -----------------------
 
@@ -1739,8 +1739,8 @@ Killing the Bait makes the killer auto self-report the Bait's body.
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Bait Knows Who They Are | Whether a player knows they are Bait at the start of a game | Toggle | True |
-| Bait Minimum Delay | The minimum time the killer of the Bait reports the body | Time | 0s |
-| Bait Maximum Delay | The maximum time the killer of the Bait reports the body | Time | 1s |
+| Bait Minimum Delay | The minimum delay before the Bait's killer automatically reports the body | Time | 0s |
+| Bait Maximum Delay | The maximum delay before the Bait's killer automatically reports the body | Time | 1s |
 
 ## Colorblind
 
@@ -1786,7 +1786,7 @@ The Drunk player's controls are inverted.
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Drunk Knows Who They Are | Whether a player knows they are Drunk at the start of a game | Toggle | True |
-| Drunk Controls Swap Over Time | Self descriptive | Toggle | True |
+| Drunk Controls Swap Over Time | Self-descriptive | Toggle | True |
 | ┗ Swap Interval | How much time must pass before the controls swap | Time | 15s |
 
 ## Dwarf
@@ -2007,7 +2007,7 @@ The Snitch is an ability which allows any member of the Crew to get arrows point
 
 **Origin**: Town Of Us
 
-The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and vice versa.
+The Swapper can swap the votes on two players during a meeting. All the votes for the first player will instead be counted towards the second player and vice versa.
 
 **Game Options**
 
@@ -2015,7 +2015,7 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 |------|-------------|------|---------|
 | Swapper Can Button | Whether the Swapper can call a meeting | Toggle | True |
 | Swapper Can Swap After Voting | Whether the Swapper can continue players to swap even after they have voted | Toggle | True |
-| Swapper Can Swap Themselves | Self descriptive | Toggle | True |
+| Swapper Can Swap Themselves | Self-descriptive | Toggle | True |
 
 ## Tiebreaker
 
@@ -2072,7 +2072,7 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 -----------------------
 
 # License
-This software is distributed under the GNU GPLv3 License. BepInEx is distributed under LGPL-2.1 License.
+This software is distributed under the GNU GPLv3 License. BepInEx is distributed under the LGPL-2.1 License.
 
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>

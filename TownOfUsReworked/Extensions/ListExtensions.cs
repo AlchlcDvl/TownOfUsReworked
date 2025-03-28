@@ -84,9 +84,8 @@ public static class CollectionExtensions
 
     public static void ForEach<T>(this IEnumerable<T> source, Action<int, T> indexedAction) => source.Indexed().ForEach(x => indexedAction(x.Item1, x.Item2));
 
-    public static List<List<T>> Split<T>(this IEnumerable<T> list, int splitCount)
+    public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> list, int splitCount)
     {
-        var result = new List<List<T>>();
         var temp = new List<T>();
 
         foreach (var item in list)
@@ -96,14 +95,12 @@ public static class CollectionExtensions
             if (temp.Count != splitCount)
                 continue;
 
-            result.Add(temp);
+            yield return temp;
             temp = [];
         }
 
         if (temp.Any())
-            result.Add(temp);
-
-        return result;
+            yield return temp;
     }
 
     public static IEnumerable<T> GetRandomRange<T>(this IEnumerable<T> list, int count)

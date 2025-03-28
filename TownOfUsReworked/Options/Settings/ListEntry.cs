@@ -61,6 +61,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
         if (IsBan)
         {
+            base.TrySetValue(value, out newValue);
             return;
         }
 
@@ -145,6 +146,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
         if (toRemove == null)
         {
+            base.TrySetValue(value, out newValue);
             return;
         }
 

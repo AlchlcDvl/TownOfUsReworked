@@ -34,8 +34,8 @@ public sealed class Swapper : Ability
 
     public override void ReadRPC(NetData reader)
     {
-        Swap1 = reader.Read<PlayerVoteArea>();
-        Swap2 = reader.Read<PlayerVoteArea>();
+        Swap1 = reader.ReadVoteArea();
+        Swap2 = reader.ReadVoteArea();
     }
 
     public override void OnMeetingStart(MeetingHud __instance)

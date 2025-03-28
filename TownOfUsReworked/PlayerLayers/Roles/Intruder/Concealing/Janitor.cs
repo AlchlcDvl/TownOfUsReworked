@@ -74,7 +74,7 @@ public sealed class Janitor : Intruder
         DragButton.StartCooldown();
     }
 
-    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
         if (Local)
             Drop();

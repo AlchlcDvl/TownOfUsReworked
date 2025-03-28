@@ -11,7 +11,7 @@ public sealed class Vip : Modifier
     public override Func<string> Description => () => "- Your death will alert everyone and will have an arrow pointing at your body";
     public override bool Hidden => !VipKnows && !Dead;
 
-    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
         Flash(Player.GetRole().Color);
         var local = CustomPlayer.Local.GetRole();

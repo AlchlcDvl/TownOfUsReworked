@@ -246,12 +246,12 @@ public abstract class Role : PlayerLayer
             Positions.Clear();
     }
 
-    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
         if (killer != Player)
         {
             KilledBy = " By " + killer.name;
-            DeathReason = Meeting() ? DeathReasonEnum.Guessed : reason2;
+            DeathReason = Meeting() ? DeathReasonEnum.Guessed : reason;
         }
         else
             DeathReason = Meeting() ? DeathReasonEnum.Misfire : DeathReasonEnum.Suicide;

@@ -1,4 +1,4 @@
-// ReSharper disable UnusedAutoPropertyAccessor.Global\
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace TownOfUsReworked.Modules;
 

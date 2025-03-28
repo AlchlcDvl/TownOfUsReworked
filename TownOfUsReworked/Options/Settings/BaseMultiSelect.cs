@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Options;
 public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValue, T? noneValue) : Option<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
 {
     protected ValueMap<MissingBehaviour, T> Buttons { get; } = [];
-    protected T? NoneValue { get; } = noneValue;
-    protected T? AllValue { get; } = allValue;
+    private T? NoneValue { get; } = noneValue;
+    private T? AllValue { get; } = allValue;
     public IEnumerable<MissingBehaviour> Options => Buttons.Keys;
 
     public override void OptionCreated()
@@ -72,7 +72,40 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
 
     protected abstract void CreateButtons();
 
-    protected abstract void TrySetValue(T value, out MultiSelectValue<T> newValue);
+    protected virtual void TrySetValue(T value, out MultiSelectValue<T> newValue)
+    {
+        newValue = Value;
+
+        if (AllValue.HasValue && value.Equals(AllValue))
+        {
+            var contained = newValue == value;
+            newValue.Clear();
+            newValue.Add(NoneValue.HasValue ? (contained ? NoneValue : AllValue).Value : value);
+        }
+        else if (NoneValue.HasValue && value.Equals(NoneValue))
+        {
+            newValue.Clear();
+            newValue.Add(NoneValue.Value);
+        }
+        else
+        {
+            if (newValue == value)
+                newValue.Remove(value);
+            else
+                newValue.Add(value);
+
+            if (NoneValue.HasValue)
+            {
+                if (newValue.Count == 0)
+                    newValue.Add(NoneValue.Value);
+                else
+                    newValue.Remove(NoneValue.Value);
+            }
+
+            if (AllValue.HasValue)
+                newValue.Remove(AllValue.Value);
+        }
+    }
 }
 
 public interface IMultiSelectOption

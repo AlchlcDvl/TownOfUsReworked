@@ -12,7 +12,7 @@ public sealed class Radar : Ability
 
     public override void ClearArrows() => RadarArrow?.Destroy();
 
-    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer) => ClearArrows();
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 
     private Vector3 Target()
     {

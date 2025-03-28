@@ -15,7 +15,7 @@ public abstract class Harbinger<TApoc> : Harbinger where TApoc : Apocalypse
 {
     protected abstract bool CanTransform();
 
-    private void TurnApocalypse() => ((TApoc)Activator.CreateInstance(typeof(TApoc))).RoleUpdate(this);
+    private void TurnApocalypse() => Activator.CreateInstance<TApoc>().RoleUpdate(this);
 
     public override void UpdatePlayer()
     {

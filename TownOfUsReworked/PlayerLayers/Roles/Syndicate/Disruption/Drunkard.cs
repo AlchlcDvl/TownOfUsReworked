@@ -53,7 +53,7 @@ public sealed class Drunkard : Syndicate
     {
         if (HoldsDrive || ConfusedPlayer)
         {
-            var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConfusedPlayer);
+            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConfusedPlayer);
 
             if (writer != null)
             {

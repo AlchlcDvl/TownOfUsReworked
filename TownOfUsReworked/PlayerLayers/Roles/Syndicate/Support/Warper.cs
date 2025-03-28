@@ -188,7 +188,7 @@ public sealed class Warper : Syndicate, IMover
         if (HoldsDrive)
         {
             var coords = GenerateWarpCoordinates();
-            var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.All);
+            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.All);
 
             if (writer != null)
             {

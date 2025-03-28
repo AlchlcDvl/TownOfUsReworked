@@ -37,9 +37,9 @@ public sealed class Troll : Evil
             (UsableFunc)Usable);
     }
 
-    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        base.OnDeath(reason, reason2, killer);
+        base.OnDeath(reason, killer);
 
         if (!NeutralSettings.AvoidNeutralKingmakers)
             Player.MurderPlayer(killer, DeathReasonEnum.Trolled, false);

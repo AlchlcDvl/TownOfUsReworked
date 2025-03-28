@@ -12,7 +12,7 @@ public sealed class Yeller : Modifier
             CustomPlayer.Local.GetRole().YellerArrows.TryAdd(PlayerId, new(CustomPlayer.Local, Player, Color));
     }
 
-    public override void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer)
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
         if (!Local)
             CustomPlayer.Local.GetRole().DestroyArrowY(PlayerId);

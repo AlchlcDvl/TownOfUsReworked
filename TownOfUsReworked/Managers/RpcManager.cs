@@ -13,7 +13,8 @@ public static class RpcManager
     /// <summary>
     /// Creates a writer instance of <see cref="NetData"/> to potentially write more data to.
     /// </summary>
-    /// <param name="data">The data values to serialize.</param>
+    /// <param name="rpc">The main rpc header.</param>
+    /// <param name="data">The data associated to the rpc.</param>
     /// <returns>A writer instance of <see cref="NetData"/>.</returns>
     public static NetData CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(rpc, data);
 
@@ -21,15 +22,20 @@ public static class RpcManager
     /// Sends an RPC message to all players.
     /// </summary>
     /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the id.</param>
+    /// <param name="data">The data associated to the rpc.</param>
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
 
     /// <summary>
     /// Sends an RPC message to a specific player.
     /// </summary>
     /// <param name="targetClientId">The player to send the data to.</param>
-    /// <inheritdoc cref="CallRpc"/>
-    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data) => CreateWriter(rpc, data)?.Send(targetClientId);
+    /// <param name="rpc">The main rpc header.</param>
+    /// <param name="data">The data associated to the rpc.</param>
+    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
+    {
+        using var writer = CreateWriter(rpc, data);
+        writer?.Send(targetClientId);
+    }
 
     /// <summary>
     /// Closes and sends the rpc.
@@ -58,12 +64,13 @@ public static class RpcManager
             return;
 
         var options = setting != null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
-        var split = options.Split(70);
-        Info($"Sending {options.Count()} options split to {split.Count} sets to {targetClientId}");
+        var count = options.Count();
+        var split = count > 75 ? options.Split(75) : [ options ]; // No need to split if less than chunk size, saves from arbitrary computation time, but I'll be honest I like my shit fast
+        Info($"Sending {count} options split to {split.Count()} sets to {targetClientId}");
 
         foreach (var list in split)
         {
-            var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Count);
+            using var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Count());
 
             foreach (var option in list)
             {
@@ -81,7 +88,7 @@ public static class RpcManager
     /// Processes received mod settings from other players.
     /// </summary>
     /// <param name="reader">The network message reader.</param>
-    public static void ReceiveOptionRPC(NetData reader)
+    private static void ReceiveOptionRPC(NetData reader)
     {
         if (TownOfUsReworked.MciActive)
             return;
@@ -97,7 +104,7 @@ public static class RpcManager
 
             if (customOption != null)
             {
-                Info($"Received option: {customOption}");
+                // Info($"Received option: {customOption.Name}");
                 customOption.ReadValueRpc(reader);
             }
             else

@@ -1320,7 +1320,7 @@ public static class MiscUtils
         SetPostmortals.BeginPostmortals(player, false);
         Pestilence.Infected.Remove(player.PlayerId);
 
-        player.GetLayers().ForEach(x => x.OnDeath(reason, customReason, killer));
+        player.GetLayers().ForEach(x => x.OnDeath(customReason, killer));
         killer.GetLayers().ForEach(x => x.OnKill(player));
 
         if (AmongUsClient.Instance.AmHost)

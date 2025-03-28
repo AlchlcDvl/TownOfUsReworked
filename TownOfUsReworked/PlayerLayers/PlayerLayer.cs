@@ -312,7 +312,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Performs an action upon the death of the player (called in <see cref="MiscUtils.CustomDie"/>). Runs for everyone.
     /// </summary>
-    public virtual void OnDeath(DeathReason reason, DeathReasonEnum reason2, PlayerControl killer) {}
+    public virtual void OnDeath(DeathReasonEnum reason, PlayerControl killer) {}
 
     /// <summary>
     /// Performs an action when the player is revived (called in <see cref="PlayerControl.Revive"/>). Runs for everyone.
@@ -403,7 +403,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     }
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => [ PlayerId, .. NetData.ToBytes(Type) ];
+    public byte[] ToBytes() => [ PlayerId, (byte)Type ];
 
     /// <summary>
     /// Inequality check.
