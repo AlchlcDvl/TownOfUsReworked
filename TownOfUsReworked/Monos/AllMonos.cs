@@ -19,6 +19,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<DeadBodyHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<FootprintHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<StatsHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<StatusHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -63,9 +64,7 @@ public static class AllMonos
         prefab.TasksCountTowardProgress = false;
         prefab.Ability = LayerHandler.CrewmateGhost.Ability;
 
-        var allRoles = RoleManager.Instance.AllRoles.ToList();
-        allRoles.Add(prefab);
-        RoleManager.Instance.AllRoles = allRoles.ToArray();
+        RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.Concat([ prefab ]).ToArray();
 
         ComponentsAdded = true;
     }

@@ -355,7 +355,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     public string ReadString()
     {
-        var length = (int)ReadUInt();
+        var length = (int)ReadUShort();
         ThrowIfIncorrectState(true, length);
         var result = Encoding.UTF8.GetString(ReadBuffer, Position, length);
         Position += length;
@@ -542,7 +542,7 @@ public sealed class NetData : IDisposable, INetSerializable
     public static byte[] ToBytes(string value)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
-        return [ .. ToBytes((uint)bytes.Length), .. bytes ];
+        return [ .. ToBytes((ushort)bytes.Length), .. bytes ];
     }
 
     /// <summary>
@@ -577,7 +577,7 @@ public sealed class NetData : IDisposable, INetSerializable
         foreach (var obj in values)
             result.AddRange(ToBytes(obj));
 
-        result.InsertRange(0, BitConverter.GetBytes((uint)values.Length));
+        result.InsertRange(0, BitConverter.GetBytes((ushort)values.Length));
         return [ .. result ];
     }
 

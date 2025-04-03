@@ -1440,43 +1440,13 @@ public static class MiscUtils
         }));
     }
 
-    // private static void RenameFolder(string og, string @new)
-    // {
-    //     if (!Directory.Exists(og))
-    //         return;
-
-    //     var files = Directory.EnumerateFiles(og);
-    //     var newFiles = files.Select(x => x.Replace(og, @new));
-    //     (files, newFiles).ForEach(File.Move);
-    //     Directory.Delete(og);
-    // }
-
-    // public static void RenameAssetFolders()
-    // {
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomHats"), TownOfUsReworked.Hats);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomVisors"), TownOfUsReworked.Visors);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomNameplates"), TownOfUsReworked.Nameplates);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomColors"), TownOfUsReworked.Colors);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomOptions"), TownOfUsReworked.Options);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomImages"), TownOfUsReworked.Images);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "CustomSounds"), TownOfUsReworked.Sounds);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "MiscAssets"), TownOfUsReworked.Bundles);
-    //     RenameFolder(Path.Combine(TownOfUsReworked.Assets, "ModLogs"), TownOfUsReworked.Logs);
-    // }
-
-    // public static string TrueReplace(this string @string, string former, string latter)
-    // {
-    //     while (@string.Contains(former))
-    //         @string = @string.Replace(former, latter);
-    //
-    //     return @string;
-    // }
-
     public static bool TryCastToLayer(this ListSlot slot, out LayerEnum layer) => Enum.TryParse($"{slot}", out layer);
 
     public static ListSlot CastToSlot(this LayerEnum layer) => Enum.Parse<ListSlot>($"{layer}");
 
     public static string Join(char separator, params object[] values) => Join<object>(separator, values);
+
+    // public static string Join(string separator, params object[] values) => Join<object>(separator, values);
 
     public static string Join<T>(char separator, IEnumerable<T> items) => Join($"{separator}", items);
 
@@ -1506,4 +1476,6 @@ public static class MiscUtils
     // public static IEnumerator WaitUntil(Task task) => WaitUntil(() => task.IsCompleted);
 
     // public static T CoStart<T>(T coroutine) where T : IEnumerator => (T)Coroutines.Start(coroutine);
+
+    public static T CreateInstance<T>(params object[] args) => (T)Activator.CreateInstance(typeof(T), args);
 }

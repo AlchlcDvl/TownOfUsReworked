@@ -27,5 +27,6 @@ public enum MiscRPC : byte
     Achievement,
     SyncUses,
     SyncMaxUses,
-    SyncMap
+    SyncMap,
+    SetStatus
 }

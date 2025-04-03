@@ -893,6 +893,9 @@ public static class SettingsPatches
                             return flag;
                         }).ToArray();
 
+                        if (members.Length > 0)
+                            y += 0.2f;
+
                         for (var i = 0; i < members!.Length; i++)
                         {
                             if (i % 2 == 0)

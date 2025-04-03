@@ -15,7 +15,7 @@ public sealed class GuardianAngel : Neutral
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     private static Number MaxProtects = 5;
 
-    [MultiSelectOption<ProtectOptions>([ ProtectOptions.Nobody, ProtectOptions.Everyone ])]
+    [MultiSelectOption<ProtectOptions>(NoneValue = ProtectOptions.Nobody, AllValue = ProtectOptions.Everyone )]
     public static MultiSelectValue<ProtectOptions> ShowProtect = ProtectOptions.Protected;
 
     [ToggleOption]

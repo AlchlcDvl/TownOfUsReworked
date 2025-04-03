@@ -3,10 +3,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 [LayerHeaderOption(LayerEnum.Medic)]
 public sealed class Medic : Crew, IShielder
 {
-    [MultiSelectOption<ShieldOptions>([ ShieldOptions.Nobody, ShieldOptions.Everyone ])]
+    [MultiSelectOption<ShieldOptions>(NoneValue = ShieldOptions.Nobody, AllValue = ShieldOptions.Everyone )]
     public static MultiSelectValue<ShieldOptions> ShowShielded = ShieldOptions.Medic;
 
-    [MultiSelectOption<ShieldOptions>([ ShieldOptions.Nobody, ShieldOptions.Everyone ])]
+    [MultiSelectOption<ShieldOptions>(NoneValue = ShieldOptions.Nobody, AllValue = ShieldOptions.Everyone )]
     public static MultiSelectValue<ShieldOptions> WhoGetsNotification = ShieldOptions.Medic;
 
     [ToggleOption]

@@ -217,6 +217,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Performs an action on a player (called in <see cref="PlayerControlHandler.Update"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The player to update.</param>
     public virtual void UpdatePlayer(PlayerControl __instance) {}
 
     /// <summary>
@@ -227,46 +228,56 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Performs an action on the <see cref="PlayerVoteArea"/> that references a player (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The player vote area to update.</param>
     public virtual void UpdateVoteArea(PlayerVoteArea __instance) {}
 
     /// <summary>
     /// Performs an action that updates the hud (called in <see cref="HudManager.Update"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The hud to update.</param>
     public virtual void UpdateHud(HudManager __instance) {}
 
     /// <summary>
     /// Performs an action that updates the meeting phone (called in <see cref="MeetingHud.Update"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to update.</param>
     public virtual void UpdateMeeting(MeetingHud __instance) {}
 
     /// <summary>
     /// Performs an action after vote calculation is complete (called in <see cref="VoteAreaHandler.Update"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
     public virtual void VoteComplete(MeetingHud __instance) {}
 
     /// <summary>
     /// Performs an action before your vote is confirmed (called in <see cref="MeetingHud.VotingComplete"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
     public virtual void ConfirmVotePrefix(MeetingHud __instance) {}
 
     /// <summary>
     /// Performs an action after your vote is confirmed (called in <see cref="MeetingHud.VotingComplete"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
     public virtual void ConfirmVotePostfix(MeetingHud __instance) {}
 
     /// <summary>
     /// Performs an action when a vote is cleared (called in <see cref="MeetingHud.ClearVote"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
     public virtual void ClearVote(MeetingHud __instance) {}
 
     /// <summary>
     /// Performs an action when a vote area is selected, making use of the id (called in <see cref="MeetingHud.Select"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
+    /// <param name="id">The vote that was selected.</param>
     public virtual void SelectVote(MeetingHud __instance, int id) {}
 
     /// <summary>
     /// Performs an action that updates the map (called in <see cref="MapBehaviour.FixedUpdate"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The minimap to update.</param>
     public virtual void UpdateMap(MapBehaviour __instance) {}
 
     /// <summary>
@@ -287,31 +298,38 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Performs an action once a meeting begins (called in <see cref="MeetingHud.Start"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
     public virtual void OnMeetingStart(MeetingHud __instance) {}
 
     /// <summary>
     /// Performs an action once a meeting ends (called in <see cref="MeetingHud.Close"/>). Runs locally.
     /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
     public virtual void OnMeetingEnd(MeetingHud __instance) {}
 
     /// <summary>
     /// Performs an action when reporting a body (called in <see cref="PlayerControl.StartMeeting"/>). Runs locally.
     /// </summary>
+    /// <param name="info">The player that's being reported.</param>
     public virtual void OnBodyReport(NetworkedPlayerInfo info) {}
 
     /// <summary>
     /// Performs an action when a specific task is completed (called in <see cref="PlayerControl.CompleteTask"/>). Runs for everyone.
     /// </summary>
+    /// <param name="taskId">The id of that specific task.</param>
     public virtual void UponTaskComplete(uint taskId) {}
 
     /// <summary>
     /// Performs an action based on the received network message (called in <see cref="PlayerControl.HandleRpc"/>). Runs for everyone.
     /// </summary>
+    /// <param name="reader">The network message to read from.</param>
     public virtual void ReadRPC(NetData reader) {}
 
     /// <summary>
     /// Performs an action upon the death of the player (called in <see cref="MiscUtils.CustomDie"/>). Runs for everyone.
     /// </summary>
+    /// <param name="reason">The reason that the player died.</param>
+    /// <param name="killer">The player's killer.</param>
     public virtual void OnDeath(DeathReasonEnum reason, PlayerControl killer) {}
 
     /// <summary>
@@ -327,6 +345,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Performs an action when killing someone (called in <see cref="MiscUtils.CustomDie"/>). Runs for everyone.
     /// </summary>
+    /// <param name="victim">The player's victim.</param>
     public virtual void OnKill(PlayerControl victim) {}
 
     /// <summary>
@@ -342,12 +361,29 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Updates the player's name (called in <see cref="NameHandler.UpdateGameName"/>). Runs for everyone.
     /// </summary>
+    /// <param name="name">The name to update.</param>
+    /// <param name="color">The color to update.</param>
+    /// <param name="revealed">Indicates whether or not the layer is revealed.</param>
+    /// <param name="removeFromConsig">Indicates whether Consiglieres should remove the player from their investigated players list.</param>
     public virtual void UpdateSelfName(ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
 
     /// <summary>
     /// Updates a player's name (called in <see cref="NameHandler.UpdateGameName"/>). Runs for everyone.
     /// </summary>
+    /// <param name="handler">The player's layer handler.</param>
+    /// <param name="player">The player.</param>
+    /// <param name="meeting">Indicates whether or not the game si currently in a meeting.</param>
+    /// <param name="name">The name to update.</param>
+    /// <param name="color">The color to update.</param>
+    /// <param name="revealed">Indicates whether or not the layer is revealed.</param>
+    /// <param name="removeFromConsig">Indicates whether Consiglieres should remove the player from their investigated players list.</param>
     public virtual void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
+
+    /// <summary>
+    /// Handles the networked addition or removal of player statuses.
+    /// </summary>
+    /// <param name="reader">The network message to read from.</param>
+    public virtual void SetNetworkedStatus(NetData reader) {}
 
     /// <summary>
     /// Checks and ends the game as needed.

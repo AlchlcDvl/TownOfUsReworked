@@ -574,7 +574,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         {
             case PlayerControl player:
             {
-                player.cosmetics.SetOutline(color.HasValue, new(color.GetValueOrDefault()));
+                player.cosmetics.SetOutline(color.HasValue, new(color ?? UColor.clear));
                 break;
             }
             case DeadBody body:

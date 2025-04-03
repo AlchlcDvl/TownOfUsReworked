@@ -70,7 +70,7 @@ public static class CustomAchievementManager
 
     private static void DeserializeCustomAchievements(this BinaryReader reader)
     {
-        var count = reader.ReadUInt32();
+        var count = reader.ReadUInt16();
 
         while (count-- > 0)
         {
@@ -84,7 +84,7 @@ public static class CustomAchievementManager
     public static void SerializeCustomAchievements(this BinaryWriter writer)
     {
         var unlocked = AllAchievements.Where(a => a.Unlocked);
-        writer.Write((uint)unlocked.Count());
+        writer.Write((ushort)unlocked.Count());
         unlocked.ForEach(a => writer.Write(a.Name));
     }
 

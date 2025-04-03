@@ -708,7 +708,7 @@ The Cryomaniac can douse players in coolant and freeze them similar to the Arson
 
 **Attack**: Basic
 
-The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into an Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula. The Dracula can only convert once per round. Members of the Undead have a grey γ next to their names.
+The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into an Undead. If the target cannot be converted, they will be attacked instead. The Dracula can only convert once per round. Members of the Undead have a grey γ next to their names.
 
 **Game Options**
 
@@ -1027,7 +1027,7 @@ The Werewolf can kill all players within a certain radius. The Werewolf cannot a
 
 **Attack**: Basic
 
-The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the Whisperer's side increases till they do convert. Members of the Sect have a pink Λ next to their names.
+The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the Whisperer's side increases till they do convert. Members of the Cult have a pink Λ next to their names.
 
 **Game Options**
 

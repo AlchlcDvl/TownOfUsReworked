@@ -63,6 +63,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
 
+    // A bunch of config stuff to ensure value persistence
     public static ConfigEntry<string> Ip { get; private set; }
     public static ConfigEntry<ushort> Port { get; private set; }
 

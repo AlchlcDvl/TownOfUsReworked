@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Modules;
 /// </summary>
 /// <typeparam name="T">The enum type that this collection will store.</typeparam>
 [Serializable]
-public class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable
+public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable
     where T : struct, Enum
 {
     /// <summary>
