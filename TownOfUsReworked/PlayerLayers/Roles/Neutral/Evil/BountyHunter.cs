@@ -40,15 +40,15 @@ public sealed class BountyHunter : Evil
     public int Rounds { get; set; }
 
     protected override UColor MainColor => CustomColorManager.BountyHunter;
-    public override LayerEnum Type => LayerEnum.BountyHunter;
-    public override Func<string> StartText => () => "Find And Kill Your Target";
+    public override LayerEnum Type { get; } = LayerEnum.BountyHunter;
+    public override Func<string> StartText { get; } = () => "Find And Kill Your Target";
     public override Func<string> Description => () => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
         "finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you will" +
         " become a <#678D36FF>Troll</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetKilled;
     public override bool CanVent => base.CanVent && BhVent;
-    protected override WinLose EndState => WinLose.BountyHunterWins;
+    public override WinLose EndState => WinLose.BountyHunterWins;
 
     protected override void Init()
     {
@@ -251,7 +251,7 @@ public sealed class BountyHunter : Evil
         {
             TargetKilled = true;
             HuntButton.StartCooldown(Interact(Player, target, true, bypass: true));
-            CallRpc(CustomRPC.WinLose, WinLose.BountyHunterWins, this);
+            // CallRpc(CustomRPC.WinLose, WinLose.BountyHunterWins, this);
         }
         else
             HuntButton.StartCooldown(Interact(Player, target, true));

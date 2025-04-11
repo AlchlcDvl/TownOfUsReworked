@@ -20,8 +20,8 @@ public sealed class Transporter : Crew, IMover
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Transporter;
-    public override LayerEnum Type => LayerEnum.Transporter;
-    public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
+    public override LayerEnum Type { get; } = LayerEnum.Transporter;
+    public override Func<string> StartText { get; } = () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
 
     protected override void Init()
@@ -30,7 +30,7 @@ public sealed class Transporter : Crew, IMover
         Alignment = Alignment.Support;
         TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, MaxTransports, new Cooldown(TransportCd),
             (LabelFunc)Label);
-        TransportMenu = new(Player, Click, Exception);
+        TransportMenu = new(Player, Click, Color, Exception);
     }
 
     private string Label() => TransportMenu.Selected.Count switch

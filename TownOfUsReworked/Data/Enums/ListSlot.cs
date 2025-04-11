@@ -45,7 +45,6 @@ public enum ListSlot : byte
     Juggernaut,
     Murderer,
     Necromancer,
-    Plaguebearer,
     SerialKiller,
     Survivor,
     Thief,
@@ -83,6 +82,8 @@ public enum ListSlot : byte
     Stalker,
     Timekeeper,
     Warper,
+
+    Plaguebearer,
 
     Astral,
     Bait,
@@ -143,12 +144,10 @@ public enum ListSlot : byte
     NonCrew,
 
     NeutralPros,
-    NeutralApoc,
-    NeutralKill,
-    NeutralHarb,
-    NeutralNeo,
     NeutralBen,
     NeutralEvil,
+    NeutralKill,
+    NeutralNeo,
 
     RandomNeutral,
     RegularNeutral,
@@ -182,6 +181,14 @@ public enum ListSlot : byte
 
     NonSyndicate,
 
+    ApocDeity,
+    ApocHarb,
+
+    RandomApocalypse,
+
+    NonApocalypse,
+
+    PandoraHarb,
     PandoraKill,
     PandoraConceal,
     PandoraDecep,
@@ -197,9 +204,7 @@ public enum ListSlot : byte
 
     NonPandora,
 
-    ComplianceApoc,
     ComplianceKill,
-    ComplianceHarb,
     ComplianceNeo,
 
     RandomCompliance,

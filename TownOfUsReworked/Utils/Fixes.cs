@@ -41,6 +41,7 @@ public static class Fixes
         mixup.secondsForAutoHeal = 0.1f;
     }
 
+    // FIXME: This somehow does not work
     public static void Fix()
     {
         FixCritSabotages();
@@ -59,48 +60,9 @@ public static class Fixes
 
         switch (MapPatches.CurrentMap)
         {
-            case 1:
+            case >= 1 and <= 5:
             {
-                if (ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
-
-                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
-                    FixOxygen();
-
-                break;
-            }
-            case 2:
-            {
-                if (ship.Systems[SystemTypes.Laboratory].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Laboratory);
-
-                break;
-            }
-            case 0 or 3:
-            {
-                if (ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
-
-                if (ship.Systems[SystemTypes.LifeSupp].TryCast(out activatable) && activatable.IsActive)
-                    FixOxygen();
-
-                break;
-            }
-            case 4:
-            {
-                if (ship.Systems[SystemTypes.HeliSabotage].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixHeli();
-
-                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
-                    FixLights(lights);
-
-                break;
-            }
-            case 5:
-            {
-                if (ship.Systems[SystemTypes.Reactor].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Reactor);
-
+                ship.RepairCriticalSabotages();
                 break;
             }
             case 6 when SubLoaded:
@@ -120,9 +82,6 @@ public static class Fixes
 
                 if (ship.Systems[SystemTypes.Reactor].TryCast(out activatable) && activatable.IsActive)
                     FixReactor(SystemTypes.Reactor);
-
-                if (ship.Systems[SystemTypes.Laboratory].TryCast(out activatable) && activatable.IsActive)
-                    FixReactor(SystemTypes.Laboratory);
 
                 break;
             }
@@ -208,9 +167,6 @@ public static class Fixes
 
                 if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
                     FixLights(lights);
-
-                if (ship.Systems[SystemTypes.MushroomMixupSabotage].TryCast<MushroomMixupSabotageSystem>(out var mixup) && mixup.IsActive)
-                    FixMixup(mixup);
 
                 break;
             }

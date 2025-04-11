@@ -17,15 +17,15 @@ public sealed class Drunkard : Syndicate
     private CustomPlayerMenu ConfuseMenu { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Drunkard;
-    public override LayerEnum Type => LayerEnum.Drunkard;
-    public override Func<string> StartText => () => "<i>Burp</i>";
+    public override LayerEnum Type { get; } = LayerEnum.Drunkard;
+    public override Func<string> StartText { get; } = () => "<i>Burp</i>";
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
 
     protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Disruption;
-        ConfuseMenu = new(Player, Click, Exception1);
+        ConfuseMenu = new(Player, Click, Color, Exception1);
         ConfusedPlayer = null;
         ConfuseButton ??= new(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
             new Duration(ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (EndFunc)EndEffect);

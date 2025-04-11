@@ -11,7 +11,15 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
     public override void Set(MemberInfo member, BaseHeaderOption header, bool clientOnly)
     {
         base.Set(member, header, clientOnly);
-        Value = member.GetValue<T>(null);
+
+        try
+        {
+            Value = member.GetValue<T>(null);
+        }
+        catch
+        {
+            Fatal(Name);
+        }
     }
 
     public override string ToString() => $"{ID}:{ValueString()}";
@@ -50,19 +58,22 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         if (!HudManager.InstanceExists || !notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;
 
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
-        var hud = HUD();
-
-        if (LastChangedSetting == ID && hud.Notifier.activeMessages.Count > 0 && LastSettingNotif)
-            LastSettingNotif.UpdateMessage(changed);
-        else
+        try
         {
-            LastChangedSetting = ID;
-            LastSettingNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, hud.Notifier.transform);
-            LastSettingNotif.transform.localPosition = new(0f, 0f, -2f);
-            LastSettingNotif.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(LastSettingNotif)));
-            hud.Notifier.AddMessageToQueue(LastSettingNotif);
-            hud.Notifier.ShiftMessages();
-        }
+            var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
+            var hud = HUD();
+
+            if (LastChangedSetting == ID && hud.Notifier.activeMessages.Count > 0 && LastSettingNotif)
+                LastSettingNotif.UpdateMessage(changed);
+            else
+            {
+                LastChangedSetting = ID;
+                LastSettingNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, hud.Notifier.transform);
+                LastSettingNotif.transform.localPosition = new(0f, 0f, -2f);
+                LastSettingNotif.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(LastSettingNotif)));
+                hud.Notifier.AddMessageToQueue(LastSettingNotif);
+                hud.Notifier.ShiftMessages();
+            }
+        } catch {} // Sometimes Il2Cpp causes something in here to be null and ends up shitting the entire notification for it
     }
 }

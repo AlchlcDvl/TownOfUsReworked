@@ -42,15 +42,15 @@ public sealed class Executioner : Evil
     private bool TargetFailed => !TargetPlayer && Rounds > 2;
 
     protected override UColor MainColor => CustomColorManager.Executioner;
-    public override LayerEnum Type => LayerEnum.Executioner;
-    public override Func<string> StartText => () => "Find Someone To Eject";
+    public override LayerEnum Type { get; } = LayerEnum.Executioner;
+    public override Func<string> StartText { get; } = () => "Find Someone To Eject";
     public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetVotedOut;
     public override bool CanVent => base.CanVent && ExeVent;
     public override bool CanSwitchVents => ExeSwitchVent;
-    protected override WinLose EndState => WinLose.ExecutionerWins;
+    public override WinLose EndState => WinLose.ExecutionerWins;
 
     protected override void Init()
     {
@@ -135,7 +135,7 @@ public sealed class Executioner : Evil
     }
 
     private bool Exception1(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player.IsLinkedTo(Player) ||
-        player.Is(Alignment.Apocalypse);
+        player.Is(Alignment.Deity);
 
     private bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.Sovereign) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);

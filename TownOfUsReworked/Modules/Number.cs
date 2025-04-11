@@ -5,12 +5,15 @@ namespace TownOfUsReworked.Modules;
 /// </summary>
 /// <param name="num">The value to be set.</param>
 [Serializable]
-public readonly struct Number(float num) : IFormattable, IEquatable<Number>
+public readonly struct Number(float num) : IFormattable, INetSerializable, IEquatable<Number>
 {
     /// <summary>
     /// Gets the value.
     /// </summary>
     public float Value { get; } = num;
+
+    /// <inheritdoc/>
+    public byte[] ToBytes() => NetData.ToBytes(Value);
 
     /// <summary>
     /// Implicitly converts to float.

@@ -83,7 +83,7 @@ public sealed class DispositionGen : BaseGen
             var assigned = id switch
             {
                 LayerEnum.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),
-                LayerEnum.Defector => playerList.FirstOrDefault(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate)),
+                LayerEnum.Defector => playerList.FirstOrDefault(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse),
                 LayerEnum.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Neutral)),
                 _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester or Shifter)),
                 _ when CrewDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),

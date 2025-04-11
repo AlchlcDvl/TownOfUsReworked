@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [LayerHeaderOption(LayerEnum.Linked)]
-public sealed class Linked : Disposition
+public sealed class Linked : Paired
 {
     [ToggleOption]
     public static bool LinkedChat = true;
@@ -9,29 +9,10 @@ public sealed class Linked : Disposition
     [ToggleOption]
     public static bool LinkedRoles = true;
 
-    public PlayerControl OtherLink { get; set; }
-
     protected override UColor MainColor => CustomColorManager.Linked;
     public override string Symbol => "Ψ";
-    public override LayerEnum Type => LayerEnum.Linked;
-    public override Func<string> Description => () => $"- Help {OtherLink.name} win";
-
-    public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Linked;
-
-    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
-    {
-        if (OtherLink != player)
-            return;
-
-        name += $" {ColoredSymbol}";
-
-        if (!LinkedRoles || revealed)
-            return;
-
-        var role = handler.CustomRole;
-        color = role.Color;
-        name += $"\n{role}";
-        revealed = true;
-        removeFromConsig = true;
-    }
+    public override LayerEnum Type { get; } = LayerEnum.Linked;
+    public override Func<string> Description => () => $"- Help {Other.name} win";
+    protected override bool RevealRole => LinkedRoles;
+    protected override ChatChannel Channel => ChatChannel.Linked;
 }

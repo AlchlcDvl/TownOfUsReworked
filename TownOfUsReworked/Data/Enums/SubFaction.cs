@@ -2,10 +2,9 @@
 
 public enum SubFaction : byte
 {
+    None,
     Undead,
     Cabal,
     Reanimated,
     Cult,
-
-    None
 }

@@ -3,7 +3,6 @@
 public enum CustomRPC : byte
 {
     Action,
-    WinLose,
     Misc,
     Test,
     Vanilla

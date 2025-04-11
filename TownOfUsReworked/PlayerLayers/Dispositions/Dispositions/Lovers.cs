@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [LayerHeaderOption(LayerEnum.Lovers)]
-public sealed class Lovers : Disposition
+public sealed class Lovers : Paired
 {
     [ToggleOption]
     public static bool BothLoversDie = true;
@@ -15,47 +15,27 @@ public sealed class Lovers : Disposition
     [ToggleOption]
     public static bool ConvertLovers = true;
 
-    public PlayerControl OtherLover { get; set; }
-    public bool LoversAlive => !Player.HasDied() && !OtherLover.HasDied();
+    public bool LoversAlive => !Player.HasDied() && !Other.HasDied();
 
     protected override UColor MainColor => CustomColorManager.Lovers;
     public override string Symbol => "♥";
-    public override LayerEnum Type => LayerEnum.Lovers;
-    public override Func<string> Description => () => $"- Live to the final 3 with {OtherLover.name}";
+    public override LayerEnum Type { get; } = LayerEnum.Lovers;
+    public override Func<string> Description => () => $"- Live to the final 3 with {Other.name}";
+    protected override bool RevealRole => LoversRoles;
+    protected override ChatChannel Channel => ChatChannel.Rivals;
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        if (BothLoversDie && !OtherLover.HasDied() && !OtherLover.Is(Alignment.Apocalypse))
-            OtherLover.Suicide();
+        if (BothLoversDie && !Other.HasDied() && !Other.Is(Alignment.Deity))
+            Other.Suicide();
     }
 
-    public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Lovers;
-
-    protected override void CheckWin()
+    protected override void CheckWin(List<byte> winnerIds)
     {
-        if (!LoversWin(Player))
+        if (AllPlayers().Count(x => !x.HasDied()) <= 3 && LoversAlive)
             return;
 
         WinState = WinLose.LoveWins;
-        Winner = true;
-        OtherLover.GetDisposition().Winner = true;
-        CallRpc(CustomRPC.WinLose, WinLose.LoveWins, this);
-    }
-
-    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
-    {
-        if (OtherLover != player)
-            return;
-
-        name += $" {ColoredSymbol}";
-
-        if (!LoversRoles || revealed)
-            return;
-
-        var role = handler.CustomRole;
-        color = role.Color;
-        name += $"\n{role}";
-        revealed = true;
-        removeFromConsig = true;
+        winnerIds.Add(PlayerId);
     }
 }

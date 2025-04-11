@@ -11,7 +11,7 @@ public sealed class Mafia : Disposition
 
     protected override UColor MainColor => CustomColorManager.Mafia;
     public override string Symbol => "ω";
-    public override LayerEnum Type => LayerEnum.Mafia;
+    public override LayerEnum Type { get; } = LayerEnum.Mafia;
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
     public override bool CanVent => MafVent;
 
@@ -21,14 +21,13 @@ public sealed class Mafia : Disposition
         Player.GetRole().Faction = Faction.Neutral;
     }
 
-    protected override void CheckWin()
+    protected override void CheckWin(List<byte> winnerIds)
     {
-        if (!MafiaWin())
+        if (AllPlayers().Any(x => !x.HasDied() && !x.Is<Mafia>()))
             return;
 
         WinState = WinLose.MafiaWins;
-        Winner = true;
-        CallRpc(CustomRPC.WinLose, WinLose.MafiaWins);
+        winnerIds.Add(PlayerId);
     }
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)

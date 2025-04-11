@@ -86,34 +86,34 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 - [**License**](#license)
 - [**Player Layers**](#player-layers)
 
-| [Intruders](#intruder-roles)       | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Game Mode](#game-mode-roles) |
-|------------------------------------|-------------------------------|-----------------------------------|-----------------------------------|-------------------------------|
-| [Ambusher](#ambusher)              | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Hunted](#hunted)             |
-| [Blackmailer](#blackmailer)        | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Hunter](#hunter)             |
-| [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Runner](#runner)             |
-| [Consigliere](#consigliere)        | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              |                               |
-| [Consort](#consort)                | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |                               |
-| [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Democrat](#democrat)             | [Cannibal](#cannibal)             |                               |
-| [Enforcer](#enforcer)              | [Drunkard](#drunkard)         | [Detective](#detective)           | [Cryomaniac](#cryomaniac)         |                               |
-| [Ghoul](#ghoul)                    | [Framer](#framer)             | [Dictator](#dictator)             | [Dracula](#dracula)               |                               |
-| [Godfather](#godfather)            | [Poisoner](#poisoner)         | [Engineer](#engineer)             | [Executioner](#executioner)       |                               |
-| [Grenadier](#grenadier)            | [Rebel](#rebel)               | [Escort](#escort)                 | [Glitch](#glitch)                 |                               |
-| [Impostor](#impostor)              | [Shapeshifter](#shapeshifter) | [Mayor](#mayor)                   | [Guardian Angel](#guardian-angel) |                               |
-| [Janitor](#janitor)                | [Sidekick](#sidekick)         | [Medic](#medic)                   | [Guesser](#guesser)               |                               |
-| [Mafioso](#mafioso)                | [Silencer](#silencer)         | [Medium](#medium)                 | [Jackal](#jackal)                 |                               |
-| [Miner/Herbalist](#minerherbalist) | [Spellslinger](#spellslinger) | [Monarch](#monarch)               | [Jester](#jester)                 |                               |
-| [Morphling](#morphling)            | [Stalker](#stalker)           | [Mystic](#mystic)                 | [Juggernaut](#juggernaut)         |                               |
-| [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Operative](#operative)           | [Murderer](#murderer)             |                               |
-| [Wraith](#wraith)                  | [Warper](#warper)             | [Retributionist](#retributionist) | [Necromancer](#necromancer)       |                               |
-|                                    |                               | [Revealer](#revealer)             | [Pestilence](#pestilence)         |                               |
-|                                    |                               | [Seer](#seer)                     | [Phantom](#phantom)               |                               |
-|                                    |                               | [Sheriff](#sheriff)               | [Plaguebearer](#plaguebearer)     |                               |
-|                                    |                               | [Shifter](#shifter)               | [Serial Killer](#serial-killer)   |                               |
-|                                    |                               | [Tracker](#tracker)               | [Survivor](#survivor)             |                               |
-|                                    |                               | [Transporter](#transporter)       | [Thief](#thief)                   |                               |
-|                                    |                               | [Trapper](#trapper)               | [Troll](#troll)                   |                               |
-|                                    |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
-|                                    |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
+| [Intruders](#intruder-roles)       | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Apocalypse](#apocalypse-roles) | [Game Mode](#game-mode-roles) |
+|------------------------------------|-------------------------------|-----------------------------------|-----------------------------------|---------------------------------|-------------------------------|
+| [Ambusher](#ambusher)              | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Cultist](#cultist)             | [Hunted](#hunted)             |
+| [Blackmailer](#blackmailer)        | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Pestilence](#pestilence)       | [Hunter](#hunter)             |
+| [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Plaguebearer](#plaguebearer)   | [Runner](#runner)             |
+| [Consigliere](#consigliere)        | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              | [Void](#void)                   |                               |
+| [Consort](#consort)                | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |                                 |                               |
+| [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Democrat](#democrat)             | [Cannibal](#cannibal)             |                                 |                               |
+| [Enforcer](#enforcer)              | [Drunkard](#drunkard)         | [Detective](#detective)           | [Cryomaniac](#cryomaniac)         |                                 |                               |
+| [Ghoul](#ghoul)                    | [Framer](#framer)             | [Dictator](#dictator)             | [Dracula](#dracula)               |                                 |                               |
+| [Godfather](#godfather)            | [Poisoner](#poisoner)         | [Engineer](#engineer)             | [Executioner](#executioner)       |                                 |                               |
+| [Grenadier](#grenadier)            | [Rebel](#rebel)               | [Escort](#escort)                 | [Glitch](#glitch)                 |                                 |                               |
+| [Impostor](#impostor)              | [Shapeshifter](#shapeshifter) | [Mayor](#mayor)                   | [Guardian Angel](#guardian-angel) |                                 |                               |
+| [Janitor](#janitor)                | [Sidekick](#sidekick)         | [Medic](#medic)                   | [Guesser](#guesser)               |                                 |                               |
+| [Mafioso](#mafioso)                | [Silencer](#silencer)         | [Medium](#medium)                 | [Jackal](#jackal)                 |                                 |                               |
+| [Miner/Herbalist](#minerherbalist) | [Spellslinger](#spellslinger) | [Monarch](#monarch)               | [Jester](#jester)                 |                                 |                               |
+| [Morphling](#morphling)            | [Stalker](#stalker)           | [Mystic](#mystic)                 | [Juggernaut](#juggernaut)         |                                 |                               |
+| [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Operative](#operative)           | [Murderer](#murderer)             |                                 |                               |
+| [Wraith](#wraith)                  | [Warper](#warper)             | [Retributionist](#retributionist) | [Necromancer](#necromancer)       |                                 |                               |
+|                                    |                               | [Revealer](#revealer)             | [Phantom](#phantom)               |                                 |                               |
+|                                    |                               | [Seer](#seer)                     | [Serial Killer](#serial-killer)   |                                 |                               |
+|                                    |                               | [Sheriff](#sheriff)               | [Survivor](#survivor)             |                                 |                               |
+|                                    |                               | [Shifter](#shifter)               | [Thief](#thief)                   |                                 |                               |
+|                                    |                               | [Tracker](#tracker)               | [Troll](#troll)                   |                                 |                               |
+|                                    |                               | [Transporter](#transporter)       | [Werewolf](#werewolf)             |                                 |                               |
+|                                    |                               | [Trapper](#trapper)               | [Whisperer](#whisperer)           |                                 |                               |
+|                                    |                               | [Veteran](#veteran)               |                                   |                                 |                               |
+|                                    |                               | [Vigilante](#vigilante)           |                                   |                                 |                               |
 
 
 | [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Dispositions](#dispositions) |
@@ -225,6 +225,9 @@ The Altruist is capable of reviving dead players at a cost. The Altruist can ext
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Mana Gained Per Body | How much mana is granted from a body per use | Number | 1 |
+| Mana Gained At The Start Of A Meeting | Self-Descriptive | Number | 0 |
+| Mana Required To Bring Life | Amount of mana that's used up to make use of the revive | Number | 2 |
 | Target's Body Disappears On Beginning Of Revive | Whether the reviving body disappears upon start of the revival | Toggle | False |
 
 ## Bastion <img height="17" src="./Images/Bastion.png">
@@ -282,6 +285,13 @@ Just a plain Crew with no abilities and only spawns if all the other roles are t
 
 The Democrat can campaign players to gain their electoral vote. When all alive players have been campaigned, the Democrat can reveal themselves to be the [Mayor](#mayor).
 
+**Game Options**
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Democrat Cannot Campaign Round One | Self-descriptive | Toggle | True |
+| Democrat Can Button | Whether the Democrat can call a meeting | Toggle | True |
+
 ## Detective <img height="17" src="./Images/Detective.png">
 
 **Alignment**: Crew (Investigative)
@@ -312,7 +322,6 @@ The Dictator has the ability to call tribunals. Upon calling the first tribunal,
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Dictator Cannot Reveal Round One | Self-descriptive | Toggle | True |
-| Dictator Can Dictate After Voting | Self-descriptive | Toggle | True |
 | Dictator Can Button | Whether the Dictator can call a meeting | Toggle | True |
 
 ## Engineer <img height="17" src="./Images/Engineer.png">
@@ -344,6 +353,7 @@ The Mayor can reveal themselves as the Mayor to other players. Upon doing so, th
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Mayor Votes Count As | The additional number of votes that are added to the Mayor's vote | Number | 2 |
+| Mayor Can Appear Directly | Self-descriptive | Toggle | True |
 | Mayor Cannot Reveal Round One | Self-descriptive | Toggle | True |
 | Mayor Can Button | Whether the Mayor can call a meeting | Toggle | True |
 
@@ -359,9 +369,9 @@ The Medic can give any player a shield that will grant them Powerful defense. Th
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Show Shielded Player | Who should be able to see who is Shielded | String | Self |
-| Who Gets Murder Attempt Indicator | Who will receive an indicator when someone tries to Kill them | String | Medic |
-| Shield Breaks On Murder Attempt | Whether the Shield breaks when someone attempts to Kill them | Toggle | True |
+| Show Shielded Player | Who should be able to see who is shielded | String | Self |
+| Who Gets Murder Attempt Indicator | Who will receive an indicator when someone tries to kill them | String | Medic |
+| Shield Breaks On Murder Attempt | Whether the shield breaks when someone attempts to kill them | Toggle | True |
 
 ## Medium <img height="17" src="./Images/Medium.png">
 
@@ -431,12 +441,6 @@ The Operative can place bugs around the map. When players enter the range of the
 
 The Retributionist can mimic dead crewmates. During meetings, the Retributionist can select who they are going to mimic for the following round from the dead. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
 
-**Game Options**
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Retributionist Can Mimic After Voting | Self-descriptive | Toggle | True |
-
 ## Revealer <img height="17" src="./Images/Revealer.png">
 
 **Alignment**: Crew (Utility)
@@ -474,8 +478,8 @@ The Sheriff can reveal the alliance of other players. Based on settings, the She
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Neutral Evils Show Up As Evil | Neutral Evil roles show up as Red | Toggle | False |
-| Neutral Killing Show Up As Evil | Neutral Killing roles show up as Red | Toggle | False |
+| Neutral Evils Show Up As Evil | Neutral Evil roles show up as bad | Toggle | False |
+| Neutral Killing Show Up As Evil | Neutral Killing roles show up as bad | Toggle | False |
 
 ## Shifter <img height="17" src="./Images/Shifter.png">
 
@@ -882,6 +886,9 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Mana Gained Per Body | How much mana is granted from a body per use | Number | 1 |
+| Mana Gained At The Start Of A Meeting | Self-Descriptive | Number | 0 |
+| Mana Required To Bring Life | Amount of mana that's used up to make use of the revive | Number | 2 |
 | Resurrect Cooldown Increases | Toggles whether the Necromancer's Resurrect cooldown increases each use | Toggle | True |
 | ┗ Resurrect Cooldown Increases By | The increase on the Necromancer's Resurrect cooldown with each use | Time | 5s |
 | Sacrifice Cooldown Increases | Toggles whether the Necromancer's sacrifice cooldown increases each use | Toggle | True |
@@ -890,27 +897,6 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 | Resurrect Duration | The time it takes for the Necromancer to resurrect a dead body | Time | 10s |
 | Target's Body Disappears On Beginning Of Resurrect | Whether the dead body of the player the Necromancer is resurrecting disappears upon resurrection | Toggle | False |
 | Reanimated Can Vent | Toggles the Reanimated's ability to vent, overriding their role's vent settings | Toggle | False |
-
-## Pestilence <img height="17" src="./Images/Pestilence.png">
-
-**Alignment**: Neutral (Apocalypse)
-
-**Win Condition**: Obliterate anyone who can oppose them
-
-**Origin**: Town Of Salem
-
-**Attack**: Unstoppable
-
-**Defense**: Invincible
-
-When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targeting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Neutral (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
-
-**Game Options**
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Pestilence Can Spawn Directly | Dictates whether Pestilence can appear even if no one is infected | Toggle | False |
-| Pestilence Transformation Alerts Everyone | Dictates whether everyone is alerted when the Plaguebearer turns into Pestilence | Toggle | False |
 
 ## Phantom <img height="17" src="./Images/Phantom.png">
 
@@ -928,18 +914,6 @@ The Phantom spawns when a Neutral player dies without accomplishing their object
 |------|-------------|------|---------|
 | Tasks Remaining When Phantom Can Be Clicked | The number of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
 | Players Are Alerted When Phantom Is Clickable | Whether players are alerted to the Phantom's existence and clickability | Toggle | False |
-
-## Plaguebearer <img height="17" src="./Images/Plaguebearer.png">
-
-**Alignment**: Neutral (Harbinger)
-
-**Win Condition**: Infect everyone and turn into Pestilence or live to the end by killing off anyone who can oppose them
-
-**Origin**: Town Of Salem
-
-**Defense**: Basic for as long as half the players are infected
-
-The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.
 
 ## Serial Killer <img height="17" src="./Images/SerialKiller.png">
 
@@ -1457,7 +1431,7 @@ The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, t
 
 **Alignment**: Syndicate (Disruption)
 
-**Origin**: Reworked Town Of Us Time Lord
+**Origin**: Town Of Us Time Lord + Town Of Us Reworked Time Master
 
 The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can freeze time, making everyone unable to move and with it, the Timekeeper rewinds players instead.
 
@@ -1482,7 +1456,58 @@ The Warper can teleport a player to another player. With the Chaos Drive, the Wa
 |------|-------------|------|---------|
 | Warper Can Warp Themselves | Self-descriptive | Toggle | False |
 
-# Game Mode Roles
+# Apocalypse Roles <img height="25" src="./Images/Apocalypse.png">
+
+Each member starts off extremely weak, but can become extremely powerful as the game progresses.
+
+**Game Options**
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Deities Can Spawn Directly | Dictates whether deity roles can appear without having to complete objectives for them | Toggle | False |
+| Transformation Alerts Everyone | Dictates whether everyone is alerted when a deity role appears | Toggle | False |
+
+## Cultist <img height="17" src="./Images/Cultist.png">
+
+**Alignment**: Apocalypse (Harbinger)
+
+**Defense**: Basic when alone
+
+The Cultist is the basic Apocalypse role. They can only kill once per round and upon achieving three kills, the Cultist transforms into the [Void](#void).
+
+## Pestilence <img height="17" src="./Images/Pestilence.png">
+
+**Alignment**: Apocalypse (Deity)
+
+**Origin**: Town Of Salem
+
+**Attack**: Unstoppable
+
+**Defense**: Invincible
+
+When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targeting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Neutral (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
+
+## Plaguebearer <img height="17" src="./Images/Plaguebearer.png">
+
+**Alignment**: Apocalypse (Harbinger)
+
+**Origin**: Town Of Salem
+
+**Defense**: Basic for as long as half the players are infected
+
+The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.
+
+## Void <img height="17" src="./Images/Void.png">
+
+**Alignment**: Apocalypse (Deity)
+
+**Attack**: Unstoppable
+
+**Defense**: Invincible
+
+The Void can directly kill players and take away their souls, leaving their bodies unreportable. Anyone who interacts with the Void and anyone targeted by the Void will lose their role by the end of the discussion phase and will be alerted about it.
+
+# Game Mode Roles <img height="17" src="./Images/GameMode.png">
 
 Each role within this group only spawns in certain game modes and come with their own special interactions with the game.
 

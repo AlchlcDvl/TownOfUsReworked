@@ -43,15 +43,15 @@ public sealed class Guesser : Evil, IGuesser
     public CustomGuessingMenu GuessingMenu { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Guesser;
-    public override LayerEnum Type => LayerEnum.Guesser;
-    public override Func<string> StartText => () => "Guess What Someone Might Be";
+    public override LayerEnum Type { get; } = LayerEnum.Guesser;
+    public override Func<string> StartText { get; } = () => "Guess What Someone Might Be";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
         $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetGuessed;
     public override bool CanVent => base.CanVent && GuessVent;
     public override bool CanSwitchVents => GuessSwitchVent;
-    protected override WinLose EndState => WinLose.GuesserWins;
+    public override WinLose EndState => WinLose.GuesserWins;
 
     protected override void Init()
     {
@@ -119,7 +119,7 @@ public sealed class Guesser : Evil, IGuesser
             }
         }
 
-        if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
+        if (IntruderSettings.IntruderCount > 0)
         {
             GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
@@ -393,10 +393,10 @@ public sealed class Guesser : Evil, IGuesser
             {
                 MarkMeetingDead(player, Player);
 
-                if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
-                    !lovers.OtherLover.Data.IsDead)
+                if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && !lovers.Other.Is(Alignment.Deity) &&
+                    !lovers.Other.Data.IsDead)
                 {
-                    RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
+                    RpcMurderPlayer(lovers.Other, guess, guessTarget);
                 }
             }
 

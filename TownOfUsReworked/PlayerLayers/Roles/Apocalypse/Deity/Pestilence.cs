@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Pestilence)]
-public sealed class Pestilence : Apocalypse
+public sealed class Pestilence : Deity
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ObliterateCd = 25;
@@ -15,8 +15,8 @@ public sealed class Pestilence : Apocalypse
     private CustomButton ObliterateButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Pestilence;
-    public override LayerEnum Type => LayerEnum.Pestilence;
-    public override Func<string> Description => () => "- You can spread a deadly disease to other players";
+    public override LayerEnum Type { get; } = LayerEnum.Pestilence;
+    public override Func<string> Description => () => "- You can spread a deadly disease to other players" + CommonAbilities;
     public override bool CanVent => base.CanVent && PestVent;
 
     public static readonly Dictionary<byte, uint> Infected = [];
@@ -24,13 +24,12 @@ public sealed class Pestilence : Apocalypse
     protected override void Init()
     {
         base.Init();
-        Objectives = () => "- Obliterate anyone who can oppose you";
         ObliterateButton ??= new(this, new SpriteName("Obliterate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",
             new Cooldown(ObliterateCd));
 
         foreach (var player in AllPlayers())
         {
-            if (player.GetAlignment() is not (Alignment.Apocalypse or Alignment.Harbinger))
+            if (player.GetAlignment() is not (Alignment.Deity or Alignment.Harbinger))
                 Infected[player.PlayerId] = 1;
         }
     }

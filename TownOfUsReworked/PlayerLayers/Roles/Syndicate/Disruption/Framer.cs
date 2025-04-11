@@ -14,8 +14,8 @@ public sealed class Framer : Syndicate
     public List<byte> Framed { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Framer;
-    public override LayerEnum Type => LayerEnum.Framer;
-    public override Func<string> StartText => () => "Make Everyone Suspicious";
+    public override LayerEnum Type { get; } = LayerEnum.Framer;
+    public override Func<string> StartText { get; } = () => "Make Everyone Suspicious";
     public override Func<string> Description => () => $"- You can frame a{(HoldsDrive ? $"ll players within a {ChaosDriveFrameRadius}m radius" : " player")}\n- Till you are dead, framed " +
         $"targets will die easily to killing roles and will have the wrong investigative results\n{CommonAbilities}";
 

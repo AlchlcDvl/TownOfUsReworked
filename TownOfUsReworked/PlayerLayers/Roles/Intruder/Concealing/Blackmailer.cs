@@ -20,8 +20,8 @@ public sealed class Blackmailer : Intruder, IIntimidator
     public PlayerControl Target { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Blackmailer;
-    public override LayerEnum Type => LayerEnum.Blackmailer;
-    public override Func<string> StartText => () => "You Know Their Secrets";
+    public override LayerEnum Type { get; } = LayerEnum.Blackmailer;
+    public override Func<string> StartText { get; } = () => "You Know Their Secrets";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say\n" + (BmRevealed ? ("- Everyone will be alerted at the start " +
         "of the meeting that someone has been silenced ") : "") + (WhispersNotPrivateB ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
 

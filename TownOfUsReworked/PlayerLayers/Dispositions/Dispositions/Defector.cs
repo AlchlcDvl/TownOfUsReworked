@@ -11,26 +11,19 @@ public sealed class Defector : Disposition
 
     public bool Turned { get; private set; }
     public Faction Side { get; private set; }
+    private Role PlayerRole { get; set; }
 
-    protected override UColor MainColor => Turned
-        ? (Side switch
-        {
-            Faction.Crew => CustomColorManager.Crew,
-            Faction.Intruder => CustomColorManager.Intruder,
-            Faction.Neutral => CustomColorManager.Neutral,
-            Faction.Syndicate => CustomColorManager.Syndicate,
-            _ => CustomColorManager.Defector
-        })
-        : CustomColorManager.Defector;
+    protected override UColor MainColor => Turned ? PlayerRole.FactionColor : CustomColorManager.Defector;
     public override string Symbol => "ε";
-    public override LayerEnum Type => LayerEnum.Defector;
+    public override LayerEnum Type { get; } = LayerEnum.Defector;
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !DefectorKnows && !Turned;
 
     protected override void Init()
     {
         base.Init();
-        Side = Player.GetFaction();
+        PlayerRole = Player.GetRole();
+        Side = PlayerRole.Faction;
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -38,97 +31,123 @@ public sealed class Defector : Disposition
         if (Dead || Turned || !Last(Side))
             return;
 
-        GetFactionChoice(out var crew, out var evil, out var neut);
-        CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, crew, evil, neut);
-        TurnSides(crew, evil, neut);
+        var faction = GetFactionChoice();
+        CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, faction);
+        TurnSides(faction);
     }
 
-    protected override void CheckWin()
+    protected override void CheckWin(List<byte> winnerIds)
     {
-        if (!DefectorWins())
+        if (Side != Faction.Neutral || AllPlayers().Any(x => !x.HasDied() && !x.Is<Defector>() && !x.Is(Faction.Neutral)))
             return;
 
-        if (Side == Faction.Neutral)
-            WinState = WinLose.DefectorWins;
-
-        CallRpc(CustomRPC.WinLose, WinState, this);
+        WinState = WinLose.DefectorWins;
+        winnerIds.Add(PlayerId);
     }
 
-    private static void GetFactionChoice(out bool crew, out bool evil, out bool neut)
+    private Faction GetFactionChoice()
     {
-        crew = DefectorFaction == DefectorFaction.Crew;
-        neut = DefectorFaction == DefectorFaction.Neutral;
-        evil = DefectorFaction == DefectorFaction.OpposingEvil;
+        if (GameModifiers.IlluminatiUnleashed)
+        {
+            return DefectorFaction switch
+            {
+                DefectorFaction.Neutral or DefectorFaction.NonCrew => Faction.Neutral,
+                DefectorFaction.Crew or DefectorFaction.NonNeutral => Faction.Crew,
+                _ => Side
+            };
+        }
+
+        var factions = new List<Faction>();
 
         switch (DefectorFaction)
         {
+            case DefectorFaction.Neutral:
+            {
+                factions.Add(Faction.Neutral);
+                break;
+            }
+            case DefectorFaction.OpposingEvil:
+            {
+                factions.Add(Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
+                break;
+            }
             case DefectorFaction.Random:
             {
-                var random = URandom.RandomRangeInt(0, 3);
-                evil = random == 0;
-                crew = random == 1;
-                neut = random == 2;
+                factions.Add(Faction.Crew, Faction.Neutral, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
                 break;
             }
             case DefectorFaction.NonCrew:
             {
-                var random = URandom.RandomRangeInt(0, 2);
-                evil = random == 0;
-                neut = random == 1;
+                factions.Add(Faction.Neutral, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
                 break;
             }
             case DefectorFaction.NonNeutral:
             {
-                var random = URandom.RandomRangeInt(0, 2);
-                evil = random == 0;
-                crew = random == 1;
+                factions.Add(Faction.Crew, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
                 break;
             }
             case DefectorFaction.NonFaction:
             {
-                var random = URandom.RandomRangeInt(0, 2);
-                crew = random == 0;
-                neut = random == 1;
+                factions.Add(Faction.Crew, Faction.Neutral);
+                break;
+            }
+            default:
+            {
+                factions.Add(Faction.Crew);
                 break;
             }
         }
+
+        if (GameModifiers.OrderOfCompliance)
+        {
+            factions.Add(Faction.Compliance);
+
+            if (GameModifiers.ComplianceType == ComplianceType.Killers)
+                factions.RemoveAll(Faction.Neutral);
+        }
+
+        if (GameModifiers.PandoricaOpens)
+        {
+            factions.RemoveAll(Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
+            factions.Add(Faction.Pandorica);
+        }
+
+        var players = AllPlayers();
+        var aliveCounts = factions.ToDictionary(x => x, x => players.Count(y => y.Is(x) && !y.HasDied()));
+        var validFactions = aliveCounts.Where(kvp => kvp.Value > 0).ToList();
+
+        if (!validFactions.Any())
+            return Side;
+
+        if (validFactions.Count == 1)
+            return validFactions[0].Key;
+
+        var maxCount = validFactions.Max(kvp => kvp.Value);
+        var weightedFactions = validFactions.Select(kvp => (kvp.Key, maxCount - kvp.Value + 1));
+        var totalWeight = weightedFactions.Sum(x => x.Item2);
+        var random = URandom.RandomRangeInt(0, totalWeight + 1);
+
+        foreach (var (faction, weight) in weightedFactions)
+        {
+            if (random < weight)
+                return faction;
+
+            random -= weight;
+        }
+
+        return Side;
     }
 
-    public void TurnSides(bool crew, bool evil, bool neutral)
+    public void TurnSides(Faction faction)
     {
+        if (Side == faction)
+            return;
+
         Turned = true;
-        var role = Player.GetRole();
+        PlayerRole.Faction = Side = faction;
 
-        if (crew)
-        {
-            role.Faction = Faction.Crew;
-            role.Objectives = () => Role.CrewWinCon;
-        }
-        else if (evil)
-        {
-            switch (Side)
-            {
-                case Faction.Intruder:
-                {
-                    role.Faction = Faction.Syndicate;
-                    role.Objectives = () => Role.SyndicateWinCon;
-                    break;
-                }
-                case Faction.Syndicate:
-                {
-                    role.Faction = Faction.Intruder;
-                    role.Objectives = () => Role.IntrudersWinCon;
-                    break;
-                }
-            }
-        }
-        else if (neutral)
-        {
-            role.Faction = Faction.Neutral;
-            role.Objectives = () => "- Be the last one standing";
-        }
-
-        Side = role.Faction;
+        if (faction == Faction.Neutral)
+            PlayerRole.Objectives = () => "- Be the last one standing";
 
         if (Local)
             Flash(Color);

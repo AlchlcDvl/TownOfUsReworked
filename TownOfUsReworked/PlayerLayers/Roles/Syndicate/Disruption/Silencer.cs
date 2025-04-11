@@ -20,8 +20,8 @@ public sealed class Silencer : Syndicate, IIntimidator
     public PlayerControl Target { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Silencer;
-    public override LayerEnum Type => LayerEnum.Silencer;
-    public override Func<string> StartText => () => "You Are The One Who Hushes";
+    public override LayerEnum Type { get; } = LayerEnum.Silencer;
+    public override Func<string> StartText { get; } = () => "You Are The One Who Hushes";
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +
         "start of the meeting that someone has been silenced " : "") + (WhispersNotPrivateS ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
 

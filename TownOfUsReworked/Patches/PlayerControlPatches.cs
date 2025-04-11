@@ -76,7 +76,6 @@ public static class PlayerControlPatches
 
         var hud = HUD();
         hud.ShadowQuad.gameObject.SetActive(true);
-        hud.KillButton.ToggleVisible(IsHnS());
         hud.AdminButton.ToggleVisible(__instance.IsImpostor() && IsHnS());
         hud.SabotageButton.ToggleVisible(__instance.CanSabotage());
         hud.ImpostorVentButton.ToggleVisible(__instance.CanVent());
@@ -125,7 +124,7 @@ public static class PlayerControlPatches
         if (!role)
             return true;
 
-        var size = Ship().CalculateLightRadius(__instance.Data);
+        var size = __instance.lightSource.viewDistance;
         var flashlights = role.Faction switch
         {
             Faction.Crew => CrewSettings.CrewFlashlight,
@@ -155,7 +154,7 @@ public static class PlayerControlPatches
         if (!__instance.AmOwner || !__instance.onLadder || b || __instance.GetModifier() is not (Giant or Dwarf) || MapPatches.CurrentMap is not (5 or 4))
             return true;
 
-        var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector3.Distance(x.transform.position, __instance.transform.position)).ElementAt(0);
+        var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector2.Distance(x.transform.position, __instance.transform.position)).FirstOrDefault();
 
         if (!ladder.IsTop)
             return true; // Are we at the bottom?

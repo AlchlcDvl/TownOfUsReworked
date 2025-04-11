@@ -595,7 +595,21 @@ public sealed class CustomButton : IDisposable, INetSerializable
         }
     }
 
-    private float MaxCooldown() => PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, Difference(), Multiplier());
+    private float MaxCooldown()
+    {
+        var baseCd = PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, Difference(), Multiplier());
+
+        if (MapSettings.AutoAdjustSettings)
+        {
+            if (MapPatches.CurrentMap is 0 or 1 or 3)
+                baseCd -= MapSettings.SmallMapDecreasedCooldown;
+
+            if (MapPatches.CurrentMap is 4 or 5 or 6)
+                baseCd += MapSettings.LargeMapIncreasedCooldown;
+        }
+
+        return baseCd;
+    }
 
     private string Label()
     {

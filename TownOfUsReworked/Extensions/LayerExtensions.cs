@@ -78,28 +78,13 @@ public static class LayerExtensions
 
     public static bool IsConverted(this Role role) => role.SubFaction != SubFaction.None && role is not Neophyte;
 
-    private static bool IsCrewDefect(this PlayerControl player) => player.GetRole().IsCrewDefect;
-
-    // private static bool IsIntDefect(this PlayerControl player) => player.GetRole().IsIntDefect;
-
-    // private static bool IsSynDefect(this PlayerControl player) => player.GetRole().IsSynDefect;
-
-    // private static bool IsNeutDefect(this PlayerControl player) => player.GetRole().IsNeutDefect;
-
-    // public static bool IsDefect(this PlayerControl player) => player.IsCrewDefect() || player.IsIntDefect() || player.IsSynDefect() || player.IsNeutDefect();
-
-    public static bool NotOnTheSameSide(this PlayerControl player) => !player.GetRole().Faithful;
-
     public static bool CanSabotage(this PlayerControl player)
     {
-        if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace() || !IntruderSettings.IntrudersCanSabotage)
+        if (IsHnS() || Meeting() || IsCustomHnS() || IsTaskRace() || !BadGuysSettings.MainBadGuysCanSabotage)
             return false;
 
-        return (player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) || (player.Is(Faction.Syndicate) && SyndicateSettings.AltImps)) && (!player.Data.IsDead ||
-            (IntruderSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead)));
+        return player.GetFaction() == BadGuysSettings.MainBadGuys && (!player.Data.IsDead || (BadGuysSettings.GhostsCanSabotage && !Role.GetRoles(player.GetFaction()).All(x => x.Dead)));
     }
-
-    public static bool HasAliveLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) && lovers.LoversAlive;
 
     public static bool CanDoTasks(this PlayerControl player)
     {
@@ -111,20 +96,17 @@ public static class LayerExtensions
 
         var crewFlag = player.Is(Faction.Crew);
         var neutralFlag = player.Is(Faction.Neutral);
-        var factionFlag = player.Is(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati);
+        var factionFlag = player.Is(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse);
 
         var phantomFlag = player.Is<Phantom>();
 
-        var sideFlag = player.NotOnTheSameSide();
         var taskmasterFlag = player.Is<Taskmaster>();
-        var defectFlag = player.IsCrewDefect();
 
         var gmFlag = player.Is<Runner>() || player.Is<Hunted>();
 
-        var flag1 = crewFlag && !sideFlag;
-        var flag2 = neutralFlag && (taskmasterFlag || phantomFlag);
-        var flag3 = factionFlag && (taskmasterFlag || defectFlag);
-        return flag1 || flag2 || flag3 || gmFlag;
+        var flag1 = neutralFlag && (taskmasterFlag || phantomFlag);
+        var flag2 = factionFlag && taskmasterFlag;
+        return crewFlag || flag1 || flag2 || gmFlag;
     }
 
     public static bool IsMoving(this PlayerControl player) => Moving.Contains(player.PlayerId);
@@ -193,8 +175,6 @@ public static class LayerExtensions
         return result;
     }
 
-    // public static bool IsFaithful(this PlayerControl player) => player.GetRole()?.Faithful ?? false;
-
     public static bool IsBlackmailed(this PlayerControl player) => PlayerLayer.GetLayers<Blackmailer>().Any(role => role.Target == player);
 
     public static bool IsSilenced(this PlayerControl player) => PlayerLayer.GetLayers<Silencer>().Any(role => role.Target == player);
@@ -222,36 +202,6 @@ public static class LayerExtensions
 
     public static bool IsFramed(this PlayerControl player) => PlayerLayer.GetLayers<Framer>().Any(role => role.Framed.Contains(player.PlayerId));
 
-    public static bool IsWinningRival(this PlayerControl player) => PlayerLayer.GetLayers<Rivals>().Any(x => x.Player == player && x.IsWinningRival);
-
-    public static bool IsTurnedTraitor(this PlayerControl player) => player.IsIntTraitor() || player.IsSynTraitor();
-
-    public static bool IsTurnedFanatic(this PlayerControl player) => player.IsIntFanatic() || player.IsSynFanatic();
-
-    public static bool IsUnturnedFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Crew };
-
-    // private static bool IsIllFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Illuminati };
-
-    // private static bool IsPandFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Pandorica };
-
-    private static bool IsIntFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Intruder };
-
-    private static bool IsSynFanatic(this PlayerControl player) => player.GetDisposition() is Fanatic { Side: Faction.Syndicate };
-
-    // private static bool IsIllTraitor(this PlayerControl player) => player.GetDisposition() is Traitor { Side: Faction.Illuminati };
-
-    // private static bool IsPandTraitor(this PlayerControl player) => player.GetDisposition() is Traitor { Side: Faction.Pandorica };
-
-    private static bool IsIntTraitor(this PlayerControl player) => player.GetDisposition() is Traitor { Side: Faction.Intruder };
-
-    private static bool IsSynTraitor(this PlayerControl player) => player.GetDisposition() is Traitor { Side: Faction.Intruder };
-
-    // public static bool IsCrewAlly(this PlayerControl player) => player.GetDisposition() is Allied { Side: Faction.Crew };
-
-    // public static bool IsSynAlly(this PlayerControl player) => player.GetDisposition() is Allied { Side: Faction.Syndicate };
-
-    // public static bool IsIntAlly(this PlayerControl player) => player.GetDisposition() is Allied { Side: Faction.Intruder };
-
     public static bool IsOtherRival(this PlayerControl player, PlayerControl refPlayer) => player.GetOtherRival() == refPlayer;
 
     public static bool IsOtherLover(this PlayerControl player, PlayerControl refPlayer) => player.GetOtherLover() == refPlayer;
@@ -264,19 +214,20 @@ public static class LayerExtensions
 
     public static bool IntruderSided(this PlayerControl player) => player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) && !player.Is<Intruder>();
 
-    public static bool CrewSided(this PlayerControl player) => player.Is(Faction.Crew) && !player.Is<Crew>();
+    public static bool ApocalypseSided(this PlayerControl player) => player.Is(Faction.Apocalypse, Faction.Illuminati, Faction.Pandorica) && !player.Is<Apocalypse>();
 
     public static bool Last(PlayerControl player) => Utils.GameStates.Last(player.GetFaction());
 
     public static bool CanKill(this PlayerControl player)
     {
         var role = player.GetRole();
-        return role is Intruder or Syndicate || role?.Alignment is Alignment.Killing or Alignment.Harbinger or Alignment.Apocalypse || player.GetDisposition() is Corrupted or Fanatic or Traitor;
+        return role is Intruder or Syndicate or Apocalypse || role?.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte || player.GetDisposition() is Corrupted or
+            FactionChanger;
     }
 
-    public static bool IsPostmortal(this PlayerControl player) => player.HasDied() && player.Is<IGhosty>();
+    public static bool IsPostmortal(this PlayerControl player) => player.Is<IGhosty>();
 
-    public static bool Caught(this PlayerControl player) => player.HasDied() && (!player.Is<IGhosty>(out var iGhost) || iGhost.Caught);
+    public static bool Caught(this PlayerControl player) => !player.Is<IGhosty>(out var iGhost) || iGhost.Caught;
 
     public static bool IsLinkedTo(this PlayerControl player, PlayerControl refPlayer) => player.IsOtherRival(refPlayer) || player.IsOtherLover(refPlayer) || player.IsOtherLink(refPlayer) ||
         (player.Is<Mafia>() && refPlayer.Is<Mafia>());
@@ -403,7 +354,13 @@ public static class LayerExtensions
         if ((int)GameModifiers.WhoCanVent is 3)
             return false;
 
-        if (player.inVent || GameModifiers.WhoCanVent == WhoCanVentOptions.Everyone)
+        if (player.inVent)
+            return true;
+
+        if (AllPlayers().Count() == 2 && GameModifiers.FinalTwoDisableVenting)
+            return false;
+
+        if (GameModifiers.WhoCanVent == WhoCanVentOptions.Everyone)
             return true;
 
         if (playerInfo.IsDead)
@@ -459,22 +416,20 @@ public static class LayerExtensions
         var role = player.GetRole();
         var intruderFlag = role.Faction is Faction.Intruder or Faction.Illuminati or Faction.Pandorica && role is Intruder { IsPromoted: false };
         var syndicateFlag = role.Faction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is Syndicate { IsPromoted: false, HoldsDrive: false };
-        var traitorFlag = player.IsTurnedTraitor() && Traitor.TraitorColourSwap;
-        var fanaticFlag = player.IsTurnedFanatic() && Fanatic.FanaticColourSwap;
+        var apocalypseFlag = role.Faction is Faction.Apocalypse or Faction.Illuminati or Faction.Pandorica && role is { Alignment: Alignment.Harbinger };
+        var changerFlag = player.GetDisposition() is FactionChanger { SheriffSwap: true, Turned: true };
         var nkFlag = role.Alignment is Alignment.Killing && !Sheriff.NeutKillingRed;
         var neFlag = role.Alignment is Alignment.Evil && !Sheriff.NeutEvilRed;
         var framedFlag = player.IsFramed();
         var compFlag = role.Faction == Faction.Compliance;
-        return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag || compFlag;
+        return intruderFlag || syndicateFlag || apocalypseFlag || changerFlag || nkFlag || neFlag || framedFlag || compFlag;
     }
 
-    // public static bool IsBlockImmune(PlayerControl player) => player.GetRole().RoleBlockImmune;
+    public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) ? lovers.Other : null;
 
-    public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) ? lovers.OtherLover : null;
+    public static PlayerControl GetOtherRival(this PlayerControl player) => player.Is<Rivals>(out var rivals) ? rivals.Other : null;
 
-    public static PlayerControl GetOtherRival(this PlayerControl player) => player.Is<Rivals>(out var rivals) ? rivals.OtherRival : null;
-
-    private static PlayerControl GetOtherLink(this PlayerControl player) => player.Is<Linked>(out var linked) ? linked.OtherLink : null;
+    private static PlayerControl GetOtherLink(this PlayerControl player) => player.Is<Linked>(out var linked) ? linked.Other : null;
 
     public static bool IsExcludedNeutral(PlayerControl player)
     {
@@ -531,7 +486,7 @@ public static class LayerExtensions
         subfaction += "</b></color>";
         attdef += "</b>";
 
-        if (info[3] && !disposition.Hidden)
+        if (info[3] && !disposition.Hidden && disposition.Type != LayerEnum.NoneDisposition)
         {
             objectives += $"\n{disposition.ColorString}{disposition.Description()}</color>";
             dispositionName += $"{disposition.ColorString}{disposition.Name} {disposition.Symbol}</color>";
@@ -679,6 +634,7 @@ public static class LayerExtensions
 
     public static PlayerLayerEnum GetLayerType(this LayerEnum layer) => layer switch
     {
+        LayerEnum.None => PlayerLayerEnum.None,
         < LayerEnum.NoneRole => PlayerLayerEnum.Role,
         < LayerEnum.NoneModifier => PlayerLayerEnum.Modifier,
         < LayerEnum.NoneDisposition => PlayerLayerEnum.Disposition,
@@ -881,8 +837,8 @@ public static class LayerExtensions
         else if (CustomPlayer.Local.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
 
-        if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.OtherLover.Is(SubFaction.None))
-            ConvertPlayer(lovers.OtherLover.PlayerId, convert, sub, false);
+        if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.Other.Is(SubFaction.None))
+            ConvertPlayer(lovers.Other.PlayerId, convert, sub, false);
     }
 
     public static void RpcConvert(byte target, byte convert, SubFaction sub, bool condition = false)

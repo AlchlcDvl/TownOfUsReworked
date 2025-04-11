@@ -32,8 +32,8 @@ public sealed class Collider : Syndicate
     private float Range => CollideRange + (HoldsDrive ? CollideRangeIncrease : 0);
 
     protected override UColor MainColor => CustomColorManager.Collider;
-    public override LayerEnum Type => LayerEnum.Collider;
-    public override Func<string> StartText => () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
+    public override LayerEnum Type { get; } = LayerEnum.Collider;
+    public override Func<string> StartText { get; } = () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
     public override Func<string> Description => () => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die together" +
         $"{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : "")}\n{CommonAbilities}";
 

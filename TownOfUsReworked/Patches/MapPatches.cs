@@ -87,54 +87,41 @@ public static class MapPatches
 
     private static byte GetSelectedMap()
     {
-        var map = (byte)MapSettings.Map;
+        if (MapSettings.Map < MapEnum.Random)
+            return (byte)MapSettings.Map;
 
-        if (map < 8)
-            return map;
-
-        var totalWeight = 0;
-        totalWeight += MapSettings.RandomMapSkeld;
-        totalWeight += MapSettings.RandomMapMira;
-        totalWeight += MapSettings.RandomMapPolus;
-        totalWeight += MapSettings.RandomMapdlekS;
-        totalWeight += MapSettings.RandomMapAirship;
-        totalWeight += MapSettings.RandomMapFungle;
-
-        if (SubLoaded)
-            totalWeight += MapSettings.RandomMapSubmerged;
-
-        if (LiLoaded)
-            totalWeight += MapSettings.RandomMapLevelImpostor;
-
-        var maps = new List<int>() { 0, 1, 2, 3, 4, 5 };
+        var randoms = new Dictionary<MapEnum, int>
+        {
+            { MapEnum.Skeld, MapSettings.RandomMapSkeld },
+            { MapEnum.MiraHq, MapSettings.RandomMapMira },
+            { MapEnum.Polus, MapSettings.RandomMapPolus },
+            { MapEnum.dlekS, MapSettings.RandomMapdlekS },
+            { MapEnum.Airship, MapSettings.RandomMapAirship },
+            { MapEnum.Fungle, MapSettings.RandomMapFungle }
+        };
 
         if (SubLoaded)
-            maps.Add(6);
+            randoms.Add(MapEnum.Submerged, MapSettings.RandomMapSubmerged);
 
         if (LiLoaded)
-            maps.Add(7);
+            randoms.Add(MapEnum.LevelImpostor, MapSettings.RandomMapLevelImpostor);
 
-        maps.Shuffle();
+        var maxWeight = randoms.Values.Sum();
 
-        if (totalWeight == 0)
-            return (byte)maps.Random();
+        if (maxWeight == 0)
+            return (byte)randoms.Keys.Random();
 
-        var randoms = new List<int>();
-        randoms.AddMany(0, MapSettings.RandomMapSkeld / 5);
-        randoms.AddMany(1, MapSettings.RandomMapMira / 5);
-        randoms.AddMany(2, MapSettings.RandomMapPolus / 5);
-        randoms.AddMany(3, MapSettings.RandomMapdlekS / 5);
-        randoms.AddMany(4, MapSettings.RandomMapAirship / 5);
-        randoms.AddMany(5, MapSettings.RandomMapFungle / 5);
+        var random = URandom.RandomRangeInt(0, maxWeight);
 
-        if (SubLoaded)
-            randoms.AddMany(6, MapSettings.RandomMapSubmerged / 5);
+        foreach (var (id, chance) in randoms)
+        {
+            if (random < chance)
+                return (byte)id;
 
-        if (LiLoaded)
-            randoms.AddMany(7, MapSettings.RandomMapLevelImpostor / 5);
+            random -= chance;
+        }
 
-        randoms.Shuffle();
-        return (byte)(randoms.Any() ? randoms : maps).Random();
+        return 0;
     }
 
     public static void AdjustSettings()
@@ -146,7 +133,6 @@ public static class MapPatches
         {
             TownOfUsReworked.NormalOptions.NumShortTasks += MapSettings.SmallMapIncreasedShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks += MapSettings.SmallMapIncreasedLongTasks;
-            AdjustCooldowns(-MapSettings.SmallMapDecreasedCooldown);
         }
 
         if (CurrentMap is not (4 or 5 or 6))
@@ -154,12 +140,7 @@ public static class MapPatches
 
         TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.LargeMapDecreasedShortTasks;
         TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.LargeMapDecreasedLongTasks;
-        AdjustCooldowns(MapSettings.LargeMapIncreasedCooldown);
     }
-
-    public static void AdjustCooldowns(float change) => Option.GetOptions<Options.NumberOption>()
-        .Where(x => x.Name.Contains("Cd") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease"))
-        .ForEach(x => x.Set(x.Value + change));
 
     public static void SetDefaults()
     {

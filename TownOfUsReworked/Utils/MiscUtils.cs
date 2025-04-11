@@ -660,11 +660,14 @@ public static class MiscUtils
         PlayerControl closestPlayer = null;
         allPlayers ??= AllPlayers();
 
-        if (predicate != null)
-            allPlayers = allPlayers.Where(predicate);
-
         if (float.IsNaN(maxDistance))
             maxDistance = GameSettings.InteractionDistance;
+
+        if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
+            maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+
+        if (predicate != null)
+            allPlayers = allPlayers.Where(predicate);
 
         foreach (var player in allPlayers)
         {
@@ -675,17 +678,16 @@ public static class MiscUtils
             }
 
             var truePos = player.GetTruePosition();
-            var distance = Vector2.Distance(position, truePos);
             var vector = truePos - position;
 
-            if (distance > closestDistance || distance > maxDistance)
+            if (vector.magnitude > closestDistance || vector.magnitude > maxDistance)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
                 continue;
 
             closestPlayer = player;
-            closestDistance = distance;
+            closestDistance = vector.magnitude;
         }
 
         return closestPlayer;
@@ -703,22 +705,24 @@ public static class MiscUtils
         if (float.IsNaN(maxDistance))
             maxDistance = AllMapVents().First().UsableDistance;
 
+        if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
+            maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+
         if (predicate != null)
             allVents = allVents.Where(predicate);
 
         foreach (var vent in allVents)
         {
-            var distance = Vector2.Distance(position, vent.transform.position);
             var vector = (Vector2)vent.transform.position - position;
 
-            if (distance > maxDistance || distance > closestDistance)
+            if (vector.magnitude > maxDistance || vector.magnitude > closestDistance)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
                 continue;
 
             closestVent = vent;
-            closestDistance = distance;
+            closestDistance = vector.magnitude;
         }
 
         return closestVent;
@@ -737,6 +741,9 @@ public static class MiscUtils
         if (float.IsNaN(maxDistance))
             maxDistance = GameSettings.InteractionDistance;
 
+        if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
+            maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+
         if (predicate != null)
             allBodies = allBodies.Where(predicate);
 
@@ -745,17 +752,16 @@ public static class MiscUtils
             if (Cleaned.Any(x => x == body.ParentId))
                 continue;
 
-            var distance = Vector2.Distance(position, body.TruePosition);
             var vector = body.TruePosition - position;
 
-            if (distance > maxDistance || distance > closestDistance)
+            if (vector.magnitude > maxDistance || vector.magnitude > closestDistance)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
                 continue;
 
             closestBody = body;
-            closestDistance = distance;
+            closestDistance = vector.magnitude;
         }
 
         return closestBody;
@@ -776,21 +782,23 @@ public static class MiscUtils
 
         foreach (var console in allConsoles)
         {
-            var distance = Vector2.Distance(position, console.transform.position);
             var vector = (Vector2)console.transform.position - position;
             var tempMaxDistance = maxDistance;
 
             if (float.IsNaN(tempMaxDistance))
                 tempMaxDistance = console.UsableDistance;
 
-            if (distance > tempMaxDistance || distance > closestDistance)
+            if (tempMaxDistance > CustomPlayer.Local.lightSource.ViewDistance)
+                tempMaxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+
+            if (vector.magnitude > tempMaxDistance || vector.magnitude > closestDistance)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
                 continue;
 
             closestConsole = console;
-            closestDistance = distance;
+            closestDistance = vector.magnitude;
         }
 
         return closestConsole;
@@ -799,7 +807,7 @@ public static class MiscUtils
     public static MonoBehaviour GetClosestMono(this PlayerControl player, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour,
         bool> predicate = null) => GetClosestMono(player.GetTruePosition(), allMonos, trueMaxDistance, ignoreWalls, predicate);
 
-    private static MonoBehaviour GetClosestMono(Vector2 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour, bool>
+    public static MonoBehaviour GetClosestMono(Vector2 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour, bool>
         predicate = null)
     {
         var closestDistance = float.MaxValue;
@@ -813,7 +821,6 @@ public static class MiscUtils
             if (!mono)
                 continue;
 
-            var distance = Vector2.Distance(position, mono.transform.position);
             var vector = (Vector2)mono.transform.position - position;
             var maxDistance = trueMaxDistance;
 
@@ -828,14 +835,17 @@ public static class MiscUtils
                 };
             }
 
-            if (distance > maxDistance || distance > closestDistance)
+            if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
+                maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+
+            if (vector.magnitude > maxDistance || vector.magnitude > closestDistance)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
                 continue;
 
             closestMono = mono;
-            closestDistance = distance;
+            closestDistance = vector.magnitude;
         }
 
         return closestMono;
@@ -1193,16 +1203,14 @@ public static class MiscUtils
         return null;
     }
 
-    public static IEnumerable<T> GetAllComponents<T>(this Component self) where T : Component => self.transform.GetAllComponents<T>();
-
-    public static IEnumerable<T> GetAllComponents<T>(this Transform self) where T : Component
+    public static IEnumerable<T> GetAllComponents<T>(this Component self) where T : Component
     {
         if (self.TryGetComponent<T>(out var comp))
             yield return comp;
 
-        for (var i = 0; i < self.childCount; i++)
+        for (var i = 0; i < self.transform.childCount; i++)
         {
-            foreach (var comp2 in self.GetChild(i).GetAllComponents<T>())
+            foreach (var comp2 in self.transform.GetChild(i).GetAllComponents<T>())
                 yield return comp2;
         }
     }
@@ -1370,6 +1378,9 @@ public static class MiscUtils
         KillAnimation.SetMovement(target, true);
         deadBody.enabled = true;
 
+        if (killer.Is<PlayerLayers.Roles.Void>())
+            deadBody.Reported = true;
+
         if (!isParticipant)
             yield break;
 
@@ -1389,6 +1400,8 @@ public static class MiscUtils
     }
 
     public static bool IsAny<T>(this T item, params T[] items) => items.Contains(item);
+
+    public static bool IsAll<T>(this T item, params T[] items) => items.All(x => Equals(x, item));
 
     public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
 

@@ -81,12 +81,12 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
             // Neutral Categories
             ListSlot.NeutralBen => RoleGenManager.NB,
-            ListSlot.NeutralKill => RoleGenManager.NK,
+            ListSlot.NeutralEvil => RoleGenManager.NE,
             ListSlot.RegularNeutral or ListSlot.NonCompNeutral => RoleGenManager.RegNeutral.GetAll(),
+            ListSlot.RandomNeutral => RoleGenManager.Neutral.GetAll(),
 
             // Neutral + Compliance Categories
-            ListSlot.NeutralEvil or ListSlot.ComplianceKill => RoleGenManager.NK,
-            ListSlot.NeutralHarb or ListSlot.ComplianceHarb => RoleGenManager.NH,
+            ListSlot.NeutralKill or ListSlot.ComplianceKill => RoleGenManager.NK,
             ListSlot.NeutralNeo or ListSlot.ComplianceNeo => RoleGenManager.NN,
             ListSlot.HarmfulNeutral or ListSlot.RandomCompliance => RoleGenManager.HarmNeutral.GetAll(),
 
@@ -99,6 +99,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             ListSlot.IntruderHead => RoleGenManager.IH,
             ListSlot.RegularIntruder => RoleGenManager.RegIntruders.GetAll(),
             ListSlot.PowerIntruder => RoleGenManager.PowerIntruders.GetAll(),
+            ListSlot.RandomIntruder => RoleGenManager.Intruders.GetAll(),
 
             // Syndicate Categories
             ListSlot.SyndicateKill => RoleGenManager.SyK,
@@ -108,6 +109,11 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             ListSlot.SyndicateUtil => RoleGenManager.SU,
             ListSlot.RegularSyndicate => RoleGenManager.RegSyndicate.GetAll(),
             ListSlot.PowerSyndicate => RoleGenManager.PowerSyndicate.GetAll(),
+            ListSlot.RandomSyndicate => RoleGenManager.Syndicate.GetAll(),
+
+            // Apocalypse Categories
+            ListSlot.ApocHarb => RoleGenManager.AH,
+            ListSlot.RandomApocalypse => RoleGenManager.Apocalypse.GetAll(),
 
             // Pandora Categories
             ListSlot.PandoraKill => RoleGenManager.PK,
@@ -119,6 +125,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             ListSlot.PandoraUtil => RoleGenManager.PU,
             ListSlot.RegularPandora => RoleGenManager.RegPandorica.GetAll(),
             ListSlot.PowerPandora => RoleGenManager.PowerPandorica.GetAll(),
+            ListSlot.RandomPandora => RoleGenManager.Pandorica.GetAll(),
 
             // Illuminati Categories
             ListSlot.IlluminatiKill => RoleGenManager.IlK,
@@ -131,6 +138,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             ListSlot.IlluminatiHead => RoleGenManager.IlHe,
             ListSlot.RegularIlluminati => RoleGenManager.RegIlluminati.GetAll(),
             ListSlot.PowerIlluminati => RoleGenManager.PowerIlluminati.GetAll(),
+            ListSlot.RandomIlluminati => RoleGenManager.Illuminati.GetAll(),
 
             // Alignment Categories
             ListSlot.NonCrew => RoleGenManager.NonCrew.GetAll().GetAll(),
@@ -140,6 +148,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             ListSlot.NonPandora => RoleGenManager.NonPandorica.GetAll().GetAll(),
             ListSlot.NonIlluminati => RoleGenManager.NonIlluminati.GetAll().GetAll(),
             ListSlot.NonCompliance => RoleGenManager.NonCompliance.GetAll().GetAll(),
+            ListSlot.NonApocalypse => RoleGenManager.NonApocalypse.GetAll().GetAll(),
 
             _ => null
         };

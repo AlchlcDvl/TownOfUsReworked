@@ -5,6 +5,7 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
     protected ValueMap<MissingBehaviour, T> Buttons { get; } = [];
     private T? NoneValue { get; } = noneValue;
     private T? AllValue { get; } = allValue;
+    public bool ForceAtLeastOne { get; set; }
     public IEnumerable<MissingBehaviour> Options => Buttons.Keys;
 
     public override void OptionCreated()
@@ -89,7 +90,7 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
         }
         else
         {
-            if (newValue == value)
+            if (newValue == value && (newValue.Count > 1 || !ForceAtLeastOne))
                 newValue.Remove(value);
             else
                 newValue.Add(value);

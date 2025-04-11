@@ -13,15 +13,15 @@ public sealed class Shifter : Crew
     private CustomPlayerMenu ShifterMenu { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Shifter;
-    public override LayerEnum Type => LayerEnum.Shifter;
-    public override Func<string> StartText => () => "Shift Around Roles";
+    public override LayerEnum Type { get; } = LayerEnum.Shifter;
+    public override Func<string> StartText { get; } = () => "Shift Around Roles";
     public override Func<string> Description => () => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";
 
     protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;
-        ShifterMenu = new(Player, ClickShift, Exception);
+        ShifterMenu = new(Player, ClickShift, Color, Exception);
         ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)ShifterMenu.Open, new Cooldown(ShiftCd));
     }
 

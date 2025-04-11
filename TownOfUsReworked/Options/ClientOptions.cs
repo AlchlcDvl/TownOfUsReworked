@@ -66,6 +66,13 @@ public static class ClientOptions
     }
 
     [ToggleOption]
+    public static bool CustomApocColors
+    {
+        get => TownOfUsReworked.CustomApocColors.Value;
+        set => TownOfUsReworked.CustomApocColors.Value = value;
+    }
+
+    [ToggleOption]
     public static bool CustomGmColors
     {
         get => TownOfUsReworked.CustomGmColors.Value;

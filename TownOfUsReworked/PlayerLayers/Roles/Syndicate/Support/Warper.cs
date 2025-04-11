@@ -17,8 +17,8 @@ public sealed class Warper : Syndicate, IMover
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Warper;
-    public override LayerEnum Type => LayerEnum.Warper;
-    public override Func<string> StartText => () => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
+    public override LayerEnum Type { get; } = LayerEnum.Warper;
+    public override Func<string> StartText { get; } = () => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
 
@@ -26,7 +26,7 @@ public sealed class Warper : Syndicate, IMover
     {
         base.Init();
         Alignment = Alignment.Support;
-        WarpMenu = new(Player, Click, Exception1);
+        WarpMenu = new(Player, Click, Color, Exception1);
         WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
     }
 

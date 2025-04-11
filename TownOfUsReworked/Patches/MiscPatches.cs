@@ -241,23 +241,6 @@ public static class GetPurchasePatch
     public static bool Prefix() => !(TownOfUsReworked.IsDev || TownOfUsReworked.IsStream);
 }
 
-[HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.Initialize))]
-public static class OverlayKillAnimationPatch
-{
-    private static int OutfitTypeCache;
-
-    public static void Prefix(KillOverlayInitData initData)
-    {
-        var playerControl = AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit);
-        OutfitTypeCache = (int)playerControl.CurrentOutfitType;
-
-        if (!GameModifiers.AppearanceAnimation)
-            playerControl.CurrentOutfitType = PlayerOutfitType.Default;
-    }
-
-    public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
-}
-
 [HarmonyPatch(typeof(HudManager))]
 public static class HudPatches
 {
@@ -448,9 +431,10 @@ public static class ShowCustomAnim
     }
 }
 
-[HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.WaitForFinish))]
-public static class WaitForFinishPatch
+[HarmonyPatch(typeof(OverlayKillAnimation))]
+public static class OverlayKillAnimationPatches
 {
+    [HarmonyPatch(nameof(OverlayKillAnimation.WaitForFinish))]
     public static bool Prefix(OverlayKillAnimation __instance, ref Il2CppSystem.Collections.IEnumerator __result)
     {
         var flag = __instance.TryGetComponent<CustomKillAnimationPlayer>(out var customKillAnim);
@@ -459,6 +443,31 @@ public static class WaitForFinishPatch
             __result = customKillAnim.WaitForFinish().WrapToIl2Cpp();
 
         return !flag;
+    }
+
+    private static int OutfitTypeCache;
+
+    [HarmonyPatch(nameof(OverlayKillAnimation.Initialize))]
+    public static void Prefix(KillOverlayInitData initData)
+    {
+        var playerControl = AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit);
+        OutfitTypeCache = (int)playerControl.CurrentOutfitType;
+
+        if (!GameModifiers.AppearanceAnimation)
+            playerControl.CurrentOutfitType = PlayerOutfitType.Default;
+    }
+
+    [HarmonyPatch(nameof(OverlayKillAnimation.Initialize))]
+    public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
+}
+
+[HarmonyPatch(typeof(OverlayKillAnimation._CoShow_d__18), nameof(OverlayKillAnimation._CoShow_d__18.MoveNext))]
+public static class FixMeetingKills
+{
+    public static void Postfix(bool __result)
+    {
+        if (Meeting())
+            AllVoteAreas().ForEach(x => x.gameObject.SetActive(!__result));
     }
 }
 
@@ -680,7 +689,7 @@ public static class RPCHandling
         if (callId != CustomRPCCallID)
             return;
 
-        using var data = new NetData(reader.ReadBytesAndSize());
+        using var data = new NetData(reader.ReadBytes(reader.ReadUInt16()));
         HandleRpc(data);
     }
 }

@@ -27,8 +27,8 @@ public sealed class Monarch : Crew, ISovereign
     public List<byte> Knighted { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Monarch;
-    public override LayerEnum Type => LayerEnum.Monarch;
-    public override Func<string> StartText => () => "Knight Those Who You Trust";
+    public override LayerEnum Type { get; } = LayerEnum.Monarch;
+    public override Func<string> StartText { get; } = () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"
         + " you cannot be killed\n- You will know when a knight of yours dies";
     public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;

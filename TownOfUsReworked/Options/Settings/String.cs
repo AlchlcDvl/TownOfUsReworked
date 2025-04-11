@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionType.String) where T : struct, Enum
+public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionType.String), IStringOption where T : struct, Enum
 {
     private int Index { get; set; }
     private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
@@ -67,4 +67,11 @@ public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionT
     public override void ReadValueRpc(NetData reader) => Set(reader.Read<T>(), false);
 
     protected override void ReadValueString(string value) => Set(Enum.Parse<T>(value), false);
+
+    string IStringOption.ValueString() => ValueString();
+}
+
+public interface IStringOption
+{
+    string ValueString();
 }

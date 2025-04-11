@@ -32,7 +32,7 @@ public static class Interactions
         if (!PlayerLayer.GetLayers<Pestilence>().Any())
             return;
 
-        var targetId = target.Is(Alignment.Apocalypse) || target.Is(Alignment.Harbinger) ? interactor.PlayerId : target.PlayerId;
+        var targetId = target.Is(Alignment.Deity) || target.Is(Alignment.Harbinger) ? interactor.PlayerId : target.PlayerId;
 
         if (!Pestilence.Infected.ContainsKey(targetId))
             return;
@@ -77,12 +77,11 @@ public static class Interactions
             {
                 if (bypass)
                     source.RpcMurderPlayer(target, reason, lunge);
-                else if (target.IsUnturnedFanatic() && faction is Faction.Intruder or Faction.Syndicate)
+                else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse)
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
-                    var fan = target.GetLayer<Fanatic>();
-                    CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fan, false, faction);
-                    fan.TurnFanatic(faction);
+                    CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fanatic, false, faction);
+                    fanatic.TurnFaction(faction);
                 }
                 else
                 {

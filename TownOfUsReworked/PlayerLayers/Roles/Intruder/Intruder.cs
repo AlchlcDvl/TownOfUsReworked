@@ -7,11 +7,11 @@ public abstract class Intruder : Role
     public bool IsPromoted { get; set; }
     public Godfather Promoter { get; set; }
 
-    protected string CommonAbilities => "<#FF1919FF>- You can kill players</color>" + (IntruderSettings.IntrudersCanSabotage && (!Dead || IntruderSettings.GhostsCanSabotage) ? ("\n- You can " +
-        "call sabotages to distract the <#8CFFFFFF>Crew</color>") : "");
+    protected string CommonAbilities => "<#FF1919FF>- You can kill players</color>" + (Player.CanSabotage() ? "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "");
 
     protected override UColor MainColor => CustomColorManager.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override bool AffectedByLights => false;
     public override float VisionRange => IntruderSettings.IntruderVision;
     public override bool CanVent => IntruderSettings.IntrudersVent;
     protected override bool UseMainColor => ClientOptions.CustomIntColors;
@@ -20,7 +20,6 @@ public abstract class Intruder : Role
     {
         base.Init();
         Faction = GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Intruder);
-        Objectives = () => IntrudersWinCon;
         KillButton ??= new(this, new SpriteName("IntruderKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor, (UsableFunc)KillUsable);
     }

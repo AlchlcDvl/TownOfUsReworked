@@ -18,7 +18,6 @@ global using Reactor.Utilities;
 global using Reactor.Networking;
 global using Reactor.Utilities.Extensions;
 global using Reactor.Networking.Attributes;
-global using Reactor.Networking.Extensions;
 global using Reactor.Networking.Serialization;
 
 global using TownOfUsReworked.Data;

@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Patches;
 
-// TODO: Remake this from the ground up
 [HarmonyPatch(typeof(LogicGameFlowNormal))]
 public static class CheckEndGame
 {
@@ -18,8 +17,18 @@ public static class CheckEndGame
 
         if (Sabotaged())
         {
-            WinState = SyndicateSettings.AltImps ? WinLose.SyndicateWins : WinLose.IntrudersWin;
-            CallRpc(CustomRPC.WinLose, WinState);
+            WinState = GameModifiers.IlluminatiUnleashed ? WinLose.IlluminatiWins : (BadGuysSettings.MainBadGuys switch
+            {
+                Faction.Intruder => WinLose.IntrudersWin,
+                Faction.Compliance => WinLose.ComplianceWins,
+                Faction.Syndicate => WinLose.SyndicateWins,
+                Faction.Apocalypse => WinLose.ApocalypseWins,
+                Faction.Pandorica => WinLose.PandoricaWins,
+                _ => WinLose.IlluminatiWins,
+            });
+            var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
+            winners.ForEach(x => x.GetLayers().ForEach(y => y.Winner = true));
+            CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners.Distinct() ]);
         }
 
         if (WinState == WinLose.None)
@@ -38,27 +47,32 @@ public static class CheckEndGame
 
     public static void CheckPlayerWins()
     {
-        DetectStalemate();
+        // Only run the subsequent checks if and only if no previous condition as been fulfilled
+        var winnerIds = new List<byte>();
 
-        if (WinState != WinLose.None) // Skipping further checks because a condition was already fulfilled
-            return;
+        if (WinState == WinLose.None)
+            DetectStalemate();
 
-        CheckFactionWin();
+        if (WinState == WinLose.None)
+            CheckFactionWin(winnerIds);
+
+        if (WinState == WinLose.None)
+            CheckSubFactionWin(winnerIds);
+
+        if (WinState == WinLose.None)
+            CheckNeutralKillers(winnerIds);
+
+        if (WinState == WinLose.None)
+            PlayerLayer.GetLayers<Role>().ForEach(x => x.GameEnd(winnerIds));
+
+        if (WinState == WinLose.None)
+            PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd(winnerIds));
 
         if (WinState != WinLose.None)
-            return;
-
-        CheckSubFactionWin();
-
-        if (WinState != WinLose.None)
-            return;
-
-        PlayerLayer.GetLayers<Role>().ForEach(x => x.GameEnd());
-
-        if (WinState != WinLose.None)
-            return;
-
-        PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd());
+        {
+            winnerIds.Select(x => PlayerById(x)).ForEach(x => x.GetLayers().ForEach(y => y.Winner = true));
+            CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds.Distinct() ]);
+        }
     }
 
     public static void CheckSpellWin(Spellslinger hexer)
@@ -66,7 +80,6 @@ public static class CheckEndGame
         if (hexer.Player.HasDied())
             return;
 
-        var players = AllPlayers();
         var faction = hexer.Faction;
         Func<PlayerControl, bool> factionCheck = faction switch
         {
@@ -79,6 +92,8 @@ public static class CheckEndGame
             }
         };
 
+        var players = AllPlayers();
+
         if (hexer.Spelled.Count == players.Count(plr => !plr.HasDied() && !factionCheck(plr)))
         {
             WinState = hexer.Faction switch
@@ -89,55 +104,127 @@ public static class CheckEndGame
                 Faction.Pandorica => WinLose.PandoricaWins,
                 Faction.Compliance => WinLose.ComplianceWins,
                 Faction.Syndicate => WinLose.SyndicateWins,
-                Faction.Neutral => hexer.LinkedDisposition switch
+                Faction.Apocalypse => WinLose.ApocalypseWins,
+                Faction.Neutral => hexer.Player.GetDisposition() switch
                 {
-                    LayerEnum.Mafia => WinLose.MafiaWins,
-                    LayerEnum.Lovers => WinLose.LoveWins,
-                    _ => WinLose.DefectorWins
+                    Mafia => WinLose.MafiaWins,
+                    Lovers => WinLose.LoveWins,
+                    Defector => WinLose.DefectorWins,
+                    _ => WinLose.NobodyWins
                 },
                 _ => WinLose.NobodyWins
             };
-
-            CallRpc(CustomRPC.WinLose, WinState);
         }
     }
 
-    private static void CheckFactionWin()
+    private static void CheckFactionWin(List<byte> winnerIds)
     {
-        if (SyndicateWins())
-            WinState = WinLose.SyndicateWins;
-        else if (IntrudersWin())
-            WinState = WinLose.IntrudersWin;
-        else if (CrewWins())
-            WinState = WinLose.CrewWins;
-        else if (ApocWins())
-            WinState = WinLose.ApocalypseWins;
-        else if (IlluminatiWins())
-            WinState = WinLose.IlluminatiWins;
-        else if (ComplianceWins())
-            WinState = WinLose.ComplianceWins;
-        else if (PandoricaWins())
-            WinState = WinLose.PandoricaWins;
-        else
-            return;
+        var winner = FactionsToKill.FirstOrDefault(CheckFactionWin);
 
-        CallRpc(CustomRPC.WinLose, WinState);
+        if (winner != Faction.None)
+        {
+            WinState = WinLoseGroupMappings[winner];
+            winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
+        }
     }
 
-    private static void CheckSubFactionWin()
+    private static void CheckSubFactionWin(List<byte> winnerIds)
     {
-        if (CabalWin())
-            WinState = WinLose.CabalWins;
-        else if (CultWin())
-            WinState = WinLose.CultWins;
-        else if (UndeadWin())
-            WinState = WinLose.UndeadWins;
-        else if (ReanimatedWin())
-            WinState = WinLose.ReanimatedWins;
-        else
+        var winner = SubFactionsToKill.FirstOrDefault(CheckSubFactionWin);
+
+        if (winner != SubFaction.None)
+        {
+            WinState = WinLoseGroupMappings[winner];
+            winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
+        }
+    }
+
+    private static void CheckNeutralKillers(List<byte> winnerIds)
+    {
+        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType == ComplianceType.Killers)
             return;
 
-        CallRpc(CustomRPC.WinLose, WinState);
+        var winner = NksToKill.FirstOrDefault(CheckNkWin);
+
+        if (winner != LayerEnum.None)
+        {
+            WinState = WinLoseGroupMappings[winner];
+            winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
+        }
+    }
+
+    private static readonly Faction[] FactionsToKill = [ .. Enum.GetValues<Faction>().Except([ Faction.None, Faction.Neutral, Faction.GameMode ]) ];
+    private static readonly Alignment[] AlignmentsToKill = [ Alignment.Killing, Alignment.Neophyte, Alignment.Proselyte ];
+    private static readonly LayerEnum[] NksToKill = [ LayerEnum.Arsonist, LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Werewolf, LayerEnum.Betrayer,
+        LayerEnum.SerialKiller ];
+    private static readonly SubFaction[] SubFactionsToKill = [ .. Enum.GetValues<SubFaction>().Except([ SubFaction.None ]) ];
+    private static readonly Dictionary<Enum, WinLose> WinLoseGroupMappings = FactionsToKill.Cast<Enum>()
+        .Concat(SubFactionsToKill.Cast<Enum>())
+        .Concat(NksToKill.Cast<Enum>())
+        .ToDictionary(
+            x => x,
+            x => Enum.GetValues<WinLose>().FirstOrDefault(y => y.ToString().StartsWith(x.ToString())));
+
+    private static bool CheckFactionWin(Faction faction)
+    {
+        if (faction == Faction.Compliance && !GameModifiers.OrderOfCompliance)
+            return false;
+
+        if (faction == Faction.Pandorica && !GameModifiers.PandoricaOpens)
+            return false;
+
+        if (faction == Faction.Illuminati && !GameModifiers.IlluminatiUnleashed)
+            return false;
+
+        var toKill = FactionsToKill.Except([ faction ]);
+
+        foreach (var player in AllPlayers())
+        {
+            if (player.HasDied())
+                continue;
+
+            if (toKill.Any(player.Is) || SubFactionsToKill.Any(player.Is) || (player.Is(Faction.Neutral) && AlignmentsToKill.Any(player.Is)))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static bool CheckSubFactionWin(SubFaction subFaction)
+    {
+        var toKill = SubFactionsToKill.Except([ subFaction ]);
+
+        foreach (var player in AllPlayers())
+        {
+            if (player.HasDied())
+                continue;
+
+            if (FactionsToKill.Any(player.Is) || toKill.Any(player.Is) || (player.Is(Faction.Neutral) && AlignmentsToKill.Any(player.Is) && !player.Is(subFaction)))
+                return false;
+        }
+
+        return true;
+    }
+
+    private static bool CheckNkWin(LayerEnum nk)
+    {
+        var toKill = NksToKill.Except([ nk ]);
+        var nonNk = AlignmentsToKill.Except([ Alignment.Killing ]);
+        var count = 0;
+
+        foreach (var player in AllPlayers())
+        {
+            if (player.HasDied())
+                continue;
+
+            if (FactionsToKill.Any(player.Is) || toKill.Any(player.Is) || (player.Is(Faction.Neutral) && nonNk.Any(player.Is)))
+                return false;
+
+            if (player.Is(nk))
+                count++;
+        }
+
+        return NeutralKillingSettings.WinSolo ? count == 1 : count > 1;
     }
 
     // Stalemate detector for unwinnable situations
@@ -149,21 +236,21 @@ public static class CheckEndGame
         {
             var player1 = players.First();
             var player2 = players.Last();
-            var nobuttons1 = player1.RemainingEmergencies == 0;
-            var nobuttons2 = player2.RemainingEmergencies == 0;
-            var nobuttons = nobuttons1 && nobuttons2;
+            var noButtons1 = player1.RemainingEmergencies == 0;
+            var noButtons2 = player2.RemainingEmergencies == 0;
+            var noButtons = noButtons1 && noButtons2;
             var knighted1 = player1.IsKnighted() || player1.Is<Tiebreaker>();
             var knighted2 = player2.IsKnighted() || player2.Is<Tiebreaker>();
-            var neitherknighted = (knighted1 && knighted2) || (!knighted1 && !knighted2);
-            var cankill1 = player1.CanKill();
-            var cankill2 = player2.CanKill();
-            var cantkill = !(cankill1 || cankill2);
+            var neitherKnighted = (knighted1 && knighted2) || (!knighted1 && !knighted2);
+            var canKill1 = player1.CanKill();
+            var canKill2 = player2.CanKill();
+            var cantKill = !(canKill1 || canKill2);
             var rival1 = player1.Is<Rivals>();
             var rival2 = player2.Is<Rivals>();
             var rivals = rival1 && rival2;
 
             // NK vs. NK when neither can kill each other and Neutrals don't win together
-            if ((nobuttons && neitherknighted) || rivals || (cantkill && nobuttons))
+            if ((noButtons && neitherKnighted) || rivals || (cantKill && noButtons))
                 PerformStalemate();
         }
         else if (!players.Any())
@@ -172,8 +259,8 @@ public static class CheckEndGame
 
     public static void PerformStalemate()
     {
-        CallRpc(CustomRPC.WinLose, WinLose.NobodyWins);
         WinState = WinLose.NobodyWins;
+        CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState);
     }
 
     public static bool TasksDone()
@@ -186,9 +273,8 @@ public static class CheckEndGame
 
         var allCrew = new List<PlayerControl>();
         var crewWithNoTasks = new List<PlayerControl>();
-        var roles = IsCustomHnS() ? PlayerLayer.GetLayers<Hunted>() : Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks());
 
-        foreach (var role in roles)
+        foreach (var role in IsCustomHnS() ? PlayerLayer.GetLayers<Hunted>() : Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks()))
         {
             if (role.Dead && !TaskSettings.GhostTasksCountToWin)
                 continue;
@@ -204,7 +290,7 @@ public static class CheckEndGame
 
     private static bool Sabotaged()
     {
-        if (!IntruderSettings.IntrudersCanSabotage)
+        if (!BadGuysSettings.MainBadGuysCanSabotage)
             return false;
 
         var ship = Ship();

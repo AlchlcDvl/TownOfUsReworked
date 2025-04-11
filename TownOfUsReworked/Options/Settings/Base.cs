@@ -58,6 +58,7 @@ public abstract class Option(CustomOptionType type)
         ([ "Allied", "Allied1" ], [ "not+IlluminatiUnleashed", "not+OrderOfCompliance" ]),
         ([ "PandoricaOpens", "OrderOfCompliance" ], [ "not+IlluminatiUnleashed" ]),
         ([ "RoundOneNoMayorReveal" ], [ "MayorDirectSpawn" ]),
+        ([ "FinalTwoDisableVenting" ], [ "not+WhoCanVent+NoOne" ]),
         ([ "ComplianceType" ], [ "OrderOfCompliance" ])
     ];
     // I need a second one because for some dumb reason the game likes crashing
@@ -139,16 +140,22 @@ public abstract class Option(CustomOptionType type)
         if (id == Name)
             return true; // To prevent accidental stack overflows, very rudimentary because I've already managed to cause several of them even with this line active
 
-        var invertVal = id.StartsWith("not+");
-        id = id.Replace("not+", "");
+        var parts = id.TrueSplit('+');
+        var invertVal = parts[0] == "not";
+
+        if (invertVal)
+            id = parts[1];
+
         bool result;
 
-        if (AllOptions.TryFinding(x => x.Name == id, out var optionatt))
+        if (TryGetOption(id, out var optionatt))
         {
             result = optionatt.PartiallyActive();
 
             if (optionatt is Option<bool> boolOpt)
                 result &= invertVal ? !boolOpt.Value : boolOpt.Value;
+            else if (optionatt is IStringOption stringOpt)
+                result &= invertVal ? !parts[2].Contains(stringOpt.ValueString()) : parts[1].Contains(stringOpt.ValueString());
         }
         else if (!MapToLoaded.TryGetValue(id, out result))
             MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
@@ -328,6 +335,12 @@ public abstract class Option(CustomOptionType type)
     {
         id = id.ToLower();
         return AllOptions.Find(x => x.ID.ToLower().IsAny($"customOption.{id}", id) || x.Name.ToLower() == id); // To support any case changes
+    }
+
+    private static bool TryGetOption(string id, out Option option)
+    {
+        id = id.ToLower();
+        return AllOptions.TryFinding(x => x.ID.ToLower().IsAny($"customOption.{id}", id) || x.Name.ToLower() == id, out option);
     }
 
     public static Option GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);

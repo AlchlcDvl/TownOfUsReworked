@@ -2,6 +2,8 @@
 
 public enum LayerEnum : byte
 {
+    None,
+
     Altruist,
     Bastion,
     Chameleon,
@@ -46,9 +48,7 @@ public enum LayerEnum : byte
     Juggernaut,
     Murderer,
     Necromancer,
-    Pestilence,
     Phantom,
-    Plaguebearer,
     SerialKiller,
     Survivor,
     Thief,
@@ -94,6 +94,11 @@ public enum LayerEnum : byte
     Timekeeper,
     Warper,
 
+    Cultist,
+    Plaguebearer,
+    Pestilence,
+    Void,
+
     Hunted,
     Hunter,
 
@@ -138,6 +143,7 @@ public enum LayerEnum : byte
     Ninja,
     Politician,
     Radar,
+    Ritualist,
     Ruthless,
     Slayer,
     Sniper,
@@ -152,7 +158,5 @@ public enum LayerEnum : byte
     Undead,
     Cult,
     Cabal,
-    Reanimated,
-
-    None
+    Reanimated
 }

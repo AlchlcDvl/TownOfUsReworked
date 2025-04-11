@@ -12,8 +12,8 @@ public sealed class Seer : Crew
     private CustomButton SeerButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Seer;
-    public override LayerEnum Type => LayerEnum.Seer;
-    public override Func<string> StartText => () => "You Can See People's Histories";
+    public override LayerEnum Type { get; } = LayerEnum.Seer;
+    public override Func<string> StartText { get; } = () => "You Can See People's Histories";
     public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
         "<#FFCC80FF>Sheriff</color>";
 

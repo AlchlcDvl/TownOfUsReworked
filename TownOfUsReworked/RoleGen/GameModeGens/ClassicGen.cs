@@ -120,7 +120,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
     {
         base.InitIntList();
 
-        if (SyndicateSettings.AltImps || Intruders == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Intruder or Faction.Compliance) || Intruders == 0)
             return;
 
         int minInt = IntruderSettings.IntruderMin;
@@ -255,7 +255,6 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
             int maxNb = NeutralBenignSettings.MaxNb;
             int maxNk = NeutralKillingSettings.MaxNk;
             int maxNn = NeutralNeophyteSettings.MaxNn;
-            int maxNh = NeutralHarbingerSettings.MaxNh;
 
             if (maxNe > RoleGenManager.NeutralEvilRoles.Count)
                 maxNe = RoleGenManager.NeutralEvilRoles.Count;
@@ -269,14 +268,11 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
             if (maxNn > RoleGenManager.NeutralNeophyteRoles.Count)
                 maxNn = RoleGenManager.NeutralNeophyteRoles.Count;
 
-            if (maxNh > RoleGenManager.NeutralHarbingerRoles.Count)
-                maxNh = RoleGenManager.NeutralHarbingerRoles.Count;
-
-            var maxNeutSum = maxNe + maxNb + maxNk + maxNn + maxNh;
+            var maxNeutSum = maxNe + maxNb + maxNk + maxNn;
 
             while (maxNeutSum > maxNeut && maxNeutSum > 0)
             {
-                switch (URandom.RandomRangeInt(0, 5))
+                switch (URandom.RandomRangeInt(0, 4))
                 {
                     case 0:
                     {
@@ -306,27 +302,18 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
                         break;
                     }
-                    case 4:
-                    {
-                        if (maxNh > 0)
-                            maxNh--;
-
-                        break;
-                    }
                 }
 
-                maxNeutSum = maxNe + maxNb + maxNk + maxNn + maxNh;
+                maxNeutSum = maxNe + maxNb + maxNk + maxNn;
             }
 
             filter.Filter(RoleGenManager.NeutralBenignRoles, maxNb);
             filter.Filter(RoleGenManager.NeutralEvilRoles, maxNe);
             filter.Filter(RoleGenManager.NeutralKillingRoles, maxNk);
             filter.Filter(RoleGenManager.NeutralNeophyteRoles, maxNn);
-            filter.Filter(RoleGenManager.NeutralHarbingerRoles, maxNh);
         }
 
-        NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles, RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles,
-            RoleGenManager.NeutralHarbingerRoles);
+        NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles, RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles);
 
         filter.Filter(NeutralRoles, GameModeSettings.IgnoreFactionCaps ? Neutrals : URandom.RandomRangeInt(minNeut, maxNeut + 1));
 
@@ -337,14 +324,64 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         RoleGenManager.NeutralEvilRoles.Clear();
         RoleGenManager.NeutralKillingRoles.Clear();
         RoleGenManager.NeutralNeophyteRoles.Clear();
-        RoleGenManager.NeutralHarbingerRoles.Clear();
+    }
+
+    public override void InitApocList()
+    {
+        base.InitApocList();
+
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Apocalypse or Faction.Compliance) || Apocalypse == 0)
+            return;
+
+        int minApoc = ApocalypseSettings.ApocalypseMin;
+        int maxApoc = ApocalypseSettings.ApocalypseMax;
+
+        if (minApoc > maxApoc)
+            (maxApoc, minApoc) = (minApoc, maxApoc);
+
+        while (maxApoc > Apocalypse)
+            maxApoc--;
+
+        while (minApoc > Apocalypse)
+            minApoc--;
+
+        var filter = ModeFilters[GameModeSettings.GameMode];
+
+        if (!GameModeSettings.IgnoreAlignmentCaps)
+        {
+            int maxAh = ApocalypseHarbingerSettings.MaxAh;
+
+            if (maxAh > RoleGenManager.ApocalypseHarbingerRoles.Count)
+                maxAh = RoleGenManager.ApocalypseHarbingerRoles.Count;
+
+            var maxApocSum = maxAh;
+
+            while (maxApocSum > maxApoc && maxApocSum > 0)
+            {
+                if (maxAh > 0)
+                    maxAh--;
+
+                maxApocSum = maxAh;
+            }
+
+            filter.Filter(RoleGenManager.ApocalypseHarbingerRoles, maxAh);
+        }
+
+        ApocalypseRoles.AddRanges(RoleGenManager.ApocalypseHarbingerRoles);
+
+        filter.Filter(ApocalypseRoles, GameModeSettings.IgnoreFactionCaps ? Apocalypse : URandom.RandomRangeInt(minApoc, maxApoc + 1));
+
+        while (ApocalypseRoles.Count < Apocalypse)
+            ApocalypseRoles.Add(GetSpawnItem(LayerEnum.Cultist));
+
+        RoleGenManager.ApocalypseHarbingerRoles.Clear();
     }
 
     public override void InitSynList()
     {
         base.InitSynList();
 
-        if (Syndicate == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Syndicate or Faction.Compliance) || Syndicate == 0)
             return;
 
         int minSyn = SyndicateSettings.SyndicateMin;

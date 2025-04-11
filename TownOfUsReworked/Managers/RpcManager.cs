@@ -74,7 +74,7 @@ public static class RpcManager
 
             foreach (var option in list)
             {
-                // Info($"Sending {option}");
+                // Info($"Sending {option.Name}");
                 writer.Write(option.RpcId.Key);
                 writer.Write(option.RpcId.Value);
                 option.WriteValueRpc(writer);
@@ -171,12 +171,12 @@ public static class RpcManager
                 {
                     case MiscRPC.SyncMaxUses:
                     {
-                        reader.Read<CustomButton>().MaxUses = reader.ReadInt();
+                        reader.ReadButton().MaxUses = reader.ReadInt();
                         return;
                     }
                     case MiscRPC.SyncUses:
                     {
-                        reader.Read<CustomButton>().Uses = reader.ReadInt();
+                        reader.ReadButton().Uses = reader.ReadInt();
                         return;
                     }
                     case MiscRPC.SetLayer:
@@ -214,7 +214,7 @@ public static class RpcManager
                     }
                     case MiscRPC.BastionBomb:
                     {
-                        Role.BastionBomb(reader.Read<Vent>(), Bastion.BombRemovedOnKill);
+                        Role.BastionBomb(reader.ReadVent(), Bastion.BombRemovedOnKill);
                         return;
                     }
                     case MiscRPC.Catch:
@@ -280,7 +280,7 @@ public static class RpcManager
                     }
                     case MiscRPC.SetFirstKilled:
                     {
-                        CachedFirstDead = FirstDead = reader.ReadString();
+                        CachedFirstDead = reader.ReadString();
                         return;
                     }
                     case MiscRPC.BodyLocation:
@@ -315,7 +315,7 @@ public static class RpcManager
                     }
                     case MiscRPC.SetTarget:
                     {
-                        switch (reader.Read<PlayerLayer>())
+                        switch (reader.ReadLayer())
                         {
                             case Executioner exe:
                             {
@@ -353,22 +353,22 @@ public static class RpcManager
                             case Lovers lover1:
                             {
                                 var lover2 = reader.Read<Lovers>();
-                                lover1.OtherLover = lover2.Player;
-                                lover2.OtherLover = lover1.Player;
+                                lover1.Other = lover2.Player;
+                                lover2.Other = lover1.Player;
                                 break;
                             }
                             case Rivals rival1:
                             {
                                 var rival2 = reader.Read<Rivals>();
-                                rival1.OtherRival = rival2.Player;
-                                rival2.OtherRival = rival1.Player;
+                                rival1.Other = rival2.Player;
+                                rival2.Other = rival1.Player;
                                 break;
                             }
                             case Linked link1:
                             {
                                 var link2 = reader.Read<Linked>();
-                                link1.OtherLink = link2.Player;
-                                link2.OtherLink = link1.Player;
+                                link1.Other = link2.Player;
+                                link2.Other = link1.Player;
                                 break;
                             }
                         }
@@ -377,29 +377,20 @@ public static class RpcManager
                     }
                     case MiscRPC.ChangeRoles:
                     {
-                        switch (reader.Read<PlayerLayer>())
+                        switch (reader.ReadLayer())
                         {
-                            case Traitor traitor:
+                            case FactionChanger changer:
                             {
                                 if (reader.ReadBool())
-                                    traitor.TurnBetrayer();
+                                    changer.TurnBetrayer();
                                 else
-                                    traitor.TurnTraitor(reader.ReadBool(), reader.ReadBool());
+                                    changer.TurnFaction(reader.Read<Faction>());
 
                                 break;
                             }
                             case Defector defector:
                             {
-                                defector.TurnSides(reader.ReadBool(), reader.ReadBool(), reader.ReadBool());
-                                break;
-                            }
-                            case Fanatic fanatic:
-                            {
-                                if (reader.ReadBool())
-                                    fanatic.TurnBetrayer();
-                                else
-                                    fanatic.TurnFanatic(reader.Read<Faction>());
-
+                                defector.TurnSides(reader.Read<Faction>());
                                 break;
                             }
                             case Actor act:
@@ -414,6 +405,20 @@ public static class RpcManager
                     case MiscRPC.Achievement:
                     {
                         CustomAchievementManager.UnlockAchievement(reader.ReadString());
+                        return;
+                    }
+                    case MiscRPC.SetStatus:
+                    {
+                        StatusUtils.AddStatusFromRpc(reader);
+                        return;
+                    }
+                    case MiscRPC.WinLose:
+                    {
+                        WinState = reader.Read<WinLose>();
+
+                        while (reader.BytesRemaining > 0)
+                            reader.ReadPlayer().GetLayers().ForEach(x => x.Winner = true);
+
                         return;
                     }
                     default:
@@ -540,17 +545,17 @@ public static class RpcManager
                     }
                     case ActionsRPC.ButtonAction:
                     {
-                        reader.Read<CustomButton>().StartEffectRPC(reader);
+                        reader.ReadButton().StartEffectRPC(reader);
                         return;
                     }
                     case ActionsRPC.LayerAction:
                     {
-                        reader.Read<PlayerLayer>().ReadRPC(reader);
+                        reader.ReadLayer().ReadRPC(reader);
                         return;
                     }
                     case ActionsRPC.Cancel:
                     {
-                        reader.Read<CustomButton>().ClickedAgain = true;
+                        reader.ReadButton().ClickedAgain = true;
                         return;
                     }
                     case ActionsRPC.PublicReveal:
@@ -564,88 +569,6 @@ public static class RpcManager
                         return;
                     }
                 }
-            }
-            case CustomRPC.WinLose:
-            {
-                WinState = reader.Read<WinLose>();
-
-                switch (WinState)
-                {
-                    case >= WinLose.ArsonistWins and <= WinLose.WerewolfWins:
-                    {
-                        var nkRole = reader.Read<Role>();
-
-                        foreach (var role in PlayerLayer.GetLayers<Neutral>().Where(x => x.Type == nkRole.Type))
-                        {
-                            if (!role.Disconnected && role.Faithful)
-                                role.Winner = true;
-                        }
-
-                        return;
-                    }
-                    case WinLose.JesterWins:
-                    {
-                        reader.Read<Jester>().VotedOut = true;
-                        return;
-                    }
-                    case WinLose.CannibalWins:
-                    {
-                        reader.Read<Cannibal>().Eaten = true;
-                        return;
-                    }
-                    case WinLose.ExecutionerWins:
-                    {
-                        reader.Read<Executioner>().TargetVotedOut = true;
-                        return;
-                    }
-                    case WinLose.BountyHunterWins:
-                    {
-                        reader.Read<BountyHunter>().TargetKilled = true;
-                        return;
-                    }
-                    case WinLose.ActorWins:
-                    {
-                        reader.Read<Actor>().Guessed = true;
-                        return;
-                    }
-                    case WinLose.GuesserWins:
-                    {
-                        reader.Read<Guesser>().TargetGuessed = true;
-                        return;
-                    }
-                    case WinLose.CorruptedWins:
-                    {
-                        if (Corrupted.AllCorruptedWin)
-                            PlayerLayer.GetLayers<Corrupted>().ForEach(x => x.Winner = true);
-
-                        reader.Read<PlayerLayer>().Winner = true;
-                        return;
-                    }
-                    case WinLose.LoveWins:
-                    {
-                        var lover = reader.Read<Lovers>();
-                        lover.Winner = true;
-                        lover.OtherLover.GetDisposition().Winner = true;
-                        return;
-                    }
-                    case WinLose.OverlordWins:
-                    {
-                        PlayerLayer.GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
-                        return;
-                    }
-                    case WinLose.TaskmasterWins or WinLose.RivalWins:
-                    {
-                        reader.Read<PlayerLayer>().Winner = true;
-                        return;
-                    }
-                    case WinLose.TaskRunnerWins:
-                    {
-                        reader.Read<Runner>().Winner = true;
-                        return;
-                    }
-                }
-
-                return;
             }
             default:
             {

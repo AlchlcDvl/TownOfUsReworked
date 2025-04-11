@@ -15,8 +15,8 @@ public sealed class Banshee : Syndicate, IGhosty
     public bool Faded { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Banshee;
-    public override LayerEnum Type => LayerEnum.Banshee;
-    public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
+    public override LayerEnum Type { get; } = LayerEnum.Banshee;
+    public override Func<string> StartText { get; } = () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
     public override bool RoleBlockImmune => true; // Not taking chances
 

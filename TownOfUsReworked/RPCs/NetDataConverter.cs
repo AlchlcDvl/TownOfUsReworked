@@ -7,8 +7,8 @@ namespace TownOfUsReworked.RPCs;
 public sealed class NetDataConverter : MessageConverter<NetData>
 {
     /// <inheritdoc/>
-    public override NetData Read(MessageReader reader, Type objectType) => new(reader.ReadBytesAndSize());
+    public override NetData Read(MessageReader reader, Type objectType) => new(reader.ReadBytes(reader.ReadUInt16()));
 
     /// <inheritdoc/>
-    public override void Write(MessageWriter writer, NetData value) => writer.WriteBytesAndSize(value.ToBytes());
+    public override void Write(MessageWriter writer, NetData value) => writer.Write(value.ToBytes());
 }

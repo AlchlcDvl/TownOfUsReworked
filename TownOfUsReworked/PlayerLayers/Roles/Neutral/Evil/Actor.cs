@@ -28,14 +28,14 @@ public sealed class Actor : Evil
     private bool Targeted { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Actor;
-    public override LayerEnum Type => LayerEnum.Actor;
-    public override Func<string> StartText => () => "Play Pretend With The Others";
+    public override LayerEnum Type { get; } = LayerEnum.Actor;
+    public override Func<string> StartText { get; } = () => "Play Pretend With The Others";
     public override Func<string> Description => () => !Targeted ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you will kill your guesser";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => Guessed;
     public override bool CanVent => base.CanVent && ActorVent;
     public override bool CanSwitchVents => ActSwitchVent;
-    protected override WinLose EndState => WinLose.ActorWins;
+    public override WinLose EndState => WinLose.ActorWins;
 
     protected override void Init()
     {

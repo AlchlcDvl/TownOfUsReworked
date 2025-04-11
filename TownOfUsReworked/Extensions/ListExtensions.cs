@@ -251,7 +251,7 @@ public static class CollectionExtensions
         return dict;
     }
 
-    public static int RemoveAll<T>(this List<T> list, params T[] items) => items.Count(list.Remove);
+    public static int RemoveAll<T>(this List<T> list, params T[] items) => list.RemoveAll(items.Contains);
 
     /* These methods are unused at the moment, so they've been commented until needed
 

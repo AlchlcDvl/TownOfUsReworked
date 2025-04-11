@@ -13,8 +13,8 @@ public sealed class Phantom : Neutral, IGhosty
     public bool Faded { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Phantom;
-    public override LayerEnum Type => LayerEnum.Phantom;
-    public override Func<string> StartText => () => "Peek-A-Boo!";
+    public override LayerEnum Type { get; } = LayerEnum.Phantom;
+    public override Func<string> StartText { get; } = () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";
 
     protected override void Init()
@@ -31,11 +31,11 @@ public sealed class Phantom : Neutral, IGhosty
         if (TasksLeft == PhantomTasksRemaining && PhantomPlayersAlerted && !Caught)
             Flash(Color);
 
-        if (!AmongUsClient.Instance.AmHost || !TasksDone || !Faithful)
+        if (!AmongUsClient.Instance.AmHost || !TasksDone)
             return;
 
         WinState = WinLose.PhantomWins;
-        CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
+        // CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
     }
 
     public override void UpdatePlayer()

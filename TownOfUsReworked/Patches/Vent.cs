@@ -121,26 +121,20 @@ public static class VentPatches
         return false;
     }
 
+    // TODO: Remove this when updating to latest version as it's not longer needed
     [HarmonyPatch(nameof(Vent.UpdateArrows))]
     [HarmonyPatch(nameof(Vent.ToggleNeighborVentBeingCleaned))]
     public static bool Prefix() => MapPatches.CurrentMap != 3;
 
     [HarmonyPatch(nameof(Vent.EnterVent)), HarmonyPrefix]
-    public static bool EnterVentPrefix(Vent __instance, PlayerControl pc)
-    {
-        if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
-            return true;
-
-        var truePosition = CustomPlayer.Local.GetTruePosition();
-        var vector = pc.GetTruePosition() - truePosition;
-        return vector.magnitude < CustomPlayer.Local.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
-            Constants.ShipAndObjectsMask);
-    }
+    public static bool EnterVentPrefix(Vent __instance, PlayerControl pc) => EnterExitVentPrefix(pc, __instance.EnterVentAnim);
 
     [HarmonyPatch(nameof(Vent.ExitVent)), HarmonyPrefix]
-    public static bool ExitVentPrefix(Vent __instance, PlayerControl pc)
+    public static bool ExitVentPrefix(Vent __instance, PlayerControl pc) => EnterExitVentPrefix(pc, __instance.ExitVentAnim);
+
+    public static bool EnterExitVentPrefix(PlayerControl pc, AnimationClip clip)
     {
-        if (!__instance.ExitVentAnim || !GameModifiers.HideVentAnims)
+        if (!clip || !GameModifiers.HideVentAnims)
             return true;
 
         var truePosition = CustomPlayer.Local.GetTruePosition();

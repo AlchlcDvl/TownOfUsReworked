@@ -10,7 +10,8 @@ public abstract class Syndicate : Role
     public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive);
 
     protected override UColor MainColor => CustomColorManager.Syndicate;
-    public override AttackEnum AttackVal => HoldsDrive ? AttackEnum.Basic : AttackEnum.None;
+    public override AttackEnum AttackVal => KillUsable() ? AttackEnum.Basic : AttackEnum.None;
+    public override bool AffectedByLights => false;
     public override float VisionRange => SyndicateSettings.SyndicateVision;
     public override bool CanVent => (HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
     protected override bool UseMainColor => ClientOptions.CustomSynColors;
@@ -46,8 +47,7 @@ public abstract class Syndicate : Role
     protected override void Init()
     {
         base.Init();
-        Faction = Faction.Syndicate;
-        Objectives = () => SyndicateWinCon;
+        Faction = GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Syndicate);
         KillButton ??= new(this, new SpriteName("SyndicateKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
     }

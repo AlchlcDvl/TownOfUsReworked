@@ -70,7 +70,7 @@ public static class SpawnPatches
     private static void RandomSpawn(bool intro, bool meeting)
     {
         if (!AmongUsClient.Instance.AmHost || MapPatches.CurrentMap is 4 or 5 || (meeting && GameModifiers.RandomSpawns == RandomSpawning.GameStart) || (intro && GameModifiers.RandomSpawns ==
-            RandomSpawning.PostMeeting))
+            RandomSpawning.PostMeeting) || GameModifiers.RandomSpawns != [ RandomSpawning.GameStart, RandomSpawning.GameStart ])
         {
             return;
         }
@@ -96,6 +96,7 @@ public static class SpawnPatches
 
             player.RpcCustomSnapTo(allLocations.Random());
             player.MyPhysics.ResetMoveState();
+            player.MyPhysics.ResetAnimState();
 
             if (!IsSubmerged())
                 continue;

@@ -33,8 +33,8 @@ public sealed class Revealer : Crew, IGhosty
     public Role FormerRole { get; init; }
 
     protected override UColor MainColor => CustomColorManager.Revealer;
-    public override LayerEnum Type => LayerEnum.Revealer;
-    public override Func<string> StartText => () => "OOOOOOO";
+    public override LayerEnum Type { get; } = LayerEnum.Revealer;
+    public override Func<string> StartText { get; } = () => "OOOOOOO";
     public override Func<string> Description => () => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 
     protected override void Init()
@@ -51,16 +51,16 @@ public sealed class Revealer : Crew, IGhosty
         {
             if (Local)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte or
-                Alignment.Harbinger or Alignment.Apocalypse || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
+            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or
+                Alignment.Proselyte || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
             {
                 Revealed = true;
                 Flash(Color);
                 CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
             }
         }
-        else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte or
-            Alignment.Harbinger or Alignment.Apocalypse || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
+        else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or
+            Alignment.Proselyte || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
         {
             Flash(Color);
         }

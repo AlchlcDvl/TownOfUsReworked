@@ -15,8 +15,8 @@ public sealed class Poisoner : Syndicate
     private CustomPlayerMenu PoisonMenu { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Poisoner;
-    public override LayerEnum Type => LayerEnum.Poisoner;
-    public override Func<string> StartText => () => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
+    public override LayerEnum Type { get; } = LayerEnum.Poisoner;
+    public override Func<string> StartText { get; } = () => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" +
         CommonAbilities;
 
@@ -25,7 +25,7 @@ public sealed class Poisoner : Syndicate
         base.Init();
         PoisonedPlayer = null;
         Alignment = Alignment.Killing;
-        PoisonMenu = new(Player, Click, Exception1);
+        PoisonMenu = new(Player, Click, Color, Exception1);
         PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
             new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
         GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGlobalPoison, (LabelFunc)Label,

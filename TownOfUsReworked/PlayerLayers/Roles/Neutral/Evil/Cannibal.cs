@@ -26,13 +26,13 @@ public sealed class Cannibal : Evil
     private bool CanEat => !Eaten || !NeutralSettings.AvoidNeutralKingmakers;
 
     protected override UColor MainColor => CustomColorManager.Cannibal;
-    public override LayerEnum Type => LayerEnum.Cannibal;
-    public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
+    public override LayerEnum Type { get; } = LayerEnum.Cannibal;
+    public override Func<string> StartText { get; } = () => "Eat The Bodies Of The Dead";
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their "
         + "body" : "");
     public override bool HasWon => EatWin;
     public override bool CanVent => base.CanVent && CannibalVent;
-    protected override WinLose EndState => WinLose.CannibalWins;
+    public override WinLose EndState => WinLose.CannibalWins;
 
     protected override void Init()
     {
@@ -87,6 +87,6 @@ public sealed class Cannibal : Evil
             return;
 
         Eaten = true;
-        CallRpc(CustomRPC.WinLose, WinLose.CannibalWins, this);
+        // CallRpc(CustomRPC.WinLose, WinLose.CannibalWins, this);
     }
 }

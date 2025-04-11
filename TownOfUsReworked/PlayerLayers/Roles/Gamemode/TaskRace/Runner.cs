@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public sealed class Runner : GameModeRole
 {
-    public override LayerEnum Type => LayerEnum.Runner;
-    public override Func<string> StartText => () => "Speedrun Tasks To Be The Victor";
+    public override LayerEnum Type { get; } = LayerEnum.Runner;
+    public override Func<string> StartText { get; } = () => "Speedrun Tasks To Be The Victor";
     protected override UColor MainColor => CustomColorManager.Runner;
     public override string FactionName => "Task Race";
     public override float VisionRange => GameModeSettings.RunnerVision;

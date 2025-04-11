@@ -256,6 +256,7 @@ public enum AlliedFaction : byte
     Crew,
     Intruder,
     Syndicate,
+    Apocalypse,
     Pandorica
 }
 

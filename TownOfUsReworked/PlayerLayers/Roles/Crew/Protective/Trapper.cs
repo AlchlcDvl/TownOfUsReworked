@@ -24,8 +24,8 @@ public sealed class Trapper : Crew, ITrapper
     private bool AttackedSomeone { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Trapper;
-    public override LayerEnum Type => LayerEnum.Trapper;
-    public override Func<string> StartText => () => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
+    public override LayerEnum Type { get; } = LayerEnum.Trapper;
+    public override Func<string> StartText { get; } = () => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
     public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
         "them\nor protect from an attack once and attack the attacker in return";
 

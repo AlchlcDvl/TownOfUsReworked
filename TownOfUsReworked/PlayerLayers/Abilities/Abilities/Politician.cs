@@ -20,7 +20,7 @@ public sealed class Politician : Ability
     public bool CanKill => Player.CanKill();
 
     protected override UColor MainColor => CustomColorManager.Politician;
-    public override LayerEnum Type => LayerEnum.Politician;
+    public override LayerEnum Type { get; } = LayerEnum.Politician;
     public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 

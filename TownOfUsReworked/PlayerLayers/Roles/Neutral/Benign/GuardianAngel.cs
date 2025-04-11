@@ -46,8 +46,8 @@ public sealed class GuardianAngel : Neutral
     public bool Protecting { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.GuardianAngel;
-    public override LayerEnum Type => LayerEnum.GuardianAngel;
-    public override Func<string> StartText => () => "Find Someone To Protect";
+    public override LayerEnum Type { get; } = LayerEnum.GuardianAngel;
+    public override Func<string> StartText { get; } = () => "Find Someone To Protect";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +
         $"\n- If {TargetPlayer?.name} dies, you will become a <#DDDD00FF>Survivor</color>");
     public override bool CanVent => base.CanVent && GaVent;

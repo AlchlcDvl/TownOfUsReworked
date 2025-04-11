@@ -20,8 +20,8 @@ public sealed class Thief : Neutral, IGuesser
     public CustomGuessingMenu GuessingMenu { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Thief;
-    public override LayerEnum Type => LayerEnum.Thief;
-    public override Func<string> StartText => () => "Steal From The Killers";
+    public override LayerEnum Type { get; } = LayerEnum.Thief;
+    public override Func<string> StartText { get; } = () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override bool CanVent => base.CanVent && ThiefVent;
@@ -30,8 +30,7 @@ public sealed class Thief : Neutral, IGuesser
     {
         base.Init();
         Alignment = Alignment.Benign;
-        StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL",
-            (PlayerBodyExclusion)Exception);
+        StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL", (PlayerBodyExclusion)Exception);
         GuessingMenu = new(Player, GuessPlayer);
 
         if (ThiefCanGuess)
@@ -46,7 +45,7 @@ public sealed class Thief : Neutral, IGuesser
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
             GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Bastion, LayerEnum.Veteran, LayerEnum.Vigilante }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-        if (!SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
+        if (IntruderSettings.IntruderCount > 0)
         {
             GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
@@ -103,9 +102,9 @@ public sealed class Thief : Neutral, IGuesser
         {
             var layerFlag = player.GetLayers().Any(x => x.Type == guess);
             var subfactionFlag = $"{player.GetSubFaction()}" == $"{guess}";
-            var mafiosoFlag = player.Is<Intruder>(out var intruder) && intruder.IsMafioso;
+            var mafiosoFlag = player.Is<Intruder>(out var intruder) && intruder.IsMafioso && guess == LayerEnum.Mafioso;
             var gfFlag = (intruder?.IsPromoted ?? false) && guess == LayerEnum.Godfather;
-            var sidekickFlag = player.Is<Syndicate>(out var syn) && syn.IsSidekick;
+            var sidekickFlag = player.Is<Syndicate>(out var syn) && syn.IsSidekick && guess == LayerEnum.Sidekick;
             var rebFlag = (syn?.IsPromoted ?? false) && guess == LayerEnum.Rebel;
 
             var flag = layerFlag || subfactionFlag || mafiosoFlag || gfFlag || rebFlag || sidekickFlag;
@@ -307,10 +306,10 @@ public sealed class Thief : Neutral, IGuesser
         {
             MarkMeetingDead(player, Player);
 
-            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && !lovers.OtherLover.Is(Alignment.Apocalypse) &&
-                !lovers.OtherLover.Data.IsDead)
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && !lovers.Other.Is(Alignment.Deity) &&
+                !lovers.Other.Data.IsDead)
             {
-                RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
+                RpcMurderPlayer(lovers.Other, guess, guessTarget);
             }
         }
 

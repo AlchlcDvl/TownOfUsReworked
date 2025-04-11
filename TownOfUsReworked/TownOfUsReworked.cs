@@ -27,7 +27,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 41;
+    private const int DevBuild = 42;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -72,6 +72,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> NoLevels { get; private set; }
     public static ConfigEntry<bool> CustomCrewColors { get; private set; }
     public static ConfigEntry<bool> CustomNeutColors { get; private set; }
+    public static ConfigEntry<bool> CustomApocColors { get; private set; }
     public static ConfigEntry<bool> CustomIntColors { get; private set; }
     public static ConfigEntry<bool> CustomSynColors { get; private set; }
     public static ConfigEntry<bool> CustomGmColors { get; private set; }
@@ -142,6 +143,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         CustomNeutColors = Config.Bind("Client", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
         CustomIntColors = Config.Bind("Client", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
         CustomSynColors = Config.Bind("Client", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
+        CustomApocColors = Config.Bind("Client", "Custom Apocalypse Colors", true, "Enables custom colors for Apocalypse roles");
         CustomGmColors = Config.Bind("Client", "Custom Game Mode Colors", true, "Enables custom colors for Game Mode roles");
         CustomModColors = Config.Bind("Client", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
         CustomDispColors = Config.Bind("Client", "Custom Disposition Colors", true, "Enables custom colors for Dispositions");

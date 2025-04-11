@@ -20,8 +20,8 @@ public sealed class Mayor : Crew, IRevealer
     private CustomButton RevealButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Mayor;
-    public override LayerEnum Type => LayerEnum.Mayor;
-    public override Func<string> StartText => () => "Commit Voter Fraud!";
+    public override LayerEnum Type { get; } = LayerEnum.Mayor;
+    public override Func<string> StartText { get; } = () => "Commit Voter Fraud!";
     public override Func<string> Description => () => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";
 
     protected override void Init()

@@ -12,8 +12,8 @@ public sealed class Engineer : Crew
     private CustomButton FixButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Engineer;
-    public override LayerEnum Type => LayerEnum.Engineer;
-    public override Func<string> StartText => () => "Just Fix It";
+    public override LayerEnum Type { get; } = LayerEnum.Engineer;
+    public override Func<string> StartText { get; } = () => "Just Fix It";
     public override Func<string> Description => () => "- You can fix sabotages at any time from anywhere\n- You can vent";
 
     protected override void Init()

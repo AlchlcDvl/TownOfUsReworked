@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public sealed class Hunter : HideAndSeek
 {
-    public override LayerEnum Type => LayerEnum.Hunter;
-    public override Func<string> StartText => () => "Hunt Them All Down";
+    public override LayerEnum Type { get; } = LayerEnum.Hunter;
+    public override Func<string> StartText { get; } = () => "Hunt Them All Down";
     protected override UColor MainColor => CustomColorManager.Hunter;
     public override float VisionRange => Starting ? 0.001f : GameModeSettings.HunterVision;
     public override bool CanVent => GameModeSettings.HunterVent;
@@ -65,7 +65,8 @@ public sealed class Hunter : HideAndSeek
                 TurnHunter(target);
 
                 if (AmongUsClient.Instance.AmHost)
-                    CheckWin();
+                    CheckEndGame.CheckPlayerWins();
+
                 break;
             }
         }
@@ -78,15 +79,15 @@ public sealed class Hunter : HideAndSeek
         TurnHunter(reader.ReadPlayer());
 
         if (AmongUsClient.Instance.AmHost)
-            CheckWin();
+            CheckEndGame.CheckPlayerWins();
     }
 
-    protected override void CheckWin()
+    protected override void CheckWin(List<byte> winnerIds)
     {
-        if (HunterWins())
-        {
-            WinState = WinLose.HunterWins;
-            CallRpc(CustomRPC.WinLose, WinLose.HunterWins);
-        }
+        if (AllPlayers().Any(x => !x.HasDied() && x.Is<Hunted>()))
+            return;
+
+        WinState = WinLose.HunterWins;
+        winnerIds.Add(PlayerId);
     }
 }

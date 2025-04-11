@@ -19,8 +19,8 @@ public sealed class Crusader : Syndicate
     public CustomButton CrusadeButton { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Crusader;
-    public override LayerEnum Type => LayerEnum.Crusader;
-    public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
+    public override LayerEnum Type { get; } = LayerEnum.Crusader;
+    public override Func<string> StartText { get; } = () => "Cleanse This Land Of The Unholy Filth";
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
         $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {ChaosDriveCrusadeRadius}m radius" : "")}\n{CommonAbilities}";
 
@@ -66,7 +66,7 @@ public sealed class Crusader : Syndicate
             if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || (player.Is(Faction.Syndicate) && !CrusadeMates))
                 continue;
 
-            if (!player.Is(Alignment.Apocalypse))
+            if (!player.Is(Alignment.Deity))
                 player2.RpcMurderPlayer(player, DeathReasonEnum.Crusaded, false);
 
             if (player.IsOnAlert() || player.Is<Pestilence>())

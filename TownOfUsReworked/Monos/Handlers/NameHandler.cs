@@ -26,14 +26,12 @@ public abstract class NameHandler : MonoBehaviour
 
         if (!Meeting())
         {
-            var distance = Vector2.Distance(local.transform.position, player.transform.position);
-
-            if (distance > Ship()?.CalculateLightRadius(local.Data))
-                return ("", UColor.clear);
-
             var vector = player.transform.position - local.transform.position;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
+            if (vector.magnitude > local.lightSource.viewDistance)
+                return ("", UColor.clear);
+
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
                 GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
             {
                 return ("", UColor.clear);
@@ -82,13 +80,13 @@ public abstract class NameHandler : MonoBehaviour
 
         if (!meeting)
         {
-            var distance = Vector2.Distance(local.transform.position, player.transform.position);
+            var diff = player.transform.position - local.transform.position;
 
-            if (distance > Ship()?.CalculateLightRadius(local.Data))
+            if (diff.magnitude > local.lightSource.viewDistance)
                 return ("", UColor.white);
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, (player.transform.position - local.transform.position).normalized, distance, Constants.ShipAndObjectsMask) &&
-                !amOwner && !local.HasDied() && GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, diff.normalized, diff.magnitude, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
+                GameModifiers.PlayerNames == Data.PlayerNames.Obstructed)
             {
                 return ("", UColor.clear);
             }

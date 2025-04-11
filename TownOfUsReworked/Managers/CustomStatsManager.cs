@@ -17,6 +17,7 @@ public static class CustomStatsManager
     public static StringNames StatsGamesIlluminati;
     public static StringNames StatsGamesCompliance;
     public static StringNames StatsGamesPandorica;
+    public static StringNames StatsConvertedFanatics;
     private static StringNames StatsLayerWins;
     private static StringNames StatsMapWins;
 
@@ -60,6 +61,7 @@ public static class CustomStatsManager
         StatsRoleblocked = TranslationManager.GetOrAddName("Stats.Roleblocked");
         StatsKilled = TranslationManager.GetOrAddName("Stats.Killed", StringNames.StatsImpostorKills);
         StatsHitImmune = TranslationManager.GetOrAddName("Stats.HitImmune");
+        StatsConvertedFanatics = TranslationManager.GetOrAddName("Stats.ConvertedFanatics");
         StatsGamesCrew = TranslationManager.GetOrAddName("Stats.CrewGames");
         StatsGamesIntruder = TranslationManager.GetOrAddName("Stats.IntruderGames");
         StatsGamesSyndicate = TranslationManager.GetOrAddName("Stats.SyndicateGames");
@@ -93,6 +95,7 @@ public static class CustomStatsManager
             StringNames.StatsTimesMurdered,
             StringNames.StatsTimesEjected,
             StatsHitImmune,
+            StatsConvertedFanatics,
             StringNames.StatsHidenSeekGamesCrewmateSurvived,
             StringNames.StatsHidenSeekTimesVented,
             StringNames.StatsImpostorKills_HideAndSeek,

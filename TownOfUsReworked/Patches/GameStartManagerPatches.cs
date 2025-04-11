@@ -49,24 +49,25 @@ public static class GameStartManagerPatches
 
         CancelStartButton.activeTextColor = CancelStartButton.inactiveTextColor = UColor.white;
         CancelStartButton.OverrideOnClickListeners(__instance.ResetStartState);
-
-        __instance.GameStartText.transform.SetLocalY(2f);
     }
 
+    // Let's agree that Il2Cpp sucks alright?
     [HarmonyPatch(nameof(GameStartManager.Update)), HarmonyPrefix]
     public static bool UpdatePrefix(GameStartManager __instance)
     {
         if (!GameData.Instance || !GameManager.Instance)
             return false;
 
+        __instance.GameStartText.transform.SetLocalY(AmongUsClient.Instance.AmHost ? 2f : 0f);
+
         __instance.UpdateMapImage((MapNames)GameManager.Instance.LogicOptions.MapId);
         __instance.CheckSettingsDiffs();
         __instance.RulesPresetText.text = TranslationController.Instance.GetString(GameOptionsManager.Instance.CurrentGameOptions.GetRulesPresetTitle());
         __instance.privatePublicPanelText.text = TranslationController.Instance.GetString(IsLocalGame()
-                ? StringNames.LocalButton
-                : (AmongUsClient.Instance.IsGamePublic
-                    ? StringNames.PublicHeader
-                    : StringNames.PrivateHeader));
+            ? StringNames.LocalButton
+            : (AmongUsClient.Instance.IsGamePublic
+                ? StringNames.PublicHeader
+                : StringNames.PrivateHeader));
 
         __instance.HostPrivateButton.gameObject.SetActive(!AmongUsClient.Instance.IsGamePublic);
         __instance.HostPublicButton.gameObject.SetActive(AmongUsClient.Instance.IsGamePublic);

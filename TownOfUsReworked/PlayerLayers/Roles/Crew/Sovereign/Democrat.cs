@@ -19,8 +19,8 @@ public sealed class Democrat : Crew, IRevealer
     private bool RoundOne { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Democrat;
-    public override LayerEnum Type => LayerEnum.Democrat;
-    public override Func<string> StartText => () => "Start A Campaign To Get Elected!";
+    public override LayerEnum Type { get; } = LayerEnum.Democrat;
+    public override Func<string> StartText { get; } = () => "Start A Campaign To Get Elected!";
     public override Func<string> Description => () => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
         "<#704FA8FF>Mayor</color>";
 

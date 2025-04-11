@@ -9,8 +9,10 @@ public sealed class Allied : Disposition
         get => AlliedFactionPriv;
         set
         {
-            if (value is AlliedFaction.Intruder or AlliedFaction.Syndicate && GameModifiers.PandoricaOpens)
+            if (value is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse && GameModifiers.PandoricaOpens)
                 value = AlliedFaction.Pandorica;
+            else if (value is AlliedFaction.Pandorica && !GameModifiers.PandoricaOpens)
+                value = AlliedFactionPriv == AlliedFaction.Apocalypse ? AlliedFaction.Random : AlliedFaction.Apocalypse;
 
             AlliedFactionPriv = value;
         }
@@ -27,7 +29,7 @@ public sealed class Allied : Disposition
         _ => CustomColorManager.Allied,
     };
     public override string Symbol => "ζ";
-    public override LayerEnum Type => LayerEnum.Allied;
+    public override LayerEnum Type { get; } = LayerEnum.Allied;
     public override Func<string> Description => () => Side == Faction.Neutral ? "- You are conflicted" : "";
 
     protected override void Init()

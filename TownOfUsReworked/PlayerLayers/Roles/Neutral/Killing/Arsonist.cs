@@ -31,8 +31,8 @@ public sealed class Arsonist : NKilling
     public List<byte> Doused { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Arsonist;
-    public override LayerEnum Type => LayerEnum.Arsonist;
-    public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
+    public override LayerEnum Type { get; } = LayerEnum.Arsonist;
+    public override Func<string> StartText { get; } = () => "PYROMANIAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +
         "get doused";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;

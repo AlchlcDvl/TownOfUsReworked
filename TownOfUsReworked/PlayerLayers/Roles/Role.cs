@@ -5,11 +5,11 @@ public abstract class Role : PlayerLayer
 {
     protected override UColor MainColor => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
-    public override LayerEnum Type => LayerEnum.NoneRole;
+    public override LayerEnum Type { get; } = LayerEnum.NoneRole;
     protected override UColor LayerColor => CustomColorManager.Role;
     protected override bool UseMainColor => false;
 
-    public virtual Func<string> StartText => () => "Woah The Game Started";
+    public virtual Func<string> StartText { get; } = () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
     public virtual float VisionRange => 1f;
     public virtual bool AffectedByLights => true;
@@ -19,11 +19,11 @@ public abstract class Role : PlayerLayer
     {
         var team = new List<PlayerControl>() { Player };
 
-        if (Player.Is<Lovers>())
+        if (LinkedDisposition == LayerEnum.Lovers)
             team.Add(Player.GetOtherLover());
-        else if (Player.Is<Rivals>())
+        else if (LinkedDisposition == LayerEnum.Rivals)
             team.Add(Player.GetOtherRival());
-        else if (Player.Is<Mafia>())
+        else if (LinkedDisposition == LayerEnum.Mafia)
             team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
 
         if (SubFaction == SubFaction.Cabal && Alignment != Alignment.Neophyte)
@@ -40,14 +40,6 @@ public abstract class Role : PlayerLayer
     // public static bool IsLeft;
     // private static bool PlayerIsLeft;
     // public CustomButton CallButton { get; set; }
-
-    // public static bool RoleWins => WinState is WinLose.SerialKillerWins or WinLose.ArsonistWins or WinLose.CryomaniacWins or WinLose.MurdererWins or WinLose.BetrayerWins or
-    //     WinLose.PhantomWins or WinLose.WerewolfWins or WinLose.ActorWins or WinLose.BountyHunterWins or WinLose.CannibalWins or WinLose.TrollWins or WinLose.ExecutionerWins or
-    //     WinLose.GuesserWins or WinLose.JesterWins or WinLose.TaskRunnerWins or WinLose.HuntedWin or WinLose.HunterWins;
-
-    // public static bool FactionWins => WinState is WinLose.CrewWins or WinLose.IntrudersWin or WinLose.SyndicateWins or WinLose.AllNeutralsWin;
-
-    // public static bool SubFactionWins => WinState is WinLose.ApocalypseWins or WinLose.AllNKsWin or WinLose.CabalWins or WinLose.ReanimatedWins or WinLose.CultWins or WinLose.UndeadWins;
 
     public Alignment Alignment { get; protected set; }
     public ChatChannel CurrentChannel { get; set; }
@@ -75,6 +67,7 @@ public abstract class Role : PlayerLayer
                 Faction.Pandorica => CustomColorManager.Pandorica,
                 Faction.Compliance => CustomColorManager.Compliance,
                 Faction.Illuminati => CustomColorManager.Illuminati,
+                Faction.Apocalypse => CustomColorManager.Apocalypse,
                 Faction.GameMode => Alignment switch
                 {
                     Alignment.HideAndSeek => CustomColorManager.HideAndSeek,
@@ -85,8 +78,12 @@ public abstract class Role : PlayerLayer
             };
             Objectives = value switch
             {
-                Faction.Intruder => () => IntrudersWinCon,
-                Faction.Syndicate => () => SyndicateWinCon,
+                Faction.Intruder => () => IntrudersWinCon(Player),
+                Faction.Syndicate => () => SyndicateWinCon(Player),
+                Faction.Apocalypse => () => ApocalypseWinCon(Player),
+                Faction.Compliance => () => ComplianceWinCon(Player),
+                Faction.Pandorica => () => PandoricaWinCon(Player),
+                Faction.Illuminati => () => IlluminatiWinCon(Player),
                 Faction.Crew => () => CrewWinCon,
                 _ => Objectives
             };
@@ -147,24 +144,6 @@ public abstract class Role : PlayerLayer
 
     public bool Diseased { get; set; }
 
-    public bool IsRecruit => SubFaction == SubFaction.Cabal;
-    // public bool IsResurrected => SubFaction == SubFaction.Reanimated;
-    // public bool IsPersuaded => SubFaction == SubFaction.Cult;
-    // public bool IsBitten => SubFaction == SubFaction.Undead;
-    // public bool IsIntTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Intruder;
-    // public bool IsIntAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Intruder;
-    // public bool IsIntFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Intruder;
-    // public bool IsSynTraitor => LinkedDisposition == LayerEnum.Traitor && Faction == Faction.Syndicate;
-    // public bool IsSynAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Syndicate;
-    // public bool IsSynFanatic => LinkedDisposition == LayerEnum.Fanatic && Faction == Faction.Syndicate;
-    // public bool IsCrewAlly => LinkedDisposition == LayerEnum.Allied && Faction == Faction.Crew;
-    public bool IsCrewDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Crew && this is not Crew;
-    private bool IsIntDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Intruder && this is not Intruder;
-    private bool IsSynDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Syndicate && this is not Syndicate;
-    private bool IsNeutDefect => LinkedDisposition == LayerEnum.Defector && Faction == Faction.Neutral && this is not Neutral;
-    public bool Faithful => SubFaction == SubFaction.None && LinkedDisposition is not (LayerEnum.Allied or LayerEnum.Corrupted or LayerEnum.Mafia) && !IsCrewDefect && !IsIntDefect && !IsSynDefect
-        && !IsNeutDefect && !Player.IsWinningRival() && !Player.HasAliveLover() && !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor() && !Deinitialised;
-
     protected override void Init()
     {
         Faction = Faction.None;
@@ -201,14 +180,12 @@ public abstract class Role : PlayerLayer
             hud.SabotageButton.graphic.sprite = GetSprite(Faction switch
             {
                 Faction.Syndicate => "SyndicateSabotage",
-                Faction.Intruder => "IntruderSabotage",
                 _ => "IntruderSabotage"
             });
             hud.SabotageButton.graphic.SetCooldownNormalizedUvs();
             hud.ImpostorVentButton.graphic.sprite = GetSprite(Faction switch
             {
                 Faction.Syndicate => "SyndicateVent",
-                Faction.Intruder => "IntruderVent",
                 Faction.Crew => "CrewVent",
                 Faction.Neutral => "NeutralVent",
                 _ => "IntruderVent"
@@ -258,37 +235,6 @@ public abstract class Role : PlayerLayer
 
         if (!GetLayers<IReviver>().Any())
             TrulyDead |= Type != LayerEnum.GuardianAngel;
-    }
-
-    protected override void CheckWin()
-    {
-        if (Faithful && Faction == Faction.Neutral && Alignment == Alignment.Killing && (SameNkWins(Type) || SoloNkWins(Player)))
-        {
-            WinState = Type switch
-            {
-                LayerEnum.Arsonist => WinLose.ArsonistWins,
-                LayerEnum.Cryomaniac => WinLose.CryomaniacWins,
-                LayerEnum.Glitch => WinLose.GlitchWins,
-                LayerEnum.Juggernaut => WinLose.JuggernautWins,
-                LayerEnum.Murderer => WinLose.MurdererWins,
-                LayerEnum.SerialKiller => WinLose.SerialKillerWins,
-                LayerEnum.Werewolf => WinLose.WerewolfWins,
-                _ => WinLose.None,
-            };
-
-            foreach (var role2 in GetLayers<Neutral>().Where(x => x.Type == Type))
-            {
-                if (!role2.Disconnected && role2.Faithful)
-                    role2.Winner = true;
-            }
-
-            CallRpc(CustomRPC.WinLose, WinState, this);
-        }
-        else if (Type == LayerEnum.Betrayer && Faction == Faction.Neutral && BetrayerWins())
-        {
-            WinState = WinLose.BetrayerWins;
-            CallRpc(CustomRPC.WinLose, WinLose.BetrayerWins);
-        }
     }
 
     private bool BombUsable() => Bombed;
@@ -432,10 +378,6 @@ public abstract class Role : PlayerLayer
         DeadArrows.Values.DestroyAll();
         DeadArrows.Clear();
     }
-
-    public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <#FF0000FF>Intruders</color>";
-    public static string SyndicateWinCon => (SyndicateSettings.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes the " +
-        "<#008000FF>Syndicate</color>";
     public const string CrewWinCon = "- Finish all tasks\n- Eject all <#FF0000FF>evildoers</color>";
 
     private void PlaceHit(PlayerControl target)
@@ -510,4 +452,22 @@ public abstract class Role : PlayerLayer
     public static IEnumerable<Role> GetRoles(Alignment ra) => GetLayers<Role>().Where(x => x.Alignment == ra && !x.Deinitialised);
 
     public static IEnumerable<Role> GetRoles(SubFaction subfaction) => GetLayers<Role>().Where(x => x.SubFaction == subfaction && !x.Deinitialised);
+
+    public static string IntrudersWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Kill anyone who opposes the <#FF0000FF>Intruders</color>";
+
+    public static string SyndicateWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Cause chaos and kill off anyone who opposes the <#008000FF>Syndicate</color>";
+
+    public static string ApocalypseWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Summon your deities to bring on the <#99007FFF>Apocalypse</color>";
+
+    public static string ComplianceWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Eliminate any and all opposition to the <#5A27CCFF>Compliance</color>";
+
+    public static string PandoricaWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Kill off anyone who tries to oppose the <#ECFF45FF>Pandorica</color>";
+
+    public static string IlluminatiWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Eliminate anyone who tries to oppose the <#A39389FF>Illuminati</color>";
 }

@@ -24,8 +24,8 @@ public sealed class Morphling : Intruder
     private PlayerControl SampledPlayer { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Morphling;
-    public override LayerEnum Type => LayerEnum.Morphling;
-    public override Func<string> StartText => () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
+    public override LayerEnum Type { get; } = LayerEnum.Morphling;
+    public override Func<string> StartText { get; } = () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
     public override bool CanVent => MorphlingVent;
 

@@ -12,8 +12,8 @@ public sealed class Ghoul : Intruder, IGhosty
     public PlayerControl MarkedPlayer { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Ghoul;
-    public override LayerEnum Type => LayerEnum.Ghoul;
-    public override Func<string> StartText => () => "BOO!";
+    public override LayerEnum Type { get; } = LayerEnum.Ghoul;
+    public override Func<string> StartText { get; } = () => "BOO!";
     public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +
         " meeting if you are not clicked";
 

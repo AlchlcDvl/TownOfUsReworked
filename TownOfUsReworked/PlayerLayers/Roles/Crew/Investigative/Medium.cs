@@ -29,8 +29,8 @@ public sealed class Medium : Crew, IShaman
     public List<byte> MediatedPlayers { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Medium;
-    public override LayerEnum Type => LayerEnum.Medium;
-    public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
+    public override LayerEnum Type { get; } = LayerEnum.Medium;
+    public override Func<string> StartText { get; } = () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
     public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
         "players will be able to see you"));
 

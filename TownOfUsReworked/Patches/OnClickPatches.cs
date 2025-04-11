@@ -17,8 +17,11 @@ public static class PlayerControlOnClick
             return false;
         }
 
-        if (CustomPlayer.Local.Data.Tasks == null || __instance.AmOwner)
+        if (CustomPlayer.Local.Data.Tasks == null || __instance.AmOwner || PhysicsHelpers.AnythingBetween(PlayerControl.LocalPlayer.GetTruePosition(), __instance.GetTruePosition(),
+            Constants.ShipAndObjectsMask, false))
+        {
             return false;
+        }
 
         CallRpc(CustomRPC.Misc, MiscRPC.Catch, __instance, CustomPlayer.Local);
         CatchPostmortal(__instance, CustomPlayer.Local);
@@ -90,7 +93,7 @@ public static class DeadBodyOnClick
             return true;
 
         if (!CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable(), out var button))
-            return GameModeSettings.GameMode is not (GameMode.HideAndSeek or GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < Ship().CalculateLightRadius(CustomPlayer.Local.Data);
+            return GameModeSettings.GameMode is not (GameMode.HideAndSeek or GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < CustomPlayer.Local.lightSource.viewDistance;
 
         button?.Clicked();
         return false;

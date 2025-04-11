@@ -92,10 +92,23 @@ public sealed class LayerHandler : RoleBehaviour
         CustomModifier.UponTaskComplete(idx);
         CustomDisposition.UponTaskComplete(idx);
 
-        if (AmongUsClient.Instance.AmHost && CheckEndGame.TasksDone())
+        if (AmongUsClient.Instance.AmHost)
         {
-            WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
-            CallRpc(CustomRPC.WinLose, WinState);
+            if (CheckEndGame.TasksDone())
+            {
+                WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
+                var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
+                winners.ForEach(x => x.GetLayers().ForEach(y => y.Winner = true));
+                CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners.Distinct() ]);
+            }
+            else if (CustomRole is Runner { TasksDone: true })
+            {
+                WinState = WinLose.TaskRunnerWins;
+                CustomLayers.ForEach(x => x.Winner = true);
+                CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState, Player);
+            }
+            else
+                CheckEndGame.CheckPlayerWins();
         }
 
         if (!CustomRole.TasksDone)
@@ -184,10 +197,9 @@ public sealed class LayerHandler : RoleBehaviour
 
         TasksCountTowardProgress = Player.CanDoTasks() && (CustomRole.Faction == Faction.Crew || CustomRole is Runner or Hunted);
         CanVent = Player.CanVent();
-        CanUseKillButton = Player.CanKill();
         AffectedByLightAffectors = !(CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica);
 
-        // CustomLayers.ForEach(x => x.Handler = this);
+        CustomLayers.ForEach([HideFromIl2Cpp] (x) => x.Handler = this);
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;

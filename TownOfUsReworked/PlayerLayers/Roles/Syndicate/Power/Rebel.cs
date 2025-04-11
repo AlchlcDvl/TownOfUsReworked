@@ -10,8 +10,8 @@ public sealed class Rebel : Syndicate
     private CustomButton SidekickButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Rebel;
-    public override LayerEnum Type => LayerEnum.Rebel;
-    public override Func<string> StartText => () => "Promote Your Fellow <#008000FF>Syndicate</color> To Do Better";
+    public override LayerEnum Type { get; } = LayerEnum.Rebel;
+    public override Func<string> StartText { get; } = () => "Promote Your Fellow <#008000FF>Syndicate</color> To Do Better";
     public override Func<string> Description => () => "- You can promote a fellow <#008000FF>Syndicate</color> into becoming your successor\n- Promoting a <#008000FF>" +
         "Syndicate</color> turns them into a <#979C9FFF>Sidekick</color>\n- If you die, the <#979C9FFF>Sidekick</color> become the new <#FFFCCEFF>Rebel</color>\n" +
         $"and inherits better abilities of their former role\n{CommonAbilities}";

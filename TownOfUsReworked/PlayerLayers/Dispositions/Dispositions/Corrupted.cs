@@ -7,16 +7,13 @@ public sealed class Corrupted : Disposition
     private static Number CorruptCd = 25;
 
     [ToggleOption]
-    public static bool AllCorruptedWin = false;
-
-    [ToggleOption]
     private static bool CorruptedVent = false;
 
     private CustomButton CorruptButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Corrupted;
     public override string Symbol => "δ";
-    public override LayerEnum Type => LayerEnum.Corrupted;
+    public override LayerEnum Type { get; } = LayerEnum.Corrupted;
     public override Func<string> Description => () => "- Corrupt everyone";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => CorruptedVent;
@@ -30,18 +27,12 @@ public sealed class Corrupted : Disposition
 
     private void Corrupt(PlayerControl target) => CorruptButton.StartCooldown(Interact(Player, target, true));
 
-    protected override void CheckWin()
+    protected override void CheckWin(List<byte> winnerIds)
     {
-        if (!CorruptedWin(Player))
+        if (!GetLayers<Corrupted>().Any(x => x.Alive && x != this))
             return;
 
         WinState = WinLose.CorruptedWins;
-
-        if (AllCorruptedWin)
-            GetLayers<Corrupted>().ForEach(x => x.Winner = true);
-        else
-            Winner = true;
-
-        CallRpc(CustomRPC.WinLose, WinLose.CorruptedWins, this);
+        winnerIds.Add(PlayerId);
     }
 }

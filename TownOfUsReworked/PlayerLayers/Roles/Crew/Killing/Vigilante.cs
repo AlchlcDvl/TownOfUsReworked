@@ -32,8 +32,8 @@ public sealed class Vigilante : Crew
     private bool RoundOne { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Vigilante;
-    public override LayerEnum Type => LayerEnum.Vigilante;
-    public override Func<string> StartText => () => "Shoot The <#FF0000FF>Evildoers</color>";
+    public override LayerEnum Type { get; } = LayerEnum.Vigilante;
+    public override Func<string> StartText { get; } = () => "Shoot The <#FF0000FF>Evildoers</color>";
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
@@ -69,9 +69,9 @@ public sealed class Vigilante : Crew
 
     private void Shoot(PlayerControl target)
     {
-        var flag4 = target.Is(Faction.Intruder) || target.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte or Alignment.Harbinger or Alignment.Apocalypse ||
-            target.Is(Faction.Syndicate) || target.Is<Troll>() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() || Player.IsFramed() || (target.Is(Alignment.Evil) &&
-            NeutralEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.IsFramed() || (target.Is(Alignment.Benign) && NeutralBenignSettings.VigilanteKillsBenigns);
+        var flag4 = target.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || target.GetFaction() is Faction.Syndicate or Faction.Intruder or Faction.Apocalypse or Faction.Illuminati
+            or Faction.Compliance || target.Is<Troll>() || Player.IsFramed() || (target.Is(Alignment.Evil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() ||
+            target.IsFramed() || (target.Is(Alignment.Benign) && NeutralBenignSettings.VigilanteKillsBenigns);
         var cooldown = Interact(Player, target, flag4);
 
         if (cooldown != CooldownType.Fail)

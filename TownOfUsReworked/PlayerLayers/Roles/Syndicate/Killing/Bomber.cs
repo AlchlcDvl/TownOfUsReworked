@@ -35,8 +35,8 @@ public sealed class Bomber : Syndicate
     private List<Bomb> Bombs { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Bomber;
-    public override LayerEnum Type => LayerEnum.Bomber;
-    public override Func<string> StartText => () => "Make People Go Boom";
+    public override LayerEnum Type { get; } = LayerEnum.Bomber;
+    public override Func<string> StartText { get; } = () => "Make People Go Boom";
     public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";
 
     protected override void Init()
@@ -104,21 +104,34 @@ public sealed class Bomber : Syndicate
 
     public override void ReadRPC(NetData reader)
     {
-        if (reader.Read<BomberActionsRPC>() == BomberActionsRPC.DropBomb)
-        {
-            if ((CustomPlayer.Local.GetFaction() is Faction.Syndicate or Faction.Intruder && Faction is Faction.Syndicate or Faction.Intruder) || CustomPlayer.Local.IsOtherLover(Player) ||
-                CustomPlayer.Local.IsOtherLink(Player))
-            {
-                Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
-            }
-        }
-        else
-        {
-            if (BombAlert)
-                Play("Bomb");
+        var bombAction = reader.Read<BomberActionsRPC>();
 
-            Bombs.ForEach(x => x.gameObject.Destroy());
-            Bombs.Clear();
+        switch (bombAction)
+        {
+            case BomberActionsRPC.DropBomb:
+            {
+                if ((CustomPlayer.Local.GetFaction() is Faction.Syndicate or Faction.Intruder && Faction is Faction.Syndicate or Faction.Intruder) || CustomPlayer.Local.IsOtherLover(Player) ||
+                    CustomPlayer.Local.IsOtherLink(Player))
+                {
+                    Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
+                }
+
+                break;
+            }
+            case BomberActionsRPC.Explode:
+            {
+                if (BombAlert)
+                    Play("Bomb");
+
+                Bombs.ForEach(x => x.gameObject.Destroy());
+                Bombs.Clear();
+                break;
+            }
+            default:
+            {
+                Failure($"Received unknown RPC - {bombAction}");
+                break;
+            }
         }
     }
 }

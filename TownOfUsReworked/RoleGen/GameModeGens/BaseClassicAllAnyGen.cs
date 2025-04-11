@@ -43,7 +43,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitIntList()
     {
-        if (Intruders == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Intruder or Faction.Compliance) || Intruders == 0)
             return;
 
         foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Mafioso)))
@@ -95,9 +95,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
             }
             else if (spawn.IsActive())
             {
-                if (NH.Contains(layer) || NA.Contains(layer))
-                    RoleGenManager.NeutralHarbingerRoles.AddMany(spawn.Clone, spawn.Count);
-                else if (NB.Contains(layer))
+                if (NB.Contains(layer))
                     RoleGenManager.NeutralBenignRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (NE.Contains(layer))
                     RoleGenManager.NeutralEvilRoles.AddMany(spawn.Clone, spawn.Count);
@@ -109,9 +107,27 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         }
     }
 
+    public override void InitApocList()
+    {
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Apocalypse or Faction.Compliance) || Apocalypse == 0)
+            return;
+
+        // TODO: Implement a ghost role for apoc
+        foreach (var layer in new[] { LayerEnum.Plaguebearer, LayerEnum.Cultist })
+        {
+            var spawn = GetSpawnItem(layer);
+
+            if (spawn.IsActive())
+            {
+                if (AH.Contains(layer) || AD.Contains(layer))
+                    RoleGenManager.ApocalypseHarbingerRoles.AddMany(spawn.Clone, spawn.Count);
+            }
+        }
+    }
+
     public override void InitSynList()
     {
-        if (Syndicate == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Syndicate or Faction.Compliance) || Syndicate == 0)
             return;
 
         foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Sidekick)))
@@ -144,10 +160,21 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void Filter()
     {
-        AllRoles.AddRanges(NeutralRoles, CrewRoles, SyndicateRoles);
+        AllRoles.AddRanges(NeutralRoles, CrewRoles);
 
-        if (!SyndicateSettings.AltImps)
-            AllRoles.AddRange(IntruderRoles);
+        if (BadGuysSettings.OnlyMainBadGuys)
+        {
+            AllRoles.AddRange(BadGuysSettings.MainBadGuys switch
+            {
+                Faction.Intruder => IntruderRoles,
+                Faction.Syndicate => SyndicateRoles,
+                Faction.Apocalypse => ApocalypseRoles,
+                Faction.Pandorica => IntruderRoles.Concat(SyndicateRoles).Concat(ApocalypseRoles),
+                _ => []
+            });
+        }
+        else
+            AllRoles.AddRanges(IntruderRoles, SyndicateRoles, ApocalypseRoles);
 
         if (!AllRoles.Any(x => x.ID is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer))
             AllRoles.AddMany(GetSpawnItem(LayerEnum.Seer).Clone, AllRoles.RemoveAll(x => x.ID == LayerEnum.Mystic));
@@ -167,6 +194,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         CrewRoles.Clear();
         SyndicateRoles.Clear();
         IntruderRoles.Clear();
+        ApocalypseRoles.Clear();
 
         while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));

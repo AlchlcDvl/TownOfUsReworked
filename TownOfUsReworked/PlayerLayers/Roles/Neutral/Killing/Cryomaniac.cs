@@ -27,8 +27,8 @@ public sealed class Cryomaniac : NKilling
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
     protected override UColor MainColor => CustomColorManager.Cryomaniac;
-    public override LayerEnum Type => LayerEnum.Cryomaniac;
-    public override Func<string> StartText => () => "Who Likes Ice Cream?";
+    public override LayerEnum Type { get; } = LayerEnum.Cryomaniac;
+    public override Func<string> StartText { get; } = () => "Who Likes Ice Cream?";
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;

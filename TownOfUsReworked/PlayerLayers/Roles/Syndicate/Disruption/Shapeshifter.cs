@@ -19,8 +19,8 @@ public sealed class Shapeshifter : Syndicate
     private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Shapeshifter;
-    public override LayerEnum Type => LayerEnum.Shapeshifter;
-    public override Func<string> StartText => () => "Change Everyone's Appearances";
+    public override LayerEnum Type { get; } = LayerEnum.Shapeshifter;
+    public override Func<string> StartText { get; } = () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
 
     protected override void Init()
@@ -29,8 +29,8 @@ public sealed class Shapeshifter : Syndicate
         Alignment = Alignment.Disruption;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
-        ShapeshiftMenu1 = new(Player, Click1, Exception1);
-        ShapeshiftMenu2 = new(Player, Click2, Exception2);
+        ShapeshiftMenu1 = new(Player, Click1, Color, Exception1);
+        ShapeshiftMenu2 = new(Player, Click2, Color, Exception2);
         ShapeshiftButton ??= new(this, new SpriteName("Shapeshift"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd),
             (EffectEndVoid)UnShapeshift, new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
     }

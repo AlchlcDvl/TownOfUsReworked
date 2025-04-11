@@ -38,7 +38,7 @@ public static class ConfirmEjects
             else
                 ejectString = $"{player.name} was {role.FactionColorString}{role.FactionName}</color>.";
 
-            var totalEvilsCount = AllPlayers().Count(x => ((!x.Is(Faction.Crew) && x.GetAlignment() is not (Alignment.Benign or Alignment.Evil)) || x.NotOnTheSameSide()) && !x.HasDied());
+            var totalEvilsCount = AllPlayers().Count(x => !x.Is(Faction.Crew) && x.GetAlignment() is not (Alignment.Benign or Alignment.Evil) && !x.HasDied());
             var totalEvilsRemaining = IsAllAny() ? "an unknown number of" : $"{totalEvilsCount}";
             var s = totalEvilsCount > 1 ? "s" : "";
             var isAre = totalEvilsCount > 1 ? "are" : "is";

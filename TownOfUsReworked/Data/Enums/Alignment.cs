@@ -14,7 +14,7 @@ public enum Alignment : byte
     Disruption,
     Head,
     Harbinger,
-    Apocalypse,
+    Deity,
     Neophyte,
     Proselyte,
     Evil,

@@ -7,7 +7,7 @@ public sealed class Vip : Modifier
     private static bool VipKnows = true;
 
     protected override UColor MainColor => CustomColorManager.Vip;
-    public override LayerEnum Type => LayerEnum.Vip;
+    public override LayerEnum Type { get; } = LayerEnum.Vip;
     public override Func<string> Description => () => "- Your death will alert everyone and will have an arrow pointing at your body";
     public override bool Hidden => !VipKnows && !Dead;
 

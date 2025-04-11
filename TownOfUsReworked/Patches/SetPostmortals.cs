@@ -14,12 +14,12 @@ public static class SetPostmortals
         {
             if (ghoul.Caught)
                 ghoul.MarkedPlayer = null;
-            else if (ghoul.MarkedPlayer && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.Apocalypse))
+            else if (ghoul.MarkedPlayer && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.Deity))
             {
                 ghoul.MarkedPlayer.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
 
-                if (Lovers.BothLoversDie && ghoul.MarkedPlayer.Is<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
-                    lover.OtherLover.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
+                if (Lovers.BothLoversDie && ghoul.MarkedPlayer.Is<Lovers>(out var lover) && !lover.Other.Is(Alignment.Deity))
+                    lover.Other.CustomDie(DeathReasonEnum.Marked, ghoul.Player);
 
                 ghoul.MarkedPlayer = null;
             }
@@ -29,11 +29,11 @@ public static class SetPostmortals
 
         if (exiled)
         {
-            JesterWin(exiled);
-            ExecutionerWin(exiled);
+            // JesterWin(exiled);
+            // ExecutionerWin(exiled);
 
-            if (Lovers.BothLoversDie && exiled.Is<Lovers>(out var lover) && !lover.OtherLover.Is(Alignment.Apocalypse))
-                lover.OtherLover.CustomDie(DeathReasonEnum.Suicide);
+            if (Lovers.BothLoversDie && exiled.Is<Lovers>(out var lover) && !lover.Other.Is(Alignment.Deity))
+                lover.Other.CustomDie(DeathReasonEnum.Suicide);
         }
 
         foreach (var dict in PlayerLayer.GetLayers<Dictator>())
@@ -87,29 +87,29 @@ public static class SetPostmortals
         SetGhouls(player, ejection);
     }
 
-    private static void JesterWin(PlayerControl player)
-    {
-        foreach (var jest in PlayerLayer.GetLayers<Jester>())
-        {
-            if (jest.Player != player)
-                continue;
+    // private static void JesterWin(PlayerControl player)
+    // {
+    //     foreach (var jest in PlayerLayer.GetLayers<Jester>())
+    //     {
+    //         if (jest.Player != player)
+    //             continue;
 
-            jest.VotedOut = true;
-            CallRpc(CustomRPC.WinLose, WinLose.JesterWins, jest);
-        }
-    }
+    //         jest.VotedOut = true;
+    //         CallRpc(CustomRPC.WinLose, WinLose.JesterWins, jest);
+    //     }
+    // }
 
-    private static void ExecutionerWin(PlayerControl player)
-    {
-        foreach (var exe in PlayerLayer.GetLayers<Executioner>())
-        {
-            if (!exe.TargetPlayer || (!Executioner.ExeCanWinBeyondDeath && exe.Dead) || player != exe.TargetPlayer)
-                continue;
+    // private static void ExecutionerWin(PlayerControl player)
+    // {
+    //     foreach (var exe in PlayerLayer.GetLayers<Executioner>())
+    //     {
+    //         if (!exe.TargetPlayer || (!Executioner.ExeCanWinBeyondDeath && exe.Dead) || player != exe.TargetPlayer)
+    //             continue;
 
-            exe.TargetVotedOut = true;
-            CallRpc(CustomRPC.WinLose, WinLose.ExecutionerWins, exe);
-        }
-    }
+    //         exe.TargetVotedOut = true;
+    //         CallRpc(CustomRPC.WinLose, WinLose.ExecutionerWins, exe);
+    //     }
+    // }
 
     private static void SetStartingVent(PlayerControl player)
     {

@@ -15,8 +15,8 @@ public sealed class Sheriff : Crew
     private CustomButton InterrogateButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Sheriff;
-    public override LayerEnum Type => LayerEnum.Sheriff;
-    public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
+    public override LayerEnum Type { get; } = LayerEnum.Sheriff;
+    public override Func<string> StartText { get; } = () => "Reveal The Alignment Of Other Players";
     public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
 
     protected override void Init()

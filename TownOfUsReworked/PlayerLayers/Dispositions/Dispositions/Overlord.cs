@@ -11,17 +11,16 @@ public sealed class Overlord : Disposition
 
     protected override UColor MainColor => CustomColorManager.Overlord;
     public override string Symbol => "β";
-    public override LayerEnum Type => LayerEnum.Overlord;
+    public override LayerEnum Type { get; } = LayerEnum.Overlord;
     public override Func<string> Description => () => $"- Stay alive for {OverlordMeetingWinCount} rounds";
     public override bool Hidden => !OverlordKnows && !Dead;
 
-    protected override void CheckWin()
+    protected override void CheckWin(List<byte> winnerIds)
     {
-        if (!Alive || !OverlordWins())
+        if (!Alive || MeetingPatches.MeetingCount < OverlordMeetingWinCount)
             return;
 
         WinState = WinLose.OverlordWins;
-        GetLayers<Overlord>().Where(ov => ov.Alive).ForEach(x => x.Winner = true);
-        CallRpc(CustomRPC.WinLose, WinLose.OverlordWins);
+        winnerIds.Add(PlayerId);
     }
 }

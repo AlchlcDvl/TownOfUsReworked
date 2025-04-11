@@ -10,8 +10,8 @@ public sealed class Godfather : Intruder
     private CustomButton DeclareButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Godfather;
-    public override LayerEnum Type => LayerEnum.Godfather;
-    public override Func<string> StartText => () => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
+    public override LayerEnum Type { get; } = LayerEnum.Godfather;
+    public override Func<string> StartText { get; } = () => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
     public override Func<string> Description => () => "- You can promote a fellow <#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <#FF1919FF>" +
         "Intruder</color> turns them into a <#6400FFFF>Mafioso</color>\n- If you die, the <#6400FFFF>Mafioso</color> will become the new <#404C08FF>Godfather</color>"
         + $"\nand inherits better abilities of their former role\n{CommonAbilities}";

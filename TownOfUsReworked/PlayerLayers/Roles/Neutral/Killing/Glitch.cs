@@ -30,8 +30,8 @@ public sealed class Glitch : NKilling, IBlocker
     public PlayerControl BlockTarget => HackTarget;
 
     protected override UColor MainColor => CustomColorManager.Glitch;
-    public override LayerEnum Type => LayerEnum.Glitch;
-    public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
+    public override LayerEnum Type { get; } = LayerEnum.Glitch;
+    public override Func<string> StartText { get; } = () => "foreach var PlayerControl Glitch.MurderPlayer";
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
         "short while\n- You are immune to blocks\n- If you hack a <#336EFFFF>Serial Killer</color> they will be forced to kill you";
     public override AttackEnum AttackVal => AttackEnum.Basic;
@@ -43,7 +43,7 @@ public sealed class Glitch : NKilling, IBlocker
     {
         base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";
-        MimicMenu = new(Player, Click, Exception3);
+        MimicMenu = new(Player, Click, Color, Exception3);
         NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
             new Cooldown(NeutraliseCd));
         HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EndFunc)EndHack, new Duration(HackDur),

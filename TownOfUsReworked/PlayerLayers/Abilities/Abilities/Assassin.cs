@@ -2,22 +2,27 @@
 
 public sealed class Bullseye : Assassin
 {
-    public override LayerEnum Type => LayerEnum.Bullseye;
+    public override LayerEnum Type { get; } = LayerEnum.Bullseye;
 }
 
 public sealed class Hitman : Assassin
 {
-    public override LayerEnum Type => LayerEnum.Hitman;
+    public override LayerEnum Type { get; } = LayerEnum.Hitman;
 }
 
 public sealed class Slayer : Assassin
 {
-    public override LayerEnum Type => LayerEnum.Slayer;
+    public override LayerEnum Type { get; } = LayerEnum.Slayer;
 }
 
 public sealed class Sniper : Assassin
 {
-    public override LayerEnum Type => LayerEnum.Sniper;
+    public override LayerEnum Type { get; } = LayerEnum.Sniper;
+}
+
+public sealed class Ritualist : Assassin
+{
+    public override LayerEnum Type { get; } = LayerEnum.Ritualist;
 }
 
 [LayerHeaderOption(LayerEnum.Assassin)]
@@ -116,20 +121,23 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if ((!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)) && !SyndicateSettings.AltImps && IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
+        if ((!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)) && IntruderSettings.IntruderCount > 0)
         {
             if (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Mafioso or
-                LayerEnum.Impostor)))
+            if (IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive())
+                foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Mafioso or
+                    LayerEnum.Impostor)))
                 {
-                    GuessingMenu.Mapping.Add(layer);
+                    if (RoleGenManager.GetSpawnItem(layer).IsActive())
+                    {
+                        GuessingMenu.Mapping.Add(layer);
 
-                    if (layer == LayerEnum.Godfather)
-                        GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
+                        if (layer == LayerEnum.Godfather)
+                            GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
+                    }
                 }
             }
         }
@@ -151,17 +159,20 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0 && !Player.Is(Faction.Neutral))
+        if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0 && (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None)))
         {
-            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Werewolf }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() && !Player.Is(layer)));
-
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive() && !Player.Is(Alignment.Harbinger) && !Player.Is(Alignment.Apocalypse))
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive())
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Plaguebearer);
 
                 if (AssassinGuessApoc)
                     GuessingMenu.Mapping.Add(LayerEnum.Pestilence);
             }
+        }
+
+        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0 && !Player.Is(Faction.Neutral))
+        {
+            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Werewolf }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() && !Player.Is(layer)));
 
             if (RoleGenManager.GetSpawnItem(LayerEnum.Dracula).IsActive() && !Player.Is(SubFaction.Undead))
             {
@@ -213,8 +224,8 @@ public abstract class Assassin : Ability, IGuesser
         {
             foreach (var layer in GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor))
             {
-                if (!RoleGenManager.GetSpawnItem(layer).IsActive() || (Player.Is(layer) && ((layer is LayerEnum.Lovers or LayerEnum.Rivals or LayerEnum.Linked or LayerEnum.Mafia) || (layer == LayerEnum.Corrupted &&
-                    Corrupted.AllCorruptedWin))))
+                if (!RoleGenManager.GetSpawnItem(layer).IsActive() || (Player.Is(layer) && (layer is LayerEnum.Lovers or LayerEnum.Rivals or LayerEnum.Linked or LayerEnum.Mafia or
+                    LayerEnum.Corrupted)))
                 {
                     continue;
                 }
@@ -262,14 +273,14 @@ public abstract class Assassin : Ability, IGuesser
             var sidekickFlag = player.Is<Syndicate>(out var syn) && syn.IsSidekick;
             var rebFlag = (syn?.IsPromoted ?? false) && guess == LayerEnum.Rebel;
 
-            if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
-            {
-                actor.Guessed = true;
-                CallRpc(CustomRPC.WinLose, WinLose.ActorWins, actor);
+            // if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
+            // {
+            //     actor.Guessed = true;
+            //     CallRpc(CustomRPC.WinLose, WinLose.ActorWins, actor);
 
-                if (!NeutralSettings.AvoidNeutralKingmakers)
-                    RpcMurderPlayer(Player, guess, player);
-            }
+            //     if (!NeutralSettings.AvoidNeutralKingmakers)
+            //         RpcMurderPlayer(Player, guess, player);
+            // }
 
             var flag = layerFlag || subfactionFlag || framedFlag || mafiosoFlag || gfFlag || rebFlag || sidekickFlag;
             var toDie = flag ? player : Player;
@@ -346,8 +357,8 @@ public abstract class Assassin : Ability, IGuesser
             RemainingKills--;
             MarkMeetingDead(player, Player);
 
-            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && (!lovers.OtherLover.Is(Alignment.Apocalypse) || AssassinGuessApoc))
-                RpcMurderPlayer(lovers.OtherLover, guess, guessTarget);
+            if (Lovers.BothLoversDie && AmongUsClient.Instance.AmHost && player.Is<Lovers>(out var lovers) && (!lovers.Other.Is(Alignment.Deity) || AssassinGuessApoc))
+                RpcMurderPlayer(lovers.Other, guess, guessTarget);
         }
 
         if (Local)

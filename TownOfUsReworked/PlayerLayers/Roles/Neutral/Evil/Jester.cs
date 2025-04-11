@@ -22,14 +22,14 @@ public sealed class Jester : Evil
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !NeutralSettings.AvoidNeutralKingmakers;
 
     protected override UColor MainColor => CustomColorManager.Jester;
-    public override LayerEnum Type => LayerEnum.Jester;
-    public override Func<string> StartText => () => "It Was Jest A Prank Bro";
+    public override LayerEnum Type { get; } = LayerEnum.Jester;
+    public override Func<string> StartText { get; } = () => "It Was Jest A Prank Bro";
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => VotedOut;
     public override bool CanVent => base.CanVent && JesterVent;
     public override bool CanSwitchVents => JestSwitchVent;
-    protected override WinLose EndState => WinLose.JesterWins;
+    public override WinLose EndState => WinLose.JesterWins;
 
     protected override void Init()
     {
@@ -63,7 +63,7 @@ public sealed class Jester : Evil
     }
 
     private bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player) ||
-        player.Is(Alignment.Apocalypse);
+        player.Is(Alignment.Deity);
 
     private void Haunt(PlayerControl target)
     {

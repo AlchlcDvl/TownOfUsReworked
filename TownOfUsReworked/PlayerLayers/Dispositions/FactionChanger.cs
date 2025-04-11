@@ -1,0 +1,74 @@
+namespace TownOfUsReworked.PlayerLayers.Dispositions;
+
+public abstract class FactionChanger : Disposition
+{
+    public bool Turned { get; set; }
+    public Faction Side { get; private set; }
+    protected bool Betrayed { get; set; }
+    protected Role PlayerRole { get; private set; }
+
+    public abstract bool SheriffSwap { get; }
+    protected abstract bool SnitchReveals { get; }
+    protected abstract bool RevealerReveals { get; }
+
+    protected override void Init()
+    {
+        base.Init();
+        PlayerRole = Player.GetRole();
+        Side = PlayerRole.Faction;
+    }
+
+    public override void UpdatePlayer()
+    {
+        if (!Dead && Turned && !Betrayed && Last(Side))
+            TurnBetrayer();
+    }
+
+    public void TurnFaction(Faction faction)
+    {
+        if (faction == Faction.Crew)
+            return;
+
+        PlayerRole.Faction = Side = faction;
+        Turned = true;
+        var local = CustomPlayer.Local.GetRole();
+
+        if (SnitchReveals)
+        {
+            foreach (var snitch in GetLayers<Snitch>())
+            {
+                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
+                    local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
+                else if (snitch.TasksDone && snitch.Local)
+                    snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, Player, snitch.Color));
+            }
+        }
+
+        if (RevealerReveals && Local)
+        {
+            foreach (var revealer in GetLayers<Revealer>())
+            {
+                if (revealer.Revealed)
+                    local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
+            }
+        }
+
+        if (CustomPlayer.Local.Is<Mystic>() && !Local)
+            Flash(CustomColorManager.Mystic);
+
+        if (Local || CustomPlayer.Local.Is(faction))
+            Flash(CustomColorManager.Fanatic);
+
+        if (Local)
+            PlayerRole.UpdateButtons();
+    }
+
+    public void TurnBetrayer()
+    {
+        var role = Player.GetRole();
+        Betrayed = true;
+
+        if (role.Type != LayerEnum.Betrayer)
+            new Betrayer { Objectives = role.Objectives }.RoleUpdate(role);
+    }
+}

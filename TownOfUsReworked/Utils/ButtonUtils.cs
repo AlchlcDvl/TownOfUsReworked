@@ -35,7 +35,6 @@ public static class ButtonUtils
         var hud = HUD();
         player.GetButtons().ForEach(x => x.SetActive());
         player.GetRole()?.UpdateButtons();
-        hud.KillButton.ToggleVisible(false);
         hud.UseButton.ToggleVisible(true);
         hud.PetButton.ToggleVisible(true);
         var inGame = IsInGame();
@@ -53,7 +52,6 @@ public static class ButtonUtils
     {
         var hud = HUD();
         CustomButton.AllButtons.ForEach(x => x.Disable());
-        hud.KillButton.ToggleVisible(false);
         hud.SabotageButton.ToggleVisible(false);
         hud.ReportButton.ToggleVisible(false);
         hud.ImpostorVentButton.ToggleVisible(false);

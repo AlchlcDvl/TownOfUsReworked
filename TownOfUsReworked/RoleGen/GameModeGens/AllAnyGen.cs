@@ -12,7 +12,8 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
             RoleGenManager.IntruderHeadRoles);
         SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
         NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles, RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles,
-            RoleGenManager.NeutralHarbingerRoles);
+            RoleGenManager.ApocalypseHarbingerRoles);
+        ApocalypseRoles.AddRange(RoleGenManager.ApocalypseHarbingerRoles);
 
         RoleGenManager.CrewInvestigativeRoles.Clear();
         RoleGenManager.CrewSupportRoles.Clear();
@@ -35,7 +36,8 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
         RoleGenManager.NeutralEvilRoles.Clear();
         RoleGenManager.NeutralKillingRoles.Clear();
         RoleGenManager.NeutralNeophyteRoles.Clear();
-        RoleGenManager.NeutralHarbingerRoles.Clear();
+
+        RoleGenManager.ApocalypseHarbingerRoles.Clear();
 
         base.Filter();
     }
@@ -45,48 +47,37 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
         var players = GameData.Instance.PlayerCount;
         Intruders = GetRandomCount();
         Syndicate = GetRandomCount();
+        Apocalypse = GetRandomCount();
 
-        if (Intruders == 0 && Syndicate == 0)
+        if (Intruders == 0 && Syndicate == 0 && Apocalypse == 0)
         {
-            _ = URandom.RandomRangeInt(0, 2) switch
+            _ = URandom.RandomRangeInt(0, 3) switch
             {
                 0 => Intruders++,
+                1 => Apocalypse++,
                 _ => Syndicate++
             };
         }
 
-        Neutrals = URandom.RandomRangeInt(0, players - Intruders - Syndicate + 1);
+        Neutrals = URandom.RandomRangeInt(0, players - Intruders - Syndicate - Apocalypse + 1);
         Crew = players - Intruders - Syndicate - Neutrals;
 
-        while (Crew == 0 && (Intruders > 0 || Syndicate > 0 || Neutrals > 0) && players > 1)
+        while (Crew == 0 && (Intruders > 0 || Syndicate > 0 || Neutrals > 0 || Apocalypse > 0) && players > 1)
         {
-            var random2 = URandom.RandomRangeInt(0, 3);
-
-            switch (random2)
+            _ = URandom.RandomRangeInt(0, 4) switch
             {
-                case 0 when Intruders > 0:
-                {
-                    Intruders--;
-                    Crew++;
-                    break;
-                }
-                case 1 when Syndicate > 0:
-                {
-                    Syndicate--;
-                    Crew++;
-                    break;
-                }
-                case 2 when Neutrals > 0:
-                {
-                    Neutrals--;
-                    Crew++;
-                    break;
-                }
-            }
+                0 when Intruders > 0 => Intruders--,
+                1 when Apocalypse > 0 => Apocalypse--,
+                2 when Syndicate > 0 => Syndicate--,
+                3 when Neutrals > 0 => Neutrals--,
+                _ => 0
+            };
+
+            Crew++;
         }
 
         if (TownOfUsReworked.MciActive)
-            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}");
+            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}, Apoc = {Apocalypse}");
     }
 
     private static int GetRandomCount()

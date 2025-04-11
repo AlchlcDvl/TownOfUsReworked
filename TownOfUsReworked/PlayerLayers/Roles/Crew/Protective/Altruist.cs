@@ -32,8 +32,8 @@ public sealed class Altruist : Crew, IReviver
     private byte ParentId { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Altruist;
-    public override LayerEnum Type => LayerEnum.Altruist;
-    public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
+    public override LayerEnum Type { get; } = LayerEnum.Altruist;
+    public override Func<string> StartText { get; } = () => "Sacrifice Yourself To Save Another";
     public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {ReviveDur}s\n- If a meeting is called or you are killed during your revive, " +
         "the revive fails";
 
@@ -69,7 +69,7 @@ public sealed class Altruist : Crew, IReviver
 
         if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers))
         {
-            var lover = lovers.OtherLover;
+            var lover = lovers.Other;
             var loverRole = lover.GetRole();
             loverRole.DeathReason = DeathReasonEnum.Revived;
             loverRole.KilledBy = " By " + PlayerName;

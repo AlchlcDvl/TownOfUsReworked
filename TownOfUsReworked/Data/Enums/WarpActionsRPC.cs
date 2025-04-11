@@ -5,4 +5,3 @@ public enum WarpActionsRPC : byte
     All,
     Single
 }
-

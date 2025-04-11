@@ -16,8 +16,8 @@ public sealed class Bastion : Crew, IVentBomber
     public List<int> BombedIDs { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Bastion;
-    public override LayerEnum Type => LayerEnum.Bastion;
-    public override Func<string> StartText => () => "Place Traps To Deter Venters";
+    public override LayerEnum Type { get; } = LayerEnum.Bastion;
+    public override Func<string> StartText { get; } = () => "Place Traps To Deter Venters";
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 

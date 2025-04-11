@@ -56,8 +56,9 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
         {
             >= ListSlot.CrewSupport and <= ListSlot.CrewUtil => CustomColorManager.Crew,
             >= ListSlot.IntruderSupport and <= ListSlot.IntruderHead => CustomColorManager.Intruder,
-            >= ListSlot.NeutralPros and <= ListSlot.NeutralEvil => CustomColorManager.Neutral,
+            >= ListSlot.NeutralPros and <= ListSlot.NeutralNeo => CustomColorManager.Neutral,
             >= ListSlot.SyndicateKill and <= ListSlot.SyndicateUtil => CustomColorManager.Syndicate,
+            ListSlot.ApocDeity or ListSlot.ApocHarb => CustomColorManager.Apocalypse,
             _ => Color
         };
 

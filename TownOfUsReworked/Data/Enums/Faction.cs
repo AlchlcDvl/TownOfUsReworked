@@ -6,9 +6,10 @@ public enum Faction : byte
     Crew,
     Intruder,
     Syndicate,
+    Apocalypse,
     Neutral,
     Pandorica, // Int + Syn
-    Compliance, // NK + NH + NA + NN
+    Compliance, // NK + NN
     Illuminati, // Pand + Comp
     GameMode
 }

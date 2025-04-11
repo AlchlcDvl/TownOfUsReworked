@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [LayerHeaderOption(LayerEnum.Rivals)]
-public sealed class Rivals : Disposition
+public sealed class Rivals : Paired
 {
     [ToggleOption]
     public static bool RivalsChat = true;
@@ -9,40 +9,21 @@ public sealed class Rivals : Disposition
     [ToggleOption]
     public static bool RivalsRoles = true;
 
-    public PlayerControl OtherRival { get; set; }
-    public bool IsWinningRival =>  OtherRival.HasDied() && !Player.HasDied();
+    public bool IsWinningRival => Other.HasDied() && !Player.HasDied();
 
     protected override UColor MainColor => CustomColorManager.Rivals;
     public override string Symbol => "α";
-    public override LayerEnum Type => LayerEnum.Rivals;
-    public override Func<string> Description => () => OtherRival.HasDied() ? "- Live to the final 2" : $"- Get {OtherRival.name} killed";
+    public override LayerEnum Type { get; } = LayerEnum.Rivals;
+    public override Func<string> Description => () => Other.HasDied() ? "- Live to the final 2" : $"- Get {Other.name} killed";
+    protected override bool RevealRole => RivalsRoles;
+    protected override ChatChannel Channel => ChatChannel.Rivals;
 
-    public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = ChatChannel.Rivals;
-
-    protected override void CheckWin()
+    protected override void CheckWin(List<byte> winnerIds)
     {
-        if (!RivalsWin(Player))
+        if (AllPlayers().Count(x => !x.HasDied()) <= 2 &&  IsWinningRival)
             return;
 
         WinState = WinLose.RivalWins;
-        Winner = true;
-        CallRpc(CustomRPC.WinLose, WinLose.RivalWins, this);
-    }
-
-    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
-    {
-        if (OtherRival != player)
-            return;
-
-        name += $" {ColoredSymbol}";
-
-        if (!RivalsRoles || revealed)
-            return;
-
-        var role = handler.CustomRole;
-        color = role.Color;
-        name += $"\n{role}";
-        revealed = true;
-        removeFromConsig = true;
+        winnerIds.Add(PlayerId);
     }
 }

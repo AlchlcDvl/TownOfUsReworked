@@ -204,96 +204,153 @@ public static class TaskSettings
 }
 
 [HeaderOption(MultiMenu.Main)]
+public static class BadGuysSettings
+{
+    [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Neutral, Faction.None, Faction.Illuminati)]
+    public static Faction MainBadGuys
+    {
+        get => GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : MainBadGuysPriv;
+        set
+        {
+            if (value == Faction.Compliance && !GameModifiers.OrderOfCompliance)
+                value = value < MainBadGuysPriv ? Faction.Intruder : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
+
+            if (value is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse && GameModifiers.PandoricaOpens)
+                value = Faction.Pandorica;
+
+            if (value == Faction.Pandorica && !GameModifiers.PandoricaOpens)
+                value = value < MainBadGuysPriv ? (GameModifiers.OrderOfCompliance ? Faction.Compliance : Faction.Intruder) : Faction.Apocalypse;
+
+            MainBadGuysPriv = value;
+        }
+    }
+    public static Faction MainBadGuysPriv = Faction.Intruder;
+
+    [ToggleOption]
+    public static bool OnlyMainBadGuys = false;
+
+    [ToggleOption]
+    public static bool MainBadGuysCanSabotage = false;
+
+    [ToggleOption]
+    public static bool GhostsCanSabotage = false;
+
+    public static Number BadGuyCount => MainBadGuys switch
+    {
+        Faction.Intruder => IntruderSettings.IntruderCount,
+        Faction.Syndicate => SyndicateSettings.SyndicateCount,
+        Faction.Apocalypse => ApocalypseSettings.ApocalypseCount,
+        _ => IntruderSettings.IntruderCount + SyndicateSettings.SyndicateCount + ApocalypseSettings.ApocalypseCount,
+    };
+}
+
+[HeaderOption(MultiMenu.Main)]
 public static class GameModifiers
 {
-    [StringOption<WhoCanVentOptions>]
+    [StringOption<WhoCanVentOptions>, Sorted(0)]
     public static WhoCanVentOptions WhoCanVent = WhoCanVentOptions.Default;
 
-    [StringOption<AnonVotes>]
+    [ToggleOption, Sorted(0)]
+    public static bool FinalTwoDisableVenting = false;
+
+    [StringOption<AnonVotes>, Sorted(0)]
     public static AnonVotes AnonymousVoting = AnonVotes.Enabled;
 
-    [StringOption<DisableSkipButtonMeetings>]
+    [StringOption<DisableSkipButtonMeetings>, Sorted(0)]
     public static DisableSkipButtonMeetings NoSkipping = DisableSkipButtonMeetings.Never;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool FirstKillShield = false;
 
-    [StringOption<WhoCanSeeFirstKillShield>]
+    [StringOption<WhoCanSeeFirstKillShield>, Sorted(0)]
     public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield = WhoCanSeeFirstKillShield.Everyone;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool FactionSeeRoles = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool VisualTasks = false;
 
-    [StringOption<PlayerNames>]
+    [StringOption<PlayerNames>, Sorted(0)]
     public static PlayerNames PlayerNames = PlayerNames.Obstructed;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool Whispers = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool WhispersAnnouncement = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool AppearanceAnimation = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool EnableAbilities = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool EnableModifiers = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool EnableDispositions = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool VentTargeting = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool CooldownInVent = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool DeadSeeEverything = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool ParallelMedScans = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool HideVentAnims = true;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool JaniCanMutuallyExclusive = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool IndicateReportedBodies = false;
 
-    [MultiSelectOption<RandomSpawning>]
+    [MultiSelectOption<RandomSpawning>, Sorted(0)]
     public static MultiSelectValue<RandomSpawning> RandomSpawns = "";
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool ShowKillerRoleColor = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool PurePlayers = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool NoVentingUncleanedVents = false;
 
     // TODO: Finish implementing these
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool IlluminatiUnleashed = false;
 
-    [ToggleOption]
-    public static bool PandoricaOpens = false;
+    [ToggleOption, Sorted(1)]
+    public static bool PandoricaOpens
+    {
+        get => PandoricaOpensPriv;
+        set
+        {
+            if (!value && Allied.AlliedFaction == AlliedFaction.Pandorica)
+                Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Random);
+            else if (value && Allied.AlliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse)
+                Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Pandorica);
+
+            PandoricaOpensPriv = value;
+        }
+    }
+    private static bool PandoricaOpensPriv = false;
 
     [ToggleOption]
     public static bool OrderOfCompliance = false;
 
-    [MultiSelectOption<ComplianceType>]
-    public static MultiSelectValue<ComplianceType> ComplianceType = new[] { Data.Enums.ComplianceType.Neophytes, Data.Enums.ComplianceType.Killers, Data.Enums.ComplianceType.Harbingers };
+    [MultiSelectOption<ComplianceType>(ForceAtLeastOne = true)]
+    public static MultiSelectValue<ComplianceType> ComplianceType = new[] { Data.Enums.ComplianceType.Neophytes, Data.Enums.ComplianceType.Killers };
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -442,12 +499,6 @@ public static class IntruderSettings
     [ToggleOption]
     public static bool IntrudersVent = true;
 
-    [ToggleOption]
-    public static bool IntrudersCanSabotage = true;
-
-    [ToggleOption]
-    public static bool GhostsCanSabotage = false;
-
     [NumberOption(0, 14, 1)]
     public static Number IntruderMin = 0;
 
@@ -477,10 +528,6 @@ public static class SyndicateSettings
     public static SyndicateVentOptions SyndicateVent = SyndicateVentOptions.Always;
 
     [ToggleOption]
-    private static bool AltImpsPriv = false;
-    public static bool AltImps => AltImpsPriv || IntruderSettings.IntruderCount == 0;
-
-    [ToggleOption]
     public static bool GlobalDrive = false;
 
     [ToggleOption]
@@ -491,6 +538,34 @@ public static class SyndicateSettings
 
     [NumberOption(0, 14, 1)]
     public static Number SyndicateMax = 1;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class ApocalypseSettings
+{
+    [NumberOption(0, 4, 1)]
+    public static Number ApocalypseCount = 1;
+
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number ApocalypseVision = 1.5f;
+
+    [ToggleOption]
+    public static bool ApocalypseFlashlight = false;
+
+    [NumberOption(0, 14, 1)]
+    public static Number ApocalypseMin = 0;
+
+    [NumberOption(0, 14, 1)]
+    public static Number ApocalypseMax = 1;
+
+    [ToggleOption]
+    public static bool ApocalypseVent = true;
+
+    [ToggleOption]
+    public static bool DirectSpawn = false;
+
+    [ToggleOption]
+    public static bool PlayersAlerted = true;
 }
 
 [AlignmentOption(ListSlot.CrewInvest)]
@@ -595,13 +670,6 @@ public static class CrewUtilityRoles
     public static RoleOptionData Revealer;
 }
 
-[AlignmentOption(ListSlot.NeutralApoc, true)]
-public static class NeutralApocalypseRoles
-{
-    [LayerOption("#424242FF", LayerEnum.Pestilence, true)]
-    public static RoleOptionData Pestilence;
-}
-
 [AlignmentOption(ListSlot.NeutralBen)]
 public static class NeutralBenignRoles
 {
@@ -641,13 +709,6 @@ public static class NeutralEvilRoles
 
     [LayerOption("#678D36FF", LayerEnum.Troll)]
     public static RoleOptionData Troll;
-}
-
-[AlignmentOption(ListSlot.NeutralHarb)]
-public static class NeutralHarbingerRoles
-{
-    [LayerOption("#CFFE61FF", LayerEnum.Plaguebearer)]
-    public static RoleOptionData Plaguebearer;
 }
 
 [AlignmentOption(ListSlot.NeutralKill)]
@@ -841,6 +902,26 @@ public static class SyndicateUtilityRoles
     public static RoleOptionData Banshee;
 }
 
+[AlignmentOption(ListSlot.ApocDeity, true)]
+public static class ApocalypseDeityRoles
+{
+    [LayerOption("#424242FF", LayerEnum.Pestilence, true)]
+    public static RoleOptionData Pestilence;
+
+    [LayerOption("#E1E4E4FF", LayerEnum.Void, true)]
+    public static RoleOptionData Void;
+}
+
+[AlignmentOption(ListSlot.ApocHarb)]
+public static class ApocalypseHarbingerRoles
+{
+    [LayerOption("#99007FFF", LayerEnum.Cultist, true)]
+    public static RoleOptionData Cultist;
+
+    [LayerOption("#CFFE61FF", LayerEnum.Plaguebearer)]
+    public static RoleOptionData Plaguebearer;
+}
+
 [AlignmentOption(colorHex: "#7F7F7FFF")]
 public static class Modifiers
 {
@@ -913,6 +994,9 @@ public static class Abilities
 
     [LayerOption("#FF0080FF", LayerEnum.Radar)]
     public static RoleOptionData Radar;
+
+    [LayerOption("#99007FFF", LayerEnum.Ritualist)]
+    public static RoleOptionData Ritualist;
 
     [LayerOption("#2160DDFF", LayerEnum.Ruthless)]
     public static RoleOptionData Ruthless;
@@ -1015,16 +1099,6 @@ public static class CrewSupportSettings
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
-public static class NeutralApocalypseSettings
-{
-    [ToggleOption]
-    public static bool DirectSpawn = false;
-
-    [ToggleOption]
-    public static bool PlayersAlerted = true;
-}
-
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralBenignSettings
 {
     [NumberOption(1, 14, 1)]
@@ -1051,16 +1125,6 @@ public static class NeutralEvilSettings
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
-public static class NeutralHarbingerSettings
-{
-    [NumberOption(1, 14, 1)]
-    public static Number MaxNh = 1;
-
-    [ToggleOption]
-    public static bool NhHaveImpVision = true;
-}
-
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
 public static class NeutralKillingSettings
 {
     [NumberOption(1, 14, 1)]
@@ -1071,6 +1135,9 @@ public static class NeutralKillingSettings
 
     [ToggleOption]
     public static bool KnowEachOther = false;
+
+    [ToggleOption]
+    public static bool WinSolo = false;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]
@@ -1144,6 +1211,16 @@ public static class SyndicateSupportSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxSSu = 1;
+}
+
+[HeaderOption(MultiMenu.AlignmentSubOptions)]
+public static class ApocalypseHarbingerSettings
+{
+    [NumberOption(1, 14, 1)]
+    public static Number MaxAh = 1;
+
+    [ToggleOption]
+    public static bool AhHaveImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]

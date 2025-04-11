@@ -3,6 +3,7 @@ namespace TownOfUsReworked.PlayerLayers;
 /// <summary>
 /// The main class that identifies the aspects attached to a player.
 /// </summary>
+/// <remarks>Adopted from the role system of Town of Us but restructured to be better.</remarks>
 public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
 {
     /// <summary>
@@ -56,14 +57,24 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public virtual bool CanVent => false;
 
     /// <summary>
+    /// Gets a value indicating whether or not the layer has won.
+    /// </summary>
+    public virtual bool HasWon => false;
+
+    /// <summary>
+    /// Gets the related wing related end state for the layer.
+    /// </summary>
+    public virtual WinLose EndState { get; }
+
+    /// <summary>
     /// Gets or sets the name of the layer.
     /// </summary>
     public string Name { get; set; }
 
-    // /// <summary>
-    // /// Gets or sets the handler for this layer.
-    // /// </summary>
-    // public LayerHandler Handler { get; set; }
+    /// <summary>
+    /// Gets or sets the handler for this layer.
+    /// </summary>
+    public LayerHandler Handler { get; set; }
 
     /// <summary>
     /// Gets or sets the player.
@@ -78,7 +89,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Gets or sets a value indicating whether or not the layer has been deinitialised.
     /// </summary>
-    protected bool Deinitialised { get; private set; }
+    protected bool Deinitialised { get; private set; } = true; // Start uninitialised
 
     /// <summary>
     /// Gets a value indicating whether or not the player is dead.
@@ -167,6 +178,9 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <remarks>Idk why, but the code for some reason fails to set the player in the constructor, so I was forced to make this and it works.</remarks>
     public void Start(PlayerControl player)
     {
+        if (!Deinitialised) // Already initialised
+            return;
+
         Name = TranslationManager.Translate($"Layer.{Type}");
         Player = player;
         Deinitialised = false;
@@ -181,7 +195,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// </summary>
     public void End()
     {
-        if (Deinitialised)
+        if (Deinitialised) // Already deinitialised
             return;
 
         ClearArrows();
@@ -356,7 +370,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Checks if this layer has achieved their win. Runs for the host.
     /// </summary>
-    protected virtual void CheckWin() {}
+    protected virtual void CheckWin(List<byte> winnerIds) {}
 
     /// <summary>
     /// Updates the player's name (called in <see cref="NameHandler.UpdateGameName"/>). Runs for everyone.
@@ -388,12 +402,12 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Checks and ends the game as needed.
     /// </summary>
-    public void GameEnd()
+    public void GameEnd(List<byte> winnerIds)
     {
         if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Deinitialised)
             return;
 
-        CheckWin();
+        CheckWin(winnerIds);
     }
 
     /// <summary>

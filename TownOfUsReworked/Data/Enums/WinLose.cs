@@ -2,6 +2,10 @@
 
 public enum WinLose : byte
 {
+    None,
+
+    NobodyWins,
+
     JesterWins,
     ExecutionerWins,
     CannibalWins,
@@ -10,18 +14,19 @@ public enum WinLose : byte
     GuesserWins,
     ActorWins,
     BountyHunterWins,
-    BetrayerWins,
 
     CrewWins,
     IntrudersWin,
     SyndicateWins,
+    IlluminatiWins,
+    ComplianceWins,
+    PandoricaWins,
+    ApocalypseWins,
 
     UndeadWins,
     CabalWins,
     CultWins,
     ReanimatedWins,
-
-    ApocalypseWins,
 
     ArsonistWins,
     CryomaniacWins,
@@ -30,10 +35,7 @@ public enum WinLose : byte
     MurdererWins,
     SerialKillerWins,
     WerewolfWins,
-
-    IlluminatiWins,
-    ComplianceWins,
-    PandoricaWins,
+    BetrayerWins,
 
     LoveWins,
     TaskmasterWins,
@@ -43,14 +45,8 @@ public enum WinLose : byte
     MafiaWins,
     DefectorWins,
 
-    NobodyWins,
-
     TaskRunnerWins,
 
     HunterWins,
-    HuntedWin,
-
-    EveryoneWins,
-
-    None
+    HuntedWin
 }

@@ -11,11 +11,11 @@ public sealed class TargetGen : BaseGen
             foreach (var ally in PlayerLayer.GetLayers<Allied>())
             {
                 var alliedRole = ally.Player.GetRole();
-                var factions = new List<Faction>() { Faction.Crew, Faction.Intruder, Faction.Syndicate };
+                var factions = new List<Faction>() { Faction.Crew, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse };
 
                 if (GameModifiers.PandoricaOpens)
                 {
-                    factions.RemoveAll(Faction.Intruder, Faction.Syndicate);
+                    factions.RemoveAll(Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
                     factions.Add(Faction.Pandorica);
                 }
 
@@ -36,23 +36,23 @@ public sealed class TargetGen : BaseGen
             {
                 var lover = lovers[i];
 
-                if (lover.OtherLover)
+                if (lover.Other)
                     continue;
 
                 var other = lovers[i + 1];
 
-                if (!other || other.OtherLover)
+                if (!other || other.Other)
                     continue;
 
-                lover.OtherLover = other.Player;
-                other.OtherLover = lover.Player;
+                lover.Other = other.Player;
+                other.Other = lover.Player;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, lover, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
             }
 
-            lovers.Where(lover => !lover.OtherLover).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
+            lovers.Where(lover => !lover.Other).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Lovers Set");
         }
 
@@ -65,23 +65,23 @@ public sealed class TargetGen : BaseGen
             {
                 var rival = rivals[i];
 
-                if (rival.OtherRival)
+                if (rival.Other)
                     continue;
 
                 var other = rivals[i + 1];
 
-                if (!other || other.OtherRival)
+                if (!other || other.Other)
                     continue;
 
-                rival.OtherRival = other.Player;
-                other.OtherRival = rival.Player;
+                rival.Other = other.Player;
+                other.Other = rival.Player;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, rival, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
             }
 
-            rivals.Where(rival => !rival.OtherRival).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
+            rivals.Where(rival => !rival.Other).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Rivals Set");
         }
 
@@ -94,23 +94,23 @@ public sealed class TargetGen : BaseGen
             {
                 var link = linked[i];
 
-                if (link.OtherLink)
+                if (link.Other)
                     continue;
 
                 var other = linked[i + 1];
 
-                if (!other || other.OtherLink)
+                if (!other || other.Other)
                     continue;
 
-                link.OtherLink = other.Player;
-                other.OtherLink = link.Player;
+                link.Other = other.Player;
+                other.Other = link.Player;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, link, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Linked = {link.PlayerName} & {other.PlayerName}");
             }
 
-            linked.Where(link => !link.OtherLink).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
+            linked.Where(link => !link.Other).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Linked Set");
         }
 

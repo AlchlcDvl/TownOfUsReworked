@@ -54,8 +54,8 @@ public sealed class Necromancer : Neophyte, IReviver
     private CustomButton ManaButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Necromancer;
-    public override LayerEnum Type => LayerEnum.Necromancer;
-    public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
+    public override LayerEnum Type { get; } = LayerEnum.Necromancer;
+    public override Func<string> StartText { get; } = () => "Resurrect The Dead Into Doing Your Bidding";
     public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
     public override AttackEnum AttackVal => AttackEnum.Basic;
@@ -95,7 +95,7 @@ public sealed class Necromancer : Neophyte, IReviver
         if (!Lovers.BothLoversDie || !player.Is<Lovers>(out var lovers))
             return;
 
-        var lover = lovers.OtherLover;
+        var lover = lovers.Other;
         var loverRole = lover.GetRole();
         loverRole.DeathReason = DeathReasonEnum.Revived;
         loverRole.KilledBy = " By " + PlayerName;

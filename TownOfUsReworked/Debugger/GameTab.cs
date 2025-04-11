@@ -45,6 +45,15 @@ public sealed class GameTab : BaseTab
             DefaultOutfitAll();
         }
 
+        if (GUILayout.Button("Reset Self"))
+        {
+            CustomPlayer.Local.MyPhysics.ResetAnimState();
+            CustomPlayer.Local.MyPhysics.ResetMoveState();
+        }
+
+        if (GUILayout.Button("Kill Animation"))
+            HUD().KillOverlay.ShowKillAnimation(AllPlayers().Random().Data, CustomPlayer.Local.Data);
+
         if (GUILayout.Button("Complete Tasks"))
             CustomPlayer.Local.myTasks.ForEach(x => CustomPlayer.Local.RpcCompleteTask(x.Id));
 

@@ -50,9 +50,7 @@ public static class AllInfo
         new(LayerEnum.Juggernaut, Alignment.Killing, Faction.Neutral),
         new(LayerEnum.Murderer, Alignment.Killing, Faction.Neutral),
         new(LayerEnum.Necromancer, Alignment.Neophyte, Faction.Neutral),
-        new(LayerEnum.Pestilence, Alignment.Apocalypse, Faction.Neutral),
         new(LayerEnum.Phantom, Alignment.Proselyte, Faction.Neutral),
-        new(LayerEnum.Plaguebearer, Alignment.Harbinger, Faction.Neutral),
         new(LayerEnum.SerialKiller, Alignment.Killing, Faction.Neutral),
         new(LayerEnum.Survivor, Alignment.Benign, Faction.Neutral),
         new(LayerEnum.Thief, Alignment.Benign, Faction.Neutral),
@@ -95,6 +93,9 @@ public static class AllInfo
         new(LayerEnum.Stalker, Alignment.Support, Faction.Syndicate),
         new(LayerEnum.Timekeeper, Alignment.Disruption, Faction.Syndicate),
         new(LayerEnum.Warper, Alignment.Support, Faction.Syndicate, true),
+
+        new(LayerEnum.Pestilence, Alignment.Deity, Faction.Apocalypse),
+        new(LayerEnum.Plaguebearer, Alignment.Harbinger, Faction.Apocalypse, true),
 
         new(LayerEnum.Hunter, Alignment.HideAndSeek, Faction.GameMode),
         new(LayerEnum.Hunted, Alignment.HideAndSeek, Faction.GameMode),
@@ -202,7 +203,7 @@ public static class AllInfo
         new(Alignment.Benign),
         new(Alignment.Proselyte),
         new(Alignment.Harbinger),
-        new(Alignment.Apocalypse),
+        new(Alignment.Deity),
         new(Alignment.Disruption),
         new(Alignment.Power),
 

@@ -46,7 +46,7 @@ public static class PerformReport
 {
     public static bool ReportPressed;
 
-    public static bool Prefix() => ReportPressed = IsInGame() && CustomPlayer.Local.GetClosestBody(maxDistance: Ship().CalculateLightRadius(CustomPlayer.Local.Data));
+    public static bool Prefix() => ReportPressed = IsInGame() && CustomPlayer.Local.GetClosestBody(maxDistance: CustomPlayer.Local.lightSource.viewDistance);
 
     public static void Postfix() => ReportPressed = false;
 }
@@ -140,9 +140,6 @@ public static class Blocked
         VentBlock.SetActive(BlockExposed);
         ReportBlock.SetActive(BlockExposed);
 
-        if (!IsHnS())
-            __instance.KillButton.ToggleVisible(false);
-
         if (!__instance.ImpostorVentButton.currentTarget || BlockExposed)
             __instance.ImpostorVentButton.SetDisabled();
         else
@@ -150,7 +147,7 @@ public static class Blocked
 
         __instance.ImpostorVentButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.ToggleVisible((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
-        var closestDead = handler.CustomModifier is Shy ? null : CustomPlayer.Local.GetClosestBody(maxDistance: Ship().CalculateLightRadius(CustomPlayer.Local.Data));
+        var closestDead = handler.CustomModifier is Shy ? null : CustomPlayer.Local.GetClosestBody(maxDistance: CustomPlayer.Local.lightSource.viewDistance);
 
         if (!closestDead || CustomPlayer.Local.CannotUse() || BlockExposed)
             __instance.ReportButton.SetDisabled();

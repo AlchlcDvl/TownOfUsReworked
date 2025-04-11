@@ -8,24 +8,27 @@ public sealed class CustomPlayerMenu : CustomMenu
     private PlayerBodyExclusion Exception { get; }
     private PlayerMenuType SelectType { get; }
     private int MaxSelected { get; }
+    private UColor SelectionColor { get; }
     private Dictionary<byte, ShapeshifterPanel> PlayerToPanel { get; } = [];
 
     private PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
-    private CustomPlayerMenu(PlayerControl owner, PlayerMenuType type, PlayerBodyExclusion exception) : base(owner, MenuType.Player)
+    private CustomPlayerMenu(PlayerControl owner, PlayerMenuType type, PlayerBodyExclusion exception, UColor selectionColor) : base(owner, MenuType.Player)
     {
         Exception = exception ?? BlankFalse;
+        SelectionColor = selectionColor;
         SelectType = type;
     }
 
-    public CustomPlayerMenu(PlayerControl owner, PlayerMultiSelect multiClick, PlayerBodyExclusion exception = null, int max = 2) : this(owner, PlayerMenuType.MultiSelect, exception)
+    public CustomPlayerMenu(PlayerControl owner, PlayerMultiSelect multiClick, UColor selectionColor, PlayerBodyExclusion exception = null, int max = 2) : this(owner, PlayerMenuType.MultiSelect,
+        exception, selectionColor)
     {
         Click = BlankVoid;
         MultiClick = multiClick ?? BlankFalse;
         MaxSelected = max;
     }
 
-    public CustomPlayerMenu(PlayerControl owner, PlayerSelect click, PlayerBodyExclusion exception = null) : this(owner, PlayerMenuType.Single, exception)
+    public CustomPlayerMenu(PlayerControl owner, PlayerSelect click, UColor selectionColor, PlayerBodyExclusion exception = null) : this(owner, PlayerMenuType.Single, exception, selectionColor)
     {
         Click = click ?? BlankVoid;
         MultiClick = BlankFalse;
@@ -46,7 +49,7 @@ public sealed class CustomPlayerMenu : CustomMenu
         while (Selected.Count > MaxSelected)
             Selected.TakeFirst();
 
-        PlayerToPanel.ForEach((x, y) => y.Background.color = Selected.Contains(x) ? UColor.red : UColor.white);
+        PlayerToPanel.ForEach((x, y) => y.Background.color = Selected.Contains(x) ? SelectionColor : UColor.white);
 
         if (SelectType != PlayerMenuType.Single && !shouldClose && Selected.Count < MaxSelected)
             return;
@@ -66,7 +69,13 @@ public sealed class CustomPlayerMenu : CustomMenu
             var player = targets[i];
             var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
             panel.SetPlayer(i, player.Data, (Action)(() => Clicked(player)));
-            panel.Background.color = Selected.Contains(player.PlayerId) ? UColor.red : UColor.white;
+            panel.Background.color = Selected.Contains(player.PlayerId) ? SelectionColor : UColor.white;
+            var button = panel.transform.GetChild(5).GetComponent<PassiveButton>();
+            var highlight = button.transform.GetChild(0);
+            var rend = highlight.GetComponent<SpriteRenderer>();
+            highlight.GetChild(0).gameObject.SetActive(false); // TODO: Implement role icons into this whenever possible
+            button.OverrideOnMouseOverListeners(() => rend.color = SelectionColor);
+            button.OverrideOnMouseOutListeners(() => rend.color = UColor.clear);
             (panel.NameText.text, panel.NameText.color) = (player.NameText().text, player.NameText().color);
             __instance.potentialVictims.Add(panel);
             list2.Add(panel.Button);
