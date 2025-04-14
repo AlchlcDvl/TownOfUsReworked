@@ -510,7 +510,7 @@ public static class MiscUtils
         (minInclusive ? num >= min : num > min) &&
         (maxInclusive ? num <= max : num < max);
 
-    private static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
+    public static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 
     public static bool IsInRange(this byte num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 
@@ -1400,6 +1400,10 @@ public static class MiscUtils
     }
 
     public static bool IsAny<T>(this T item, params T[] items) => items.Contains(item);
+
+    // public static bool StartsWithAny(this string item, params string[] items) => items.Any(item.StartsWith);
+
+    public static bool EndsWithAny(this string item, params string[] items) => items.Any(item.EndsWith);
 
     public static bool IsAll<T>(this T item, params T[] items) => items.All(x => Equals(x, item));
 

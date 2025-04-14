@@ -89,10 +89,7 @@ public sealed class AbilityGen : BaseGen
                 LayerEnum.Hitman => playerList.FirstOrDefault(x => x.Is(Faction.Intruder) && (!x.Is<Consigliere>() || Consigliere.ConsigInfo != ConsigInfo.Role)),
                 LayerEnum.Ninja => playerList.FirstOrDefault(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse || x.Is(Alignment.Neophyte) ||
                     x.Is(Alignment.Killing) || x.Is<Corrupted>()),
-                LayerEnum.Torch => playerList.FirstOrDefault(x => !(x.GetFaction() is Faction.Syndicate or Faction.Intruder or Faction.Illuminati or Faction.Pandorica or Faction.Apocalypse ||
-                    (x.Is(Faction.Neutral) && (!NeutralSettings.LightsAffectNeutrals || (x.Is(Alignment.Killing) && !NeutralKillingSettings.NkHaveImpVision) || (x.Is(Alignment.Neophyte) &&
-                    !NeutralNeophyteSettings.NnHaveImpVision) || (x.Is(Alignment.Evil) && !NeutralEvilSettings.NeHaveImpVision) || (x.Is(Alignment.Harbinger) &&
-                    !ApocalypseHarbingerSettings.AhHaveImpVision))))),
+                LayerEnum.Torch => playerList.FirstOrDefault(x => x.GetRole().AffectedByLights),
                 LayerEnum.Underdog => playerList.FirstOrDefault(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica or Faction.Compliance or
                     Faction.Apocalypse),
                 LayerEnum.Tunneler => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),

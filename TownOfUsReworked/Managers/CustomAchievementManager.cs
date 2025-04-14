@@ -25,11 +25,11 @@ public static class CustomAchievementManager
         new("RekindledPower", eog: true), // Revive a Crew Sovereign role as either a Necromancer or an Altruist (or a Retributionist-Altruist)
         new("EerieSilence", eog: true), // Blackmail a silenced player OR Silence a blackmailed player
         new("WhoNeedsHorses"), // Win as a Harbinger without turning into an Apocalypse role
-        new("Silence"), // Win as an Intruder without calling a sabotage
+        new("TooQuiet"), // Win as a member of a sabotaging faction without calling a sabotage
         new("LastLaugh"), // Win as a neutral evil role with less than 5 players remaining
         new("TotalAnnihilation"), // Win as an Arsonist by only igniting once
         new("Martyrdom"), // Be the first to die as a Troll
-        new("Perfection"), // Win a game without losing a single member of your team
+        new("BloodOfTheCovenant"), // Win a game without losing a single member of your team
         new("ImTheCaptainNow"), // Shift with a Mayor as the Shifter
         new("Persuasive"), // Reveal as the Mayor by round 3 or earlier
         new("JustPolitics"), // Win as a Corrupted Mayor
@@ -59,7 +59,7 @@ public static class CustomAchievementManager
         }
 
         // Adding in achievements for each type of win (an achievement for 5 wins for each), I was just too lazy to add them all manually to the list
-        LayerDictionary.Keys.ForEach(layer => AllAchievements.Add(new($"LayerWins.{layer}")));
+        LayerDictionary.Keys.Where(x => x != LayerEnum.Assassin).ForEach(layer => AllAchievements.Add(new($"LayerWins.{layer}")));
 
         foreach (var map in Enum.GetValues<MapEnum>())
         {

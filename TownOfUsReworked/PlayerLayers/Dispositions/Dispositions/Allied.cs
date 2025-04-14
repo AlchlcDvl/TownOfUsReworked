@@ -9,10 +9,13 @@ public sealed class Allied : Disposition
         get => AlliedFactionPriv;
         set
         {
+            if (value == AlliedFaction.Compliance && (!GameModifiers.OrderOfCompliance || GameModifiers.ComplianceType == ComplianceType.Killers))
+                value = AlliedFactionPriv < value ? AlliedFaction.Random : (GameModifiers.PandoricaOpens ? AlliedFaction.Pandorica : AlliedFaction.Apocalypse);
+
             if (value is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse && GameModifiers.PandoricaOpens)
                 value = AlliedFaction.Pandorica;
             else if (value is AlliedFaction.Pandorica && !GameModifiers.PandoricaOpens)
-                value = AlliedFactionPriv == AlliedFaction.Apocalypse ? AlliedFaction.Random : AlliedFaction.Apocalypse;
+                value = AlliedFactionPriv < value ? AlliedFaction.Random : AlliedFaction.Apocalypse;
 
             AlliedFactionPriv = value;
         }

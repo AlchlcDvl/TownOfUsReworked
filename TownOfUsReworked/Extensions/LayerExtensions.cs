@@ -216,6 +216,9 @@ public static class LayerExtensions
 
     public static bool ApocalypseSided(this PlayerControl player) => player.Is(Faction.Apocalypse, Faction.Illuminati, Faction.Pandorica) && !player.Is<Apocalypse>();
 
+    public static bool ComplianceSided(this PlayerControl player) => player.Is(Faction.Compliance) && ((!player.Is<NKilling>() && GameModifiers.ComplianceType == ComplianceType.Killers) ||
+        (!player.Is<Neophyte>() && GameModifiers.ComplianceType == ComplianceType.Neophytes));
+
     public static bool Last(PlayerControl player) => Utils.GameStates.Last(player.GetFaction());
 
     public static bool CanKill(this PlayerControl player)
@@ -418,11 +421,12 @@ public static class LayerExtensions
         var syndicateFlag = role.Faction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is Syndicate { IsPromoted: false, HoldsDrive: false };
         var apocalypseFlag = role.Faction is Faction.Apocalypse or Faction.Illuminati or Faction.Pandorica && role is { Alignment: Alignment.Harbinger };
         var changerFlag = player.GetDisposition() is FactionChanger { SheriffSwap: true, Turned: true };
-        var nkFlag = role.Alignment is Alignment.Killing && !Sheriff.NeutKillingRed;
-        var neFlag = role.Alignment is Alignment.Evil && !Sheriff.NeutEvilRed;
+        var nkFlag = role.Alignment is Alignment.Killing && Sheriff.NeutKillingRed;
+        var neFlag = role.Alignment is Alignment.Evil && Sheriff.NeutEvilRed;
+        var nnFlag = role.Alignment is Alignment.Neophyte && Sheriff.NeutNeophyteRed;
         var framedFlag = player.IsFramed();
         var compFlag = role.Faction == Faction.Compliance;
-        return intruderFlag || syndicateFlag || apocalypseFlag || changerFlag || nkFlag || neFlag || framedFlag || compFlag;
+        return intruderFlag || syndicateFlag || apocalypseFlag || changerFlag || nkFlag || neFlag || nnFlag || framedFlag || compFlag;
     }
 
     public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) ? lovers.Other : null;
@@ -764,19 +768,19 @@ public static class LayerExtensions
         if (Syndicate.DriveHolder.HasDied())
         {
             if (!all.TryFinding(x => x.IsPromoted, out chosen))
-                chosen = all.Find(x => x.Alignment == Alignment.Disruption && !x.IsSidekick);
+                chosen = all.Find(x => x is { Alignment: Alignment.Disruption, IsUnderling: false });
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.Support && !x.IsSidekick);
+                chosen = all.Find(x => x is { Alignment: Alignment.Support, IsUnderling: false });
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.Power && !x.IsSidekick);
+                chosen = all.Find(x => x is { Alignment: Alignment.Power, IsUnderling: false });
 
             if (!chosen)
-                chosen = all.Find(x => x.Alignment == Alignment.Killing && !x.IsSidekick);
+                chosen = all.Find(x => x is { Alignment: Alignment.Killing, IsUnderling: false });
 
             if (!chosen)
-                chosen = all.Find(x => x is Anarchist or Rebel || x.IsSidekick);
+                chosen = all.Find(x => x is Anarchist or Rebel || x.IsUnderling);
         }
 
         Syndicate.DriveHolder = chosen?.Player;
@@ -789,8 +793,9 @@ public static class LayerExtensions
         var converted = PlayerById(target);
         var converter = PlayerById(convert);
         var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.Neophyte));
+        var comp = GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType == ComplianceType.Neophytes;
 
-        if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts)
+        if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts || (comp && converted.GetFaction() is not (Faction.Crew or Faction.Neutral)))
         {
             if (AmongUsClient.Instance.AmHost)
                 Interact(converter, converted, true, true);
@@ -829,7 +834,7 @@ public static class LayerExtensions
         }
 
         role1.SubFaction = sub;
-        role1.Faction = Faction.Neutral;
+        role1.Faction = comp ? Faction.Compliance : Faction.Neutral;
         RoleGenManager.Convertible--;
 
         if (converted.AmOwner)

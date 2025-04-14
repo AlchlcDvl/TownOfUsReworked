@@ -18,7 +18,7 @@ public static class TranslationManager
     private static string Translate(string id, (string Key, string Value)[] toReplace, string language)
     {
         id = id.ToLower();
-        language ??= DataManager.Settings.Language.CurrentLanguage.ToString(); // Get the current language if none is provided
+        language ??= DataManager.Settings.Language.CurrentLanguage.ToString().ToLower(); // Get the current language if none is provided
 
         try
         {
@@ -52,7 +52,7 @@ public static class TranslationManager
         MissingIds.Add(id);
     }
 
-    private static StringNames GetNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
+    private static StringNames AddNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
         id = id.ToLower();
 
@@ -130,6 +130,6 @@ public static class TranslationManager
             return value;
 
         return VanillaToCustomMap.TryGetValue(vanillaName, out value) ? // Contingency in case the value could not be found
-            value : GetNextName(id, vanillaName, customName, replacements); // Add and return the new id if it could not be found
+            value : AddNextName(id, vanillaName, customName, replacements); // Add and return the new id if it could not be found
     }
 }

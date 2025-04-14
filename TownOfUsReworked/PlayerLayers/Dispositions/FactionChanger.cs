@@ -8,8 +8,8 @@ public abstract class FactionChanger : Disposition
     protected Role PlayerRole { get; private set; }
 
     public abstract bool SheriffSwap { get; }
+    public abstract bool RevealerReveals { get; }
     protected abstract bool SnitchReveals { get; }
-    protected abstract bool RevealerReveals { get; }
 
     protected override void Init()
     {

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Mayor)]
-public sealed class Mayor : Crew, IRevealer
+public sealed class Mayor : Crew, ISovereign
 {
     [NumberOption(1, 10, 1)]
     public static Number MayorVoteCount = 2;
@@ -40,6 +40,9 @@ public sealed class Mayor : Crew, IRevealer
     {
         CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
         PublicReveal(Player);
+
+        if (!MayorDirectSpawn && MeetingPatches.MeetingCount <= 3)
+            CustomAchievementManager.UnlockAchievement("Persuasive");
     }
 
     private bool Usable() => !RoundOne && !GetLayers<Mayor>().Any(x => !x.TrulyDead && x.Revealed);
@@ -51,6 +54,4 @@ public sealed class Mayor : Crew, IRevealer
         color = Color;
         removeFromConsig = true;
     }
-
-    public void OnReveal() {}
 }

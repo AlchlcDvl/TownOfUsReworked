@@ -14,10 +14,11 @@ public static class OnGameEndPatches
     {
         public static void Postfix()
         {
+            var players = AllPlayers();
             PlayerRoles.Clear();
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
-            AllPlayers().ForEach(x => AddSummaryInfo(x));
+            players.ForEach(x => AddSummaryInfo(x));
             EndGameResult.CachedGameOverReason = (GameOverReason)9;
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
@@ -59,8 +60,15 @@ public static class OnGameEndPatches
                     CustomAchievementManager.UnlockAchievement("JustPolitics");
             }
 
-            if (AllPlayers().Count(x => !x.HasDied()) == 1 && !CustomPlayer.Local.HasDied())
+            if (players.Count(x => !x.HasDied()) == 1 && !CustomPlayer.Local.HasDied())
                 CustomAchievementManager.UnlockAchievement("LastOneStanding");
+
+            if ((WinState is (> WinLose.BountyHunterWins and < WinLose.ArsonistWins) or WinLose.HuntedWin &&! players.Any(x => x.Is(CustomPlayer.Local.GetFaction()) && x.HasDied())) ||
+                (WinState is > WinLose.ReanimatedWins and < WinLose.LoveWins && !players.Any(x => x.Is(CustomPlayer.Local.GetRole().Type) && x.HasDied()) && NeutralKillingSettings.WinSolo) ||
+                (WinState == WinLose.HuntedWin && GameModeSettings.HnSMode == HnSMode.Classic && !players.Any(x => x.Is<Hunted>(out var hunted) && !hunted.Alive)))
+            {
+                CustomAchievementManager.UnlockAchievement("BloodOfTheCovenant");
+            }
         }
     }
 
@@ -317,17 +325,14 @@ public static class OnGameEndPatches
 
         if (role!.Type != LayerEnum.NoneRole)
         {
-            if (role.RoleHistory.Any())
+            foreach (var role2 in role.RoleHistory)
             {
-                foreach (var role2 in role.RoleHistory)
-                {
-                    var part = TranslationManager.Translate($"Layer.{role2}");
+                var part = TranslationManager.Translate($"Layer.{role2}");
 
-                    if (LayerDictionary.TryGetValue(role2, out var entry))
-                        summary += $"<color=#{entry.Color.ToHtmlStringRGBA()}>{part}</color> → ";
+                if (LayerDictionary.TryGetValue(role2, out var entry))
+                    summary += $"<color=#{entry.Color.ToHtmlStringRGBA()}>{part}</color> → ";
 
-                    cache += $"{part} → ";
-                }
+                cache += $"{part} → ";
             }
 
             summary += $"{role.ColorString}{role.Name}</color>";

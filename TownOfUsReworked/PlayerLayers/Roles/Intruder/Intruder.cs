@@ -1,11 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public abstract class Intruder : Role
+public abstract class Intruder : Role, IPromoter
 {
     protected CustomButton KillButton { get; private set; }
-    public bool IsMafioso { get; set; }
+    public bool IsUnderling { get; set; }
     public bool IsPromoted { get; set; }
     public Godfather Promoter { get; set; }
+    public LayerEnum UnderlingType { get; } = LayerEnum.Mafioso;
+    public LayerEnum PromoterType { get; } = LayerEnum.Godfather;
+    public float PromotionModifier { get; } = Godfather.GfPromotionCdDecrease;
 
     protected string CommonAbilities => "<#FF1919FF>- You can kill players</color>" + (Player.CanSabotage() ? "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "");
 
@@ -35,13 +38,14 @@ public abstract class Intruder : Role
     {
         base.UpdatePlayer();
 
-        if (!IsPromoted && IsMafioso && (Promoter?.Dead ?? false))
+        if (!IsPromoted && IsUnderling && (Promoter?.Dead ?? false))
         {
             IsPromoted = true;
-            IsMafioso = false;
+            IsUnderling = false;
             Promoter = null;
             Name = TranslationManager.Translate("Layer.Godfather");
             Alignment = Alignment.Head;
+            RoleHistory.Add(LayerEnum.Mafioso);
         }
     }
 
@@ -50,5 +54,5 @@ public abstract class Intruder : Role
     private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
-    private bool KillUsable() => !IsMafioso;
+    private bool KillUsable() => !IsUnderling;
 }

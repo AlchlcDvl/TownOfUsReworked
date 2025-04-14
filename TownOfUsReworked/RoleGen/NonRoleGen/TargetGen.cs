@@ -19,6 +19,9 @@ public sealed class TargetGen : BaseGen
                     factions.Add(Faction.Pandorica);
                 }
 
+                if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType != ComplianceType.Killers)
+                    factions.Add(Faction.Compliance);
+
                 var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());
                 ally.Side = alliedRole.Faction = faction;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);

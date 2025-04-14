@@ -77,7 +77,7 @@ public static class Interactions
             {
                 if (bypass)
                     source.RpcMurderPlayer(target, reason, lunge);
-                else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse)
+                else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction is not (Faction.Crew or Faction.Neutral or Faction.GameMode))
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
                     CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fanatic, false, faction);
@@ -103,23 +103,16 @@ public static class Interactions
                         source.RpcMurderPlayer(target, reason);
                 }
             }
-            else
+            else if (target.IsShielded())
             {
-                if (attack > AttackEnum.None)
-                {
-                    CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
-                    CustomAchievementManager.RpcUnlockAchievement(target, "Resilient");
-                }
-
-                if (target.IsShielded())
-                {
-                    RpcBreakShield(target);
-                    abilityUsed = false;
-                }
+                RpcBreakShield(target);
+                abilityUsed = false;
             }
         }
 
-        if (TargetShouldAttack(source, target, isAttack && !bypass))
+        var targetAttack = TargetShouldAttack(source, target, isAttack && !bypass);
+
+        if (targetAttack)
         {
             attack = target.GetAttackValue(source);
             defense = source.GetDefenseValue(target);
@@ -169,6 +162,21 @@ public static class Interactions
 
         if (target.CrusadeActive())
             Crusader.RadialCrusade(target);
+
+        if (!delayed)
+        {
+            if (isAttack && !target.HasDied())
+            {
+                CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
+                CustomAchievementManager.RpcUnlockAchievement(target, "Resilient");
+            }
+
+            if (targetAttack && !source.HasDied())
+            {
+                CustomStatsManager.RpcIncrementStat(target, CustomStatsManager.StatsHitImmune);
+                CustomAchievementManager.UnlockAchievement("Resilient");
+            }
+        }
 
         return abilityUsed ? CooldownType.Reset : CooldownType.Fail;
     }

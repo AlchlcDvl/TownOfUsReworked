@@ -25,6 +25,7 @@ public sealed class Monarch : Crew, ISovereign
     private CustomButton KnightingButton { get; set; }
     public List<byte> ToBeKnighted { get; } = [];
     public List<byte> Knighted { get; } = [];
+    public bool Revealed { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Monarch;
     public override LayerEnum Type { get; } = LayerEnum.Monarch;
@@ -54,7 +55,7 @@ public sealed class Monarch : Crew, ISovereign
             ToBeKnighted.Add(target.PlayerId);
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
 
-            if (target.Is<IRevealer>(out var rev) && !rev.Revealed)
+            if (target.Is<ISovereign>(out var rev) && !rev.Revealed)
                 CustomAchievementManager.UnlockAchievement("HiddenAlliance");
         }
 
@@ -68,7 +69,7 @@ public sealed class Monarch : Crew, ISovereign
         var id = reader.ReadByte();
         ToBeKnighted.Add(id);
 
-        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.Is<IRevealer>(out var rev) && !rev.Revealed)
+        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.Is<ISovereign>(out var rev) && !rev.Revealed)
             CustomAchievementManager.UnlockAchievement("HiddenAlliance");
     }
 

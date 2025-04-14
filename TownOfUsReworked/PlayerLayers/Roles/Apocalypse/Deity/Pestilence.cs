@@ -26,12 +26,7 @@ public sealed class Pestilence : Deity
         base.Init();
         ObliterateButton ??= new(this, new SpriteName("Obliterate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",
             new Cooldown(ObliterateCd));
-
-        foreach (var player in AllPlayers())
-        {
-            if (player.GetAlignment() is not (Alignment.Deity or Alignment.Harbinger))
-                Infected[player.PlayerId] = 1;
-        }
+        AllPlayers().Where(x => !x.Is<Apocalypse>()).ForEach(x => Infected[x.PlayerId] = 1);
     }
 
     private void Obliterate(PlayerControl target)

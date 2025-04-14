@@ -130,6 +130,9 @@ public static class CheckEndGame
 
     private static void CheckSubFactionWin(List<byte> winnerIds)
     {
+        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType == ComplianceType.Neophytes)
+            return;
+
         var winner = SubFactionsToKill.FirstOrDefault(CheckSubFactionWin);
 
         if (winner != SubFaction.None)

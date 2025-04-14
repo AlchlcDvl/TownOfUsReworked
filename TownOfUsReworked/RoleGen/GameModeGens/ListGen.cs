@@ -116,5 +116,7 @@ public sealed class ListGen : BaseRoleGen
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
     }
 
-    public static bool CannotAdd(LayerEnum id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryOption.IsBanned(id.CastToSlot());
+    public static bool CannotAdd(LayerEnum id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryOption.IsBanned(id.CastToSlot()) || (id == LayerEnum.Anarchist &&
+        GameModeSettings.BanAnarchist) || (id == LayerEnum.Crewmate && GameModeSettings.BanCrewmate) || (id == LayerEnum.Impostor && GameModeSettings.BanImpostor) || (id == LayerEnum.Murderer &&
+        GameModeSettings.BanMurderer) || (id == LayerEnum.Cultist && GameModeSettings.BanCultist);
 }

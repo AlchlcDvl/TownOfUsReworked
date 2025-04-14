@@ -164,15 +164,15 @@ public abstract class NameHandler : MonoBehaviour
 
             localDisp.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
 
-            if (playerHandler.CustomAbility is Snitch snitch && (localRole.Faction is Faction.Syndicate or Faction.Intruder or Faction.Compliance or Faction.Illuminati or Faction.Pandorica ||
-                (localRole.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals)) && (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
+            if (playerHandler.CustomAbility is Snitch snitch && (localRole.Faction is Faction.Syndicate or Faction.Intruder or Faction.Compliance or Faction.Illuminati or Faction.Pandorica or
+                Faction.Apocalypse || (localRole.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals)) && (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
             {
                 color = snitch.Color;
                 name += (name.Contains('\n') ? " " : "\n") + snitch.Name;
                 revealed = true;
             }
 
-            if (localRole.Faction == role.Faction && role.Faction is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica or Faction.Compliance)
+            if (localRole.Faction == role.Faction && role.Faction is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica or Faction.Compliance or Faction.Apocalypse)
             {
                 if (GameModifiers.FactionSeeRoles && !revealed)
                 {
@@ -184,10 +184,9 @@ public abstract class NameHandler : MonoBehaviour
                 else
                     color = role.FactionColor;
 
-                if (player.SyndicateSided() || player.IntruderSided())
-                    name += $" {disp.ColoredSymbol}";
-                else
-                    name += $" {role.FactionColorString}ξ</color>";
+                name += player.SyndicateSided() || player.IntruderSided() || player.ApocalypseSided() || player.ComplianceSided()
+                    ? $" {disp.ColoredSymbol}"
+                    : $" {role.FactionColorString}ξ</color>";
             }
 
             localHandler.CustomAbility.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
@@ -296,18 +295,18 @@ public abstract class NameHandler : MonoBehaviour
         {
             if (Revealer.RevealerRevealsRoles)
             {
-                if (role.Faction is Faction.Syndicate or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica || (role.Faction == Faction.Neutral &&
-                    Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
+                if (role.Faction is Faction.Syndicate or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica or Faction.Apocalypse || (role.Faction ==
+                    Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
                 {
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
                 }
             }
-            else if (role.Faction is Faction.Syndicate or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica || (role.Faction == Faction.Neutral &&
-                Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
+            else if (role.Faction is Faction.Syndicate or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica or Faction.Apocalypse || (role.Faction ==
+                Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
             {
-                if (!((disp is Traitor && Revealer.RevealerRevealsTraitor) || (disp is Fanatic && Revealer.RevealerRevealsFanatic)))
+                if (disp is not FactionChanger { RevealerReveals: false })
                 {
                     color = role.FactionColor;
                     name += $"\n{role.FactionName}";

@@ -128,7 +128,7 @@ public abstract class Assassin : Ability, IGuesser
 
             if (IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
             {
-                foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Mafioso or
+                foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or
                     LayerEnum.Impostor)))
                 {
                     if (RoleGenManager.GetSpawnItem(layer).IsActive())
@@ -147,7 +147,7 @@ public abstract class Assassin : Ability, IGuesser
             if (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
+            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
             {
                 if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
@@ -268,10 +268,7 @@ public abstract class Assassin : Ability, IGuesser
             var layerFlag = player.GetLayers().Any(x => x.Type == guess);
             var subfactionFlag = $"{player.GetSubFaction()}" == $"{guess}";
             var framedFlag = player.IsFramed();
-            var mafiosoFlag = player.Is<Intruder>(out var intruder) && intruder.IsMafioso;
-            var gfFlag = (intruder?.IsPromoted ?? false) && guess == LayerEnum.Godfather;
-            var sidekickFlag = player.Is<Syndicate>(out var syn) && syn.IsSidekick;
-            var rebFlag = (syn?.IsPromoted ?? false) && guess == LayerEnum.Rebel;
+            var promoterFlag = player.Is<IPromoter>(out var promoter) && ((promoter.UnderlingType == guess && promoter.IsUnderling) || (promoter.PromoterType == guess && promoter.IsPromoted));
 
             // if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
             // {
@@ -282,7 +279,7 @@ public abstract class Assassin : Ability, IGuesser
             //         RpcMurderPlayer(Player, guess, player);
             // }
 
-            var flag = layerFlag || subfactionFlag || framedFlag || mafiosoFlag || gfFlag || rebFlag || sidekickFlag;
+            var flag = layerFlag || subfactionFlag || framedFlag || promoterFlag;
             var toDie = flag ? player : Player;
             RpcMurderPlayer(toDie, guess, player);
 

@@ -5,15 +5,12 @@ namespace TownOfUsReworked.Modules;
 /// </summary>
 /// <param name="num">The value to be set.</param>
 [Serializable]
-public readonly struct Number(float num) : IFormattable, INetSerializable, IEquatable<Number>
+public readonly struct Number(float num) : IComparable, IFormattable, INetSerializable, IEquatable<Number>, IComparable<Number>
 {
     /// <summary>
     /// Gets the value.
     /// </summary>
     public float Value { get; } = num;
-
-    /// <inheritdoc/>
-    public byte[] ToBytes() => NetData.ToBytes(Value);
 
     /// <summary>
     /// Implicitly converts to float.
@@ -46,25 +43,80 @@ public readonly struct Number(float num) : IFormattable, INetSerializable, IEqua
     /// <inheritdoc cref="op_Implicit(float)"/>
     public static implicit operator Number(int num) => new(num);
 
+    /// <summary>
+    /// Equality check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if both values match</returns>
     public static bool operator ==(Number a, Number b) => a.Value == b.Value;
 
+    /// <summary>
+    /// Inequality check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if neither values match</returns>
     public static bool operator !=(Number a, Number b) => a.Value != b.Value;
 
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if <paramref name="a"/> is greater than <paramref name="b"/>.</returns>
     public static bool operator >(Number a, Number b) => a.Value > b.Value;
 
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if <paramref name="a"/> is greater than or equal <paramref name="b"/>.</returns>
     public static bool operator >=(Number a, Number b) => a.Value >= b.Value;
 
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if <paramref name="a"/> is lesser than <paramref name="b"/>.</returns>
     public static bool operator <(Number a, Number b) => a.Value < b.Value;
 
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if both values match</returns>
+    /// <returns><c>true</c> if <paramref name="a"/> is lesser than or equal <paramref name="b"/>.</returns>
     public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
 
+    /// <inheritdoc/>
+    public byte[] ToBytes() => NetData.ToBytes(Value);
+
+    /// <inheritdoc/>
     public override int GetHashCode() => Value.GetHashCode();
 
+    /// <inheritdoc/>
     public bool Equals(Number other) => Value == other.Value;
 
+    /// <inheritdoc/>
     public override bool Equals(object obj) => obj is Number number && Value == number.Value;
 
+    /// <inheritdoc/>
     public override string ToString() => Value.ToString();
 
+    /// <inheritdoc/>
     public string ToString(string format, IFormatProvider formatProvider) => Value.ToString(format, formatProvider);
+
+    /// <inheritdoc/>
+    public int CompareTo(object obj) => obj switch
+    {
+        Number i => CompareTo(i),
+        _ => Value.CompareTo(obj)
+    };
+
+    /// <inheritdoc/>
+    public int CompareTo(Number other) => Value.CompareTo(other.Value);
 }

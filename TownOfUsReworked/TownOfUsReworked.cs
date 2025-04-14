@@ -27,7 +27,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 42;
+    private const int DevBuild = 43;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -62,6 +62,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static HideNSeekGameOptionsV08 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
+    public static bool DebugMode => IsDev || DebugModeOn.Value;
 
     // A bunch of config stuff to ensure value persistence
     public static ConfigEntry<string> Ip { get; private set; }
@@ -87,6 +88,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static ConfigEntry<bool> UseDarkTheme { get; private set; }
     public static ConfigEntry<bool> NoWelcome { get; private set; }
     public static ConfigEntry<bool> AutoPlayAgain { get; private set; }
+    public static ConfigEntry<bool> DebugModeOn { get; private set; }
 
     public static ConfigEntry<bool> BlockBaseGameLogger { get; private set; }
     public static ConfigEntry<bool> RedirectLogger { get; private set; }
@@ -156,6 +158,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         UseDarkTheme = Config.Bind("Client", "Use Dark Theme Chat", false, "Enables dark mode for chat");
         NoWelcome = Config.Bind("Client", "No Welcome Message", false, "Disables the welcome message when joining a lobby for the first time in a session");
         AutoPlayAgain = Config.Bind("Client", "Auto Play Again", false, "Automatically calls Play Again after game ends");
+        DebugModeOn = Config.Bind("Client", "Debug Mode", false, "Enabled Debug Mode to replicate dev mode status and provide info in the logs");
 
         Ip = Config.Bind("Config", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
         Port = Config.Bind("Config", "Custom Server Port", (ushort)22023, "Port for the Custom Server");

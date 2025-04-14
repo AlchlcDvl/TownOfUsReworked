@@ -143,6 +143,9 @@ public static class GameModeSettings
     [ToggleOption]
     public static bool BanAnarchist = true;
 
+    [ToggleOption]
+    public static bool BanCultist = true;
+
     [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
     public static Number RunnerVision = 1.5f;
 }

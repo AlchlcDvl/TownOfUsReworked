@@ -34,7 +34,18 @@ public static class Generate
 
                 // Simple enough, I'm too cautious to let something fuck me up while I set the properties
                 opt.PostLoadSetup();
-                opt.Debug();
+
+                if (TownOfUsReworked.IsDev)
+                    opt.Debug();
+            }
+        }
+
+        if (TownOfUsReworked.IsDev)
+        {
+            foreach (var id in TranslationManager.AllTranslations.Keys.Where(x => x.StartsWith("customoption") && !x.EndsWithAny("entry", "ban")))
+            {
+                if (!Option.AllOptions.Any(x => x.IsId(id)))
+                    Fatal(id);
             }
         }
 
@@ -42,10 +53,10 @@ public static class Generate
 
         Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers
 
-        Option.SaveSettings("Default");
+        Option.SaveSettings("Default"); // Save the current values as the default preset
 
-        Option.LoadPreset("LastUsed", null);
+        Option.LoadPreset("LastUsed", null); // Load the last used settings preset to ensure values persist
 
-        Success($"There exist {Option.AllOptions.Count - Option.SortedOptions.Count} guaranteed options with 1040 more possible ones with {Option.SortedOptions.Count} headers (number jumpscare lmao)");
+        Success($"There exist {Option.AllOptions.Count - Option.SortedOptions.Count} guaranteed options with 1040 more possible ones with {Option.SortedOptions.Count} headers (number jumpscare lmao)"); // Debug
     }
 }

@@ -111,7 +111,6 @@ public enum ListSlot : byte
     Taskmaster,
     Traitor,
 
-    Assassin,
     Bullseye,
     ButtonBarry,
     Hitman,
@@ -120,6 +119,7 @@ public enum ListSlot : byte
     Ninja,
     Politician,
     Radar,
+    Ritualist,
     Ruthless,
     Slayer,
     Sniper,

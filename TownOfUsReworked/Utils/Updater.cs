@@ -109,7 +109,7 @@ public static class ModUpdater
             {
                 var version = Version.Parse(data.Tag.Replace("v", ""));
                 var diff = TownOfUsReworked.ModVer.CompareTo(version);
-                ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.IsDev);
+                ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.DebugMode);
                 break;
             }
             // Accounts for a broken version + checks the Submerged version

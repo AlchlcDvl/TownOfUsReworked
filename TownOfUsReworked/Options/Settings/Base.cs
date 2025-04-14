@@ -85,7 +85,7 @@ public abstract class Option(CustomOptionType type)
         ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ]),
         ([ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ]),
         ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleEntryList", "ModifierEntryList", "ModifierBanList",
-            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList" ], [ GameMode.List ]),
+            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist" ], [ GameMode.List ]),
         ([ "RunnerVision" ], [ GameMode.TaskRace ]),
         ([ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.List, GameMode.AllAny ]),
         ([ "Location1", "Location2", "Location3" ], [ AirshipSpawnType.Fixed ])
@@ -190,6 +190,8 @@ public abstract class Option(CustomOptionType type)
     protected virtual string SettingNotif() => TranslationManager.Translate(ID);
 
     public virtual void Debug() => TranslationManager.DebugId(ID);
+
+    public virtual bool IsId(string id) => ID.ToLower() == id;
 
     public virtual void ReadValueRpc(NetData reader) {}
 

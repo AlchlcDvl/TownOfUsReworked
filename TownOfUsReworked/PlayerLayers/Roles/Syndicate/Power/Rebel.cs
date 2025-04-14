@@ -41,13 +41,14 @@ public sealed class Rebel : Syndicate
 
         HasDeclared = true;
         var role = target.GetLayer<Syndicate>();
-        role.IsSidekick = true;
+        role.IsUnderling = true;
         role.IsPromoted = false;
         role.Promoter = this;
-        role.Name = TranslationManager.Translate("Layer.Mafioso");
+        role.Name = TranslationManager.Translate("Layer.Sidekick");
+        role.RoleHistory.Add(role.Type);
     }
 
-    private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsSidekick || !player.Is(Faction);
+    private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsUnderling || !player.Is(Faction);
 
     public override void ReadRPC(NetData reader) => Sidekick(reader.ReadPlayer());
 

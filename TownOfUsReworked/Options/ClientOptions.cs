@@ -161,4 +161,11 @@ public static class ClientOptions
         get => TownOfUsReworked.AutoPlayAgain.Value;
         set => TownOfUsReworked.AutoPlayAgain.Value = value;
     }
+
+    [ToggleOption]
+    public static bool DebugModeOn
+    {
+        get => TownOfUsReworked.DebugModeOn.Value;
+        set => TownOfUsReworked.DebugModeOn.Value = value;
+    }
 }

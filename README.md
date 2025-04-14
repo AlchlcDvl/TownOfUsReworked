@@ -1131,7 +1131,7 @@ The Enforcer can plant bombs on players. After a short while, their target will 
 
 The Ghoul is a dead Intruder. Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them. Marked players have a yellow χ next to their names.
 
-## Godfather <img height="17" src="./Images/Godfather.png"> <img height="17" src="./Images/PromotedGodfather.png">
+## Godfather <img height="17" src="./Images/Godfather.png">
 
 **Alignment**: Intruder (Head)
 
@@ -1359,7 +1359,7 @@ The Framer can frame players, making them appear to be evil or have wrong result
 
 The Poisoner can poison a player instead of killing them. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere. Poisoned players are dealt a Basic attack astrally.
 
-## Rebel <img height="17" src="./Images/Rebel.png"> <img height="17" src="./Images/PromotedRebel.png">
+## Rebel <img height="17" src="./Images/Rebel.png">
 
 **Alignment**: Syndicate (Power)
 

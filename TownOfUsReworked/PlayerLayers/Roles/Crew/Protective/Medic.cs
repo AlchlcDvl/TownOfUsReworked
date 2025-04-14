@@ -49,7 +49,7 @@ public sealed class Medic : Crew, IShielder
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
 
-        return player.Is<IRevealer>(out var irev) && irev.Revealed;
+        return player.Is<ISovereign>(out var irev) && irev.Revealed;
     }
 
     private bool Usable() => !ShieldBroken;

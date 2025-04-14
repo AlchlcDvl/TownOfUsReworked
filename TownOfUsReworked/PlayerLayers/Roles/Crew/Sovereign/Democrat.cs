@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Democrat)]
-public sealed class Democrat : Crew, IRevealer
+public sealed class Democrat : Crew, ISovereign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number CampaignCd = 25;
@@ -28,9 +28,9 @@ public sealed class Democrat : Crew, IRevealer
     {
         base.Init();
         Alignment = Alignment.Sovereign;
-        RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, "REVEAL");
+        RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable2, "REVEAL");
         CampaignButton ??= new(this, "CAMPAIGN", new SpriteName("Campaign"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Campaign, new Cooldown(CampaignCd),
-            (UsableFunc)Usable, (PlayerBodyExclusion)Exception);
+            (UsableFunc)Usable1, (PlayerBodyExclusion)Exception);
     }
 
     public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoCampaigning;
@@ -60,9 +60,16 @@ public sealed class Democrat : Crew, IRevealer
         CampaignButton.StartCooldown(cooldown);
     }
 
-    private bool Usable() => !RoundOne && !GetLayers<Mayor>().Any(x => !x.TrulyDead && x.Revealed) && AllPlayers().Count(x => !x.HasDied()) <= Campaigned.Count;
+    private bool Usable1() => !RoundOne && !GetLayers<Mayor>().Any(x => !x.TrulyDead && x.Revealed);
 
-    public void OnReveal() => new Mayor().RoleUpdate(this);
+    private bool Usable2() => Usable1() && AllPlayers().Where(x => x.Is(Faction.Crew) && !x.HasDied()).All(x => Campaigned.Contains(x.PlayerId));
+
+    public void OnReveal()
+    {
+        var mayor = new Mayor();
+        mayor.RoleUpdate(this);
+        PublicReveal(mayor.Player);
+    }
 
     private bool Exception(PlayerControl player) => Campaigned.Contains(player.PlayerId);
 

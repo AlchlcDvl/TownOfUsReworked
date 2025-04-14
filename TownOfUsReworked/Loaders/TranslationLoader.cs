@@ -13,6 +13,5 @@ public sealed class TranslationLoader : AssetLoader<Language>
             AllTranslations[item.ID.ToLower()] = item;
 
         item.IDs?.ForEach(id => AllTranslations[id.ToLower()] = item);
-        item.Values?.ForEach(lang => item.Modules[lang.Name] = lang.Value);
     }
 }

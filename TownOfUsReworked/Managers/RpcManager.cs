@@ -126,7 +126,7 @@ public static class RpcManager
             return;
         }
 
-        if (TownOfUsReworked.IsDev)
+        if (TownOfUsReworked.DebugMode)
             Message($"Received rpc with {reader.DataSize} bytes");
 
         var rpc = reader.Read<CustomRPC>();
@@ -405,6 +405,11 @@ public static class RpcManager
                     case MiscRPC.Achievement:
                     {
                         CustomAchievementManager.UnlockAchievement(reader.ReadString());
+                        return;
+                    }
+                    case MiscRPC.Stat:
+                    {
+                        CustomStatsManager.IncrementStat(reader.Read<StringNames>());
                         return;
                     }
                     case MiscRPC.SetStatus:

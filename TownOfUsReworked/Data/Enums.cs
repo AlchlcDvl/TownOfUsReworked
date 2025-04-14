@@ -257,7 +257,8 @@ public enum AlliedFaction : byte
     Intruder,
     Syndicate,
     Apocalypse,
-    Pandorica
+    Pandorica,
+    Compliance
 }
 
 public enum SyndicateVentOptions : byte

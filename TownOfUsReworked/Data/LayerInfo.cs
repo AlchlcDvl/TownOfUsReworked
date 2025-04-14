@@ -94,8 +94,10 @@ public static class AllInfo
         new(LayerEnum.Timekeeper, Alignment.Disruption, Faction.Syndicate),
         new(LayerEnum.Warper, Alignment.Support, Faction.Syndicate, true),
 
+        new(LayerEnum.Cultist, Alignment.Harbinger, Faction.Apocalypse),
         new(LayerEnum.Pestilence, Alignment.Deity, Faction.Apocalypse),
-        new(LayerEnum.Plaguebearer, Alignment.Harbinger, Faction.Apocalypse, true),
+        new(LayerEnum.Plaguebearer, Alignment.Harbinger, Faction.Apocalypse),
+        new(LayerEnum.Void, Alignment.Deity, Faction.Apocalypse, true),
 
         new(LayerEnum.Hunter, Alignment.HideAndSeek, Faction.GameMode),
         new(LayerEnum.Hunted, Alignment.HideAndSeek, Faction.GameMode),
@@ -169,6 +171,7 @@ public static class AllInfo
         new(Faction.Crew),
         new(Faction.Intruder),
         new(Faction.Syndicate),
+        new(Faction.Apocalypse),
         new(Faction.Neutral),
         new(Faction.Compliance),
         new(Faction.Pandorica),

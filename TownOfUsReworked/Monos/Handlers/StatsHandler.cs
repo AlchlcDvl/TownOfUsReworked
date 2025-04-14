@@ -48,6 +48,8 @@ public sealed class StatsHandler : MonoBehaviour
         str.AppendLine($"{(char)(achievement.Unlocked ? 0x25A0 : 0x25A1)} {TranslationManager.Translate($"Achievement.{achievement.Name}.Title")}");
         str.AppendLine(achievement.Name.Contains("LayerWins")
             ? $"     {TranslationManager.Translate("Achievement.LayerWins.Description", ("%layer%", TranslationManager.Translate($"Layer.{achievement.Name.TrueSplit('.')[^1]}")))}"
-            : $"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}");
+            : (achievement.Name.Contains("MapWins")
+            ? $"     {TranslationManager.Translate("Achievement.MapWins.Description", ("%map%", TranslationManager.Translate($"Map.{achievement.Name.TrueSplit('.')[^1]}")))}"
+            : $"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}"));
     }
 }

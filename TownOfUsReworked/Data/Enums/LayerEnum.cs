@@ -71,7 +71,6 @@ public enum LayerEnum : byte
     Mafioso,
     Miner,
     Morphling,
-    PromotedGodfather,
     Teleporter,
     Wraith,
 
@@ -84,7 +83,6 @@ public enum LayerEnum : byte
     Drunkard,
     Framer,
     Poisoner,
-    PromotedRebel,
     Rebel,
     Shapeshifter,
     Sidekick,

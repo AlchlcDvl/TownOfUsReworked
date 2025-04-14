@@ -108,10 +108,8 @@ public static class ButtonUtils
         var num = 1f;
         var role = player.GetRole();
 
-        if (role is Intruder { IsPromoted: true })
-            num *= Godfather.GfPromotionCdDecrease;
-        if (role is Syndicate { IsPromoted: true })
-            num *= Rebel.RebPromotionCdDecrease;
+        if (role is IPromoter { IsPromoted: true } promoter)
+            num *= promoter.PromotionModifier;
 
         if (role.Diseased)
             num *= Diseased.DiseasedMultiplier;

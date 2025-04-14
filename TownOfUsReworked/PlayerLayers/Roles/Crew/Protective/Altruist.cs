@@ -76,7 +76,7 @@ public sealed class Altruist : Crew, IReviver
             lover.Revive();
         }
 
-        if (Local && player.Is<ISovereign>())
+        if (Local && player.Is<ISovereign>(out var sov) && !sov.Revealed)
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 

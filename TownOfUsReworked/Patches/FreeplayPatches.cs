@@ -70,10 +70,10 @@ public static class FreeplayPatches
     [HarmonyPatch(nameof(TaskAdderGame.PopulateRoot))]
     public static void Postfix(TaskAdderGame __instance, ISystem.Dictionary<SystemTypes, TaskFolder> folders, TaskFolder rootFolder)
     {
-        if (folders.TryGetValue(LayersType, out var taskFolder))
+        if (folders.ContainsKey(LayersType))
             return;
 
-        taskFolder = folders[LayersType] = CreateFolder(__instance, "_Reworked", rootFolder);
+        var taskFolder = folders[LayersType] = CreateFolder(__instance, "_Reworked", rootFolder);
 
         for (var i = 0; i < 4; i++)
         {
@@ -82,8 +82,10 @@ public static class FreeplayPatches
             if (folder.FolderName != "Role")
                 continue;
 
-            for (var j = 0; j < 5; j++)
+            for (var j = 1; j < 6; j++)
                 CreateFolder(__instance, $"{(Faction)j}", folder);
+
+            CreateFolder(__instance, "GameMode", folder);
         }
     }
 
@@ -106,7 +108,7 @@ public static class FreeplayPatches
         var num = 0f;
         var num2 = 0f;
         var num3 = 0f;
-        taskFolder.SubFolders = taskFolder.SubFolders.ToArray().OrderBy(x => x.FolderName).ToIl2Cpp();
+        taskFolder.SubFolders = taskFolder.SubFolders.ToSystem().OrderBy(x => x.FolderName).ToIl2Cpp();
 
         foreach (var sub in taskFolder.SubFolders)
         {
@@ -155,6 +157,7 @@ public static class FreeplayPatches
                     Faction.Neutral => GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer),
                     Faction.Intruder => GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith),
                     Faction.GameMode => GetValuesFromTo(LayerEnum.Hunter, LayerEnum.Runner),
+                    Faction.Apocalypse => GetValuesFromTo(LayerEnum.Cultist, LayerEnum.Void),
                     Faction.Syndicate => GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper),
                     _ => []
                 };
@@ -162,7 +165,7 @@ public static class FreeplayPatches
 
             foreach (var layer in range)
             {
-                if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer)
+                if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.Mafioso or LayerEnum.Sidekick)
                     continue;
 
                 try

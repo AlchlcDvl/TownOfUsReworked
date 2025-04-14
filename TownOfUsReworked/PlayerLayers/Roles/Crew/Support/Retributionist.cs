@@ -694,7 +694,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             lover.Revive();
         }
 
-        if (Local && player.Is<ISovereign>())
+        if (Local && player.Is<ISovereign>(out var sov) && !sov.Revealed)
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
@@ -742,7 +742,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
 
-        return player.Is<IRevealer>(out var irev) && irev.Revealed;
+        return player.Is<ISovereign>(out var irev) && irev.Revealed;
     }
 
     private bool MedicUsable() => !ShieldBroken && IsMedic;

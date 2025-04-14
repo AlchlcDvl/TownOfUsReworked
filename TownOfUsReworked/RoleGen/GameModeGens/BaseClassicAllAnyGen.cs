@@ -46,7 +46,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Intruder or Faction.Compliance) || Intruders == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Mafioso)))
+        foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not LayerEnum.Mafioso))
         {
             var spawn = GetSpawnItem(layer);
 
@@ -130,7 +130,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Syndicate or Faction.Compliance) || Syndicate == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Sidekick)))
+        foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not LayerEnum.Sidekick))
         {
             var spawn = GetSpawnItem(layer);
 

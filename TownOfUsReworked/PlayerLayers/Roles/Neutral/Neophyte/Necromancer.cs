@@ -127,7 +127,7 @@ public sealed class Necromancer : Neophyte, IReviver
                 SacrificeButton.StartCooldown();
         }
 
-        if (Local && player.Is<ISovereign>())
+        if (Local && player.Is<ISovereign>(out var sov) && !sov.Revealed)
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 

@@ -28,19 +28,33 @@ public static class CustomColorManager
 
     public static UColor GetColor(this int id, bool shadow) => AllColors.TryGetValue(id, out var color) ? (shadow ? color.GetShadowColor() : color.GetMainColor()) : UColor.white;
 
-    public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r - val), Mathf.Clamp01(color.g - val), Mathf.Clamp01(color.b - val), color.a);
+    // public static UColor ShadeColor(this UColor color, float val = 0.2f)
+    // {
+    //     val = Mathf.Clamp(val, -1f, 1f);
+    //     return UColor.Lerp(color, val < 0 ? UColor.black : UColor.white, Mathf.Abs(val));
+    // }
 
-    public static UColor Light(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r + val), Mathf.Clamp01(color.g + val), Mathf.Clamp01(color.b + val), color.a);
+    public static UColor Shadow(this UColor color, float val = 0.2f) => UColor.Lerp(color, UColor.black, val);
+
+    public static UColor Light(this UColor color, float val = 0.2f) => UColor.Lerp(color, UColor.white, val);
 
     public static UColor Alternate(this UColor color, float val = 0.2f) => color.IsColorDark() ? color.Light(val) : color.Shadow(val);
 
-    private static bool IsColorDark(this UColor color) => color is { r: <= 0.5f, g: <= 0.5f, b: <= 0.5f };
+    private static bool IsColorDark(this UColor color) => (color.r * 0.2126f * 255f) + (color.g * 0.7152f * 255f) + (color.b * 0.0722f * 255f) < 255f / 2;
 
     public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
 
-    // public static Color32 Shadow(this Color32 color, byte val = 51) => new(ClampByte(color.r - val, 0, 255), ClampByte(color.g - val, 0, 255), ClampByte(color.b - val, 0, 255), color.a);
+    // public static Color32 ShadeColor(this Color32 color, int val = 51)
+    // {
+    //     if (val.IsInRange(-256, 256))
+    //         throw new InvalidOperationException($"Shade value {val} was out of bounds -255 to 255");
 
-    // public static Color32 Light(this Color32 color, byte val = 51) => new(ClampByte(color.r + val, 0, 255), ClampByte(color.g + val, 0, 255), ClampByte(color.b + val, 0, 255), color.a);
+    //     return ((UColor)color).ShadeColor(val / 255f);
+    // }
+
+    // public static Color32 Shadow(this Color32 color, byte val = 51) => ((UColor)color).Shadow(val / 255f);
+
+    // public static Color32 Light(this Color32 color, byte val = 51) => ((UColor)color).Light(val / 255f);
 
     public static Color32 Alternate(this Color32 color, byte val = 51) => ((UColor)color).Alternate(val / 255f);
 

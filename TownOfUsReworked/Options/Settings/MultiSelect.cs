@@ -11,6 +11,8 @@ public sealed class MultiSelectOption<T>(T? none, T? all, params T[] ignore) : B
         Values.ForEach(x => TranslationManager.DebugId($"CustomOption.{InnerType.Name}.{x}"));
     }
 
+    public override bool IsId(string id) => base.IsId(id) || Values.Any(x => id == $"CustomOption.{InnerType.Name}.{x}".ToLower());
+
     protected override string Format()
     {
         if (Value.Count == 0)

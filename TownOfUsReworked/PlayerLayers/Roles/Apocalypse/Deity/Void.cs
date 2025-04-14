@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Void)]

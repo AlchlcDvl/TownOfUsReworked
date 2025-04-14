@@ -123,7 +123,7 @@ public sealed class Guesser : Evil, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.PromotedGodfather or LayerEnum.Ghoul or LayerEnum.Mafioso or
+            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or
                 LayerEnum.Impostor)))
             {
                 if (RoleGenManager.GetSpawnItem(layer).IsActive())
@@ -140,7 +140,7 @@ public sealed class Guesser : Evil, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.PromotedRebel or LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
+            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
             {
                 if (RoleGenManager.GetSpawnItem(layer).IsActive())
                 {
@@ -198,12 +198,9 @@ public sealed class Guesser : Evil, IGuesser
         {
             var layerFlag = player.GetLayers().Any(x => x.Type == guess);
             var subfactionFlag = $"{player.GetSubFaction()}" == $"{guess}";
-            var mafiosoFlag = player.Is<Intruder>(out var intruder) && intruder.IsMafioso;
-            var gfFlag = (intruder?.IsPromoted ?? false) && guess == LayerEnum.Godfather;
-            var sidekickFlag = player.Is<Syndicate>(out var syn) && syn.IsSidekick;
-            var rebFlag = (syn?.IsPromoted ?? false) && guess == LayerEnum.Rebel;
+            var promoterFlag = player.Is<IPromoter>(out var promoter) && ((promoter.UnderlingType == guess && promoter.IsUnderling) || (promoter.PromoterType == guess && promoter.IsPromoted));
 
-            var flag = layerFlag || subfactionFlag || mafiosoFlag || gfFlag || rebFlag || sidekickFlag;
+            var flag = layerFlag || subfactionFlag || promoterFlag;
             var toDie = flag ? player : Player;
             TargetGuessed = flag;
             RpcMurderPlayer(toDie, guess, player);

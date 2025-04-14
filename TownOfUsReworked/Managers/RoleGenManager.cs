@@ -146,6 +146,7 @@ public static class RoleGenManager
     public static RoleOptionData GetSpawnItem(LayerEnum id) => id switch
     {
         LayerEnum.Pestilence => Options.ApocalypseHarbingerRoles.Plaguebearer,
+        LayerEnum.Void => Options.ApocalypseHarbingerRoles.Cultist,
         LayerEnum.Mayor => Options.CrewSovereignRoles.Democrat,
         LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
         _ => Option.GetOptions<LayerOption>().TryFinding(x => x.Layer == id, out var result) ? result.Value : new(0, 0, false, false, id)

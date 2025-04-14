@@ -210,6 +210,14 @@ public static class CustomStatsManager
         StatsManager.Instance.SaveStats();
     }
 
+    public static void RpcIncrementStat(PlayerControl player, StringNames stat)
+    {
+        if (player.AmOwner || TownOfUsReworked.MciActive)
+            IncrementStat(stat);
+        else
+            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.Stat, stat);
+    }
+
     public static void IncrementStat(StringNames stat) => IncrementStat(stat, out _);
 
     public static Il2CppSystem.Object GetStat(StringNames stat)
@@ -301,6 +309,25 @@ public static class CustomStatsManager
 
                 if (GetLayerWins(role2) == 5)
                     CustomAchievementManager.UnlockAchievement($"LayerWins.{role2}");
+            }
+
+            if (role is IPromoter promoter)
+            {
+                if (promoter.IsUnderling || promoter.IsPromoted)
+                {
+                    IncrementStat(promoter.UnderlingType);
+
+                    if (GetLayerWins(promoter.UnderlingType) == 5)
+                        CustomAchievementManager.UnlockAchievement($"LayerWins.{promoter.UnderlingType}");
+                }
+
+                if (promoter.IsPromoted)
+                {
+                    IncrementStat(promoter.PromoterType);
+
+                    if (GetLayerWins(promoter.PromoterType) == 5)
+                        CustomAchievementManager.UnlockAchievement($"LayerWins.{promoter.PromoterType}");
+                }
             }
         }
     }

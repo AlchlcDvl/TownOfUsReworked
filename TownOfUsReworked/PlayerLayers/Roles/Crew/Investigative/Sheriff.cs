@@ -12,6 +12,9 @@ public sealed class Sheriff : Crew
     [ToggleOption]
     public static bool NeutKillingRed = false;
 
+    [ToggleOption]
+    public static bool NeutNeophyteRed = false;
+
     private CustomButton InterrogateButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Sheriff;

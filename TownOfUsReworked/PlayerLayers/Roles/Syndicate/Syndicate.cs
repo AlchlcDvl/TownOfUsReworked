@@ -1,11 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public abstract class Syndicate : Role
+public abstract class Syndicate : Role, IPromoter
 {
     private CustomButton KillButton { get; set; }
     public Rebel Promoter { get; set; }
-    public bool IsSidekick { get; set; }
+    public bool IsUnderling { get; set; }
     public bool IsPromoted { get; set; }
+    public LayerEnum UnderlingType { get; } = LayerEnum.Sidekick;
+    public LayerEnum PromoterType { get; } = LayerEnum.Rebel;
+    public float PromotionModifier { get; } = Rebel.RebPromotionCdDecrease;
     protected string CommonAbilities => "<#008000FF>" + (KillUsable() ? "- You can kill players directly" : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
     public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive);
 
@@ -71,13 +74,14 @@ public abstract class Syndicate : Role
     {
         base.UpdatePlayer();
 
-        if (!IsPromoted && IsSidekick && (Promoter?.Dead ?? false))
+        if (!IsPromoted && IsUnderling && (Promoter?.Dead ?? false))
         {
             IsPromoted = true;
-            IsSidekick = false;
+            IsUnderling = false;
             Promoter = null;
             Name = TranslationManager.Translate("Layer.Rebel");
             Alignment = Alignment.Power;
+            RoleHistory.Add(LayerEnum.Sidekick);
         }
     }
 
@@ -94,5 +98,5 @@ public abstract class Syndicate : Role
     private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
-    private bool KillUsable() => ((HoldsDrive && Alignment != Alignment.Killing) || Type is LayerEnum.Anarchist || IsPromoted) && !IsSidekick;
+    private bool KillUsable() => ((HoldsDrive && Alignment != Alignment.Killing) || Type is LayerEnum.Anarchist || IsPromoted) && !IsUnderling;
 }

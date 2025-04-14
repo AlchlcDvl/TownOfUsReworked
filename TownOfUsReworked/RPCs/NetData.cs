@@ -147,6 +147,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     public object Read(Type type) => type switch
     {
+        null => throw new NullReferenceException("type was null"),
         _ when type == typeof(byte) => ReadByte(),
         _ when type == typeof(bool) => ReadBool(),
         _ when type == typeof(sbyte) => ReadSByte(),
@@ -158,7 +159,9 @@ public sealed class NetData : IDisposable, INetSerializable
         _ when type == typeof(long) => ReadLong(),
         _ when type == typeof(float) => ReadFloat(),
         _ when type == typeof(double) => ReadDouble(),
+        _ when type == typeof(decimal) => ReadDecimal(),
         _ when type == typeof(string) => ReadString(),
+        _ when type == typeof(Half) => ReadHalf(),
         _ when type == typeof(PlayerControl) => ReadPlayer(),
         _ when type == typeof(PlayerVoteArea) => ReadVoteArea(),
         _ when type == typeof(DeadBody) => ReadBody(),
@@ -340,6 +343,19 @@ public sealed class NetData : IDisposable, INetSerializable
     }
 
     /// <summary>
+    /// Reads a half floating point precision value (float) from the data.
+    /// </summary>
+    /// <returns>The deserialized float value.</returns>
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    public Half ReadHalf()
+    {
+        ThrowIfIncorrectState(true, 2);
+        var result = BitConverter.ToHalf(ReadBuffer, Position);
+        Position += 2;
+        return result;
+    }
+
+    /// <summary>
     /// Reads a single floating point precision value (float) from the data.
     /// </summary>
     /// <returns>The deserialized float value.</returns>
@@ -363,6 +379,17 @@ public sealed class NetData : IDisposable, INetSerializable
         var result = BitConverter.ToDouble(ReadBuffer, Position);
         Position += 8;
         return result;
+    }
+
+    /// <summary>
+    /// Reads a decimal value from the data.
+    /// </summary>
+    /// <returns>The deserialized double value.</returns>
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    public decimal ReadDecimal()
+    {
+        var bytes = ReadBytes(16);
+        return new([BitConverter.ToInt32(bytes, 0), BitConverter.ToInt32(bytes, 4), BitConverter.ToInt32(bytes, 8), BitConverter.ToInt32(bytes, 12)]);
     }
 
     /// <summary>
@@ -399,8 +426,8 @@ public sealed class NetData : IDisposable, INetSerializable
     /// Reads an enum value of the provided type from the data.
     /// </summary>
     /// <returns>The deserialized enum value.</returns>
-    /// <exception cref="InvalidDataException">Thrown if <paramref name="type"/> is not an enum.</exception>
-    private object ReadEnum(Type type) => type.IsEnum ? Enum.ToObject(type, Read(Enum.GetUnderlyingType(type))) : throw new InvalidDataException($"{type.Name} is not an enum");
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    private object ReadEnum(Type type) => Enum.ToObject(type, Read(Enum.GetUnderlyingType(type)));
 
     /// <summary>
     /// Reads a player layer from the data by its player ID and layer type.
@@ -562,6 +589,8 @@ public sealed class NetData : IDisposable, INetSerializable
         long i => BitConverter.GetBytes(i),
         float i => BitConverter.GetBytes(i),
         double i => BitConverter.GetBytes(i),
+        Half i => BitConverter.GetBytes(i),
+        decimal i => [ .. decimal.GetBits(i).SelectMany(BitConverter.GetBytes) ], // BitConverter please have more conversion methods I beg you
         string i => ToBytes(i), // String needs a custom method because BitConverter apparently can't support it
         Enum i => ToBytes(Convert.ChangeType(i, Enum.GetUnderlyingType(i.GetType()))),
         Type i => ToBytes(i.AssemblyQualifiedName),
