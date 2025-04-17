@@ -65,7 +65,7 @@ public sealed class Framer : Syndicate
         RadialFrameButton.StartCooldown();
     }
 
-    private bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+    private bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) &&
         SubFaction != SubFaction.None);
 
     private bool Usable1() => !HoldsDrive;

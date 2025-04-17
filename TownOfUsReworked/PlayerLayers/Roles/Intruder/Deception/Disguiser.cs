@@ -92,7 +92,7 @@ public sealed class Disguiser : Intruder
     }
 
     private bool Exception1(PlayerControl player) => Exception2(player) || (((player.Is(Faction) && DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) && DisguiseTarget
-        == DisguiserTargets.Intruders)) && Faction is Faction.Intruder or Faction.Syndicate);
+        == DisguiserTargets.Intruders)) && Faction is not (Faction.Crew or Faction.Neutral));
 
     private bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 

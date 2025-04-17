@@ -102,11 +102,12 @@ public sealed class Collider : Syndicate
             PositiveButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == Negative || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || Player.IsLinkedTo(player);
+    private bool Exception1(PlayerControl player) => player == Negative || CommonException(player);
 
-    private bool Exception2(PlayerControl player) => player == Positive || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None) || Player.IsLinkedTo(player);
+    private bool Exception2(PlayerControl player) => player == Positive || CommonException(player);
+
+    private bool CommonException(PlayerControl player) => (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+        Player.IsLinkedTo(player);
 
     private bool Usable() => HoldsDrive;
 

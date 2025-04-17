@@ -30,7 +30,8 @@ public sealed class Wraith : Intruder
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
     }
 
-    private void Invis() => MiscUtils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
+    private void Invis() => MiscUtils.Invis(Player, CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || (CustomPlayer.Local.Is(SubFaction) && SubFaction !=
+        SubFaction.None));
 
     private void UnInvis() => DefaultOutfit(Player);
 

@@ -21,6 +21,9 @@ public sealed class BountyHunter : Evil
     [ToggleOption]
     private static bool BhToTroll = true;
 
+    [ToggleOption]
+    public static bool BhTargetKnows = false;
+
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetKilled { get; set; }
     private bool ColorHintGiven { get; set; }

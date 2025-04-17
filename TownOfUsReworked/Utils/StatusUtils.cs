@@ -33,25 +33,17 @@ public static class StatusUtils
 
     public static T RpcAddStatus<T>(this PlayerControl player, params object[] args) where T : BaseStatus
     {
-        CallRpc(CustomRPC.Misc, [ MiscRPC.SetStatus, typeof(T), player, .. args ]);
+        CallRpc(CustomRPC.Misc, [ MiscRPC.SetStatus, typeof(T), .. args, player ]);
         return player.AddStatus<T>(args);
     }
 
     public static void AddStatusFromRpc(NetData data)
     {
         var type = data.ReadType();
-        var player = data.ReadPlayer();
 
         if (!TypeToConstructorParamsMap.TryGetValue(type, out var parameters))
             TypeToConstructorParamsMap[type] = parameters = type.GetConstructors(AccessTools.all)[0].GetParameters();
 
-        BaseStatus status;
-
-        if (parameters.Length == 0)
-            status = (BaseStatus)Activator.CreateInstance(type);
-        else
-            status = (BaseStatus)Activator.CreateInstance(type, [ .. parameters.Select(x => data.Read(x.ParameterType)) ]);
-
-        status.Start(player);
+        ((BaseStatus)Activator.CreateInstance(type, [ .. parameters.Select(x => data.Read(x.ParameterType)) ])).Start(data.ReadPlayer());
     }
 }

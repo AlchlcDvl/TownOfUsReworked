@@ -3,8 +3,10 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(SplashManager), nameof(SplashManager.Update))]
 public static class UpdateSplashPatch
 {
+    public static SpriteRenderer Rend;
     private static bool Loading;
     private static TextMeshPro TMP;
+    private static readonly int Glitches = Shader.PropertyToID("_Glitches");
 
     public static bool Prefix(SplashManager __instance)
     {
@@ -31,14 +33,15 @@ public static class UpdateSplashPatch
             }
         };
 
-        var rend = loading.AddComponent<SpriteRenderer>();
-        rend.sprite = GetSprite("Banner");
-        rend.transform.localScale = Vector3.one * 1.8f;
-        rend.color = UColor.clear;
+        Rend = loading.AddComponent<SpriteRenderer>();
+        Rend.sprite = GetSprite("Banner");
+        Rend.transform.localScale = Vector3.one * 1.8f;
+        Rend.color = UColor.clear;
+        var cache = Rend.material;
 
-        yield return PerformTimedAction(1f, p => rend.color = UColor.white.SetAlpha(p));
+        yield return PerformTimedAction(1f, p => Rend.color = UColor.white.SetAlpha(p));
 
-        rend.color = UColor.white;
+        Rend.color = UColor.white;
         TMP = UObject.Instantiate(__instance.errorPopup.InfoText, loading.transform);
         TMP.transform.localPosition = new(0f, -1.5f, -10f);
         TMP.fontStyle = FontStyles.Bold;
@@ -55,6 +58,8 @@ public static class UpdateSplashPatch
         yield return ModUpdater.CheckForUpdates();
         yield return LoadModData();
 
+        Rend.material = cache;
+
         SetText("Loaded!");
 
         yield return Wait(0.5f);
@@ -63,9 +68,9 @@ public static class UpdateSplashPatch
 
         SetText("");
 
-        yield return PerformTimedAction(1f, p => rend.color = UColor.white.SetAlpha(1 - p));
+        yield return PerformTimedAction(1f, p => Rend.color = UColor.white.SetAlpha(1 - p));
 
-        rend.color = UColor.clear;
+        Rend.color = UColor.clear;
         loading.Destroy();
         yield return Wait(0.1f);
 

@@ -113,7 +113,6 @@ public sealed class Amnesiac : Neutral
             Juggernaut => new Juggernaut(),
             Murderer => new Murderer(),
             Necromancer => new Necromancer(),
-            Plaguebearer or Pestilence => new Plaguebearer(),
             SerialKiller => new SerialKiller(),
             Survivor => new Survivor(),
             Thief => new Thief(),
@@ -155,6 +154,10 @@ public sealed class Amnesiac : Neutral
             Timekeeper => new Timekeeper(),
             Warper => new Warper(),
 
+            // Apocalypse roles
+            Plaguebearer or Pestilence => new Plaguebearer(),
+            Cultist or Void => new Cultist(),
+
             // Whatever else
             Amnesiac or _ => new Amnesiac(),
         };
@@ -193,21 +196,30 @@ public sealed class Amnesiac : Neutral
         }
 
         var local = CustomPlayer.Local.GetRole();
+        var faction = local.Faction;
 
-        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && (Snitch.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))
+        if (faction != Faction.Crew || (faction == Faction.Neutral && (Snitch.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))
         {
-            foreach (var snitch in GetLayers<Snitch>())
+            var neut = faction == Faction.Neutral;
+
+            if (!neut || Snitch.SnitchSeesNeutrals)
             {
-                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
-                    local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
-                else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
+                foreach (var snitch in GetLayers<Snitch>())
+                {
+                    if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
+                        local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
+                    else if (snitch.TasksDone && snitch.Local)
+                        snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
+                }
             }
 
-            foreach (var revealer in GetLayers<Revealer>())
+            if (!neut || Revealer.RevealerRevealsNeutrals)
             {
-                if (revealer.Revealed && player.AmOwner)
-                    local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Player, revealer.Color));
+                foreach (var revealer in GetLayers<Revealer>())
+                {
+                    if (revealer.Revealed && player.AmOwner)
+                        local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Player, revealer.Color));
+                }
             }
         }
 

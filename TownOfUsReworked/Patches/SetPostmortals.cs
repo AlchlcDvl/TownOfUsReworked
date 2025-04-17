@@ -59,7 +59,7 @@ public static class SetPostmortals
         {
             foreach (var ne in PlayerLayer.GetLayers<Evil>())
             {
-                if (ne.HasWon && !ne.Dead)
+                if (ne is { HasWon: true, Dead: false })
                     ne.Player.CustomDie(DeathReasonEnum.Escaped);
             }
         }

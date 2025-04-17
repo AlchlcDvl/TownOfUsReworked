@@ -57,16 +57,6 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public virtual bool CanVent => false;
 
     /// <summary>
-    /// Gets a value indicating whether or not the layer has won.
-    /// </summary>
-    public virtual bool HasWon => false;
-
-    /// <summary>
-    /// Gets the related wing related end state for the layer.
-    /// </summary>
-    public virtual WinLose EndState { get; }
-
-    /// <summary>
     /// Gets or sets the name of the layer.
     /// </summary>
     public string Name { get; set; }
@@ -392,12 +382,6 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <param name="revealed">Indicates whether or not the layer is revealed.</param>
     /// <param name="removeFromConsig">Indicates whether Consiglieres should remove the player from their investigated players list.</param>
     public virtual void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
-
-    /// <summary>
-    /// Handles the networked addition or removal of player statuses.
-    /// </summary>
-    /// <param name="reader">The network message to read from.</param>
-    public virtual void SetNetworkedStatus(NetData reader) {}
 
     /// <summary>
     /// Checks and ends the game as needed.

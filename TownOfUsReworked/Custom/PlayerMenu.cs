@@ -11,8 +11,6 @@ public sealed class CustomPlayerMenu : CustomMenu
     private UColor SelectionColor { get; }
     private Dictionary<byte, ShapeshifterPanel> PlayerToPanel { get; } = [];
 
-    private PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
-
     private CustomPlayerMenu(PlayerControl owner, PlayerMenuType type, PlayerBodyExclusion exception, UColor selectionColor) : base(owner, MenuType.Player)
     {
         Exception = exception ?? BlankFalse;
@@ -34,6 +32,8 @@ public sealed class CustomPlayerMenu : CustomMenu
         MultiClick = BlankFalse;
         MaxSelected = 1;
     }
+
+    private PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
 
     private void Clicked(PlayerControl player)
     {

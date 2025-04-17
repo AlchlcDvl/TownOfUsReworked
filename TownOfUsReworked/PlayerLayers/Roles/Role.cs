@@ -87,6 +87,10 @@ public abstract class Role : PlayerLayer
                 Faction.Crew => () => CrewWinCon,
                 _ => Objectives
             };
+
+            if (Local)
+                UpdateButtons();
+
             FactionPriv = value;
         }
     }
@@ -177,26 +181,21 @@ public abstract class Role : PlayerLayer
         try
         {
             var hud = HUD();
-            hud.SabotageButton.graphic.sprite = GetSprite(Faction switch
-            {
-                Faction.Syndicate => "SyndicateSabotage",
-                _ => "IntruderSabotage"
-            });
+            hud.SabotageButton.graphic.sprite = GetSprite($"{Faction}Sabotage");
             hud.SabotageButton.graphic.SetCooldownNormalizedUvs();
-            hud.ImpostorVentButton.graphic.sprite = GetSprite(Faction switch
-            {
-                Faction.Syndicate => "SyndicateVent",
-                Faction.Crew => "CrewVent",
-                Faction.Neutral => "NeutralVent",
-                _ => "IntruderVent"
-            });
+
+            hud.ImpostorVentButton.graphic.sprite = GetSprite($"{Faction}Vent");
             hud.ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
+
             hud.ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
             hud.UseButton.buttonLabelText.SetOutlineColor(FactionColor);
             hud.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             hud.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             hud.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-        } catch {}
+
+            Player.GetButtons().ForEach(x => x.UpdateSprite());
+        }
+        catch { }
     }
 
     public override void OnIntroEnd() => UpdateButtons();
@@ -205,7 +204,7 @@ public abstract class Role : PlayerLayer
 
     public override void UpdatePlayer()
     {
-        if (!Timekeeper.TkExists || Dead || (Faction is Faction.Syndicate && Timekeeper.TimeRewindImmunity) || Faction == Faction.GameMode)
+        if (!Timekeeper.TkExists || Dead || Faction == Faction.GameMode || (Faction is Faction.Syndicate && Timekeeper.TimeRewindImmunity))
             return;
 
         if (!Rewinding)
@@ -394,11 +393,11 @@ public abstract class Role : PlayerLayer
         if (!player.Is<ISovereign>(out var revealer))
             return;
 
-        revealer.Revealed = true;
-        revealer.OnReveal();
         Flash(revealer.Color);
         BreakShield(player, true);
         GetLayers<ITrapper>().ForEach(x => x.Trapped.Remove(player.PlayerId));
+        revealer.Revealed = true;
+        revealer.OnReveal();
     }
 
     public static void BreakShield(PlayerControl player, bool flag)

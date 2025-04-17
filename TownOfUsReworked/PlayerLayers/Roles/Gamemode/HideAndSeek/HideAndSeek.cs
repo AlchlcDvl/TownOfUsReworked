@@ -12,12 +12,4 @@ public abstract class HideAndSeek : GameModeRole
     }
 
     public override List<PlayerControl> Team() => [ .. GetLayers<Hunter>().Select(x => x.Player) ];
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        __instance.ReportButton.ToggleVisible(false);
-        __instance.SabotageButton.ToggleVisible(false);
-        __instance.ImpostorVentButton.ToggleVisible(false);
-    }
 }

@@ -119,7 +119,6 @@ public sealed class Actor : Evil
             LayerEnum.Juggernaut => new Juggernaut(),
             LayerEnum.Murderer => new Murderer(),
             LayerEnum.Necromancer => new Necromancer(),
-            LayerEnum.Plaguebearer or LayerEnum.Pestilence => new Plaguebearer(),
             LayerEnum.SerialKiller => new SerialKiller(),
             LayerEnum.Survivor => new Survivor(),
             LayerEnum.Thief => new Thief(),
@@ -160,6 +159,10 @@ public sealed class Actor : Evil
             LayerEnum.Stalker => new Stalker(),
             LayerEnum.Timekeeper => new Timekeeper(),
             LayerEnum.Warper => new Warper(),
+
+            // Apocalypse roles
+            LayerEnum.Cultist or LayerEnum.Void => new Cultist(),
+            LayerEnum.Plaguebearer or LayerEnum.Pestilence => new Plaguebearer(),
 
             // Whatever remains
             LayerEnum.Actor or _ => new Amnesiac(),

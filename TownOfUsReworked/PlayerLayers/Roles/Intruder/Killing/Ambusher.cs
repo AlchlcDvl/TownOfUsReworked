@@ -53,7 +53,7 @@ public sealed class Ambusher : Intruder
             AmbushButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is Faction.Intruder or Faction.Syndicate) || (!AmbushMates &&
+    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is not (Faction.Crew or Faction.Neutral)) || (!AmbushMates &&
         player.Is(SubFaction) && SubFaction != SubFaction.None);
 
     private bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());

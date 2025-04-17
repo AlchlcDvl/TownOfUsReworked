@@ -16,14 +16,10 @@ public sealed class Taskmaster : Disposition
         if (TasksLeft == TMTasksRemaining)
         {
             var role = CustomPlayer.Local.GetRole();
+            Flash(Color);
 
-            if (Local || role.Faction == Faction.Crew || role.Alignment is Alignment.Benign or Alignment.Evil)
-                Flash(Color);
-            else if (role.Faction is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse || role.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
-            {
-                Flash(Color);
+            if (role.Faction is not (Faction.Crew or Faction.Neutral) || role.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
                 role.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
-            }
         }
         else if (TasksDone && Local)
             Flash(Color);

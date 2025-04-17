@@ -67,8 +67,8 @@ public sealed class Consort : Intruder, IBlocker
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None);
+    public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||  (SubFaction !=
+        SubFaction.None && player.Is(SubFaction));
 
     public string Label() => BlockTarget ? "ROLEBLOCK" : "SET TARGET";
 

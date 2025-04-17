@@ -69,8 +69,8 @@ public sealed class Drunkard : Syndicate
             ConfuseMenu.Open();
     }
 
-    private bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate &&
-        ConfuseImmunity) || (player.Is(SubFaction) && SubFaction != SubFaction.None && ConfuseImmunity);
+    private bool Exception1(PlayerControl player) => player == ConfusedPlayer || (ConfuseImmunity && (player == Player || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral))
+        || (player.Is(SubFaction) && SubFaction != SubFaction.None)));
 
     private string Label() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
 

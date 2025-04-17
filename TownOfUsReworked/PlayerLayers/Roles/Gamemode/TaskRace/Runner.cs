@@ -16,14 +16,6 @@ public sealed class Runner : GameModeRole
         Alignment = Alignment.TaskRace;
     }
 
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        __instance.ReportButton.ToggleVisible(false);
-        __instance.SabotageButton.ToggleVisible(false);
-        __instance.ImpostorVentButton.ToggleVisible(false);
-    }
-
     public override void UponTaskComplete(uint taskId)
     {
         if (TasksLeft == 1)

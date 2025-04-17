@@ -59,8 +59,8 @@ public sealed class Grenadier : Intruder
         }
     }
 
-    private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
-        SubFaction != SubFaction.None)) && !Meeting()) || player == Player || Meeting();
+    private bool ShouldPlayerBeDimmed(PlayerControl player) => player.HasDied() || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) &&
+        SubFaction != SubFaction.None) || player == Player || Meeting();
 
     private void UnFlash() => FlashedPlayers = [];
 

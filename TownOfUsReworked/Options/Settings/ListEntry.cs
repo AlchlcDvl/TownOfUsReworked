@@ -123,6 +123,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             ListSlot.PandoraPower => RoleGenManager.PP,
             ListSlot.PandoraSupport => RoleGenManager.PS,
             ListSlot.PandoraUtil => RoleGenManager.PU,
+            ListSlot.PandoraHarb => RoleGenManager.PHa,
             ListSlot.RegularPandora => RoleGenManager.RegPandorica.GetAll(),
             ListSlot.PowerPandora => RoleGenManager.PowerPandorica.GetAll(),
             ListSlot.RandomPandora => RoleGenManager.Pandorica.GetAll(),

@@ -38,7 +38,7 @@ public sealed class Werewolf : NKilling
         MaulButton.StartCooldown();
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
         Player.IsLinkedTo(player);
 
     private bool Usable() => CanMaul;

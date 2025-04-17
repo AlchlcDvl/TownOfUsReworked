@@ -3,12 +3,11 @@ namespace TownOfUsReworked.Custom;
 public abstract class CustomMenu : IDisposable
 {
     public static readonly List<CustomMenu> AllMenus = [];
+    public static bool IsActive;
 
     public ShapeshifterMinigame Menu { get; private set; }
     public PlayerControl Owner { get; set; }
     private MenuType Type { get; }
-
-    public static bool IsActive;
 
     protected CustomMenu(PlayerControl owner, MenuType type)
     {

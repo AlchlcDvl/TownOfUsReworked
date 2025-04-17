@@ -46,7 +46,7 @@ public sealed class SerialKiller : NKilling
 
     private void Stab(PlayerControl target) => StabButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
         Player.IsLinkedTo(player);
 
     private bool Usable() => BloodlustButton.EffectActive;

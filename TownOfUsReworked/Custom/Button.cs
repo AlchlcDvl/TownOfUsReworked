@@ -408,8 +408,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         if (Owner.Player.IsBlocked())
             BlockExposed = true;
 
-        Base.graphic.sprite = GetSprite(Sprite());
-        Base.graphic.SetCooldownNormalizedUvs();
+        UpdateSprite();
 
         if (!BlockExposed)
         {
@@ -471,6 +470,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             OnEffectStart();
             EffectTime = Duration;
             EffectEnabled = true;
+            UpdateSprite();
         }
 
         EffectTime -= Time.deltaTime;
@@ -485,6 +485,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         OnEffectEnd();
         EffectEnabled = false;
         ClickedAgain = false;
+        UpdateSprite();
 
         if (HasOtherDelay)
             ButtonOtherDelay();
@@ -499,6 +500,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             OnDelayStart();
             DelayTime = Delay;
             DelayEnabled = true;
+            UpdateSprite();
         }
 
         DelayTime -= Time.deltaTime;
@@ -512,6 +514,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
     {
         OnDelayEnd();
         DelayEnabled = false;
+        UpdateSprite();
 
         if (HasEffect)
             ButtonEffect();
@@ -528,6 +531,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             OnOtherDelayStart();
             OtherDelayTime = OtherDelay;
             OtherDelayEnabled = true;
+            UpdateSprite();
         }
 
         OtherDelayTime -= Time.deltaTime;
@@ -542,6 +546,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         OnOtherDelayEnd();
         OtherDelayEnabled = false;
         StartCooldown();
+        UpdateSprite();
     }
 
     private void Timer()
@@ -632,6 +637,12 @@ public sealed class CustomButton : IDisposable, INetSerializable
             result = SpriteFunc();
 
         return result;
+    }
+
+    public void UpdateSprite()
+    {
+        Base.graphic.sprite = GetSprite(Sprite());
+        Base.graphic.SetCooldownNormalizedUvs();
     }
 
     public bool Usable() => IsUsable() && (!HasUses || UseCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() &&

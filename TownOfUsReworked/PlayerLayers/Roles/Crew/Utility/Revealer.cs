@@ -51,16 +51,16 @@ public sealed class Revealer : Crew, IGhosty
         {
             if (Local)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or
-                Alignment.Proselyte || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
+            else if (CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte ||
+                CustomPlayer.Local.GetRole() is NKilling or Neophyte) && RevealerRevealsNeutrals))
             {
                 Revealed = true;
                 Flash(Color);
                 CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
             }
         }
-        else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or
-            Alignment.Proselyte || CustomPlayer.Local.GetRole() is NKilling) && RevealerRevealsNeutrals))
+        else if (CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((CustomPlayer.Local.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte ||
+            CustomPlayer.Local.GetRole() is NKilling or Neophyte) && RevealerRevealsNeutrals))
         {
             Flash(Color);
         }

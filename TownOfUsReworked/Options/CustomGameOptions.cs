@@ -148,6 +148,9 @@ public static class GameModeSettings
 
     [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
     public static Number RunnerVision = 1.5f;
+
+    [ToggleOption]
+    public static bool RunnerFlashlight = false;
 }
 
 [ListHolderOption(PlayerLayerEnum.Role, false)]
@@ -1221,9 +1224,6 @@ public static class ApocalypseHarbingerSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxAh = 1;
-
-    [ToggleOption]
-    public static bool AhHaveImpVision = true;
 }
 
 [HeaderOption(MultiMenu.AlignmentSubOptions)]

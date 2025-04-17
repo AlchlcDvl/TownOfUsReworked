@@ -57,13 +57,13 @@ public sealed class Crusader : Syndicate
             CrusadeButton.StartCooldown(cooldown);
     }
 
-    public static void RadialCrusade(PlayerControl player2)
+    public void RadialCrusade(PlayerControl player2)
     {
         foreach (var player in GetClosestPlayers(player2, ChaosDriveCrusadeRadius))
         {
             Spread(player2, player);
 
-            if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || (player.Is(Faction.Syndicate) && !CrusadeMates))
+            if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || Exception1(player))
                 continue;
 
             if (!player.Is(Alignment.Deity))
@@ -78,8 +78,8 @@ public sealed class Crusader : Syndicate
         }
     }
 
-    private bool Exception1(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CrusadeMates && Faction is Faction.Intruder or Faction.Syndicate) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None && !CrusadeMates);
+    public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (!CrusadeMates && ((player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
+        (player.Is(SubFaction) && SubFaction != SubFaction.None)));
 
     private bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 

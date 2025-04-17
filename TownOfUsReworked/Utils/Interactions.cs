@@ -8,13 +8,13 @@ public static class Interactions
         if (target.IsOnAlert())
             return true;
 
-        if (target.IsAmbushed() && (!player.Is(Faction.Intruder, Faction.Pandorica) || Ambusher.AmbushMates))
+        if (target.IsAmbushed(out var amb) && !amb.Exception1(player))
             return true;
 
-        if (target.GetRole() is SerialKiller sk && sk.BloodlustButton.EffectActive && player.GetRole() is Escort or Consort or Glitch && !harmful)
+        if (target.GetRole() is SerialKiller sk && sk.BloodlustButton.EffectActive && player.GetRole() is IBlocker && !harmful)
             return true;
 
-        return target.IsCrusaded() && (!player.Is(Faction.Syndicate, Faction.Pandorica) || Crusader.CrusadeMates);
+        return target.IsCrusaded(out var crus) && !crus.Exception1(player);
     }
 
     private static void Trigger(PlayerControl player, PlayerControl target, bool harmful, out PlayerControl trapper)
@@ -160,8 +160,8 @@ public static class Interactions
             }
         }
 
-        if (target.CrusadeActive())
-            Crusader.RadialCrusade(target);
+        if (target.CrusadeActive(out var crus))
+            crus.RadialCrusade(target);
 
         if (!delayed)
         {

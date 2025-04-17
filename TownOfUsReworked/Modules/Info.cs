@@ -53,6 +53,7 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
     Faction.Illuminati => CustomColorManager.Illuminati,
     Faction.Pandorica => CustomColorManager.Pandorica,
     Faction.Compliance => CustomColorManager.Compliance,
+    Faction.Apocalypse => CustomColorManager.Apocalypse,
     _ => CustomColorManager.Faction
 }, footer)
 {

@@ -120,7 +120,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
     {
         base.InitIntList();
 
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Intruder or Faction.Compliance) || Intruders == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Intruder or Faction.Pandorica or Faction.Illuminati)) || Intruders == 0)
             return;
 
         int minInt = IntruderSettings.IntruderMin;
@@ -330,7 +330,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
     {
         base.InitApocList();
 
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Apocalypse or Faction.Compliance) || Apocalypse == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Apocalypse or Faction.Pandorica or Faction.Illuminati)) || Apocalypse == 0)
             return;
 
         int minApoc = ApocalypseSettings.ApocalypseMin;
@@ -381,7 +381,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
     {
         base.InitSynList();
 
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is Faction.Syndicate or Faction.Compliance) || Syndicate == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Syndicate or Faction.Pandorica or Faction.Illuminati)) || Syndicate == 0)
             return;
 
         int minSyn = SyndicateSettings.SyndicateMin;

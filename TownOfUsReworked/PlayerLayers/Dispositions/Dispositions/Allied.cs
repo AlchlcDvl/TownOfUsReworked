@@ -29,6 +29,9 @@ public sealed class Allied : Disposition
         Faction.Crew => CustomColorManager.Crew,
         Faction.Syndicate => CustomColorManager.Syndicate,
         Faction.Intruder => CustomColorManager.Intruder,
+        Faction.Apocalypse => CustomColorManager.Apocalypse,
+        Faction.Compliance => CustomColorManager.Compliance,
+        Faction.Pandorica => CustomColorManager.Pandorica,
         _ => CustomColorManager.Allied,
     };
     public override string Symbol => "ζ";

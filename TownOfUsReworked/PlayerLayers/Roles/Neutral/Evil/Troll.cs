@@ -15,7 +15,6 @@ public sealed class Troll : Evil
     [ToggleOption]
     private static bool TrollSwitchVent = false;
 
-    public bool Killed => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     private CustomButton InteractButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Troll;
@@ -24,7 +23,7 @@ public sealed class Troll : Evil
     public override Func<string> Description => () => "- If you are killed, you will also kill your killer" + (CanInteract ? "\n- You can interact with players\n- Your interactions do nothing "
         + "except spread infection and possibly kill you via touch sensitive roles" : "");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
-    public override bool HasWon => Killed;
+    public override bool HasWon => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public override bool CanVent => base.CanVent && TrollVent;
     public override bool CanSwitchVents => TrollSwitchVent;
     public override WinLose EndState => WinLose.TrollWins;
@@ -32,7 +31,7 @@ public sealed class Troll : Evil
     protected override void Init()
     {
         base.Init();
-        Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
+        Objectives = () => HasWon ? "- You have successfully trolled someone" : "- Get killed";
         InteractButton ??= new(this, new SpriteName("Interact"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
             (UsableFunc)Usable);
     }

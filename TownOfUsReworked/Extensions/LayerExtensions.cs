@@ -44,9 +44,7 @@ public static class LayerExtensions
         if (!player)
             return Faction.None;
 
-        var role = player.GetRole();
-
-        if (role != null)
+        if (player.Is<Role>(out var role))
             return role.Faction;
 
         if (!player.IsImpostor())
@@ -91,18 +89,18 @@ public static class LayerExtensions
         if (!player)
             return false;
 
-        if (!player.GetRole())
+        if (!player.Is<Role>(out var role))
             return !player.Data.IsImpostor();
 
-        var crewFlag = player.Is(Faction.Crew);
-        var neutralFlag = player.Is(Faction.Neutral);
-        var factionFlag = player.Is(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse);
+        var crewFlag = role.Faction == Faction.Crew;
+        var neutralFlag = role.Faction == Faction.Neutral;
+        var factionFlag = role.Faction.IsAny(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse);
 
-        var phantomFlag = player.Is<Phantom>();
+        var phantomFlag = role is Phantom;
 
         var taskmasterFlag = player.Is<Taskmaster>();
 
-        var gmFlag = player.Is<Runner>() || player.Is<Hunted>();
+        var gmFlag = role is Runner or Hunted;
 
         var flag1 = neutralFlag && (taskmasterFlag || phantomFlag);
         var flag2 = factionFlag && taskmasterFlag;
@@ -181,9 +179,9 @@ public static class LayerExtensions
 
     public static bool SilenceActive(this PlayerControl player) => !player.IsSilenced() && PlayerLayer.GetLayers<Silencer>().Any(role => role.HoldsDrive);
 
-    public static bool IsOnAlert(this PlayerControl player) => PlayerLayer.GetLayers<IAlerter>().Any(role => role.Player == player && role.AlertButton?.EffectActive == true);
+    public static bool IsOnAlert(this PlayerControl player) => player.Is<IAlerter>(out var alerter) && alerter.AlertButton?.EffectActive == true;
 
-    public static bool IsVesting(this PlayerControl player) => PlayerLayer.GetLayers<Survivor>().Any(role => role.VestButton.EffectActive && player == role.Player);
+    public static bool IsVesting(this PlayerControl player) => player.Is<Survivor>(out var surv) && surv.VestButton.EffectActive;
 
     public static bool IsMarked(this PlayerControl player) => PlayerLayer.GetLayers<Ghoul>().Any(role => player == role.MarkedPlayer);
 
@@ -191,10 +189,16 @@ public static class LayerExtensions
 
     public static bool IsAmbushed(this PlayerControl player) => PlayerLayer.GetLayers<Ambusher>().Any(role => player == role.AmbushedPlayer && role.AmbushButton.EffectActive);
 
+    public static bool IsAmbushed(this PlayerControl player, out Ambusher amb) => PlayerLayer.GetLayers<Ambusher>().TryFinding(role => player == role.AmbushedPlayer &&
+        role.AmbushButton.EffectActive, out amb);
+
     public static bool IsCrusaded(this PlayerControl player) => PlayerLayer.GetLayers<Crusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive);
 
-    public static bool CrusadeActive(this PlayerControl player) => PlayerLayer.GetLayers<Crusader>().Any(role => player == role.CrusadedPlayer && role.CrusadeButton.EffectActive &&
-        role.HoldsDrive);
+    public static bool IsCrusaded(this PlayerControl player, out Crusader crus) => PlayerLayer.GetLayers<Crusader>().TryFinding(role => player == role.CrusadedPlayer &&
+        role.CrusadeButton.EffectActive, out crus);
+
+    public static bool CrusadeActive(this PlayerControl player, out Crusader crus) => PlayerLayer.GetLayers<Crusader>().TryFinding(role => player == role.CrusadedPlayer &&
+        role is { CrusadeButton.EffectActive: true, HoldsDrive: true }, out crus);
 
     public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => role.Protecting && player == role.TargetPlayer);
 
@@ -277,7 +281,7 @@ public static class LayerExtensions
 
         if (PlayerLayer.GetLayers<Timekeeper>().Any(x => x.TimeButton.EffectActive))
         {
-            if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && !Timekeeper.TimeFreezeImmunity))
+            if (!player.Is(Faction.Syndicate) || !Timekeeper.TimeFreezeImmunity)
                 result = 0f;
         }
 
@@ -547,10 +551,10 @@ public static class LayerExtensions
         if (player.IsGaTarget() && GuardianAngel.GaTargetKnows)
             attributes += "\n<#FFFFFFFF>- Someone wants to protect you ★</color>";
 
-        if (player.IsBhTarget())
+        if (player.IsBhTarget() && BountyHunter.BhTargetKnows)
             attributes += "\n<#B51E39FF>- There is a bounty on your head Θ</color>";
 
-        if (player.Is(Faction.Syndicate) && role is Syndicate { HoldsDrive: true })
+        if (role is Syndicate { HoldsDrive: true, Faction: Faction.Syndicate or Faction.Pandorica or Faction.Illuminati })
             attributes += "\n<#008000FF>- You have the power of the Chaos Drive Δ</color>";
 
         if (!player.CanDoTasks())
@@ -591,6 +595,7 @@ public static class LayerExtensions
         newRole.AllArrows.AddRange(allArrows);
         newRole.RoleHistory.AddRange(history);
         newRole.RoleHistory.Add(former.Type);
+        newRole.PostAssignment();
 
         if (!retainFaction)
             newRole.Faction = former.Faction;
@@ -598,7 +603,6 @@ public static class LayerExtensions
         if (newRole.Local)
         {
             ButtonUtils.Reset();
-            newRole.UpdateButtons();
             newRole.Player.RegenTask();
             Flash(newRole.Color);
         }
@@ -758,7 +762,7 @@ public static class LayerExtensions
         if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost)
             return;
 
-        var all = PlayerLayer.GetLayers<Syndicate>().Where(x => x.Faction is Faction.Syndicate or Faction.Pandorica or Faction.Illuminati && x.Alive);
+        var all = PlayerLayer.GetLayers<Syndicate>().Where(x => x is { Faction: Faction.Syndicate or Faction.Pandorica or Faction.Illuminati, Alive: true });
 
         if (!all.Any())
             return;

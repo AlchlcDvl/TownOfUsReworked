@@ -10,7 +10,8 @@ public abstract class Intruder : Role, IPromoter
     public LayerEnum PromoterType { get; } = LayerEnum.Godfather;
     public float PromotionModifier { get; } = Godfather.GfPromotionCdDecrease;
 
-    protected string CommonAbilities => "<#FF1919FF>- You can kill players</color>" + (Player.CanSabotage() ? "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "");
+    protected string CommonAbilities => $"<#{FactionColor.ToHtmlStringRGBA()}>- You can kill players</color>" + (Player.CanSabotage() ?
+        "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "");
 
     protected override UColor MainColor => CustomColorManager.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
@@ -23,9 +24,11 @@ public abstract class Intruder : Role, IPromoter
     {
         base.Init();
         Faction = GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Intruder);
-        KillButton ??= new(this, new SpriteName("IntruderKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
+        KillButton ??= new(this, (SpriteFunc)GetKillSprite, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor, (UsableFunc)KillUsable);
     }
+
+    private string GetKillSprite() => $"{Faction}Kill";
 
     public override List<PlayerControl> Team()
     {
@@ -51,7 +54,7 @@ public abstract class Intruder : Role, IPromoter
 
     protected virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
     private bool KillUsable() => !IsUnderling;

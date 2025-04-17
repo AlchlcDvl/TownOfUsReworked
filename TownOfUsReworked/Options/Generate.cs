@@ -40,6 +40,7 @@ public static class Generate
             }
         }
 
+        // Sanitizing the languages json in case there are translation ids of settings that don't exist anymore
         if (TownOfUsReworked.IsDev)
         {
             foreach (var id in TranslationManager.AllTranslations.Keys.Where(x => x.StartsWith("customoption") && !x.EndsWithAny("entry", "ban")))

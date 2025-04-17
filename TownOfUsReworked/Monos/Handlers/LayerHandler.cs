@@ -197,7 +197,7 @@ public sealed class LayerHandler : RoleBehaviour
 
         TasksCountTowardProgress = Player.CanDoTasks() && (CustomRole.Faction == Faction.Crew || CustomRole is Runner or Hunted);
         CanVent = Player.CanVent();
-        AffectedByLightAffectors = !(CustomAbility is Torch || CustomRole.Faction is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica);
+        AffectedByLightAffectors = !(CustomAbility is Torch || !CustomRole.AffectedByLights);
 
         CustomLayers.ForEach([HideFromIl2Cpp] (x) => x.Handler = this);
     }
@@ -244,6 +244,7 @@ public sealed class LayerHandler : RoleBehaviour
                 Faction.Intruder => CustomStatsManager.StatsGamesIntruder,
                 Faction.Neutral => CustomStatsManager.StatsGamesNeutral,
                 Faction.Syndicate => CustomStatsManager.StatsGamesSyndicate,
+                Faction.Apocalypse => CustomStatsManager.StatsGamesApocalypse,
                 Faction.Pandorica => CustomStatsManager.StatsGamesPandorica,
                 Faction.Compliance => CustomStatsManager.StatsGamesCompliance,
                 Faction.Illuminati => CustomStatsManager.StatsGamesIlluminati,

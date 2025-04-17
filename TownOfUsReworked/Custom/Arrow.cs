@@ -7,7 +7,6 @@ public class CustomArrow : IDisposable
 {
     public PlayerControl Owner { get; }
     protected ArrowBehaviour Arrow { get; private set; }
-
     protected Func<Vector3> Target { get; init; }
     private SpriteRenderer Render { get; set; }
     private GameObject ArrowObj { get; set; }

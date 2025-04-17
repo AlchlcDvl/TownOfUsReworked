@@ -126,7 +126,7 @@ public static class Blocked
     [HarmonyPatch(nameof(HudManager.Update)), HarmonyPostfix]
     public static void UpdatePostfix(HudManager __instance)
     {
-        if (!CustomPlayer.Local || IsLobby() || !Ship())
+        if (!CustomPlayer.Local || IsLobby() || !Ship() || Meeting())
             return;
 
         if (CustomPlayer.Local.Data?.Role is LayerHandler handler)
@@ -178,12 +178,10 @@ public static class Blocked
         __instance.SabotageButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "SABOTAGE";
         __instance.SabotageButton.ToggleVisible(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
 
-        if (!IsInGame() || IsLobby())
-            __instance.AbilityButton.ToggleVisible(false);
-        else if (IsHnS())
+        if (IsHnS())
             __instance.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor());
         else
-            __instance.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && CustomPlayer.Local.HasDied());
+            __instance.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught());
 
         __instance.FullScreen.enabled = true;
         __instance.FullScreen.gameObject.SetActive(true);

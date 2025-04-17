@@ -47,7 +47,7 @@ public sealed class Void : Deity
         ExtractButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
         Player.IsLinkedTo(player);
 
     public override void ReadRPC(NetData reader) => ToBeExtracted.Add(reader.ReadByte());

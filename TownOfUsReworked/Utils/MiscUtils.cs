@@ -1492,7 +1492,30 @@ public static class MiscUtils
 
     // public static IEnumerator WaitUntil(Task task) => WaitUntil(() => task.IsCompleted);
 
-    // public static T CoStart<T>(T coroutine) where T : IEnumerator => (T)Coroutines.Start(coroutine);
+    public static T CoStart<T>(T coroutine) where T : IEnumerator => (T)Coroutines.Start(coroutine);
 
     public static T CreateInstance<T>(params object[] args) => (T)Activator.CreateInstance(typeof(T), args);
+
+    // Graciously yoinked these two methods from MiraAPI
+    public static LobbyNotificationMessage PopNotif(string text, UColor color, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f) => PopNotif(text, color, new(0f, 0f, -2f),
+        sprite, clip, thickness);
+
+    public static LobbyNotificationMessage PopNotif(string text, UColor color, Vector3 localPos, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f)
+    {
+        var popper = HUD().Notifier;
+        var newMessage = UObject.Instantiate(popper.notificationMessageOrigin, Vector3.zero, Quaternion.identity, popper.transform);
+        newMessage.transform.localPosition = localPos;
+        newMessage.SetUp(text, sprite, color, (Action)(() => popper.OnMessageDestroy(newMessage)));
+        popper.ShiftMessages();
+        popper.AddMessageToQueue(newMessage);
+        newMessage.Text.SetOutlineThickness(thickness);
+
+        if (clip)
+        {
+            SoundManager.Instance.StopSound(clip);
+            SoundManager.Instance.PlaySound(clip, false, 2f);
+        }
+
+        return newMessage;
+    }
 }

@@ -40,7 +40,7 @@ public sealed class Sheriff : Crew
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
+    private bool Exception(PlayerControl player) => (((Faction is not (Faction.Crew or Faction.Neutral) && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
         GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>()
         && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 }

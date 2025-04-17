@@ -57,6 +57,7 @@ public abstract class AssetLoader
     {
         using var hasher = MD5.Create();
         yield return new TranslationLoader().CoFetch(hasher);
+        yield return new BundleLoader().CoFetch(hasher);
         yield return new HatLoader().CoFetch(hasher);
         yield return new VisorLoader().CoFetch(hasher);
         yield return new NameplateLoader().CoFetch(hasher);
@@ -65,7 +66,6 @@ public abstract class AssetLoader
         yield return new BaseDownloader(TownOfUsReworked.Images, "Images", "png").CoFetch(hasher);
         yield return new PortalLoader().CoFetch(hasher);
         yield return new BaseDownloader(TownOfUsReworked.Sounds, "Sounds", "wav").CoFetch(hasher);
-        yield return new BundleLoader().CoFetch(hasher);
     }
 
     protected static bool ShouldDownload(string file, string hash, HashAlgorithm hasher) => IsNullEmptyOrWhiteSpace(hash) || !File.Exists(file) || GenerateHash(file, hasher) != hash;

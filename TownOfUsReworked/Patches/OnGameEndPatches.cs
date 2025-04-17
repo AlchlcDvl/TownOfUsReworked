@@ -40,7 +40,7 @@ public static class OnGameEndPatches
 
             foreach (var role in PlayerLayer.GetLayers<Role>())
             {
-                if (!role.Disconnected && role.Winner)
+                if (role is { Disconnected: false, Winner: true })
                     Winners[role.PlayerName] = role.Player.GetLayers();
             }
 
@@ -187,9 +187,10 @@ public static class OnGameEndPatches
                     WinLose.TaskRunnerWins => ("Tasks Completed", "IntruderWin", CustomColorManager.TaskRace),
                     WinLose.HunterWins => ("Hunters Win", "IntruderWin", CustomColorManager.Hunter),
                     WinLose.HuntedWin => ("The Hunted Win", "IntruderWin", CustomColorManager.Hunted),
-                    WinLose.PandoricaWins => ("The Pandorica Wins", "IntruderWin", CustomColorManager.Hunted),
-                    WinLose.IlluminatiWins => ("The Illuminati Wins", "IntruderWin", CustomColorManager.Hunted),
-                    WinLose.ComplianceWins => ("The Compliance Wins", "IntruderWin", CustomColorManager.Hunted),
+                    WinLose.PandoricaWins => ("The Pandorica Wins", "IntruderWin", CustomColorManager.Pandorica),
+                    WinLose.IlluminatiWins => ("The Illuminati Wins", "IntruderWin", CustomColorManager.Illuminati),
+                    WinLose.ComplianceWins => ("The Compliance Wins", "IntruderWin", CustomColorManager.Compliance),
+                    WinLose.NeutralsWin => ("Neutrals Wins", "IntruderWin", CustomColorManager.Neutral),
                     _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
                 };
                 __instance.BackgroundBar.material.color = text.color = color;

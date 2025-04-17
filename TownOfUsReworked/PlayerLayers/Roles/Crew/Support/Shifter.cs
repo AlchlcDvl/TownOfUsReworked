@@ -86,7 +86,7 @@ public sealed class Shifter : Crew
             handler1.SetUpLayers();
     }
 
-    private bool Exception(PlayerControl player) => player.HasDied() || (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None &&
+    private bool Exception(PlayerControl player) => player.HasDied() || (Faction is not (Faction.Crew or Faction.Neutral) && player.Is(Faction)) || (SubFaction != SubFaction.None &&
         player.Is(SubFaction)) || player == Player;
 
     public override void ReadRPC(NetData reader) => Shift(reader.ReadPlayer());

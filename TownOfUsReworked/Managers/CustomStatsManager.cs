@@ -13,6 +13,7 @@ public static class CustomStatsManager
     public static StringNames StatsGamesCrew;
     public static StringNames StatsGamesIntruder;
     public static StringNames StatsGamesSyndicate;
+    public static StringNames StatsGamesApocalypse;
     public static StringNames StatsGamesNeutral;
     public static StringNames StatsGamesIlluminati;
     public static StringNames StatsGamesCompliance;
@@ -65,6 +66,7 @@ public static class CustomStatsManager
         StatsGamesCrew = TranslationManager.GetOrAddName("Stats.CrewGames");
         StatsGamesIntruder = TranslationManager.GetOrAddName("Stats.IntruderGames");
         StatsGamesSyndicate = TranslationManager.GetOrAddName("Stats.SyndicateGames");
+        StatsGamesApocalypse = TranslationManager.GetOrAddName("Stats.ApocalypseGames");
         StatsGamesNeutral = TranslationManager.GetOrAddName("Stats.NeutralGames");
         StatsGamesIlluminati = TranslationManager.GetOrAddName("Stats.IlluminatiGames");
         StatsGamesCompliance = TranslationManager.GetOrAddName("Stats.ComplianceGames");
@@ -77,6 +79,7 @@ public static class CustomStatsManager
             StatsGamesCrew,
             StatsGamesIntruder,
             StatsGamesSyndicate,
+            StatsGamesApocalypse,
             StatsGamesNeutral,
             StatsGamesIlluminati,
             StatsGamesCompliance,

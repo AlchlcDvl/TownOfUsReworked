@@ -45,7 +45,7 @@ public static class PlayerControlOnClick
             }
             case Revealer revealer:
             {
-                if ((Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
+                if ((Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral))) ||
                     (Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && CustomPlayer.Local.Is(Faction.Crew)))
                 {
                     return;

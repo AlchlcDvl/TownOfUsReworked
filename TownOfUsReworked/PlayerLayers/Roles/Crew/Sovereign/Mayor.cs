@@ -27,11 +27,8 @@ public sealed class Mayor : Crew, ISovereign
     protected override void Init()
     {
         base.Init();
-        Revealed = !MayorDirectSpawn;
         Alignment = Alignment.Sovereign;
-
-        if (!Revealed)
-            RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, "REVEAL");
+        RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, "REVEAL");
     }
 
     public override void Reset(bool meeting, bool start) => RoundOne = start && RoundOneNoMayorReveal;

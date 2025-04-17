@@ -40,7 +40,7 @@ public sealed class Snitch : Ability
         {
             if (Local)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
+            else if (CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
             {
                 Flash(Color);
                 local.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
@@ -51,13 +51,11 @@ public sealed class Snitch : Ability
             if (Local)
             {
                 Flash(UColor.green);
-                AllPlayers().Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.GetFaction() == Faction.Neutral && SnitchSeesNeutrals)).ForEach(x =>
+                AllPlayers().Where(x => x.GetFaction() is not (Faction.Crew or Faction.Neutral) || (x.GetFaction() == Faction.Neutral && SnitchSeesNeutrals)).ForEach(x =>
                     local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
             }
-            else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
-            {
+            else if (CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
                 Flash(UColor.red);
-            }
         }
     }
 
@@ -70,26 +68,24 @@ public sealed class Snitch : Ability
 
         if (SnitchSeesRoles)
         {
-            if (role.Faction is not (Faction.Syndicate or Faction.Intruder) && (role.Faction != Faction.Neutral || !SnitchSeesNeutrals) && (role.Faction != Faction.Crew || !SnitchSeesCrew))
+            if ((role.Faction != Faction.Neutral || !SnitchSeesNeutrals) && (role.Faction != Faction.Crew || !SnitchSeesCrew))
                 return;
 
             color = role.Color;
             name += $"\n{role.Name}";
             revealed = true;
         }
-        else if (role.Faction is Faction.Syndicate or Faction.Intruder || (role.Faction == Faction.Neutral && SnitchSeesNeutrals) || (role.Faction == Faction.Crew && SnitchSeesCrew))
+        else if (role.Faction is not (Faction.Crew or Faction.Neutral) || (role.Faction == Faction.Neutral && SnitchSeesNeutrals) || (role.Faction == Faction.Crew && SnitchSeesCrew))
         {
-            var disp = handler.CustomDisposition;
-
-            if (!(disp is Traitor && SnitchSeesTraitor) && !(disp is Fanatic && SnitchSeesFanatic))
-            {
-                color = role.FactionColor;
-                name += $"\n{role.FactionName}";
-            }
-            else
+            if (handler.CustomDisposition is FactionChanger { SnitchReveals: false })
             {
                 color = CustomColorManager.Crew;
                 name += "\nCrew";
+            }
+            else
+            {
+                color = role.FactionColor;
+                name += $"\n{role.FactionName}";
             }
 
             revealed = true;

@@ -20,13 +20,15 @@ public sealed class Cultist : Harbinger<Void>
     protected override void Init()
     {
         base.Init();
-        SacrificeButton ??= new(this, new SpriteName("CultistSacrifice"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Sacrifice, (PlayerBodyExclusion)Exception, "SACRIFICE",
+        SacrificeButton ??= new(this, (SpriteFunc)GetSpriteName, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Sacrifice, (PlayerBodyExclusion)Exception, "SACRIFICE",
             new Cooldown(SacrificeCd));
     }
 
+    private string GetSpriteName() => $"{Faction}Kill";
+
     public void Sacrifice(PlayerControl target) => SacrificeButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
         Player.IsLinkedTo(player);
 
     protected override bool CanTransform() => KillCounts.TryGetValue(PlayerId, out var count) && count >= 3;

@@ -77,8 +77,6 @@ public static class PlayerControlPatches
         var hud = HUD();
         hud.ShadowQuad.gameObject.SetActive(true);
         hud.AdminButton.ToggleVisible(__instance.IsImpostor() && IsHnS());
-        hud.SabotageButton.ToggleVisible(__instance.CanSabotage());
-        hud.ImpostorVentButton.ToggleVisible(__instance.CanVent());
         ButtonUtils.Reset();
 
         if (Chat().IsOpenOrOpening)
@@ -130,11 +128,13 @@ public static class PlayerControlPatches
             Faction.Crew => CrewSettings.CrewFlashlight,
             Faction.Intruder => IntruderSettings.IntruderFlashlight,
             Faction.Syndicate => SyndicateSettings.SyndicateFlashlight,
+            Faction.Apocalypse => ApocalypseSettings.ApocalypseFlashlight,
             Faction.Neutral => NeutralSettings.NeutralFlashlight,
             _ => role switch
             {
                 Hunted => GameModeSettings.HuntedFlashlight,
                 Hunter => GameModeSettings.HunterFlashlight,
+                Runner => GameModeSettings.RunnerFlashlight,
                 _ => false
             }
         } && __instance.Data.IsDead;

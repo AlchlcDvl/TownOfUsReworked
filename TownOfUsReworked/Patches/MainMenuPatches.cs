@@ -18,7 +18,7 @@ public static class MainMenuPatches
             Logo = new("ReworkedLogo") { transform = { position = new(2f, 0f, 100f) } };
             var rend = Logo.AddComponent<SpriteRenderer>();
             rend.sprite = GetSprite("Banner");
-            rend.material = GetMaterial("GlitchedMaterial");
+            rend.material = new(GetMaterial("GlitchedMaterial"));
             Logo.transform.SetParent(rightPanel.transform);
         }
 
@@ -48,13 +48,13 @@ public static class MainMenuPatches
             CreateDownloadButton("LevelImpostor", y, pos, "DownloadLevelImpostor");
         }
 
-        if (ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate)
-        {
-            var popup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
-            popup.TextAreaTMP.fontSize *= 0.7f;
-            popup.TextAreaTMP.enableAutoSizing = false;
-            popup.Show("A mod update is available!");
-        }
+        if (!ModUpdater.ReworkedUpdate && !ModUpdater.SubmergedUpdate)
+            return;
+
+        var popup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+        popup.TextAreaTMP.fontSize *= 0.7f;
+        popup.TextAreaTMP.enableAutoSizing = false;
+        popup.Show("A mod update is available!");
     }
 
     private static void CreateDownloadButton(string downloadType, float yValue1, float yValue2, string spriteName)

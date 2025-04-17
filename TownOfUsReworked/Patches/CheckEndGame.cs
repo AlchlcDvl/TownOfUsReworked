@@ -81,22 +81,30 @@ public static class CheckEndGame
             return;
 
         var faction = hexer.Faction;
-        Func<PlayerControl, bool> factionCheck = faction switch
+        var subFaction = hexer.SubFaction;
+        Func<PlayerControl, bool> factionCheck = subFaction switch
         {
-            Faction.Syndicate or Faction.Crew or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica => x => x.Is(faction),
-            _ => hexer.LinkedDisposition switch
+            SubFaction.None => faction switch
             {
-                LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
-                LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
-                _ => x => x == hexer.Player
-            }
+                Faction.Neutral => hexer.LinkedDisposition switch
+                {
+                    LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
+                    LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
+                    _ => x => x == hexer.Player
+                },
+                _ => x => x.Is(faction)
+            },
+            _ => x => x.Is(subFaction)
         };
 
         var players = AllPlayers();
 
-        if (hexer.Spelled.Count == players.Count(plr => !plr.HasDied() && !factionCheck(plr)))
+        if (hexer.Spelled.Count != players.Count(plr => !plr.HasDied() && !factionCheck(plr)))
+            return;
+
+        WinState = subFaction switch
         {
-            WinState = hexer.Faction switch
+            SubFaction.None => faction switch
             {
                 Faction.Crew => WinLose.CrewWins,
                 Faction.Intruder => WinLose.IntrudersWin,
@@ -113,8 +121,14 @@ public static class CheckEndGame
                     _ => WinLose.NobodyWins
                 },
                 _ => WinLose.NobodyWins
-            };
-        }
+            },
+            SubFaction.Cabal => WinLose.CabalWins,
+            SubFaction.Undead => WinLose.UndeadWins,
+            SubFaction.Reanimated => WinLose.ReanimatedWins,
+            SubFaction.Cult => WinLose.CultWins,
+            _ => WinLose.NobodyWins
+        };
+        CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. players.Where(factionCheck).Distinct() ]);
     }
 
     private static void CheckFactionWin(List<byte> winnerIds)

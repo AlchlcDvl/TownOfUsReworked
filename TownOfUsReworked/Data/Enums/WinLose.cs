@@ -14,6 +14,7 @@ public enum WinLose : byte
     GuesserWins,
     ActorWins,
     BountyHunterWins,
+    NeutralsWin,
 
     CrewWins,
     IntrudersWin,

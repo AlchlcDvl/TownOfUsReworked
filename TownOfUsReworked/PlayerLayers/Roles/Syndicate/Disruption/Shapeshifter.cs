@@ -12,6 +12,9 @@ public sealed class Shapeshifter : Syndicate
     [ToggleOption]
     public static bool ShapeshiftMates = false;
 
+    [ToggleOption]
+    public static bool ShapeshiftSelf = false;
+
     private CustomButton ShapeshiftButton { get; set; }
     public PlayerControl ShapeshiftPlayer1 { get; private set; }
     public PlayerControl ShapeshiftPlayer2 { get; private set; }
@@ -126,8 +129,8 @@ public sealed class Shapeshifter : Syndicate
 
     private bool Exception2(PlayerControl player) => player == ShapeshiftPlayer1 || CommonException(player);
 
-    private bool CommonException(PlayerControl player) => player == Player || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) && Faction is Faction.Intruder or
-        Faction.Syndicate && !ShapeshiftMates) || (player.Is(SubFaction) && SubFaction != SubFaction.None && !ShapeshiftMates);
+    private bool CommonException(PlayerControl player) => (player == Player && !ShapeshiftSelf) || (player.Data.IsDead && !BodyByPlayer(player)) || (((player.Is(Faction) && Faction is not
+        (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) && !ShapeshiftMates);
 
     public override void UpdateHud(HudManager __instance)
     {

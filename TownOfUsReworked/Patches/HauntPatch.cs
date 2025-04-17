@@ -64,12 +64,12 @@ public static class HauntPatches
     [HarmonyPatch(nameof(HauntMenuMinigame.MatchesFilter))]
     public static bool Prefix(HauntMenuMinigame __instance, PlayerControl pc, ref bool __result)
     {
+        var role = pc.GetRole();
         __result = __instance.filterMode switch
         {
-            HauntMenuMinigame.HauntFilters.Impostor => pc.GetFaction() is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse || pc.GetAlignment() == Alignment.Neophyte ||
-                pc.Is<Hunter>() || pc.Is<NKilling>(),
-            HauntMenuMinigame.HauntFilters.Crewmate => pc.GetFaction() is Faction.Crew || pc.GetAlignment() is Alignment.Benign or Alignment.Evil or Alignment.Proselyte || pc.Is<Hunted>(),
-            HauntMenuMinigame.HauntFilters.Ghost => pc.HasDied(),
+            HauntMenuMinigame.HauntFilters.Impostor => role.Faction is not (Faction.Crew or Faction.Neutral) || role.Alignment == Alignment.Neophyte || role is Hunter or NKilling or Betrayer,
+            HauntMenuMinigame.HauntFilters.Crewmate => role.Faction is Faction.Crew || role.Alignment is Alignment.Benign or Alignment.Evil or Alignment.Proselyte || role is Hunted,
+            HauntMenuMinigame.HauntFilters.Ghost => !role.Alive,
             _ => true
         };
         return false;

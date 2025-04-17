@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: GlitchedMaterial
   m_Shader: {fileID: 4800000, guid: bbe12dc77f96e82429b5f3382ccfebad, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: _CHUNKHORZ_ON _CHUNKVERT_ON _FLIPX_ON _FLIPY_ON _GLITCHES_ON
+    _PIXELHORZ_ON _PIXELVERT_ON _ZOOMX_ON _ZOOMY_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -58,23 +59,40 @@ Material:
     m_Floats:
     - _BumpScale: 1
     - _ChromaticAberration: 0.0413
+    - _ChunkHorz: 1
+    - _ChunkSize: 0.047
+    - _ChunkSizeHorz: 0.05
+    - _ChunkSizeVert: 0.05
+    - _ChunkVert: 1
     - _ColorDistortion: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _EffectCount: 1
+    - _FlipX: 1
+    - _FlipY: 1
     - _GlitchDuration: 0.2
-    - _GlitchIntensity: 0.115
+    - _GlitchIntensity: 0.1
     - _GlitchSpeed: 10
     - _GlitchTimer: 5
+    - _Glitches: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
+    - _MaxScale: 1.2
+    - _MaxXScale: 1.2
+    - _MaxYScale: 1.2
     - _Metallic: 0
+    - _MinScale: 0.8
+    - _MinXScale: 0.8
+    - _MinYScale: 0.8
     - _Mode: 0
     - _NoiseIntensity: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _PixelHorz: 1
     - _PixelSize: 100
+    - _PixelVert: 1
     - _ScanlineCount: 50
     - _ScanlineIntensity: 0.236
     - _ScanlineMoveSpeed: 0.05
@@ -84,6 +102,9 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
+    - _Zoom: 0
+    - _ZoomX: 1
+    - _ZoomY: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

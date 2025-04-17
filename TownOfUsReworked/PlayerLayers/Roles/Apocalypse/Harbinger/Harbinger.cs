@@ -2,8 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Harbinger : Apocalypse
 {
-    public override bool AffectedByLights => !ApocalypseHarbingerSettings.AhHaveImpVision;
-
     protected override void Init()
     {
         base.Init();

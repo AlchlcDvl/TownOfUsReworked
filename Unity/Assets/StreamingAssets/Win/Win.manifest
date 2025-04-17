@@ -1,0 +1,10 @@
+ManifestFileVersion: 0
+CRC: 1775900690
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: reworked
+      Dependencies: {}
+    Info_1:
+      Name: soundvision
+      Dependencies: {}

@@ -164,15 +164,15 @@ public abstract class NameHandler : MonoBehaviour
 
             localDisp.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
 
-            if (playerHandler.CustomAbility is Snitch snitch && (localRole.Faction is Faction.Syndicate or Faction.Intruder or Faction.Compliance or Faction.Illuminati or Faction.Pandorica or
-                Faction.Apocalypse || (localRole.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals)) && (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
+            if (playerHandler.CustomAbility is Snitch snitch && (localRole.Faction is not (Faction.Crew or Faction.Neutral) || (localRole.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals))
+                && (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
             {
                 color = snitch.Color;
                 name += (name.Contains('\n') ? " " : "\n") + snitch.Name;
                 revealed = true;
             }
 
-            if (localRole.Faction == role.Faction && role.Faction is Faction.Intruder or Faction.Syndicate or Faction.Illuminati or Faction.Pandorica or Faction.Compliance or Faction.Apocalypse)
+            if (localRole.Faction == role.Faction && role.Faction is not (Faction.Crew or Faction.Neutral))
             {
                 if (GameModifiers.FactionSeeRoles && !revealed)
                 {
@@ -279,8 +279,8 @@ public abstract class NameHandler : MonoBehaviour
         if (player.IsProtected() && GuardianAngel.ShowProtect == ProtectOptions.Everyone && !deadSeeEverything)
             name += " <#FFFFFFFF>η</color>";
 
-        if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Syndicate.DriveHolder || (SyndicateSettings.GlobalDrive && Syndicate.SyndicateHasChaosDrive && role.Faction ==
-            Faction.Syndicate)))
+        if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Syndicate.DriveHolder || (SyndicateSettings.GlobalDrive && Syndicate.SyndicateHasChaosDrive && role.Faction is
+            not (Faction.Crew or Faction.Neutral))))
         {
             name += " <#008000FF>Δ</color>";
         }
@@ -295,16 +295,16 @@ public abstract class NameHandler : MonoBehaviour
         {
             if (Revealer.RevealerRevealsRoles)
             {
-                if (role.Faction is Faction.Syndicate or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica or Faction.Apocalypse || (role.Faction ==
-                    Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
+                if (role.Faction is not (Faction.Crew or Faction.Neutral) || (role.Faction == Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew &&
+                    Revealer.RevealerRevealsCrew))
                 {
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
                 }
             }
-            else if (role.Faction is Faction.Syndicate or Faction.Intruder or Faction.Illuminati or Faction.Compliance or Faction.Pandorica or Faction.Apocalypse || (role.Faction ==
-                Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
+            else if (role.Faction is not (Faction.Crew or Faction.Neutral) || (role.Faction == Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew &&
+                Revealer.RevealerRevealsCrew))
             {
                 if (disp is not FactionChanger { RevealerReveals: false })
                 {

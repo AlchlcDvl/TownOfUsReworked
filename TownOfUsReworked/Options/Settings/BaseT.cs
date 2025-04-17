@@ -58,22 +58,15 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         if (!HudManager.InstanceExists || !notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;
 
-        try
-        {
-            var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
-            var hud = HUD();
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
+        var notifier = HUD().Notifier;
 
-            if (LastChangedSetting == ID && hud.Notifier.activeMessages.Count > 0 && LastSettingNotif)
-                LastSettingNotif.UpdateMessage(changed);
-            else
-            {
-                LastChangedSetting = ID;
-                LastSettingNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, hud.Notifier.transform);
-                LastSettingNotif.transform.localPosition = new(0f, 0f, -2f);
-                LastSettingNotif.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(LastSettingNotif)));
-                hud.Notifier.AddMessageToQueue(LastSettingNotif);
-                hud.Notifier.ShiftMessages();
-            }
-        } catch {} // Sometimes Il2Cpp causes something in here to be null and ends up shitting the entire notification for it
+        if (LastChangedSetting == ID && LastSettingNotif)
+            LastSettingNotif.UpdateMessage(changed);
+        else
+        {
+            LastChangedSetting = ID;
+            LastSettingNotif = PopNotif(changed, notifier.settingsChangeColor, notifier.settingsChangeSprite);
+        }
     }
 }

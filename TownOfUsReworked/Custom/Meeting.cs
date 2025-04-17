@@ -117,8 +117,9 @@ public sealed class CustomMeeting : IDisposable
 
         foreach (var pair in ButtonSprites.Where(pair => pair.Value))
         {
-            pair.Value.sprite = GetSprite(Actives[pair.Key] ? ActiveSprite : DisabledSprite);
-            pair.Value.color = Actives[pair.Key] ? UColor.green : UColor.white;
+            var active = Actives[pair.Key];
+            pair.Value.sprite = GetSprite(active ? ActiveSprite : DisabledSprite);
+            pair.Value.color = active ? UColor.green : UColor.white;
         }
     }
 

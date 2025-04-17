@@ -114,7 +114,7 @@ public sealed class Thief : Neutral, IGuesser
     {
         var player = PlayerByVoteArea(voteArea);
         return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player.AmOwner) || (player.Is(Faction)
-            && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
+            && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -155,7 +155,7 @@ public sealed class Thief : Neutral, IGuesser
         }
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
         Player.IsLinkedTo(player);
 
     private void Steal(PlayerControl target)
@@ -168,7 +168,8 @@ public sealed class Thief : Neutral, IGuesser
 
             if (cooldown != CooldownType.Fail)
             {
-                if (target.GetFaction() is Faction.Intruder or Faction.Syndicate || target.GetAlignment() is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
+                // TODO: Add CKilling class
+                if (target.GetRole() is NKilling or IPromoter or Neophyte or Apocalypse or Betrayer)
                 {
                     Player.RpcMurderPlayer(target);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
@@ -198,13 +199,12 @@ public sealed class Thief : Neutral, IGuesser
 
             // Neutral roles
             Arsonist => new Arsonist(),
-            Betrayer => new Betrayer() { Faction = role.Faction },
+            Betrayer => new Betrayer(),
             Cannibal => new Cannibal(),
             Cryomaniac => new Cryomaniac(),
             Glitch => new Glitch(),
             Juggernaut => new Juggernaut(),
             Murderer => new Murderer(),
-            Plaguebearer or Pestilence => new Plaguebearer(),
             SerialKiller => new SerialKiller(),
             Thief => new Thief(),
             Werewolf => new Werewolf(),
@@ -243,6 +243,10 @@ public sealed class Thief : Neutral, IGuesser
             Timekeeper => new Timekeeper(),
             Warper => new Warper(),
 
+            // Apocalypse roles
+            Cultist => new Cultist(),
+            Plaguebearer => new Plaguebearer(),
+
             // Whatever else
             Thief or _ => new Thief()
         };
@@ -253,21 +257,30 @@ public sealed class Thief : Neutral, IGuesser
             new Thief().RoleUpdate(role, target, true);
 
         var local = CustomPlayer.Local.GetRole();
+        var faction = local.Faction;
 
-        if (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) && Snitch.SnitchSeesNeutrals))
+        if (faction != Faction.Crew || (faction == Faction.Neutral && (Snitch.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))
         {
-            foreach (var snitch in GetLayers<Snitch>())
+            var neut = faction == Faction.Neutral;
+
+            if (!neut || Snitch.SnitchSeesNeutrals)
             {
-                if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
-                    local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
-                else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, Player, snitch.Color));
+                foreach (var snitch in GetLayers<Snitch>())
+                {
+                    if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
+                        local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
+                    else if (snitch.TasksDone && snitch.Local)
+                        snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
+                }
             }
 
-            foreach (var revealer in GetLayers<Revealer>())
+            if (!neut || Revealer.RevealerRevealsNeutrals)
             {
-                if (revealer.Revealed && player.AmOwner)
-                    local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Player, revealer.Color));
+                foreach (var revealer in GetLayers<Revealer>())
+                {
+                    if (revealer.Revealed && player.AmOwner)
+                        local.AllArrows.Add(revealer.PlayerId, new(player, revealer.Player, revealer.Color));
+                }
             }
         }
 

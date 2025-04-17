@@ -99,7 +99,7 @@ public abstract class Assassin : Ability, IGuesser
         GuessingMenu.Mapping.Clear();
 
         // Adds all the roles that have a non-zero chance of being in the game
-        if ((!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None)) && CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
+        if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0 && (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None)))
         {
             if (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Crewmate);
@@ -121,7 +121,7 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if ((!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)) && IntruderSettings.IntruderCount > 0)
+        if (IntruderSettings.IntruderCount > 0 && (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)))
         {
             if (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Impostor);
@@ -142,7 +142,7 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if ((!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None)) && SyndicateSettings.SyndicateCount > 0)
+        if (SyndicateSettings.SyndicateCount > 0 && (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None)))
         {
             if (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None))
                 GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
@@ -159,8 +159,11 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0 && (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None)))
+        if (ApocalypseSettings.ApocalypseCount > 0 && (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None)))
         {
+            if (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None))
+                GuessingMenu.Mapping.Add(LayerEnum.Cultist);
+
             if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive())
             {
                 GuessingMenu.Mapping.Add(LayerEnum.Plaguebearer);
@@ -232,6 +235,9 @@ public abstract class Assassin : Ability, IGuesser
 
                 GuessingMenu.Mapping.Add(layer);
             }
+
+            if (GuessingMenu.Mapping.ContainsAny(LayerEnum.Traitor, LayerEnum.Fanatic))
+                GuessingMenu.Mapping.Add(LayerEnum.Betrayer);
         }
 
         // Add Abilities if enabled
@@ -240,8 +246,8 @@ public abstract class Assassin : Ability, IGuesser
 
         foreach (var layer in GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog))
         {
-            if (!RoleGenManager.GetSpawnItem(layer).IsActive() || ((layer == LayerEnum.Hitman && Player.Is(Faction.Intruder)) || (layer == LayerEnum.Sniper && Player.Is(Faction.Syndicate)) || (layer is LayerEnum.Bullseye or
-                LayerEnum.Snitch && Player.Is(Faction.Crew))))
+            if (!RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Hitman && Player.Is(Faction.Intruder)) || (layer == LayerEnum.Sniper && Player.Is(Faction.Syndicate)) ||
+                (layer is LayerEnum.Bullseye or LayerEnum.Snitch && Player.Is(Faction.Crew)) || (layer == LayerEnum.Ritualist && Player.Is(Faction.Apocalypse)))
             {
                 continue;
             }
@@ -343,7 +349,7 @@ public abstract class Assassin : Ability, IGuesser
                 Flash(Color);
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
             }
-            else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())
+            else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
 
             return;
@@ -362,7 +368,7 @@ public abstract class Assassin : Ability, IGuesser
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"You guessed {guessTarget.name} as {guessString}!" : $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else if (Player != player && player.AmOwner)
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
-        else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything())
+        else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"{Player.name} guessed {guessTarget.name} as {guessString}!" : $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");

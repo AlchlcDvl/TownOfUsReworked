@@ -62,16 +62,16 @@ public sealed class Vigilante : Crew
             Run("<#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
         Player.IsLinkedTo(player);
 
     private bool Usable() => !KilledInno && !RoundOne;
 
     private void Shoot(PlayerControl target)
     {
-        var flag4 = target.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || target.GetFaction() is Faction.Syndicate or Faction.Intruder or Faction.Apocalypse or Faction.Illuminati
-            or Faction.Compliance || target.Is<Troll>() || Player.IsFramed() || (target.Is(Alignment.Evil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() ||
-            target.IsFramed() || (target.Is(Alignment.Benign) && NeutralBenignSettings.VigilanteKillsBenigns);
+        var flag4 = target.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || target.GetFaction() is not (Faction.Crew or Faction.Neutral) || target.Is<Troll>() || target.IsFramed() ||
+            Player.IsFramed() || (target.Is(Alignment.Evil) && NeutralEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || (target.Is(Alignment.Benign) &&
+            NeutralBenignSettings.VigilanteKillsBenigns);
         var cooldown = Interact(Player, target, flag4);
 
         if (cooldown != CooldownType.Fail)

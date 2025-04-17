@@ -27,7 +27,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 43;
+    private const int DevBuild = 44;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -39,7 +39,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static readonly string Visors = Path.Combine(Assets, "Visors");
     public static readonly string Nameplates = Path.Combine(Assets, "Nameplates");
     public static readonly string Colors = Path.Combine(Assets, "Colors");
-    public static readonly string Options = Path.Combine(Assets, "Options");
+    public static readonly string Options = Path.Combine(DataPath, "ReworkedOptions");
     public static readonly string Images = Path.Combine(Assets, "Images");
     public static readonly string Sounds = Path.Combine(Assets, "Sounds");
     public static readonly string Bundles = Path.Combine(Assets, "Bundles");

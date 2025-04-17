@@ -103,7 +103,7 @@ public sealed class Glitch : NKilling, IBlocker
             MimicMenu.Open();
     }
 
-    private bool Exception1(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+    private bool Exception1(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
         Player.IsLinkedTo(player);
 
     private bool Exception2(PlayerControl player) => player == HackTarget || Exception1(player);

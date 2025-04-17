@@ -58,6 +58,7 @@ public abstract class Option(CustomOptionType type)
         ([ "Allied", "Allied1" ], [ "not+IlluminatiUnleashed", "not+OrderOfCompliance" ]),
         ([ "PandoricaOpens", "OrderOfCompliance" ], [ "not+IlluminatiUnleashed" ]),
         ([ "RoundOneNoMayorReveal" ], [ "MayorDirectSpawn" ]),
+        ([ "AssassinChances" ], [ "AssassinChance" ]),
         ([ "FinalTwoDisableVenting" ], [ "not+WhoCanVent+NoOne" ]),
         ([ "ComplianceType" ], [ "OrderOfCompliance" ])
     ];

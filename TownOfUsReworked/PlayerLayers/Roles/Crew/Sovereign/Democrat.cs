@@ -64,12 +64,7 @@ public sealed class Democrat : Crew, ISovereign
 
     private bool Usable2() => Usable1() && AllPlayers().Where(x => x.Is(Faction.Crew) && !x.HasDied()).All(x => Campaigned.Contains(x.PlayerId));
 
-    public void OnReveal()
-    {
-        var mayor = new Mayor();
-        mayor.RoleUpdate(this);
-        PublicReveal(mayor.Player);
-    }
+    public void OnReveal() => new Mayor().RoleUpdate(this);
 
     private bool Exception(PlayerControl player) => Campaigned.Contains(player.PlayerId);
 

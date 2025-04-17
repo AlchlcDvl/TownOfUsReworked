@@ -26,7 +26,7 @@ public sealed class Arsonist : NKilling
 
     private CustomButton IgniteButton { get; set; }
     private CustomButton DouseButton { get; set; }
-    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
+    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Neutral) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
     public List<byte> Doused { get; } = [];
 
@@ -123,8 +123,8 @@ public sealed class Arsonist : NKilling
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
     }
 
-    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
-        Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not
+        (Faction.Crew or Faction.Neutral)) || Player.IsLinkedTo(player);
 
     public override void ReadRPC(NetData reader)
     {

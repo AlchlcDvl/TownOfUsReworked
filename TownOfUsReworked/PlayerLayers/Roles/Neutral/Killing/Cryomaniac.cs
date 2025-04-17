@@ -23,7 +23,7 @@ public sealed class Cryomaniac : NKilling
     private CustomButton KillButton { get; set; }
     public List<byte> Doused { get; } = [];
     public bool FreezeUsed { get; set; }
-    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is Faction.Intruder or Faction.Syndicate || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
+    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Neutral) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
     protected override UColor MainColor => CustomColorManager.Cryomaniac;
@@ -89,8 +89,8 @@ public sealed class Cryomaniac : NKilling
         FreezeUsed = false;
     }
 
-    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
-        Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not
+        (Faction.Crew or Faction.Neutral)) || Player.IsLinkedTo(player);
 
     private void Douse(PlayerControl target)
     {

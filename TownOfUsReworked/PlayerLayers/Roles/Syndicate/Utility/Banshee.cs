@@ -26,8 +26,17 @@ public sealed class Banshee : Syndicate, IGhosty
         Alignment = Alignment.Utility;
         Blocked.Clear();
         ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
-            new Duration(ScreamDur), (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect);
+            new Duration(ScreamDur), (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect, (EffectStartVoid)StartScream);
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
+    }
+
+    private void StartScream()
+    {
+        foreach (var player in AllPlayers())
+        {
+            if (!player.HasDied() && !player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral))
+                Blocked.Add(player.PlayerId);
+        }
     }
 
     private void UnScream()
@@ -38,12 +47,6 @@ public sealed class Banshee : Syndicate, IGhosty
 
     private void HitScream()
     {
-        foreach (var player in AllPlayers())
-        {
-            if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
-                Blocked.Add(player.PlayerId);
-        }
-
         CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ScreamButton);
         ScreamButton.Begin();
     }
@@ -51,15 +54,6 @@ public sealed class Banshee : Syndicate, IGhosty
     private bool Usable() => !Caught;
 
     private bool EndEffect() => Caught;
-
-    public override void ReadRPC(NetData reader)
-    {
-        foreach (var player in AllPlayers())
-        {
-            if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
-                Blocked.Add(player.PlayerId);
-        }
-    }
 
     public override void UpdatePlayer()
     {
