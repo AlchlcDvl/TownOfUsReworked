@@ -14,7 +14,7 @@ public sealed class Consigliere : Intruder
     private CustomButton InvestigateButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Consigliere;
-    public override LayerEnum Type { get; } = LayerEnum.Consigliere;
+    public override LayerEnum Type => LayerEnum.Consigliere;
     public override Func<string> StartText { get; } = () => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
     public override Func<string> Description => () => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}{(Player.Is<Assassin>() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "")}\n{CommonAbilities}";
 

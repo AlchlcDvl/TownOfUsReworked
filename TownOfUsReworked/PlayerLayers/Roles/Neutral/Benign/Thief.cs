@@ -20,7 +20,7 @@ public sealed class Thief : Neutral, IGuesser
     public CustomGuessingMenu GuessingMenu { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Thief;
-    public override LayerEnum Type { get; } = LayerEnum.Thief;
+    public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText { get; } = () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
@@ -168,8 +168,7 @@ public sealed class Thief : Neutral, IGuesser
 
             if (cooldown != CooldownType.Fail)
             {
-                // TODO: Add CKilling class
-                if (target.GetRole() is NKilling or IPromoter or Neophyte or Apocalypse or Betrayer)
+                if (target.GetRole() is NKilling or IPromoter or Neophyte or Apocalypse or Betrayer or CKilling)
                 {
                     Player.RpcMurderPlayer(target);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
@@ -199,7 +198,7 @@ public sealed class Thief : Neutral, IGuesser
 
             // Neutral roles
             Arsonist => new Arsonist(),
-            Betrayer => new Betrayer(),
+            Betrayer => new Betrayer() { Faction = role.Faction },
             Cannibal => new Cannibal(),
             Cryomaniac => new Cryomaniac(),
             Glitch => new Glitch(),

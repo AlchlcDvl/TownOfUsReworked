@@ -10,12 +10,6 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
     where T1 : notnull
     where T2 : notnull
 {
-    /// <summary>
-    /// Gets the reverse mapping of the current ValueMap.<br/>
-    /// The reverse map provides a mapping from <typeparamref name="T2"/> to <typeparamref name="T1"/>.
-    /// </summary>
-    public ValueMap<T2, T1> Reverse { get; }
-
     private readonly Dictionary<T1, T2> Forward;
     private readonly Dictionary<T2, T1> Backward;
 
@@ -44,33 +38,6 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
     {
         Forward = [];
         Backward = [];
-
-        Reverse = new ValueMap<T2, T1>(this, Backward, Forward);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the ValueMap class that contains elements copied from the specified collection.
-    /// </summary>
-    /// <param name="collection">The collection whose elements are copied to the new ValueMap.</param>
-    public ValueMap(IEnumerable<KeyValuePair<T1, T2>> collection)
-    {
-        Forward = collection.ToDictionary(p => p.Key, p => p.Value);
-        Backward = collection.ToDictionary(p => p.Value, p => p.Key);
-
-        Reverse = new ValueMap<T2, T1>(this, Backward, Forward);
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the ValueMap class that is used to represent the reverse mapping.
-    /// </summary>
-    /// <param name="reverse">The reverse ValueMap.</param>
-    /// <param name="forward">The forward dictionary.</param>
-    /// <param name="back">The backward dictionary.</param>
-    private ValueMap(ValueMap<T2, T1> reverse, Dictionary<T1, T2> forward, Dictionary<T2, T1> back)
-    {
-        Reverse = reverse;
-        Forward = forward;
-        Backward = back;
     }
 
     /// <inheritdoc/>
@@ -116,6 +83,7 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
     /// </summary>
     /// <param name="value">The value to locate in the ValueMap.</param>
     /// <returns>true if the value exists; otherwise, false.</returns>
+    /// <inheritdoc cref="ContainsKey"/>
     public bool ContainsValue(T2 value) => Backward.ContainsKey(value);
 
     /// <summary>

@@ -370,7 +370,7 @@ public static class MeetingCooldowns
 [HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation), typeof(NetworkedPlayerInfo), typeof(NetworkedPlayerInfo))]
 public static class ShowCustomAnim
 {
-    private static OverlayKillAnimation SelfDeathPriv;
+    private static OverlayKillAnimation selfDeath;
     private static OverlayKillAnimation SelfDeath
     {
         get
@@ -388,29 +388,29 @@ public static class ShowCustomAnim
             // SIR YES SIR o7
             // - AD
 
-            if (!SelfDeathPriv)
+            if (!selfDeath)
             {
                 var parent = new GameObject("SelfKillObject").DontUnload().DontDestroy().transform;
                 parent.gameObject.SetActive(false);
 
-                SelfDeathPriv = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
+                selfDeath = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
 
-                SelfDeathPriv.killerParts.gameObject.SetActive(false);
-                SelfDeathPriv.killerParts = null;
-                SelfDeathPriv.transform.Find("killstabknife").gameObject.SetActive(false);
-                SelfDeathPriv.transform.Find("killstabknifehand").gameObject.SetActive(false);
+                selfDeath.killerParts.gameObject.SetActive(false);
+                selfDeath.killerParts = null;
+                selfDeath.transform.Find("killstabknife").gameObject.SetActive(false);
+                selfDeath.transform.Find("killstabknifehand").gameObject.SetActive(false);
 
-                SelfDeathPriv.victimParts.transform.localPosition = new(-1.5f, 0, 0);
-                SelfDeathPriv.KillType = (KillAnimType)10;
+                selfDeath.victimParts.transform.localPosition = new(-1.5f, 0, 0);
+                selfDeath.KillType = (KillAnimType)10;
 
-                SelfDeathPriv.AddComponent<CustomKillAnimationPlayer>();
+                selfDeath.AddComponent<CustomKillAnimationPlayer>();
 
                 var array = HUD().KillOverlay.KillAnims.ToList();
-                array.Add(SelfDeathPriv);
+                array.Add(selfDeath);
                 HUD().KillOverlay.KillAnims = array.ToArray();
             }
 
-            return SelfDeathPriv;
+            return selfDeath;
         }
     }
 

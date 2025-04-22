@@ -8,6 +8,17 @@ public static class AssetManager
     public static readonly Dictionary<string, string> AssetToBundle = [];
     private static readonly Dictionary<string, HashSet<UObject>> LoadedAssets = [];
     private static readonly Dictionary<string, HashSet<string>> UnloadedAssets = [];
+    private static readonly Dictionary<Type, (string, Func<string, UObject>)> AssetTypeExtensions = new()
+    {
+        [typeof(Sprite)] = ("png", LoadSprite),
+        // [typeof(Texture2D)] = ("png", LoadTexture),
+        [typeof(AudioClip)] = ("wav", LoadAudio),
+// #if ANDROID
+//         [typeof(AssetBundle)] = ("bundle_android", LoadBundle),
+// #else
+//         [typeof(AssetBundle)] = ("bundle_pc", LoadBundle),
+// #endif
+    };
 
     public static AudioClip GetAudio(string path, bool placeholder = true) => Get<AudioClip>(path) ?? (placeholder ? Get<AudioClip>("Placeholder") : null);
 
@@ -75,6 +86,10 @@ public static class AssetManager
         sprite.name = name;
         return sprite.DontDestroy();
     }
+
+    // public static AssetBundle LoadBundle(string path) => AssetBundle.LoadFromMemory(path.StartsWith(TownOfUsReworked.Resources)
+    //     ? TownOfUsReworked.Core.GetManifestResourceStream(path)!.ReadFully()
+    //     : File.ReadAllBytes(path));
 
     public static AssetBundle LoadBundle(byte[] data) => AssetBundle.LoadFromMemory(data);
 
@@ -157,14 +172,10 @@ public static class AssetManager
 
         var tType = typeof(T);
 
-        if (tType == typeof(Sprite) && strings.TryFinding(x => x.EndsWith(".png"), out var path))
-            result = AddAsset(name, LoadSprite(path));
-        else if (tType == typeof(AudioClip) && strings.TryFinding(x => x.EndsWith(".wav"), out path))
-            result = AddAsset(name, LoadAudio(path));
-        // else if (tType == typeof(Texture2D) && strings.TryFinding(x => x.EndsWith(".png"), out path))
-        //     result = AddAsset(name, LoadTexture(path));
+        if (AssetTypeExtensions.TryGetValue(tType, out var pair) && strings.TryFinding(x => x.EndsWith($".{pair.Item1}"), out var path))
+            result = AddAsset(name, pair.Item2(path));
         else
-            return null;
+            throw new NotImplementedException($"{tType.Name} is not a loadable asset type");
 
         strings.Remove(path);
 

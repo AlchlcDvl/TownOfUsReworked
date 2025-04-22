@@ -1,5 +1,4 @@
 using BepInEx.Logging;
-using IObject = Il2CppSystem.Object;
 
 // Taken from Reactor.Debugger, it's starting to get annoying having both mine and Reactor's debuggers open at the same time :/
 namespace TownOfUsReworked.Patches;
@@ -9,7 +8,7 @@ public static class RedirectLoggerPatch1
 {
     private static readonly ManualLogSource Log = BepInEx.Logging.Logger.CreateLogSource("Among Us");
 
-    private static bool Patch(Logger __instance, LogLevel level, IObject message, UObject context)
+    private static bool Patch(Logger __instance, LogLevel level, Il2CppStringArray path, IObject message, UObject context)
     {
         if (TownOfUsReworked.BlockBaseGameLogger.Value)
             return false;
@@ -22,10 +21,10 @@ public static class RedirectLoggerPatch1
         if (__instance.category != Logger.Category.None)
             finalMessage += $"[{__instance.category}] ";
 
-        if (!IsNullEmptyOrWhiteSpace(__instance.tag))
-            finalMessage += $"[{__instance.tag}] ";
+        __instance.subCategories?.ForEach(x => finalMessage += $"[{x}] ");
+        path?.ForEach(x => finalMessage += $"[{x}] ");
 
-        if (context != null)
+        if (context)
             finalMessage += $"[{context.name} ({context.GetIl2CppType().FullName})]";
 
         finalMessage += $" {message.ToString()}";
@@ -33,17 +32,29 @@ public static class RedirectLoggerPatch1
         return false;
     }
 
-    [HarmonyPatch(nameof(Logger.Debug)), HarmonyPrefix]
-    public static bool DebugPatch(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Debug, message, context);
+    [HarmonyPatch(nameof(Logger.Debug), typeof(Il2CppStringArray), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool DebugPatch1(Logger __instance, Il2CppStringArray path, IObject message, UObject context) => Patch(__instance, LogLevel.Debug, path, message, context);
 
-    [HarmonyPatch(nameof(Logger.Info)), HarmonyPrefix]
-    public static bool InfoPatch(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Info, message, context);
+    [HarmonyPatch(nameof(Logger.Info), typeof(Il2CppStringArray), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool InfoPatch1(Logger __instance, Il2CppStringArray path, IObject message, UObject context) => Patch(__instance, LogLevel.Info, path, message, context);
 
-    [HarmonyPatch(nameof(Logger.Warning)), HarmonyPrefix]
-    public static bool WarningPatch(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Warning, message, context);
+    [HarmonyPatch(nameof(Logger.Warning), typeof(Il2CppStringArray), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool WarningPatch1(Logger __instance, Il2CppStringArray path, IObject message, UObject context) => Patch(__instance, LogLevel.Warning, path, message, context);
 
-    [HarmonyPatch(nameof(Logger.Error)), HarmonyPrefix]
-    public static bool ErrorPatch(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Error, message, context);
+    [HarmonyPatch(nameof(Logger.Error), typeof(Il2CppStringArray), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool ErrorPatch1(Logger __instance, Il2CppStringArray path, IObject message, UObject context) => Patch(__instance, LogLevel.Error, path, message, context);
+
+    [HarmonyPatch(nameof(Logger.Debug), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool DebugPatch2(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Debug, null, message, context);
+
+    [HarmonyPatch(nameof(Logger.Info), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool InfoPatch2(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Info, null, message, context);
+
+    [HarmonyPatch(nameof(Logger.Warning), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool WarningPatch2(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Warning, null, message, context);
+
+    [HarmonyPatch(nameof(Logger.Error), typeof(IObject), typeof(UObject)), HarmonyPrefix]
+    public static bool ErrorPatch2(Logger __instance, IObject message, UObject context) => Patch(__instance, LogLevel.Error, null, message, context);
 }
 
 public static class RedirectLoggerPatch2

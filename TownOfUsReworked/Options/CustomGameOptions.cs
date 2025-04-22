@@ -1,6 +1,7 @@
 // ReSharper disable UnusedMember.Global
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnassignedField.Global
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace TownOfUsReworked.Options;
 
 // DO NOT OVERRIDE VALUES OF THE OPTION PROPERTIES ANYWHERE IN THE CODE, OR ELSE THE OPTIONS WILL START TO FUCK OFF
@@ -28,6 +29,9 @@ public static class GameSettings
 
     [NumberOption(5, 600, 15, Format.Time)]
     public static Number VotingTime = 60;
+
+    [NumberOption(0.5f, 10f, 0.5f, Format.Distance)]
+    public static Number MaxReportDistance = 10;
 
     [StringOption<TBMode>]
     private static TBMode TaskBar = TBMode.MeetingOnly;
@@ -215,22 +219,22 @@ public static class BadGuysSettings
     [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Neutral, Faction.None, Faction.Illuminati)]
     public static Faction MainBadGuys
     {
-        get => GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : MainBadGuysPriv;
+        get => GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : mainBadGuys;
         set
         {
             if (value == Faction.Compliance && !GameModifiers.OrderOfCompliance)
-                value = value < MainBadGuysPriv ? Faction.Intruder : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
+                value = value < mainBadGuys ? Faction.Intruder : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
 
             if (value is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse && GameModifiers.PandoricaOpens)
                 value = Faction.Pandorica;
 
             if (value == Faction.Pandorica && !GameModifiers.PandoricaOpens)
-                value = value < MainBadGuysPriv ? (GameModifiers.OrderOfCompliance ? Faction.Compliance : Faction.Intruder) : Faction.Apocalypse;
+                value = value < mainBadGuys ? (GameModifiers.OrderOfCompliance ? Faction.Compliance : Faction.Intruder) : Faction.Apocalypse;
 
-            MainBadGuysPriv = value;
+            mainBadGuys = value;
         }
     }
-    public static Faction MainBadGuysPriv = Faction.Intruder;
+    private static Faction mainBadGuys = Faction.Intruder;
 
     [ToggleOption]
     public static bool OnlyMainBadGuys = false;
@@ -339,18 +343,27 @@ public static class GameModifiers
     [ToggleOption, Sorted(1)]
     public static bool PandoricaOpens
     {
-        get => PandoricaOpensPriv;
+        get => pandoricaOpens;
         set
         {
-            if (!value && Allied.AlliedFaction == AlliedFaction.Pandorica)
-                Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Random);
-            else if (value && Allied.AlliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse)
-                Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Pandorica);
+            switch (value)
+            {
+                case false when Allied.AlliedFaction == AlliedFaction.Pandorica:
+                {
+                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Random);
+                    break;
+                }
+                case true when Allied.AlliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse:
+                {
+                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Pandorica);
+                    break;
+                }
+            }
 
-            PandoricaOpensPriv = value;
+            pandoricaOpens = value;
         }
     }
-    private static bool PandoricaOpensPriv = false;
+    private static bool pandoricaOpens = false;
 
     [ToggleOption]
     public static bool OrderOfCompliance = false;
@@ -378,19 +391,20 @@ public static class GameAnnouncementSettings
 [HeaderOption(MultiMenu.Main)]
 public static class MapSettings
 {
-    private static MapEnum MapPriv;
+    private static MapEnum map;
     public static MapEnum Map
     {
-        get => MapPriv;
+        get => map;
         set
         {
             if (value == MapEnum.LevelImpostor && !LiLoaded)
-                value = MapPriv < MapEnum.LevelImpostor ? MapEnum.Random : MapEnum.Submerged;
+                value = map < MapEnum.LevelImpostor ? MapEnum.Random : MapEnum.Submerged;
 
             if (value == MapEnum.Submerged && !SubLoaded)
-                value = MapPriv < MapEnum.Submerged ? MapEnum.Random : MapEnum.Fungle;
+                value = map < MapEnum.Submerged ? MapEnum.Random : MapEnum.Fungle;
 
-            MapPriv = value;
+            map = value;
+            TownOfUsReworked.NormalOptions.MapId = TownOfUsReworked.HnsOptions.MapId = (byte)value;
         }
     }
 

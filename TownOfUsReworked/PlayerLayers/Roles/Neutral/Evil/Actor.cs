@@ -28,7 +28,7 @@ public sealed class Actor : Evil
     private bool Targeted { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Actor;
-    public override LayerEnum Type { get; } = LayerEnum.Actor;
+    public override LayerEnum Type => LayerEnum.Actor;
     public override Func<string> StartText { get; } = () => "Play Pretend With The Others";
     public override Func<string> Description => () => !Targeted ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you will kill your guesser";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;

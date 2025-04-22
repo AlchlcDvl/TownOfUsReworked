@@ -80,4 +80,5 @@ global using Twitch;
 global using InnerNet;
 global using HarmonyLib;
 
+global using IObject = Il2CppSystem.Object;
 global using ISystem = Il2CppSystem.Collections.Generic;

@@ -20,7 +20,7 @@ public sealed class Transporter : Crew, IMover
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Transporter;
-    public override LayerEnum Type { get; } = LayerEnum.Transporter;
+    public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText { get; } = () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
 

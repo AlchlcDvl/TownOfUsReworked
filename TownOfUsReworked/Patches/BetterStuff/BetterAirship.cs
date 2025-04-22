@@ -27,10 +27,10 @@ public static class BetterAirship
     [StringOption<AirshipSpawnLocation>, Sorted(2)]
     private static AirshipSpawnLocation Location1
     {
-        get => Location1Priv;
-        set => Location1Priv = SetLocation(value, Location3Priv, Location2Priv, Location1Priv);
+        get => loc1;
+        set => loc1 = SetLocation(value, loc3, loc2, loc1);
     }
-    private static AirshipSpawnLocation Location1Priv = AirshipSpawnLocation.Engine;
+    private static AirshipSpawnLocation loc1 = AirshipSpawnLocation.Engine;
 
     /// <summary>
     /// Sets the second location when selecting the custom spawn type.<br/>
@@ -39,10 +39,10 @@ public static class BetterAirship
     [StringOption<AirshipSpawnLocation>, Sorted(3)]
     private static AirshipSpawnLocation Location2
     {
-        get => Location2Priv;
-        set => Location2Priv = SetLocation(value, Location1Priv, Location3Priv, Location2Priv);
+        get => loc2;
+        set => loc2 = SetLocation(value, loc1, loc3, loc2);
     }
-    private static AirshipSpawnLocation Location2Priv = AirshipSpawnLocation.Kitchen;
+    private static AirshipSpawnLocation loc2 = AirshipSpawnLocation.Kitchen;
 
     /// <summary>
     /// Sets the third location when selecting the custom spawn type.<br/>
@@ -51,10 +51,10 @@ public static class BetterAirship
     [StringOption<AirshipSpawnLocation>, Sorted(4)]
     private static AirshipSpawnLocation Location3
     {
-        get => Location3Priv;
-        set => Location3Priv = SetLocation(value, Location1Priv, Location2Priv, Location3Priv);
+        get => loc3;
+        set => loc3 = SetLocation(value, loc1, loc2, loc3);
     }
-    private static AirshipSpawnLocation Location3Priv = AirshipSpawnLocation.VaultRoom;
+    private static AirshipSpawnLocation loc3 = AirshipSpawnLocation.VaultRoom;
 
     /// <summary>
     /// When enabled, moves the Vitals panel to a new location (<c>24.55</c>, <c>-4.780</c>).

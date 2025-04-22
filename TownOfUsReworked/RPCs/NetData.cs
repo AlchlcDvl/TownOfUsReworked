@@ -207,7 +207,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <typeparam name="T">The type to cast the collection to.</typeparam>
     /// <returns>A collection of values, casted to <typeparamref name="T"/>.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public T[] ReadArray<T>() => (T[])ReadArray(typeof(T));
+    public T[] ReadArray<T>() => ReadArray(typeof(T)) as T[];
 
     /// <summary>
     /// Reads a collection of values from the data, prefixed by a count.
@@ -562,7 +562,11 @@ public sealed class NetData : IDisposable, INetSerializable
 
     // Static method helpers
 
-    /// <inheritdoc cref="ToBytes(string)"/>
+    /// <summary>
+    /// Serializes the value to an array of bytes.
+    /// </summary>
+    /// <param name="value">The value to serialize.</param>
+    /// <returns>An array of bytes representing the value.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> was null.</exception>
     /// <exception cref="NotSupportedException">Thrown of the value can't be serialized.</exception>
     public static byte[] ToBytes(object value) => value switch
@@ -588,16 +592,19 @@ public sealed class NetData : IDisposable, INetSerializable
         ulong i => BitConverter.GetBytes(i),
         long i => BitConverter.GetBytes(i),
         float i => BitConverter.GetBytes(i),
-        double i => BitConverter.GetBytes(i),
-        Half i => BitConverter.GetBytes(i),
-        decimal i => [ .. decimal.GetBits(i).SelectMany(BitConverter.GetBytes) ], // BitConverter please have more conversion methods I beg you
+        // double i => BitConverter.GetBytes(i),
+        // Half i => BitConverter.GetBytes(i),
+        // decimal i => [ .. decimal.GetBits(i).SelectMany(BitConverter.GetBytes) ], // BitConverter please have more conversion methods I beg you
         string i => ToBytes(i), // String needs a custom method because BitConverter apparently can't support it
         Enum i => ToBytes(Convert.ChangeType(i, Enum.GetUnderlyingType(i.GetType()))),
         Type i => ToBytes(i.AssemblyQualifiedName),
 
+        // WIP
+        // IDictionary i => ToBytes(i),
+        // ICollection i => ToBytes(i),
+
         // Special cases
         Array i => ToBytes(i),
-        // IDictionary i => ToBytes(i), WIP
         IEnumerable i => ToBytes(i),
 
         // Edge cases
@@ -605,11 +612,7 @@ public sealed class NetData : IDisposable, INetSerializable
         _ => throw new NotSupportedException($"Either {value.GetType().Name} does not extend INetSerializable, or cannot be serialized to bytes")
     };
 
-    /// <summary>
-    /// Serializes the value to an array of bytes.
-    /// </summary>
-    /// <param name="value">The value to serialize.</param>
-    /// <returns>An array of bytes representing the value.</returns>
+    /// <inheritdoc cref="ToBytes(object)"/>
     public static byte[] ToBytes(string value)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
@@ -636,6 +639,22 @@ public sealed class NetData : IDisposable, INetSerializable
         return [ .. result ];
     }
 
+    // /// <summary>
+    // /// Serializes an array of values to an array of bytes, prefixed by the collection's length.
+    // /// </summary>
+    // /// <param name="values">The values to serialize.</param>
+    // /// <returns>An array of bytes representing the values.</returns>
+    // private static byte[] ToBytes(ICollection values)
+    // {
+    //     var result = new List<byte>();
+    //     result.AddRange(BitConverter.GetBytes((ushort)values.Count));
+
+    //     foreach (var obj in values)
+    //         result.AddRange(ToBytes(obj));
+
+    //     return [ .. result ];
+    // }
+
     /// <summary>
     /// Serializes an array of values to an array of bytes, prefixed by the collection's length.
     /// </summary>
@@ -644,16 +663,16 @@ public sealed class NetData : IDisposable, INetSerializable
     private static byte[] ToBytes(Array values)
     {
         var result = new List<byte>();
+        result.AddRange(BitConverter.GetBytes((ushort)values.Length));
 
         foreach (var obj in values)
             result.AddRange(ToBytes(obj));
 
-        result.InsertRange(0, BitConverter.GetBytes((ushort)values.Length));
         return [ .. result ];
     }
 
     /// <summary>
-    /// Serializes a 2d vector to an array of bytes, prefixed by the collection's length.
+    /// Serializes a 2d vector to an array of bytes.
     /// </summary>
     /// <param name="value">The value to serialize.</param>
     /// <returns>An array of bytes representing the value.</returns>

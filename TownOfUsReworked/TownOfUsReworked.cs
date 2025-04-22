@@ -27,7 +27,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 45;
+    private const int DevBuild = 46;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -58,8 +58,8 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}";
     private static string VersionFull => $"v{VersionFinal}+{VersionSignature}";
 
-    public static NormalGameOptionsV08 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
-    public static HideNSeekGameOptionsV08 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
+    public static NormalGameOptionsV09 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
+    public static HideNSeekGameOptionsV09 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
     public static bool DebugMode => IsDev || DebugModeOn.Value;

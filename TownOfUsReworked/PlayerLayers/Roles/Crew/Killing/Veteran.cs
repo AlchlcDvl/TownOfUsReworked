@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Veteran)]
-public sealed class Veteran : Crew, IAlerter
+public sealed class Veteran : CKilling, IAlerter
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxAlerts = 5;
@@ -15,7 +15,7 @@ public sealed class Veteran : Crew, IAlerter
     public CustomButton AlertButton { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Veteran;
-    public override LayerEnum Type { get; } = LayerEnum.Veteran;
+    public override LayerEnum Type => LayerEnum.Veteran;
     public override Func<string> StartText { get; } = () => "Alert To Kill Anyone Who Dares To Touch You";
     public override Func<string> Description => () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
     public override DefenseEnum DefenseVal => AlertButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
@@ -24,7 +24,6 @@ public sealed class Veteran : Crew, IAlerter
     protected override void Init()
     {
         base.Init();
-        Alignment = Alignment.Killing;
         AlertButton ??= new(this, "ALERT", new SpriteName("Alert"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Alert, new Cooldown(AlertCd), MaxAlerts,
             (EndFunc)EndEffect, new Duration(AlertDur));
     }

@@ -29,7 +29,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     public CustomMeeting RetMenu { get; private set; }
 
     protected override UColor MainColor => RevivedRole?.Color ?? CustomColorManager.Retributionist;
-    public override LayerEnum Type { get; } = LayerEnum.Retributionist;
+    public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText { get; } = () => "Mimic the Dead";
     public override Func<string> Description => () => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description()}" : "");
     public override AttackEnum AttackVal
@@ -430,7 +430,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
                 (UsableFunc)AltUsable1);
 
             if (wasNull)
-                ReviveButton.UseCount = 0;
+                ReviveButton.UsesCount = 0;
         }
         else if (IsMedic)
         {
@@ -446,7 +446,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
                 new Cooldown(Trapper.TrapCd), (PlayerBodyExclusion)TrapException);
 
             if (wasNull)
-                TrapsMade = TrapButton.UseCount = 0;
+                TrapsMade = TrapButton.UsesCount = 0;
         }
         else if (IsCham)
         {
@@ -663,7 +663,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     private bool AltUsable() => IsAlt;
 
-    private bool AltUsable1() => AltUsable() && ReviveButton.UseCount != ReviveButton.Max;
+    private bool AltUsable1() => AltUsable() && ReviveButton.UsesCount != ReviveButton.Max;
 
     private void UponEnd()
     {
@@ -694,7 +694,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             lover.Revive();
         }
 
-        if (Local && player.Is<ISovereign>(out var sov) && !sov.Revealed)
+        if (Local && player.Is<Sovereign>(out var sov) && !sov.Revealed)
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
@@ -742,7 +742,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         if (ShieldedPlayer)
             return ShieldedPlayer != player;
 
-        return player.Is<ISovereign>(out var irev) && irev.Revealed;
+        return player.Is<Sovereign>(out var irev) && irev.Revealed;
     }
 
     private bool MedicUsable() => !ShieldBroken && IsMedic;

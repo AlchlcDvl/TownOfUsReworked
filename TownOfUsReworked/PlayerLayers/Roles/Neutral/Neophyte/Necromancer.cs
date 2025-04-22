@@ -54,7 +54,7 @@ public sealed class Necromancer : Neophyte, IReviver
     private CustomButton ManaButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Necromancer;
-    public override LayerEnum Type { get; } = LayerEnum.Necromancer;
+    public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText { get; } = () => "Resurrect The Dead Into Doing Your Bidding";
     public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
@@ -127,7 +127,7 @@ public sealed class Necromancer : Neophyte, IReviver
                 SacrificeButton.StartCooldown();
         }
 
-        if (Local && player.Is<ISovereign>(out var sov) && !sov.Revealed)
+        if (Local && player.Is<Sovereign>(out var sov) && !sov.Revealed)
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
@@ -152,7 +152,7 @@ public sealed class Necromancer : Neophyte, IReviver
         ManaButton.StartCooldown();
     }
 
-    private bool Usable() => ResurrectButton.UseCount != ResurrectButton.Max;
+    private bool Usable() => ResurrectButton.UsesCount != ResurrectButton.Max;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

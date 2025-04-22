@@ -42,7 +42,7 @@ public sealed class Executioner : Evil
     private bool TargetFailed => !TargetPlayer && Rounds > 2;
 
     protected override UColor MainColor => CustomColorManager.Executioner;
-    public override LayerEnum Type { get; } = LayerEnum.Executioner;
+    public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText { get; } = () => "Find Someone To Eject";
     public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";

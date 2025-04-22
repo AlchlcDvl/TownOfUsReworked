@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Vigilante)]
-public sealed class Vigilante : Crew
+public sealed class Vigilante : CKilling
 {
     [ToggleOption]
     private static bool MisfireKillsInno = true;
@@ -32,7 +32,7 @@ public sealed class Vigilante : Crew
     private bool RoundOne { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Vigilante;
-    public override LayerEnum Type { get; } = LayerEnum.Vigilante;
+    public override LayerEnum Type => LayerEnum.Vigilante;
     public override Func<string> StartText { get; } = () => "Shoot The <#FF0000FF>Evildoers</color>";
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
     public override AttackEnum AttackVal => AttackEnum.Basic;
@@ -40,7 +40,6 @@ public sealed class Vigilante : Crew
     protected override void Init()
     {
         base.Init();
-        Alignment = Alignment.Killing;
         ShootButton ??= new(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Shoot, new Cooldown(ShootCd), (PlayerBodyExclusion)Exception,
             MaxBullets, (UsableFunc)Usable);
         RoundOne = RoundOneNoShot;

@@ -18,7 +18,7 @@ public sealed class Void : Deity
     public static readonly HashSet<byte> ToBeExtracted = [];
 
     protected override UColor MainColor => CustomColorManager.Void;
-    public override LayerEnum Type { get; } = LayerEnum.Void;
+    public override LayerEnum Type => LayerEnum.Void;
     public override Func<string> Description => () => "- Anyone who either you interact with or interacts with you will lose their role\n- Your victim's bodies cannot be reported" +
         CommonAbilities;
     public override bool CanVent => base.CanVent && VoidVent;

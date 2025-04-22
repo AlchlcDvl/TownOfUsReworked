@@ -35,7 +35,7 @@ public sealed class Bomber : Syndicate
     private List<Bomb> Bombs { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Bomber;
-    public override LayerEnum Type { get; } = LayerEnum.Bomber;
+    public override LayerEnum Type => LayerEnum.Bomber;
     public override Func<string> StartText { get; } = () => "Make People Go Boom";
     public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";
 

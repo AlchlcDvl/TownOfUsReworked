@@ -233,7 +233,7 @@ public static class ModCompatibility
     public static void AddSubmergedComponent(this GameObject obj, string typeName)
     {
         if (!IsSubmerged() || !SubTypes.TryGetValue(typeName, out var type) || type == null)
-            obj.AddComponent<MissingBehaviour>();
+            obj.AddComponent<BlankBehaviour>();
         else
             obj.AddComponent(Il2CppType.From(type));
     }

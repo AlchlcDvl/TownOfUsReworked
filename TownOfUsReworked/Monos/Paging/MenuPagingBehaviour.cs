@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Monos;
 public sealed class MenuPagingBehaviour : BasePagingBehaviour
 {
     [HideFromIl2Cpp]
-    public IEnumerable<ShapeshifterPanel> Targets => [ .. Menu.potentialVictims ];
+    private IEnumerable<ShapeshifterPanel> Targets => [ .. Menu.potentialVictims ];
 
     protected override int MaxPageIndex => (Targets.Count() - 1) / 15;
 

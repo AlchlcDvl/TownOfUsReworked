@@ -4,7 +4,7 @@ public abstract class Disposition : PlayerLayer
 {
     protected override UColor MainColor => CustomColorManager.Disposition;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Disposition;
-    public override LayerEnum Type { get; } = LayerEnum.NoneDisposition;
+    public override LayerEnum Type => LayerEnum.NoneDisposition;
     protected override UColor LayerColor => CustomColorManager.Disposition;
     protected override bool UseMainColor => ClientOptions.CustomDispColors;
 

@@ -32,7 +32,7 @@ public sealed class Altruist : Crew, IReviver
     private byte ParentId { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Altruist;
-    public override LayerEnum Type { get; } = LayerEnum.Altruist;
+    public override LayerEnum Type => LayerEnum.Altruist;
     public override Func<string> StartText { get; } = () => "Sacrifice Yourself To Save Another";
     public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {ReviveDur}s\n- If a meeting is called or you are killed during your revive, " +
         "the revive fails";
@@ -44,7 +44,7 @@ public sealed class Altruist : Crew, IReviver
         ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(AltManaCd), (UsableFunc)Usable);
         ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
             MaxAltMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(AltManaCost));
-        ReviveButton.UseCount = 0;
+        ReviveButton.UsesCount = 0;
     }
 
     private bool EndEffect() => Dead;
@@ -76,7 +76,7 @@ public sealed class Altruist : Crew, IReviver
             lover.Revive();
         }
 
-        if (Local && player.Is<ISovereign>(out var sov) && !sov.Revealed)
+        if (Local && player.Is<Sovereign>(out var sov) && !sov.Revealed)
             CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
@@ -101,7 +101,7 @@ public sealed class Altruist : Crew, IReviver
         ManaButton.StartCooldown();
     }
 
-    private bool Usable() => ReviveButton.UseCount != ReviveButton.Max;
+    private bool Usable() => ReviveButton.UsesCount != ReviveButton.Max;
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

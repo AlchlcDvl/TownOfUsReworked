@@ -13,32 +13,32 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// </summary>
     public string Values
     {
-        get => Join(',', ValuesPriv.OrderBy(x => x));
+        get => Join(',', values.OrderBy(x => x));
         set
         {
-            ValuesPriv.Clear();
-            ValuesPriv.AddRange(value.TrueSplit(',').Select(Enum.Parse<T>).OrderBy(x => x));
+            values.Clear();
+            values.AddRange(value.TrueSplit(',').Select(Enum.Parse<T>).OrderBy(x => x));
         }
     }
-    private readonly HashSet<T> ValuesPriv = [];
+    private readonly HashSet<T> values = [];
 
     /// <summary>
     /// Initialises a new instance of <see cref="MultiSelectValue{T}"/> with the provided values.
     /// </summary>
     /// <param name="values">One or more enum values to initialize the collection with.</param>
-    public MultiSelectValue(params T[] values) => ValuesPriv.AddRange(values);
+    public MultiSelectValue(params T[] values) => this.values.AddRange(values);
 
     /// <inheritdoc/>
-    public int Count => ValuesPriv.Count;
+    public int Count => values.Count;
 
     /// <inheritdoc/>
     public bool IsReadOnly => false;
 
     /// <inheritdoc/>
-    public void Add(T item) => ValuesPriv.Add(item);
+    public void Add(T item) => values.Add(item);
 
     /// <inheritdoc/>
-    public bool Remove(T item) => ValuesPriv.Remove(item);
+    public bool Remove(T item) => values.Remove(item);
 
     /// <summary>
     /// Adds multiple enum values to the end of the collection.
@@ -58,7 +58,7 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// </summary>
     /// <param name="item">The enum value to locate.</param>
     /// <returns>true if the item is found in the collection; otherwise, false.</returns>
-    public bool Contains(T item) => ValuesPriv.Contains(item);
+    public bool Contains(T item) => values.Contains(item);
 
     /// <summary>
     /// Removes all enum values that match the specified predicate condition.<br/>
@@ -66,18 +66,18 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// </summary>
     /// <param name="predicate">A function that defines the condition for removing items.</param>
     /// <returns>The number of items removed from the collection.</returns>
-    public int RemoveAll(Func<T, bool> predicate) => ValuesPriv.Where(predicate).Count(Remove);
+    public int RemoveAll(Func<T, bool> predicate) => values.Where(predicate).Count(Remove);
 
     /// <summary>
     /// Removes all enum values from the collection.
     /// </summary>
-    public void Clear() => ValuesPriv.Clear();
+    public void Clear() => values.Clear();
 
     /// <summary>
     /// Gets the first value in the collection.
     /// </summary>
     /// <returns>Returns the first value.</returns>
-    public T First() => ValuesPriv.First();
+    public T First() => values.First();
 
     /// <summary>
     /// Converts the collection to its string representation.
@@ -89,22 +89,22 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     public override bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
 
     /// <inheritdoc/>
-    public bool Equals(MultiSelectValue<T> other) => other != null && ValuesPriv.SetEquals(other.ValuesPriv);
+    public bool Equals(MultiSelectValue<T> other) => other != null && values.SetEquals(other.values);
 
     /// <inheritdoc/>
     public override int GetHashCode() => Values.GetHashCode();
 
     /// <inheritdoc/>
-    public void Dispose() => ValuesPriv.Clear();
+    public void Dispose() => values.Clear();
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => [ (byte)Count, .. ValuesPriv.Select(x => (byte)Convert.ChangeType(x, typeof(byte))) ]; // All enums within the code base use byte
+    public byte[] ToBytes() => [ (byte)Count, .. values.Select(x => (byte)Convert.ChangeType(x, typeof(byte))) ]; // All enums within the code base use byte
 
     /// <inheritdoc/>
-    public void CopyTo(T[] array, int arrayIndex) => ValuesPriv.CopyTo(array, arrayIndex);
+    public void CopyTo(T[] array, int arrayIndex) => values.CopyTo(array, arrayIndex);
 
     /// <inheritdoc/>
-    public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)ValuesPriv).GetEnumerator();
+    public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)values).GetEnumerator();
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -119,7 +119,7 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// Converts the current instance to its array representation of values.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    public static implicit operator T[](MultiSelectValue<T> value) => [ .. value.ValuesPriv ];
+    public static implicit operator T[](MultiSelectValue<T> value) => [ .. value.values ];
 
     /// <summary>
     /// Converts the current instance to one singular value.
@@ -128,7 +128,7 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// <exception cref="Exception">There were either no values, or more than one value.</exception>
     public static implicit operator T(MultiSelectValue<T> value) =>
         value.Count == 1
-            ? value.ValuesPriv.First()
+            ? value.values.First()
             : throw new InvalidOperationException($"Tried to convert multiple or no values ({value.Values}) to a singular one");
 
     /// <summary>

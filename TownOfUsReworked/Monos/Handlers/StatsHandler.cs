@@ -38,9 +38,9 @@ public sealed class StatsHandler : MonoBehaviour
         if (ViewingAchievements)
             CustomAchievementManager.AllAchievements.Where(x => (!x.Hidden || x.Unlocked) && x.Name != "Test").GetRange(I, 15).ForEach(x => AppendAchievement(sb, x));
         else
-            CustomStatsManager.OrderedStats.GetRange(I, 39).ForEach(x => StatsPopup.AppendStat(sb, x, CustomStatsManager.GetStat(x)));
+            CustomStatsManager.OrderedStats.GetRange(I, 39).ForEach(x => AppendStat(sb, x, CustomStatsManager.GetStat(x)));
 
-        Popup.StatsText.text = sb.ToString();
+        Popup.StatsText.SetText(sb);
     }
 
     private static void AppendAchievement(Il2CppSystem.Text.StringBuilder str, Achievement achievement)
@@ -51,5 +51,13 @@ public sealed class StatsHandler : MonoBehaviour
             : (achievement.Name.Contains("MapWins")
             ? $"     {TranslationManager.Translate("Achievement.MapWins.Description", ("%map%", TranslationManager.Translate($"Map.{achievement.Name.TrueSplit('.')[^1]}")))}"
             : $"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}"));
+    }
+
+    private static void AppendStat(Il2CppSystem.Text.StringBuilder str, StringNames stat, object value)
+    {
+		str.Append("<align=left>" + TranslationController.Instance.GetString(stat).Trim() + ":<line-height=0>");
+		str.AppendLine();
+		str.Append("<align=right>" + value?.ToString() + "<line-height=1em>");
+		str.AppendLine();
     }
 }

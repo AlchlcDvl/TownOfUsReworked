@@ -13,7 +13,7 @@ public sealed class Corrupted : Disposition
 
     protected override UColor MainColor => CustomColorManager.Corrupted;
     public override string Symbol => "δ";
-    public override LayerEnum Type { get; } = LayerEnum.Corrupted;
+    public override LayerEnum Type => LayerEnum.Corrupted;
     public override Func<string> Description => () => "- Corrupt everyone";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => CorruptedVent;

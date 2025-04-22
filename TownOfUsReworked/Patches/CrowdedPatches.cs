@@ -1,101 +1,103 @@
-﻿namespace TownOfUsReworked.Patches;
+﻿using UnityEngine.ProBuilder;
 
-[HarmonyPatch(typeof(CreateOptionsPicker))]
-public static class CrowdedPatches
-{
-    [HarmonyPatch(nameof(CreateOptionsPicker.Awake))]
-    public static void Postfix(CreateOptionsPicker __instance)
-    {
-        if (__instance.mode != SettingsMode.Host)
-            return;
+namespace TownOfUsReworked.Patches;
 
-        var options = __instance.GetTargetOptions();
+// [HarmonyPatch(typeof(CreateOptionsPicker))]
+// public static class CrowdedPatches
+// {
+//     [HarmonyPatch(nameof(CreateOptionsPicker.Awake))]
+//     public static void Postfix(CreateOptionsPicker __instance)
+//     {
+//         if (__instance.mode != SettingsMode.Host)
+//             return;
 
-        var firstButtonRenderer = __instance.MaxPlayerButtons[0];
-        firstButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "-";
-        firstButtonRenderer.enabled = false;
+//         var options = __instance.GetTargetOptions();
 
-        var firstButtonButton = firstButtonRenderer.GetComponent<PassiveButton>();
-        firstButtonButton.OverrideOnClickListeners(() =>
-        {
-            foreach (var playerButton in __instance.MaxPlayerButtons)
-            {
-                var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 3);
-                tmp.text = $"{newValue}";
-            }
+//         var firstButtonRenderer = __instance.MaxPlayerButtons[0];
+//         firstButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "-";
+//         firstButtonRenderer.enabled = false;
 
-            __instance.UpdateMaxPlayersButtons(options);
-        });
+//         var firstButtonButton = firstButtonRenderer.GetComponent<PassiveButton>();
+//         firstButtonButton.OverrideOnClickListeners(() =>
+//         {
+//             foreach (var playerButton in __instance.MaxPlayerButtons)
+//             {
+//                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
+//                 var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 3);
+//                 tmp.text = $"{newValue}";
+//             }
 
-        firstButtonRenderer.Destroy();
+//             __instance.UpdateMaxPlayersButtons(options);
+//         });
 
-        var lastButtonRenderer = __instance.MaxPlayerButtons[^1];
-        lastButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "+";
-        lastButtonRenderer.enabled = false;
+//         firstButtonRenderer.Destroy();
 
-        var lastButtonButton = lastButtonRenderer.GetComponent<PassiveButton>();
-        lastButtonButton.OverrideOnClickListeners(() =>
-        {
-            foreach (var playerButton in __instance.MaxPlayerButtons)
-            {
-                var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 235);
-                tmp.text = $"{newValue}";
-            }
+//         var lastButtonRenderer = __instance.MaxPlayerButtons[^1];
+//         lastButtonRenderer.GetComponentInChildren<TextMeshPro>().text = "+";
+//         lastButtonRenderer.enabled = false;
 
-            __instance.UpdateMaxPlayersButtons(options);
-        });
+//         var lastButtonButton = lastButtonRenderer.GetComponent<PassiveButton>();
+//         lastButtonButton.OverrideOnClickListeners(() =>
+//         {
+//             foreach (var playerButton in __instance.MaxPlayerButtons)
+//             {
+//                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
+//                 var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 235);
+//                 tmp.text = $"{newValue}";
+//             }
 
-        lastButtonRenderer.Destroy();
+//             __instance.UpdateMaxPlayersButtons(options);
+//         });
 
-        foreach (var button in __instance.MaxPlayerButtons)
-        {
-            var playerButton = button.GetComponent<PassiveButton>();
-            var text = playerButton.GetComponentInChildren<TextMeshPro>();
-            playerButton.OverrideOnClickListeners(() => __instance.SetMaxPlayersButtons(byte.Parse(text.text)));
-        }
+//         lastButtonRenderer.Destroy();
 
-        __instance.MaxPlayerButtons.ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == options.MaxPlayers.ToString());
-        __instance.ImpostorButtons.ForEach(x => x.gameObject.SetActive(false));
-        __instance.ImpostorText.gameObject.SetActive(false);
-    }
+//         foreach (var button in __instance.MaxPlayerButtons)
+//         {
+//             var playerButton = button.GetComponent<PassiveButton>();
+//             var text = playerButton.GetComponentInChildren<TextMeshPro>();
+//             playerButton.OverrideOnClickListeners(() => __instance.SetMaxPlayersButtons(byte.Parse(text.text)));
+//         }
 
-    [HarmonyPatch(nameof(CreateOptionsPicker.SetMap))]
-    public static void Prefix(ref int mapId) => MapSettings.Map = (MapEnum)mapId;
+//         __instance.MaxPlayerButtons.ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == options.MaxPlayers.ToString());
+//         __instance.ImpostorButtons.ForEach(x => x.gameObject.SetActive(false));
+//         __instance.ImpostorText.gameObject.SetActive(false);
+//     }
 
-    [HarmonyPatch(nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
-    public static void Postfix(int maxPlayers) => Option.GetOption<Options.NumberOption>("LobbySize").Set(maxPlayers, false);
+//     [HarmonyPatch(nameof(CreateOptionsPicker.SetMap))]
+//     public static void Prefix(ref int mapId) => MapSettings.Map = (MapEnum)mapId;
 
-    [HarmonyPatch(nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
-    public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)
-    {
-        if (__instance.mode != SettingsMode.Host)
-            return true;
+//     [HarmonyPatch(nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
+//     public static void Postfix(int maxPlayers) => Option.GetOption<Options.NumberOption>("LobbySize").Set(maxPlayers, false);
 
-        __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
-        __instance.MaxPlayerButtons.ToArray().Skip(1).ForEach(x =>
-        {
-            if (x)
-                x.enabled = x.GetComponentInChildren<TextMeshPro>()?.text == opts?.MaxPlayers.ToString();
-        });
-        return false;
-    }
+//     [HarmonyPatch(nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
+//     public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)
+//     {
+//         if (__instance.mode != SettingsMode.Host)
+//             return true;
 
-    [HarmonyPatch(nameof(CreateOptionsPicker.UpdateImpostorsButtons))]
-    public static bool Prefix() => false;
+//         __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
+//         __instance.MaxPlayerButtons.ToArray().Skip(1).ForEach(x =>
+//         {
+//             if (x)
+//                 x.enabled = x.GetComponentInChildren<TextMeshPro>()?.text == opts?.MaxPlayers.ToString();
+//         });
+//         return false;
+//     }
 
-    [HarmonyPatch(nameof(CreateOptionsPicker.Refresh))]
-    public static bool Prefix(CreateOptionsPicker __instance)
-    {
-        var options = __instance.GetTargetOptions();
-        __instance.UpdateMaxPlayersButtons(options);
-        __instance.UpdateLanguageButton((uint)options.Keywords);
-        __instance.MapMenu.UpdateMapButtons(options.MapId);
-        __instance.GameModeText.text = TranslationController.Instance.GetString(GameModesHelpers.ModeToName[GameOptionsManager.Instance.CurrentGameOptions.GameMode]);
-        return false;
-    }
-}
+//     [HarmonyPatch(nameof(CreateOptionsPicker.UpdateImpostorsButtons))]
+//     public static bool Prefix() => false;
+
+//     [HarmonyPatch(nameof(CreateOptionsPicker.Refresh))]
+//     public static bool Prefix(CreateOptionsPicker __instance)
+//     {
+//         var options = __instance.GetTargetOptions();
+//         __instance.UpdateMaxPlayersButtons(options);
+//         __instance.UpdateLanguageButton((uint)options.Keywords);
+//         __instance.MapMenu.UpdateMapButtons(options.MapId);
+//         __instance.GameModeText.text = TranslationController.Instance.GetString(GameModesHelpers.ModeToName[GameOptionsManager.Instance.CurrentGameOptions.GameMode]);
+//         return false;
+//     }
+// }
 
 [HarmonyPatch(typeof(InnerNetServer), nameof(InnerNetServer.HandleNewGameJoin))]
 public static class InnerNetSererHandleNewGameJoin
@@ -134,5 +136,58 @@ public static class InnerNetSererHandleNewGameJoin
         }
 
         return false;
+    }
+}
+
+[HarmonyPatch(typeof(CreateOptionsPicker))]
+public static class CreateGameOptionsPatch
+{
+    [HarmonyPatch(nameof(CreateOptionsPicker.Awake))]
+    public static void Prefix(CreateOptionsPicker __instance)
+    {
+        if (!__instance.MapMenu)
+            return;
+
+        var skeld = __instance.MapMenu.MapButtons.Find(x => x.MapId == MapNames.Skeld);
+
+        if (!__instance.MapMenu.MapButtons.Any(x => x.MapId == MapNames.Dleks))
+        {
+            var dleksButton = UObject.Instantiate(skeld, skeld.transform.parent);
+            dleksButton.ButtonImage.sprite = skeld.ButtonImage.sprite;
+            dleksButton.ButtonImage.flipX = true;
+            dleksButton.Icon.sprite = skeld.Icon.sprite;
+            dleksButton.Icon.flipX = true;
+            dleksButton.MapId = MapNames.Dleks;
+            __instance.MapMenu.MapButtons = __instance.MapMenu.MapButtons.AddItem(dleksButton).ToArray();
+        }
+
+        if (!__instance.MapMenu.MapButtons.Any(x => x.MapId == (MapNames)8))
+        {
+            var randomButton = UObject.Instantiate(skeld, skeld.transform.parent);
+            randomButton.ButtonImage.sprite = GetSprite("RandomMapIcon");
+            randomButton.Icon.sprite = GetSprite("RandomMapIcon");
+            randomButton.MapId = (MapNames)8;
+            __instance.MapMenu.MapButtons = __instance.MapMenu.MapButtons.AddItem(randomButton).ToArray();
+        }
+    }
+
+    [HarmonyPatch(nameof(CreateOptionsPicker.SetMap))]
+    public static void Prefix(int mapId) => SettingsPatches.SetMap((MapEnum)mapId);
+}
+
+[HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show))]
+public static class FilterPatch
+{
+    public static void Prefix(CreateGameOptions __instance)
+    {
+        var dleksTooltip = TranslationManager.GetOrAddName("Dleks.Tooltip");
+
+        if (!__instance.mapTooltips.Contains(dleksTooltip))
+            __instance.mapTooltips = __instance.mapTooltips.AddItem(dleksTooltip).ToArray();
+
+        var randomTooltip = TranslationManager.GetOrAddName("Random.Tooltip");
+
+        if (!__instance.mapTooltips.Contains(randomTooltip))
+            __instance.mapTooltips = __instance.mapTooltips.AddItem(randomTooltip).ToArray();
     }
 }

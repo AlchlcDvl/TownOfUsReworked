@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Mayor)]
-public sealed class Mayor : Crew, ISovereign
+public sealed class Mayor : Sovereign
 {
     [NumberOption(1, 10, 1)]
     public static Number MayorVoteCount = 2;
@@ -15,19 +15,17 @@ public sealed class Mayor : Crew, ISovereign
     [ToggleOption]
     private static bool RoundOneNoMayorReveal = true;
 
-    public bool Revealed { get; set; }
     private bool RoundOne { get; set; }
     private CustomButton RevealButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Mayor;
-    public override LayerEnum Type { get; } = LayerEnum.Mayor;
+    public override LayerEnum Type => LayerEnum.Mayor;
     public override Func<string> StartText { get; } = () => "Commit Voter Fraud!";
     public override Func<string> Description => () => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";
 
     protected override void Init()
     {
         base.Init();
-        Alignment = Alignment.Sovereign;
         RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, "REVEAL");
     }
 

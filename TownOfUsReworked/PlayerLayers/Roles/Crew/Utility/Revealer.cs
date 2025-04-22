@@ -33,7 +33,7 @@ public sealed class Revealer : Crew, IGhosty
     public Role FormerRole { get; init; }
 
     protected override UColor MainColor => CustomColorManager.Revealer;
-    public override LayerEnum Type { get; } = LayerEnum.Revealer;
+    public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText { get; } = () => "OOOOOOO";
     public override Func<string> Description => () => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 

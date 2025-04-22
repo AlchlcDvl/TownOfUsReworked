@@ -91,22 +91,22 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 CallRpc(CustomRPC.Misc, MiscRPC.SyncMaxUses, this, value);
         }
     }
-    public int UseCount = -1;
+    public int UsesCount = -1;
     public int Uses
     {
-        get => UseCount;
+        get => UsesCount;
         set
         {
-            if (!HasUses || value == UseCount)
+            if (!HasUses || value == UsesCount)
                 return;
 
-            UseCount = Mathf.Clamp(value, 0, Max);
+            UsesCount = Mathf.Clamp(value, 0, Max);
 
             if (!Owner.Local)
                 return;
 
             CallRpc(CustomRPC.Misc, MiscRPC.SyncUses, this, value);
-            Base.SetUsesRemaining(UseCount);
+            Base.SetUsesRemaining(UsesCount);
         }
     }
 
@@ -254,12 +254,12 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 }
                 case Number usesNum:
                 {
-                    UseCount = Max = usesNum;
+                    UsesCount = Max = usesNum;
                     break;
                 }
                 case int number:
                 {
-                    UseCount = Max = number;
+                    UsesCount = Max = number;
                     break;
                 }
                 case UsableFunc usable:
@@ -361,7 +361,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Block.transform.SetLocalZ(-5f);
 
         if (HasUses)
-            Base.SetUsesRemaining(UseCount);
+            Base.SetUsesRemaining(UsesCount);
         else
             Base.SetInfiniteUses();
     }
@@ -645,7 +645,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base.graphic.SetCooldownNormalizedUvs();
     }
 
-    public bool Usable() => IsUsable() && (!HasUses || UseCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() &&
+    public bool Usable() => IsUsable() && (!HasUses || UsesCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() &&
         !NoPlayers() && !HUD().IsIntroDisplayed && !MapBehaviourPatches.MapActive;
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses >=

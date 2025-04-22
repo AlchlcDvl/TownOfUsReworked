@@ -17,7 +17,7 @@ public sealed class Werewolf : NKilling
     public int Rounds { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Werewolf;
-    public override LayerEnum Type { get; } = LayerEnum.Werewolf;
+    public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText { get; } = () => "AWOOOOOOOOOO";
     public override Func<string> Description => () => $"- You kill everyone within {GameSettings.InteractionDistance}m";
     public override AttackEnum AttackVal => AttackEnum.Powerful;

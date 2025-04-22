@@ -15,7 +15,7 @@ public sealed class Pestilence : Deity
     private CustomButton ObliterateButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Pestilence;
-    public override LayerEnum Type { get; } = LayerEnum.Pestilence;
+    public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> Description => () => "- You can spread a deadly disease to other players" + CommonAbilities;
     public override bool CanVent => base.CanVent && PestVent;
 

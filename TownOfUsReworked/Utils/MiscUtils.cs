@@ -237,14 +237,7 @@ public static class MiscUtils
 
     public static float GetAlpha(this PlayerControl player) => player.cosmetics.currentBodySprite.BodySprite.color.a;
 
-    public static IEnumerator Wait(float duration)
-    {
-        while (duration > 0)
-        {
-            duration -= Time.deltaTime;
-            yield return EndFrame();
-        }
-    }
+    public static IEnumerator Wait(float duration) => Effects.Wait(duration).WrapToManaged();
 
     private static NetworkedPlayerInfo.PlayerOutfit CurrentOutfit(PlayerControl player) => player.CurrentOutfit;
 
@@ -1301,8 +1294,8 @@ public static class MiscUtils
 
             if (!TutorialManager.InstanceExists)
             {
-                StatsManager.Instance.LastGameStarted = Il2CppSystem.DateTime.MinValue;
-                StatsManager.Instance.BanPoints--;
+                DataManager.Player.Ban.BanPoints--;
+                DataManager.Player.Ban.PreviousGameStartDate = Il2CppSystem.DateTime.MinValue;
             }
 
             if (FirstDead == player.name)

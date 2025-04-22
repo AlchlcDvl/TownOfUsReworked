@@ -4,31 +4,32 @@ public static class ReworkedDataManager
 {
     public static void Setup()
     {
-        var path = Path.Combine(Application.persistentDataPath, "reworkedData");
-
-        if (File.Exists(path))
-        {
-            try
-            {
-                using var reader = new BinaryReader(File.OpenRead(path));
-                reader.DeserializeReworkedData();
-            } catch {}
-        }
-
         CustomStatsManager.Setup();
         CustomAchievementManager.Setup();
 
-        StatsManager.Instance.LoadStats(); // Forcing stat loading to ensure proper stats are loaded
-        StatsManager.Instance.SaveStats(); // Force save the stats to save any new achievements and stats
+        Save(); // Ensuring the data files are up-to-date
     }
 
-    private static void DeserializeReworkedData(this BinaryReader reader)
+    public static void Save()
     {
-        TranslationManager.PreviousLastID = reader.ReadInt32();
-    }
+        try
+        {
+            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(Application.persistentDataPath, "reworkedStats")));
+            writer.SerializeCustomStats();
+        }
+        catch (Exception ex)
+        {
+            Error($"Failed to write out reworked stats: {ex}");
+        }
 
-    public static void SerializeReworkedData(this BinaryWriter writer)
-    {
-        writer.Write(TranslationManager.LastID);
+        try
+        {
+            using var writer = new BinaryWriter(File.OpenWrite(Path.Combine(Application.persistentDataPath, "reworkedAchievements")));
+            writer.SerializeCustomAchievements();
+        }
+        catch (Exception ex)
+        {
+            Error($"Failed to write out reworked achievements: {ex}");
+        }
     }
 }

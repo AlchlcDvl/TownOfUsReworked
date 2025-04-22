@@ -58,19 +58,10 @@ public static class PlayerControlOnClick
 
                 break;
             }
-            case Banshee banshee:
+            case IGhosty { IsEvil: true } evilGhosty:
             {
-                if (!CustomPlayer.Local.Is(Faction.Syndicate))
-                    banshee.Caught = true;
-                else
-                    return;
-
-                break;
-            }
-            case Ghoul ghoul:
-            {
-                if (!CustomPlayer.Local.Is(Faction.Intruder))
-                    ghoul.Caught = true;
+                if (!CustomPlayer.Local.Is(evilGhosty.Faction))
+                    evilGhosty.Caught = true;
                 else
                     return;
 

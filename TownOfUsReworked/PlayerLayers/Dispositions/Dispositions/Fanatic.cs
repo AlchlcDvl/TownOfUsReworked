@@ -11,7 +11,7 @@ public sealed class Fanatic : FactionChanger
 
     protected override UColor MainColor => Turned ? PlayerRole.FactionColor : CustomColorManager.Fanatic;
     public override string Symbol => "♠";
-    public override LayerEnum Type { get; } = LayerEnum.Fanatic;
+    public override LayerEnum Type => LayerEnum.Fanatic;
     public override Func<string> Description => () => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";
     public override bool Hidden => !FanaticKnows && !Turned && !Dead;
     public override bool SnitchReveals => Snitch.SnitchSeesFanatic;

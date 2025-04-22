@@ -21,7 +21,7 @@ public sealed class Jackal : Neophyte
     private bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
 
     protected override UColor MainColor => CustomColorManager.Jackal;
-    public override LayerEnum Type { get; } = LayerEnum.Jackal;
+    public override LayerEnum Type => LayerEnum.Jackal;
     public override Func<string> StartText { get; } = () => "Gain A Majority";
     public override Func<string> Description => () => "- You start off with 2 recruits. 1 of them is always <#8CFFFFFF>Crew</color>\nand the other is either a <#008000FF>" +
         "Syndicate</color>, <#FF1919FF>Intruder</color> or a <#B3B3B3FF>Neutral</color> <#1D7CF2FF>Killer</color>\n- When both recruits die, you can recruit a third" +

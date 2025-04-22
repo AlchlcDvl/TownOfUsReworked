@@ -15,7 +15,7 @@ public sealed class Poisoner : Syndicate
     private CustomPlayerMenu PoisonMenu { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Poisoner;
-    public override LayerEnum Type { get; } = LayerEnum.Poisoner;
+    public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText { get; } = () => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" +
         CommonAbilities;

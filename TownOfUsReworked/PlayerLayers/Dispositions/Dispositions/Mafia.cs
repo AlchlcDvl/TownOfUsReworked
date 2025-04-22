@@ -11,7 +11,7 @@ public sealed class Mafia : Disposition
 
     protected override UColor MainColor => CustomColorManager.Mafia;
     public override string Symbol => "ω";
-    public override LayerEnum Type { get; } = LayerEnum.Mafia;
+    public override LayerEnum Type => LayerEnum.Mafia;
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
     public override bool CanVent => MafVent;
 

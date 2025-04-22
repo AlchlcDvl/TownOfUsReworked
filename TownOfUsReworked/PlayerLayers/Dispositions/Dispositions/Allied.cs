@@ -6,21 +6,21 @@ public sealed class Allied : Disposition
     [StringOption<AlliedFaction>]
     public static AlliedFaction AlliedFaction
     {
-        get => AlliedFactionPriv;
+        get => alliedFaction;
         set
         {
             if (value == AlliedFaction.Compliance && (!GameModifiers.OrderOfCompliance || GameModifiers.ComplianceType == ComplianceType.Killers))
-                value = AlliedFactionPriv < value ? AlliedFaction.Random : (GameModifiers.PandoricaOpens ? AlliedFaction.Pandorica : AlliedFaction.Apocalypse);
+                value = alliedFaction < value ? AlliedFaction.Random : (GameModifiers.PandoricaOpens ? AlliedFaction.Pandorica : AlliedFaction.Apocalypse);
 
-            if (value is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse && GameModifiers.PandoricaOpens)
-                value = AlliedFaction.Pandorica;
-            else if (value is AlliedFaction.Pandorica && !GameModifiers.PandoricaOpens)
-                value = AlliedFactionPriv < value ? AlliedFaction.Random : AlliedFaction.Apocalypse;
-
-            AlliedFactionPriv = value;
+            alliedFaction = value switch
+            {
+                AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse when GameModifiers.PandoricaOpens => AlliedFaction.Pandorica,
+                AlliedFaction.Pandorica when !GameModifiers.PandoricaOpens => alliedFaction < value ? AlliedFaction.Random : AlliedFaction.Apocalypse,
+                _ => value
+            };
         }
     }
-    private static AlliedFaction AlliedFactionPriv;
+    private static AlliedFaction alliedFaction;
 
     public Faction Side { get; set; }
 
@@ -35,7 +35,7 @@ public sealed class Allied : Disposition
         _ => CustomColorManager.Allied,
     };
     public override string Symbol => "ζ";
-    public override LayerEnum Type { get; } = LayerEnum.Allied;
+    public override LayerEnum Type => LayerEnum.Allied;
     public override Func<string> Description => () => Side == Faction.Neutral ? "- You are conflicted" : "";
 
     protected override void Init()

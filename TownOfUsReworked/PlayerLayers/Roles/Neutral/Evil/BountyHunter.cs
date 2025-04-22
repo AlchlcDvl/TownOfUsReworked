@@ -43,7 +43,7 @@ public sealed class BountyHunter : Evil
     public int Rounds { get; set; }
 
     protected override UColor MainColor => CustomColorManager.BountyHunter;
-    public override LayerEnum Type { get; } = LayerEnum.BountyHunter;
+    public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText { get; } = () => "Find And Kill Your Target";
     public override Func<string> Description => () => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
         "finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you will" +

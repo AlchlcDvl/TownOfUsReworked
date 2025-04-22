@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Monos;
 public sealed class MeetingPagingBehaviour : BasePagingBehaviour
 {
     [HideFromIl2Cpp]
-    public IEnumerable<PlayerVoteArea> Targets => Menu.playerStates.OrderBy(p => p.AmDead);
+    private IEnumerable<PlayerVoteArea> Targets => Menu.playerStates.OrderBy(p => p.AmDead);
 
     protected override int MaxPageIndex => (Targets.Count() - 1) / 15;
     public MeetingHud Menu;

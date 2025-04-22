@@ -17,7 +17,7 @@ public static class GameStartManagerPatches
             __instance.AllMapIcons.Add(new()
             {
                 Name = MapNames.Dleks,
-                MapImage = GetSprite("DleksBackground"),
+                MapImage = __instance.AllMapIcons.Find(x => x.Name == MapNames.Skeld).MapImage,
                 MapIcon = GetSprite("DleksLobby"),
                 NameImage = GetSprite("Dleks")
             });
@@ -156,17 +156,14 @@ public static class GameStartManagerPatches
         return false;
     }
 
-    // [HarmonyPatch(nameof(GameStartManager.UpdateMapImage))]
-    // public static Exception Finalizer() => null;
-
-    [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.ResetStartState))]
+    [HarmonyPatch(nameof(GameStartManager.ResetStartState))]
     public static void Prefix(GameStartManager __instance)
     {
         if (IsCountDown())
             SoundManager.Instance.StopSound(__instance.gameStartSound);
     }
 
-    [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.SetStartCounter))]
+    [HarmonyPatch(nameof(GameStartManager.SetStartCounter))]
     public static void Prefix(GameStartManager __instance, sbyte sec)
     {
         if (sec == -1)

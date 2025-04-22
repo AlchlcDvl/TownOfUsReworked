@@ -116,7 +116,7 @@ public sealed class LayerHandler : RoleBehaviour
 
         foreach (var button in Buttons.Where(x => x.HasUses))
         {
-            button.UseCount++;
+            button.UsesCount++;
             button.Max++;
         }
     }

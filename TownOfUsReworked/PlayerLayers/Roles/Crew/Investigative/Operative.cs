@@ -32,7 +32,7 @@ public sealed class Operative : Crew, IBugger
     private CustomButton BugButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Operative;
-    public override LayerEnum Type { get; } = LayerEnum.Operative;
+    public override LayerEnum Type => LayerEnum.Operative;
     public override Func<string> StartText { get; } = () => "Detect Which Roles Are Here";
     public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
         " meeting\n- You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";

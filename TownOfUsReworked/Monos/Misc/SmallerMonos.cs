@@ -1,3 +1,3 @@
 namespace TownOfUsReworked.Monos;
 
-public sealed class MissingBehaviour : MonoBehaviour;
+public sealed class BlankBehaviour : MonoBehaviour;

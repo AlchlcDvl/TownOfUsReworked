@@ -13,7 +13,7 @@ public sealed class Shifter : Crew
     private CustomPlayerMenu ShifterMenu { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Shifter;
-    public override LayerEnum Type { get; } = LayerEnum.Shifter;
+    public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText { get; } = () => "Shift Around Roles";
     public override Func<string> Description => () => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";
 
@@ -59,6 +59,9 @@ public sealed class Shifter : Crew
         role.RoleHistory.AddRange(RoleHistory);
         role.RoleHistory.Add(LayerEnum.Shifter);
         ShiftButton.Destroy();
+
+        if (role.Type == LayerEnum.Mayor)
+            CustomAchievementManager.UnlockAchievement("ImTheCaptainNow");
 
         if (ShiftedBecomes == BecomeEnum.Crewmate)
         {

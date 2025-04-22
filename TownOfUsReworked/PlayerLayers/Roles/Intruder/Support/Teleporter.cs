@@ -24,7 +24,7 @@ public sealed class Teleporter : Intruder, IMover
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Teleporter;
-    public override LayerEnum Type { get; } = LayerEnum.Teleporter;
+    public override LayerEnum Type => LayerEnum.Teleporter;
     public override Func<string> StartText { get; } = () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
     public override bool CanVent => TeleVent;

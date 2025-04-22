@@ -104,6 +104,7 @@ public static class CustomAchievementManager
 
     private static void UnlockAchievement(Achievement achievement)
     {
+        // TODO: Uncomment before release
         // if (TownOfUsReworked.MCIActive || IsFreePlay() || !IsInGame())
         //     return;
 
@@ -125,7 +126,7 @@ public static class CustomAchievementManager
         }
 
         achievement.Unlocked = achievement.Name != "Test";
-        StatsManager.Instance.SaveStats();
+        ReworkedDataManager.Save();
 
         if ((achievement.EndOfGame && IsInGame()) || !CustomPlayer.Local)
             QueuedAchievements.Add(achievement);

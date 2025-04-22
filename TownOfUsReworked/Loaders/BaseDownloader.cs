@@ -8,7 +8,7 @@ public class BaseDownloader(string dir, string manifest, string ext) : AssetLoad
 
     protected override bool Downloading => true;
 
-    protected override IEnumerable<string> GenerateDownloadList(DownloadableAsset[] response, HashAlgorithm hasher) => response.Where(x => ShouldDownload(Path.Combine(DirectoryInfo,
+    protected override IEnumerable<string> GenerateDownloadList(DownloadableAsset[] response, HashAlgorithm hasher) => response.Where(x => !x.IsCustom && ShouldDownload(Path.Combine(DirectoryInfo,
         $"{x.ID}.{FileExtension}"), x.Hash, hasher)).Select(x => x.ID);
 
     protected override void GenerateHash(DownloadableAsset item, HashAlgorithm hasher) => item.Hash = GenerateHash(Path.Combine(DirectoryInfo, $"{item.ID}.{FileExtension}"), hasher);

@@ -80,6 +80,7 @@ public static class Interactions
                 else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction is not (Faction.Crew or Faction.Neutral or Faction.GameMode))
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
+                    CustomStatsManager.IncrementStat(CustomStatsManager.StatsConvertedFanatics);
                     CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fanatic, false, faction);
                     fanatic.TurnFaction(faction);
                 }

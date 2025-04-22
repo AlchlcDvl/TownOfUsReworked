@@ -45,7 +45,7 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
     {
         foreach (var item in response)
         {
-            if (item.StreamOnly && !TownOfUsReworked.IsStream)
+            if ((item.StreamOnly && !TownOfUsReworked.IsStream) || item.IsCustom)
                 continue;
 
             foreach (var (id, hash) in IDsAndHashes)

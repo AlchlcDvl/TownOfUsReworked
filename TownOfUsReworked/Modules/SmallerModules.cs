@@ -31,6 +31,9 @@ public abstract class Asset
 {
     [JsonPropertyName("id")]
     public string ID { get; set; }
+
+    [JsonPropertyName("custom")]
+    public bool IsCustom { get; set; }
 }
 
 public sealed class DownloadableAsset : Asset

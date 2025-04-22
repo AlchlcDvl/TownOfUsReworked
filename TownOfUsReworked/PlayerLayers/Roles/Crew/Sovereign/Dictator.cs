@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Dictator)]
-public sealed class Dictator : Crew, ISovereign
+public sealed class Dictator : Sovereign
 {
     [ToggleOption]
     private static bool RoundOneNoDictReveal = false;
@@ -13,21 +13,19 @@ public sealed class Dictator : Crew, ISovereign
     private static Number MaxTribunals = 2;
 
     private bool RoundOne { get; set; }
-    public bool Revealed { get; set; }
     public bool Tribunal { get; set; }
     public PlayerControl ToBeEjected { get; set; }
     private CustomButton RevealButton { get; set; }
     public CustomMeeting DictMenu { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Dictator;
-    public override LayerEnum Type { get; } = LayerEnum.Dictator;
+    public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText { get; } = () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
 
     protected override void Init()
     {
         base.Init();
-        Alignment = Alignment.Sovereign;
         RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, MaxTribunals);
         DictMenu = new(Player, "DictActive", "DictDisabled", SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
@@ -45,7 +43,7 @@ public sealed class Dictator : Crew, ISovereign
             OnReveal();
     }
 
-    public void OnReveal()
+    public override void OnReveal()
     {
         if (Local)
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DictActionsRPC.Tribunal);

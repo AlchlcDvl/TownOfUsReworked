@@ -11,7 +11,7 @@ public sealed class Traitor : FactionChanger
 
     protected override UColor MainColor => Turned ? PlayerRole.FactionColor : CustomColorManager.Traitor;
     public override string Symbol => "♣";
-    public override LayerEnum Type { get; } = LayerEnum.Traitor;
+    public override LayerEnum Type => LayerEnum.Traitor;
     public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";
     public override bool Hidden => !TraitorKnows && !Turned && !Dead;
     public override bool SnitchReveals => Snitch.SnitchSeesTraitor;

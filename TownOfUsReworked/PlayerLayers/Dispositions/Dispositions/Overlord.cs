@@ -11,7 +11,7 @@ public sealed class Overlord : Disposition
 
     protected override UColor MainColor => CustomColorManager.Overlord;
     public override string Symbol => "β";
-    public override LayerEnum Type { get; } = LayerEnum.Overlord;
+    public override LayerEnum Type => LayerEnum.Overlord;
     public override Func<string> Description => () => $"- Stay alive for {OverlordMeetingWinCount} rounds";
     public override bool Hidden => !OverlordKnows && !Dead;
 

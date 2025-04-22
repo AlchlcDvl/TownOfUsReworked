@@ -2,8 +2,6 @@ namespace TownOfUsReworked.Managers;
 
 public static class CustomStatsManager
 {
-    public static bool MigratedFromVanillaStats;
-
     private static StringNames StatsGamesWon;
     private static StringNames StatsGamesLost;
     private static StringNames StatsGamesDrawn;
@@ -34,14 +32,7 @@ public static class CustomStatsManager
         StringNames.StatsTimesEjected,
         StringNames.StatsGamesStarted,
         StringNames.StatsGamesFinished,
-        StringNames.StatsHidenSeekGamesCrewmateSurvived,
-        StringNames.StatsHidenSeekTimesVented,
         StringNames.StatsTimesPettedPet,
-        StringNames.StatsImpostorKills_HideAndSeek,
-        StringNames.StatsFastestCrewmateWin_HideAndSeek,
-        StringNames.StatsFastestImpostorWin_HideAndSeek,
-        StringNames.StatsHideAndSeekCrewmateVictory,
-        StringNames.StatsHideAndSeekImpostorVictory,
 
         // These are mapped to custom stats
         StringNames.StatsImpostorKills
@@ -53,6 +44,9 @@ public static class CustomStatsManager
 
     private static readonly ValueMap<StringNames, MapEnum> MapMap = [];
     private static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
+    private static readonly ValueMap<StringNames, StatID> StatsMap = [];
+
+    private static int NextID;
 
     public static void Setup()
     {
@@ -99,14 +93,7 @@ public static class CustomStatsManager
             StringNames.StatsTimesEjected,
             StatsHitImmune,
             StatsConvertedFanatics,
-            StringNames.StatsHidenSeekGamesCrewmateSurvived,
-            StringNames.StatsHidenSeekTimesVented,
-            StringNames.StatsImpostorKills_HideAndSeek,
-            StringNames.StatsTimesPettedPet,
-            StringNames.StatsFastestCrewmateWin_HideAndSeek,
-            StringNames.StatsFastestImpostorWin_HideAndSeek,
-            StringNames.StatsHideAndSeekCrewmateVictory,
-            StringNames.StatsHideAndSeekImpostorVictory
+            StringNames.StatsTimesPettedPet
         ];
 
         var path = Path.Combine(Application.persistentDataPath, "reworkedStats");
@@ -127,17 +114,35 @@ public static class CustomStatsManager
 
         foreach (var map in MapWins.Keys)
         {
-            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [ ("%map%", () => TranslationManager.Translate($"Map.{map}")) ]);
+            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [("%map%", () => TranslationManager.Translate($"Map.{map}"))]);
             OrderedStats.Add(val);
             MapMap[val] = map;
         }
 
         foreach (var layer in LayerWins.Keys)
         {
-            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [ ("%layer%", () => TranslationManager.Translate($"Layer.{layer}")) ]);
+            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [("%layer%", () => TranslationManager.Translate($"Layer.{layer}"))]);
             OrderedStats.Add(val);
             LayerMap[val] = layer;
         }
+
+        foreach (var pair in StatsPopup.BaseStatsToShow)
+        {
+            if (OrderedStats.Contains(pair.Value))
+                StatsMap[pair.Value] = pair.Key;
+        }
+
+        foreach (var stat in OrderedStats)
+        {
+            if (!StatsMap.ContainsKey(stat))
+                StatsMap.Add(stat, GetNextStat());
+        }
+    }
+
+    private static StatID GetNextStat()
+    {
+        NextID--;
+        return (StatID)NextID;
     }
 
     public static void Reset()
@@ -147,70 +152,36 @@ public static class CustomStatsManager
         CustomStats.Clear();
     }
 
-    public static void MigrateFromVanillaStats(this StatsManager.Stats stats)
-    {
-        if (MigratedFromVanillaStats)
-            return;
-
-        foreach (var map in Enum.GetValues<MapEnum>())
-        {
-            if (stats.mapWins.TryGetValue((MapNames)(byte)map, out var value))
-                MapWins[map] = value;
-        }
-
-        foreach (var stat in SupportVanillaStats)
-        {
-            if (!stats.gameplayStats.TryGetValue(stat, out var value))
-                continue;
-
-            if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
-                CustomStats[customStat] = value;
-            else
-                CustomStats[stat] = value;
-        }
-
-        MigratedFromVanillaStats = true;
-    }
-
     private static void IncrementStat(LayerEnum layer)
     {
-        if (!LayerDictionary.ContainsKey(layer))
-            return;
-
-        LayerWins[layer] = LayerWins.GetValueOrDefault(layer) + 1;
-        StatsManager.Instance.SaveStats();
+        if (LayerDictionary.ContainsKey(layer))
+            LayerWins[layer] = LayerWins.GetValueOrDefault(layer) + 1;
     }
 
-    private static void IncrementStat(MapEnum map)
-    {
-        MapWins[map] = MapWins.GetValueOrDefault(map) + 1;
-        StatsManager.Instance.SaveStats();
-    }
+    private static void IncrementStat(MapEnum map) => MapWins[map] = MapWins.GetValueOrDefault(map) + 1;
 
-    public static void IncrementStat(StringNames stat, out bool success)
+    public static void IncrementStat(StatID stat) => IncrementStat(StatsMap[stat]);
+
+    public static void IncrementStat(StringNames stat)
     {
-        success = !(IsFreePlay() || TownOfUsReworked.MciActive) && (SupportVanillaStats.Contains(stat) || stat > ReworkedStart);
+        var success = !(IsFreePlay() || TownOfUsReworked.MciActive) && (SupportVanillaStats.Contains(stat) || stat > 0);
 
         if (!success)
             return;
 
         if (LayerMap.TryGetValue(stat, out var layer))
-        {
             IncrementStat(layer);
-            return;
-        }
-
-        if (MapMap.TryGetValue(stat, out var map))
-        {
+        else if (MapMap.TryGetValue(stat, out var map))
             IncrementStat(map);
-            return;
+        else
+        {
+            if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
+                stat = customStat;
+
+            CustomStats[stat] = CustomStats.GetValueOrDefault(stat) + 1;
         }
 
-        if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
-            stat = customStat;
-
-        CustomStats[stat] = CustomStats.GetValueOrDefault(stat) + 1;
-        StatsManager.Instance.SaveStats();
+        ReworkedDataManager.Save();
     }
 
     public static void RpcIncrementStat(PlayerControl player, StringNames stat)
@@ -221,11 +192,9 @@ public static class CustomStatsManager
             CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.Stat, stat);
     }
 
-    public static void IncrementStat(StringNames stat) => IncrementStat(stat, out _);
-
-    public static Il2CppSystem.Object GetStat(StringNames stat)
+    public static IObject GetStat(StringNames stat)
     {
-        if (!SupportVanillaStats.Contains(stat) && stat < ReworkedStart)
+        if (!SupportVanillaStats.Contains(stat) && stat >= 0)
             return null;
 
         if (LayerMap.TryGetValue(stat, out var layer))
@@ -234,23 +203,8 @@ public static class CustomStatsManager
         if (MapMap.TryGetValue(stat, out var map))
             return GetMapWins(map);
 
-        switch (stat)
-        {
-            case StringNames.StatsFastestCrewmateWin_HideAndSeek:
-                return StatsPopup.GetFloatStatStr(StatsManager.Instance.GetFastestHideAndSeekCrewmateWin());
-            case StringNames.StatsFastestImpostorWin_HideAndSeek:
-                return StatsPopup.GetFloatStatStr(StatsManager.Instance.GetFastestHideAndSeekImpostorWin());
-            case StringNames.StatsHideAndSeekCrewmateVictory:
-                return StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByTimer);
-            case StringNames.StatsHideAndSeekImpostorVictory:
-                return StatsManager.Instance.GetWinReason(GameOverReason.HideAndSeek_ByKills);
-        }
-
-        if (TranslationManager.VanillaToCustomMap.TryGetValue(stat, out var customStat))
-            stat = customStat;
-
         if (!CustomStats.TryGetValue(stat, out var val))
-            return CustomStats[stat] = 0;
+            CustomStats[stat] = val = 0;
 
         return val;
     }
@@ -280,7 +234,7 @@ public static class CustomStatsManager
     public static void AddWin(byte map, IEnumerable<PlayerLayer> layers)
     {
         IncrementStat(StatsGamesWon);
-        IncrementStat(StringNames.StatsGamesFinished);
+        IncrementStat(StatID.GamesFinished);
         IncrementStat((MapEnum)map);
 
         foreach (var layer in layers)
@@ -314,42 +268,45 @@ public static class CustomStatsManager
                     CustomAchievementManager.UnlockAchievement($"LayerWins.{role2}");
             }
 
-            if (role is IPromoter promoter)
+            if (role is not IPromoter promoter)
+                continue;
+
+            if (promoter.IsUnderling || promoter.IsPromoted)
             {
-                if (promoter.IsUnderling || promoter.IsPromoted)
-                {
-                    IncrementStat(promoter.UnderlingType);
+                IncrementStat(promoter.UnderlingType);
 
-                    if (GetLayerWins(promoter.UnderlingType) == 5)
-                        CustomAchievementManager.UnlockAchievement($"LayerWins.{promoter.UnderlingType}");
-                }
-
-                if (promoter.IsPromoted)
-                {
-                    IncrementStat(promoter.PromoterType);
-
-                    if (GetLayerWins(promoter.PromoterType) == 5)
-                        CustomAchievementManager.UnlockAchievement($"LayerWins.{promoter.PromoterType}");
-                }
+                if (GetLayerWins(promoter.UnderlingType) == 5)
+                    CustomAchievementManager.UnlockAchievement($"LayerWins.{promoter.UnderlingType}");
             }
+
+            if (!promoter.IsPromoted)
+                continue;
+
+            IncrementStat(promoter.PromoterType);
+
+            if (GetLayerWins(promoter.PromoterType) == 5)
+                CustomAchievementManager.UnlockAchievement($"LayerWins.{promoter.PromoterType}");
         }
+
+        ReworkedDataManager.Save();
     }
 
     public static void AddLoss()
     {
         IncrementStat(StatsGamesLost);
         IncrementStat(StringNames.StatsGamesFinished);
+        ReworkedDataManager.Save();
     }
 
     public static void AddDraw()
     {
         IncrementStat(StatsGamesDrawn);
         IncrementStat(StringNames.StatsGamesFinished);
+        ReworkedDataManager.Save();
     }
 
     public static void SerializeCustomStats(this BinaryWriter writer)
     {
-        writer.Write(MigratedFromVanillaStats);
         writer.Write(CustomStats);
         writer.Write(LayerWins);
         writer.Write(MapWins);
@@ -357,30 +314,9 @@ public static class CustomStatsManager
 
     private static void DeserializeCustomStats(this BinaryReader reader)
     {
-        MigratedFromVanillaStats = reader.ReadBoolean();
         reader.ReadEnumDict(CustomStats);
         reader.ReadEnumDict(LayerWins);
         reader.ReadEnumDict(MapWins);
-
-        var diff = TranslationManager.LastID - TranslationManager.PreviousLastID; // Accounting for any changes to the translations in the base game
-
-        if (diff == 0)
-            return;
-
-        var keys = CustomStats.Keys.ToList();
-        var values = CustomStats.Values.ToList();
-        var count = CustomStats.Count;
-
-        CustomStats.Clear();
-
-        // Remapping stats to ids that have been pushed further up or down the enum
-        for (var i = 0; i < count; i++)
-        {
-            if (keys[i] < ReworkedStart)
-                CustomStats[keys[i]] = values[i];
-            else
-                CustomStats[keys[i] + diff] = values[i];
-        }
     }
 
     private static void ReadEnumDict<T>(this BinaryReader reader, Dictionary<T, uint> dict) where T : struct, Enum

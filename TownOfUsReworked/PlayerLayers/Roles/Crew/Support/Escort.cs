@@ -13,7 +13,7 @@ public sealed class Escort : Crew, IBlocker
     private CustomButton BlockButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Escort;
-    public override LayerEnum Type { get; } = LayerEnum.Escort;
+    public override LayerEnum Type => LayerEnum.Escort;
     public override Func<string> StartText { get; } = () => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
         "to blocks\n- If you attempt to block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you";

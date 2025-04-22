@@ -15,7 +15,7 @@ public sealed class Dwarf : Modifier
     private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : ""));
 
     protected override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Dwarf;
-    public override LayerEnum Type { get; } = LayerEnum.Dwarf;
+    public override LayerEnum Type => LayerEnum.Dwarf;
     public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
 
     protected override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Smol ? (Sped ? "Gremlin" : "Dwarf") : "Flash"))}");

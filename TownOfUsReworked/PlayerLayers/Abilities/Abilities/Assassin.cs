@@ -2,27 +2,27 @@
 
 public sealed class Bullseye : Assassin
 {
-    public override LayerEnum Type { get; } = LayerEnum.Bullseye;
+    public override LayerEnum Type => LayerEnum.Bullseye;
 }
 
 public sealed class Hitman : Assassin
 {
-    public override LayerEnum Type { get; } = LayerEnum.Hitman;
+    public override LayerEnum Type => LayerEnum.Hitman;
 }
 
 public sealed class Slayer : Assassin
 {
-    public override LayerEnum Type { get; } = LayerEnum.Slayer;
+    public override LayerEnum Type => LayerEnum.Slayer;
 }
 
 public sealed class Sniper : Assassin
 {
-    public override LayerEnum Type { get; } = LayerEnum.Sniper;
+    public override LayerEnum Type => LayerEnum.Sniper;
 }
 
 public sealed class Ritualist : Assassin
 {
-    public override LayerEnum Type { get; } = LayerEnum.Ritualist;
+    public override LayerEnum Type => LayerEnum.Ritualist;
 }
 
 [LayerHeaderOption(LayerEnum.Assassin)]
@@ -275,19 +275,20 @@ public abstract class Assassin : Ability, IGuesser
             var subfactionFlag = $"{player.GetSubFaction()}" == $"{guess}";
             var framedFlag = player.IsFramed();
             var promoterFlag = player.Is<IPromoter>(out var promoter) && ((promoter.UnderlingType == guess && promoter.IsUnderling) || (promoter.PromoterType == guess && promoter.IsPromoted));
+            var actorGuessed = false;
 
-            // if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
-            // {
-            //     actor.Guessed = true;
-            //     CallRpc(CustomRPC.WinLose, WinLose.ActorWins, actor);
+            if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
+            {
+                actor.Guessed = true;
+                actorGuessed = true;
+            }
 
-            //     if (!NeutralSettings.AvoidNeutralKingmakers)
-            //         RpcMurderPlayer(Player, guess, player);
-            // }
-
-            var flag = layerFlag || subfactionFlag || framedFlag || promoterFlag;
+            var flag = layerFlag || subfactionFlag || framedFlag || promoterFlag || actorGuessed;
             var toDie = flag ? player : Player;
             RpcMurderPlayer(toDie, guess, player);
+
+            if (!NeutralSettings.AvoidNeutralKingmakers && player != Player && actorGuessed)
+                RpcMurderPlayer(Player, guess, player);
 
             if (RemainingKills <= 0 || !AssassinMultiKill)
                 GuessMenu.HideButtons();
@@ -328,15 +329,21 @@ public abstract class Assassin : Ability, IGuesser
         if (Local && player == Player)
             GuessMenu.HideButtons();
 
-        if (player.Is<Indomitable>(out var ind) && player != Player)
+        if (player != Player)
         {
-            if (Local)
-                Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
-            else if (player.AmOwner)
-                Run("<#EC1C45FF>∮ Assassination ∮</color>", "Someone tried to assassinate you!");
+            if (player.Is<Indomitable>(out var ind))
+            {
+                if (Local)
+                    Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
+                else if (player.AmOwner)
+                    Run("<#EC1C45FF>∮ Assassination ∮</color>", "Someone tried to assassinate you!");
 
-            Flash(CustomColorManager.Indomitable);
-            ind.AttemptedGuess = true;
+                Flash(CustomColorManager.Indomitable);
+                ind.AttemptedGuess = true;
+            }
+
+            if (guess != LayerEnum.Actor && player.Is<Actor>(out var act) && act.PretendRoles.Any(x => x.Type == guess))
+                    act.Guessed = true;
         }
 
         if (Player == player && Lives <= 0)

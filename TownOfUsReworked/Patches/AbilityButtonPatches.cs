@@ -25,11 +25,8 @@ public static class ActionButtonPatches
     public static bool SetCoolDownPrefix(ActionButton __instance, float timer, float maxTimer)
     {
         var percentCool = Mathf.Clamp(timer / maxTimer, 0f, 1f);
-        __instance.isCoolingDown = percentCool > 0f;
         __instance.graphic.transform.localPosition = __instance.position;
-        __instance.cooldownTimerText.text = $"{Mathf.CeilToInt(timer)}";
-        __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
-        __instance.SetCooldownFill(percentCool);
+        __instance.SetFill(percentCool, timer);
         __instance.cooldownTimerText.color = percentCool switch
         {
             > 0.5f => UColor.red,
@@ -43,11 +40,8 @@ public static class ActionButtonPatches
     public static bool SetFillUpPrefix(ActionButton __instance, float timer, float maxTimer)
     {
         var percentCool = Mathf.Clamp((maxTimer - timer) / maxTimer, 0f, 1f);
-        __instance.isCoolingDown = percentCool > 0f;
         __instance.graphic.transform.localPosition = __instance.position + (Vector3)(URandom.insideUnitCircle * (percentCool > 0.9f ? URandom.Range(-0.05f, 0.051f) : 0f));
-        __instance.cooldownTimerText.text = $"{Mathf.CeilToInt(timer)}";
-        __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
-        __instance.SetCooldownFill(percentCool);
+        __instance.SetFill(percentCool, timer);
         __instance.cooldownTimerText.color = percentCool switch
         {
             > 0.9f => UColor.red,
@@ -55,5 +49,13 @@ public static class ActionButtonPatches
             _ => UColor.white
         };
         return false;
+    }
+
+    private static void SetFill(this ActionButton __instance, float percentCool, float timer)
+    {
+        __instance.isCoolingDown = percentCool > 0f;
+        __instance.cooldownTimerText.text = $"{Mathf.CeilToInt(timer)}";
+        __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
+        __instance.SetCooldownFill(percentCool);
     }
 }

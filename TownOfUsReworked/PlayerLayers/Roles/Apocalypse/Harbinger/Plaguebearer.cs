@@ -13,7 +13,7 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
     private CustomButton InfectButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Plaguebearer;
-    public override LayerEnum Type { get; } = LayerEnum.Plaguebearer;
+    public override LayerEnum Type => LayerEnum.Plaguebearer;
     public override Func<string> StartText { get; } = () => "Spread Disease To Summon <#424242FF>Pestilence</color>";
     public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <#424242FF>Pestilence</color>\n- Infections can "
         + "spread via interaction between players" + CommonAbilities;

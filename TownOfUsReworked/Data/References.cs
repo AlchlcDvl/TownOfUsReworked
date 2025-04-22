@@ -34,23 +34,22 @@ public static class References
     public static string MostRecentKiller { get; set; }
     public static bool Shapeshifted { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
-    public static StringNames ReworkedStart { get; set; }
-    private static bool HiddenBlockPriv;
+    private static bool hiddenBlock;
     public static bool HiddenBlock
     {
-        get => HiddenBlockPriv;
+        get => hiddenBlock;
         set
         {
-            HiddenBlockPriv = value;
+            hiddenBlock = value;
 
             if (!value)
                 BlockExposed = false;
         }
     }
-    private static bool BlockExposedPriv;
+    private static bool blockExposed;
     public static bool BlockExposed
     {
-        get => BlockExposedPriv;
+        get => blockExposed;
         set
         {
             if (value)
@@ -58,7 +57,7 @@ public static class References
             else
                 CameraEffectHandler.RemoveEffect("GlitchedMaterial");
 
-            BlockExposedPriv = value;
+            blockExposed = value;
         }
     }
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +

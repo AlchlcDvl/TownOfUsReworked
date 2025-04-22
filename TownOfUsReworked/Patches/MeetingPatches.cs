@@ -11,10 +11,8 @@ public static class MeetingPatches
     [HarmonyPatch(nameof(MeetingHud.Confirm))]
     public static void Postfix(MeetingHud __instance, byte suspectStateIdx)
     {
-        if (!IsLocalGame() || !TownOfUsReworked.MciActive || !TownOfUsReworked.SameVote.Value)
-            return;
-
-        __instance.playerStates.ForEach(x => __instance.CmdCastVote(x.TargetPlayerId, suspectStateIdx));
+        if (IsLocalGame() && TownOfUsReworked.MciActive && TownOfUsReworked.SameVote.Value)
+            __instance.playerStates.ForEach(x => __instance.CmdCastVote(x.TargetPlayerId, suspectStateIdx));
     }
 
     public static Sprite Cache;

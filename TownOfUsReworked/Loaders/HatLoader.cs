@@ -30,8 +30,7 @@ public sealed class HatLoader : BaseCosmeticLoader<CustomHat>
         var preview = ScriptableObject.CreateInstance<PreviewViewData>();
         preview.PreviewSprite = viewData.MainImage;
 
-        var hat = ScriptableObject.CreateInstance<HatData>()
-        ;
+        var hat = ScriptableObject.CreateInstance<HatData>();
         hat.name = item.Name;
         hat.displayOrder = 99;
         hat.ProductId = "customHat_" + item.Name.Replace(' ', '_');

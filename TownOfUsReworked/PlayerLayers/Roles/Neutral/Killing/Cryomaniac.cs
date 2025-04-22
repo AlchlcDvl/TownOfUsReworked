@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Cryomaniac)]
-public sealed class Cryomaniac : NKilling
+public sealed class Cryomaniac : NKilling, IDouser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number CryoDouseCd = 25;
@@ -27,7 +27,7 @@ public sealed class Cryomaniac : NKilling
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
     protected override UColor MainColor => CustomColorManager.Cryomaniac;
-    public override LayerEnum Type { get; } = LayerEnum.Cryomaniac;
+    public override LayerEnum Type => LayerEnum.Cryomaniac;
     public override Func<string> StartText { get; } = () => "Who Likes Ice Cream?";
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
@@ -78,10 +78,8 @@ public sealed class Cryomaniac : NKilling
             if (cryo != this && !CryoFreezeAll)
                 continue;
 
-            foreach (var player2 in from player in cryo.Doused select PlayerById(player) into player2 where !player2.HasDied() && !player2.TryFreezingIgnited() where CanAttack(AttackVal, player2.GetDefenseValue()) select player2)
-            {
+            foreach (var player2 in from player in cryo.Doused select PlayerById(player) into player2 where !player2.HasDied() && !player2.TryReversingDouses<Arsonist>() && CanAttack(AttackVal, player2.GetDefenseValue()) select player2)
                 Player.RpcMurderPlayer(player2, DeathReasonEnum.Frozen, false);
-            }
 
             cryo.Doused.Clear();
         }

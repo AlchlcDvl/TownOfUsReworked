@@ -13,9 +13,6 @@ public sealed class Language : Asset
     [JsonPropertyName("values")]
     public Dictionary<string, string> Values { get; set; }
 
-    [JsonIgnore]
-    public StringNames StringNamesID { get; set; }
-
     public string this[string lang]
     {
         get

@@ -10,25 +10,16 @@ public static class RegionInfoOpenPatch
     [HarmonyPatch(nameof(RegionMenu.Open))]
     public static void Postfix(RegionMenu __instance)
     {
-        JoinGameButton joinGameButton1 = null;
+        var joinGameButton = UObject.FindObjectsOfType<JoinGameButton>().FirstOrDefault(x => x.GameIdText && x.GameIdText.Background);
 
-        foreach (var joinGameButton2 in UObject.FindObjectsOfType<JoinGameButton>())
-        {
-            if (joinGameButton2.GameIdText && joinGameButton2.GameIdText.Background)
-            {
-                joinGameButton1 = joinGameButton2;
-                break;
-            }
-        }
-
-        if (!joinGameButton1 || !joinGameButton1.GameIdText)
+        if (!joinGameButton || !joinGameButton.GameIdText)
             return;
 
         var flag = ServerManager.Instance.CurrentRegion.Name == "Custom";
 
         if (!IPField || !IPField.gameObject)
         {
-            IPField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
+            IPField = UObject.Instantiate(joinGameButton.GameIdText, __instance.transform);
             IPField.name = "IPTextBox";
             var child = IPField.transform.FindChild("arrowEnter");
 
@@ -51,7 +42,7 @@ public static class RegionInfoOpenPatch
 
         if (!PortField || !PortField.gameObject)
         {
-            PortField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
+            PortField = UObject.Instantiate(joinGameButton.GameIdText, __instance.transform);
             PortField.name = "PortTextBox";
             var child1 = PortField.transform.FindChild("arrowEnter");
 

@@ -8,12 +8,7 @@ public static class TranslationManager
     private static readonly Dictionary<StringNames, List<StringNames>> CustomToCustom = []; // Used to map multiple custom ids to the same one
     private static readonly Dictionary<string, (string Key, Func<string> Value)[]> ReplacementsMap = [];
     private static readonly List<string> MissingIds = [];
-
-    // Values for comparisons
-    public static int LastID = -1;
-    private static int NextID = -1;
-
-    public static int PreviousLastID;
+    private static int NextID;
 
     private static string Translate(string id, (string Key, string Value)[] toReplace, string language)
     {
@@ -55,11 +50,7 @@ public static class TranslationManager
     private static StringNames AddNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
         id = id.ToLower();
-
-        if (LastID == -1)
-            LastID = NextID = (int)Enum.GetValues<StringNames>().Last(); // Getting the very last enum value and casting it to int
-
-        NextID++; // Increment to the next value
+        NextID--; // Decrement to the next value
         var value = (StringNames)NextID; // Cast the int to the enum
         CustomStringNames[value] = id; // Add the id to the dictionary
 

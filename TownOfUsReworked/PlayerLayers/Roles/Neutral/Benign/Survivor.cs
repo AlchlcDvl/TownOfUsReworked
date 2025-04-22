@@ -21,7 +21,7 @@ public sealed class Survivor : Neutral
     public CustomButton VestButton { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Survivor;
-    public override LayerEnum Type { get; } = LayerEnum.Survivor;
+    public override LayerEnum Type => LayerEnum.Survivor;
     public override Func<string> StartText { get; } = () => "Do Whatever It Takes To Live";
     public override Func<string> Description => () => "- You can put on a vest, which gives you basic defense for a short duration of time";
     public override DefenseEnum DefenseVal => VestButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;

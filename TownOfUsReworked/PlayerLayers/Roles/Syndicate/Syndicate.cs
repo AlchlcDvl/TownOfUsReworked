@@ -21,21 +21,21 @@ public abstract class Syndicate : Role, IPromoter
 
     public static bool SyndicateHasChaosDrive { get; set; }
 
-    private static PlayerControl DriveHolderPriv;
+    private static PlayerControl driveHolder;
     public static PlayerControl DriveHolder
     {
-        get => DriveHolderPriv;
+        get => driveHolder;
         set
         {
-            if (DriveHolderPriv && DriveHolderPriv.Is<Syndicate>(out var syndicate1))
+            if (driveHolder && driveHolder.Is<Syndicate>(out var syndicate1))
             {
                 syndicate1.OnDriveLost();
 
-                if (DriveHolderPriv.AmOwner || TownOfUsReworked.MciActive)
+                if (driveHolder.AmOwner || TownOfUsReworked.MciActive)
                     syndicate1.OnDriveLostLocal();
             }
 
-            DriveHolderPriv = value;
+            driveHolder = value;
 
             if (!value || !value.Is<Syndicate>(out var syndicateRole))
                 return;

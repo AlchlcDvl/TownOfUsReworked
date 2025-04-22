@@ -11,7 +11,7 @@ public sealed class Linked : Paired
 
     protected override UColor MainColor => CustomColorManager.Linked;
     public override string Symbol => "Ψ";
-    public override LayerEnum Type { get; } = LayerEnum.Linked;
+    public override LayerEnum Type => LayerEnum.Linked;
     public override Func<string> Description => () => $"- Help {Other.name} win";
     protected override bool RevealRole => LinkedRoles;
     protected override ChatChannel Channel => ChatChannel.Linked;

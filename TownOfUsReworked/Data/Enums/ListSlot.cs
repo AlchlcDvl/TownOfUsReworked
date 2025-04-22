@@ -144,10 +144,10 @@ public enum ListSlot : byte
     NonCrew,
 
     NeutralPros,
-    NeutralBen,
-    NeutralEvil,
     NeutralKill,
     NeutralNeo,
+    NeutralBen,
+    NeutralEvil,
 
     RandomNeutral,
     RegularNeutral,
@@ -211,7 +211,6 @@ public enum ListSlot : byte
 
     NonCompliance,
 
-    IlluminatiApoc,
     IlluminatiKill,
     IlluminatiConceal,
     IlluminatiDecep,
@@ -228,6 +227,7 @@ public enum ListSlot : byte
     PowerIlluminati,
 
     NonIlluminati,
+    NonIllNeutral,
 
     Any
 }

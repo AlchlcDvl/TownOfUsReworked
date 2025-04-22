@@ -156,7 +156,7 @@ public static class PlayerControlPatches
 
         var ladder = UObject.FindObjectsOfType<Ladder>().OrderBy(x => Vector2.Distance(x.transform.position, __instance.transform.position)).FirstOrDefault();
 
-        if (!ladder.IsTop)
+        if (!ladder!.IsTop)
             return true; // Are we at the bottom?
 
         __instance.RpcCustomSnapTo(__instance.transform.position + new Vector3(0, 0.5f, 0f));
@@ -230,8 +230,8 @@ public static class PlayerControlPatches
     {
         __instance.CustomDie(DeathReasonEnum.Ejected, reason: DeathReason.Exile);
 
-        if (__instance.AmOwner)
-            StatsManager.Instance.IncrementStat(StringNames.StatsTimesEjected);
+        // if (__instance.AmOwner)
+        //     StatsManager.Instance.IncrementStat(StringNames.StatsTimesEjected);
 
         return false;
     }

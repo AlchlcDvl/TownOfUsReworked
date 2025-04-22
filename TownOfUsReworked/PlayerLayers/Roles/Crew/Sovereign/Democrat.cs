@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Democrat)]
-public sealed class Democrat : Crew, ISovereign
+public sealed class Democrat : Sovereign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number CampaignCd = 25;
@@ -15,11 +15,10 @@ public sealed class Democrat : Crew, ISovereign
     public List<byte> Campaigned { get; } = [];
     private CustomButton RevealButton { get; set; }
     private CustomButton CampaignButton { get; set; }
-    public bool Revealed { get; set; }
     private bool RoundOne { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Democrat;
-    public override LayerEnum Type { get; } = LayerEnum.Democrat;
+    public override LayerEnum Type => LayerEnum.Democrat;
     public override Func<string> StartText { get; } = () => "Start A Campaign To Get Elected!";
     public override Func<string> Description => () => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
         "<#704FA8FF>Mayor</color>";
@@ -27,7 +26,6 @@ public sealed class Democrat : Crew, ISovereign
     protected override void Init()
     {
         base.Init();
-        Alignment = Alignment.Sovereign;
         RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable2, "REVEAL");
         CampaignButton ??= new(this, "CAMPAIGN", new SpriteName("Campaign"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Campaign, new Cooldown(CampaignCd),
             (UsableFunc)Usable1, (PlayerBodyExclusion)Exception);
@@ -64,7 +62,7 @@ public sealed class Democrat : Crew, ISovereign
 
     private bool Usable2() => Usable1() && AllPlayers().Where(x => x.Is(Faction.Crew) && !x.HasDied()).All(x => Campaigned.Contains(x.PlayerId));
 
-    public void OnReveal() => new Mayor().RoleUpdate(this);
+    public override void OnReveal() => new Mayor().RoleUpdate(this);
 
     private bool Exception(PlayerControl player) => Campaigned.Contains(player.PlayerId);
 

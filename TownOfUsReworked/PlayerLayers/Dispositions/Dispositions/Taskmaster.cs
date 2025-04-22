@@ -8,7 +8,7 @@ public sealed class Taskmaster : Disposition
 
     protected override UColor MainColor => CustomColorManager.Taskmaster;
     public override string Symbol => "µ";
-    public override LayerEnum Type { get; } = LayerEnum.Taskmaster;
+    public override LayerEnum Type => LayerEnum.Taskmaster;
     public override Func<string> Description => () => "- Finish your tasks before the game ends";
 
     public override void UponTaskComplete(uint taskId)

@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Utils;
 
 // Thanks to Town Of Host parts of this code
-// TODO: Finish the rewriting of end game scenarios
 public static class GameStates
 {
     public static bool IsCountDown() => GameStartManager.Instance?.startState == GameStartManager.StartingStates.Countdown;
@@ -49,7 +48,7 @@ public static class GameStates
         return role switch
         {
             Jester jest => !jest.CanHaunt,
-            GuardianAngel ga => ga.Failed || !ga.TargetAlive || !GuardianAngel.ProtectBeyondTheGrave || !ga.GraveProtectButton.Usable(),
+            GuardianAngel ga => ga.Failed || !GuardianAngel.ProtectBeyondTheGrave || !ga.GraveProtectButton.Usable(),
             _ => true
         };
     }

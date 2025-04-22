@@ -13,7 +13,7 @@ public sealed class Bait : Modifier
     public static Number BaitMaxDelay = 1;
 
     protected override UColor MainColor => CustomColorManager.Bait;
-    public override LayerEnum Type { get; } = LayerEnum.Bait;
+    public override LayerEnum Type => LayerEnum.Bait;
     public override Func<string> Description => () => "- Killing you causes the killer to report your body, albeit with a slight delay";
     public override bool Hidden => !BaitKnows && !Dead;
 

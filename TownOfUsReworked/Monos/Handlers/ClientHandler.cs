@@ -34,15 +34,15 @@ public sealed class ClientHandler : MonoBehaviour
 
     private Transform ButtonsParent;
 
-    private ProgressTracker ProgBar;
+    private ProgressTracker taskBar;
     private ProgressTracker TaskBar
     {
         get
         {
-            if (!ProgBar)
-                ProgBar = FindObjectOfType<ProgressTracker>(true);
+            if (!taskBar)
+                taskBar = FindObjectOfType<ProgressTracker>(true);
 
-            return ProgBar;
+            return taskBar;
         }
     }
 
@@ -221,7 +221,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (!SettingsPatches.MultiOptionPrefab)
         {
             // PassiveButton = 0, Text = 1, Box = 2
-            SettingsPatches.MultiOptionPrefab = new GameObject("MultiSelectOptionPrefab").DontUnload().DontDestroy().AddComponent<MissingBehaviour>();
+            SettingsPatches.MultiOptionPrefab = new GameObject("MultiSelectOptionPrefab").DontUnload().DontDestroy().AddComponent<BlankBehaviour>();
 
             var toggle = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(6).GetComponent<PassiveButton>(), Vector3.zero, Quaternion.identity,
                 SettingsPatches.MultiOptionPrefab.transform);
@@ -303,6 +303,15 @@ public sealed class ClientHandler : MonoBehaviour
             active.GetComponent<PassiveButton>().OverrideOnClickListeners(BlankVoid);
             active.transform.localScale = new(0.6f, 0.6f, 1f);
 
+            if (LayerOption.Left == default)
+                LayerOption.Left = SettingsPatches.LayersPrefab.transform.GetChild(1).localPosition;
+
+            if (LayerOption.Right == default)
+                LayerOption.Right = SettingsPatches.LayersPrefab.transform.GetChild(2).localPosition;
+
+            if (LayerOption.Diff == default)
+                LayerOption.Diff = (LayerOption.Left - LayerOption.Right) / 2;
+
             prefabs.Add(SettingsPatches.LayersPrefab);
         }
 
@@ -350,7 +359,7 @@ public sealed class ClientHandler : MonoBehaviour
 
             // Label = 0, Title = 1, Info = 2, Desc = 3, Collapse = 4
             //                       ┗---------┗------- Text = 0
-            SettingsPatches.LayerHeaderPrefab = new GameObject("LayerHeaderPrefab").DontDestroy().DontUnload().AddComponent<MissingBehaviour>();
+            SettingsPatches.LayerHeaderPrefab = new GameObject("LayerHeaderPrefab").DontDestroy().DontUnload().AddComponent<BlankBehaviour>();
 
             var label = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(0), SettingsPatches.LayerHeaderPrefab.transform);
             label.localPosition += new Vector3(0.12f, 0.08f, 0f);

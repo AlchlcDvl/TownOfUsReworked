@@ -29,8 +29,8 @@ public static class SetPostmortals
 
         if (exiled)
         {
-            // JesterWin(exiled);
-            // ExecutionerWin(exiled);
+            JesterWin(exiled);
+            ExecutionerWin(exiled);
 
             if (Lovers.BothLoversDie && exiled.Is<Lovers>(out var lover) && !lover.Other.Is(Alignment.Deity))
                 lover.Other.CustomDie(DeathReasonEnum.Suicide);
@@ -87,29 +87,20 @@ public static class SetPostmortals
         SetGhouls(player, ejection);
     }
 
-    // private static void JesterWin(PlayerControl player)
-    // {
-    //     foreach (var jest in PlayerLayer.GetLayers<Jester>())
-    //     {
-    //         if (jest.Player != player)
-    //             continue;
+    private static void JesterWin(PlayerControl player)
+    {
+        if (player.Is<Jester>(out var jest))
+            jest.VotedOut = true;
+    }
 
-    //         jest.VotedOut = true;
-    //         CallRpc(CustomRPC.WinLose, WinLose.JesterWins, jest);
-    //     }
-    // }
-
-    // private static void ExecutionerWin(PlayerControl player)
-    // {
-    //     foreach (var exe in PlayerLayer.GetLayers<Executioner>())
-    //     {
-    //         if (!exe.TargetPlayer || (!Executioner.ExeCanWinBeyondDeath && exe.Dead) || player != exe.TargetPlayer)
-    //             continue;
-
-    //         exe.TargetVotedOut = true;
-    //         CallRpc(CustomRPC.WinLose, WinLose.ExecutionerWins, exe);
-    //     }
-    // }
+    private static void ExecutionerWin(PlayerControl player)
+    {
+        foreach (var exe in PlayerLayer.GetLayers<Executioner>())
+        {
+            if ((Executioner.ExeCanWinBeyondDeath || !exe.Dead) && player == exe.TargetPlayer)
+                exe.TargetVotedOut = true;
+        }
+    }
 
     private static void SetStartingVent(PlayerControl player)
     {

@@ -30,7 +30,7 @@ public sealed class Glitch : NKilling, IBlocker
     public PlayerControl BlockTarget => HackTarget;
 
     protected override UColor MainColor => CustomColorManager.Glitch;
-    public override LayerEnum Type { get; } = LayerEnum.Glitch;
+    public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText { get; } = () => "foreach var PlayerControl Glitch.MurderPlayer";
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
         "short while\n- You are immune to blocks\n- If you hack a <#336EFFFF>Serial Killer</color> they will be forced to kill you";

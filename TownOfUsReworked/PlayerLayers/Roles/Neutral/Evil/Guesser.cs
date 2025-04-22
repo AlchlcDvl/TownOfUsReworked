@@ -43,7 +43,7 @@ public sealed class Guesser : Evil, IGuesser
     public CustomGuessingMenu GuessingMenu { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Guesser;
-    public override LayerEnum Type { get; } = LayerEnum.Guesser;
+    public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText { get; } = () => "Guess What Someone Might Be";
     public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
         $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");

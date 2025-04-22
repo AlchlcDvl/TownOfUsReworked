@@ -1,9 +1,11 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IGhosty : IPlayerLayer
+public interface IGhosty : IRole
 {
-    bool Caught { get; }
+    bool Caught { get; set; }
     bool Faded { get; set; }
+
+    public bool IsEvil => Faction is not (Faction.Crew or Faction.Neutral);
 
     public void Fade()
     {

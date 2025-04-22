@@ -15,7 +15,7 @@ public sealed class Volatile : Modifier
     private static bool Lmao;
 
     protected override UColor MainColor => CustomColorManager.Volatile;
-    public override LayerEnum Type { get; } = LayerEnum.Volatile;
+    public override LayerEnum Type => LayerEnum.Volatile;
     public override Func<string> Description => () => "- You experience hallucinations";
     public override bool Hidden => !VolatileKnows && !Exposed && !Dead;
 

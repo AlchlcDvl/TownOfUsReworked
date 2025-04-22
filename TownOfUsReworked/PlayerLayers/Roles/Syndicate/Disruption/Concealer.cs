@@ -18,7 +18,7 @@ public sealed class Concealer : Syndicate
     private CustomPlayerMenu ConcealMenu { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Concealer;
-    public override LayerEnum Type { get; } = LayerEnum.Concealer;
+    public override LayerEnum Type => LayerEnum.Concealer;
     public override Func<string> StartText { get; } = () => "Turn The <#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
 

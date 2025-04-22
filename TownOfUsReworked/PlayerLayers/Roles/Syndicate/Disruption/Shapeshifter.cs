@@ -22,7 +22,7 @@ public sealed class Shapeshifter : Syndicate
     private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Shapeshifter;
-    public override LayerEnum Type { get; } = LayerEnum.Shapeshifter;
+    public override LayerEnum Type => LayerEnum.Shapeshifter;
     public override Func<string> StartText { get; } = () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
 

@@ -13,7 +13,7 @@ public sealed class Underdog : Ability
     public static bool UnderdogIncreasedCd = true;
 
     protected override UColor MainColor => CustomColorManager.Underdog;
-    public override LayerEnum Type { get; } = LayerEnum.Underdog;
+    public override LayerEnum Type => LayerEnum.Underdog;
     public override Func<string> Description => () => Last(Player) ? "- You have shortened cooldowns" : (UnderdogIncreasedCd ? "- You have long cooldowns while you're not alone" : ("- You " +
         "have short cooldowns when you're alone"));
     public override bool Hidden => !UnderdogKnows && !Last(Player) && !Dead;

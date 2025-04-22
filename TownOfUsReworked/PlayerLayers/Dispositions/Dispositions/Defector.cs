@@ -15,7 +15,7 @@ public sealed class Defector : Disposition
 
     protected override UColor MainColor => Turned ? PlayerRole.FactionColor : CustomColorManager.Defector;
     public override string Symbol => "ε";
-    public override LayerEnum Type { get; } = LayerEnum.Defector;
+    public override LayerEnum Type => LayerEnum.Defector;
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !DefectorKnows && !Turned;
 

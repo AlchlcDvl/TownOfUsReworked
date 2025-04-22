@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Arsonist)]
-public sealed class Arsonist : NKilling
+public sealed class Arsonist : NKilling, IDouser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ArsoDouseCd = 25;
@@ -31,7 +31,7 @@ public sealed class Arsonist : NKilling
     public List<byte> Doused { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Arsonist;
-    public override LayerEnum Type { get; } = LayerEnum.Arsonist;
+    public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText { get; } = () => "PYROMANIAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +
         "get doused";
@@ -66,18 +66,10 @@ public sealed class Arsonist : NKilling
             if (arso.Player != Player && !ArsoIgniteAll)
                 continue;
 
-            foreach (var playerId in arso.Doused)
+            foreach (var player2 in from player in arso.Doused select PlayerById(player) into player2 where !player2.HasDied() && !player2.TryReversingDouses<Cryomaniac>() && CanAttack(AttackVal, player2.GetDefenseValue()) select player2)
             {
-                var player = PlayerById(playerId);
-
-                if (player.HasDied() || player.TryIgnitingFrozen())
-                    continue;
-
-                if (CanAttack(AttackVal, player.GetDefenseValue()))
-                {
-                    Player.RpcMurderPlayer(player, DeathReasonEnum.Ignited, false);
-                    disappear.Add(playerId);
-                }
+                Player.RpcMurderPlayer(player2, DeathReasonEnum.Ignited, false);
+                disappear.Add(player2.PlayerId);
             }
 
             arso.Doused.Clear();

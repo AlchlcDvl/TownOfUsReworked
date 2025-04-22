@@ -5,7 +5,7 @@ public abstract class OptionAttribute : Attribute
 {
     public bool All { get; set; }
 
-    public abstract Option BaseSetUpOption();
+    protected abstract Option BaseSetUpOption();
 
     public Option Set(MemberInfo member, BaseHeaderOption header, bool clientOnly)
     {

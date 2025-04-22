@@ -19,13 +19,9 @@ public static class AddressablesPatch
     public static unsafe void Initialize()
     {
         var originalMethodType = AccessTools.Method(typeof(Addressables), nameof(Addressables.LoadAssetAsync), [ typeof(UObject) ]).MakeGenericMethod(typeof(UObject));
-
         var methodInfoPtr = (Il2CppMethodInfo*)Il2CppInteropUtils.GetIl2CppMethodInfoPointerFieldForGeneratedMethod(originalMethodType).GetValue<IntPtr>(null)!;
-
         var methodPtr = UnityVersionHandler.Wrap(methodInfoPtr).MethodPointer;
-
         Info($"Patching Addressables.LoadAssetAsync at 0x{methodPtr:X}");
-
         INativeDetour.CreateAndApply(methodPtr, DetourMethod, out Original);
     }
 

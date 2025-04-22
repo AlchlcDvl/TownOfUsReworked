@@ -10,7 +10,7 @@ public sealed class Stalker : Syndicate
     private CustomButton StalkButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Stalker;
-    public override LayerEnum Type { get; } = LayerEnum.Stalker;
+    public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText { get; } = () => "Stalk Everyone To Monitor Their Movements";
     public override Func<string> Description => () => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;

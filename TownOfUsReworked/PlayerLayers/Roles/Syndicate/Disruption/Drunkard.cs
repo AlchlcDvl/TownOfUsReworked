@@ -17,7 +17,7 @@ public sealed class Drunkard : Syndicate
     private CustomPlayerMenu ConfuseMenu { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Drunkard;
-    public override LayerEnum Type { get; } = LayerEnum.Drunkard;
+    public override LayerEnum Type => LayerEnum.Drunkard;
     public override Func<string> StartText { get; } = () => "<i>Burp</i>";
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
 

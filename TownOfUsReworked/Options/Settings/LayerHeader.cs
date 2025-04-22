@@ -9,6 +9,7 @@ public sealed class LayerHeaderOption(LayerEnum layer) : BaseHeaderOption(MultiM
     private GameObject Desc { get; set; }
     private TextMeshPro ButtonText { get; set; }
     private SpriteRenderer Label { get; set; }
+
     public static Sprite OgLabel;
     public static Vector3 OgPosition;
 

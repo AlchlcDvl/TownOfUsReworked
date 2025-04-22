@@ -10,7 +10,7 @@ public sealed class ButtonBarry : Ability
     private CustomButton ButtonButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.ButtonBarry;
-    public override LayerEnum Type { get; } = LayerEnum.ButtonBarry;
+    public override LayerEnum Type => LayerEnum.ButtonBarry;
     public override Func<string> Description => () => "- You can call a button from anywhere";
 
     protected override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,

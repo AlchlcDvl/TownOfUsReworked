@@ -13,7 +13,7 @@ public sealed class Spellslinger : Syndicate
     public List<byte> Spelled { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Spellslinger;
-    public override LayerEnum Type { get; } = LayerEnum.Spellslinger;
+    public override LayerEnum Type => LayerEnum.Spellslinger;
     public override Func<string> StartText { get; } = () => "Place the <#8CFFFFFF>Crew</color> Under A Curse";
     public override Func<string> Description => () => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
         $"{FactionColorString}{Faction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";

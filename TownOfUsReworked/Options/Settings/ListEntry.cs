@@ -112,8 +112,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             ListSlot.RandomSyndicate => RoleGenManager.Syndicate.GetAll(),
 
             // Apocalypse Categories
-            ListSlot.ApocHarb => RoleGenManager.AH,
-            ListSlot.RandomApocalypse => RoleGenManager.Apocalypse.GetAll(),
+            ListSlot.RandomApocalypse => RoleGenManager.AH,
 
             // Pandora Categories
             ListSlot.PandoraKill => RoleGenManager.PK,
@@ -183,7 +182,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var role in GetValuesFromTo(ListSlot.Altruist, ListSlot.Warper))
                 {
-                    if (!bans.Any(x => x.Value == role))
+                    if (bans.All(x => x.Value != role))
                         yield return role;
                 }
 
@@ -200,6 +199,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
                     yield return ListSlot.NeutralBen;
                     yield return ListSlot.NeutralEvil;
+                    yield return ListSlot.NonIllNeutral;
                 }
                 else
                 {
@@ -212,12 +212,20 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
                     {
                         foreach (var bucket in GetValuesFromTo(ListSlot.IntruderSupport, ListSlot.NonSyndicate))
                             yield return bucket;
+
+                        yield return ListSlot.RandomApocalypse;
                     }
 
                     if (GameModifiers.OrderOfCompliance)
                     {
-                        foreach (var bucket in GetValuesFromTo(ListSlot.ComplianceKill, ListSlot.NonCompliance))
-                            yield return bucket;
+                        if (GameModifiers.ComplianceType == ComplianceType.Killers)
+                            yield return ListSlot.ComplianceKill;
+
+                        if (GameModifiers.ComplianceType == ComplianceType.Neophytes)
+                            yield return ListSlot.ComplianceNeo;
+
+                        if (GameModifiers.ComplianceType == [ ComplianceType.Killers, ComplianceType.Neophytes ])
+                            yield return ListSlot.RandomCompliance;
 
                         foreach (var bucket in GetValuesFromTo(ListSlot.NeutralBen, ListSlot.RegularNeutral))
                             yield return bucket;
@@ -239,7 +247,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var disp in GetValuesFromTo(ListSlot.Allied, ListSlot.Traitor))
                 {
-                    if (!bans.Any(x => x.Value == disp))
+                    if (bans.All(x => x.Value != disp))
                         yield return disp;
                 }
 
@@ -249,7 +257,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var mod in GetValuesFromTo(ListSlot.Astral, ListSlot.Yeller))
                 {
-                    if (!bans.Any(x => x.Value == mod))
+                    if (bans.All(x => x.Value != mod))
                         yield return mod;
                 }
 
@@ -259,7 +267,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var ab in GetValuesFromTo(ListSlot.Bullseye, ListSlot.Underdog))
                 {
-                    if (!bans.Any(x => x.Value == ab))
+                    if (bans.All(x => x.Value != ab))
                         yield return ab;
                 }
 

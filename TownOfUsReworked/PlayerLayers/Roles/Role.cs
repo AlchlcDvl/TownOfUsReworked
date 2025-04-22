@@ -1,11 +1,10 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-// TODO: Refactor the usage of linked disposition and stuff and have other ways to check players' allegiances, like for example an external dictionary for modification and stuff
-public abstract class Role : PlayerLayer
+public abstract class Role : PlayerLayer, IRole
 {
     protected override UColor MainColor => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
-    public override LayerEnum Type { get; } = LayerEnum.NoneRole;
+    public override LayerEnum Type => LayerEnum.NoneRole;
     protected override UColor LayerColor => CustomColorManager.Role;
     protected override bool UseMainColor => false;
 
@@ -14,27 +13,6 @@ public abstract class Role : PlayerLayer
     public virtual float VisionRange => 1f;
     public virtual bool AffectedByLights => true;
     public virtual bool CanSwitchVents => true;
-
-    public virtual List<PlayerControl> Team()
-    {
-        var team = new List<PlayerControl>() { Player };
-
-        if (LinkedDisposition == LayerEnum.Lovers)
-            team.Add(Player.GetOtherLover());
-        else if (LinkedDisposition == LayerEnum.Rivals)
-            team.Add(Player.GetOtherRival());
-        else if (LinkedDisposition == LayerEnum.Mafia)
-            team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
-
-        if (SubFaction == SubFaction.Cabal && Alignment != Alignment.Neophyte)
-        {
-            var jackal = Player.GetJackal();
-            team.Add(jackal.Player);
-            team.AddRange(jackal.GetOtherRecruits(Player));
-        }
-
-        return team;
-    }
 
     // private static bool PlatformIsUsed;
     // public static bool IsLeft;
@@ -52,10 +30,10 @@ public abstract class Role : PlayerLayer
 
     public List<LayerEnum> RoleHistory { get; } = [];
 
-    private Faction FactionPriv;
+    private Faction faction;
     public Faction Faction
     {
-        get => FactionPriv;
+        get => faction;
         set
         {
             FactionColor = value switch
@@ -91,20 +69,20 @@ public abstract class Role : PlayerLayer
             if (Local)
                 UpdateButtons();
 
-            FactionPriv = value;
+            faction = value;
         }
     }
     public UColor FactionColor { get; private set; }
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
     public virtual string FactionName => $"{Faction}";
 
-    private SubFaction SubFactionPriv;
+    private SubFaction subFaction;
     public SubFaction SubFaction
     {
-        get => SubFactionPriv;
+        get => subFaction;
         set
         {
-            SubFactionPriv = value;
+            subFaction = value;
             (SubFactionColor, SubFactionSymbol) = value switch
             {
                 SubFaction.Undead => (CustomColorManager.Undead, "γ"),
@@ -135,13 +113,13 @@ public abstract class Role : PlayerLayer
     private CustomButton PlaceHitButton { get; set; }
     private int BountyTimer { get; set; }
 
-    private bool TrulyDeadPriv;
+    private bool trulyDead;
     public bool TrulyDead
     {
-        get=> TrulyDeadPriv;
+        get=> trulyDead;
         set
         {
-            TrulyDeadPriv = value;
+            trulyDead = value;
             OnTrueDeath();
         }
     }
@@ -181,6 +159,7 @@ public abstract class Role : PlayerLayer
         try
         {
             var hud = HUD();
+
             hud.SabotageButton.graphic.sprite = GetSprite($"{Faction}Sabotage");
             hud.SabotageButton.graphic.SetCooldownNormalizedUvs();
 
@@ -194,8 +173,28 @@ public abstract class Role : PlayerLayer
             hud.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
 
             Player.GetButtons().ForEach(x => x.UpdateSprite());
+        } catch {}
+    }
+
+    public virtual List<PlayerControl> Team()
+    {
+        var team = new List<PlayerControl>() { Player };
+
+        if (LinkedDisposition == LayerEnum.Lovers)
+            team.Add(Player.GetOtherLover());
+        else if (LinkedDisposition == LayerEnum.Rivals)
+            team.Add(Player.GetOtherRival());
+        else if (LinkedDisposition == LayerEnum.Mafia)
+            team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
+
+        if (SubFaction == SubFaction.Cabal && Alignment != Alignment.Neophyte)
+        {
+            var jackal = Player.GetJackal();
+            team.Add(jackal.Player);
+            team.AddRange(jackal.GetOtherRecruits(Player));
         }
-        catch { }
+
+        return team;
     }
 
     public override void OnIntroEnd() => UpdateButtons();
@@ -390,7 +389,7 @@ public abstract class Role : PlayerLayer
 
     public static void PublicReveal(PlayerControl player)
     {
-        if (!player.Is<ISovereign>(out var revealer))
+        if (!player.Is<Sovereign>(out var revealer))
             return;
 
         Flash(revealer.Color);

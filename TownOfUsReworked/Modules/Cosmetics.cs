@@ -117,6 +117,9 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
     [JsonPropertyName("lighter")]
     public bool Lighter { get; set; }
 
+    [JsonPropertyName("cyclic")]
+    public bool Cyclic { get; set; }
+
     [JsonPropertyName("mainColorValues")]
     public string[] MainColorValues { get; set; }
 
@@ -129,7 +132,7 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
     // The ones marked with [JsonIgnore] are serialised elsewhere
 
     [JsonIgnore]
-    public bool Changing => MainColorValues?.Length > 1 || ShadowColorValues?.Length > 1;
+    public bool Changing => MainColorValues?.Length is > 1 || ShadowColorValues?.Length is > 1;
 
     [JsonIgnore]
     public int ColorID { get; set; }
@@ -146,37 +149,34 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
     [JsonIgnore]
     private UColor ShadowColor { get; set; }
 
-    public UColor GetMainColor()
-    {
-        if (MainColorValues == null || MainColorValues.Length == 0)
-            return MainColor = ShadowColor.Light();
+    public UColor GetMainColor() => MainColor = MainColorValues?.Length is null or 0 ? ShadowColor.Light() : LerpColors(TimeSpeed, MainColors, Cyclic);
 
-        return MainColor = LerpColors(TimeSpeed, MainColors);
-    }
+    public UColor GetShadowColor() => ShadowColor = ShadowColorValues?.Length is null or 0 ? MainColor.Shadow() : LerpColors(TimeSpeed, ShadowColors, Cyclic);
 
-    public UColor GetShadowColor()
-    {
-        if (ShadowColorValues == null || ShadowColorValues.Length == 0)
-            return ShadowColor = MainColor.Shadow();
-
-        return ShadowColor = LerpColors(TimeSpeed, ShadowColors);
-    }
-
-    private static UColor LerpColors(float mul, UColor[] colors)
+    private static UColor LerpColors(float mul, UColor[] colors, bool cyclic)
     {
         if (colors.Length == 1)
             return colors[0];
 
+        var length = colors.Length - (cyclic ? 0 : 1);
+        var point = length * ZigZag(mul);
+        var index = Mathf.Clamp(Mathf.FloorToInt(point), 0, length - 1); // Clamping to ensure there's no out of range exception
+        var t = point - index;
+
+        if (index == colors.Length - 1)
+            return UColor.Lerp(colors[^1], colors[0], t);
+
+        return UColor.Lerp(colors[index], colors[index + 1], t);
+        // Index out of range usually never happens because how the function is set up, and if it does happen, it's only for a fraction of a second and not perceptible
+    }
+
+    private static float ZigZag(float mul)
+    {
         // Math nerd rambling
-        // Mapping these next 4 lines onto desmos gives a nice little zigzag graph, make sure your x is Time and that mul and colors.Length are control variables for the function
+        // Mapping these next 4 lines onto desmos gives a nice little zigzag graph, make sure your x is Time and that mul is a control variable for the function
         var dx = mul * Time.time;
         var floor = Mathf.FloorToInt(dx);
         var phase = floor % 2; // 0 = forward, 1 = backward
-        var point = (colors.Length - 1) * Mathf.Clamp(((dx - floor) * ((2 * phase) - 1)) + 1 - phase, 0f, 1f);
-
-        var index = Mathf.Clamp(Mathf.FloorToInt(point), 0, colors.Length - 2); // Clamping to ensure there's no out of range exception
-
-        return UColor.Lerp(colors[index], colors[index + 1], point - index);
-        // Index out of range usually never happens because how the function is set up, and if it does happen, it's only for a fraction of a second and not perceptible
+        return Mathf.Clamp(((dx - floor) * ((2 * phase) - 1)) + 1 - phase, 0f, 1f);
     }
 }

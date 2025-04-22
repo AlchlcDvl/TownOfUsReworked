@@ -139,35 +139,18 @@ public static class LayerExtensions
 
     public static bool IsCryoDoused(this PlayerControl player) => PlayerLayer.GetLayers<Cryomaniac>().Any(role => role.Doused.Contains(player.PlayerId));
 
-    public static bool TryIgnitingFrozen(this PlayerControl player)
+    public static bool TryReversingDouses<T>(this PlayerControl player) where T : IDouser
     {
         var result = false;
 
-        foreach (var cryo in PlayerLayer.GetLayers<Cryomaniac>())
+        foreach (var douser in PlayerLayer.GetLayers<T>())
         {
-            if (!cryo.Doused.Contains(player.PlayerId))
+            if (!douser.Doused.Contains(player.PlayerId))
                 continue;
 
             result = true;
-            cryo.Doused.Remove(player.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, cryo, DouseActionsRPC.UnDouse, player.PlayerId);
-        }
-
-        return result;
-    }
-
-    public static bool TryFreezingIgnited(this PlayerControl player)
-    {
-        var result = false;
-
-        foreach (var arso in PlayerLayer.GetLayers<Arsonist>())
-        {
-            if (!arso.Doused.Contains(player.PlayerId))
-                continue;
-
-            result = true;
-            arso.Doused.Remove(player.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, arso, DouseActionsRPC.UnDouse, player.PlayerId);
+            douser.Doused.Remove(player.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, douser, DouseActionsRPC.UnDouse, player.PlayerId);
         }
 
         return result;
@@ -288,11 +271,11 @@ public static class LayerExtensions
         if (player.Is<ITrapper>(out var trap))
             result *= trap.Building ? 0f : 1f;
 
-        if (Ship() && Ship().Systems.TryGetValue(SystemTypes.LifeSupp, out var life))
+        if (Ship()?.Systems.TryGetValue(SystemTypes.LifeSupp, out var life) == true)
         {
-            var lifeSuppSystemType = life.Cast<LifeSuppSystemType>();
+            var lifeSuppSystemType = life.TryCast<LifeSuppSystemType>();
 
-            if (lifeSuppSystemType.IsActive && BetterSabotages.OxySlow && !player.Data.IsDead)
+            if (lifeSuppSystemType!.IsActive && BetterSabotages.OxySlow && !player.Data.IsDead)
                 result *= Mathf.Lerp(1f, 0.25f, lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration);
         }
 
@@ -315,13 +298,12 @@ public static class LayerExtensions
         if (Lobby() || (Hud.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
 
-        if (player.Is<Dwarf>())
-            return Dwarf.DwarfScale;
-
-        if (player.Is<Giant>())
-            return Giant.GiantScale;
-
-        return 1f;
+        return player.GetModifier() switch
+        {
+            Dwarf => Dwarf.DwarfSpeed,
+            Giant => Giant.GiantSpeed,
+            _ => 1f
+        };
     }
 
     private static bool TryGetShaper(this PlayerControl player, out Shapeshifter shaper) => PlayerLayer.GetLayers<Shapeshifter>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
@@ -599,6 +581,8 @@ public static class LayerExtensions
 
         if (!retainFaction)
             newRole.Faction = former.Faction;
+        else if (newRole.Local)
+            newRole.UpdateButtons();
 
         if (newRole.Local)
         {
@@ -681,7 +665,7 @@ public static class LayerExtensions
         var defense = 0;
         player.GetLayers().ForEach(x => defense += (int)x.DefenseVal);
 
-        if ((player.IsShielded() || player.IsAmbushed() || player.IsCrusaded() | player.IsProtected()) && defense < 2)
+        if ((player.IsShielded() || player.IsAmbushed() || player.IsCrusaded() || player.IsProtected()) && defense < 2)
             defense = 2;
 
         if (source && player.IsLinkedTo(source))

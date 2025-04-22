@@ -19,7 +19,7 @@ public sealed class Lovers : Paired
 
     protected override UColor MainColor => CustomColorManager.Lovers;
     public override string Symbol => "♥";
-    public override LayerEnum Type { get; } = LayerEnum.Lovers;
+    public override LayerEnum Type => LayerEnum.Lovers;
     public override Func<string> Description => () => $"- Live to the final 3 with {Other.name}";
     protected override bool RevealRole => LoversRoles;
     protected override ChatChannel Channel => ChatChannel.Rivals;

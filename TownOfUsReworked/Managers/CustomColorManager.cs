@@ -85,7 +85,7 @@ public static class CustomColorManager
     public static readonly UColor Role = FromHex("#FFD700FF");
     public static readonly UColor Modifier = FromHex("#7F7F7FFF");
     public static readonly UColor Ability = FromHex("#FF9900FF");
-    public static readonly UColor Layer = FromHex("#2684C1FF");
+    // public static readonly UColor Layer = FromHex("#2684C1FF");
     public static readonly UColor Disposition = FromHex("#DD585BFF");
 
     // Faction Colors

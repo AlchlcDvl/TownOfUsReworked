@@ -253,7 +253,41 @@ public static class CollectionExtensions
 
     public static int RemoveAll<T>(this List<T> list, params T[] items) => list.RemoveAll(items.Contains);
 
+    public static T Find<T>(this ISystem.List<T> source, Func<T, bool> predicate)
+    {
+        foreach (var item in source)
+        {
+            if (predicate(item))
+                return item;
+        }
+
+        return default;
+    }
+
+    public static bool TryAddItemIfNoContains<T>(this Il2CppReferenceArray<T> arr, T checkItem, out T[] newArr) where T : Il2CppObjectBase
+    {
+        if (arr?.Contains(checkItem) != false)
+        {
+            newArr = [];
+            return false;
+        }
+
+        newArr = [.. arr.AddItem(checkItem)];
+        return true;
+    }
+
     /* These methods are unused at the moment, so they've been commented until needed
+
+    public static IEnumerable<T2> Select<T1, T2>(this IEnumerable<T1> source, Func<int, T1, T2> selector)
+    {
+        var i = 0;
+
+        foreach (var item in source)
+        {
+            yield return selector(i, item);
+            i++;
+        }
+    }
 
     public static void ForEach<T1, T2>(this (IEnumerable<T1>, IEnumerable<T2>) source, Action<T1, T2> action)
     {
@@ -267,17 +301,6 @@ public static class CollectionExtensions
 
         for (var i = 0; i < count; i++)
             action(source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
-    }
-
-    public static T Find<T>(this ISystem.List<T> source, Func<T, bool> predicate)
-    {
-        foreach (var item in source)
-        {
-            if (predicate(item))
-                return item;
-        }
-
-        return default;
     }
 
     public static int IndexOf<T>(this ISystem.List<T> source, Func<T, bool> predicate)

@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Monos;
 public sealed class VitalsPagingBehaviour : BasePagingBehaviour
 {
     [HideFromIl2Cpp]
-    public IEnumerable<VitalsPanel> Targets => [..Menu.vitals];
+    private IEnumerable<VitalsPanel> Targets => [..Menu.vitals];
 
     protected override int MaxPageIndex => (Targets.Count() - 1) / 15;
 

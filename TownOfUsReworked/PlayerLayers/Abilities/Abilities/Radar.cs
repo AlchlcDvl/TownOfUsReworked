@@ -5,7 +5,7 @@ public sealed class Radar : Ability
     private CustomArrow RadarArrow { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Radar;
-    public override LayerEnum Type { get; } = LayerEnum.Radar;
+    public override LayerEnum Type => LayerEnum.Radar;
     public override Func<string> Description => () => "- You are aware of those close to you";
 
     protected override void Init() => RadarArrow = new(Player, Color, Target);

@@ -48,9 +48,9 @@ public static class Generate
                 if (!Option.AllOptions.Any(x => x.IsId(id)))
                     Fatal(id);
             }
-        }
 
-        Enum.GetValues<ListSlot>().ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
+            Enum.GetValues<ListSlot>().Except([ ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity ]).ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
+        }
 
         Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers
 

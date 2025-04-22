@@ -34,9 +34,9 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
     private GameObject CenterCross { get; set; }
     public LayerHeaderOption GroupHeader { get; private set; }
 
-    private static Vector3 Left;
-    private static Vector3 Right;
-    private static Vector3 Diff;
+    public static Vector3 Left;
+    public static Vector3 Right;
+    public static Vector3 Diff;
 
     public override void OptionCreated()
     {
@@ -55,15 +55,6 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
 
         UniqueCheck = Unique.transform.GetChild(2).GetComponent<SpriteRenderer>();
         ActiveCheck = Active1.transform.GetChild(2).GetComponent<SpriteRenderer>();
-
-        if (Left == default)
-            Left = Count.transform.localPosition;
-
-        if (Right == default)
-            Right = Chance.transform.localPosition;
-
-        if (Diff == default)
-            Diff = (Left - Right) / 2;
 
         Cog = role.transform.GetChild(5).gameObject;
         Cog.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);

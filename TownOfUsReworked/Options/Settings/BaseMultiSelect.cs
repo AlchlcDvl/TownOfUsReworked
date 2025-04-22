@@ -2,11 +2,11 @@ namespace TownOfUsReworked.Options;
 
 public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValue, T? noneValue) : Option<MultiSelectValue<T>>(type), IMultiSelectOption where T : struct, Enum
 {
-    protected ValueMap<MissingBehaviour, T> Buttons { get; } = [];
+    protected ValueMap<BlankBehaviour, T> Buttons { get; } = [];
     private T? NoneValue { get; } = noneValue;
     private T? AllValue { get; } = allValue;
-    public bool ForceAtLeastOne { get; set; }
-    public IEnumerable<MissingBehaviour> Options => Buttons.Keys;
+    public bool ForceAtLeastOne { get; init; }
+    public IEnumerable<BlankBehaviour> Options => Buttons.Keys;
 
     public override void OptionCreated()
     {
@@ -34,7 +34,7 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
 
     public override void Update() => Setting.Cast<StringOption>().ValueText.text = Format();
 
-    protected MissingBehaviour CreateButton(T value, string name)
+    protected BlankBehaviour CreateButton(T value, string name)
     {
         var behaviour = UObject.Instantiate(SettingsPatches.MultiOptionPrefab, Setting.transform.parent);
         var text = behaviour.GetComponentInChildren<TextMeshPro>();
@@ -111,5 +111,5 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
 
 public interface IMultiSelectOption
 {
-    IEnumerable<MissingBehaviour> Options { get; }
+    IEnumerable<BlankBehaviour> Options { get; }
 }

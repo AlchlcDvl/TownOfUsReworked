@@ -20,10 +20,10 @@ public abstract class Evil : Neutral
 
     protected override void CheckWin(List<byte> winnerIds)
     {
-        if (!NeutralEvilSettings.NeutralEvilsEndGame || !HasWon)
+        if (!HasWon)
             return;
 
-        if (!WinState.IsAny(EndState, WinLose.NeutralsWin))
+        if (NeutralEvilSettings.NeutralEvilsEndGame && !WinState.IsAny(EndState, WinLose.NeutralsWin))
             WinState = WinState is > WinLose.NobodyWins and < WinLose.NeutralsWin ? WinLose.NeutralsWin : EndState;
 
         winnerIds.Add(PlayerId);

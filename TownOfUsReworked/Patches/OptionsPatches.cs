@@ -21,7 +21,6 @@ public static class SettingsPatches
         {
             __instance.GameSettingsTab.HideForOnline = new(0);
             __instance.transform.GetChild(3).gameObject.SetActive(false);
-            __instance.transform.GetChild(7).gameObject.Destroy();
 
             ReturnButton = UObject.Instantiate(__instance.transform.FindChild("CloseButton").gameObject, __instance.transform);
             ReturnButton.name = "ReturnButton";
@@ -137,9 +136,9 @@ public static class SettingsPatches
     public static ToggleOption TogglePrefab;
     public static StringOption StringPrefab;
     public static StringOption MultiSelectPrefab;
-    public static MissingBehaviour MultiOptionPrefab;
+    public static BlankBehaviour MultiOptionPrefab;
     public static CategoryHeaderMasked HeaderPrefab;
-    public static MissingBehaviour LayerHeaderPrefab;
+    public static BlankBehaviour LayerHeaderPrefab;
     public static CategoryHeaderEditRole AlignmentPrefab;
     private static PassiveButton ButtonPrefab;
 
@@ -616,16 +615,17 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameOptionsMapPicker))]
     public static class GameOptionsMapPickerPatches
     {
-        [HarmonyPatch(nameof(GameOptionsMapPicker.Initialize))]
-        public static void Postfix(GameOptionsMapPicker __instance, int maskLayer)
+        [HarmonyPatch(nameof(GameOptionsMapPicker.SetupMapButtons))]
+        public static bool Prefix(GameOptionsMapPicker __instance, int maskLayer)
         {
             if (!__instance.AllMapIcons.Any(x => x.Name == MapNames.Dleks))
             {
+                var skeld = __instance.AllMapIcons.Find(x => x.Name == MapNames.Skeld);
                 __instance.AllMapIcons.Add(new()
                 {
                     Name = MapNames.Dleks,
-                    MapImage = GetSprite("DleksBackground"),
-                    MapIcon = GetSprite("DleksMapIcon"),
+                    MapImage = skeld.MapImage,
+                    MapIcon = skeld.MapIcon,
                     NameImage = GetSprite("Dleks")
                 });
             }
@@ -641,18 +641,25 @@ public static class SettingsPatches
                 });
             }
 
-            __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
-            __instance.mapButtons.Clear();
+            if (__instance.mapButtons != null)
+            {
+                __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
+                __instance.mapButtons.Clear();
+            }
+            else
+                __instance.mapButtons = new();
+
             __instance.transform.GetChild(1).localPosition = new(-1.134f, 0.733f, -1);
-            __instance.selectedMapId = (int)MapSettings.Map;
 
             for (var k = 0; k < __instance.AllMapIcons.Count; k++)
             {
                 var thisVal = __instance.AllMapIcons[k];
                 var mapButton = UObject.Instantiate(__instance.MapButtonOrigin, Vector3.zero, Quaternion.identity, __instance.transform);
                 mapButton.SetImage(thisVal.MapIcon, maskLayer);
+                mapButton.MapIcon.ForEach(x => x.flipX = thisVal.Name == MapNames.Dleks);
                 mapButton.transform.localPosition = new(__instance.StartPosX + (k * __instance.SpacingX) - 0.7f, 0.74f, -2f);
                 mapButton.name = $"{__instance.AllMapIcons[k].Name}";
+                mapButton.MapID = (int)thisVal.Name;
                 mapButton.Button.ClickMask = __instance.ButtonClickMask;
                 mapButton.Button.OverrideOnClickListeners(() =>
                 {
@@ -661,15 +668,16 @@ public static class SettingsPatches
 
                     __instance?.selectedButton?.Button?.SelectButton(false);
                     __instance.selectedButton = mapButton;
-                    __instance.selectedButton?.Button?.SelectButton(true);
+                    __instance.selectedButton.Button.SelectButton(true);
                     __instance.SelectMap(thisVal);
                     CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
                 });
 
                 if (k > 0)
                 {
-                    mapButton.Button.ControllerNav.selectOnLeft = __instance.mapButtons[k - 1].Button;
-                    __instance.mapButtons[k - 1].Button.ControllerNav.selectOnRight = mapButton.Button;
+                    var button = __instance.mapButtons[k - 1].Button;
+                    mapButton.Button.ControllerNav.selectOnLeft = button;
+                    button.ControllerNav.selectOnRight = mapButton.Button;
                 }
 
                 __instance.mapButtons.Add(mapButton);
@@ -678,16 +686,48 @@ public static class SettingsPatches
                     continue;
 
                 mapButton.Button.SelectButton(true);
-                __instance.SelectMap((int)MapSettings.Map);
+                __instance.SelectMap(mapButton.MapID);
                 __instance.selectedButton = mapButton;
             }
+
+            return false;
         }
 
-        [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(int))]
-        public static void Postfix(int mapId) => SetMap((MapEnum)mapId);
+        [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(int)), HarmonyPrefix]
+        public static bool SetMapPrefix(GameOptionsMapPicker __instance, int mapId)
+        {
+            var mapInfo = __instance.AllMapIcons.Find(m => m.Name == (MapNames)mapId);
+
+            if (mapInfo != null)
+                __instance.SelectMap(mapInfo);
+            else
+            {
+                SetMap((MapEnum)mapId);
+                __instance.selectedMapId = mapId;
+            }
+
+            return false;
+        }
 
         [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
-        public static void Postfix(MapIconByName mapInfo) => SetMap((MapEnum)mapInfo.Name);
+        public static bool Prefix(GameOptionsMapPicker __instance, MapIconByName mapInfo)
+        {
+            SetMap((MapEnum)mapInfo.Name);
+            __instance.selectedMapId = (int)mapInfo.Name;
+
+            if (__instance.MapImage)
+            {
+                __instance.MapImage.sprite = mapInfo.MapImage;
+                __instance.MapImage.flipX = __instance.selectedMapId == 3;
+            }
+
+            if (__instance.MapName)
+                __instance.MapName.sprite = mapInfo.NameImage;
+
+            __instance.UpdateValue();
+            __instance.OnValueChanged?.Invoke(__instance);
+            return false;
+        }
     }
 
     private static readonly string[] Maps = [ "The Skeld", "Mira HQ", "Polus", "ehT dlekS", "Airship", "Fungle", "Submerged", "Level Impostor", "Random" ];
@@ -699,10 +739,12 @@ public static class SettingsPatches
             return;
 
         MapSettings.Map = map;
-        TownOfUsReworked.NormalOptions.MapId = (byte)MapSettings.Map;
         OnValueChanged();
 
-        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[TownOfUsReworked.NormalOptions.MapId]}</font>";
+        if (!HudManager.InstanceExists)
+            return;
+
+        var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">Game Map</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{Maps[(int)map]}</font>";
 
         if (MapChangeNotif)
             MapChangeNotif.UpdateMessage(changed);
@@ -893,7 +935,7 @@ public static class SettingsPatches
                             return flag;
                         }).ToArray();
 
-                        if (members.Length > 0)
+                        if (members!.Length > 0)
                             y += 0.2f;
 
                         for (var i = 0; i < members!.Length; i++)

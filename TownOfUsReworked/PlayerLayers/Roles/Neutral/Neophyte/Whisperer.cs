@@ -37,7 +37,7 @@ public sealed class Whisperer : Neophyte
     private int WhisperConversion { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Whisperer;
-    public override LayerEnum Type { get; } = LayerEnum.Whisperer;
+    public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText { get; } = () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <#F995FCFF>Cult</color>";

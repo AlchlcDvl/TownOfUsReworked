@@ -8,7 +8,7 @@ public abstract class Option(CustomOptionType type)
     public string ID { get; set; }
     public MonoBehaviour Setting { get; set; }
     public MonoBehaviour ViewSetting { get; set; }
-    public CustomOptionType Type { get; } = type;
+    public CustomOptionType Type => type;
     public bool All { get; set; }
     public bool ClientOnly { get; set; }
     protected MemberInfo Member { get; private set; }
@@ -98,7 +98,7 @@ public abstract class Option(CustomOptionType type)
         Header = header;
         ClientOnly = clientOnly;
         Member = member;
-        Name = member.Name.Replace("Priv", "");
+        Name = member.Name;
         ID = $"CustomOption.{Name}";
         RpcId = new((byte)(AllOptions.Count / 255), (byte)(AllOptions.Count % 255)); // Gotta love being able to theoretically have 2^16 options
         AllOptions.Add(this);
@@ -151,12 +151,12 @@ public abstract class Option(CustomOptionType type)
 
         if (TryGetOption(id, out var optionatt))
         {
-            result = optionatt.PartiallyActive();
-
-            if (optionatt is Option<bool> boolOpt)
-                result &= invertVal ? !boolOpt.Value : boolOpt.Value;
-            else if (optionatt is IStringOption stringOpt)
-                result &= invertVal ? !parts[2].Contains(stringOpt.ValueString()) : parts[1].Contains(stringOpt.ValueString());
+            result = optionatt.PartiallyActive() && optionatt switch
+            {
+                Option<bool> boolOpt => invertVal ? !boolOpt.Value : boolOpt.Value,
+                IStringOption stringOpt => invertVal ? !parts[2].Contains(stringOpt.ValueString()) : parts[1].Contains(stringOpt.ValueString()),
+                _ => true
+            };
         }
         else if (!MapToLoaded.TryGetValue(id, out result))
             MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);

@@ -10,7 +10,7 @@ public sealed class Diseased : Modifier
     public static Number DiseasedMultiplier = 3;
 
     protected override UColor MainColor => CustomColorManager.Diseased;
-    public override LayerEnum Type { get; } = LayerEnum.Diseased;
+    public override LayerEnum Type => LayerEnum.Diseased;
     public override Func<string> Description => () => $"- Your killer's cooldown increases by {DiseasedMultiplier} times";
     public override bool Hidden => !DiseasedKnows && !Dead;
 
