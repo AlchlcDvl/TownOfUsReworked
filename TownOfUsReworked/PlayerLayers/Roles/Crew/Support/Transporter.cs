@@ -67,7 +67,7 @@ public sealed class Transporter : Crew, IMover
         if (transport1.inVent)
         {
             while (GetInTransition())
-                yield return EndFrame();
+                yield return null;
 
             transport1.MyPhysics.ExitAllVents();
             vent1 = transport1.GetClosestVent();
@@ -76,7 +76,7 @@ public sealed class Transporter : Crew, IMover
         if (transport2.inVent)
         {
             while (GetInTransition())
-                yield return EndFrame();
+                yield return null;
 
             transport2.MyPhysics.ExitAllVents();
             vent2 = transport2.GetClosestVent();
@@ -97,7 +97,7 @@ public sealed class Transporter : Crew, IMover
 
         while (Time.time - startTime < TransportDur)
         {
-            yield return EndFrame();
+            yield return null;
 
             if (!Meeting())
                 continue;

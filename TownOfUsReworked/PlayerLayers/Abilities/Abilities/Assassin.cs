@@ -343,7 +343,7 @@ public abstract class Assassin : Ability, IGuesser
             }
 
             if (guess != LayerEnum.Actor && player.Is<Actor>(out var act) && act.PretendRoles.Any(x => x.Type == guess))
-                    act.Guessed = true;
+                act.Guessed = true;
         }
 
         if (Player == player && Lives <= 0)

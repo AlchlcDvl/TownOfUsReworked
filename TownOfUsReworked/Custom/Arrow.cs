@@ -14,7 +14,7 @@ public class CustomArrow : IDisposable
     private SpriteRenderer Point { get; set; }
     private UColor ArrowColor { get; set; }
     private bool Disabled { get; set; }
-    private float Time { get; set; }
+    private float ArrowTime { get; set; }
 
     public static readonly List<CustomArrow> AllArrows = [];
 
@@ -23,7 +23,7 @@ public class CustomArrow : IDisposable
         Owner = owner;
         Interval = interval;
         ArrowColor = color;
-        Time = UnityEngine.Time.time;
+        ArrowTime = Time.time;
         Disabled = !Owner.AmOwner;
         Target = target;
         Instantiate();
@@ -67,11 +67,11 @@ public class CustomArrow : IDisposable
         if (Disabled)
             Enable();
 
-        if (UnityEngine.Time.time - Time < Interval)
+        if (Time.time - ArrowTime < Interval)
             return;
 
         Arrow.target = Target();
-        Time = UnityEngine.Time.time;
+        ArrowTime = Time.time;
     }
 
     public void Disable()
@@ -85,7 +85,7 @@ public class CustomArrow : IDisposable
 
     public void Destroy()
     {
-        Point?.Destroy();
+        Point?.gameObject?.Destroy();
         ArrowObj?.Destroy();
     }
 

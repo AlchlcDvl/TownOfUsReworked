@@ -19,7 +19,7 @@ public sealed class ButtonBarry : Ability
     private void Call()
     {
         ButtonUsed = true;
-        Fixes.FixCritSabotages();
+        FixUtils.FixCritSabotages();
         CallMeeting(Player);
     }
 

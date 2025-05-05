@@ -86,3 +86,5 @@ public sealed class SortedAttribute(int order) : Attribute
 {
     public int Order { get; } = order;
 }
+
+public delegate bool WhereSelectFilter<T1, T2>(T1 param, out T2 value);

@@ -1,5 +1,7 @@
 namespace TownOfUsReworked.RPCs;
 
+// Recreated the MessageReader/Writer class so that I have more control over this and because making extensions is boring
+
 /// <summary>
 /// Handler that contains byte data that's either being sent to or being received from an RPC.
 /// </summary>
@@ -81,7 +83,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <param name="data">The optional data to serialize during initialisation.</param>
     public NetData(CustomRPC rpc, params object[] data)
     {
-        WriteBuffer = [ (byte)rpc, .. data.Select(ToBytes).GetAll() ];
+        WriteBuffer = [(byte)rpc, .. data.Select(ToBytes).GetAll()];
         ReadBuffer = [];
         IsReceived = false;
     }
@@ -147,7 +149,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     public object Read(Type type) => type switch
     {
-        null => throw new NullReferenceException("type was null"),
+        null => throw new NullReferenceException(nameof(type)),
         _ when type == typeof(byte) => ReadByte(),
         _ when type == typeof(bool) => ReadBool(),
         _ when type == typeof(sbyte) => ReadSByte(),
@@ -558,7 +560,7 @@ public sealed class NetData : IDisposable, INetSerializable
     }
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => [ .. ToBytes((ushort)DataSize), .. (IEnumerable<byte>)(IsReceived ? ReadBuffer : WriteBuffer) ];
+    public byte[] ToBytes() => [.. ToBytes((ushort)DataSize), .. (IEnumerable<byte>)(IsReceived ? ReadBuffer : WriteBuffer)];
 
     // Static method helpers
 
@@ -572,9 +574,9 @@ public sealed class NetData : IDisposable, INetSerializable
     public static byte[] ToBytes(object value) => value switch
     {
         // Types from the base game
-        PlayerControl i => [ i.PlayerId ],
-        DeadBody i => [ i.ParentId ],
-        PlayerVoteArea i => [ i.TargetPlayerId ],
+        PlayerControl i => [i.PlayerId],
+        DeadBody i => [i.ParentId],
+        PlayerVoteArea i => [i.TargetPlayerId],
         Vent i => BitConverter.GetBytes(i.Id),
         Vector2 i => ToBytes(i),
 
@@ -582,9 +584,9 @@ public sealed class NetData : IDisposable, INetSerializable
         INetSerializable i => i.ToBytes(),
 
         // Base C# types
-        bool i => [ (byte)(i ? 1 : 0) ],
-        byte i => [ i ],
-        sbyte i => [ (byte)(i - sbyte.MinValue) ],
+        bool i => [(byte)(i ? 1 : 0)],
+        byte i => [i],
+        sbyte i => [(byte)(i - sbyte.MinValue)],
         ushort i => BitConverter.GetBytes(i),
         short i => BitConverter.GetBytes(i),
         int i => BitConverter.GetBytes(i),
@@ -592,9 +594,9 @@ public sealed class NetData : IDisposable, INetSerializable
         ulong i => BitConverter.GetBytes(i),
         long i => BitConverter.GetBytes(i),
         float i => BitConverter.GetBytes(i),
-        // double i => BitConverter.GetBytes(i),
-        // Half i => BitConverter.GetBytes(i),
-        // decimal i => [ .. decimal.GetBits(i).SelectMany(BitConverter.GetBytes) ], // BitConverter please have more conversion methods I beg you
+        double i => BitConverter.GetBytes(i),
+        Half i => BitConverter.GetBytes(i),
+        decimal i => [.. decimal.GetBits(i).SelectMany(BitConverter.GetBytes)], // BitConverter please have more conversion methods I beg you
         string i => ToBytes(i), // String needs a custom method because BitConverter apparently can't support it
         Enum i => ToBytes(Convert.ChangeType(i, Enum.GetUnderlyingType(i.GetType()))),
         Type i => ToBytes(i.AssemblyQualifiedName),
@@ -616,7 +618,7 @@ public sealed class NetData : IDisposable, INetSerializable
     public static byte[] ToBytes(string value)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
-        return [ .. ToBytes((ushort)bytes.Length), .. bytes ];
+        return [.. ToBytes((ushort)bytes.Length), .. bytes];
     }
 
     /// <summary>
@@ -636,7 +638,7 @@ public sealed class NetData : IDisposable, INetSerializable
         }
 
         result.InsertRange(0, BitConverter.GetBytes(i));
-        return [ .. result ];
+        return [.. result];
     }
 
     // /// <summary>
@@ -668,7 +670,7 @@ public sealed class NetData : IDisposable, INetSerializable
         foreach (var obj in values)
             result.AddRange(ToBytes(obj));
 
-        return [ .. result ];
+        return [.. result];
     }
 
     /// <summary>
@@ -680,6 +682,6 @@ public sealed class NetData : IDisposable, INetSerializable
     {
         var x = (ushort)(ReverseLerp(value.x) * ushort.MaxValue);
         var y = (ushort)(ReverseLerp(value.y) * ushort.MaxValue);
-        return [ .. BitConverter.GetBytes(x), .. BitConverter.GetBytes(y), ];
+        return [.. BitConverter.GetBytes(x), .. BitConverter.GetBytes(y),];
     }
 }

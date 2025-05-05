@@ -140,7 +140,7 @@ public static class InnerNetSererHandleNewGameJoin
 }
 
 [HarmonyPatch(typeof(CreateOptionsPicker))]
-public static class CreateGameOptionsPatch
+public static class CreateOptionsPickerPatches
 {
     [HarmonyPatch(nameof(CreateOptionsPicker.Awake))]
     public static void Prefix(CreateOptionsPicker __instance)
@@ -175,8 +175,8 @@ public static class CreateGameOptionsPatch
     public static void Prefix(int mapId) => SettingsPatches.SetMap((MapEnum)mapId);
 }
 
-[HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show))]
-public static class FilterPatch
+[HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Start))]
+public static class CreateGameOptionsPatch
 {
     public static void Prefix(CreateGameOptions __instance)
     {
@@ -189,5 +189,32 @@ public static class FilterPatch
 
         if (!__instance.mapTooltips.Contains(randomTooltip))
             __instance.mapTooltips = __instance.mapTooltips.AddItem(randomTooltip).ToArray();
+    }
+}
+
+[HarmonyPatch(typeof(GameContainer), nameof(GameContainer.SetupGameInfo))]
+public static class GameContainerPatch
+{
+    public static void Prefix(GameContainer __instance)
+    {
+        __instance.mapLogoSprites = __instance.mapLogoSprites.Concat([__instance.mapLogoSprites[0], GetSprite("RandomMapIcon")]).ToArray();
+        __instance.mapBackgroundSprites = __instance.mapLogoSprites.Concat([__instance.mapBackgroundSprites[0], GetSprite("RandomMapBackground")]).ToArray();
+    }
+}
+
+[HarmonyPatch(typeof(FilterMapPicker), nameof(FilterMapPicker.Initialize))]
+public static class FilterMapPickerPatch
+{
+    public static void Prefix(FilterMapPicker __instance)
+    {
+        var dleksTooltip = TranslationManager.GetOrAddName("Dleks.Tooltip");
+
+        if (!__instance.mapStrings.Contains(dleksTooltip))
+            __instance.mapStrings = __instance.mapStrings.AddItem(dleksTooltip).ToArray();
+
+        var randomTooltip = TranslationManager.GetOrAddName("Random.Tooltip");
+
+        if (!__instance.mapStrings.Contains(randomTooltip))
+            __instance.mapStrings = __instance.mapStrings.AddItem(randomTooltip).ToArray();
     }
 }

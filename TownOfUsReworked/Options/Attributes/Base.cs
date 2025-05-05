@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Options;
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
 public abstract class OptionAttribute : Attribute
 {
-    public bool All { get; set; }
+    public bool All { get; init; }
 
     protected abstract Option BaseSetUpOption();
 

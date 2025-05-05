@@ -11,44 +11,52 @@ public static class MainMenuPatches
         LoadVanillaSounds();
         AllMonos.AddComponents();
         CachedFirstDead = null;
-        var rightPanel = GameObject.Find("RightPanel");
+        var rightPanel = GameObject.Find("RightPanel")?.transform;
 
-        if (!Logo && rightPanel)
+        if (!rightPanel)
+            return;
+
+        if (!Logo)
         {
             Logo = new("ReworkedLogo") { transform = { position = new(2f, 0f, 100f) } };
             var rend = Logo.AddComponent<SpriteRenderer>();
             rend.sprite = GetSprite("Banner");
             rend.material = new(GetMaterial("GlitchedMaterial"));
-            Logo.transform.SetParent(rightPanel.transform);
+            Logo.transform.SetParent(rightPanel);
         }
+
+        var template = GameObject.Find("ExitGameButton");
+
+        if (!template)
+            return;
 
         var y = -0.5f;
         var pos = 0.75f;
 
         // If there's a possible download, create and show the buttons for it
-        if (ModUpdater.ReworkedUpdate)
+        if (UpdateManager.ReworkedUpdate)
         {
             Info("Reworked can be updated");
-            CreateDownloadButton("Reworked", y, pos, "UpdateReworked");
+            CreateDownloadButton("Reworked", y, pos, "UpdateReworked", template, rightPanel);
             y += 0.5f;
             pos += 0.5f;
         }
 
-        if (ModUpdater.SubmergedUpdate || ModUpdater.CanDownloadSubmerged)
+        if (UpdateManager.SubmergedUpdate || UpdateManager.CanDownloadSubmerged)
         {
-            Info($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
-            CreateDownloadButton("Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged");
+            Info($"Submerged can be {(UpdateManager.SubmergedUpdate ? "updated" : "downloaded")}");
+            CreateDownloadButton("Submerged", y, pos, $"{(SubLoaded ? "Update" : "Download")}Submerged", template, rightPanel);
             y += 0.5f;
             pos += 0.5f;
         }
 
-        if (ModUpdater.CanDownloadLevelImpostor)
+        if (UpdateManager.CanDownloadLevelImpostor)
         {
             Info("LevelImpostor can be downloaded");
-            CreateDownloadButton("LevelImpostor", y, pos, "DownloadLevelImpostor");
+            CreateDownloadButton("LevelImpostor", y, pos, "DownloadLevelImpostor", template, rightPanel);
         }
 
-        if (!ModUpdater.ReworkedUpdate && !ModUpdater.SubmergedUpdate)
+        if (!UpdateManager.ReworkedUpdate && !UpdateManager.SubmergedUpdate)
             return;
 
         var popup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
@@ -57,16 +65,10 @@ public static class MainMenuPatches
         popup.Show("A mod update is available!");
     }
 
-    private static void CreateDownloadButton(string downloadType, float yValue1, float yValue2, string spriteName)
+    private static void CreateDownloadButton(string downloadType, float yValue1, float yValue2, string spriteName, GameObject template, Transform rightPanel)
     {
-        var template = GameObject.Find("ExitGameButton");
-        var rightPanel = GameObject.Find("RightPanel")?.transform;
-
-        if (!template || !rightPanel)
-            return;
-
         var button = UObject.Instantiate(template, rightPanel);
-        button.transform.localPosition = new(button.transform.localPosition.x, yValue1, button.transform.localPosition.z);
+        button.transform.SetLocalY(yValue1);
         button.transform.localScale = new(0.44f, 0.84f, 1f);
         button.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = button.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite(spriteName);
         button.name = $"{downloadType}Download";
@@ -77,7 +79,7 @@ public static class MainMenuPatches
 
         button.GetComponent<PassiveButton>().OverrideOnClickListeners(() =>
         {
-            Coroutines.Start(ModUpdater.DownloadUpdate(downloadType));
+            Coroutines.Start(UpdateManager.DownloadUpdate(downloadType));
             button.SetActive(false);
         });
 

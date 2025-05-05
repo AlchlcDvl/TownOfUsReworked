@@ -41,7 +41,7 @@ public sealed class GameTab : BaseTab
 
         if (GUILayout.Button("Fix All Sabotages"))
         {
-            Fixes.Fix();
+            FixUtils.Fix();
             DefaultOutfitAll();
         }
 

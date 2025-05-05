@@ -1,7 +1,13 @@
 namespace TownOfUsReworked.Data;
 
+/// <summary>
+/// Info class that contains wiki entries.
+/// </summary>
 public static class AllInfo
 {
+    /// <summary>
+    /// Wiki entries for all of the roles within the mod.
+    /// </summary>
     public static readonly IEnumerable<RoleInfo> AllRoles =
     [
         new(LayerEnum.None, Alignment.None, Faction.None, color: CustomColorManager.Role),

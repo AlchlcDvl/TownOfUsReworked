@@ -53,11 +53,12 @@ public sealed class StatsHandler : MonoBehaviour
             : $"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}"));
     }
 
-    private static void AppendStat(Il2CppSystem.Text.StringBuilder str, StringNames stat, object value)
+    private static void AppendStat(Il2CppSystem.Text.StringBuilder str, StringNames stat, IObject value)
     {
-		str.Append("<align=left>" + TranslationController.Instance.GetString(stat).Trim() + ":<line-height=0>");
-		str.AppendLine();
-		str.Append("<align=right>" + value?.ToString() + "<line-height=1em>");
-		str.AppendLine();
+        var text = TranslationController.Instance.GetString(stat).Trim();
+        str.Append("<align=left>" + text + (text.Contains(':') ? "" : ":") + "<line-height=0>");
+        str.AppendLine();
+        str.Append("<align=right>" + value?.ToString() + "<line-height=1em>");
+        str.AppendLine();
     }
 }

@@ -159,7 +159,7 @@ public abstract class Option(CustomOptionType type)
             };
         }
         else if (!MapToLoaded.TryGetValue(id, out result))
-            MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibility)).Find(x => x.Name == id).GetValue<bool>(null);
+            MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibilityManager)).Find(x => x.Name == id).GetValue<bool>(null);
 
         return result;
     }
@@ -325,7 +325,7 @@ public abstract class Option(CustomOptionType type)
             }
 
             if (i % 50 == 0)
-                yield return EndFrame();
+                yield return null;
         }
 
         SendOptionRPC(save: false);

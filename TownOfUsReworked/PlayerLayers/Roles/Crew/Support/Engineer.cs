@@ -28,7 +28,7 @@ public sealed class Engineer : Crew
 
     private void Fix()
     {
-        Fixes.Fix();
+        FixUtils.Fix();
         FixButton.StartCooldown();
     }
 }

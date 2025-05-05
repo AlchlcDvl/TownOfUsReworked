@@ -18,9 +18,11 @@ public static class Generate
         // I thought to myself on the toilet, What if I just used a class for the headers instead of another property?
         // Then I don't need to add a random getter setter. I don't have to make the string arrays too because I can just get the declared properties and use their names as the array...
             // and then this genius thing was born
+        var assassin = typeof(Assassin);
         AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core)
             // For some reason the attribute is being inherited by the assassin classes, even though I've stated that it shouldn't in the attribute usage
-            .Where(x => !typeof(Assassin).IsAssignableFrom(x) || x == typeof(Assassin))
+            // Future AD here: this is probably from the fact that Assassin itself is an abstract class
+            .Where(x => !assassin.IsAssignableFrom(x) || x == assassin)
             .ForEach(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
 
         foreach (var opts in Option.AllOptions.SplitBy(x => x.ID))
@@ -40,16 +42,16 @@ public static class Generate
             }
         }
 
-        // Sanitizing the languages json in case there are translation ids of settings that don't exist anymore
         if (TownOfUsReworked.IsDev)
         {
+            // Sanitizing the languages json in case there are translation ids of settings that don't exist anymore
             foreach (var id in TranslationManager.AllTranslations.Keys.Where(x => x.StartsWith("customoption") && !x.EndsWithAny("entry", "ban")))
             {
                 if (!Option.AllOptions.Any(x => x.IsId(id)))
                     Fatal(id);
             }
 
-            Enum.GetValues<ListSlot>().Except([ ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity ]).ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
+            Enum.GetValues<ListSlot>().Except([ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity]).ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
         }
 
         Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers

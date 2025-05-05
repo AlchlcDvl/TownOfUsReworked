@@ -26,6 +26,7 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
     private void SetRole(ShapeshifterPanel panel, int index, LayerEnum layer, Action onClick)
     {
         panel.shapeshift = onClick;
+        // TODO: Replace the player icon with a layer icon because that looks nicer
         panel.PlayerIcon.SetFlipX(false);
         panel.PlayerIcon.ToggleName(false);
         panel.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.material.SetInt(PlayerMaterial.MaskLayer, index + 2));
@@ -36,7 +37,7 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
         var dictEntry = LayerDictionary[layer];
         PlayerMaterial.SetColors(dictEntry.Color, panel.PlayerIcon.cosmetics.currentBodySprite.BodySprite);
         panel.LevelNumberText.transform.parent.gameObject.SetActive(false);
-        panel.NameText.text = layer == LayerEnum.Miner && MapPatches.CurrentMap == 5 ? "Herbalist" : dictEntry.Name;
+        panel.NameText.text = layer == LayerEnum.Miner && MapPatches.CurrentMap == 5 ? TranslationManager.Translate("Layer.Herbalist") : dictEntry.Name;
         panel.NameText.color = dictEntry.Color;
         panel.name = $"Guess{panel.NameText.text.Replace(" ", "")}";
 

@@ -27,19 +27,20 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 46;
+    private const int DevBuild = 47;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
     public static readonly Version ModVer = new(VersionS);
 
     private static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
-    public static readonly string Assets = Path.Combine(DataPath, "ReworkedAssets");
+    private static readonly string PersistentDataPath = Path.GetDirectoryName(Application.persistentDataPath);
+    public static readonly string Assets = Path.Combine(PersistentDataPath, "Among Us", "ReworkedAssets");
     public static readonly string Hats = Path.Combine(Assets, "Hats");
     public static readonly string Visors = Path.Combine(Assets, "Visors");
     public static readonly string Nameplates = Path.Combine(Assets, "Nameplates");
     public static readonly string Colors = Path.Combine(Assets, "Colors");
-    public static readonly string Options = Path.Combine(Path.GetDirectoryName(Application.persistentDataPath), "ReworkedOptions");
+    public static readonly string Options = Path.Combine(Assets, "ReworkedOptions");
     public static readonly string Images = Path.Combine(Assets, "Images");
     public static readonly string Sounds = Path.Combine(Assets, "Sounds");
     public static readonly string Bundles = Path.Combine(Assets, "Bundles");
@@ -103,7 +104,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public override void Load()
     {
-        Logging.Log = Log;
+        LogManager.Log = Log;
         DiskLog = BepInEx.Logging.Logger.Listeners.OfType<DiskLogListener>().FirstOrDefault();
         Message("Loading");
 

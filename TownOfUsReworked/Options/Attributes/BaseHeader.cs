@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Options;
 public abstract class BaseHeaderOptionAttribute(MultiMenu menu) : OptionAttribute<BaseHeaderOption>
 {
     protected MultiMenu Menu { get; } = menu;
-    public bool ClientOnly { get; set; }
+    public bool ClientOnly { get; init; }
 
     /// <summary>
     /// Sets up the header and its grouped options from the provided type.

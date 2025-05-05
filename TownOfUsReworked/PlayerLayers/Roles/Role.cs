@@ -318,6 +318,45 @@ public abstract class Role : PlayerLayer, IRole
             arrow.Destroy();
     }
 
+    public bool IsConverted() => SubFaction != SubFaction.None && this is not Neophyte;
+
+    public void RoleUpdate(Role former, PlayerControl player = null, bool retainFaction = false)
+    {
+        player ??= former.Player;
+        CustomButton.AllButtons.Where(x => x.Owner == former || !x.Owner.Player).ForEach(x => x.Destroy());
+        CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
+        var allArrows = former.AllArrows.Clone();
+        var history = former.RoleHistory.Clone();
+        former.End();
+        Start(player);
+        SubFaction = former.SubFaction;
+        DeathReason = former.DeathReason;
+        KilledBy = former.KilledBy;
+        Diseased = former.Diseased;
+        AllArrows.AddRange(allArrows);
+        RoleHistory.AddRange(history);
+        RoleHistory.Add(former.Type);
+        PostAssignment();
+
+        if (!retainFaction)
+            Faction = former.Faction;
+        else if (Local)
+            UpdateButtons();
+
+        if (Local)
+        {
+            ButtonUtils.Reset();
+            Player.RegenTask();
+            Flash(Color);
+        }
+
+        if (CustomPlayer.Local.Is<Seer>(out var seer))
+            Flash(seer.Color);
+
+        if (player.Data.Role is LayerHandler layerHandler)
+            layerHandler.SetUpLayers();
+    }
+
     public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().ForEach(x => x.Rounds++);
 
     protected override void Deinit() => RoleHistory.Clear();

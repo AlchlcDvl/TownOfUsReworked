@@ -58,8 +58,6 @@ public static class GameStartManagerPatches
         if (!GameData.Instance || !GameManager.Instance)
             return false;
 
-        __instance.GameStartText.transform.SetLocalY(AmongUsClient.Instance.AmHost ? 2f : 0f);
-
         __instance.UpdateMapImage((MapNames)GameManager.Instance.LogicOptions.MapId);
         __instance.CheckSettingsDiffs();
         __instance.RulesPresetText.text = TranslationController.Instance.GetString(GameOptionsManager.Instance.CurrentGameOptions.GetRulesPresetTitle());
@@ -152,7 +150,9 @@ public static class GameStartManagerPatches
         if (isCd && (TownOfUsReworked.MciActive || Input.GetKeyDown(KeyCode.LeftShift)))
             __instance.countDownTimer = 0;
 
-        CancelStartButton.gameObject.SetActive(isCd && __instance.countDownTimer < 4);
+        var cancel = isCd && __instance.countDownTimer < 4;
+        CancelStartButton.gameObject.SetActive(cancel);
+        __instance.GameStartText.transform.SetLocalY(AmongUsClient.Instance.AmHost && cancel ? 2f : 0f);
         return false;
     }
 

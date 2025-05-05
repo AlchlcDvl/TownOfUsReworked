@@ -110,6 +110,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         }
     }
 
+    // I know this constructor is cursed, but the alternative was 40+ constructors that accepted different param types in weird orders
     public CustomButton(params object[] properties)
     {
         foreach (var prop in properties)
@@ -324,12 +325,12 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 }
                 case null:
                 {
-                    Warning("Entered a null prop value");
+                    Warning("Entered a null prop value"); // Achievement Get: How did we get here?
                     break;
                 }
                 default:
                 {
-                    Warning($"Unassigned property of type {prop.GetType().Name}");
+                    Warning($"Unassigned property of type {prop.GetType().Name}"); // Achievement Get: How did I manage this?
                     break;
                 }
             }
@@ -419,7 +420,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
                 if (Type.HasFlag(AbilityTypes.Targetless))
                     DoClickTargetless();
-                else switch (Target)
+                else switch (Target) // Oh how I wish we could switch expression regular methods...one can dream, right?
                 {
                     case PlayerControl player:
                     {
@@ -558,7 +559,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             CooldownTime = Mathf.Clamp(CooldownTime - Time.deltaTime, 0f, MaxCooldown());
     }
 
-    private void SetOutline(MonoBehaviour prevMono, MonoBehaviour newMono)
+    private void SetOutline(MonoBehaviour prevMono, MonoBehaviour newMono) // Something that Innersloth changed borked this code, and I honestly couldn't be bothered to fix it because it's a shader issue
     {
         if (prevMono == newMono)
             return;

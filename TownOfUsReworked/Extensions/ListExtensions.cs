@@ -241,12 +241,18 @@ public static class CollectionExtensions
             yield return (index++, item);
     }
 
-    public static Dictionary<T2, T3> TryToDictionary<T1, T2, T3>(this IEnumerable<T1> source, Func<T1, T2> keySelector, Func<T1, T3> valueSelector)
+    public static Dictionary<T2, T3> TryToDictionary<T1, T2, T3>(this IEnumerable<T1> source, Func<T1, T2> keySelector, Func<T1, T3> valueSelector, bool warn = false)
     {
         var dict = new Dictionary<T2, T3>();
 
         foreach (var item in source)
-            dict.TryAdd(keySelector(item), valueSelector(item));
+        {
+            var key = keySelector(item);
+            var value = valueSelector(item);
+
+            if (!dict.TryAdd(key, value) && warn)
+                Warning($"{key} ({value}) already exists with the value {dict[key]}");
+        }
 
         return dict;
     }
@@ -264,6 +270,17 @@ public static class CollectionExtensions
         return default;
     }
 
+    public static IEnumerable<T2> WhereSelect<T1, T2>(this IEnumerable<T1> source, WhereSelectFilter<T1, T2> filter)
+    {
+        foreach (var item in source)
+        {
+            if (filter(item, out var result))
+                yield return result;
+        }
+    }
+
+    /* These methods are unused at the moment, so they've been commented until needed
+
     public static bool TryAddItemIfNoContains<T>(this Il2CppReferenceArray<T> arr, T checkItem, out T[] newArr) where T : Il2CppObjectBase
     {
         if (arr?.Contains(checkItem) != false)
@@ -275,8 +292,6 @@ public static class CollectionExtensions
         newArr = [.. arr.AddItem(checkItem)];
         return true;
     }
-
-    /* These methods are unused at the moment, so they've been commented until needed
 
     public static IEnumerable<T2> Select<T1, T2>(this IEnumerable<T1> source, Func<int, T1, T2> selector)
     {

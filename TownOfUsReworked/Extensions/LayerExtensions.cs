@@ -29,7 +29,7 @@ public static class LayerExtensions
 
     public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
 
-    public static bool Is(this PlayerControl player, params Faction[] factions) => factions.Contains(player.GetFaction());
+    private static bool Is(this PlayerControl player, params Faction[] factions) => factions.Contains(player.GetFaction());
 
     public static bool Is(this PlayerControl player, Alignment alignment) => player.GetRole()?.Alignment == alignment;
 
@@ -73,8 +73,6 @@ public static class LayerExtensions
         var role = player.GetRole();
         return role?.Alignment ?? Alignment.None;
     }
-
-    public static bool IsConverted(this Role role) => role.SubFaction != SubFaction.None && role is not Neophyte;
 
     public static bool CanSabotage(this PlayerControl player)
     {
@@ -206,7 +204,7 @@ public static class LayerExtensions
     public static bool ComplianceSided(this PlayerControl player) => player.Is(Faction.Compliance) && ((!player.Is<NKilling>() && GameModifiers.ComplianceType == ComplianceType.Killers) ||
         (!player.Is<Neophyte>() && GameModifiers.ComplianceType == ComplianceType.Neophytes));
 
-    public static bool Last(PlayerControl player) => Utils.GameStates.Last(player.GetFaction());
+    public static bool Last(PlayerControl player) => GameStateUtils.Last(player.GetFaction());
 
     public static bool CanKill(this PlayerControl player)
     {
@@ -271,13 +269,13 @@ public static class LayerExtensions
         if (player.Is<ITrapper>(out var trap))
             result *= trap.Building ? 0f : 1f;
 
-        if (Ship()?.Systems.TryGetValue(SystemTypes.LifeSupp, out var life) == true)
-        {
-            var lifeSuppSystemType = life.TryCast<LifeSuppSystemType>();
+        if (Ship()?.Systems.TryGetValue(SystemTypes.LifeSupp, out var life) != true)
+            return result;
 
-            if (lifeSuppSystemType!.IsActive && BetterSabotages.OxySlow && !player.Data.IsDead)
-                result *= Mathf.Lerp(1f, 0.25f, lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration);
-        }
+        var lifeSuppSystemType = life.TryCast<LifeSuppSystemType>();
+
+        if (lifeSuppSystemType!.IsActive && BetterSabotages.OxySlow && !player.Data.IsDead)
+            result *= Mathf.Lerp(1f, 0.25f, lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration);
 
         return result;
     }
@@ -559,43 +557,6 @@ public static class LayerExtensions
             if (imp.Text.Contains("Sabotage and kill everyone") || imp.Text.Contains("Fake Tasks") || imp.Text.Contains("tasks to win"))
                 player.myTasks.Remove(imp);
         }
-    }
-
-    public static void RoleUpdate(this Role newRole, Role former, PlayerControl player = null, bool retainFaction = false)
-    {
-        player ??= former.Player;
-        CustomButton.AllButtons.Where(x => x.Owner == former || !x.Owner.Player).ForEach(x => x.Destroy());
-        CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
-        var allArrows = former.AllArrows.Clone();
-        var history = former.RoleHistory.Clone();
-        former.End();
-        newRole.Start(player);
-        newRole.SubFaction = former.SubFaction;
-        newRole.DeathReason = former.DeathReason;
-        newRole.KilledBy = former.KilledBy;
-        newRole.Diseased = former.Diseased;
-        newRole.AllArrows.AddRange(allArrows);
-        newRole.RoleHistory.AddRange(history);
-        newRole.RoleHistory.Add(former.Type);
-        newRole.PostAssignment();
-
-        if (!retainFaction)
-            newRole.Faction = former.Faction;
-        else if (newRole.Local)
-            newRole.UpdateButtons();
-
-        if (newRole.Local)
-        {
-            ButtonUtils.Reset();
-            newRole.Player.RegenTask();
-            Flash(newRole.Color);
-        }
-
-        if (CustomPlayer.Local.Is<Seer>(out var seer))
-            Flash(seer.Color);
-
-        if (player.Data.Role is LayerHandler layerHandler)
-            layerHandler.SetUpLayers();
     }
 
     public static bool CanButton(this PlayerControl player, out string name)

@@ -88,7 +88,7 @@ public sealed class Teleporter : Intruder, IMover
         if (player.inVent)
         {
             while (GetInTransition())
-                yield return EndFrame();
+                yield return null;
 
             player.MyPhysics.ExitAllVents();
         }
@@ -103,7 +103,7 @@ public sealed class Teleporter : Intruder, IMover
 
         while (Time.time - startTime <= TeleportDur)
         {
-            yield return EndFrame();
+            yield return null;
 
             if (!Meeting())
                 continue;

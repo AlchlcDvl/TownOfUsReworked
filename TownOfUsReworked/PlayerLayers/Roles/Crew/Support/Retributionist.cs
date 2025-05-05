@@ -771,7 +771,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     private void Fix()
     {
-        Fixes.Fix();
+        FixUtils.Fix();
         FixButton.StartCooldown(CooldownType.Start);
     }
 

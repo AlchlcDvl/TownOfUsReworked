@@ -44,7 +44,7 @@ public sealed class Troll : Evil
             Player.MurderPlayer(killer, DeathReasonEnum.Trolled, false);
     }
 
-    private void Interact(PlayerControl target) => InteractButton.StartCooldown(Interactions.Interact(Player, target));
+    private void Interact(PlayerControl target) => InteractButton.StartCooldown(InteractionManager.Interact(Player, target));
 
     private static bool Usable() => CanInteract;
 }

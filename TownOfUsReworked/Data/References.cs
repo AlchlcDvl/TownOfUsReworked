@@ -181,7 +181,7 @@ public static class References
         new(9f, -20f), // Right outside O2
         new(6.9f, -13.8f), // Snowman under elec
         new(11f, -17f), // Comms table
-        new(12.7f, -15.5f), // Comms antenna pult
+        new(12.7f, -15.5f), // Comms antenna
         new(12f, -21.5f), // Weapons window
         new(15f, -17f), // Between comms-office
         new(17.5f, -25.7f) // Snowman under office

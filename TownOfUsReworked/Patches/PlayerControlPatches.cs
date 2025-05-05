@@ -230,8 +230,8 @@ public static class PlayerControlPatches
     {
         __instance.CustomDie(DeathReasonEnum.Ejected, reason: DeathReason.Exile);
 
-        // if (__instance.AmOwner)
-        //     StatsManager.Instance.IncrementStat(StringNames.StatsTimesEjected);
+        if (__instance.AmOwner)
+            DataManager.Player.Stats.IncrementStat(StatID.TimesEjected);
 
         return false;
     }

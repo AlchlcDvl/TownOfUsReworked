@@ -124,9 +124,5 @@ public sealed class CustomKillAnimationPlayer : MonoBehaviour
     }
 
     [HideFromIl2Cpp]
-    public IEnumerator WaitForFinish()
-    {
-        while (!Finished)
-            yield return EndFrame();
-    }
+    public IEnumerator WaitForFinish() => WaitUntil(() => Finished);
 }

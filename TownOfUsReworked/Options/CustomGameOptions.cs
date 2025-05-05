@@ -404,7 +404,12 @@ public static class MapSettings
                 value = map < MapEnum.Submerged ? MapEnum.Random : MapEnum.Fungle;
 
             map = value;
-            TownOfUsReworked.NormalOptions.MapId = TownOfUsReworked.HnsOptions.MapId = (byte)value;
+
+            try
+            {
+                TownOfUsReworked.NormalOptions.MapId = TownOfUsReworked.HnsOptions.MapId = (byte)value;
+            }
+            catch { }
         }
     }
 

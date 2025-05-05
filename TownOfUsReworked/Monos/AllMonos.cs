@@ -1,9 +1,18 @@
 namespace TownOfUsReworked.Monos;
 
+/// <summary>
+/// Mono script manager that registers components from the mod.
+/// </summary>
 public static class AllMonos
 {
+    /// <summary>
+    /// Flag to indicate whether or not important scripts have been attached/created.
+    /// </summary>
     private static bool ComponentsAdded;
 
+    /// <summary>
+    /// Registers all of the scripts within the mod.
+    /// </summary>
     public static void RegisterMonos()
     {
         // So many monos...AM I THE NEXT SUBMERGED???? o_O
@@ -38,6 +47,9 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<Footprint>();
     }
 
+    /// <summary>
+    /// Adds/creates important script object for use during the mod's session.
+    /// </summary>
     public static void AddComponents()
     {
         if (ComponentsAdded)
@@ -63,7 +75,7 @@ public static class AllMonos
         prefab.TasksCountTowardProgress = false;
         prefab.Ability = LayerHandler.CrewmateGhost.Ability;
 
-        RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.Concat([ prefab ]).ToArray();
+        RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.Concat([prefab]).ToArray();
 
         ComponentsAdded = true;
     }

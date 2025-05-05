@@ -57,7 +57,7 @@ public sealed class Warper : Syndicate, IMover
         if (player1.inVent)
         {
             while (GetInTransition())
-                yield return EndFrame();
+                yield return null;
 
             player1.MyPhysics.ExitAllVents();
         }
@@ -65,7 +65,7 @@ public sealed class Warper : Syndicate, IMover
         if (player2.inVent)
         {
             while (GetInTransition())
-                yield return EndFrame();
+                yield return null;
 
             vent = player2.GetClosestVent();
         }
@@ -82,7 +82,7 @@ public sealed class Warper : Syndicate, IMover
 
         while (Time.time - startTime < WarpDur)
         {
-            yield return EndFrame();
+            yield return null;
 
             if (!Meeting())
                 continue;

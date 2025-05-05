@@ -55,7 +55,7 @@ public static class UpdateSplashPatch
 
         yield return PreLoadModData();
         yield return AssetLoader.RunLoaders();
-        yield return ModUpdater.CheckForUpdates();
+        yield return UpdateManager.CheckForUpdates();
         yield return LoadModData();
 
         Rend.material = cache;
@@ -90,7 +90,7 @@ public static class UpdateSplashPatch
         Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();
 
-        yield return EndFrame();
+        yield return null;
     }
 
     private static IEnumerator PreLoadModData()
@@ -117,6 +117,6 @@ public static class UpdateSplashPatch
 
         Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
 
-        yield return EndFrame();
+        yield return null;
     }
 }

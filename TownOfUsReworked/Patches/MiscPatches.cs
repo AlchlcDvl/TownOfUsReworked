@@ -566,63 +566,9 @@ public static class PlayerDataPatches
 
         return false;
     }
-
-    [HarmonyPatch(nameof(NetworkedPlayerInfo.Serialize))]
-    public static bool Prefix(NetworkedPlayerInfo __instance, MessageWriter writer, bool initialState, ref bool __result)
-    {
-        writer.Write(__instance.PlayerId);
-        writer.WritePacked(__instance.ClientId);
-        writer.Write((byte)__instance.Outfits.Count);
-
-        foreach (var pair in __instance.Outfits)
-        {
-            writer.Write((byte)pair.Key);
-            pair.Value.Serialize(writer);
-        }
-
-        writer.WritePacked(__instance.PlayerLevel);
-        byte b = 0;
-
-        if (__instance.Disconnected)
-            b |= 1;
-
-        if (__instance.IsDead)
-            b |= 4;
-
-        writer.Write(b);
-        writer.Write((ushort)(__instance.Role?.Role ?? RoleTypes.Crewmate));
-        var roleWhenAlive = false;
-
-        try
-        {
-            roleWhenAlive = __instance.RoleWhenAlive is { HasValue: true };
-        } catch {}
-
-        writer.Write(roleWhenAlive);
-
-        if (roleWhenAlive)
-            writer.Write((ushort)__instance.RoleWhenAlive.Value);
-
-        if (__instance.Tasks != null)
-        {
-            writer.Write((byte)__instance.Tasks.Count);
-            __instance.Tasks.ForEach(x => x.Serialize(writer));
-        }
-        else
-            writer.Write(0);
-
-        writer.Write(__instance.FriendCode ?? "");
-        writer.Write(__instance.Puid ?? "");
-
-        if (!initialState)
-            __instance.ClearDirtyBits();
-
-        __result = true;
-        return false;
-    }
 }
 
-[HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>))]
+[HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames), typeof(Il2CppReferenceArray<IObject>))]
 public static class PatchColours
 {
     public static bool Prefix(StringNames id, ref string __result)

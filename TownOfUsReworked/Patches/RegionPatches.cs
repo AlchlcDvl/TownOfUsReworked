@@ -12,7 +12,7 @@ public static class RegionInfoOpenPatch
     {
         var joinGameButton = UObject.FindObjectsOfType<JoinGameButton>().FirstOrDefault(x => x.GameIdText && x.GameIdText.Background);
 
-        if (!joinGameButton || !joinGameButton.GameIdText)
+        if (!joinGameButton?.GameIdText)
             return;
 
         var flag = ServerManager.Instance.CurrentRegion.Name == "Custom";
