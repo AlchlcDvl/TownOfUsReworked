@@ -91,7 +91,7 @@ public sealed class Medium : Crew, IShaman
             }
             case DeadRevealed.Everyone:
             {
-                playersDead.ForEach(x => MediatePlayer(x, bodies));
+                playersDead.Do(x => MediatePlayer(x, bodies));
                 break;
             }
             default:

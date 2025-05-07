@@ -16,17 +16,17 @@ public sealed class VisorLoader : BaseCosmeticLoader<CustomVisor>
         else if (item.TestOnly)
             path = Path.Combine(DirectoryInfo, "Test");
 
-        var viewData = ScriptableObject.CreateInstance<VisorViewData>();
+        var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
         viewData.IdleFrame = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Visor);
         viewData.FloorFrame = item.FloorID != null ? CreateCosmeticSprite(path, item.FloorID, CosmeticTypeEnum.Visor) : viewData.IdleFrame;
         viewData.LeftIdleFrame = item.FlipID != null ? CreateCosmeticSprite(path, item.FlipID, CosmeticTypeEnum.Visor) : null;
         viewData.ClimbFrame = item.ClimbID != null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Visor) : null;
         viewData.MatchPlayerColor = item.Adaptive;
 
-        var preview = ScriptableObject.CreateInstance<PreviewViewData>();
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
         preview.PreviewSprite = viewData.IdleFrame;
 
-        var visor = ScriptableObject.CreateInstance<VisorData>();
+        var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
         visor.name = item.Name;
         visor.displayOrder = 99;
         visor.ProductId = "customVisor_" + item.Name.Replace(' ', '_');

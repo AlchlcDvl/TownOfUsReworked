@@ -62,7 +62,7 @@ public static class AllMonos
 
         LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.TryCast<CrewmateGhostRole>()?.HauntMenu;
 
-        var prefab = new GameObject("LayerHandler").DontDestroy().DontUnload().AddComponent<LayerHandler>();
+        var prefab = new GameObject("LayerHandler").DontDestroy().AddComponent<LayerHandler>();
         prefab.Role = prefab.DefaultGhostRole = (RoleTypes)100;
         prefab.TeamType = (RoleTeamTypes)5;
         prefab.CanBeKilled = true;

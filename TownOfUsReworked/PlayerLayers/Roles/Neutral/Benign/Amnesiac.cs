@@ -238,7 +238,7 @@ public sealed class Amnesiac : Neutral
             return;
 
         var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= RememberArrowDelay));
-        BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).ForEach(DestroyArrow);
+        BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).Do(DestroyArrow);
 
         foreach (var body in validBodies)
         {

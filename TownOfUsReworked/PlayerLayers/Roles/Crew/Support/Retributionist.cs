@@ -159,7 +159,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         if (IsCor)
         {
             var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= Coroner.CoronerArrowDur));
-            BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).ForEach(DestroyArrow);
+            BodyArrows.Keys.Where(bodyArrow => validBodies.All(x => x.ParentId != bodyArrow)).Do(DestroyArrow);
 
             foreach (var body in validBodies)
             {
@@ -549,7 +549,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             }
             case DeadRevealed.Everyone:
             {
-                playersDead.ForEach(x => MediatePlayer(x, bodies));
+                playersDead.Do(x => MediatePlayer(x, bodies));
                 break;
             }
             default:

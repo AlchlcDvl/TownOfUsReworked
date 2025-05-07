@@ -86,7 +86,7 @@ public static class MciUtils
     public static void RemoveAllPlayers()
     {
         SwitchTo(0);
-        PlayerClientIDs.Keys.ForEach(RemovePlayer);
+        PlayerClientIDs.Keys.Do(RemovePlayer);
     }
 
     public static void SwitchTo(byte playerId)
@@ -109,13 +109,13 @@ public static class MciUtils
 
             if (Meeting())
             {
-                PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingEnd(Meeting()));
+                PlayerLayer.LocalLayers().Do(x => x.OnMeetingEnd(Meeting()));
                 ButtonUtils.DisableAllButtons();
             }
             else
                 CustomPlayer.Local.DisableButtons();
 
-            PlayerLayer.LocalLayers().ForEach(x => x.ExitingLayer());
+            PlayerLayer.LocalLayers().Do(x => x.ExitingLayer());
         }
 
         CustomPlayer.Local.CustomSnapTo(CustomPlayer.Local.transform.position);
@@ -154,7 +154,7 @@ public static class MciUtils
         {
             if (Meeting())
             {
-                PlayerLayer.LocalLayers().ForEach(x => x.OnMeetingStart(Meeting()));
+                PlayerLayer.LocalLayers().Do(x => x.OnMeetingStart(Meeting()));
 
                 if (newPlayer.Data.IsDead)
                     Meeting().SetForegroundForDead();
@@ -164,7 +164,7 @@ public static class MciUtils
             else
                 newPlayer.EnableButtons();
 
-            PlayerLayer.LocalLayers().ForEach(x => x.EnteringLayer());
+            PlayerLayer.LocalLayers().Do(x => x.EnteringLayer());
         }
 
         Chat()?.SetVisible(newPlayer.CanChat());

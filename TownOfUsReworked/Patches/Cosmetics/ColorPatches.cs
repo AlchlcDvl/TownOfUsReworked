@@ -34,7 +34,7 @@ public static class PlayerTabPatches
             colorChip.transform.SetParent(__instance.scroller.Inner);
             colorChip.Button.ClickMask = __instance.scroller.Hitbox;
             colorChip.transform.FindChild("ForeGround").GetComponent<SpriteMask>().enabled = false;
-            colorChip.transform.GetAllComponents<SpriteRenderer>().ForEach(x => x.maskInteraction = SpriteMaskInteraction.VisibleInsideMask);
+            colorChip.transform.GetAllComponents<SpriteRenderer>().Do(x => x.maskInteraction = SpriteMaskInteraction.VisibleInsideMask);
             offset = ypos;
         }
 

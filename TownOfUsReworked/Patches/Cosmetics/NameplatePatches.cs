@@ -107,7 +107,7 @@ public static class NameplatesTabOnEnablePatch
             _ => 2
         });
         var yOffset = __instance.YStart;
-        keys.ForEach(key => CreateNameplatePackage(packages[key], key, ref yOffset, __instance));
+        keys.Do(key => CreateNameplatePackage(packages[key], key, ref yOffset, __instance));
         __instance.plateId = DataManager.Player.Customization.NamePlate;
         __instance.currentNameplateIsEquipped = true;
         __instance.scroller.ContentYBounds.max = -(yOffset + 3.8f);

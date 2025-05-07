@@ -108,9 +108,9 @@ public static class CustomStatsManager
         }
 
         // Preloading any missing stats
-        Enum.GetValues<MapEnum>().ForEach(x => GetMapWins(x));
-        LayerDictionary.Keys.ForEach(x => GetLayerWins(x));
-        Enum.GetValues<StringNames>().ForEach(x => GetStat(x));
+        Enum.GetValues<MapEnum>().Do(x => GetMapWins(x));
+        LayerDictionary.Keys.Do(x => GetLayerWins(x));
+        Enum.GetValues<StringNames>().Do(x => GetStat(x));
 
         foreach (var map in MapWins.Keys)
         {

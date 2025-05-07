@@ -61,6 +61,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static NormalGameOptionsV09 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV09 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
+    public static IGameOptions CurrentOptions => GameOptionsManager.Instance.CurrentGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
     public static bool DebugMode => IsDev || DebugModeOn.Value;

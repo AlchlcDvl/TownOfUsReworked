@@ -205,7 +205,7 @@ public abstract class Option(CustomOptionType type)
     private static string SettingsToString()
     {
         var builder = new StringBuilder();
-        AllOptions.Where(option => option is not BaseHeaderOption && !option.ClientOnly && option.ID.Contains("CustomOption")).ForEach(x => builder.AppendLine($"{x}"));
+        AllOptions.Where(option => option is not BaseHeaderOption && !option.ClientOnly && option.ID.Contains("CustomOption")).Do(x => builder.AppendLine($"{x}"));
         builder.AppendLine($"Map:{MapSettings.Map}");
         return $"{builder}";
     }

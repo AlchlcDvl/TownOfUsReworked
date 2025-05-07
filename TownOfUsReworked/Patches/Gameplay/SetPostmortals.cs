@@ -75,8 +75,8 @@ public static class SetPostmortals
             player.MyPhysics.ResetMoveState();
         }
 
-        AllBodies().ForEach(x => x?.gameObject?.Destroy());
-        PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.OnRoleSelected());
+        AllBodies().Do(x => x?.gameObject?.Destroy());
+        PlayerLayer.GetLayers<Retributionist>().Do(x => x.OnRoleSelected());
     }
 
     public static void BeginPostmortals(PlayerControl player, bool ejection)

@@ -11,7 +11,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (Crew == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante, x => x is not LayerEnum.Mayor))
+        foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante))
         {
             var spawn = GetSpawnItem(layer);
 
@@ -165,12 +165,12 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
         if (BadGuysSettings.OnlyMainBadGuys)
         {
-            AllRoles.AddRange(BadGuysSettings.MainBadGuys switch
+            AllRoles.AddRanges(BadGuysSettings.MainBadGuys switch
             {
-                Faction.Intruder => IntruderRoles,
-                Faction.Syndicate => SyndicateRoles,
-                Faction.Apocalypse => ApocalypseRoles,
-                Faction.Pandorica => IntruderRoles.Concat(SyndicateRoles).Concat(ApocalypseRoles),
+                Faction.Intruder => [IntruderRoles],
+                Faction.Syndicate => [SyndicateRoles],
+                Faction.Apocalypse => [ApocalypseRoles],
+                Faction.Pandorica => [IntruderRoles, SyndicateRoles, ApocalypseRoles],
                 _ => []
             });
         }
@@ -208,7 +208,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (!allPlayers.Any(x => x.GetRole() is Amnesiac or Thief or Godfather or Shifter or Guesser or Rebel or Executioner or GuardianAngel or BountyHunter or Mystic or Actor ||
             x.GetDisposition() is Traitor or Fanatic))
         {
-            allPlayers.Where(x => x.Is<Seer>()).ForEach(x => Gen(x, LayerEnum.Sheriff, PlayerLayerEnum.Role));
+            allPlayers.Where(x => x.Is<Seer>()).Do(x => Gen(x, LayerEnum.Sheriff, PlayerLayerEnum.Role));
         }
     }
 }

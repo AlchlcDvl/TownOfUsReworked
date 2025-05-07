@@ -29,9 +29,9 @@ public static class CollectionExtensions
 
     public static int AddRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Add);
 
-    public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.ForEach(main.AddRange);
+    public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.Do(main.AddRange);
 
-    public static void AddRange<T>(this ISystem.List<T> main, IEnumerable<T> items) => items.ForEach(main.Add);
+    public static void AddRange<T>(this ISystem.List<T> main, IEnumerable<T> items) => items.Do(main.Add);
 
     public static IEnumerable<T> ToSystem<T>(this ISystem.List<T> list)
     {
@@ -80,28 +80,7 @@ public static class CollectionExtensions
             action(item);
     }
 
-    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => source.Do(action);
-
-    public static void ForEach<T>(this IEnumerable<T> source, Action<int, T> indexedAction) => source.Indexed().ForEach(x => indexedAction(x.Item1, x.Item2));
-
-    public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> list, int splitCount)
-    {
-        var temp = new List<T>();
-
-        foreach (var item in list)
-        {
-            temp.Add(item);
-
-            if (temp.Count != splitCount)
-                continue;
-
-            yield return temp;
-            temp = [];
-        }
-
-        if (temp.Any())
-            yield return temp;
-    }
+    public static void ForEach<T>(this IEnumerable<T> source, Action<int, T> indexedAction) => source.Indexed().Do(x => indexedAction(x.Item1, x.Item2));
 
     public static IEnumerable<T> GetRandomRange<T>(this IEnumerable<T> list, int count)
     {
@@ -389,7 +368,7 @@ public static class CollectionExtensions
         return result;
     }
 
-    public static void Add<T>(this ISystem.List<T> main, params T[] items) => items.ForEach(main.Add);
+    public static void Add<T>(this ISystem.List<T> main, params T[] items) => items.Do(main.Add);
 
     public static bool IsAny(this string source, params string[] values) => values.Any(source.Equals);
 
@@ -402,7 +381,7 @@ public static class CollectionExtensions
     public static void AddRanges<T1, T2>(this List<T1> main, params IEnumerable<T2>[] items) where T2 : T1
     {
         foreach (var itemSet in items)
-            itemSet.ForEach(x => main.Add(x));
+            itemSet.Do(x => main.Add(x));
     }
 
     public static IEnumerable<T> GetRangeOrDefault<T>(this IEnumerable<T> source, int start, int count)
@@ -411,12 +390,12 @@ public static class CollectionExtensions
             yield return source.ElementAtOrDefault(i);
     }
 
-    public static void AddRange<T>(this ISystem.List<T> main, params T[] items) => items.ForEach(main.Add);
+    public static void AddRange<T>(this ISystem.List<T> main, params T[] items) => items.Do(main.Add);
 
     public static void AddRanges<T>(this ISystem.List<T> main, params IEnumerable<T>[] items)
     {
         foreach (var item in items)
-            item.ForEach(main.Add);
+            item.Do(main.Add);
     }
 
     public static IEnumerable<T> GetRandomRange<T>(this IEnumerable<T> list, int count, Func<T, bool> predicate) => list.Where(predicate).GetRandomRange(count);
@@ -473,7 +452,7 @@ public static class CollectionExtensions
             result[index].Add(item);
         }
 
-        result.Values.ForEach(x => x.Shuffle());
+        result.Values.Do(x => x.Shuffle());
         return result;
     }
 
@@ -491,7 +470,14 @@ public static class CollectionExtensions
         }
     }
 
-    public static T TakeFirst<T>(this ISystem.List<T> list) => list.ToSystem().TakeFirst();
+    public static T RemoveAndReturn<T>(this ISystem.List<T> data, int index)
+    {
+        var result = data[index];
+        data.RemoveAt(index);
+        return result;
+    }
+
+    public static T TakeFirst<T>(this ISystem.List<T> list) => list.RemoveAndReturn(0);
 
     public static int RemoveAsInt<T>(this List<T> list, params T[] items)
     {
@@ -522,7 +508,7 @@ public static class CollectionExtensions
     public static int RemoveRanges<T>(this List<T> main, params IEnumerable<T>[] items)
     {
         var result = 0;
-        items.ForEach(x => result += main.RemoveRange(x));
+        items.Do(x => result += main.RemoveRange(x));
         return result;
     }
 
@@ -567,21 +553,7 @@ public static class CollectionExtensions
 
     public static T Random<T>(this ISystem.List<T> list, Func<T, bool> predicate, T defaultVal = default) => list.ToSystem().Random(predicate, defaultVal);
 
-    public static T Find<T>(this ISystem.List<T> list, Func<T, bool> predicate) => list.ToSystem().Find(predicate);
-
-    public static T TakeLast<T>(this ISystem.List<T> list)
-    {
-        try
-        {
-            var item = list[^1];
-            list.RemoveAt(list.Count - 1);
-            return item;
-        }
-        catch
-        {
-            return default;
-        }
-    }
+    public static T TakeLast<T>(this ISystem.List<T> list) => list.RemoveAndReturn(list.Count - 1);
 
     public static TValue GetValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, Func<TValue> newValue) where TKey : notnull
     {

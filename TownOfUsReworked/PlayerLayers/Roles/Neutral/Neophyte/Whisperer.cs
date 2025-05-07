@@ -53,7 +53,7 @@ public sealed class Whisperer : Neophyte
         WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
         PlayerConversion.Clear();
-        AllPlayers().ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
+        AllPlayers().Do(x => PlayerConversion.Add(x.PlayerId, 100));
         Members.ForEach(x => PlayerConversion.Remove(x));
     }
 

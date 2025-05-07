@@ -30,10 +30,10 @@ public static class VotePatches
     }
 
     [HarmonyPatch(nameof(MeetingHud.Confirm))]
-    public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ConfirmVotePrefix(__instance));
+    public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers().Do(x => x?.ConfirmVotePrefix(__instance));
 
     [HarmonyPatch(nameof(MeetingHud.Confirm))]
-    public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ConfirmVotePostfix(__instance));
+    public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers().Do(x => x?.ConfirmVotePostfix(__instance));
 
     [HarmonyPatch(nameof(MeetingHud.CastVote))]
     public static bool Prefix(MeetingHud __instance, byte srcPlayerId, byte suspectPlayerId)

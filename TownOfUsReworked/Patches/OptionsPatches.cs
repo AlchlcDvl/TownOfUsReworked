@@ -68,7 +68,7 @@ public static class SettingsPatches
 
             if (!ButtonPrefab)
             {
-                ButtonPrefab = UObject.Instantiate(__instance.GamePresetsButton, null).DontUnload().DontDestroy();
+                ButtonPrefab = UObject.Instantiate(__instance.GamePresetsButton, null).DontDestroy();
                 ButtonPrefab.OverrideOnClickListeners(BlankVoid);
                 ButtonPrefab.name = "ButtonPrefab";
                 ButtonPrefab.transform.localScale = new(0.64f, 0.84f, 1f);
@@ -270,7 +270,7 @@ public static class SettingsPatches
                     _ =>  throw new ArgumentOutOfRangeException($"There's no header prefab for {header.Type}")
                 }), parent);
                 header.OptionCreated();
-                header.Setting.GetComponentsInChildren<PassiveButton>(true).ForEach(x => x.ClickMask = clickMask);
+                header.Setting.GetComponentsInChildren<PassiveButton>(true).Do(x => x.ClickMask = clickMask);
             }
 
             foreach (var option in header.GroupMembers.Where(option => !option.Setting))
@@ -290,11 +290,11 @@ public static class SettingsPatches
                     continue;
 
                 behaviour.buttons = behaviour.GetComponentsInChildren<PassiveButton>(true).ToArray();
-                behaviour.buttons.ForEach(x => x.ClickMask = clickMask);
+                behaviour.buttons.Do(x => x.ClickMask = clickMask);
             }
         }
 
-        parent.GetComponentsInChildren<UiElement>(true).ForEach(uiElements.AddUnique);
+        parent.GetComponentsInChildren<UiElement>(true).Do(uiElements.AddUnique);
     }
 
     private static PassiveButton RolesButton;
@@ -656,7 +656,7 @@ public static class SettingsPatches
                 var thisVal = __instance.AllMapIcons[k];
                 var mapButton = UObject.Instantiate(__instance.MapButtonOrigin, Vector3.zero, Quaternion.identity, __instance.transform);
                 mapButton.SetImage(thisVal.MapIcon, maskLayer);
-                mapButton.MapIcon.ForEach(x => x.flipX = thisVal.Name == MapNames.Dleks);
+                mapButton.MapIcon.Do(x => x.flipX = thisVal.Name == MapNames.Dleks);
                 mapButton.transform.localPosition = new(__instance.StartPosX + (k * __instance.SpacingX) - 0.7f, 0.74f, -2f);
                 mapButton.name = $"{__instance.AllMapIcons[k].Name}";
                 mapButton.MapID = (int)thisVal.Name;
@@ -1055,7 +1055,7 @@ public static class SettingsPatches
 
             if (!HeaderViewPrefab)
             {
-                HeaderViewPrefab = UObject.Instantiate(__instance.categoryHeaderOrigin, null).DontUnload().DontDestroy();
+                HeaderViewPrefab = UObject.Instantiate(__instance.categoryHeaderOrigin, null).DontDestroy();
                 HeaderViewPrefab.name = "HeaderViewPrefab";
                 HeaderViewPrefab.Background.gameObject.SetActive(false);
                 HeaderViewPrefab.Title.gameObject.SetActive(false);
@@ -1076,7 +1076,7 @@ public static class SettingsPatches
             {
                 // Title = 0, Left Box = 1, Center Box = 2, Right Box = 3, Button = 4, Role Icon = 5, Label = 6
                 //            ┗-------------┗---------------┗------------ Value Text = 0, Background = 1, _ = 2, Tick = 3, Cross = 4, Title = 5
-                LayerViewPrefab = UObject.Instantiate(__instance.infoPanelRoleOrigin, null).DontUnload().DontDestroy();
+                LayerViewPrefab = UObject.Instantiate(__instance.infoPanelRoleOrigin, null).DontDestroy();
                 LayerViewPrefab.name = "LayerViewPrefab";
 
                 LayerViewPrefab.iconSprite.gameObject.SetActive(false);
@@ -1131,7 +1131,7 @@ public static class SettingsPatches
 
             if (!GenericViewPrefab)
             {
-                GenericViewPrefab = UObject.Instantiate(__instance.infoPanelOrigin, null).DontUnload().DontDestroy();
+                GenericViewPrefab = UObject.Instantiate(__instance.infoPanelOrigin, null).DontDestroy();
                 GenericViewPrefab.name = "GenericViewPrefab";
                 GenericViewPrefab.labelBackground.gameObject.SetActive(false);
 
@@ -1192,8 +1192,8 @@ public static class SettingsPatches
     {
         public static bool Prefix(GamePresetsTab __instance)
         {
-            __instance.StandardRulesSprites.ForEach(x => x.gameObject.SetActive(false));
-            __instance.AlternateRulesSprites.ForEach(x => x.gameObject.SetActive(false));
+            __instance.StandardRulesSprites.Do(x => x.gameObject.SetActive(false));
+            __instance.AlternateRulesSprites.Do(x => x.gameObject.SetActive(false));
             __instance.SpritesToDesaturate.ForEach(x => x.gameObject.SetActive(false));
             __instance.StandardPresetButton.gameObject.SetActive(false);
             __instance.StandardRulesText.gameObject.SetActive(false);
@@ -1221,7 +1221,7 @@ public static class SettingsPatches
                 Overwrite.gameObject.SetActive(true);
             }
 
-            Directory.GetFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).Select(x => x.SanitisePath()).ForEach(CreatePresetButton);
+            Directory.GetFiles(TownOfUsReworked.Options).Where(x => x.EndsWith(".txt")).Select(x => x.SanitisePath()).Do(CreatePresetButton);
 
             OnPageChanged();
             return false;

@@ -45,10 +45,10 @@ public sealed class Timekeeper : Syndicate
     private void Control()
     {
         if (HoldsDrive)
-            AllPlayers().ForEach(x => x.GetRole().Rewinding = true);
+            AllPlayers().Do(x => x.GetRole().Rewinding = true);
     }
 
-    public static void UnControl() => AllPlayers().ForEach(x => x.GetRole().Rewinding = false);
+    public static void UnControl() => AllPlayers().Do(x => x.GetRole().Rewinding = false);
 
     private void TimeControl()
     {

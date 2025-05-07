@@ -39,7 +39,6 @@ Changes!
 - Change: Teleporters now also have to go through an animation to teleport to maintain parity
 - Change: Drive-holding Warpers will now play an animation for everyone before warping
 - Change: Player vision is now more integral to the gameplay
-- Change: Button Barry now only fixes critical sabotages when calling a meeting
 - Change: Actor and Betrayer (via Traitor or Fanatic turning) can now spawn in role-list mode
 - Change: List slots can now have multiple entries to allow the creation of custom buckets
 - Change: Options now have a newer look
@@ -110,4 +109,5 @@ Fixes!
 
 Known Bugs :(
 - Critically low FPS for everyone, with the host having it the worst; a fix is in progress, and the severity has been considerably reduced since discovery
-- You can't report bodies on Submerged due to its own implementation of a body report system
+- You can't report bodies with Submerged installed due to its own implementation of a body report system
+- Meetings can't be called

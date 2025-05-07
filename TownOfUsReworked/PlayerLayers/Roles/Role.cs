@@ -172,7 +172,7 @@ public abstract class Role : PlayerLayer, IRole
             hud.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             hud.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
 
-            Player.GetButtons().ForEach(x => x.UpdateSprite());
+            Player.GetButtons().Do(x => x.UpdateSprite());
         } catch {}
     }
 
@@ -199,7 +199,7 @@ public abstract class Role : PlayerLayer, IRole
 
     public override void OnIntroEnd() => UpdateButtons();
 
-    public override void UpdateHud(HudManager __instance) => DeadArrows.Keys.Where(id => !PlayerById(id)).ForEach(DestroyArrowD);
+    public override void UpdateHud(HudManager __instance) => DeadArrows.Keys.Where(id => !PlayerById(id)).Do(DestroyArrowD);
 
     public override void UpdatePlayer()
     {
@@ -209,7 +209,7 @@ public abstract class Role : PlayerLayer, IRole
         if (!Rewinding)
         {
             Positions.TryAdd(Time.time, new(Player.transform.position));
-            (from pair in Positions let seconds = Time.time - pair.Key where seconds > Timekeeper.TimeDur select pair.Key).ForEach(x => Positions.Remove(x));
+            (from pair in Positions let seconds = Time.time - pair.Key where seconds > Timekeeper.TimeDur select pair.Key).Do(x => Positions.Remove(x));
         }
         else if (Positions.Any())
         {
@@ -323,8 +323,8 @@ public abstract class Role : PlayerLayer, IRole
     public void RoleUpdate(Role former, PlayerControl player = null, bool retainFaction = false)
     {
         player ??= former.Player;
-        CustomButton.AllButtons.Where(x => x.Owner == former || !x.Owner.Player).ForEach(x => x.Destroy());
-        CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
+        CustomButton.AllButtons.Where(x => x.Owner == former || !x.Owner.Player).Do(x => x.Destroy());
+        CustomArrow.AllArrows.Where(x => x.Owner == player).Do(x => x.Disable());
         var allArrows = former.AllArrows.Clone();
         var history = former.RoleHistory.Clone();
         former.End();
@@ -357,7 +357,7 @@ public abstract class Role : PlayerLayer, IRole
             layerHandler.SetUpLayers();
     }
 
-    public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().ForEach(x => x.Rounds++);
+    public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().Do(x => x.Rounds++);
 
     protected override void Deinit() => RoleHistory.Clear();
 
@@ -369,8 +369,8 @@ public abstract class Role : PlayerLayer, IRole
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        GetLayers<Role>().ForEach(x => x.CurrentChannel = ChatChannel.All);
-        GetLayers<Arsonist>().ForEach(x => x.Doused.Clear());
+        GetLayers<Role>().Do(x => x.CurrentChannel = ChatChannel.All);
+        GetLayers<Arsonist>().Do(x => x.Doused.Clear());
 
         if (Requesting && BountyTimer > 2)
         {
@@ -433,7 +433,7 @@ public abstract class Role : PlayerLayer, IRole
 
         Flash(revealer.Color);
         BreakShield(player, true);
-        GetLayers<ITrapper>().ForEach(x => x.Trapped.Remove(player.PlayerId));
+        GetLayers<ITrapper>().Do(x => x.Trapped.Remove(player.PlayerId));
         revealer.Revealed = true;
         revealer.OnReveal();
     }
@@ -480,7 +480,7 @@ public abstract class Role : PlayerLayer, IRole
     private void BombKill(PlayerControl target)
     {
         var success = Interact(Player, target, true) != CooldownType.Fail;
-        GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
+        GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).Do(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 

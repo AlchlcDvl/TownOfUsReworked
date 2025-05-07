@@ -58,7 +58,7 @@ public sealed class GameTab : BaseTab
             CustomPlayer.Local.myTasks.ForEach(x => CustomPlayer.Local.RpcCompleteTask(x.Id));
 
         if (GUILayout.Button("Complete Everyone's Tasks"))
-            AllPlayers().ForEach(x => x.myTasks.ForEach(y => x.RpcCompleteTask(y.Id)));
+            AllPlayers().Do(x => x.myTasks.ForEach(y => x.RpcCompleteTask(y.Id)));
 
         if (GUILayout.Button("Redo Intro Sequence"))
         {
@@ -79,24 +79,24 @@ public sealed class GameTab : BaseTab
             CustomPlayer.Local.Suicide();
 
         if (GUILayout.Button("Kill All"))
-            AllPlayers().ForEach(x => x.Suicide());
+            AllPlayers().Do(x => x.Suicide());
 
         if (GUILayout.Button("Kill All But Me"))
-            AllPlayers().Where(x => !x.AmOwner).ForEach(x => x.Suicide());
+            AllPlayers().Where(x => !x.AmOwner).Do(x => x.Suicide());
 
         if (GUILayout.Button("Revive Self"))
             CustomPlayer.Local.Revive();
 
         if (GUILayout.Button("Revive All"))
-            AllPlayers().ForEach(x => x.Revive());
+            AllPlayers().Do(x => x.Revive());
 
         if (GUILayout.Button("Revive All But Me"))
-            AllPlayers().Where(x => !x.AmOwner).ForEach(x => x.Revive());
+            AllPlayers().Where(x => !x.AmOwner).Do(x => x.Revive());
 
         if (GUILayout.Button("Log Dump"))
         {
             Critical(CustomPlayer.Local.name);
-            PlayerLayer.LocalLayers().ForEach(x => Critical(x));
+            PlayerLayer.LocalLayers().Do(x => Critical(x));
             Critical("Is Dead - " + CustomPlayer.Local.HasDied());
             Critical("Location - " + CustomPlayer.Local.transform.position);
         }

@@ -11,15 +11,8 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// <summary>
     /// Gets or sets the underlying comma-separated string representation of enum values.
     /// </summary>
-    public string Values
-    {
-        get => Join(',', values.OrderBy(x => x));
-        set
-        {
-            values.Clear();
-            values.AddRange(value.TrueSplit(',').Select(Enum.Parse<T>).OrderBy(x => x));
-        }
-    }
+    public string Values => Join(',', values.OrderBy(x => x));
+
     private readonly HashSet<T> values = [];
 
     /// <summary>
@@ -44,7 +37,7 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// Adds multiple enum values to the end of the collection.
     /// </summary>
     /// <param name="items">The collection of enum values to add.</param>
-    public void AddRange(IEnumerable<T> items) => items.ForEach(Add);
+    public void AddRange(IEnumerable<T> items) => items.Do(Add);
 
     /// <summary>
     /// Removes multiple enum values from the collection.

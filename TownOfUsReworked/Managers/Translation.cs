@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace TownOfUsReworked.Managers;
 
 public static class TranslationManager
@@ -18,7 +20,7 @@ public static class TranslationManager
         try
         {
             var result = AllTranslations[id][language]; // Get and translate the result
-            toReplace.ForEach(x => result = result.Replace(x.Key, x.Value)); // Replace the placeholders with the given values
+            toReplace.Do(x => result = result.Replace(x.Key, x.Value)); // Replace the placeholders with the given values
             return result;
         }
         catch
@@ -64,7 +66,7 @@ public static class TranslationManager
             if (CustomToCustom.TryGetValue(customName, out var list))
                 list.Add(value);
             else
-                CustomToCustom[customName] = [ value ];
+                CustomToCustom[customName] = [value];
         }
 
         if (replacements != null)

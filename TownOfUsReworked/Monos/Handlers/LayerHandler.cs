@@ -73,7 +73,7 @@ public sealed class LayerHandler : RoleBehaviour
         CustomAbility.UpdateHud(__instance);
         CustomModifier.UpdateHud(__instance);
         CustomDisposition.UpdateHud(__instance);
-        Buttons.ForEach(x => x.SetActive());
+        Buttons.Do(x => x.SetActive());
         CanVent = Player.CanVent();
     }
 
@@ -98,13 +98,13 @@ public sealed class LayerHandler : RoleBehaviour
             {
                 WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
                 var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
-                winners.ForEach(x => x.GetLayers().ForEach(y => y.Winner = true));
+                winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
                 CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners.Distinct() ]);
             }
             else if (CustomRole is Runner { TasksDone: true })
             {
                 WinState = WinLose.TaskRunnerWins;
-                CustomLayers.ForEach(x => x.Winner = true);
+                CustomLayers.Do(x => x.Winner = true);
                 CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState, Player);
             }
             else
@@ -199,7 +199,7 @@ public sealed class LayerHandler : RoleBehaviour
         CanVent = Player.CanVent();
         AffectedByLightAffectors = !(CustomAbility is Torch || !CustomRole.AffectedByLights);
 
-        CustomLayers.ForEach([HideFromIl2Cpp] (x) => x.Handler = this);
+        CustomLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;

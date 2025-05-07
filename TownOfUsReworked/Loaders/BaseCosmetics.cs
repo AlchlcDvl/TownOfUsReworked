@@ -20,7 +20,7 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
             return;
 
         var data = JsonSerializer.Deserialize<T[]>(File.ReadAllText(filePath));
-        data.ForEach(x => x.StreamOnly = true);
+        data.Do(x => x.StreamOnly = true);
         response.AddRange(data);
         Array.Clear(data);
     }

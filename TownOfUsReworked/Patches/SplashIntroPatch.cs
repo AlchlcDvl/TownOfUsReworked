@@ -115,7 +115,7 @@ public static class UpdateSplashPatch
         if (!Directory.Exists(TownOfUsReworked.Logs))
             Directory.CreateDirectory(TownOfUsReworked.Logs);
 
-        Directory.EnumerateFiles(TownOfUsReworked.Logs).ForEach(File.Delete);
+        Directory.EnumerateFiles(TownOfUsReworked.Logs).Do(File.Delete);
 
         yield return null;
     }

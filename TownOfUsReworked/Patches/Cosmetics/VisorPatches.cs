@@ -117,7 +117,7 @@ public static class VisorsTabOnEnablePatch
             _ => 2
         });
         var yOffset = __instance.YStart;
-        keys.ForEach(key => CreateVisorPackage(packages[key], key, ref yOffset, __instance));
+        keys.Do(key => CreateVisorPackage(packages[key], key, ref yOffset, __instance));
         __instance.visorId = DataManager.Player.Customization.Visor;
         __instance.currentVisorIsEquipped = true;
         __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);

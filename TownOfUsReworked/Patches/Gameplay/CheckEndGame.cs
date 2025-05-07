@@ -27,7 +27,7 @@ public static class CheckEndGame
                 _ => WinLose.IlluminatiWins,
             });
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
-            winners.ForEach(x => x.GetLayers().ForEach(y => y.Winner = true));
+            winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
             CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners.Distinct() ]);
         }
 
@@ -63,14 +63,14 @@ public static class CheckEndGame
             CheckNeutralKillers(winnerIds);
 
         if (WinState == WinLose.None)
-            PlayerLayer.GetLayers<Role>().ForEach(x => x.GameEnd(winnerIds));
+            PlayerLayer.GetLayers<Role>().Do(x => x.GameEnd(winnerIds));
 
         if (WinState == WinLose.None)
-            PlayerLayer.GetLayers<Disposition>().ForEach(x => x.GameEnd(winnerIds));
+            PlayerLayer.GetLayers<Disposition>().Do(x => x.GameEnd(winnerIds));
 
         if (WinState != WinLose.None)
         {
-            winnerIds.Select(x => PlayerById(x)).ForEach(x => x.GetLayers().ForEach(y => y.Winner = true));
+            winnerIds.Select(x => PlayerById(x)).Do(x => x.GetLayers().Do(y => y.Winner = true));
             CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds.Distinct() ]);
         }
     }

@@ -407,7 +407,13 @@ public static class MapSettings
 
             try
             {
-                TownOfUsReworked.NormalOptions.MapId = TownOfUsReworked.HnsOptions.MapId = (byte)value;
+                TownOfUsReworked.NormalOptions.MapId = (byte)value;
+            }
+            catch { }
+
+            try
+            {
+                TownOfUsReworked.HnsOptions.MapId = (byte)value;
             }
             catch { }
         }

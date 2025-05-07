@@ -21,8 +21,8 @@ public static class RedirectLoggerPatch1
         if (__instance.category != Logger.Category.None)
             finalMessage += $"[{__instance.category}] ";
 
-        __instance.subCategories?.ForEach(x => finalMessage += $"[{x}] ");
-        path?.ForEach(x => finalMessage += $"[{x}] ");
+        __instance.subCategories?.Do(x => finalMessage += $"[{x}] ");
+        path?.Do(x => finalMessage += $"[{x}] ");
 
         if (context)
             finalMessage += $"[{context.name} ({context.GetIl2CppType().FullName})]";

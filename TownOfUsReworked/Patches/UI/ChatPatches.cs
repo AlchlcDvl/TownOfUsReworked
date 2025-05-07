@@ -309,7 +309,7 @@ public static class ChatPatches
             .GetComponent<SpriteRenderer>().color = __instance.openKeyboardButton.transform.parent.FindRecursive("OpenBanMenuIcon").GetComponent<SpriteRenderer>().color =
                 ClientOptions.UseDarkTheme ? new(0.5f, 0.5f, 0.5f, 1f) : UColor.white;
 
-        __instance.GetComponentsInChildren<ChatBubble>().ForEach(SetChatBubble);
+        __instance.GetComponentsInChildren<ChatBubble>().Do(SetChatBubble);
     }
 
     public static void SetChatBubble(ChatBubble bubble)

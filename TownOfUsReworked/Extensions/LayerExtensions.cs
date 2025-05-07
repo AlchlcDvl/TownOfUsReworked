@@ -21,10 +21,6 @@ public static class LayerExtensions
 
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
 
-    // public static bool Is(this Disposition disp, LayerEnum dispositionType) => disp?.Type == dispositionType;
-
-    // public static bool Is(this PlayerControl player, Role role) => player.GetRole() == role;
-
     public static bool Is(this PlayerControl player, SubFaction subFaction) => player.GetRole()?.SubFaction == subFaction;
 
     public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
@@ -624,7 +620,7 @@ public static class LayerExtensions
             return overrideDef.Value;
 
         var defense = 0;
-        player.GetLayers().ForEach(x => defense += (int)x.DefenseVal);
+        player.GetLayers().Do(x => defense += (int)x.DefenseVal);
 
         if ((player.IsShielded() || player.IsAmbushed() || player.IsCrusaded() || player.IsProtected()) && defense < 2)
             defense = 2;

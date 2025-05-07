@@ -32,10 +32,23 @@ public static class MapPatches
 
         if (!Ship())
         {
-            TownOfUsReworked.NormalOptions.MapId = TownOfUsReworked.HnsOptions.MapId = CurrentMap = GetSelectedMap();
+            CurrentMap = GetSelectedMap();
+
+            try
+            {
+                TownOfUsReworked.NormalOptions.MapId = CurrentMap;
+            }
+            catch { }
+
+            try
+            {
+                TownOfUsReworked.HnsOptions.MapId = CurrentMap;
+            }
+            catch { }
+
             SetDefaults();
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
-            AdjustSettings();
+            AdjustSettings(true);
             // __instance.ShipLoadingAsyncHandle seems to be having an issue when setting its value; I wonder what's up with that
             var async = __instance.ShipPrefabs[CurrentMap].InstantiateAsync();
             yield return async;
@@ -124,26 +137,31 @@ public static class MapPatches
         return 0;
     }
 
-    public static void AdjustSettings()
+    public static void AdjustSettings(bool starting)
     {
-        if (!MapSettings.AutoAdjustSettings)
+        if (!MapSettings.AutoAdjustSettings || IsHnS())
             return;
+
+        var direction = starting ? 1 : -1;
 
         if (CurrentMap is 0 or 1 or 3)
         {
-            TownOfUsReworked.NormalOptions.NumShortTasks += MapSettings.SmallMapIncreasedShortTasks;
-            TownOfUsReworked.NormalOptions.NumLongTasks += MapSettings.SmallMapIncreasedLongTasks;
+            TownOfUsReworked.NormalOptions.NumShortTasks += MapSettings.SmallMapIncreasedShortTasks * direction;
+            TownOfUsReworked.NormalOptions.NumLongTasks += MapSettings.SmallMapIncreasedLongTasks * direction;
         }
 
         if (CurrentMap is not (4 or 5 or 6))
             return;
 
-        TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.LargeMapDecreasedShortTasks;
-        TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.LargeMapDecreasedLongTasks;
+        TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.LargeMapDecreasedShortTasks * direction;
+        TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.LargeMapDecreasedLongTasks * direction;
     }
 
     public static void SetDefaults()
     {
+        if (IsHnS())
+            return;
+
         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);

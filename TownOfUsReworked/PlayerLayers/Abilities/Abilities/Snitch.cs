@@ -51,7 +51,7 @@ public sealed class Snitch : Ability
             if (Local)
             {
                 Flash(UColor.green);
-                AllPlayers().Where(x => x.GetFaction() is not (Faction.Crew or Faction.Neutral) || (x.GetFaction() == Faction.Neutral && SnitchSeesNeutrals)).ForEach(x =>
+                AllPlayers().Where(x => x.GetFaction() is not (Faction.Crew or Faction.Neutral) || (x.GetFaction() == Faction.Neutral && SnitchSeesNeutrals)).Do(x =>
                     local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
             }
             else if (CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))

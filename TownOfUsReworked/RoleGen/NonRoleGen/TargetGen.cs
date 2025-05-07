@@ -55,7 +55,7 @@ public sealed class TargetGen : BaseGen
                     Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
             }
 
-            lovers.Where(lover => !lover.Other).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
+            lovers.Where(lover => !lover.Other).Do(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Lovers Set");
         }
 
@@ -84,7 +84,7 @@ public sealed class TargetGen : BaseGen
                     Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
             }
 
-            rivals.Where(rival => !rival.Other).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
+            rivals.Where(rival => !rival.Other).Do(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Rivals Set");
         }
 
@@ -113,7 +113,7 @@ public sealed class TargetGen : BaseGen
                     Message($"Linked = {link.PlayerName} & {other.PlayerName}");
             }
 
-            linked.Where(link => !link.Other).ForEach(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
+            linked.Where(link => !link.Other).Do(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
             Success("Linked Set");
         }
 

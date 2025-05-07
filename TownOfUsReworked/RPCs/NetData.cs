@@ -104,7 +104,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// </summary>
     /// <param name="values">The values to serialize.</param>
     /// <exception cref="InvalidOperationException">Thrown if the instance is not in a writing state or too much data is being packed.</exception>
-    public void Write(params object[] values) => values.ForEach(Write);
+    public void Write(params object[] values) => values.Do(Write);
 
     // This part of the code deals with data being received from an rpc
 

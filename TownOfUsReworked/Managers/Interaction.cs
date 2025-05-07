@@ -20,14 +20,14 @@ public static class InteractionManager
     private static void Trigger(PlayerControl player, PlayerControl target, bool harmful, out PlayerControl trapper)
     {
         trapper = harmful ? PlayerLayer.GetLayers<ITrapper>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player : null;
-        PlayerLayer.GetLayers<ITrapper>().ForEach(x => x.TriggerTrap(target, player, harmful));
+        PlayerLayer.GetLayers<ITrapper>().Do(x => x.TriggerTrap(target, player, harmful));
     }
 
     public static void Spread(PlayerControl interactor, PlayerControl target)
     {
-        PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(target, interactor));
-        PlayerLayer.GetLayers<Arsonist>().ForEach(arso => arso.RpcSpreadDouse(target, interactor));
-        PlayerLayer.GetLayers<Cryomaniac>().ForEach(cryo => cryo.RpcSpreadDouse(target, interactor));
+        PlayerLayer.GetLayers<Plaguebearer>().Do(pb => pb.RpcSpreadInfection(target, interactor));
+        PlayerLayer.GetLayers<Arsonist>().Do(arso => arso.RpcSpreadDouse(target, interactor));
+        PlayerLayer.GetLayers<Cryomaniac>().Do(cryo => cryo.RpcSpreadDouse(target, interactor));
 
         if (!PlayerLayer.GetLayers<Pestilence>().Any())
             return;

@@ -70,7 +70,7 @@ public sealed class Shifter : Crew
             crew.RoleHistory.AddRange(historyClone);
             crew.RoleHistory.Add(role.Type);
             End();
-            CustomButton.AllButtons.Where(x => x.Owner == this || !x.Owner).ForEach(x => x.Destroy());
+            CustomButton.AllButtons.Where(x => x.Owner == this || !x.Owner).Do(x => x.Destroy());
             ShifterMenu.Destroy();
         }
         else

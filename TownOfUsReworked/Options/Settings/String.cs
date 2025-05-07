@@ -61,7 +61,7 @@ public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionT
     public override void Debug()
     {
         base.Debug();
-        Values.ForEach(x => TranslationManager.DebugId($"CustomOption.{TargetType.Name}.{x}"));
+        Values.Do(x => TranslationManager.DebugId($"CustomOption.{TargetType.Name}.{x}"));
     }
 
     public override bool IsId(string id) => base.IsId(id) || Values.Any(x => id == $"CustomOption.{TargetType.Name}.{x}".ToLower());

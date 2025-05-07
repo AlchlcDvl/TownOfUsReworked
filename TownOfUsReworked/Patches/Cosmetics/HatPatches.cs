@@ -347,7 +347,7 @@ public static class HatsTabOnEnablePatch
             _ => 2
         });
         var yOffset = __instance.YStart;
-        keys.ForEach(key => CreateHatPackage(packages[key], key, ref yOffset, __instance));
+        keys.Do(key => CreateHatPackage(packages[key], key, ref yOffset, __instance));
         __instance.currentHatIsEquipped = true;
         __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
         __instance.scroller.UpdateScrollBars();

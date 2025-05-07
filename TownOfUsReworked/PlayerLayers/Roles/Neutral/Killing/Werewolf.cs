@@ -34,7 +34,7 @@ public sealed class Werewolf : NKilling
 
     private void Maul()
     {
-        GetClosestPlayers(Player, GameSettings.InteractionDistance).ForEach(x => Interact(Player, x, true, lunge: false));
+        GetClosestPlayers(Player, GameSettings.InteractionDistance).Do(x => Interact(Player, x, true, lunge: false));
         MaulButton.StartCooldown();
     }
 

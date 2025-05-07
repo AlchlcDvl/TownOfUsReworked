@@ -124,7 +124,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (!SettingsPatches.NumberPrefab)
         {
             // Background = 0, Value Text = 1, Title = 2, - = 3, + = 4, Value Box = 5
-            SettingsPatches.NumberPrefab = Instantiate(settings.numberOptionOrigin).DontDestroy().DontUnload();
+            SettingsPatches.NumberPrefab = Instantiate(settings.numberOptionOrigin).DontDestroy();
             SettingsPatches.NumberPrefab.name = "NumberPrefab";
 
             SettingsPatches.NumberPrefab.MinusBtn.transform.localPosition += new Vector3(0.6f, 0f, 0f);
@@ -150,7 +150,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (!SettingsPatches.StringPrefab)
         {
             // Background = 0, Value Text = 1, Title = 2, < = 3, > = 4, Value Box = 5
-            SettingsPatches.StringPrefab = Instantiate(settings.stringOptionOrigin).DontDestroy().DontUnload();
+            SettingsPatches.StringPrefab = Instantiate(settings.stringOptionOrigin).DontDestroy();
             SettingsPatches.StringPrefab.name = "StringPrefab";
 
             var background = SettingsPatches.StringPrefab.transform.GetChild(0);
@@ -182,7 +182,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (!SettingsPatches.TogglePrefab)
         {
             // Title = 0, Toggle = 1, Background = 2
-            SettingsPatches.TogglePrefab = Instantiate(settings.checkboxOrigin).DontDestroy().DontUnload();
+            SettingsPatches.TogglePrefab = Instantiate(settings.checkboxOrigin).DontDestroy();
             SettingsPatches.TogglePrefab.name = "TogglePrefab";
             SettingsPatches.TogglePrefab.transform.GetChild(1).localPosition += new Vector3(2.2f, 0f, 0f);
 
@@ -200,7 +200,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (!SettingsPatches.MultiSelectPrefab)
         {
             // Background = 0, Value Text = 1, Title = 2, < = 3, > = 4, Value Box = 5, Button = 6
-            SettingsPatches.MultiSelectPrefab = Instantiate(SettingsPatches.StringPrefab, null).DontUnload().DontDestroy();
+            SettingsPatches.MultiSelectPrefab = Instantiate(SettingsPatches.StringPrefab, null).DontDestroy();
             SettingsPatches.MultiSelectPrefab.name = "MultiSelectPrefab";
             SettingsPatches.MultiSelectPrefab.PlusBtn.gameObject.SetActive(false);
             SettingsPatches.MultiSelectPrefab.MinusBtn.gameObject.SetActive(false);
@@ -221,7 +221,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (!SettingsPatches.MultiOptionPrefab)
         {
             // PassiveButton = 0, Text = 1, Box = 2
-            SettingsPatches.MultiOptionPrefab = new GameObject("MultiSelectOptionPrefab").DontUnload().DontDestroy().AddComponent<BlankBehaviour>();
+            SettingsPatches.MultiOptionPrefab = new GameObject("MultiSelectOptionPrefab").DontDestroy().AddComponent<BlankBehaviour>();
 
             var toggle = Instantiate(SettingsPatches.MultiSelectPrefab.transform.GetChild(6).GetComponent<PassiveButton>(), Vector3.zero, Quaternion.identity,
                 SettingsPatches.MultiOptionPrefab.transform);
@@ -247,7 +247,7 @@ public sealed class ClientHandler : MonoBehaviour
 
         if (!SettingsPatches.HeaderPrefab)
         {
-            SettingsPatches.HeaderPrefab = Instantiate(settings.categoryHeaderOrigin).DontDestroy().DontUnload();
+            SettingsPatches.HeaderPrefab = Instantiate(settings.categoryHeaderOrigin).DontDestroy();
             SettingsPatches.HeaderPrefab.name = "HeaderPrefab";
             SettingsPatches.HeaderPrefab.transform.localScale = Vector3.one * 0.63f;
             SettingsPatches.HeaderPrefab.Background.transform.localScale += new Vector3(0.7f, 0f, 0f);
@@ -269,7 +269,7 @@ public sealed class ClientHandler : MonoBehaviour
         {
             // Title = 0, Role # = 1, Chance % = 2, Background = 3, Divider = 4, Cog = 5, Unique = 6, Active = 7
             //            ┗-----------┗----------- Value = 0, - = 1, + = 2, Value Box = 3 ┗-----------┗--------- Checkbox = 0
-            SettingsPatches.LayersPrefab = Instantiate(roles.roleOptionSettingOrigin).DontDestroy().DontUnload();
+            SettingsPatches.LayersPrefab = Instantiate(roles.roleOptionSettingOrigin).DontDestroy();
             SettingsPatches.LayersPrefab.name = "LayersPrefab";
             SettingsPatches.LayersPrefab.titleText.alignment = TextAlignmentOptions.Left;
             SettingsPatches.LayersPrefab.role = null;
@@ -319,7 +319,7 @@ public sealed class ClientHandler : MonoBehaviour
         {
             // Header Label = 0, Header Text = 1, Quota Header = 2, Collapse = 3, Cog = 4
             //                                    ┗--------------- Dark Label = 0, Left = 1, Left Label = 2, Right Label = 3, Right = 4, Long Label = 5, Center = 6
-            SettingsPatches.AlignmentPrefab = Instantiate(roles.categoryHeaderEditRoleOrigin).DontDestroy().DontUnload();
+            SettingsPatches.AlignmentPrefab = Instantiate(roles.categoryHeaderEditRoleOrigin).DontDestroy();
             SettingsPatches.AlignmentPrefab.name = "AlignmentPrefab";
             SettingsPatches.AlignmentPrefab.transform.GetChild(0).gameObject.SetActive(false);
 
@@ -359,7 +359,7 @@ public sealed class ClientHandler : MonoBehaviour
 
             // Label = 0, Title = 1, Info = 2, Desc = 3, Collapse = 4
             //                       ┗---------┗------- Text = 0
-            SettingsPatches.LayerHeaderPrefab = new GameObject("LayerHeaderPrefab").DontDestroy().DontUnload().AddComponent<BlankBehaviour>();
+            SettingsPatches.LayerHeaderPrefab = new GameObject("LayerHeaderPrefab").DontDestroy().AddComponent<BlankBehaviour>();
 
             var label = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(0), SettingsPatches.LayerHeaderPrefab.transform);
             label.localPosition += new Vector3(0.12f, 0.08f, 0f);
@@ -665,7 +665,7 @@ public sealed class ClientHandler : MonoBehaviour
                 var cache2 = Instance.Sorted[k].Key;
                 var button = Instance.CreateButton($"{cache2}Info", cache2, () =>
                 {
-                    Instance.Buttons.Values.Where(tuples => tuples.Any()).ForEach(list => list.Select(x => x.Item2).ForEach(x => x?.gameObject?.SetActive(false)));
+                    Instance.Buttons.Values.Where(tuples => tuples.Any()).Do(list => list.Select(x => x.Item2).Do(x => x?.gameObject?.SetActive(false)));
                     Instance.Selected = cache;
                     Instance.NextButton.gameObject.SetActive(false);
                     Instance.AddInfo();
@@ -680,7 +680,7 @@ public sealed class ClientHandler : MonoBehaviour
                 j = 0;
             }
 
-            Instance.Buttons.ForEach(x =>
+            Instance.Buttons.Do(x =>
             {
                 if (!x.Value.Any())
                     Instance.Buttons.Remove(x.Key);

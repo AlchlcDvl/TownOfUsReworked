@@ -178,7 +178,7 @@ public static class MiscUtils
         Shapeshifted = false;
     }
 
-    public static void Camouflage() => AllPlayers().ForEach(CamoSingle);
+    public static void Camouflage() => AllPlayers().Do(CamoSingle);
 
     private static void CamoSingle(PlayerControl player)
     {
@@ -225,8 +225,8 @@ public static class MiscUtils
     {
         player.SetHatAndVisorAlpha(alpha);
         player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(alpha);
-        player.cosmetics.currentPet.renderers.ForEach(x => x.color = x.color.SetAlpha(alpha));
-        player.cosmetics.currentPet.shadows.ForEach(x => x.color = x.color.SetAlpha(alpha));
+        player.cosmetics.currentPet.renderers.Do(x => x.color = x.color.SetAlpha(alpha));
+        player.cosmetics.currentPet.shadows.Do(x => x.color = x.color.SetAlpha(alpha));
         player.cosmetics.PettingHand.HandSprite.color = player.cosmetics.PettingHand.HandSprite.color.SetAlpha(alpha);
         player.cosmetics.currentBodySprite.BodySprite.color = player.cosmetics.currentBodySprite.BodySprite.color.SetAlpha(alpha);
 
@@ -287,7 +287,7 @@ public static class MiscUtils
         PetId = "pet_EmptyPet"
     };
 
-    public static void DefaultOutfitAll() => AllPlayers().ForEach(DefaultOutfit);
+    public static void DefaultOutfitAll() => AllPlayers().Do(DefaultOutfit);
 
     public static PlayerControl PlayerById(byte? id) => GameData.Instance?.GetPlayerById(id ?? 255)?.Object;
 
@@ -416,7 +416,7 @@ public static class MiscUtils
                 if (dict.DictMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
                     dict.ToBeEjected = null;
-                    dict.DictMenu.Actives.Keys.ForEach(x => dict.DictMenu.Actives[x] = false);
+                    dict.DictMenu.Actives.Keys.Do(x => dict.DictMenu.Actives[x] = false);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, dict, DictActionsRPC.SelectToEject, dict.ToBeEjected);
                 }
 
@@ -638,8 +638,8 @@ public static class MiscUtils
             allLocations.AddRange(toBeAdded);
 
         allLocations.Shuffle();
-        targets.ForEach(x => coordinates.Add(x.PlayerId, allLocations.Random()));
-        AllBodies().ForEach(x => coordinates.Add(x.ParentId, allLocations.Random()));
+        targets.Do(x => coordinates.Add(x.PlayerId, allLocations.Random()));
+        AllBodies().Do(x => coordinates.Add(x.ParentId, allLocations.Random()));
         return coordinates;
     }
 
@@ -858,7 +858,7 @@ public static class MiscUtils
             normalPlayerTask.Initialize();
 
             if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
-                UObject.FindObjectsOfType<TowelTaskConsole>().ForEach(x => x.Image.color = UColor.white);
+                UObject.FindObjectsOfType<TowelTaskConsole>().Do(x => x.Image.color = UColor.white);
 
             normalPlayerTask.taskStep = 0;
 
@@ -965,7 +965,7 @@ public static class MiscUtils
             return "";
 
         var result = WrapText(texts.First(), width, overflow);
-        texts.Skip(1).ForEach(x => result += $"\n{WrapText(x, width, overflow)}");
+        texts.Skip(1).Do(x => result += $"\n{WrapText(x, width, overflow)}");
         return result;
     }
 
@@ -1271,7 +1271,7 @@ public static class MiscUtils
             var hud = HUD();
             hud.ShadowQuad.gameObject.SetActive(false);
             player.AdjustLighting();
-            AllPlayers().ForEach(x => x.cosmetics.ToggleNameVisible(GameManager.Instance.LogicOptions.GetShowCrewmateNames()));
+            AllPlayers().Do(x => x.cosmetics.ToggleNameVisible(GameManager.Instance.LogicOptions.GetShowCrewmateNames()));
             player.RpcSetScanner(false);
             hud.KillOverlay.ShowKillAnimation(killer.Data, player.Data);
             player.NameText().GetComponent<MeshRenderer>().material.SetInt(Mask, 0);
@@ -1281,7 +1281,7 @@ public static class MiscUtils
             CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, player, location);
 
             if (Vent.currentVent)
-                Vent.currentVent.Buttons?.ForEach(x => x.gameObject.SetActive(false));
+                Vent.currentVent.Buttons?.Do(x => x.gameObject.SetActive(false));
 
             if (ActiveTask())
                 ActiveTask().Close();
@@ -1318,8 +1318,8 @@ public static class MiscUtils
         SetPostmortals.BeginPostmortals(player, false);
         Pestilence.Infected.Remove(player.PlayerId);
 
-        player.GetLayers().ForEach(x => x.OnDeath(customReason, killer));
-        killer.GetLayers().ForEach(x => x.OnKill(player));
+        player.GetLayers().Do(x => x.OnDeath(customReason, killer));
+        killer.GetLayers().Do(x => x.OnKill(player));
 
         if (AmongUsClient.Instance.AmHost)
             CheckEndGame.CheckPlayerWins();
@@ -1463,7 +1463,7 @@ public static class MiscUtils
             return "";
 
         var result = "";
-        items.ForEach(x => result += $"{separator}{x}");
+        items.Do(x => result += $"{separator}{x}");
         return result[separator.Length..];
     }
 

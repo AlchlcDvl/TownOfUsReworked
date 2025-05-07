@@ -47,7 +47,7 @@ public sealed class CustomMeeting : IDisposable
 
     public void HideButtons()
     {
-        Buttons.Keys.ForEach(HideSingle);
+        Buttons.Keys.Do(HideSingle);
         Buttons.Clear();
         Actives.Clear();
         ButtonSprites.Clear();
@@ -107,7 +107,7 @@ public sealed class CustomMeeting : IDisposable
         Actives.Clear();
         Buttons.Clear();
         ButtonSprites.Clear();
-        AllVoteAreas().ForEach(x => GenButton(x, __instance));
+        AllVoteAreas().Do(x => GenButton(x, __instance));
     }
 
     public void Update()

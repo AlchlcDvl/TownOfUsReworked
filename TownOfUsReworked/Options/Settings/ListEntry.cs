@@ -43,11 +43,11 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
     {
         if (Buttons.Any())
         {
-            Buttons.Keys.ForEach(x => x.gameObject.Destroy());
+            Buttons.Keys.Do(x => x.gameObject.Destroy());
             Buttons.Clear();
         }
         else
-            GetPossibleValues(this).ForEach(x => Buttons.Add(CreateButton(x, $"List.{x}"), x));
+            GetPossibleValues(this).Do(x => Buttons.Add(CreateButton(x, $"List.{x}"), x));
 
         SettingsPatches.OnValueChanged();
     }

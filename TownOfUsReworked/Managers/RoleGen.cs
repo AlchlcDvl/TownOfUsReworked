@@ -32,6 +32,8 @@ public static class RoleGenManager
     public static readonly List<RoleOptionData> ApocalypseHarbingerRoles = [];
     public static readonly List<RoleOptionData> ApocalypseRoles = [];
 
+    public static readonly List<RoleOptionData> IlluminatiRoles = [];
+
     public static readonly List<RoleOptionData> AllModifiers = [];
     public static readonly List<RoleOptionData> AllAbilities = [];
     public static readonly List<RoleOptionData> AllDispositions = [];
@@ -318,7 +320,7 @@ public static class RoleGenManager
         }
         else
         {
-            allPlayers.ForEach(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
+            allPlayers.Do(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
             CallRpc(CustomRPC.Misc, MiscRPC.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
                 BetterAirship.SpawnPoints);
         }
@@ -424,6 +426,6 @@ public static class RoleGenManager
         Abilities.Clear();
         Dispositions.Clear();
         Targets.Clear();
-        RoleGen.Values.ForEach(x => x.Clear());
+        RoleGen.Values.Do(x => x.Clear());
     }
 }

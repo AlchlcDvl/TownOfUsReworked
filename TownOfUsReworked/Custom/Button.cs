@@ -561,14 +561,11 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     private void SetOutline(MonoBehaviour prevMono, MonoBehaviour newMono) // Something that Innersloth changed borked this code, and I honestly couldn't be bothered to fix it because it's a shader issue
     {
-        if (prevMono == newMono)
+        if (Owner is not Role || prevMono == newMono)
             return;
 
-        if (prevMono)
-            SetOutline(prevMono);
-
-        if (newMono)
-            SetOutline(prevMono, Owner.Color);
+        SetOutline(prevMono);
+        SetOutline(prevMono, Owner.Color);
     }
 
     private static void SetOutline(MonoBehaviour mono, UColor? color = null)
@@ -585,7 +582,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             }
             case DeadBody body:
             {
-                body.bodyRenderers.ForEach(x => x.SetOutlineColor(color));
+                body.bodyRenderers.Do(x => x.SetOutlineColor(color));
                 break;
             }
             case Vent vent:
@@ -749,7 +746,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             }
             case DeadBody body:
             {
-                body.bodyRenderers.ForEach(x => x.SetOutlineColor(UColor.clear));
+                body.bodyRenderers.Do(x => x.SetOutlineColor(UColor.clear));
                 break;
             }
             case Vent vent:

@@ -1,6 +1,7 @@
 ﻿namespace TownOfUsReworked.Managers;
 
 // FIXME: Submerged messes with the body reporting, causing the report button to be entirely unusable, might have to make a custom report button for that ngl
+
 /// <summary>
 /// Master class to help with mod compatibility with Submerged and LevelImpostor.
 /// </summary>

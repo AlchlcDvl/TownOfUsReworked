@@ -18,25 +18,11 @@ public static class OnGameEndPatches
             PlayerRoles.Clear();
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
-            players.ForEach(x => AddSummaryInfo(x));
+            players.Do(x => AddSummaryInfo(x));
             EndGameResult.CachedGameOverReason = (GameOverReason)9;
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
-
-            if (MapSettings.AutoAdjustSettings)
-            {
-                if (MapPatches.CurrentMap is 0 or 1 or 3)
-                {
-                    TownOfUsReworked.NormalOptions.NumShortTasks -= MapSettings.SmallMapIncreasedShortTasks;
-                    TownOfUsReworked.NormalOptions.NumLongTasks -= MapSettings.SmallMapIncreasedLongTasks;
-                }
-
-                if (MapPatches.CurrentMap is 4 or 5 or 6)
-                {
-                    TownOfUsReworked.NormalOptions.NumShortTasks += MapSettings.LargeMapDecreasedShortTasks;
-                    TownOfUsReworked.NormalOptions.NumLongTasks += MapSettings.LargeMapDecreasedLongTasks;
-                }
-            }
+            MapPatches.AdjustSettings(false);
 
             foreach (var role in PlayerLayer.GetLayers<Role>())
             {

@@ -15,7 +15,7 @@ public sealed class Bug : Range
     {
         base.Update();
         var closest = GetClosestPlayers(transform.position, Size);
-        Players.Keys.Where(player => !closest.Contains(PlayerById(player))).ForEach(x => Players.Remove(x));
+        Players.Keys.Where(player => !closest.Contains(PlayerById(player))).Do(x => Players.Remove(x));
 
         foreach (var player in closest)
         {

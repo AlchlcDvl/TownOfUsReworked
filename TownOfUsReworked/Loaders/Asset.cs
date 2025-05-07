@@ -21,7 +21,7 @@ public abstract class AssetLoader
             yield break;
 
         Message($"Downloading {count} files");
-        files.ForEach(x => Coroutines.Start(CoRun(DownloadFile(x), OnEnd)));
+        files.Do(x => Coroutines.Start(CoRun(DownloadFile(x), OnEnd)));
         var max = count;
 
         while (count > 0)

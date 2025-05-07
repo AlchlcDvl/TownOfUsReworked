@@ -12,7 +12,7 @@ public sealed class BundleLoader() : BaseDownloader(TownOfUsReworked.Bundles, "B
     {
         var bundle = LoadBundle(File.ReadAllBytes(Path.Combine(DirectoryInfo, $"{item.ID}.{FileExtension}")));
         Bundles[item.ID] = bundle;
-        bundle.GetAllAssetNames().ForEach(x => AssetToBundle[x.SanitisePath()] = item.ID);
+        bundle.GetAllAssetNames().Do(x => AssetToBundle[x.SanitisePath()] = item.ID);
     }
 
     protected override void AfterLoading(List<DownloadableAsset> response)

@@ -31,9 +31,9 @@ public static class PlayerControlPatches
             return;
 
         var pc = target.Object;
-        PlayerLayer.GetLayers<Plaguebearer>().ForEach(x => x.RpcSpreadInfection(pc, __instance));
-        PlayerLayer.GetLayers<Arsonist>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
-        PlayerLayer.GetLayers<Cryomaniac>().ForEach(x => x.RpcSpreadDouse(pc, __instance));
+        PlayerLayer.GetLayers<Plaguebearer>().Do(x => x.RpcSpreadInfection(pc, __instance));
+        PlayerLayer.GetLayers<Arsonist>().Do(x => x.RpcSpreadDouse(pc, __instance));
+        PlayerLayer.GetLayers<Cryomaniac>().Do(x => x.RpcSpreadDouse(pc, __instance));
     }
 
     [HarmonyPatch(nameof(PlayerControl.Revive)), HarmonyPrefix]

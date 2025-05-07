@@ -16,7 +16,7 @@ public sealed class HatLoader : BaseCosmeticLoader<CustomHat>
         else if (item.TestOnly)
             path = Path.Combine(DirectoryInfo, "Test");
 
-        var viewData = ScriptableObject.CreateInstance<HatViewData>();
+        var viewData = ScriptableObject.CreateInstance<HatViewData>().DontDestroy();
         viewData.MainImage = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Hat);
         viewData.BackImage = item.BackID != null ? CreateCosmeticSprite(path, item.BackID, CosmeticTypeEnum.Hat) : null;
         viewData.ClimbImage = item.ClimbID != null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Hat) : null;
@@ -27,10 +27,10 @@ public sealed class HatLoader : BaseCosmeticLoader<CustomHat>
         viewData.LeftFloorImage = item.FloorFlipID != null ? CreateCosmeticSprite(path, item.FloorFlipID, CosmeticTypeEnum.Hat) : viewData.FloorImage;
         viewData.MatchPlayerColor = item.Adaptive;
 
-        var preview = ScriptableObject.CreateInstance<PreviewViewData>();
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
         preview.PreviewSprite = viewData.MainImage;
 
-        var hat = ScriptableObject.CreateInstance<HatData>();
+        var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
         hat.name = item.Name;
         hat.displayOrder = 99;
         hat.ProductId = "customHat_" + item.Name.Replace(' ', '_');

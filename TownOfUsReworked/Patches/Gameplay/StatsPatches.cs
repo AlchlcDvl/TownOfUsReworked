@@ -24,7 +24,7 @@ public static class PatchPopup
     [HarmonyPatch(nameof(StatsPopup.OnEnable))]
     public static void Postfix(StatsPopup __instance)
     {
-        __instance.SelectableButtons.ForEach(x => x.gameObject.SetActive(false));
+        __instance.SelectableButtons.Do(x => x.gameObject.SetActive(false));
         __instance.EnsureComponent<StatsHandler>(); // Haha scroller simulator go brrr
     }
 }

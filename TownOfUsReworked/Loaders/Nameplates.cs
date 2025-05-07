@@ -16,13 +16,13 @@ public sealed class NameplateLoader : BaseCosmeticLoader<CustomNameplate>
         else if (item.TestOnly)
             path = Path.Combine(DirectoryInfo, "Test");
 
-        var viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
+        var viewData = ScriptableObject.CreateInstance<NamePlateViewData>().DontDestroy();
         viewData.Image = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Nameplate);
 
-        var preview = ScriptableObject.CreateInstance<PreviewViewData>();
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
         preview.PreviewSprite = viewData.Image;
 
-        var nameplate = ScriptableObject.CreateInstance<NamePlateData>();
+        var nameplate = ScriptableObject.CreateInstance<NamePlateData>().DontDestroy();
         nameplate.PreviewCrewmateColor = false;
         nameplate.name = item.Name;
         nameplate.displayOrder = 99;

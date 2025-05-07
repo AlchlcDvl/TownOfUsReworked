@@ -13,7 +13,7 @@ public sealed class CameraEffectHandler : MonoBehaviour
         if (Materials.Count == 0)
             Graphics.Blit(source, destination);
         else
-            Materials.Values.ForEach(x => Graphics.Blit(source, destination, x));
+            Materials.Values.Do(x => Graphics.Blit(source, destination, x));
     }
 
     public static void AddEffect(string name) => Instance.Materials.TryAdd(name, GetMaterial(name));

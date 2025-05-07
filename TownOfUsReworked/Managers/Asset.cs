@@ -53,7 +53,7 @@ public static class AssetManager
             SoundManager.Instance.StopSound(audio);
     }
 
-    public static void StopAll() => GetAll<AudioClip>().ForEach(Stop);
+    public static void StopAll() => GetAll<AudioClip>().Do(Stop);
 
     private static Texture2D EmptyTexture() => new(2, 2, TextureFormat.ARGB32, true)
     {
@@ -71,7 +71,7 @@ public static class AssetManager
     {
         var texture = EmptyTexture();
         texture.name = name;
-        return !texture.LoadImage(data, !GetReadable(name)) ? null : texture.DontDestroy();
+        return !texture.LoadImage(data, !GetReadable(name)) ? null : texture;
     }
 
     private static Sprite LoadSprite(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceSprite(path) : LoadDiskSprite(path);
@@ -84,7 +84,7 @@ public static class AssetManager
     {
         var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), float.IsNaN(size) ? GetSize(name) : size, 0, meshType);
         sprite.name = name;
-        return sprite.DontDestroy();
+        return sprite;
     }
 
     // public static AssetBundle LoadBundle(string path) => AssetBundle.LoadFromMemory(path.StartsWith(TownOfUsReworked.Resources)
@@ -122,7 +122,7 @@ public static class AssetManager
 
     public static void LoadAssets()
     {
-        TownOfUsReworked.Core.GetManifestResourceNames().ForEach(x => AddPath(x.SanitisePath(), x));
+        TownOfUsReworked.Core.GetManifestResourceNames().Do(x => AddPath(x.SanitisePath(), x));
         Cursor.SetCursor(GetSprite("Cursor").texture, CursorMode.Auto);
     }
 
@@ -215,19 +215,18 @@ public static class AssetManager
             return null;
 
         if (!LoadedAssets.TryGetValue(name, out var value))
-            LoadedAssets[name] = [ obj ];
-        else
-            value.Add(obj);
+            LoadedAssets[name] = value = [ ];
 
-        return obj;
+        value.Add(obj);
+        return obj.DontDestroy();
     }
 
     public static void AddPath(string name, string path)
     {
         if (!UnloadedAssets.TryGetValue(name, out var value))
-            UnloadedAssets[name] = [ path ];
-        else
-            value.Add(path);
+            UnloadedAssets[name] = value = [ ];
+
+        value.Add(path);
     }
 
     private static bool GetReadable(string name) => name is "Cursor";
@@ -257,7 +256,7 @@ public static class AssetManager
         };
 
         var audioClip = AudioClip.Create(name, data.Length, channels, sampleRate, false);
-        return audioClip.SetData(data, 0) ? audioClip.DontDestroy() : null;
+        return audioClip.SetData(data, 0) ? audioClip : null;
     }
 
     private static float[] Convert8BitByteArrayToAudioClipData(byte[] source, int wavSize)

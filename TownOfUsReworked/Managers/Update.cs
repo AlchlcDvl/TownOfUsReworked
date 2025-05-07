@@ -174,6 +174,7 @@ public static class UpdateManager
             }
         }
 
+        www.downloadHandler.Dispose();
         www.Dispose();
 
         Popup.TextAreaTMP.text = hasError ? TranslationManager.Translate("Updates.Mod.NoSuccess") : TranslationManager.Translate("Updates.Mod.Success", ("%mod%", updateType));

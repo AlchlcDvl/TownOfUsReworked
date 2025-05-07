@@ -102,7 +102,7 @@ public static class Blocked
     {
         if (!BlockPrefab)
         {
-            BlockPrefab = new GameObject("BlockPrefab").DontDestroy().DontUnload();
+            BlockPrefab = new GameObject("BlockPrefab").DontDestroy();
             BlockPrefab.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
             BlockPrefab.SetActive(false);
         }
@@ -177,12 +177,7 @@ public static class Blocked
 
         __instance.SabotageButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "SABOTAGE";
         __instance.SabotageButton.ToggleVisible(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
-
-        if (IsHnS())
-            __instance.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor());
-        else
-            __instance.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught());
-
+        __instance.AbilityButton.ToggleVisible((IsHnS() ? !CustomPlayer.Local.IsImpostor() : (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught())) && CustomPlayer.Local.HasDied());
         __instance.FullScreen.enabled = true;
         __instance.FullScreen.gameObject.SetActive(true);
     }

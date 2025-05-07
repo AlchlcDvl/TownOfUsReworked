@@ -23,7 +23,7 @@ public static class Generate
             // For some reason the attribute is being inherited by the assassin classes, even though I've stated that it shouldn't in the attribute usage
             // Future AD here: this is probably from the fact that Assassin itself is an abstract class
             .Where(x => !assassin.IsAssignableFrom(x) || x == assassin)
-            .ForEach(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
+            .Do(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
 
         foreach (var opts in Option.AllOptions.SplitBy(x => x.ID))
         {
@@ -51,7 +51,7 @@ public static class Generate
                     Fatal(id);
             }
 
-            Enum.GetValues<ListSlot>().Except([ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity]).ForEach(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
+            Enum.GetValues<ListSlot>().Except([ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity]).Do(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
         }
 
         Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers

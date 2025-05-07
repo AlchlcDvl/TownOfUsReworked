@@ -61,7 +61,7 @@ public sealed class Framer : Syndicate
 
     private void RadialFrame()
     {
-        GetClosestPlayers(Player, ChaosDriveFrameRadius).ForEach(RpcFrame);
+        GetClosestPlayers(Player, ChaosDriveFrameRadius).Do(RpcFrame);
         RadialFrameButton.StartCooldown();
     }
 

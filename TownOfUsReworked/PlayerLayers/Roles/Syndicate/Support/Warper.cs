@@ -168,7 +168,7 @@ public sealed class Warper : Syndicate, IMover
     public static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IMover warper)
     {
         Flash(warper.Color, WarpDur);
-        AllPlayers().ForEach(x => AnimatePortal(x, WarpDur));
+        AllPlayers().Do(x => AnimatePortal(x, WarpDur));
         yield return Wait(WarpDur);
 
         foreach (var (id, pos) in coords)

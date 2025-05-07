@@ -31,7 +31,7 @@ public static class SpawnPatches
             player.MyPhysics.ResetMoveState();
         }
 
-        AllBodies().ForEach(x => x.gameObject.Destroy());
+        AllBodies().Do(x => x.gameObject.Destroy());
         ButtonUtils.Reset(intro ? CooldownType.Start : CooldownType.Meeting);
         RandomSpawn(intro, meeting);
         var role = CustomPlayer.Local.GetRole();

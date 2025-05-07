@@ -11,7 +11,7 @@ public static class MapBehaviourPatches
     [HarmonyPatch(nameof(MapBehaviour.FixedUpdate)), HarmonyPostfix]
     public static void FixedUpdatePostfix(MapBehaviour __instance)
     {
-        PlayerLayer.LocalLayers().ForEach(x => x.UpdateMap(__instance));
+        PlayerLayer.LocalLayers().Do(x => x.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x.UpdateArrowBlip(__instance));
 
         if (LocalBlocked())
@@ -42,7 +42,7 @@ public static class MapBehaviourPatches
             notModified = false;
         }
 
-        PlayerLayer.LocalLayers().ForEach(x => x?.UpdateMap(__instance));
+        PlayerLayer.LocalLayers().Do(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
         CustomPlayer.Local.DisableButtons();
         return notModified;
@@ -63,7 +63,7 @@ public static class MapBehaviourPatches
     [HarmonyPatch(nameof(MapBehaviour.Awake)), HarmonyPostfix]
     public static void AwakePostfix(MapBehaviour __instance)
     {
-        PlayerLayer.LocalLayers().ForEach(x => x.UpdateMap(__instance));
+        PlayerLayer.LocalLayers().Do(x => x.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x.UpdateArrowBlip(__instance));
     }
 }
@@ -176,7 +176,7 @@ public static class MinigameBeginPatch
             return;
         }
 
-        __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, Multitasker.Transparency / 100f));
+        __instance.GetComponentsInChildren<SpriteRenderer>().Do(x => x.color = new(x.color.r, x.color.g, x.color.b, Multitasker.Transparency / 100f));
     }
 }
 
@@ -390,7 +390,7 @@ public static class ShowCustomAnim
 
             if (!selfDeath)
             {
-                var parent = new GameObject("SelfKillObject").DontUnload().DontDestroy().transform;
+                var parent = new GameObject("SelfKillObject").DontDestroy().transform;
                 parent.gameObject.SetActive(false);
 
                 selfDeath = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
@@ -467,7 +467,7 @@ public static class FixMeetingKills
     public static void Postfix(bool __result)
     {
         if (Meeting())
-            AllVoteAreas().ForEach(x => x.gameObject.SetActive(!__result));
+            AllVoteAreas().Do(x => x.gameObject.SetActive(!__result));
     }
 }
 

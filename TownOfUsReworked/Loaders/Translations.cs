@@ -13,6 +13,6 @@ public sealed class TranslationLoader : AssetLoader<Language>
         if (item.ID != null)
             AllTranslations[item.ID.ToLower()] = item;
 
-        item.IDs?.ForEach(id => AllTranslations[id.ToLower()] = item);
+        item.IDs?.Do(id => AllTranslations[id.ToLower()] = item);
     }
 }

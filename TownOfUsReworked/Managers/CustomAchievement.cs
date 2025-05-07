@@ -59,7 +59,7 @@ public static class CustomAchievementManager
         }
 
         // Adding in achievements for each type of win (an achievement for 5 wins for each), I was just too lazy to add them all manually to the list
-        LayerDictionary.Keys.Where(x => x != LayerEnum.Assassin).ForEach(layer => AllAchievements.Add(new($"LayerWins.{layer}")));
+        LayerDictionary.Keys.Where(x => x != LayerEnum.Assassin).Do(layer => AllAchievements.Add(new($"LayerWins.{layer}")));
 
         foreach (var map in Enum.GetValues<MapEnum>())
         {
@@ -85,7 +85,7 @@ public static class CustomAchievementManager
     {
         var unlocked = AllAchievements.Where(a => a.Unlocked);
         writer.Write((ushort)unlocked.Count());
-        unlocked.ForEach(a => writer.Write(a.Name));
+        unlocked.Do(a => writer.Write(a.Name));
     }
 
     public static void RpcUnlockAchievement(PlayerControl player, string name)
@@ -110,7 +110,7 @@ public static class CustomAchievementManager
 
         if (!Prefab)
         {
-            Prefab = UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, null).DontDestroy().DontUnload();
+            Prefab = UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, null).DontDestroy();
             Prefab.name = "AchievementPrefab";
             Prefab.text.GetComponent<TextTranslatorTMP>().Destroy();
             Prefab.text.text = "Achievement Unlocked!";

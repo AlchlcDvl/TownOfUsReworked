@@ -12,7 +12,7 @@ public static class MeetingPatches
     public static void Postfix(MeetingHud __instance, byte suspectStateIdx)
     {
         if (IsLocalGame() && TownOfUsReworked.MciActive && TownOfUsReworked.SameVote.Value)
-            __instance.playerStates.ForEach(x => __instance.CmdCastVote(x.TargetPlayerId, suspectStateIdx));
+            __instance.playerStates.Do(x => __instance.CmdCastVote(x.TargetPlayerId, suspectStateIdx));
     }
 
     public static Sprite Cache;
@@ -246,10 +246,10 @@ public static class MeetingPatches
     }
 
     [HarmonyPatch(nameof(MeetingHud.Select))]
-    public static void Postfix(MeetingHud __instance, int suspectStateIdx) => PlayerLayer.LocalLayers().ForEach(x => x?.SelectVote(__instance, suspectStateIdx));
+    public static void Postfix(MeetingHud __instance, int suspectStateIdx) => PlayerLayer.LocalLayers().Do(x => x?.SelectVote(__instance, suspectStateIdx));
 
     [HarmonyPatch(nameof(MeetingHud.ClearVote)), HarmonyPostfix]
-    public static void ClearVotePostfix(MeetingHud __instance) => PlayerLayer.LocalLayers().ForEach(x => x?.ClearVote(__instance));
+    public static void ClearVotePostfix(MeetingHud __instance) => PlayerLayer.LocalLayers().Do(x => x?.ClearVote(__instance));
 
     private static bool CheckVoted(PlayerVoteArea playerVoteArea)
     {
@@ -291,7 +291,7 @@ public static class MeetingPatches
             }
 
             __instance.RpcVotingComplete(array, exiled, tie);
-            PlayerLayer.GetLayers<Politician>().ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, x, PoliticianActionsRPC.Remove, x.ExtraVotes.ToArray()));
+            PlayerLayer.GetLayers<Politician>().Do(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, x, PoliticianActionsRPC.Remove, x.ExtraVotes.ToArray()));
         }
 
         return false;

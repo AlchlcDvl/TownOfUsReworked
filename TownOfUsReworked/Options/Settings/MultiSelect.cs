@@ -8,7 +8,7 @@ public sealed class MultiSelectOption<T>(T? none, T? all, params T[] ignore) : B
     public override void Debug()
     {
         base.Debug();
-        Values.ForEach(x => TranslationManager.DebugId($"CustomOption.{InnerType.Name}.{x}"));
+        Values.Do(x => TranslationManager.DebugId($"CustomOption.{InnerType.Name}.{x}"));
     }
 
     public override bool IsId(string id) => base.IsId(id) || Values.Any(x => id == $"CustomOption.{InnerType.Name}.{x}".ToLower());
@@ -30,11 +30,11 @@ public sealed class MultiSelectOption<T>(T? none, T? all, params T[] ignore) : B
     {
         if (Buttons.Any())
         {
-            Buttons.Keys.ForEach(x => x.gameObject.Destroy());
+            Buttons.Keys.Do(x => x.gameObject.Destroy());
             Buttons.Clear();
         }
         else
-            Values.ForEach(x => Buttons.Add(CreateButton(x, $"CustomOption.{InnerType.Name}.{x}"), x));
+            Values.Do(x => Buttons.Add(CreateButton(x, $"CustomOption.{InnerType.Name}.{x}"), x));
 
         SettingsPatches.OnValueChanged();
     }

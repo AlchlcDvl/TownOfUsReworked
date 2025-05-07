@@ -5,7 +5,7 @@ public static class ButtonUtils
     public static void DisableButtons(this PlayerControl player)
     {
         var hud = HUD();
-        player.GetButtons().ForEach(x => x.Disable());
+        player.GetButtons().Do(x => x.Disable());
         hud.SabotageButton.ToggleVisible(false);
         hud.ReportButton.ToggleVisible(false);
         hud.ImpostorVentButton.ToggleVisible(false);
@@ -33,7 +33,7 @@ public static class ButtonUtils
     public static void EnableButtons(this PlayerControl player)
     {
         var hud = HUD();
-        player.GetButtons().ForEach(x => x.SetActive());
+        player.GetButtons().Do(x => x.SetActive());
         player.GetRole()?.UpdateButtons();
         hud.UseButton.ToggleVisible(true);
         hud.PetButton.ToggleVisible(true);
@@ -123,7 +123,7 @@ public static class ButtonUtils
             return;
 
         player ??= CustomPlayer.Local;
-        player.GetButtons().ForEach(x => x.StartCooldown(cooldown));
+        player.GetButtons().Do(x => x.StartCooldown(cooldown));
 
         if (player.Is<Role>(out var role))
             role.Reset(cooldown == CooldownType.Meeting, cooldown == CooldownType.Start);

@@ -36,7 +36,7 @@ public sealed class StatsHandler : MonoBehaviour
         sb.AppendLine();
 
         if (ViewingAchievements)
-            CustomAchievementManager.AllAchievements.Where(x => (!x.Hidden || x.Unlocked) && x.Name != "Test").GetRange(I, 15).ForEach(x => AppendAchievement(sb, x));
+            CustomAchievementManager.AllAchievements.Where(x => (!x.Hidden || x.Unlocked) && x.Name != "Test").GetRange(I, 15).Do(x => AppendAchievement(sb, x));
         else
             CustomStatsManager.OrderedStats.GetRange(I, 39).ForEach(x => AppendStat(sb, x, CustomStatsManager.GetStat(x)));
 

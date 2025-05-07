@@ -10,7 +10,7 @@ public static class AdminPatch
         __instance.SabotageText.gameObject.SetActive(sabotaged);
 
         if (sabotaged)
-            __instance.CountAreas.ForEach(x => x.UpdateCount(0));
+            __instance.CountAreas.Do(x => x.UpdateCount(0));
     }
 
     private static void UpdateBlips(CounterArea area, List<byte> colorMapping, bool isOp)

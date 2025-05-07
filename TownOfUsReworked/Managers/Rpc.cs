@@ -65,12 +65,12 @@ public static class RpcManager
 
         var options = setting != null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
         var count = options.Count();
-        var split = count > 75 ? options.Split(75) : [ options ]; // No need to split if less than chunk size, saves from arbitrary computation time, but I'll be honest I like my shit fast
+        var split = count > 75 ? options.Chunk(75) : [ [.. options] ]; // No need to split if less than chunk size, saves from arbitrary computation time, but I'll be honest I like my shit fast
         Info($"Sending {count} options split to {split.Count()} sets to {targetClientId}");
 
         foreach (var list in split)
         {
-            using var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Count());
+            using var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Length);
 
             foreach (var option in list)
             {
@@ -273,9 +273,22 @@ public static class RpcManager
                     }
                     case MiscRPC.SetSettings:
                     {
-                        TownOfUsReworked.NormalOptions.MapId = MapPatches.CurrentMap = reader.ReadByte();
+                        MapPatches.CurrentMap = reader.ReadByte();
+
+                        try
+                        {
+                            TownOfUsReworked.NormalOptions.MapId = MapPatches.CurrentMap;
+                        }
+                        catch { }
+
+                        try
+                        {
+                            TownOfUsReworked.HnsOptions.MapId = MapPatches.CurrentMap;
+                        }
+                        catch { }
+
                         MapPatches.SetDefaults();
-                        MapPatches.AdjustSettings();
+                        MapPatches.AdjustSettings(true);
                         return;
                     }
                     case MiscRPC.SetFirstKilled:
@@ -302,7 +315,7 @@ public static class RpcManager
                     }
                     case MiscRPC.EndRoleGen:
                     {
-                        AllPlayers().ForEach(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
+                        AllPlayers().Do(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
                         SetPostmortals.Revealers = reader.ReadByte();
                         SetPostmortals.Phantoms = reader.ReadByte();
                         SetPostmortals.Banshees = reader.ReadByte();
@@ -422,7 +435,7 @@ public static class RpcManager
                         WinState = reader.Read<WinLose>();
 
                         while (reader.BytesRemaining > 0)
-                            reader.ReadPlayer().GetLayers().ForEach(x => x.Winner = true);
+                            reader.ReadPlayer().GetLayers().Do(x => x.Winner = true);
 
                         return;
                     }
@@ -481,7 +494,7 @@ public static class RpcManager
                     {
                         var victim = reader.ReadPlayer();
                         var success = reader.ReadBool();
-                        PlayerLayer.GetLayers<Enforcer>().Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
+                        PlayerLayer.GetLayers<Enforcer>().Where(x => x.BombedPlayer == victim).Do(x => x.BombSuccessful = success);
                         return;
                     }
                     case ActionsRPC.Infect:

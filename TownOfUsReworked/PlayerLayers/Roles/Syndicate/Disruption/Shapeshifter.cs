@@ -65,7 +65,7 @@ public sealed class Shapeshifter : Syndicate
         }
         else
         {
-            AllPlayers().ForEach(x =>
+            AllPlayers().Do(x =>
             {
                 if (CachedMorphs.TryGetValue(x.PlayerId, out var target))
                     Morph(x, PlayerById(target));
