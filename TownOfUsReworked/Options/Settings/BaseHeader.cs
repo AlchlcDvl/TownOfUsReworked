@@ -22,7 +22,7 @@ public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : 
             var att = member.GetCustomAttribute<OptionAttribute>();
             Option opt;
 
-            if (att != null)
+            if (att is not null)
                 opt = att.Set(member, this, ClientOnly);
             else
             {
@@ -48,7 +48,7 @@ public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : 
     {
         var members = type.GetMembers(AccessTools.all);
         var sortedMembers = members
-           .Where(m => m.GetCustomAttribute<SortedAttribute>() != null)
+           .Where(m => m.GetCustomAttribute<SortedAttribute>() is not null)
            .OrderBy(m => m.GetCustomAttribute<SortedAttribute>()!.Order);
 
         return sortedMembers.Concat(members.Except(sortedMembers));

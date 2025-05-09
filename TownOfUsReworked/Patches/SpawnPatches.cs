@@ -86,7 +86,7 @@ public static class SpawnPatches
             _ => null
         };
 
-        if (toAdd != null)
+        if (toAdd is not null)
             allLocations.AddRange(toAdd);
 
         foreach (var player in AllPlayers())

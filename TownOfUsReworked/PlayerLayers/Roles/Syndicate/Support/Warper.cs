@@ -190,7 +190,7 @@ public sealed class Warper : Syndicate, IMover
             var coords = GenerateWarpCoordinates();
             using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.All);
 
-            if (writer != null)
+            if (writer is not null)
             {
                 writer.Write((byte)coords.Count);
 

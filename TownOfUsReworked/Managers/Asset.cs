@@ -103,7 +103,7 @@ public static class AssetManager
         }
         catch
         {
-            Failure($"Unable to save text to {fileName}{(diskLocation != null ? $" in {diskLocation}" : "")}");
+            Failure($"Unable to save text to {fileName}{(diskLocation is not null ? $" in {diskLocation}" : "")}");
         }
     }
 
@@ -115,7 +115,7 @@ public static class AssetManager
         }
         catch
         {
-            Failure($"Error reading {fileName}{(diskLocation != null ? $" from {diskLocation}" : "")}");
+            Failure($"Error reading {fileName}{(diskLocation is not null ? $" from {diskLocation}" : "")}");
             return "";
         }
     }

@@ -18,13 +18,13 @@ public sealed class HatLoader : BaseCosmeticLoader<CustomHat>
 
         var viewData = ScriptableObject.CreateInstance<HatViewData>().DontDestroy();
         viewData.MainImage = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Hat);
-        viewData.BackImage = item.BackID != null ? CreateCosmeticSprite(path, item.BackID, CosmeticTypeEnum.Hat) : null;
-        viewData.ClimbImage = item.ClimbID != null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Hat) : null;
-        viewData.LeftBackImage = item.BackFlipID != null ? CreateCosmeticSprite(path, item.BackFlipID, CosmeticTypeEnum.Hat) : viewData.BackImage;
-        viewData.LeftClimbImage = item.ClimbFlipID != null ? CreateCosmeticSprite(path, item.ClimbFlipID, CosmeticTypeEnum.Hat) : viewData.ClimbImage;
-        viewData.FloorImage = item.FloorID != null ? CreateCosmeticSprite(path, item.FloorID, CosmeticTypeEnum.Hat) : viewData.MainImage;
-        viewData.LeftMainImage = item.FlipID != null ? CreateCosmeticSprite(path, item.FlipID, CosmeticTypeEnum.Hat) : viewData.MainImage;
-        viewData.LeftFloorImage = item.FloorFlipID != null ? CreateCosmeticSprite(path, item.FloorFlipID, CosmeticTypeEnum.Hat) : viewData.FloorImage;
+        viewData.BackImage = item.BackID is not null ? CreateCosmeticSprite(path, item.BackID, CosmeticTypeEnum.Hat) : null;
+        viewData.ClimbImage = item.ClimbID is not null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Hat) : null;
+        viewData.LeftBackImage = item.BackFlipID is not null ? CreateCosmeticSprite(path, item.BackFlipID, CosmeticTypeEnum.Hat) : viewData.BackImage;
+        viewData.LeftClimbImage = item.ClimbFlipID is not null ? CreateCosmeticSprite(path, item.ClimbFlipID, CosmeticTypeEnum.Hat) : viewData.ClimbImage;
+        viewData.FloorImage = item.FloorID is not null ? CreateCosmeticSprite(path, item.FloorID, CosmeticTypeEnum.Hat) : viewData.MainImage;
+        viewData.LeftMainImage = item.FlipID is not null ? CreateCosmeticSprite(path, item.FlipID, CosmeticTypeEnum.Hat) : viewData.MainImage;
+        viewData.LeftFloorImage = item.FloorFlipID is not null ? CreateCosmeticSprite(path, item.FloorFlipID, CosmeticTypeEnum.Hat) : viewData.FloorImage;
         viewData.MatchPlayerColor = item.Adaptive;
 
         var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();

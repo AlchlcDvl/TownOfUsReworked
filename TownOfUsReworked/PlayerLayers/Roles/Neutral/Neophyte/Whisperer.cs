@@ -93,7 +93,7 @@ public sealed class Whisperer : Neophyte
         WhisperButton.StartCooldown();
         using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, (byte)PlayerConversion.Count);
 
-        if (writer == null)
+        if (writer is null)
             return;
 
         foreach (var (id, perc) in PlayerConversion)

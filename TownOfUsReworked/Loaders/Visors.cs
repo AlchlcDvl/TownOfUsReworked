@@ -18,9 +18,9 @@ public sealed class VisorLoader : BaseCosmeticLoader<CustomVisor>
 
         var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
         viewData.IdleFrame = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Visor);
-        viewData.FloorFrame = item.FloorID != null ? CreateCosmeticSprite(path, item.FloorID, CosmeticTypeEnum.Visor) : viewData.IdleFrame;
-        viewData.LeftIdleFrame = item.FlipID != null ? CreateCosmeticSprite(path, item.FlipID, CosmeticTypeEnum.Visor) : null;
-        viewData.ClimbFrame = item.ClimbID != null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Visor) : null;
+        viewData.FloorFrame = item.FloorID is not null ? CreateCosmeticSprite(path, item.FloorID, CosmeticTypeEnum.Visor) : viewData.IdleFrame;
+        viewData.LeftIdleFrame = item.FlipID is not null ? CreateCosmeticSprite(path, item.FlipID, CosmeticTypeEnum.Visor) : null;
+        viewData.ClimbFrame = item.ClimbID is not null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Visor) : null;
         viewData.MatchPlayerColor = item.Adaptive;
 
         var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();

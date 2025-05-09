@@ -10,7 +10,7 @@ public sealed class TranslationLoader : AssetLoader<Language>
 
     protected override void LoadAsset(Language item, int i)
     {
-        if (item.ID != null)
+        if (item.ID is not null)
             AllTranslations[item.ID.ToLower()] = item;
 
         item.IDs?.Do(id => AllTranslations[id.ToLower()] = item);

@@ -68,7 +68,7 @@ public sealed class Concealer : Syndicate
         {
             using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
 
-            if (writer != null)
+            if (writer is not null)
             {
                 if (ConcealedPlayer)
                     writer.Write(ConcealedPlayer.PlayerId);

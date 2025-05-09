@@ -1,8 +1,9 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public abstract class GameModeRole : Role
+public abstract class GameMode : Role
 {
     protected override bool UseMainColor => ClientOptions.CustomGmColors;
+    protected override UColor LayerColor => CustomColorManager.GameMode;
 
     protected override void Init()
     {

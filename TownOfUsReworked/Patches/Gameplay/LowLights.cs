@@ -36,7 +36,25 @@ public static class CalculateLightRadiusPatch
         if (pc.Is<Role>(out var role))
         {
             affectedByLights = !pc.Is<Torch>() && role.AffectedByLights;
-            t *= role.VisionRange;
+            t *= role.Faction switch
+            {
+                Faction.Crew => CrewSettings.CrewVision,
+                Faction.Intruder => IntruderSettings.IntruderVision,
+                Faction.Syndicate => SyndicateSettings.SyndicateVision,
+                Faction.Neutral => NeutralSettings.NeutralVision,
+                Faction.Apocalypse => ApocalypseSettings.ApocalypseVision,
+                Faction.Illuminati => IlluminatiSettings.IlluminatiVision,
+                Faction.Pandorica => PandoricaSettings.PandoricaVision,
+                Faction.Compliance => ComplianceSettings.ComplianceVision,
+                Faction.GameMode => role switch
+                {
+                    Runner => GameModeSettings.RunnerVision,
+                    Hunted => GameModeSettings.HuntedVision,
+                    Hunter hunter => hunter.Starting ? 0.001f : GameModeSettings.HunterVision,
+                    _ => 1f
+                },
+                _ => 1f
+            };
         }
         else
         {

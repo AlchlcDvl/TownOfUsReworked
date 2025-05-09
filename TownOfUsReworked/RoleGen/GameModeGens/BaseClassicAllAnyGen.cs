@@ -43,7 +43,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitIntList()
     {
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys  is not (Faction.Intruder or Faction.Pandorica or Faction.Illuminati)) || Intruders == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Intruder or Faction.Pandorica or Faction.Illuminati)) || Intruders == 0)
             return;
 
         foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not LayerEnum.Mafioso))
@@ -110,7 +110,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitApocList()
     {
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys  is not (Faction.Apocalypse or Faction.Pandorica or Faction.Illuminati)) || Apocalypse == 0)
+        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Apocalypse or Faction.Pandorica or Faction.Illuminati)) || Apocalypse == 0)
             return;
 
         // TODO: Implement a ghost role for apoc
@@ -165,13 +165,14 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
         if (BadGuysSettings.OnlyMainBadGuys)
         {
-            AllRoles.AddRanges(BadGuysSettings.MainBadGuys switch
+            AllRoles.AddRange(BadGuysSettings.MainBadGuys switch
             {
-                Faction.Intruder => [IntruderRoles],
-                Faction.Syndicate => [SyndicateRoles],
-                Faction.Apocalypse => [ApocalypseRoles],
-                Faction.Pandorica => [IntruderRoles, SyndicateRoles, ApocalypseRoles],
-                _ => []
+                Faction.Intruder => IntruderRoles,
+                Faction.Syndicate => SyndicateRoles,
+                Faction.Apocalypse => ApocalypseRoles,
+                Faction.Pandorica => PandoricaRoles,
+                Faction.Compliance => ComplianceRoles,
+                _ => IlluminatiRoles
             });
         }
         else
@@ -196,6 +197,8 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         SyndicateRoles.Clear();
         IntruderRoles.Clear();
         ApocalypseRoles.Clear();
+        ComplianceRoles.Clear();
+        IlluminatiRoles.Clear();
 
         while (AllRoles.Count < GameData.Instance.PlayerCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));

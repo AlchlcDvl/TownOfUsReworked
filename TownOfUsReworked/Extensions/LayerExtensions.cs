@@ -15,7 +15,7 @@ public static class LayerExtensions
     private static readonly string AttackColorString = $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
     private static readonly string DefenseColorString = $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
-    public static bool Is<T>(this PlayerControl player, out T layer) where T : IPlayerLayer => (layer = player.GetLayer<T>()) != null;
+    public static bool Is<T>(this PlayerControl player, out T layer) where T : IPlayerLayer => (layer = player.GetLayer<T>()) is not null;
 
     public static bool Is<T>(this PlayerControl player) where T : IPlayerLayer => player.Is<T>(out _);
 
@@ -197,8 +197,8 @@ public static class LayerExtensions
 
     public static bool ApocalypseSided(this PlayerControl player) => player.Is(Faction.Apocalypse, Faction.Illuminati, Faction.Pandorica) && !player.Is<Apocalypse>();
 
-    public static bool ComplianceSided(this PlayerControl player) => player.Is(Faction.Compliance) && ((!player.Is<NKilling>() && GameModifiers.ComplianceType == ComplianceType.Killers) ||
-        (!player.Is<Neophyte>() && GameModifiers.ComplianceType == ComplianceType.Neophytes));
+    public static bool ComplianceSided(this PlayerControl player) => player.Is(Faction.Compliance) && ((!player.Is<NKilling>() && GameModifiers.ComplianceMembers == ComplianceType.Killers) ||
+        (!player.Is<Neophyte>() && GameModifiers.ComplianceMembers == ComplianceType.Neophytes));
 
     public static bool Last(PlayerControl player) => GameStateUtils.Last(player.GetFaction());
 
@@ -738,7 +738,7 @@ public static class LayerExtensions
         var converted = PlayerById(target);
         var converter = PlayerById(convert);
         var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.Neophyte));
-        var comp = GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType == ComplianceType.Neophytes;
+        var comp = GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Neophytes;
 
         if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts || (comp && converted.GetFaction() is not (Faction.Crew or Faction.Neutral)))
         {

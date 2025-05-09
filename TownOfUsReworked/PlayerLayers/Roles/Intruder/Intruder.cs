@@ -14,9 +14,9 @@ public abstract class Intruder : Role, IPromoter
         "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "");
 
     protected override UColor MainColor => CustomColorManager.Intruder;
+    protected override UColor LayerColor => CustomColorManager.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool AffectedByLights => false;
-    public override float VisionRange => IntruderSettings.IntruderVision;
     public override bool CanVent => IntruderSettings.IntrudersVent;
     protected override bool UseMainColor => ClientOptions.CustomIntColors;
 

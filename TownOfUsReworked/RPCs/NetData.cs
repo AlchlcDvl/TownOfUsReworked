@@ -553,7 +553,7 @@ public sealed class NetData : IDisposable, INetSerializable
         if (BytesRemaining > 0 && IsReceived)
             Warning($"There were {BytesRemaining} bytes of unread data in the rpc {(CustomRPC)ReadBuffer[0]} {ReadBuffer[1]}");
 
-        if (ReadBuffer != null)
+        if (ReadBuffer is not null)
             Array.Clear(ReadBuffer); // Explicitly clearing a byte[] just for the ease of my mind
 
         WriteBuffer?.Clear();

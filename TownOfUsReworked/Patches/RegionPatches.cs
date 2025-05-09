@@ -90,18 +90,18 @@ public static class RegionInfoOpenPatch
 
         foreach (var iRegionInfo2 in new[] { mna, meu, mas, custom })
         {
-            if (iRegionInfo2 == null)
+            if (iRegionInfo2 is null)
                 Error("Could not add region");
             else
             {
-                if (iRegionInfo1 != null && iRegionInfo2.Name.Equals(iRegionInfo1.Name, StringComparison.OrdinalIgnoreCase))
+                if (iRegionInfo1 is not null && iRegionInfo2.Name.Equals(iRegionInfo1.Name, StringComparison.OrdinalIgnoreCase))
                     iRegionInfo1 = iRegionInfo2;
 
                 ServerManager.Instance.AddOrUpdateRegion(iRegionInfo2);
             }
         }
 
-        if (iRegionInfo1 == null)
+        if (iRegionInfo1 is null)
             return;
 
         Info("Resetting previous region");

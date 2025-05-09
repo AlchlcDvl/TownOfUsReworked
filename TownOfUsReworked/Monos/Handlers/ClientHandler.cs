@@ -620,7 +620,7 @@ public sealed class ClientHandler : MonoBehaviour
         {
             Instance.BackButton = Instance.CreateButton("WikiBack", "Previous Page", () =>
             {
-                if (Instance.Selected == null)
+                if (Instance.Selected is null)
                     Instance.Page = CycleInt(Instance.MaxPage, 0, Instance.Page, false);
                 else if (Instance.LoreActive)
                 {
@@ -713,7 +713,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (Instance.ToTheWiki)
             Instance.ToTheWiki.transform.localPosition = new(-2.6f, 1.6f, 0f);
 
-        if (Instance.Selected != null)
+        if (Instance.Selected is not null)
             return;
 
         var m = 0;

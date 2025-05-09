@@ -5,6 +5,7 @@
 namespace TownOfUsReworked.Modules;
 
 // Json stuff for deserializing cosmetics
+// The ones marked with [JsonIgnore] are serialised elsewhere
 
 public abstract class CustomCosmetic : Asset
 {
@@ -128,8 +129,6 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
 
     [JsonPropertyName("timeSpeed")]
     private float TimeSpeed { get; } = 1f;
-
-    // The ones marked with [JsonIgnore] are serialised elsewhere
 
     [JsonIgnore]
     public bool Changing => MainColorValues?.Length is > 1 || ShadowColorValues?.Length is > 1;

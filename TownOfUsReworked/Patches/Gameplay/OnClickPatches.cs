@@ -17,7 +17,7 @@ public static class PlayerControlOnClick
             return false;
         }
 
-        if (CustomPlayer.Local.Data.Tasks == null || __instance.AmOwner || PhysicsHelpers.AnythingBetween(PlayerControl.LocalPlayer.GetTruePosition(), __instance.GetTruePosition(),
+        if (CustomPlayer.Local.Data.Tasks is null || __instance.AmOwner || PhysicsHelpers.AnythingBetween(PlayerControl.LocalPlayer.GetTruePosition(), __instance.GetTruePosition(),
             Constants.ShipAndObjectsMask, false))
         {
             return false;
@@ -84,7 +84,7 @@ public static class DeadBodyOnClick
             return true;
 
         if (!CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable(), out var button))
-            return GameModeSettings.GameMode is not (GameMode.HideAndSeek or GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < CustomPlayer.Local.lightSource.viewDistance;
+            return GameModeSettings.GameMode is not (Data.GameMode.HideAndSeek or Data.GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < CustomPlayer.Local.lightSource.viewDistance;
 
         button?.Clicked();
         return false;

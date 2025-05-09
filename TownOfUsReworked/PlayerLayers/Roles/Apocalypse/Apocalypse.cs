@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Apocalypse : Role
 {
     protected override UColor MainColor => CustomColorManager.Apocalypse;
-    public override float VisionRange => ApocalypseSettings.ApocalypseVision;
+    protected override UColor LayerColor => CustomColorManager.Apocalypse;
     public override bool CanVent => ApocalypseSettings.ApocalypseVent;
     protected override bool UseMainColor => ClientOptions.CustomApocColors;
 

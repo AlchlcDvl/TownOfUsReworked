@@ -22,15 +22,15 @@ public static class GameStateUtils
 
     public static bool IsFreePlay() => AmongUsClient.Instance?.NetworkMode == NetworkModes.FreePlay;
 
-    public static bool IsAllAny() => GameModeSettings.GameMode == GameMode.AllAny;
+    public static bool IsAllAny() => GameModeSettings.GameMode == Data.GameMode.AllAny;
 
-    public static bool IsClassic() => GameModeSettings.GameMode == GameMode.Classic;
+    public static bool IsClassic() => GameModeSettings.GameMode == Data.GameMode.Classic;
 
-    public static bool IsList() => GameModeSettings.GameMode == GameMode.List;
+    public static bool IsList() => GameModeSettings.GameMode == Data.GameMode.List;
 
-    public static bool IsTaskRace() => GameModeSettings.GameMode == GameMode.TaskRace;
+    public static bool IsTaskRace() => GameModeSettings.GameMode == Data.GameMode.TaskRace;
 
-    public static bool IsCustomHnS() => GameModeSettings.GameMode == GameMode.HideAndSeek;
+    public static bool IsCustomHnS() => GameModeSettings.GameMode == Data.GameMode.HideAndSeek;
 
     public static bool NoLobby() => !(IsInGame() || IsLobby() || IsEnded() || Meeting());
 

@@ -55,7 +55,7 @@ public sealed class Drunkard : Syndicate
         {
             using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConfusedPlayer);
 
-            if (writer != null)
+            if (writer is not null)
             {
                 if (ConfusedPlayer)
                     writer.Write(ConfusedPlayer.PlayerId);

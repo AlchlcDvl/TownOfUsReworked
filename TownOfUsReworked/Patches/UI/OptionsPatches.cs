@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.UI;
 
 [HarmonyPatch]
 public static class SettingsPatches
@@ -258,7 +258,7 @@ public static class SettingsPatches
     {
         var type = (MultiMenu)SettingsPage;
 
-        foreach (var header in SelectedSubOptions == null ? Option.SortedOptions.Where(x => x.Menu == type) : [ SelectedSubOptions ])
+        foreach (var header in SelectedSubOptions is null ? Option.SortedOptions.Where(x => x.Menu == type) : [ SelectedSubOptions ])
         {
             if (!header.Setting)
             {
@@ -451,7 +451,7 @@ public static class SettingsPatches
                         continue;
                     }
 
-                    var flag = header.Menu == menu && (SelectedSubOptions == null || header == SelectedSubOptions) && header.Active() && header.GroupMembers.Any(x => x.PartiallyActive());
+                    var flag = header.Menu == menu && (SelectedSubOptions is null || header == SelectedSubOptions) && header.Active() && header.GroupMembers.Any(x => x.PartiallyActive());
                     header.Setting.gameObject.SetActive(flag);
                     header.Update();
 
@@ -607,7 +607,7 @@ public static class SettingsPatches
             CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
             CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SyncSummary, ReadDiskText("Summary", TownOfUsReworked.Other));
 
-            if (CachedFirstDead != null)
+            if (CachedFirstDead is not null)
                 CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
         }
     }
@@ -641,7 +641,7 @@ public static class SettingsPatches
                 });
             }
 
-            if (__instance.mapButtons != null)
+            if (__instance.mapButtons is not null)
             {
                 __instance.mapButtons.ForEach(x => x.gameObject.Destroy());
                 __instance.mapButtons.Clear();
@@ -698,7 +698,7 @@ public static class SettingsPatches
         {
             var mapInfo = __instance.AllMapIcons.Find(m => m.Name == (MapNames)mapId);
 
-            if (mapInfo != null)
+            if (mapInfo is not null)
                 __instance.SelectMap(mapInfo);
             else
             {
@@ -916,7 +916,7 @@ public static class SettingsPatches
                         continue;
                     }
 
-                    if (option.GroupHeader != null)
+                    if (option.GroupHeader is not null)
                     {
                         if (option.GroupHeader.ViewSetting)
                         {
@@ -973,7 +973,7 @@ public static class SettingsPatches
                         __instance.settingsInfo.Add(layer.ViewSetting.gameObject);
                         y -= 0.65f;
 
-                        if (layer.GroupHeader != null)
+                        if (layer.GroupHeader is not null)
                         {
                             layer.GroupHeader.ViewUpdate();
                             layer.GroupHeader.ViewSetting.gameObject.SetActive(false);

@@ -102,7 +102,7 @@ public sealed class Defector : Disposition
         {
             factions.Add(Faction.Compliance);
 
-            if (GameModifiers.ComplianceType == ComplianceType.Killers)
+            if (GameModifiers.ComplianceMembers == ComplianceType.Killers)
                 factions.RemoveAll(Faction.Neutral);
         }
 

@@ -33,7 +33,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         if (IsInGame() && !(ClientOnly || TownOfUsReworked.MciActive))
             return;
 
-        if (Member == null)
+        if (Member is null)
             Value = value;
         else
         {

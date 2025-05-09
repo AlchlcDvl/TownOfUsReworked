@@ -8,5 +8,7 @@ public abstract class NKilling : Neutral
     {
         base.Init();
         Alignment = Alignment.Killing;
+        Faction = GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Killers ?
+            Faction.Compliance : Faction.Neutral);
     }
 }

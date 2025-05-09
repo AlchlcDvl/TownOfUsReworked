@@ -55,7 +55,7 @@ public static class ModCompatibilityManager
 
     private static bool InitializeSubmerged()
     {
-        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(SmGuid, out var subPlugin) || subPlugin == null)
+        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(SmGuid, out var subPlugin) || subPlugin is null)
             return false;
 
         Message("Submerged was detected");
@@ -153,7 +153,7 @@ public static class ModCompatibilityManager
 
         var (isInElevator, elevator) = GetPlayerElevator(player);
 
-        if (!isInElevator || elevator == null)
+        if (!isInElevator || elevator is null)
             return;
 
         if ((int)GetMovementStageFromTimeMethod.Invoke(elevator, null)! < 5)
@@ -220,7 +220,7 @@ public static class ModCompatibilityManager
 
     public static void AddSubmergedComponent(this GameObject obj, string typeName)
     {
-        if (!IsSubmerged() || !SubTypes.TryGetValue(typeName, out var type) || type == null)
+        if (!IsSubmerged() || !SubTypes.TryGetValue(typeName, out var type) || type is null)
             obj.AddComponent<BlankBehaviour>();
         else
             obj.AddComponent(Il2CppType.From(type));
@@ -290,7 +290,7 @@ public static class ModCompatibilityManager
 
     private static bool InitializeLevelImpostor()
     {
-        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(LiGuid, out var liPlugin) || liPlugin == null)
+        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(LiGuid, out var liPlugin) || liPlugin is null)
             return false;
 
         Message("LevelImpostor was detected");

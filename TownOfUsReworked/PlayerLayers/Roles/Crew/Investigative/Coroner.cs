@@ -106,7 +106,7 @@ public sealed class Coroner : Crew, IExaminer
 
     public override void OnBodyReport(NetworkedPlayerInfo info)
     {
-        if (info == null || !ReferenceBodies.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
+        if (info is null || !ReferenceBodies.TryFinding(x => x.PlayerId == info.PlayerId, out var body))
             return;
 
         Reported.Add(info.PlayerId);

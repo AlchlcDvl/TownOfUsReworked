@@ -19,7 +19,7 @@ public static class StatusUtils
     {
         var result = player.HasStatuses<T>(out var statuses);
         status = statuses.FirstOrDefault();
-        return result && status != null;
+        return result && status is not null;
     }
 
     public static bool HasStatuses<T>(this PlayerControl player, out IEnumerable<T> statuses) where T : BaseStatus => BaseStatus.AllStatuses.OfType<T>().TryFindingAll(x => x.Player == player, out

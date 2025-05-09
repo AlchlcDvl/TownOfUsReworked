@@ -70,7 +70,7 @@ public static class OnGameEndPatches
             __instance.Navigation.HideButtons();
             var cachedPlayerData = EndGameResult.CachedWinners.ToSystem().Find(h => h.IsYou);
 
-            if (cachedPlayerData != null)
+            if (cachedPlayerData is not null)
             {
                 CustomStatsManager.AddWin(MapPatches.CurrentMap, Winners[cachedPlayerData.PlayerName]);
                 AchievementManager.Instance.SetWinMap(MapPatches.CurrentMap);

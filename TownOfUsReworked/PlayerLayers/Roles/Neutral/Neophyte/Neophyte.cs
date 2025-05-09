@@ -10,6 +10,8 @@ public abstract class Neophyte : Neutral
     {
         base.Init();
         Alignment = Alignment.Neophyte;
+        Faction = GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Neophytes ?
+            Faction.Compliance : Faction.Neutral);
         Members.Clear();
         Members.Add(PlayerId);
     }

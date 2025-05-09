@@ -67,5 +67,5 @@ public abstract class BaseStatus
     /// <summary>
     /// Null check.
     /// </summary>
-    public static implicit operator bool(BaseStatus exists) => exists != null;
+    public static implicit operator bool(BaseStatus exists) => exists is not null;
 }

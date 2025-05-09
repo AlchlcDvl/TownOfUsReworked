@@ -22,10 +22,10 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
 
         item.ColorID = i;
 
-        if (item.MainColorValues != null)
+        if (item.MainColorValues is not null)
             item.MainColors = [ .. item.MainColorValues.Select(FromHex) ];
 
-        if (item.ShadowColorValues != null)
+        if (item.ShadowColorValues is not null)
             item.ShadowColors = [ .. item.ShadowColorValues.Select(FromHex) ];
 
         if (!item.Default)

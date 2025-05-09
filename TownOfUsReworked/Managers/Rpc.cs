@@ -43,7 +43,7 @@ public static class RpcManager
     /// <param name="writer">The network writer to close and send.</param>
     public static void CloseRpc(this MessageWriter writer)
     {
-        if (writer == null)
+        if (writer is null)
             Failure("RPC writer was null");
         else
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -63,7 +63,7 @@ public static class RpcManager
         if (TownOfUsReworked.MciActive || !CustomPlayer.Local || GameData.Instance.PlayerCount <= 1)
             return;
 
-        var options = setting != null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
+        var options = setting is not null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
         var count = options.Count();
         var split = count > 75 ? options.Chunk(75) : [ [.. options] ]; // No need to split if less than chunk size, saves from arbitrary computation time, but I'll be honest I like my shit fast
         Info($"Sending {count} options split to {split.Count()} sets to {targetClientId}");
@@ -102,7 +102,7 @@ public static class RpcManager
             var id = reader.ReadByte();
             var customOption = Option.GetOption(superId, id);
 
-            if (customOption != null)
+            if (customOption is not null)
             {
                 // Info($"Received option: {customOption.Name}");
                 customOption.ReadValueRpc(reader);
@@ -120,7 +120,7 @@ public static class RpcManager
     /// <param name="reader">The reader instance of <see cref="NetData"/> containing byte data.</param>
     public static void HandleRpc(NetData reader)
     {
-        if (reader == null || reader.DataSize == 0)
+        if (reader is null || reader.DataSize == 0)
         {
             Warning("Received no data");
             return;

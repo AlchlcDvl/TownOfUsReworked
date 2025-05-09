@@ -1,4 +1,5 @@
 
+
 namespace TownOfUsReworked.Options;
 
 public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int num) : BaseMultiSelectOption<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None)
@@ -55,13 +56,11 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
     public override void Debug() => TranslationManager.DebugId(IsBan ? "CustomOption.Ban" : "CustomOption.Entry");
 
     // TODO: Redo this to handle value filtering
-    protected override void TrySetValue(ListSlot value, out MultiSelectValue<ListSlot> newValue)
+    protected override void TrySetValue(ListSlot value)
     {
-        newValue = Value;
-
         if (IsBan)
         {
-            base.TrySetValue(value, out newValue);
+            base.TrySetValue(value);
             return;
         }
 
@@ -153,14 +152,15 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             _ => null
         };
 
-        if (toRemove == null)
+        if (toRemove is null)
         {
-            base.TrySetValue(value, out newValue);
+            base.TrySetValue(value);
             return;
         }
 
-        newValue.RemoveRange(toRemove.GetValues());
-        newValue.Add(value);
+        Value.RemoveRange(toRemove.GetValues());
+        Value.Remove(ListSlot.None);
+        Value.Add(value);
     }
 
     protected override bool Visible() => Num <= GameData.Instance.PlayerCount / (IsBan ? 3 : 1);
@@ -218,13 +218,13 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
                     if (GameModifiers.OrderOfCompliance)
                     {
-                        if (GameModifiers.ComplianceType == ComplianceType.Killers)
+                        if (GameModifiers.ComplianceMembers == ComplianceType.Killers)
                             yield return ListSlot.ComplianceKill;
 
-                        if (GameModifiers.ComplianceType == ComplianceType.Neophytes)
+                        if (GameModifiers.ComplianceMembers == ComplianceType.Neophytes)
                             yield return ListSlot.ComplianceNeo;
 
-                        if (GameModifiers.ComplianceType == [ ComplianceType.Killers, ComplianceType.Neophytes ])
+                        if (GameModifiers.ComplianceMembers == [ ComplianceType.Killers, ComplianceType.Neophytes ])
                             yield return ListSlot.RandomCompliance;
 
                         foreach (var bucket in GetValuesFromTo(ListSlot.NeutralBen, ListSlot.RegularNeutral))
@@ -276,15 +276,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
         }
     }
 
-    public static bool IsAdded(ListSlot value, ListEntryOption entry = null)
-    {
-        var entries = GetOptions<ListEntryOption>().Where(x => !x.IsBan);
-        return entry == null ? entries.Any(x => x.Value == value) : entries.Any(x => x != entry && x.Value == value);
-    }
+    public static bool IsAdded(ListSlot value, ListEntryOption entry = null) => GetOptions<ListEntryOption>().Any(x => x != entry && !x.IsBan && x.Visible() && x.Value == value);
 
-    public static bool IsBanned(ListSlot value, ListEntryOption entry = null)
-    {
-        var entries = GetOptions<ListEntryOption>().Where(x => x.IsBan);
-        return entry == null ? entries.Any(x => x.Value == value) : entries.Any(x => x != entry && x.Value == value);
-    }
+    public static bool IsBanned(ListSlot value, ListEntryOption entry = null) => GetOptions<ListEntryOption>().Any(x => x != entry && x.IsBan && x.Visible() && x.Value == value);
 }

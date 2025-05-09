@@ -10,7 +10,6 @@ public abstract class Role : PlayerLayer, IRole
 
     public virtual Func<string> StartText { get; } = () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
-    public virtual float VisionRange => 1f;
     public virtual bool AffectedByLights => true;
     public virtual bool CanSwitchVents => true;
 
@@ -144,7 +143,7 @@ public abstract class Role : PlayerLayer, IRole
         //         (ConditionFunc)CallCondition);
         // }
 
-        if (GameModeSettings.GameMode is GameMode.HideAndSeek or GameMode.TaskRace)
+        if (GameModeSettings.GameMode is global::TownOfUsReworked.Data.GameMode.HideAndSeek or global::TownOfUsReworked.Data.GameMode.TaskRace)
             return;
 
         if (RoleGenManager.GetSpawnItem(LayerEnum.Enforcer).IsActive())

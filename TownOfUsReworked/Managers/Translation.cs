@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace TownOfUsReworked.Managers;
 
 public static class TranslationManager
@@ -69,7 +67,7 @@ public static class TranslationManager
                 CustomToCustom[customName] = [value];
         }
 
-        if (replacements != null)
+        if (replacements is not null)
             ReplacementsMap[id] = replacements;
 
         return value;
@@ -107,7 +105,7 @@ public static class TranslationManager
                 : Translate(value));
 
         // If the translation is successful, update the result with the translated string
-        if (value != null && !lang.Contains(value))
+        if (value is not null && !lang.Contains(value))
             result = lang;
         else
             result += $" ({value})";

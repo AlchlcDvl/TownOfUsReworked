@@ -493,7 +493,7 @@ public static class MiscUtils
     {
         var result = AllPlayers().Where(x => Vector2.Distance(player.GetTruePosition(), x.GetTruePosition()) <= radius && (!x.Data.IsDead || includeDead) && x != player);
 
-        if (filter != null)
+        if (filter is not null)
             result = result.Where(filter);
 
         return result;
@@ -634,7 +634,7 @@ public static class MiscUtils
             _ => null
         };
 
-        if (toBeAdded != null)
+        if (toBeAdded is not null)
             allLocations.AddRange(toBeAdded);
 
         allLocations.Shuffle();
@@ -644,7 +644,7 @@ public static class MiscUtils
     }
 
     public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false,
-        Func<PlayerControl, bool> predicate = null, bool includeDead = false) => predicate != null ? GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls,
+        Func<PlayerControl, bool> predicate = null, bool includeDead = false) => predicate is not null ? GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls,
             x => x != refPlayer && predicate(x), includeDead) : GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls, x => x
             != refPlayer, includeDead);
 
@@ -661,7 +661,7 @@ public static class MiscUtils
         if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
             maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
 
-        if (predicate != null)
+        if (predicate is not null)
             allPlayers = allPlayers.Where(predicate);
 
         foreach (var player in allPlayers)
@@ -703,7 +703,7 @@ public static class MiscUtils
         if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
             maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
 
-        if (predicate != null)
+        if (predicate is not null)
             allVents = allVents.Where(predicate);
 
         foreach (var vent in allVents)
@@ -739,7 +739,7 @@ public static class MiscUtils
         if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
             maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
 
-        if (predicate != null)
+        if (predicate is not null)
             allBodies = allBodies.Where(predicate);
 
         foreach (var body in allBodies)
@@ -772,7 +772,7 @@ public static class MiscUtils
         Console closestConsole = null;
         allConsoles ??= AllConsoles();
 
-        if (predicate != null)
+        if (predicate is not null)
             allConsoles = allConsoles.Where(predicate);
 
         foreach (var console in allConsoles)
@@ -808,7 +808,7 @@ public static class MiscUtils
         var closestDistance = float.MaxValue;
         MonoBehaviour closestMono = null;
 
-        if (predicate != null)
+        if (predicate is not null)
             allMonos = allMonos.Where(predicate);
 
         foreach (var mono in allMonos)
@@ -1212,7 +1212,7 @@ public static class MiscUtils
         var endIndex = values.IndexOf(end);
         var result = values.Where(x => values.IndexOf(x).IsInRange(startIndex, endIndex, startInclusive, endInclusive));
 
-        if (predicate != null)
+        if (predicate is not null)
             result = result.Where(predicate);
 
         return result;
@@ -1397,9 +1397,9 @@ public static class MiscUtils
 
     public static bool IsAll<T>(this T item, params T[] items) => items.All(x => Equals(x, item));
 
-    public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) != null;
+    public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) is not null;
 
-    // public static bool CanCast<T>(this Il2CppObjectBase obj) where T : Il2CppObjectBase => obj.TryCast<T>() != null;
+    // public static bool CanCast<T>(this Il2CppObjectBase obj) where T : Il2CppObjectBase => obj.TryCast<T>() is not null;
 
     public static void AnimatePortal(PlayerControl player, float duration)
     {
@@ -1469,7 +1469,7 @@ public static class MiscUtils
 
     // public static object TryCast(this Il2CppObjectBase self, Type type) => TryCastMethod.MakeGenericMethod(type).Invoke(self, null);
 
-    // public static bool TryCast(this Il2CppObjectBase obj, Type type, out object result) => (result = obj.TryCast(type)) != null;
+    // public static bool TryCast(this Il2CppObjectBase obj, Type type, out object result) => (result = obj.TryCast(type)) is not null;
 
     public static IEnumerable<ListSlot> GetValues(this IEnumerable<Enum> enums) => enums.WhereSelect((Enum x, out ListSlot y) => Enum.TryParse(x.ToString(), out y));
 
@@ -1530,7 +1530,7 @@ public static class MiscUtils
             var persistTask = File.WriteAllBytesAsync(location, www.downloadHandler.data);
             yield return WaitUntilTaskComplete(persistTask);
 
-            if (persistTask.Exception != null)
+            if (persistTask.Exception is not null)
                 Error(persistTask.Exception);
         }
         else

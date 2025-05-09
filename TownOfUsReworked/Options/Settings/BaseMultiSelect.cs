@@ -5,7 +5,7 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
     protected ValueMap<BlankBehaviour, T> Buttons { get; } = [];
     private T? NoneValue { get; } = noneValue;
     private T? AllValue { get; } = allValue;
-    public bool ForceAtLeastOne { get; init; }
+    public int LeastSelected { get; init; }
     public IEnumerable<BlankBehaviour> Options => Buttons.Keys;
 
     public override void OptionCreated()
@@ -60,8 +60,8 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
 
     private void SetValue(T value)
     {
-        TrySetValue(value, out var newValue);
-        Set(newValue);
+        TrySetValue(value);
+        Set(Value);
         Buttons.ForEach((x, y) => x.GetComponentInChildren<SpriteRenderer>().color = Value == y ? CustomColorManager.AcceptedTeal : UColor.white);
     }
 
@@ -73,43 +73,45 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
 
     protected abstract void CreateButtons();
 
-    protected virtual void TrySetValue(T value, out MultiSelectValue<T> newValue)
+    protected virtual void TrySetValue(T value)
     {
-        newValue = Value;
-
         if (AllValue.HasValue && value.Equals(AllValue))
         {
-            var contained = newValue == value;
-            newValue.Clear();
-            newValue.Add(NoneValue.HasValue ? (contained ? NoneValue : AllValue).Value : value);
+            var contained = Value == value;
+            Value.Clear();
+            Value.Add(NoneValue.HasValue ? (contained ? NoneValue : AllValue).Value : value);
         }
         else if (NoneValue.HasValue && value.Equals(NoneValue))
         {
-            newValue.Clear();
-            newValue.Add(NoneValue.Value);
+            Value.Clear();
+            Value.Add(NoneValue.Value);
         }
         else
         {
-            if (newValue == value && (newValue.Count > 1 || !ForceAtLeastOne))
-                newValue.Remove(value);
+            if (Value == value && (Value.Count > LeastSelected))
+                Value.Remove(value);
             else
-                newValue.Add(value);
+                Value.Add(value);
 
             if (NoneValue.HasValue)
             {
-                if (newValue.Count == 0)
-                    newValue.Add(NoneValue.Value);
+                if (Value.Count == 0)
+                    Value.Add(NoneValue.Value);
                 else
-                    newValue.Remove(NoneValue.Value);
+                    Value.Remove(NoneValue.Value);
             }
 
             if (AllValue.HasValue)
-                newValue.Remove(AllValue.Value);
+                Value.Remove(AllValue.Value);
         }
     }
+
+    public bool Contains(string value) => Value.Contains(value);
 }
 
 public interface IMultiSelectOption
 {
     IEnumerable<BlankBehaviour> Options { get; }
+
+    bool Contains(string value);
 }

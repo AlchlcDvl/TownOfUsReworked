@@ -51,7 +51,8 @@ public abstract class Option(CustomOptionType type)
         ([ "GuessSwitchVent" ], [ "GuessVent" ]),
         ([ "TrollSwitchVent" ], [ "TrollVent" ]),
         ([ "InteractCd" ], [ "CanInteract" ]),
-        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ "not+IgnoreFactionCaps" ]),
+        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin", "ApocalypseMax", "ApocalypseMin", "ComplianceM", "ComplianceMin",
+            "PandoricaMax", "PandoricaMin", "IlluminatiMax", "IlluminatiMin" ], [ "not+IgnoreFactionCaps" ]),
         ([ "MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers" ], [ "not+IgnoreLayerCaps" ]),
         ([ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
             "not+IgnoreAlignmentCaps" ]),
@@ -60,36 +61,38 @@ public abstract class Option(CustomOptionType type)
         ([ "RoundOneNoMayorReveal" ], [ "MayorDirectSpawn" ]),
         ([ "AssassinChances" ], [ "AssassinChance" ]),
         ([ "FinalTwoDisableVenting" ], [ "not+WhoCanVent+NoOne" ]),
-        ([ "ComplianceType" ], [ "OrderOfCompliance" ])
+        ([ "ComplianceType", "ComplianceSettings" ], [ "OrderOfCompliance" ]),
+        ([ "PandoricaType", "PandoricaSettings" ], [ "PandoricaOpens" ]),
+        ([ "IlluminatiType", "IlluminatiSettings" ], [ "IlluminatiUnleashed" ])
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
     private static readonly List<(string[], object[])> OptionParents2 =
     [
-        ([ "TaskBar" ], [ GameMode.Classic, GameMode.AllAny, GameMode.List, GameMode.Vanilla ]),
-        ([ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [ GameMode.Classic ]),
+        ([ "TaskBar" ], [Data.GameMode.Classic, Data.GameMode.AllAny, Data.GameMode.List, Data.GameMode.Vanilla ]),
+        ([ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [Data.GameMode.Classic ]),
         ([ "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [
-            GameMode.HideAndSeek ]),
-        ([ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [ MapEnum.Random ]),
-        ([ "RandomMapSubmerged" ], [ MapEnum.Random, "SubLoaded" ]),
-        ([ "RandomMapLevelImpostor" ], [ MapEnum.Random, "LiLoaded" ]),
+            Data.GameMode.HideAndSeek ]),
+        ([ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [MapEnum.Random ]),
+        ([ "RandomMapSubmerged" ], [MapEnum.Random, "SubLoaded" ]),
+        ([ "RandomMapLevelImpostor" ], [MapEnum.Random, "LiLoaded" ]),
         ([ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
             MapEnum.MiraHq, MapEnum.LevelImpostor ]),
         ([ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
             MapEnum.LevelImpostor ]),
-        ([ "BetterSkeld" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ]),
-        ([ "BetterMiraHq" ], [ MapEnum.MiraHq, MapEnum.Random ]),
-        ([ "BetterPolus" ], [ MapEnum.Polus, MapEnum.Random ]),
-        ([ "BetterAirship" ], [ MapEnum.Airship, MapEnum.Random ]),
-        ([ "BetterFungle" ], [ MapEnum.Fungle, MapEnum.Random ]),
-        ([ "CrewSettings" ], [ GameMode.Classic, GameMode.AllAny, GameMode.Vanilla, GameMode.List ]),
-        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [ GameMode.Classic, GameMode.AllAny ]),
-        ([ "HowIsVigilanteNotified" ], [ VigiOptions.PostMeeting, VigiOptions.PreMeeting ]),
+        ([ "BetterSkeld" ], [MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ]),
+        ([ "BetterMiraHq" ], [MapEnum.MiraHq, MapEnum.Random ]),
+        ([ "BetterPolus" ], [MapEnum.Polus, MapEnum.Random ]),
+        ([ "BetterAirship" ], [MapEnum.Airship, MapEnum.Random ]),
+        ([ "BetterFungle" ], [MapEnum.Fungle, MapEnum.Random ]),
+        ([ "CrewSettings" ], [Data.GameMode.Classic, Data.GameMode.AllAny, Data.GameMode.Vanilla, Data.GameMode.List ]),
+        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [Data.GameMode.Classic, Data.GameMode.AllAny ]),
+        ([ "HowIsVigilanteNotified" ], [VigiOptions.PostMeeting, VigiOptions.PreMeeting ]),
         ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleEntryList", "ModifierEntryList", "ModifierBanList",
-            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist" ], [ GameMode.List ]),
-        ([ "RunnerVision" ], [ GameMode.TaskRace ]),
-        ([ "Dispositions", "Modifiers", "Abilities" ], [ GameMode.Classic, GameMode.List, GameMode.AllAny ]),
-        ([ "Location1", "Location2", "Location3" ], [ AirshipSpawnType.Fixed ])
+            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist" ], [Data.GameMode.List ]),
+        ([ "RunnerVision" ], [Data.GameMode.TaskRace ]),
+        ([ "Dispositions", "Modifiers", "Abilities" ], [Data.GameMode.Classic, Data.GameMode.List, Data.GameMode.AllAny ]),
+        ([ "Location1", "Location2", "Location3" ], [AirshipSpawnType.Fixed ])
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -128,7 +131,7 @@ public abstract class Option(CustomOptionType type)
     private bool IsActive(object option) => option switch
     {
         MapEnum map => MapSettings.Map == map,
-        GameMode mode => GameModeSettings.GameMode == mode,
+        Data.GameMode mode => GameModeSettings.GameMode == mode,
         VigiOptions vigiOptions => Vigilante.HowDoesVigilanteDie == vigiOptions,
         string id => GetBoolValue(id),
         AirshipSpawnType spawnType => BetterAirship.SpawnType == spawnType,
@@ -143,10 +146,7 @@ public abstract class Option(CustomOptionType type)
 
         var parts = id.TrueSplit('+');
         var invertVal = parts[0] == "not";
-
-        if (invertVal)
-            id = parts[1];
-
+        id = parts[invertVal ? 1 : 0];
         bool result;
 
         if (TryGetOption(id, out var optionatt))
@@ -305,7 +305,7 @@ public abstract class Option(CustomOptionType type)
 
             var option = GetOption(name);
 
-            if (option == null)
+            if (option is null)
             {
                 if (name.ContainsAny("Entry", "Ban"))
                     ListHolderOption.CachedValues[name] = value;

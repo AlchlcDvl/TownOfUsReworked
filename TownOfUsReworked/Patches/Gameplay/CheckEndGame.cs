@@ -28,7 +28,8 @@ public static class CheckEndGame
             });
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
             winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
-            CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners.Distinct() ]);
+            CallRpc(CustomRPC.Misc, [MiscRPC.WinLose, WinState, .. winners.Distinct()]);
+            var somethingReallyNice = Monos.Range.AllItems;
         }
 
         if (WinState == WinLose.None)
@@ -144,7 +145,7 @@ public static class CheckEndGame
 
     private static void CheckSubFactionWin(List<byte> winnerIds)
     {
-        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType == ComplianceType.Neophytes)
+        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Neophytes)
             return;
 
         var winner = SubFactionsToKill.FirstOrDefault(CheckSubFactionWin);
@@ -158,7 +159,7 @@ public static class CheckEndGame
 
     private static void CheckNeutralKillers(List<byte> winnerIds)
     {
-        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType == ComplianceType.Killers)
+        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Killers)
             return;
 
         var winner = NksToKill.FirstOrDefault(CheckNkWin);
@@ -312,7 +313,7 @@ public static class CheckEndGame
 
         var ship = Ship();
 
-        if (ship?.Systems == null)
+        if (ship?.Systems is null)
             return false;
 
         foreach (var sab in ship.Systems.Values)

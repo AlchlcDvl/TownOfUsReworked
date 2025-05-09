@@ -64,7 +64,7 @@ public sealed class ChatCommand
 
     public string ConstructParameters(string[] parts = null)
     {
-        if (Parameters == null || Parameters.Length == 1)
+        if (Parameters is null || Parameters.Length == 1)
             return "<none>";
 
         var result = "";
@@ -87,13 +87,13 @@ public sealed class ChatCommand
     {
         var command = Find(args[0][1..].ToLower());
 
-        if (command == null)
+        if (command is null)
             Run("<#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
-        else if (command.ExecuteArgless != null)
+        else if (command.ExecuteArgless is not null)
             command.ExecuteArgless();
-        else if (command.ExecuteArgs != null)
+        else if (command.ExecuteArgs is not null)
             command.ExecuteArgs(args);
-        else if (command.ExecuteArgsMessage != null)
+        else if (command.ExecuteArgsMessage is not null)
             command.ExecuteArgsMessage(args, message);
         else
             Run("<#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
@@ -286,7 +286,7 @@ public sealed class ChatCommand
 
             var client = AmongUsClient.Instance.GetClient(player2.OwnerId);
 
-            if (client != null)
+            if (client is not null)
                 AmongUsClient.Instance.KickPlayer(client.Id, false);
         }
 
@@ -339,7 +339,7 @@ public sealed class ChatCommand
 
         var client = AmongUsClient.Instance.GetClient(target.OwnerId);
 
-        if (client == null)
+        if (client is null)
         {
             Run($"<#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", "Could not find the target.");
             return;
@@ -362,7 +362,7 @@ public sealed class ChatCommand
         {
             var command = Find(args[1].ToLower());
 
-            if (command != null)
+            if (command is not null)
                 Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Command Name: {command.Aliases[0]}\nParameters: {command.ConstructParameters()}\nDescription: {command.Description}");
             else
                 Run("<#FF0000FF>⚠ Help Error ⚠</color>", "Could not find the requested command.");

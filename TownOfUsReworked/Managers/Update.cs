@@ -70,19 +70,19 @@ public static class UpdateManager
 
         var data = JsonSerializer.Deserialize<GitHubApiObject[]>(jsonText)[0];
 
-        if (data.Tag == null)
+        if (data.Tag is null)
         {
             Failure($"{updateType} tag doesn't exist");
             yield break; // Something went wrong
         }
 
-        if (data.Description == null)
+        if (data.Description is null)
         {
             Failure($"{updateType} description doesn't exist");
             yield break; // Something went wrong part 2
         }
 
-        if (data.Assets == null)
+        if (data.Assets is null)
         {
             Failure($"No assets found for {updateType}");
             yield break; // Something went wrong part 3
@@ -101,14 +101,14 @@ public static class UpdateManager
             // Accounts for a broken version + checks the Submerged version
             case "Submerged" when SubLoaded:
             {
-                SubmergedUpdate = SubVersion == null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(data.Tag.Replace("v", ""))) < 0;
+                SubmergedUpdate = SubVersion is null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(data.Tag.Replace("v", ""))) < 0;
                 break;
             }
         }
 
         foreach (var asset in data.Assets)
         {
-            if (asset.URL == null || (data.Description.Contains("[NoUpdate]") && ReworkedUpdate) || !asset.URL.EndsWith(".dll"))
+            if (asset.URL is null || (data.Description.Contains("[NoUpdate]") && ReworkedUpdate) || !asset.URL.EndsWith(".dll"))
                 continue;
 
             Urls[updateType] = asset.URL;
@@ -167,7 +167,7 @@ public static class UpdateManager
             var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
             yield return WaitUntilTaskComplete(persistTask);
 
-            if (persistTask.Exception != null)
+            if (persistTask.Exception is not null)
             {
                 Error(persistTask.Exception);
                 hasError = true;

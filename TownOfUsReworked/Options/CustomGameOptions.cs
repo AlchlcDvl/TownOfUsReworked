@@ -37,7 +37,7 @@ public static class GameSettings
     private static TBMode TaskBar = TBMode.MeetingOnly;
     public static TBMode TaskBarMode => GameModeSettings.GameMode switch
     {
-        GameMode.TaskRace or GameMode.HideAndSeek => TBMode.Normal,
+        Data.GameMode.TaskRace or Data.GameMode.HideAndSeek => TBMode.Normal,
         _ => TaskBar
     }; // I want this to actually change, according to the game modes
 
@@ -78,8 +78,8 @@ public static class GameSettings
 [HeaderOption(MultiMenu.Main)]
 public static class GameModeSettings
 {
-    [StringOption<GameMode>(GameMode.None)]
-    public static GameMode GameMode = GameMode.Classic;
+    [StringOption<Data.GameMode>(Data.GameMode.None)]
+    public static Data.GameMode GameMode = Data.GameMode.Classic;
 
     [ToggleOption]
     public static bool IgnoreFactionCaps = true;
@@ -229,7 +229,7 @@ public static class BadGuysSettings
                 value = Faction.Pandorica;
 
             if (value == Faction.Pandorica && !GameModifiers.PandoricaOpens)
-                value = value < mainBadGuys ? (GameModifiers.OrderOfCompliance ? Faction.Compliance : Faction.Intruder) : Faction.Apocalypse;
+                value = value < mainBadGuys ? Faction.Apocalypse : (GameModifiers.OrderOfCompliance ? Faction.Compliance : Faction.Intruder);
 
             mainBadGuys = value;
         }
@@ -340,6 +340,10 @@ public static class GameModifiers
     [ToggleOption, Sorted(0)]
     public static bool IlluminatiUnleashed = false;
 
+    [MultiSelectOption<IlluminatiType>(LeastSelected = 2)]
+    public static MultiSelectValue<IlluminatiType> IlluminatiMembers = new[] { IlluminatiType.Syndicate, IlluminatiType.Intruders, IlluminatiType.Apocalypse, IlluminatiType.Neophytes,
+        IlluminatiType.Killers };
+
     [ToggleOption, Sorted(1)]
     public static bool PandoricaOpens
     {
@@ -365,11 +369,14 @@ public static class GameModifiers
     }
     private static bool pandoricaOpens = false;
 
+    [MultiSelectOption<PandoricaType>(LeastSelected = 1)]
+    public static MultiSelectValue<PandoricaType> PandoricaMembers = new[] { PandoricaType.Syndicate, PandoricaType.Intruders, PandoricaType.Apocalypse };
+
     [ToggleOption]
     public static bool OrderOfCompliance = false;
 
-    [MultiSelectOption<ComplianceType>(ForceAtLeastOne = true)]
-    public static MultiSelectValue<ComplianceType> ComplianceType = new[] { Data.Enums.ComplianceType.Neophytes, Data.Enums.ComplianceType.Killers };
+    [MultiSelectOption<ComplianceType>(LeastSelected = 1)]
+    public static MultiSelectValue<ComplianceType> ComplianceMembers = new[] { ComplianceType.Neophytes, ComplianceType.Killers };
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -597,6 +604,72 @@ public static class ApocalypseSettings
 
     [ToggleOption]
     public static bool PlayersAlerted = true;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class ComplianceSettings
+{
+    [NumberOption(0, 4, 1)]
+    public static Number ComplianceCount = 1;
+
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number ComplianceVision = 1.5f;
+
+    [ToggleOption]
+    public static bool ComplianceFlashlight = false;
+
+    [NumberOption(0, 14, 1)]
+    public static Number ComplianceMin = 0;
+
+    [NumberOption(0, 14, 1)]
+    public static Number ComplianceMax = 1;
+
+    [ToggleOption]
+    public static bool ComplianceVent = true;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class PandoricaSettings
+{
+    [NumberOption(0, 4, 1)]
+    public static Number PandoricaCount = 1;
+
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number PandoricaVision = 1.5f;
+
+    [ToggleOption]
+    public static bool PandoricaFlashlight = false;
+
+    [NumberOption(0, 14, 1)]
+    public static Number PandoricaMin = 0;
+
+    [NumberOption(0, 14, 1)]
+    public static Number PandoricaMax = 1;
+
+    [ToggleOption]
+    public static bool PandoricaVent = true;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class IlluminatiSettings
+{
+    [NumberOption(0, 4, 1)]
+    public static Number IlluminatiCount = 1;
+
+    [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
+    public static Number IlluminatiVision = 1.5f;
+
+    [ToggleOption]
+    public static bool IlluminatiFlashlight = false;
+
+    [NumberOption(0, 14, 1)]
+    public static Number IlluminatiMin = 0;
+
+    [NumberOption(0, 14, 1)]
+    public static Number IlluminatiMax = 1;
+
+    [ToggleOption]
+    public static bool IlluminatiVent = true;
 }
 
 [AlignmentOption(ListSlot.CrewInvest)]

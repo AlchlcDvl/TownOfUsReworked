@@ -156,7 +156,7 @@ public static class Blocked
 
         __instance.ReportButton.buttonLabelText.SetText(BlockExposed ? "BLOCKED" : "REPORT");
 
-        if (CustomPlayer.Local.closest == null || BlockExposed)
+        if (CustomPlayer.Local.closest is null || BlockExposed)
             __instance.UseButton.SetDisabled();
         else
             __instance.UseButton.SetEnabled();

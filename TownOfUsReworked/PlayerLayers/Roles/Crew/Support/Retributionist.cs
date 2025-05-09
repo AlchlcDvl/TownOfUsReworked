@@ -423,7 +423,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         }
         else if (IsAlt)
         {
-            var wasNull = ReviveButton == null;
+            var wasNull = ReviveButton is null;
             ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(Altruist.ReviveCd),
                 (EndFunc)ReviveEnd, new Duration(Altruist.ReviveDur), (EffectEndVoid)UponEnd, Altruist.MaxAltMana, (UsableFunc)AltUsable);
             ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(Altruist.AltManaCd),
@@ -439,7 +439,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         }
         else if (IsTrap)
         {
-            var wasNull = TrapButton == null;
+            var wasNull = TrapButton is null;
             BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuilding, (UsableFunc)BuildUsable,
                 new Cooldown(Trapper.BuildCd), new Duration(Trapper.BuildDur), (EffectEndVoid)EndBuilding, new CanClickAgain(false));
             TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, (UsableFunc)TrapUsable, Trapper.MaxTraps,
@@ -465,11 +465,11 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         }
         else if (IsTrans)
         {
-            var wasNull = TransportButton == null;
+            var wasNull = TransportButton is null;
             TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, Transporter.MaxTransports,
                 (LabelFunc)TransLabel, new Cooldown(Transporter.TransportCd), (UsableFunc)TransUsable);
 
-            if (wasNull && TransportMenu == null)
+            if (wasNull && TransportMenu is null)
                 TransportMenu = new(Player, Click, Color, TransException);
         }
 

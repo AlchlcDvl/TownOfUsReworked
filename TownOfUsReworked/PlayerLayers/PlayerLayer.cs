@@ -452,7 +452,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// </summary>
     /// <param name="exists">Left layer.</param>
     /// <returns>true the layer exists.</returns>
-    public static implicit operator bool(PlayerLayer exists) => exists != null;
+    public static implicit operator bool(PlayerLayer exists) => exists is not null;
 
     /// <summary>
     /// Gets all layers of a specific type.

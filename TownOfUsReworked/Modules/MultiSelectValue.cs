@@ -54,6 +54,20 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     public bool Contains(T item) => values.Contains(item);
 
     /// <summary>
+    /// Determines whether the collection contains the specified string representation of an enum value.
+    /// </summary>
+    /// <param name="item">The enum value to locate.</param>
+    /// <returns>true if the item is found in the collection; otherwise, false.</returns>
+    public bool Contains(string item) => Values.Contains(item);
+
+    /// <summary>
+    /// Determines whether the collection contains the specified enum values.
+    /// </summary>
+    /// <param name="items">The enum values to locate.</param>
+    /// <returns>true if the items are found in the collection; otherwise, false.</returns>
+    public bool ContainsAny(params T[] items) => values.ContainsAny(items);
+
+    /// <summary>
     /// Removes all enum values that match the specified predicate condition.<br/>
     /// Iterates through the collection and removes each matching value.
     /// </summary>
@@ -82,7 +96,7 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     public override bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
 
     /// <inheritdoc/>
-    public bool Equals(MultiSelectValue<T> other) => other != null && values.SetEquals(other.values);
+    public bool Equals(MultiSelectValue<T> other) => other is not null && values.SetEquals(other.values);
 
     /// <inheritdoc/>
     public override int GetHashCode() => Values.GetHashCode();
@@ -169,4 +183,26 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
     public static bool operator !=(MultiSelectValue<T> left, T right) => left?.Contains(right) == false;
+
+    /// <summary>
+    /// Adds the elements in the right collection to the left collection.
+    /// </summary>
+    /// <param name="left">Left.</param>
+    /// <param name="right">Right.</param>
+    public static MultiSelectValue<T> operator +(MultiSelectValue<T> left, IEnumerable<T> right)
+    {
+        left.values.AddRange(right);
+        return left;
+    }
+
+    /// <summary>
+    /// Removes the elements in the right collection from the left collection.
+    /// </summary>
+    /// <param name="left">Left.</param>
+    /// <param name="right">Right.</param>
+    public static MultiSelectValue<T> operator -(MultiSelectValue<T> left, IEnumerable<T> right)
+    {
+        left.values.RemoveRange(right);
+        return left;
+    }
 }

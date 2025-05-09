@@ -52,7 +52,7 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
             {
                 var idString = id.GetValue<string>(item);
 
-                if (idString != null && ShouldDownload(Path.Combine(DirectoryInfo, $"{idString}.png"), hash.GetValue<string>(item), hasher))
+                if (idString is not null && ShouldDownload(Path.Combine(DirectoryInfo, $"{idString}.png"), hash.GetValue<string>(item), hasher))
                     yield return idString;
             }
         }
@@ -64,7 +64,7 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
         {
             var idString = id.GetValue<string>(item);
 
-            if (idString != null)
+            if (idString is not null)
                 hash.SetValue(item, GenerateHash(Path.Combine(DirectoryInfo, $"{idString}.png"), hasher));
         }
     }

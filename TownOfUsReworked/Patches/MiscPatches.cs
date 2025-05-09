@@ -351,6 +351,9 @@ public static class RefreshPatch
     [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Initialize))]
     [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Initialize))]
     [HarmonyPatch(typeof(StringOption), nameof(StringOption.Initialize))]
+    [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.FixedUpdate))]
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.FixedUpdate))]
+    [HarmonyPatch(typeof(StringOption), nameof(StringOption.FixedUpdate))]
     [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.UpdateValuesAndText))]
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.AddSettingsChangeMessage))]
     public static bool Prefix() => false;

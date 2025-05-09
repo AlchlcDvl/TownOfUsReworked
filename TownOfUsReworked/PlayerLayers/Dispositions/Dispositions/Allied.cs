@@ -9,7 +9,7 @@ public sealed class Allied : Disposition
         get => alliedFaction;
         set
         {
-            if (value == AlliedFaction.Compliance && (!GameModifiers.OrderOfCompliance || GameModifiers.ComplianceType == ComplianceType.Killers))
+            if (value == AlliedFaction.Compliance && (!GameModifiers.OrderOfCompliance || GameModifiers.ComplianceMembers == ComplianceType.Killers))
                 value = alliedFaction < value ? AlliedFaction.Random : (GameModifiers.PandoricaOpens ? AlliedFaction.Pandorica : AlliedFaction.Apocalypse);
 
             alliedFaction = value switch

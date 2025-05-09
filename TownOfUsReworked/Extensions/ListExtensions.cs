@@ -29,6 +29,8 @@ public static class CollectionExtensions
 
     public static int AddRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Add);
 
+    public static int RemoveRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Remove);
+
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.Do(main.AddRange);
 
     public static void AddRange<T>(this ISystem.List<T> main, IEnumerable<T> items) => items.Do(main.Add);
@@ -299,10 +301,10 @@ public static class CollectionExtensions
 
     public static int IndexOf<T>(this ISystem.List<T> source, Func<T, bool> predicate)
     {
-        if (source == null)
+        if (source is null)
             throw new ArgumentNullException(nameof(source));
 
-        if (predicate == null)
+        if (predicate is null)
             throw new ArgumentNullException(nameof(predicate));
 
         var index = 0;
@@ -320,10 +322,10 @@ public static class CollectionExtensions
 
     public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
-        if (source == null)
+        if (source is null)
             throw new ArgumentNullException(nameof(source));
 
-        if (predicate == null)
+        if (predicate is null)
             throw new ArgumentNullException(nameof(predicate));
 
         var index = 0;

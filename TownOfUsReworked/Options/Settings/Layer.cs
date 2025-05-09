@@ -20,7 +20,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
     private GameObject Cog { get; set; }
     private SpriteRenderer UniqueCheck { get; set; }
     private SpriteRenderer ActiveCheck { get; set; }
-    private GameMode SavedMode { get; set; }
+    private Data.GameMode SavedMode { get; set; }
     private PassiveButton Button { get; set; }
     private TextMeshPro CenterTitle { get; set; }
     private TextMeshPro LeftTitle { get; set; }
@@ -95,7 +95,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             active.OverrideOnClickListeners(ToggleActive);
         }
 
-        SavedMode = GameMode.None;
+        SavedMode = Data.GameMode.None;
     }
 
     public override void ViewOptionCreated()
@@ -130,7 +130,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             CenterBox.SetActive(false);
         }
 
-        SavedMode = GameMode.None;
+        SavedMode = Data.GameMode.None;
     }
 
     private void IncreaseCount()
@@ -230,25 +230,25 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             return;
 
         SavedMode = GameModeSettings.GameMode;
-        Divider.SetActive(SavedMode is GameMode.Classic or GameMode.AllAny);
+        Divider.SetActive(SavedMode is Data.GameMode.Classic or Data.GameMode.AllAny);
 
         if (NoParts)
             return;
 
-        Chance.SetActive(SavedMode is GameMode.Classic);
-        Count.SetActive(SavedMode == GameMode.Classic);
-        Unique.SetActive(SavedMode is GameMode.AllAny or GameMode.List);
-        Active1.SetActive(SavedMode == GameMode.AllAny);
+        Chance.SetActive(SavedMode is Data.GameMode.Classic);
+        Count.SetActive(SavedMode == Data.GameMode.Classic);
+        Unique.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.List);
+        Active1.SetActive(SavedMode == Data.GameMode.AllAny);
 
         switch (SavedMode)
         {
-            case GameMode.AllAny:
+            case Data.GameMode.AllAny:
             {
                 Unique.transform.localPosition = Right + new Vector3(0.75f, 0f, 0f);
                 Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
                 break;
             }
-            case GameMode.List:
+            case Data.GameMode.List:
             {
                 Unique.transform.localPosition = Right + Diff + new Vector3(0.76f, 0f, 0f);
                 break;
@@ -277,9 +277,9 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
         var val = Value;
         return GameModeSettings.GameMode switch
         {
-            GameMode.Classic => $"{val.Chance}% x{val.Count}",
-            GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
-            GameMode.List => $"{(val.Unique ? "" : "Non-")}Unique",
+            Data.GameMode.Classic => $"{val.Chance}% x{val.Count}",
+            Data.GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
+            Data.GameMode.List => $"{(val.Unique ? "" : "Non-")}Unique",
             _ => "Invalid"
         };
     }
@@ -306,7 +306,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
 
     private void Toggle()
     {
-        if (GroupHeader == null)
+        if (GroupHeader is null)
             return;
 
         GroupHeader.Button = Button;
@@ -320,15 +320,15 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
 
         Button.gameObject.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);
 
-        view.chanceText.text = SavedMode == GameMode.Classic ? $"{data.Chance}%" : "";
-        view.settingText.text = SavedMode == GameMode.Classic ? $"x{data.Count}" : "";
+        view.chanceText.text = SavedMode == Data.GameMode.Classic ? $"{data.Chance}%" : "";
+        view.settingText.text = SavedMode == Data.GameMode.Classic ? $"x{data.Count}" : "";
 
-        CenterCheck.SetActive(SavedMode == GameMode.List && data.Unique);
-        CenterCross.SetActive(SavedMode == GameMode.List && !data.Unique);
-        RightCheck.SetActive(SavedMode == GameMode.AllAny && data.Unique);
-        RightCross.SetActive(SavedMode == GameMode.AllAny && !data.Unique);
-        view.checkMark.gameObject.SetActive(SavedMode == GameMode.AllAny && data.Active);
-        view.checkMarkOff.gameObject.SetActive(SavedMode == GameMode.AllAny && !data.Active);
+        CenterCheck.SetActive(SavedMode == Data.GameMode.List && data.Unique);
+        CenterCross.SetActive(SavedMode == Data.GameMode.List && !data.Unique);
+        RightCheck.SetActive(SavedMode == Data.GameMode.AllAny && data.Unique);
+        RightCross.SetActive(SavedMode == Data.GameMode.AllAny && !data.Unique);
+        view.checkMark.gameObject.SetActive(SavedMode == Data.GameMode.AllAny && data.Active);
+        view.checkMarkOff.gameObject.SetActive(SavedMode == Data.GameMode.AllAny && !data.Active);
 
         var isActive = RoleGenManager.GetSpawnItem(Layer).IsActive();
         var color = isActive ? LayerColor : Palette.DisabledGrey.Shadow();
@@ -344,25 +344,25 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
         if (NoParts)
             return;
 
-        LeftBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-        RightBox.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-        CenterBox.gameObject.SetActive(SavedMode == GameMode.List);
+        LeftBox.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
+        RightBox.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
+        CenterBox.gameObject.SetActive(SavedMode == Data.GameMode.List);
 
         CenterTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.List => "Unique",
+            Data.GameMode.List => "Unique",
             _ => ""
         }));
         view.chanceTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.Classic => "Chance",
-            GameMode.AllAny => "Unique",
+            Data.GameMode.Classic => "Chance",
+            Data.GameMode.AllAny => "Unique",
             _ => ""
         }));
         LeftTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.Classic => "Count",
-            GameMode.AllAny => "Active",
+            Data.GameMode.Classic => "Count",
+            Data.GameMode.AllAny => "Active",
             _ => ""
         }));
     }

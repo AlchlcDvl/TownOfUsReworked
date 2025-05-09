@@ -52,7 +52,7 @@ public static class FixUtils
     {
         var ship = Ship();
 
-        if (ship.Systems == null)
+        if (ship.Systems is null)
             return;
 
         if (ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>(out var system) || !system.AnyActive)
@@ -92,7 +92,7 @@ public static class FixUtils
     {
         var ship = Ship();
 
-        if (ship.Systems == null)
+        if (ship.Systems is null)
             return;
 
         if (ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>(out var system) || !system.AnyActive)

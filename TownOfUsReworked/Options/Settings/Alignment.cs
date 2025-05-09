@@ -12,7 +12,7 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
     private GameObject Single { get; set; }
     private TextMeshPro ButtonText { get; set; }
     private PassiveButton Button { get; set; }
-    private GameMode SavedMode { get; set; }
+    private Data.GameMode SavedMode { get; set; }
     private GameObject Cog { get; set; }
     private Transform PlsMnsBtn { get; set; }
 
@@ -76,7 +76,7 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
             Single.SetActive(true);
         }
 
-        SavedMode = GameMode.None;
+        SavedMode = Data.GameMode.None;
     }
 
     private bool ChildrenActive() => GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true;
@@ -89,7 +89,7 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
         Button.OverrideOnClickListeners(Toggle);
         Button.SelectButton(Value);
 
-        SavedMode = GameMode.None;
+        SavedMode = Data.GameMode.None;
     }
 
     private void Toggle()
@@ -133,26 +133,26 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
         if (NoParts)
             return;
 
-        Left.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-        Right.gameObject.SetActive(SavedMode is GameMode.AllAny or GameMode.Classic);
-        Center.gameObject.SetActive(SavedMode == GameMode.List);
-        Single.SetActive(SavedMode is not (GameMode.Classic or GameMode.AllAny));
+        Left.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
+        Right.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
+        Center.gameObject.SetActive(SavedMode == Data.GameMode.List);
+        Single.SetActive(SavedMode is not (Data.GameMode.Classic or Data.GameMode.AllAny));
 
         Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.List => "Unique",
+            Data.GameMode.List => "Unique",
             _ => ""
         }));
         Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.Classic => "Chance",
-            GameMode.AllAny => "Unique",
+            Data.GameMode.Classic => "Chance",
+            Data.GameMode.AllAny => "Unique",
             _ => ""
         }));
         Left.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            GameMode.Classic => "Count",
-            GameMode.AllAny => "Active",
+            Data.GameMode.Classic => "Count",
+            Data.GameMode.AllAny => "Active",
             _ => ""
         }));
     }

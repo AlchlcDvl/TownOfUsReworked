@@ -30,7 +30,7 @@ public static class ChatPatches
             var first = split[0][1..];
             var closestCommand = Find(first);
 
-            if (closestCommand != null)
+            if (closestCommand is not null)
             {
                 var result = Join(" ", split[1..]);
                 result = result.Length > 0 ? $"/{first} {result.Trim()} {closestCommand.ConstructParameters(split)}" : $"/{closestCommand.FindAlias(first)} {closestCommand.ConstructParameters(split)}";

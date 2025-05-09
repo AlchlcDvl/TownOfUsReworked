@@ -19,7 +19,7 @@ public sealed class TargetGen : BaseGen
                     factions.Add(Faction.Pandorica);
                 }
 
-                if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceType != ComplianceType.Killers)
+                if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers != ComplianceType.Killers)
                     factions.Add(Faction.Compliance);
 
                 var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());

@@ -221,7 +221,7 @@ public static class MeetingPatches
             return;
 
         // Deactivate skip Button if skipping an emergency meeting is disabled
-        __instance.SkipVoteButton.gameObject.SetActive(!((Reported == null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
+        __instance.SkipVoteButton.gameObject.SetActive(!((Reported is null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
             DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !CustomPlayer.Local.HasDied());
 
         if (CustomPlayer.Local.Data.Role is LayerHandler localHandler)

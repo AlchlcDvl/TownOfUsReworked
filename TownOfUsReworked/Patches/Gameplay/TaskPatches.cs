@@ -19,7 +19,7 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (!pc || !playerInfo || playerInfo.Tasks == null || pc.HasDied())
+                if (!pc || !playerInfo || playerInfo.Tasks is null || pc.HasDied())
                     continue;
 
                 var mostRole = most.GetRole();
@@ -40,7 +40,7 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (playerInfo.Disconnected || playerInfo.Tasks == null || !pc.Is<Hunted>() || (playerInfo.IsDead && !TaskSettings.GhostTasksCountToWin))
+                if (playerInfo.Disconnected || playerInfo.Tasks is null || !pc.Is<Hunted>() || (playerInfo.IsDead && !TaskSettings.GhostTasksCountToWin))
                     continue;
 
                 foreach (var task in playerInfo.Tasks)
@@ -58,7 +58,7 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (playerInfo.Disconnected || playerInfo.Tasks == null || !pc.CanDoTasks() || !pc.Is(Faction.Crew) || pc.Is<Revealer>() || (playerInfo.IsDead &&
+                if (playerInfo.Disconnected || playerInfo.Tasks is null || !pc.CanDoTasks() || !pc.Is(Faction.Crew) || pc.Is<Revealer>() || (playerInfo.IsDead &&
                     !TaskSettings.GhostTasksCountToWin))
                 {
                     continue;

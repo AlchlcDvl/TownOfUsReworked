@@ -32,6 +32,8 @@ public static class RoleGenManager
     public static readonly List<RoleOptionData> ApocalypseHarbingerRoles = [];
     public static readonly List<RoleOptionData> ApocalypseRoles = [];
 
+    public static readonly List<RoleOptionData> PandoricaRoles = [];
+    public static readonly List<RoleOptionData> ComplianceRoles = [];
     public static readonly List<RoleOptionData> IlluminatiRoles = [];
 
     public static readonly List<RoleOptionData> AllModifiers = [];
@@ -129,20 +131,20 @@ public static class RoleGenManager
     private static readonly ModifierGen Modifiers = new();
     private static readonly AbilityGen Abilities = new();
     private static readonly DispositionGen Dispositions = new();
-    private static readonly Dictionary<GameMode, BaseRoleGen> RoleGen = new()
+    private static readonly Dictionary<Data.GameMode, BaseRoleGen> RoleGen = new()
     {
-        { GameMode.HideAndSeek, new HideAndSeekGen() },
-        { GameMode.Classic, new ClassicGen() },
-        { GameMode.List, new ListGen() },
-        { GameMode.Vanilla, new VanillaGen() },
-        { GameMode.AllAny, new AllAnyGen() },
-        { GameMode.TaskRace, new TaskRaceGen() }
+        { Data.GameMode.HideAndSeek, new HideAndSeekGen() },
+        { Data.GameMode.Classic, new ClassicGen() },
+        { Data.GameMode.List, new ListGen() },
+        { Data.GameMode.Vanilla, new VanillaGen() },
+        { Data.GameMode.AllAny, new AllAnyGen() },
+        { Data.GameMode.TaskRace, new TaskRaceGen() }
     };
 
-    public static readonly Dictionary<GameMode, BaseFilter> ModeFilters = new()
+    public static readonly Dictionary<Data.GameMode, BaseFilter> ModeFilters = new()
     {
-        { GameMode.Classic, new CommonFilter() },
-        { GameMode.AllAny, new AllAnyFilter() }
+        { Data.GameMode.Classic, new CommonFilter() },
+        { Data.GameMode.AllAny, new AllAnyFilter() }
     };
 
     public static RoleOptionData GetSpawnItem(LayerEnum id) => id switch

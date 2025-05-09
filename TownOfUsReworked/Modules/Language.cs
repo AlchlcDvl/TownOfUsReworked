@@ -29,9 +29,9 @@ public sealed class Language : Asset
 
     // public string GetIDs()
     // {
-    //     if (ID != null)
+    //     if (ID is not null)
     //         return ID;
-    //     else if (IDs != null)
+    //     else if (IDs is not null)
     //     {
     //         var result = "";
     //         IDs.ForEach(x => result += $"{x} ");
