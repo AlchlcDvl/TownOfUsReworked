@@ -11,6 +11,7 @@ public abstract class Option(CustomOptionType type)
     public CustomOptionType Type => type;
     public bool All { get; set; }
     public bool ClientOnly { get; set; }
+    public bool SelfMember { get; set; }
     protected MemberInfo Member { get; private set; }
     public string Name { get; set; } // Not actually the setting text, just the member name :]
     public KeyValuePair<byte, byte> RpcId { get; protected set; }
@@ -23,86 +24,89 @@ public abstract class Option(CustomOptionType type)
     // This one is for those depending on other options
     private static readonly List<(string[], object[])> OptionParents1 =
     [
-        ([ "EjectionRevealsRoles", "JestEjectScreen", "ExeEjectScreen" ], [ "ConfirmEjects" ]),
-        ([ "InitialCooldowns" ], [ "EnableInitialCds" ]),
-        ([ "MeetingCooldowns" ], [ "EnableMeetingCds" ]),
-        ([ "FailCooldowns" ], [ "EnableFailCds" ]),
-        ([ "WhoSeesFirstKillShield" ], [ "FirstKillShield" ]),
-        ([ "WhispersAnnouncement" ], [ "Whispers" ]),
-        ([ "KillerReports", "RoleFactionReports", "LocationReports" ], [ "GameAnnouncements" ]),
-        ([ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks",
-            "LargeMapDecreasedLongTasks" ], [ "AutoAdjustSettings" ]),
-        ([ "EvilsIgnoreNv" ], [ "NightVision" ]),
-        ([ "SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer" ], [ "EnableBetterSkeld" ]),
-        ([ "MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer" ], [ "EnableBetterMiraHq" ]),
-        ([ "PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer" ], [ "EnableBetterPolus" ]),
-        ([ "SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer" ], [ "EnableBetterAirship" ]),
-        ([ "FungleReactorTimer", "FungleMixupTimer" ], [ "EnableBetterFungle" ]),
-        ([ "CoronerKillerNameTime" ], [ "CoronerReportName" ]),
-        ([ "DrunkInterval" ], [ "DrunkControlsSwap" ]),
-        ([ "WhisperRateDecrease" ], [ "WhisperRateDecreases" ]),
-        ([ "WhisperCdIncrease" ], [ "WhisperCdIncreases" ]),
-        ([ "NecroKillCdIncrease" ], [ "NecroKillCdIncreases" ]),
-        ([ "JestSwitchVent" ], [ "JesterVent" ]),
-        ([ "ExeSwitchVent" ], [ "ExeVent" ]),
-        ([ "SurvSwitchVent" ], [ "SurvVent" ]),
-        ([ "AmneSwitchVent" ], [ "AmneVent" ]),
-        ([ "GASwitchVent" ], [ "GAVent" ]),
-        ([ "GuessSwitchVent" ], [ "GuessVent" ]),
-        ([ "TrollSwitchVent" ], [ "TrollVent" ]),
-        ([ "InteractCd" ], [ "CanInteract" ]),
-        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin", "ApocalypseMax", "ApocalypseMin", "ComplianceM", "ComplianceMin",
-            "PandoricaMax", "PandoricaMin", "IlluminatiMax", "IlluminatiMin" ], [ "not+IgnoreFactionCaps" ]),
-        ([ "MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers" ], [ "not+IgnoreLayerCaps" ]),
-        ([ "MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu" ], [
-            "not+IgnoreAlignmentCaps" ]),
-        ([ "Allied", "Allied1" ], [ "not+IlluminatiUnleashed", "not+OrderOfCompliance" ]),
-        ([ "PandoricaOpens", "OrderOfCompliance" ], [ "not+IlluminatiUnleashed" ]),
-        ([ "RoundOneNoMayorReveal" ], [ "MayorDirectSpawn" ]),
-        ([ "AssassinChances" ], [ "AssassinChance" ]),
-        ([ "FinalTwoDisableVenting" ], [ "not+WhoCanVent+NoOne" ]),
-        ([ "ComplianceType", "ComplianceSettings" ], [ "OrderOfCompliance" ]),
-        ([ "PandoricaType", "PandoricaSettings" ], [ "PandoricaOpens" ]),
-        ([ "IlluminatiType", "IlluminatiSettings" ], [ "IlluminatiUnleashed" ])
+        (["EjectionRevealsRoles", "JestEjectScreen", "ExeEjectScreen"], ["ConfirmEjects"]),
+        (["InitialCooldowns"], ["EnableInitialCds"]),
+        (["MeetingCooldowns"], ["EnableMeetingCds"]),
+        (["FailCooldowns"], ["EnableFailCds"]),
+        (["WhoSeesFirstKillShield"], ["FirstKillShield"]),
+        (["WhispersAnnouncement"], ["Whispers"]),
+        (["KillerReports", "RoleFactionReports", "LocationReports"], ["GameAnnouncements"]),
+        (["SmallMapHalfVision", "SmallMapDecreasedCooldown", "LargeMapIncreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "LargeMapDecreasedShortTasks",
+            "LargeMapDecreasedLongTasks"], ["AutoAdjustSettings"]),
+        (["EvilsIgnoreNv"], ["NightVision"]),
+        (["SkeldVentImprovements" , "SkeldReactorTimer", "SkeldO2Timer"], ["EnableBetterSkeld"]),
+        (["MiraHQVentImprovements" , "MiraReactorTimer", "MiraO2Timer"], ["EnableBetterMiraHq"]),
+        (["PolusVentImprovements", "VitalsLab", "ColdTempDeathValley", "WifiChartCourseSwap", "SeismicTimer"], ["EnableBetterPolus"]),
+        (["SpawnType", "MoveVitals", "MoveFuel", "MoveDivert", "MoveAdmin", "MoveElectrical", "MinDoorSwipeTime", "CrashTimer"], ["EnableBetterAirship"]),
+        (["FungleReactorTimer", "FungleMixupTimer"], ["EnableBetterFungle"]),
+        (["CoronerKillerNameTime"], ["CoronerReportName"]),
+        (["DrunkInterval"], ["DrunkControlsSwap"]),
+        (["WhisperRateDecrease"], ["WhisperRateDecreases"]),
+        (["WhisperCdIncrease"], ["WhisperCdIncreases"]),
+        (["NecroKillCdIncrease"], ["NecroKillCdIncreases"]),
+        (["JestSwitchVent"], ["JesterVent"]),
+        (["ExeSwitchVent"], ["ExeVent"]),
+        (["SurvSwitchVent"], ["SurvVent"]),
+        (["AmneSwitchVent"], ["AmneVent"]),
+        (["GASwitchVent"], ["GAVent"]),
+        (["GuessSwitchVent"], ["GuessVent"]),
+        (["TrollSwitchVent"], ["TrollVent"]),
+        (["InteractCd"], ["CanInteract"]),
+        (["CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin", "ApocalypseMax", "ApocalypseMin", "ComplianceM", "ComplianceMin",
+            "PandoricaMax", "PandoricaMin", "IlluminatiMax", "IlluminatiMin"], ["not+IgnoreFactionCaps"]),
+        (["MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers"], ["not+IgnoreLayerCaps"]),
+        (["MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu"], [
+            "not+IgnoreAlignmentCaps"]),
+        (["Allied", "Allied1"], ["not+IlluminatiUnleashed", "not+OrderOfCompliance"]),
+        (["PandoricaOpens", "OrderOfCompliance"], ["not+IlluminatiUnleashed"]),
+        (["RoundOneNoMayorReveal"], ["MayorDirectSpawn"]),
+        (["AssassinChances"], ["AssassinChance"]),
+        (["FinalTwoDisableVenting"], ["not+WhoCanVent+NoOne"]),
+        (["ComplianceType", "ComplianceSettings"], ["OrderOfCompliance"]),
+        (["PandoricaType", "PandoricaSettings"], ["PandoricaOpens"]),
+        (["IlluminatiType", "IlluminatiSettings"], ["IlluminatiUnleashed"])
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
     private static readonly List<(string[], object[])> OptionParents2 =
     [
-        ([ "TaskBar" ], [Data.GameMode.Classic, Data.GameMode.AllAny, Data.GameMode.List, Data.GameMode.Vanilla ]),
-        ([ "IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps" ], [Data.GameMode.Classic ]),
-        ([ "HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode" ], [
-            Data.GameMode.HideAndSeek ]),
-        ([ "RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle" ], [MapEnum.Random ]),
-        ([ "RandomMapSubmerged" ], [MapEnum.Random, "SubLoaded" ]),
-        ([ "RandomMapLevelImpostor" ], [MapEnum.Random, "LiLoaded" ]),
-        ([ "SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow" ], [ MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
-            MapEnum.MiraHq, MapEnum.LevelImpostor ]),
-        ([ "LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown" ], [ MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
-            MapEnum.LevelImpostor ]),
-        ([ "BetterSkeld" ], [MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random ]),
-        ([ "BetterMiraHq" ], [MapEnum.MiraHq, MapEnum.Random ]),
-        ([ "BetterPolus" ], [MapEnum.Polus, MapEnum.Random ]),
-        ([ "BetterAirship" ], [MapEnum.Airship, MapEnum.Random ]),
-        ([ "BetterFungle" ], [MapEnum.Fungle, MapEnum.Random ]),
-        ([ "CrewSettings" ], [Data.GameMode.Classic, Data.GameMode.AllAny, Data.GameMode.Vanilla, Data.GameMode.List ]),
-        ([ "CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin" ], [Data.GameMode.Classic, Data.GameMode.AllAny ]),
-        ([ "HowIsVigilanteNotified" ], [VigiOptions.PostMeeting, VigiOptions.PreMeeting ]),
-        ([ "RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleEntryList", "ModifierEntryList", "ModifierBanList",
-            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist" ], [Data.GameMode.List ]),
-        ([ "RunnerVision" ], [Data.GameMode.TaskRace ]),
-        ([ "Dispositions", "Modifiers", "Abilities" ], [Data.GameMode.Classic, Data.GameMode.List, Data.GameMode.AllAny ]),
-        ([ "Location1", "Location2", "Location3" ], [AirshipSpawnType.Fixed ])
+        (["TaskBar"], [Mode.Classic, Mode.AllAny, Mode.List, Mode.Vanilla]),
+        (["IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps"], [Mode.Classic]),
+        (["HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode"], [
+            Mode.HideAndSeek]),
+        (["RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle"], [MapEnum.Random]),
+        (["RandomMapSubmerged"], [MapEnum.Random, "SubLoaded"]),
+        (["RandomMapLevelImpostor"], [MapEnum.Random, "LiLoaded"]),
+        (["SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow"], [MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
+            MapEnum.MiraHq, MapEnum.LevelImpostor]),
+        (["LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown"], [MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
+            MapEnum.LevelImpostor]),
+        (["BetterSkeld"], [MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random]),
+        (["BetterMiraHq"], [MapEnum.MiraHq, MapEnum.Random]),
+        (["BetterPolus"], [MapEnum.Polus, MapEnum.Random]),
+        (["BetterAirship"], [MapEnum.Airship, MapEnum.Random]),
+        (["BetterFungle"], [MapEnum.Fungle, MapEnum.Random]),
+        (["CrewSettings"], [Mode.Classic, Mode.AllAny, Mode.Vanilla, Mode.List]),
+        (["CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin"], [Mode.Classic, Mode.AllAny]),
+        (["HowIsVigilanteNotified"], [VigiOptions.PostMeeting, VigiOptions.PreMeeting]),
+        (["RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleEntryList", "ModifierEntryList", "ModifierBanList",
+            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist"], [Mode.List]),
+        (["RunnerVision"], [Mode.TaskRace]),
+        (["Dispositions", "Modifiers", "Abilities"], [Mode.Classic, Mode.List, Mode.AllAny]),
+        (["Runner", "Runner1"], [Mode.TaskRace]),
+        (["Hunted1", "Hunted", "Hunter", "Hunter1"], [Mode.HideAndSeek]),
+        (["Location1", "Location2", "Location3"], [AirshipSpawnType.Fixed])
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
-    public virtual void Set(MemberInfo member, BaseHeaderOption header, bool clientOnly)
+    public virtual void Set(MemberInfo member, BaseHeaderOption header, bool clientOnly, bool selfMember)
     {
         Header = header;
         ClientOnly = clientOnly;
         Member = member;
         Name = member.Name;
         ID = $"CustomOption.{Name}";
+        SelfMember = selfMember;
         RpcId = new((byte)(AllOptions.Count / 255), (byte)(AllOptions.Count % 255)); // Gotta love being able to theoretically have 2^16 options
         AllOptions.Add(this);
     }
@@ -131,7 +135,7 @@ public abstract class Option(CustomOptionType type)
     private bool IsActive(object option) => option switch
     {
         MapEnum map => MapSettings.Map == map,
-        Data.GameMode mode => GameModeSettings.GameMode == mode,
+        Mode mode => GameModeSettings.GameMode == mode,
         VigiOptions vigiOptions => Vigilante.HowDoesVigilanteDie == vigiOptions,
         string id => GetBoolValue(id),
         AirshipSpawnType spawnType => BetterAirship.SpawnType == spawnType,
@@ -154,6 +158,8 @@ public abstract class Option(CustomOptionType type)
             result = optionatt.PartiallyActive() && optionatt switch
             {
                 Option<bool> boolOpt => invertVal ? !boolOpt.Value : boolOpt.Value,
+                NumberOption numOpt => invertVal ? !numOpt.IsValid(parts[2]) : numOpt.IsValid(parts[1]),
+                IMultiSelectOption multiOpt => invertVal ? !multiOpt.Contains(parts[2]) : multiOpt.Contains(parts[1]),
                 IStringOption stringOpt => invertVal ? !parts[2].Contains(stringOpt.ValueString()) : parts[1].Contains(stringOpt.ValueString()),
                 _ => true
             };

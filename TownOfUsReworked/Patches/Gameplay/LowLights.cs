@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Gameplay;
 
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius)), HarmonyPriority(Priority.Low)]
 public static class CalculateLightRadiusPatch
@@ -48,9 +48,9 @@ public static class CalculateLightRadiusPatch
                 Faction.Compliance => ComplianceSettings.ComplianceVision,
                 Faction.GameMode => role switch
                 {
-                    Runner => GameModeSettings.RunnerVision,
-                    Hunted => GameModeSettings.HuntedVision,
-                    Hunter hunter => hunter.Starting ? 0.001f : GameModeSettings.HunterVision,
+                    Runner => Runner.RunnerVision,
+                    Hunted => Hunted.HuntedVision,
+                    Hunter hunter => hunter.Starting ? 0.001f : Hunter.HunterVision,
                     _ => 1f
                 },
                 _ => 1f

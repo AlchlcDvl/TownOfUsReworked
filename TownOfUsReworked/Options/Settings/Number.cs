@@ -76,4 +76,37 @@ public sealed class NumberOption(float min, float max, float increment, Format f
     public override void WriteValueRpc(NetData writer) => writer.Write(Value.Value);
 
     protected override void ReadValueString(string value) => Set(float.Parse(value), false);
+
+    public bool IsValid(string value)
+    {
+        var values = value.TrueSplit(',');
+        var value2 = float.Parse(values[0]);
+        var min = Min;
+        var max = Max;
+        var useMin = true;
+        var useMax = true;
+
+        for (var i = 1; i < values.Length; i++)
+        {
+            var temp = values[i];
+            var valuePart = temp[4..];
+
+            if (float.TryParse(valuePart, out var value3))
+            {
+                if (temp.StartsWith("min:"))
+                    min = value3;
+                else if (temp.StartsWith("max:"))
+                    max = value3;
+            }
+            else if (bool.TryParse(valuePart, out var value4))
+            {
+                if (temp.StartsWith("min:"))
+                    useMin = value4;
+                else if (temp.StartsWith("max:"))
+                    useMax = value4;
+            }
+        }
+
+        return value2.IsInRange(min, max, useMin, useMax);
+    }
 }

@@ -143,7 +143,7 @@ public abstract class Role : PlayerLayer, IRole
         //         (ConditionFunc)CallCondition);
         // }
 
-        if (GameModeSettings.GameMode is global::TownOfUsReworked.Data.GameMode.HideAndSeek or global::TownOfUsReworked.Data.GameMode.TaskRace)
+        if (GameModeSettings.GameMode is Mode.HideAndSeek or Mode.TaskRace)
             return;
 
         if (RoleGenManager.GetSpawnItem(LayerEnum.Enforcer).IsActive())

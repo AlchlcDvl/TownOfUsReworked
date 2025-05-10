@@ -12,7 +12,7 @@ public abstract class Apocalypse : Role
     protected override void Init()
     {
         base.Init();
-        Faction = GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
+        Faction = BadGuysSettings.IlluminatiUnleashed ? Faction.Illuminati : (BadGuysSettings.PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
     }
 
     public override List<PlayerControl> Team()

@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Gameplay;
 
 [HarmonyPatch(typeof(Vent))]
 public static class VentPatches

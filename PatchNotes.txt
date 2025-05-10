@@ -105,6 +105,7 @@ Fixes!
 - General: Fixed the buttons not behaving as intended*
 - General: Fixed cosmetic loading not actually loading all of the parts as needed (idk how it went undetected for so long)
 - General: Fixed option limits not being consistent/correct
+- General: Fixed the mod updater still sending a request to GitHub even though it should be blocked by the local files client setting
 - General: Fixed other minor bugs and issues that I can't remember
 
 Known Bugs :(

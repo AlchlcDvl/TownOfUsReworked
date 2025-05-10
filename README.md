@@ -459,6 +459,8 @@ The Revealer is a dead Crew. Upon finishing all their tasks, the evils, and poss
 | Revealer Reveals Crew | Whether the Revealer also Reveals crew roles | Toggle | False |
 | Revealer Reveals Exact Roles | Whether the Revealer also Reveals all roles | Toggle | False |
 | Who Can Click Revealer | Which players can click the Revealer | String | All |
+| Revealer Reveals Turned Traitor | Whether the Revealer reveals a turned Traitor | Toggle | True |
+| Revealer Reveals Turned Fanatic | Whether the Revealer reveals a turned Fanatic | Toggle | True |
 
 ## Seer <img height="17" src="./Images/Seer.png">
 
@@ -1571,12 +1573,6 @@ An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndic
 
 The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared. Corrupted adds a level of attack to the applied crewmate.
 
-**Game Options**
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| All Corrupted Win Together | Self-descriptive | Toggle | False |
-
 ## Defector
 
 **Applied To**: Intruders and Syndicate
@@ -1611,8 +1607,6 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Fanatic Knows Who They Are | Whether the Fanatic knows who they are | Toggle | True |
-| Snitch Sees Turned Fanatic | Whether the Snitch sees a turned Fanatic | Toggle | True |
-| Revealer Reveals Turned Fanatic | Whether the Revealer reveals a turned Fanatic | Toggle | True |
 | Turned Fanatic Swaps Colours for Investigative Roles | Self-descriptive | Toggle | False |
 
 ## Linked
@@ -1651,6 +1645,7 @@ The Lovers are two players who are linked together. They gain the primary object
 | Enable Lovers Chat | Whether the Lovers get a private chat in-between meetings | Toggle | True |
 | Both Lovers Die | Whether the a Lover automatically dies if the other does | Toggle | True |
 | Lovers Know Each Other's Roles | Self-descriptive | Toggle | True |
+| Other Lover Is Converted As Well | If one Lover is converted by a Neophyte role, then the other Lover is converted as well | Toggle | True |
 
 ## Mafia
 
@@ -1733,8 +1728,6 @@ The Traitor is a member of the Crew who must finish their tasks to switch sides.
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Traitor Knows Who They Are | Whether the Traitor knows who they are | Toggle | True |
-| Snitch Sees Turned Traitor | Whether the Snitch sees a turned Traitor | Toggle | True |
-| Revealer Reveals Turned Traitor | Whether the Revealer reveals a turned Traitor | Toggle | True |
 | Turned Traitor Swaps Colours for Investigative Roles | Self-descriptive | Toggle | False |
 
 -----------------------
@@ -1913,7 +1906,7 @@ Abilities give you extra perks on top of your role's regular powers.
 
 **Attack**: Basic
 
-The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals and Sniper is for the Syndicate. Assassin adds a level of attack to the applied crewmate.
+The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals, Ritualist is for Apocalypse and Sniper is for the Syndicate. Assassin adds a level of attack to the applied crewmate.
 
 **Game Options**
 
@@ -1921,14 +1914,15 @@ The Assassin can guess the layers of others. If they guess right, the target is 
 |------|-------------|------|---------|
 | Assassin Guess Limit | The number of kills Assassins can do with his ability | Number | 1 |
 | Assassin Multiple Kill | Whether the Assassin can kill more than once per meeting | Toggle | False |
+| Assassins Get Chances | Whether the Assassins have room for error for misguessing | Toggle | False |
+| Assassin Chances | How many chances does the Assassin get before they are penalised with being killed | Number | 1 |
 | Assassin Guess Neutral Evils | Whether the Assassin can Guess Neutral (Evil) roles | Toggle | False |
 | Assassin Guess Neutral Benigns | Whether the Assassin can Guess Neutral (Benign) roles | Toggle | False |
 | Assassin Guess Crew Investigators | Whether the Assassin can Guess Crew (Investigative) roles | Toggle | False |
-| Assassin Guess Pestilence | Whether the Assassin can Guess Pestilence | Toggle | False |
+| Assassin Guess Deities | Whether the Assassin can Guess Apocalypse Deity Roles | Toggle | False |
 | Assassin Guess Select Modifiers | Whether the Assassin can Guess some non-obvious Modifiers | Toggle | False |
 | Assassin Guess Select Dispositions | Whether the Assassin can Guess some non-obvious Dispositions | Toggle | False |
 | Assassin Guess Select Abilities | Whether the Assassin can Guess some non-obvious Abilities | Toggle | False |
-| Assassin Can Guess After Voting | Whether the Assassin can Guess after voting | Toggle | False |
 
 ## Button Barry
 
@@ -2025,6 +2019,8 @@ The Snitch is an ability which allows any member of the Crew to get arrows point
 | Snitch Sees Exact Roles | Whether the Snitch also Reveals all Roles | Toggle | False |
 | Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |
 | Snitch Sees Evils in Meetings | Whether the Snitch sees the evil players' names red in Meetings | Toggle | True |
+| Snitch Sees Turned Fanatic | Whether the Snitch sees a turned Fanatic | Toggle | True |
+| Snitch Sees Turned Traitor | Whether the Snitch sees a turned Traitor | Toggle | True |
 
 ## Swapper
 
@@ -2039,7 +2035,6 @@ The Swapper can swap the votes on two players during a meeting. All the votes fo
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Swapper Can Button | Whether the Swapper can call a meeting | Toggle | True |
-| Swapper Can Swap After Voting | Whether the Swapper can continue players to swap even after they have voted | Toggle | True |
 | Swapper Can Swap Themselves | Self-descriptive | Toggle | True |
 
 ## Tiebreaker

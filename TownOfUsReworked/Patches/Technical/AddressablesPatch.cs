@@ -4,7 +4,7 @@ using Il2CppInterop.Common;
 using Il2CppInterop.Runtime.Runtime;
 using UnityEngine.AddressableAssets;
 
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Technical;
 
 // Yoinked more code from Daemon with some modification
 [HarmonyPatch(typeof(AssetReference), nameof(AssetReference.RuntimeKeyIsValid))]

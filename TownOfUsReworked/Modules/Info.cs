@@ -169,14 +169,14 @@ public sealed class OtherInfo(string id, UColor color, string otherNotes = "", b
     }
 }
 
-public sealed class GameModeInfo(Data.GameMode mode, bool footer = false) : Info($"{mode}", mode switch
+public sealed class GameModeInfo(Mode mode, bool footer = false) : Info($"{mode}", mode switch
 {
-    Data.GameMode.Vanilla => UColor.white,
-    Data.GameMode.Classic => CustomColorManager.Classic,
-    Data.GameMode.List => CustomColorManager.List,
-    Data.GameMode.HideAndSeek => CustomColorManager.HideAndSeek,
-    Data.GameMode.TaskRace => CustomColorManager.TaskRace,
-    Data.GameMode.AllAny => CustomColorManager.AllAny,
+    Mode.Vanilla => UColor.white,
+    Mode.Classic => CustomColorManager.Classic,
+    Mode.List => CustomColorManager.List,
+    Mode.HideAndSeek => CustomColorManager.HideAndSeek,
+    Mode.TaskRace => CustomColorManager.TaskRace,
+    Mode.AllAny => CustomColorManager.AllAny,
     _ => CustomColorManager.GameMode
 }, footer)
 {

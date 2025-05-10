@@ -32,16 +32,16 @@ public sealed class Traitor : FactionChanger
     {
         var factions = new List<Faction>() { Faction.Intruder, Faction.Syndicate, Faction.Apocalypse };
 
-        if (GameModifiers.OrderOfCompliance)
+        if (BadGuysSettings.OrderOfCompliance)
             factions.Add(Faction.Compliance);
 
-        if (GameModifiers.PandoricaOpens)
+        if (BadGuysSettings.PandoricaOpens)
         {
             factions.RemoveAll(Faction.Apocalypse, Faction.Intruder, Faction.Syndicate);
             factions.Add(Faction.Pandorica);
         }
 
-        if (GameModifiers.IlluminatiUnleashed)
+        if (BadGuysSettings.IlluminatiUnleashed)
         {
             factions.Clear();
             factions.Add(Faction.Illuminati);

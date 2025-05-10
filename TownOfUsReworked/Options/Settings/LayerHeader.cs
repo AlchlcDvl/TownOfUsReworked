@@ -9,6 +9,7 @@ public sealed class LayerHeaderOption(LayerEnum layer) : BaseHeaderOption(MultiM
     private GameObject Desc { get; set; }
     private TextMeshPro ButtonText { get; set; }
     private SpriteRenderer Label { get; set; }
+    private LayerOption LinkedOption { get; set; }
 
     public static Sprite OgLabel;
     public static Vector3 OgPosition;
@@ -27,7 +28,7 @@ public sealed class LayerHeaderOption(LayerEnum layer) : BaseHeaderOption(MultiM
         Desc = Setting.transform.FindChild("Desc").gameObject;
         Desc.GetComponentInChildren<TextMeshPro>().text = TranslationManager.Translate($"ShortDesc.{Layer}");
         Label = Setting.transform.FindChild("Label").GetComponent<SpriteRenderer>();
-        titleText.color = (Label.color = LayerDictionary[Layer].Color).Alternate();
+        titleText.color = (Label.color = LayerDictionary[Layer].Color).Alternate(0.3f);
         Label.sprite = Value ? OgLabel : GetSprite("Unopened");
     }
 
@@ -69,4 +70,12 @@ public sealed class LayerHeaderOption(LayerEnum layer) : BaseHeaderOption(MultiM
         else
             Label.transform.SetLocalX(-1.1706f);
     }
+
+    public override void PostLoadSetup()
+    {
+        base.PostLoadSetup();
+        LinkedOption = GetOptions<LayerOption>().FirstOrDefault(x => x.Layer == Layer);
+    }
+
+    protected override bool Visible() => LinkedOption?.Header?.PartiallyActive() == true && LinkedOption?.PartiallyActive() == true;
 }

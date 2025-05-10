@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Gameplay;
 
 [HarmonyPatch(typeof(LogicGameFlowNormal))]
 public static class CheckEndGame
@@ -17,7 +17,7 @@ public static class CheckEndGame
 
         if (Sabotaged())
         {
-            WinState = GameModifiers.IlluminatiUnleashed ? WinLose.IlluminatiWins : (BadGuysSettings.MainBadGuys switch
+            WinState = BadGuysSettings.IlluminatiUnleashed ? WinLose.IlluminatiWins : (BadGuysSettings.MainBadGuys switch
             {
                 Faction.Intruder => WinLose.IntrudersWin,
                 Faction.Compliance => WinLose.ComplianceWins,
@@ -145,7 +145,7 @@ public static class CheckEndGame
 
     private static void CheckSubFactionWin(List<byte> winnerIds)
     {
-        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Neophytes)
+        if (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes)
             return;
 
         var winner = SubFactionsToKill.FirstOrDefault(CheckSubFactionWin);
@@ -159,7 +159,7 @@ public static class CheckEndGame
 
     private static void CheckNeutralKillers(List<byte> winnerIds)
     {
-        if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Killers)
+        if (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
             return;
 
         var winner = NksToKill.FirstOrDefault(CheckNkWin);
@@ -185,13 +185,13 @@ public static class CheckEndGame
 
     private static bool CheckFactionWin(Faction faction)
     {
-        if (faction == Faction.Compliance && !GameModifiers.OrderOfCompliance)
+        if (faction == Faction.Compliance && !BadGuysSettings.OrderOfCompliance)
             return false;
 
-        if (faction == Faction.Pandorica && !GameModifiers.PandoricaOpens)
+        if (faction == Faction.Pandorica && !BadGuysSettings.PandoricaOpens)
             return false;
 
-        if (faction == Faction.Illuminati && !GameModifiers.IlluminatiUnleashed)
+        if (faction == Faction.Illuminati && !BadGuysSettings.IlluminatiUnleashed)
             return false;
 
         var toKill = FactionsToKill.Except([ faction ]);

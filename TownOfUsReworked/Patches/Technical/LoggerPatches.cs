@@ -1,7 +1,7 @@
 using BepInEx.Logging;
 
 // Taken from Reactor.Debugger, it's starting to get annoying having both mine and Reactor's debuggers open at the same time :/
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Technical;
 
 [HarmonyPatch(typeof(Logger))]
 public static class RedirectLoggerPatch1

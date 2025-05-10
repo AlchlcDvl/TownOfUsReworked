@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Core.Network;
 
 // Adapted from The Other Roles
 [HarmonyPatch(typeof(RegionMenu))]

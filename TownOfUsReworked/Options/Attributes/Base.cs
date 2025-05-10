@@ -7,11 +7,11 @@ public abstract class OptionAttribute : Attribute
 
     protected abstract Option BaseSetUpOption();
 
-    public Option Set(MemberInfo member, BaseHeaderOption header, bool clientOnly)
+    public Option Set(MemberInfo member, BaseHeaderOption header, bool clientOnly, bool selfMember)
     {
         var option = BaseSetUpOption();
         option.All = All;
-        option.Set(member, header, clientOnly);
+        option.Set(member, header, clientOnly, selfMember);
         return option;
     }
 }

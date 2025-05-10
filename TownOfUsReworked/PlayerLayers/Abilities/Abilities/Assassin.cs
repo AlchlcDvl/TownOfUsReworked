@@ -162,7 +162,12 @@ public abstract class Assassin : Ability, IGuesser
         if (ApocalypseSettings.ApocalypseCount > 0 && (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None)))
         {
             if (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None))
+            {
                 GuessingMenu.Mapping.Add(LayerEnum.Cultist);
+
+                if (AssassinGuessApoc)
+                    GuessingMenu.Mapping.Add(LayerEnum.Void);
+            }
 
             if (RoleGenManager.GetSpawnItem(LayerEnum.Plaguebearer).IsActive())
             {

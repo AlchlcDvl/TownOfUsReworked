@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Core.Player;
 
 [HarmonyPatch(typeof(PlayerVoteArea))]
 public static class PlayerVoteAreaPatches

@@ -1,6 +1,6 @@
 using Assets.CoreScripts;
 
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Core.GameFlow;
 
 [HarmonyPatch]
 public static class OnGameEndPatches

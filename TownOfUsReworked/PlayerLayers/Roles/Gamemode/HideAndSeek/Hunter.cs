@@ -1,11 +1,33 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[LayerHeaderOption(LayerEnum.Hunter)]
 public sealed class Hunter : HideAndSeek
 {
+    [NumberOption(1, 13, 1)]
+    public static Number HunterCount = 1;
+
+    [NumberOption(5f, 60f, 5f, Format.Time)]
+    public static Number HuntCd = 10;
+
+    [NumberOption(5f, 60f, 5f, Format.Time)]
+    public static Number StartTime = 10;
+
+    [ToggleOption]
+    public static bool HunterVent = true;
+
+    [NumberOption(0.1f, 1f, 0.05f, Format.Multiplier)]
+    public static Number HunterVision = 0.25f;
+
+    [NumberOption(1f, 1.5f, 0.05f, Format.Multiplier)]
+    public static Number HunterSpeedModifier = 1.25f;
+
+    [ToggleOption]
+    public static bool HunterFlashlight = false;
+
     public override LayerEnum Type => LayerEnum.Hunter;
     public override Func<string> StartText { get; } = () => "Hunt Them All Down";
     protected override UColor MainColor => CustomColorManager.Hunter;
-    public override bool CanVent => GameModeSettings.HunterVent;
+    public override bool CanVent => HunterVent;
 
     private CustomButton HuntButton { get; set; }
     private float StartingTimer { get; set; }
@@ -15,8 +37,8 @@ public sealed class Hunter : HideAndSeek
     {
         base.Init();
         Objectives = () => "- Hunt the others down before they finish their tasks";
-        HuntButton ??= new(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(GameModeSettings.HuntCd),
-            (UsableFunc)Usable, (PlayerBodyExclusion)Exception);
+        HuntButton ??= new(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(HuntCd), (UsableFunc)Usable,
+            (PlayerBodyExclusion)Exception);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -26,7 +48,7 @@ public sealed class Hunter : HideAndSeek
         if (!Starting)
             return;
 
-        StartingTimer = Mathf.Clamp(StartingTimer - Time.deltaTime, 0f, GameModeSettings.StartTime);
+        StartingTimer = Mathf.Clamp(StartingTimer - Time.deltaTime, 0f, StartTime);
 
         if (!Starting)
             HuntButton.StartCooldown();
@@ -47,7 +69,7 @@ public sealed class Hunter : HideAndSeek
         GameData.Instance.RecomputeTaskCounts();
     }
 
-    public override void OnIntroEnd() => StartingTimer = GameModeSettings.StartTime;
+    public override void OnIntroEnd() => StartingTimer = StartTime;
 
     private void Hunt(PlayerControl target)
     {

@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.UI;
 
 [HarmonyPatch(typeof(SplashManager), nameof(SplashManager.Update))]
 public static class UpdateSplashPatch
@@ -6,7 +6,6 @@ public static class UpdateSplashPatch
     public static SpriteRenderer Rend;
     private static bool Loading;
     private static TextMeshPro TMP;
-    private static readonly int Glitches = Shader.PropertyToID("_Glitches");
 
     public static bool Prefix(SplashManager __instance)
     {

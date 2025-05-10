@@ -1,7 +1,14 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+[LayerHeaderOption(LayerEnum.Runner)]
 public sealed class Runner : GameMode
 {
+    [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
+    public static Number RunnerVision = 1.5f;
+
+    [ToggleOption]
+    public static bool RunnerFlashlight = false;
+
     public override LayerEnum Type => LayerEnum.Runner;
     public override Func<string> StartText { get; } = () => "Speedrun Tasks To Be The Victor";
     protected override UColor MainColor => CustomColorManager.Runner;

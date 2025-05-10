@@ -13,13 +13,13 @@ public sealed class TargetGen : BaseGen
                 var alliedRole = ally.Player.GetRole();
                 var factions = new List<Faction>() { Faction.Crew, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse };
 
-                if (GameModifiers.PandoricaOpens)
+                if (BadGuysSettings.PandoricaOpens)
                 {
                     factions.RemoveAll(Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
                     factions.Add(Faction.Pandorica);
                 }
 
-                if (GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers != ComplianceType.Killers)
+                if (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers != ComplianceType.Killers)
                     factions.Add(Faction.Compliance);
 
                 var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());

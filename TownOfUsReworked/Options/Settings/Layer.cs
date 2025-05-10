@@ -20,7 +20,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
     private GameObject Cog { get; set; }
     private SpriteRenderer UniqueCheck { get; set; }
     private SpriteRenderer ActiveCheck { get; set; }
-    private Data.GameMode SavedMode { get; set; }
+    private Mode SavedMode { get; set; }
     private PassiveButton Button { get; set; }
     private TextMeshPro CenterTitle { get; set; }
     private TextMeshPro LeftTitle { get; set; }
@@ -95,7 +95,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             active.OverrideOnClickListeners(ToggleActive);
         }
 
-        SavedMode = Data.GameMode.None;
+        SavedMode = Mode.None;
     }
 
     public override void ViewOptionCreated()
@@ -130,7 +130,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             CenterBox.SetActive(false);
         }
 
-        SavedMode = Data.GameMode.None;
+        SavedMode = Mode.None;
     }
 
     private void IncreaseCount()
@@ -230,25 +230,25 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             return;
 
         SavedMode = GameModeSettings.GameMode;
-        Divider.SetActive(SavedMode is Data.GameMode.Classic or Data.GameMode.AllAny);
+        Divider.SetActive(SavedMode is Mode.Classic or Mode.AllAny);
 
         if (NoParts)
             return;
 
-        Chance.SetActive(SavedMode is Data.GameMode.Classic);
-        Count.SetActive(SavedMode == Data.GameMode.Classic);
-        Unique.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.List);
-        Active1.SetActive(SavedMode == Data.GameMode.AllAny);
+        Chance.SetActive(SavedMode is Mode.Classic);
+        Count.SetActive(SavedMode == Mode.Classic);
+        Unique.SetActive(SavedMode is Mode.AllAny or Mode.List);
+        Active1.SetActive(SavedMode == Mode.AllAny);
 
         switch (SavedMode)
         {
-            case Data.GameMode.AllAny:
+            case Mode.AllAny:
             {
                 Unique.transform.localPosition = Right + new Vector3(0.75f, 0f, 0f);
                 Active1.transform.localPosition = Left + new Vector3(0.75f, 0f, 0f);
                 break;
             }
-            case Data.GameMode.List:
+            case Mode.List:
             {
                 Unique.transform.localPosition = Right + Diff + new Vector3(0.76f, 0f, 0f);
                 break;
@@ -277,9 +277,9 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
         var val = Value;
         return GameModeSettings.GameMode switch
         {
-            Data.GameMode.Classic => $"{val.Chance}% x{val.Count}",
-            Data.GameMode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
-            Data.GameMode.List => $"{(val.Unique ? "" : "Non-")}Unique",
+            Mode.Classic => $"{val.Chance}% x{val.Count}",
+            Mode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
+            Mode.List => $"{(val.Unique ? "" : "Non-")}Unique",
             _ => "Invalid"
         };
     }
@@ -320,15 +320,15 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
 
         Button.gameObject.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);
 
-        view.chanceText.text = SavedMode == Data.GameMode.Classic ? $"{data.Chance}%" : "";
-        view.settingText.text = SavedMode == Data.GameMode.Classic ? $"x{data.Count}" : "";
+        view.chanceText.text = SavedMode == Mode.Classic ? $"{data.Chance}%" : "";
+        view.settingText.text = SavedMode == Mode.Classic ? $"x{data.Count}" : "";
 
-        CenterCheck.SetActive(SavedMode == Data.GameMode.List && data.Unique);
-        CenterCross.SetActive(SavedMode == Data.GameMode.List && !data.Unique);
-        RightCheck.SetActive(SavedMode == Data.GameMode.AllAny && data.Unique);
-        RightCross.SetActive(SavedMode == Data.GameMode.AllAny && !data.Unique);
-        view.checkMark.gameObject.SetActive(SavedMode == Data.GameMode.AllAny && data.Active);
-        view.checkMarkOff.gameObject.SetActive(SavedMode == Data.GameMode.AllAny && !data.Active);
+        CenterCheck.SetActive(SavedMode == Mode.List && data.Unique);
+        CenterCross.SetActive(SavedMode == Mode.List && !data.Unique);
+        RightCheck.SetActive(SavedMode == Mode.AllAny && data.Unique);
+        RightCross.SetActive(SavedMode == Mode.AllAny && !data.Unique);
+        view.checkMark.gameObject.SetActive(SavedMode == Mode.AllAny && data.Active);
+        view.checkMarkOff.gameObject.SetActive(SavedMode == Mode.AllAny && !data.Active);
 
         var isActive = RoleGenManager.GetSpawnItem(Layer).IsActive();
         var color = isActive ? LayerColor : Palette.DisabledGrey.Shadow();
@@ -344,25 +344,25 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
         if (NoParts)
             return;
 
-        LeftBox.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
-        RightBox.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
-        CenterBox.gameObject.SetActive(SavedMode == Data.GameMode.List);
+        LeftBox.gameObject.SetActive(SavedMode is Mode.AllAny or Mode.Classic);
+        RightBox.gameObject.SetActive(SavedMode is Mode.AllAny or Mode.Classic);
+        CenterBox.gameObject.SetActive(SavedMode == Mode.List);
 
         CenterTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            Data.GameMode.List => "Unique",
+            Mode.List => "Unique",
             _ => ""
         }));
         view.chanceTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            Data.GameMode.Classic => "Chance",
-            Data.GameMode.AllAny => "Unique",
+            Mode.Classic => "Chance",
+            Mode.AllAny => "Unique",
             _ => ""
         }));
         LeftTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            Data.GameMode.Classic => "Count",
-            Data.GameMode.AllAny => "Active",
+            Mode.Classic => "Count",
+            Mode.AllAny => "Active",
             _ => ""
         }));
     }

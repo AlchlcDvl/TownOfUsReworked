@@ -46,10 +46,10 @@ public static class LayerExtensions
         if (!player.IsImpostor())
             return Faction.Crew;
 
-        if (GameModifiers.IlluminatiUnleashed)
+        if (BadGuysSettings.IlluminatiUnleashed)
             return Faction.Illuminati;
 
-        return GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Intruder;
+        return BadGuysSettings.PandoricaOpens ? Faction.Pandorica : Faction.Intruder;
     }
 
     public static SubFaction GetSubFaction(this PlayerControl player)
@@ -197,8 +197,8 @@ public static class LayerExtensions
 
     public static bool ApocalypseSided(this PlayerControl player) => player.Is(Faction.Apocalypse, Faction.Illuminati, Faction.Pandorica) && !player.Is<Apocalypse>();
 
-    public static bool ComplianceSided(this PlayerControl player) => player.Is(Faction.Compliance) && ((!player.Is<NKilling>() && GameModifiers.ComplianceMembers == ComplianceType.Killers) ||
-        (!player.Is<Neophyte>() && GameModifiers.ComplianceMembers == ComplianceType.Neophytes));
+    public static bool ComplianceSided(this PlayerControl player) => player.Is(Faction.Compliance) && ((!player.Is<NKilling>() && BadGuysSettings.ComplianceMembers == ComplianceType.Killers) ||
+        (!player.Is<Neophyte>() && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes));
 
     public static bool Last(PlayerControl player) => GameStateUtils.Last(player.GetFaction());
 
@@ -237,7 +237,7 @@ public static class LayerExtensions
             return 0f;
 
         if (player.Is<Hunter>(out var hunt))
-            return hunt.Starting ? 0f : GameModeSettings.HunterSpeedModifier;
+            return hunt.Starting ? 0f : Hunter.HunterSpeedModifier;
 
         if (player.Is<Modifier>(out var mod))
         {
@@ -387,7 +387,7 @@ public static class LayerExtensions
             Lovers => Lovers.LoversChat,
             Rivals => Rivals.RivalsChat,
             Linked => Linked.LinkedChat,
-            _ => player.Is<Hunted>() && GameModeSettings.HuntedChat
+            _ => player.Is<Hunted>() && Hunted.HuntedChat
         };
     }
 
@@ -738,7 +738,7 @@ public static class LayerExtensions
         var converted = PlayerById(target);
         var converter = PlayerById(convert);
         var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.Neophyte));
-        var comp = GameModifiers.OrderOfCompliance && GameModifiers.ComplianceMembers == ComplianceType.Neophytes;
+        var comp = BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes;
 
         if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts || (comp && converted.GetFaction() is not (Faction.Crew or Faction.Neutral)))
         {

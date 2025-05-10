@@ -1,6 +1,6 @@
 ﻿using UnityEngine.ProBuilder;
 
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Core.GameFlow;
 
 // [HarmonyPatch(typeof(CreateOptionsPicker))]
 // public static class CrowdedPatches

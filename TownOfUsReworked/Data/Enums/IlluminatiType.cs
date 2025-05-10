@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum IlluminatiType
+public enum IlluminatiType : byte
 {
     Intruders,
     Syndicate,

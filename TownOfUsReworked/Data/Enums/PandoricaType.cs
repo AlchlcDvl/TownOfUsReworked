@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum PandoricaType
+public enum PandoricaType : byte
 {
     Intruders,
     Syndicate,

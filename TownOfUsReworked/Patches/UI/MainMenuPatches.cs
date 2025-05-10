@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.UI;
 
 [HarmonyPatch(typeof(MainMenuManager))]
 public static class MainMenuPatches

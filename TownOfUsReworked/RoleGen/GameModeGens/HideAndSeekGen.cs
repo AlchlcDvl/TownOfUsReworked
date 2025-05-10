@@ -9,7 +9,7 @@ public sealed class HideAndSeekGen : BaseRoleGen
 
     public override void InitList()
     {
-        while (AllRoles.Count < GameModeSettings.HunterCount)
+        while (AllRoles.Count < Hunter.HunterCount)
             AllRoles.Add(GetSpawnItem(LayerEnum.Hunter));
 
         while (AllRoles.Count < GameData.Instance.PlayerCount)

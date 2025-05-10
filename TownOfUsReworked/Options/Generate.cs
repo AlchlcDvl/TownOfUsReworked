@@ -51,7 +51,9 @@ public static class Generate
                     Fatal(id);
             }
 
-            Enum.GetValues<ListSlot>().Except([ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity]).Do(x => TranslationManager.DebugId($"List.{x}")); // Not gonna make it dump debug statements for *every* role list entry
+            // Not gonna make it dump debug statements for *every* role list entry
+            Enum.GetValues<ListSlot>().Except([ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity, ListSlot.GameMode, ListSlot.Abilities, ListSlot.Dispositions, ListSlot.Modifiers])
+                .Do(x => TranslationManager.DebugId($"List.{x}"));
         }
 
         Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers

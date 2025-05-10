@@ -1,6 +1,6 @@
 using AmongUs.Data.Player;
 
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Gameplay;
 
 [HarmonyPatch(typeof(PlayerStatsData), nameof(PlayerStatsData.IncrementStat))]
 public static class StatsPatches

@@ -32,34 +32,38 @@ public static class UpdateManager
         UpdateSplashPatch.SetText($"Fetching {updateType} Data");
         Message($"Getting update info for {updateType}");
 
-        // Checks the GitHub api for tags. Compares the current version to the latest tag version on GitHub
-        var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=1");
-        yield return www.SendWebRequest();
-
-        var isError = www.result != UnityWebRequest.Result.Success;
         string jsonText;
 
         if (ClientOptions.ForceUseLocal)
             jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
-        else if (isError)
-        {
-            Error(www.error);
-            jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
-        }
         else
         {
-            jsonText = www.downloadHandler.text;
-            var task = File.WriteAllTextAsync(Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json"), jsonText);
-            yield return WaitUntilTaskComplete(task);
-        }
+            // Checks the GitHub api for tags. Compares the current version to the latest tag version on GitHub
+            var www = UnityWebRequest.Get($"https://api.github.com/repos/{GetLink(updateType)}/releases?per_page=1");
+            yield return www.SendWebRequest();
 
-        www.downloadHandler.Dispose();
-        www.Dispose();
+            var isError = www.result != UnityWebRequest.Result.Success;
 
-        if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
-        {
-            jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
-            Warning($"Online JSON for {updateType} was missing");
+            if (isError)
+            {
+                Error(www.error);
+                jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
+            }
+            else
+            {
+                jsonText = www.downloadHandler.text;
+                var task = File.WriteAllTextAsync(Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json"), jsonText);
+                yield return WaitUntilTaskComplete(task);
+            }
+
+            www.downloadHandler.Dispose();
+            www.Dispose();
+
+            if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
+            {
+                jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
+                Warning($"Online JSON for {updateType} was missing");
+            }
         }
 
         if (IsNullEmptyOrWhiteSpace(jsonText))

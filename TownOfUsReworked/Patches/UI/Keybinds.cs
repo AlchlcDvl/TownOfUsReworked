@@ -1,7 +1,7 @@
 using Rewired;
 using Rewired.Data;
 
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.UI;
 
 // Thanks to TheOtherRolesAU/TheOtherRoles/pull/347 by dadoum for the patch and extension
 [HarmonyPatch(typeof(InputManager_Base), nameof(InputManager_Base.Awake))]

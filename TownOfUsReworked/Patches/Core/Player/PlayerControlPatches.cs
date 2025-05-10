@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Core.Player;
 
 [HarmonyPatch(typeof(PlayerControl))]
 public static class PlayerControlPatches
@@ -132,9 +132,9 @@ public static class PlayerControlPatches
             Faction.Neutral => NeutralSettings.NeutralFlashlight,
             _ => role switch
             {
-                Hunted => GameModeSettings.HuntedFlashlight,
-                Hunter => GameModeSettings.HunterFlashlight,
-                Runner => GameModeSettings.RunnerFlashlight,
+                Hunted => Hunted.HuntedFlashlight,
+                Hunter => Hunter.HunterFlashlight,
+                Runner => Runner.RunnerFlashlight,
                 _ => false
             }
         } && __instance.Data.IsDead;

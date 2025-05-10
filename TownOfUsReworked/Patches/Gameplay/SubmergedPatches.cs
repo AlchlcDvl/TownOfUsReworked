@@ -1,4 +1,4 @@
-﻿namespace TownOfUsReworked.Patches;
+﻿namespace TownOfUsReworked.Patches.Gameplay;
 
 [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.ShowRole))]
 public static class SubmergedStartPatch

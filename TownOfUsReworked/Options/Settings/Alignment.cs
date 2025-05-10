@@ -1,10 +1,9 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noParts = false, string colorHex = null) : BaseHeaderOption(MultiMenu.Layer, CustomOptionType.Alignment)
+public sealed class AlignmentOption(ListSlot alignment, bool noParts = false) : BaseHeaderOption(MultiMenu.Layer, CustomOptionType.Alignment)
 {
-    private ListSlot Alignment { get; } = alignment;
+    public ListSlot Alignment { get; } = alignment;
     private bool NoParts { get; } = noParts;
-    private UColor Color { get; } = CustomColorManager.FromHex(colorHex ?? "#FFFFFFFF");
     public HeaderOption GroupHeader { get; private set; }
     private TextMeshPro Left { get; set; }
     private TextMeshPro Right { get; set; }
@@ -12,7 +11,7 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
     private GameObject Single { get; set; }
     private TextMeshPro ButtonText { get; set; }
     private PassiveButton Button { get; set; }
-    private Data.GameMode SavedMode { get; set; }
+    private Mode SavedMode { get; set; }
     private GameObject Cog { get; set; }
     private Transform PlsMnsBtn { get; set; }
 
@@ -59,7 +58,10 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
             >= ListSlot.NeutralPros and <= ListSlot.NeutralNeo => CustomColorManager.Neutral,
             >= ListSlot.SyndicateKill and <= ListSlot.SyndicateUtil => CustomColorManager.Syndicate,
             ListSlot.ApocDeity or ListSlot.ApocHarb => CustomColorManager.Apocalypse,
-            _ => Color
+            ListSlot.Modifiers => CustomColorManager.Modifier,
+            ListSlot.Abilities => CustomColorManager.Ability,
+            ListSlot.Dispositions => CustomColorManager.Disposition,
+            _ => UColor.white
         };
 
         quota.GetChild(0).GetComponent<SpriteRenderer>().color = color.Alternate(0.35f);
@@ -76,7 +78,7 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
             Single.SetActive(true);
         }
 
-        SavedMode = Data.GameMode.None;
+        SavedMode = Mode.None;
     }
 
     private bool ChildrenActive() => GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true;
@@ -89,7 +91,7 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
         Button.OverrideOnClickListeners(Toggle);
         Button.SelectButton(Value);
 
-        SavedMode = Data.GameMode.None;
+        SavedMode = Mode.None;
     }
 
     private void Toggle()
@@ -133,26 +135,26 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
         if (NoParts)
             return;
 
-        Left.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
-        Right.gameObject.SetActive(SavedMode is Data.GameMode.AllAny or Data.GameMode.Classic);
-        Center.gameObject.SetActive(SavedMode == Data.GameMode.List);
-        Single.SetActive(SavedMode is not (Data.GameMode.Classic or Data.GameMode.AllAny));
+        Left.gameObject.SetActive(SavedMode is Mode.AllAny or Mode.Classic);
+        Right.gameObject.SetActive(SavedMode is Mode.AllAny or Mode.Classic);
+        Center.gameObject.SetActive(SavedMode == Mode.List);
+        Single.SetActive(SavedMode is not (Mode.Classic or Mode.AllAny));
 
         Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            Data.GameMode.List => "Unique",
+            Mode.List => "Unique",
             _ => ""
         }));
         Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            Data.GameMode.Classic => "Chance",
-            Data.GameMode.AllAny => "Unique",
+            Mode.Classic => "Chance",
+            Mode.AllAny => "Unique",
             _ => ""
         }));
         Left.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
-            Data.GameMode.Classic => "Count",
-            Data.GameMode.AllAny => "Active",
+            Mode.Classic => "Count",
+            Mode.AllAny => "Active",
             _ => ""
         }));
     }
@@ -161,6 +163,15 @@ public sealed class AlignmentOption(ListSlot alignment = ListSlot.None, bool noP
     {
         base.PostLoadSetup();
         GroupHeader = GetOption<HeaderOption>($"{Name.Replace("Roles", "")}Settings");
+    }
+
+    protected override bool Visible()
+    {
+        if (GameModeSettings.GameMode == Mode.Vanilla)
+            return false;
+
+        var mode = GameModeSettings.GameMode is Mode.HideAndSeek or Mode.TaskRace;
+        return Alignment == ListSlot.GameMode ? mode : !mode;
     }
 
     private void SetUpOptionsMenu()

@@ -106,6 +106,32 @@ public static class CollectionExtensions
         return result;
     }
 
+    public static bool TryFinding<T1, T2>(this IEnumerable<T1> source, out T2 value, Func<T2, bool> predicate1 = null, Func<T1, bool> predicate2 = null)
+    {
+        var result = source.TryFindingAll(out var values, predicate1, predicate2);
+        value = values.FirstOrDefault();
+        return result;
+    }
+
+    public static bool TryFindingAll<T>(this IEnumerable<T> source, Func<T, bool> predicate, out IEnumerable<T> value)
+    {
+        value = source.Where(predicate);
+        return value.Any();
+    }
+
+    public static bool TryFindingAll<T1, T2>(this IEnumerable<T1> source, out IEnumerable<T2> value, Func<T2, bool> predicate1 = null, Func<T1, bool> predicate2 = null)
+    {
+        if (predicate2 is not null)
+            source = source.Where(predicate2);
+
+        value = source.OfType<T2>();
+
+        if (predicate1 is not null)
+            value = value.Where(predicate1);
+
+        return value.Any();
+    }
+
     public static void AddMany<T>(this List<T> list, T item, int count)
     {
         while (count-- > 0)
@@ -116,12 +142,6 @@ public static class CollectionExtensions
     {
         while (count-- > 0)
             list.Add(item());
-    }
-
-    public static bool TryFindingAll<T>(this IEnumerable<T> source, Func<T, bool> predicate, out IEnumerable<T> value)
-    {
-        value = source.Where(predicate);
-        return value.Any();
     }
 
     public static T Find<T>(this IEnumerable<T> source, Func<T, bool> predicate)

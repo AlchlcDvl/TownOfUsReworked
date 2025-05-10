@@ -222,14 +222,14 @@ public static class AllInfo
 
     public static readonly IEnumerable<GameModeInfo> AllModes =
     [
-        new(GameMode.None),
+        new(Mode.None),
 
-        new(GameMode.Vanilla),
-        new(GameMode.Classic),
-        new(GameMode.AllAny),
-        new(GameMode.TaskRace),
-        new(GameMode.List),
-        new(GameMode.HideAndSeek, true)
+        new(Mode.Vanilla),
+        new(Mode.Classic),
+        new(Mode.AllAny),
+        new(Mode.TaskRace),
+        new(Mode.List),
+        new(Mode.HideAndSeek, true)
     ];
 
     public static readonly IEnumerable<OtherInfo> AllOthers =

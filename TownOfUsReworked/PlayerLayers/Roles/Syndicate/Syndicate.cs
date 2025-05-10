@@ -50,7 +50,7 @@ public abstract class Syndicate : Role, IPromoter
     protected override void Init()
     {
         base.Init();
-        Faction = GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Syndicate);
+        Faction = BadGuysSettings.IlluminatiUnleashed ? Faction.Illuminati : (BadGuysSettings.PandoricaOpens ? Faction.Pandorica : Faction.Syndicate);
         KillButton ??= new(this, new SpriteName($"{Faction}Kill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
     }

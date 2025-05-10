@@ -264,7 +264,7 @@ public static class SettingsPatches
             {
                 header.Setting = UObject.Instantiate((MonoBehaviour)(header.Type switch
                 {
-                    CustomOptionType.Header or CustomOptionType.ListHolder => HeaderPrefab,
+                    CustomOptionType.Header or CustomOptionType.ListHolder or CustomOptionType.AlignmentHeader => HeaderPrefab,
                     CustomOptionType.Alignment => AlignmentPrefab,
                     CustomOptionType.LayerHeader => LayerHeaderPrefab,
                     _ =>  throw new ArgumentOutOfRangeException($"There's no header prefab for {header.Type}")

@@ -8,28 +8,47 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
     {
         CrewRoles.AddRanges(RoleGenManager.CrewInvestigativeRoles, RoleGenManager.CrewKillingRoles, RoleGenManager.CrewSupportRoles, RoleGenManager.CrewProtectiveRoles,
             RoleGenManager.CrewSovereignRoles);
-        IntruderRoles.AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles, RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles,
-            RoleGenManager.IntruderHeadRoles);
-        SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
-        ApocalypseRoles.AddRange(RoleGenManager.ApocalypseHarbingerRoles);
         NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles);
 
-        if (GameModifiers.OrderOfCompliance)
+        if (BadGuysSettings.IlluminatiUnleashed)
         {
-            var type = GameModifiers.ComplianceMembers;
-
-            if (type == ComplianceType.Killers)
-                ComplianceRoles.AddRange(RoleGenManager.NeutralKillingRoles);
-            else if (type == ComplianceType.Neophytes)
-                ComplianceRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
-
-            if (type != ComplianceType.Killers)
-                NeutralRoles.AddRange(RoleGenManager.NeutralKillingRoles);
-            else if (type != ComplianceType.Neophytes)
-                NeutralRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
+            var type = BadGuysSettings.IlluminatiMembers;
+            (type == IlluminatiType.Killers ? ComplianceRoles : NeutralRoles).AddRange(RoleGenManager.NeutralKillingRoles);
+            (type == IlluminatiType.Neophytes ? ComplianceRoles : NeutralRoles).AddRange(RoleGenManager.NeutralNeophyteRoles);
+            (type == IlluminatiType.Apocalypse ? PandoricaRoles : ApocalypseRoles).AddRanges(RoleGenManager.ApocalypseHarbingerRoles);
+            (type == IlluminatiType.Syndicate ? PandoricaRoles : SyndicateRoles).AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles,
+                RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
+            (type == IlluminatiType.Intruders ? PandoricaRoles : IntruderRoles).AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles,
+                RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles, RoleGenManager.IntruderHeadRoles);
         }
         else
-            NeutralRoles.AddRanges(RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles);
+        {
+            if (BadGuysSettings.OrderOfCompliance)
+            {
+                var type = BadGuysSettings.ComplianceMembers;
+                (type == ComplianceType.Killers ? ComplianceRoles : NeutralRoles).AddRange(RoleGenManager.NeutralKillingRoles);
+                (type == ComplianceType.Neophytes ? ComplianceRoles : NeutralRoles).AddRange(RoleGenManager.NeutralNeophyteRoles);
+            }
+            else
+                NeutralRoles.AddRanges(RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles);
+
+            if (BadGuysSettings.PandoricaOpens)
+            {
+                var type = BadGuysSettings.PandoricaMembers;
+                (type == PandoricaType.Apocalypse ? PandoricaRoles : ApocalypseRoles).AddRanges(RoleGenManager.ApocalypseHarbingerRoles);
+                (type == PandoricaType.Syndicate ? PandoricaRoles : SyndicateRoles).AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles,
+                    RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
+                (type == PandoricaType.Intruders ? PandoricaRoles : IntruderRoles).AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles,
+                    RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles, RoleGenManager.IntruderHeadRoles);
+            }
+            else
+            {
+                IntruderRoles.AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles, RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles,
+                    RoleGenManager.IntruderHeadRoles);
+                SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
+                ApocalypseRoles.AddRange(RoleGenManager.ApocalypseHarbingerRoles);
+            }
+        }
 
         RoleGenManager.CrewInvestigativeRoles.Clear();
         RoleGenManager.CrewSupportRoles.Clear();

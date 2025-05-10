@@ -131,20 +131,20 @@ public static class RoleGenManager
     private static readonly ModifierGen Modifiers = new();
     private static readonly AbilityGen Abilities = new();
     private static readonly DispositionGen Dispositions = new();
-    private static readonly Dictionary<Data.GameMode, BaseRoleGen> RoleGen = new()
+    private static readonly Dictionary<Mode, BaseRoleGen> RoleGen = new()
     {
-        { Data.GameMode.HideAndSeek, new HideAndSeekGen() },
-        { Data.GameMode.Classic, new ClassicGen() },
-        { Data.GameMode.List, new ListGen() },
-        { Data.GameMode.Vanilla, new VanillaGen() },
-        { Data.GameMode.AllAny, new AllAnyGen() },
-        { Data.GameMode.TaskRace, new TaskRaceGen() }
+        { Mode.HideAndSeek, new HideAndSeekGen() },
+        { Mode.Classic, new ClassicGen() },
+        { Mode.List, new ListGen() },
+        { Mode.Vanilla, new VanillaGen() },
+        { Mode.AllAny, new AllAnyGen() },
+        { Mode.TaskRace, new TaskRaceGen() }
     };
 
-    public static readonly Dictionary<Data.GameMode, BaseFilter> ModeFilters = new()
+    public static readonly Dictionary<Mode, BaseFilter> ModeFilters = new()
     {
-        { Data.GameMode.Classic, new CommonFilter() },
-        { Data.GameMode.AllAny, new AllAnyFilter() }
+        { Mode.Classic, new CommonFilter() },
+        { Mode.AllAny, new AllAnyFilter() }
     };
 
     public static RoleOptionData GetSpawnItem(LayerEnum id) => id switch
@@ -152,7 +152,7 @@ public static class RoleGenManager
         LayerEnum.Pestilence => Options.ApocalypseHarbingerRoles.Plaguebearer,
         LayerEnum.Void => Options.ApocalypseHarbingerRoles.Cultist,
         LayerEnum.Mayor => Options.CrewSovereignRoles.Democrat,
-        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, 15, false, false, id),
+        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, GameSettings.LobbySize, false, false, id),
         _ => Option.GetOptions<LayerOption>().TryFinding(x => x.Layer == id, out var result) ? result.Value : new(0, 0, false, false, id)
     };
 
@@ -176,7 +176,7 @@ public static class RoleGenManager
         LayerEnum.Linked => Role.GetRoles(Faction.Neutral).Count() > 1 && GameData.Instance.PlayerCount > 4,
         LayerEnum.Democrat => !Mayor.MayorDirectSpawn,
         LayerEnum.Mayor => Mayor.MayorDirectSpawn,
-        LayerEnum.Allied => !GameModifiers.IlluminatiUnleashed && !GameModifiers.OrderOfCompliance,
+        LayerEnum.Allied => !BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.OrderOfCompliance,
         _ => true
     };
 

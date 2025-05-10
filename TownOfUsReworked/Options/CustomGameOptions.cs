@@ -37,7 +37,7 @@ public static class GameSettings
     private static TBMode TaskBar = TBMode.MeetingOnly;
     public static TBMode TaskBarMode => GameModeSettings.GameMode switch
     {
-        Data.GameMode.TaskRace or Data.GameMode.HideAndSeek => TBMode.Normal,
+        Mode.TaskRace or Mode.HideAndSeek => TBMode.Normal,
         _ => TaskBar
     }; // I want this to actually change, according to the game modes
 
@@ -78,8 +78,8 @@ public static class GameSettings
 [HeaderOption(MultiMenu.Main)]
 public static class GameModeSettings
 {
-    [StringOption<Data.GameMode>(Data.GameMode.None)]
-    public static Data.GameMode GameMode = Data.GameMode.Classic;
+    [StringOption<Mode>(Mode.None)]
+    public static Mode GameMode = Mode.Classic;
 
     [ToggleOption]
     public static bool IgnoreFactionCaps = true;
@@ -92,36 +92,6 @@ public static class GameModeSettings
 
     [StringOption<HnSMode>]
     public static HnSMode HnSMode = HnSMode.Classic;
-
-    [NumberOption(1, 13, 1)]
-    public static Number HunterCount = 1;
-
-    [NumberOption(5f, 60f, 5f, Format.Time)]
-    public static Number HuntCd = 10;
-
-    [NumberOption(5f, 60f, 5f, Format.Time)]
-    public static Number StartTime = 10;
-
-    [ToggleOption]
-    public static bool HunterVent = true;
-
-    [NumberOption(0.1f, 1f, 0.05f, Format.Multiplier)]
-    public static Number HunterVision = 0.25f;
-
-    [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
-    public static Number HuntedVision = 1.5f;
-
-    [NumberOption(1f, 1.5f, 0.05f, Format.Multiplier)]
-    public static Number HunterSpeedModifier = 1.25f;
-
-    [ToggleOption]
-    public static bool HunterFlashlight = false;
-
-    [ToggleOption]
-    public static bool HuntedFlashlight = false;
-
-    [ToggleOption]
-    public static bool HuntedChat = true;
 
     [NumberOption(0, 15, 1)]
     public static Number RevealerCount = 0;
@@ -149,12 +119,6 @@ public static class GameModeSettings
 
     [ToggleOption]
     public static bool BanCultist = true;
-
-    [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
-    public static Number RunnerVision = 1.5f;
-
-    [ToggleOption]
-    public static bool RunnerFlashlight = false;
 }
 
 [ListHolderOption(PlayerLayerEnum.Role, false)]
@@ -219,17 +183,17 @@ public static class BadGuysSettings
     [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Neutral, Faction.None, Faction.Illuminati)]
     public static Faction MainBadGuys
     {
-        get => GameModifiers.IlluminatiUnleashed ? Faction.Illuminati : mainBadGuys;
+        get => IlluminatiUnleashed ? Faction.Illuminati : mainBadGuys;
         set
         {
-            if (value == Faction.Compliance && !GameModifiers.OrderOfCompliance)
-                value = value < mainBadGuys ? Faction.Intruder : (GameModifiers.PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
+            if (value == Faction.Compliance && !OrderOfCompliance)
+                value = value < mainBadGuys ? Faction.Intruder : (PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
 
-            if (value is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse && GameModifiers.PandoricaOpens)
+            if (value is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse && PandoricaOpens)
                 value = Faction.Pandorica;
 
-            if (value == Faction.Pandorica && !GameModifiers.PandoricaOpens)
-                value = value < mainBadGuys ? Faction.Apocalypse : (GameModifiers.OrderOfCompliance ? Faction.Compliance : Faction.Intruder);
+            if (value == Faction.Pandorica && !PandoricaOpens)
+                value = value < mainBadGuys ? Faction.Apocalypse : (OrderOfCompliance ? Faction.Compliance : Faction.Intruder);
 
             mainBadGuys = value;
         }
@@ -245,12 +209,58 @@ public static class BadGuysSettings
     [ToggleOption]
     public static bool GhostsCanSabotage = false;
 
+    // TODO: Finish implementing these
+
+    [ToggleOption, Sorted(0)]
+    public static bool IlluminatiUnleashed = false;
+
+    [MultiSelectOption<IlluminatiType>(LeastSelected = 2)]
+    public static MultiSelectValue<IlluminatiType> IlluminatiMembers = new[] { IlluminatiType.Syndicate, IlluminatiType.Intruders, IlluminatiType.Apocalypse, IlluminatiType.Neophytes,
+        IlluminatiType.Killers };
+
+    [ToggleOption, Sorted(1)]
+    public static bool PandoricaOpens
+    {
+        get => pandoricaOpens;
+        set
+        {
+            switch (value)
+            {
+                case false when Allied.AlliedFaction == AlliedFaction.Pandorica:
+                {
+                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Random);
+                    break;
+                }
+                case true when Allied.AlliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse:
+                {
+                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Pandorica);
+                    break;
+                }
+            }
+
+            pandoricaOpens = value;
+        }
+    }
+    private static bool pandoricaOpens = false;
+
+    [MultiSelectOption<PandoricaType>(LeastSelected = 1)]
+    public static MultiSelectValue<PandoricaType> PandoricaMembers = new[] { PandoricaType.Syndicate, PandoricaType.Intruders, PandoricaType.Apocalypse };
+
+    [ToggleOption]
+    public static bool OrderOfCompliance = false;
+
+    [MultiSelectOption<ComplianceType>(LeastSelected = 1)]
+    public static MultiSelectValue<ComplianceType> ComplianceMembers = new[] { ComplianceType.Neophytes, ComplianceType.Killers };
+
     public static Number BadGuyCount => MainBadGuys switch
     {
         Faction.Intruder => IntruderSettings.IntruderCount,
         Faction.Syndicate => SyndicateSettings.SyndicateCount,
         Faction.Apocalypse => ApocalypseSettings.ApocalypseCount,
-        _ => IntruderSettings.IntruderCount + SyndicateSettings.SyndicateCount + ApocalypseSettings.ApocalypseCount,
+        Faction.Compliance => ComplianceSettings.ComplianceCount,
+        Faction.Illuminati => IlluminatiSettings.IlluminatiCount,
+        Faction.Pandorica => PandoricaSettings.PandoricaCount,
+        _ => 0,
     };
 }
 
@@ -334,49 +344,6 @@ public static class GameModifiers
 
     [ToggleOption, Sorted(0)]
     public static bool NoVentingUncleanedVents = false;
-
-    // TODO: Finish implementing these
-
-    [ToggleOption, Sorted(0)]
-    public static bool IlluminatiUnleashed = false;
-
-    [MultiSelectOption<IlluminatiType>(LeastSelected = 2)]
-    public static MultiSelectValue<IlluminatiType> IlluminatiMembers = new[] { IlluminatiType.Syndicate, IlluminatiType.Intruders, IlluminatiType.Apocalypse, IlluminatiType.Neophytes,
-        IlluminatiType.Killers };
-
-    [ToggleOption, Sorted(1)]
-    public static bool PandoricaOpens
-    {
-        get => pandoricaOpens;
-        set
-        {
-            switch (value)
-            {
-                case false when Allied.AlliedFaction == AlliedFaction.Pandorica:
-                {
-                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Random);
-                    break;
-                }
-                case true when Allied.AlliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse:
-                {
-                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Pandorica);
-                    break;
-                }
-            }
-
-            pandoricaOpens = value;
-        }
-    }
-    private static bool pandoricaOpens = false;
-
-    [MultiSelectOption<PandoricaType>(LeastSelected = 1)]
-    public static MultiSelectValue<PandoricaType> PandoricaMembers = new[] { PandoricaType.Syndicate, PandoricaType.Intruders, PandoricaType.Apocalypse };
-
-    [ToggleOption]
-    public static bool OrderOfCompliance = false;
-
-    [MultiSelectOption<ComplianceType>(LeastSelected = 1)]
-    public static MultiSelectValue<ComplianceType> ComplianceMembers = new[] { ComplianceType.Neophytes, ComplianceType.Killers };
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -1026,7 +993,20 @@ public static class ApocalypseHarbingerRoles
     public static RoleOptionData Plaguebearer;
 }
 
-[AlignmentOption(colorHex: "#7F7F7FFF")]
+[AlignmentOption(ListSlot.GameMode)]
+public static class GameModeRoles
+{
+    [LayerOption("#ECC23EFF", LayerEnum.Runner, true)]
+    public static RoleOptionData Runner;
+
+    [LayerOption("#FF004EFF", LayerEnum.Hunter, true)]
+    public static RoleOptionData Hunter;
+
+    [LayerOption("#1F51FFFF", LayerEnum.Hunted, true)]
+    public static RoleOptionData Hunted;
+}
+
+[AlignmentOption(ListSlot.Modifiers)]
 public static class Modifiers
 {
     [LayerOption("#612BEFFF", LayerEnum.Astral)]
@@ -1069,7 +1049,7 @@ public static class Modifiers
     public static RoleOptionData Yeller;
 }
 
-[AlignmentOption(colorHex: "#FF9900FF")]
+[AlignmentOption(ListSlot.Abilities)]
 public static class Abilities
 {
     [LayerOption("#073763FF", LayerEnum.Assassin, true)]
@@ -1130,7 +1110,7 @@ public static class Abilities
     public static RoleOptionData Underdog;
 }
 
-[AlignmentOption(colorHex: "#DD585BFF")]
+[AlignmentOption(ListSlot.Dispositions)]
 public static class Dispositions
 {
     [LayerOption("#4545A9FF", LayerEnum.Allied, All = true)]
@@ -1167,42 +1147,42 @@ public static class Dispositions
     public static RoleOptionData Traitor;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.CrewInvest)]
 public static class CrewInvestigativeSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxCi = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.CrewKill)]
 public static class CrewKillingSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxCk = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.CrewProt)]
 public static class CrewProtectiveSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxCrP = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.CrewSov)]
 public static class CrewSovereignSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxCSv = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.CrewSupport)]
 public static class CrewSupportSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxCs = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.NeutralBen)]
 public static class NeutralBenignSettings
 {
     [NumberOption(1, 14, 1)]
@@ -1212,7 +1192,7 @@ public static class NeutralBenignSettings
     public static bool VigilanteKillsBenigns = true;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.NeutralEvil)]
 public static class NeutralEvilSettings
 {
     [NumberOption(1, 14, 1)]
@@ -1228,7 +1208,7 @@ public static class NeutralEvilSettings
     public static bool NeHaveImpVision = true;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.NeutralKill)]
 public static class NeutralKillingSettings
 {
     [NumberOption(1, 14, 1)]
@@ -1244,7 +1224,7 @@ public static class NeutralKillingSettings
     public static bool WinSolo = false;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.NeutralNeo)]
 public static class NeutralNeophyteSettings
 {
     [NumberOption(1, 14, 1)]
@@ -1254,77 +1234,77 @@ public static class NeutralNeophyteSettings
     public static bool NnHaveImpVision = true;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.IntruderConceal)]
 public static class IntruderConcealingSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxIc = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.IntruderDecep)]
 public static class IntruderDeceptionSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxID = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.IntruderHead)]
 public static class IntruderHeadSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxIh = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.IntruderKill)]
 public static class IntruderKillingSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxIK = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.IntruderSupport)]
 public static class IntruderSupportSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxIs = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.SyndicateDisrup)]
 public static class SyndicateDisruptionSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxSD = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.SyndicateKill)]
 public static class SyndicateKillingSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxSyK = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.SyndicatePower)]
 public static class SyndicatePowerSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxSp = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.SyndicateSupport)]
 public static class SyndicateSupportSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxSSu = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.ApocHarb)]
 public static class ApocalypseHarbingerSettings
 {
     [NumberOption(1, 14, 1)]
     public static Number MaxAh = 1;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.Modifiers)]
 public static class ModifiersSettings
 {
     [NumberOption(0, 14, 1)]
@@ -1334,7 +1314,7 @@ public static class ModifiersSettings
     public static Number MaxModifiers = 5;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.Abilities)]
 public static class AbilitiesSettings
 {
     [NumberOption(0, 14, 1)]
@@ -1344,7 +1324,7 @@ public static class AbilitiesSettings
     public static Number MaxAbilities = 5;
 }
 
-[HeaderOption(MultiMenu.AlignmentSubOptions)]
+[AlignmentHeaderOption(ListSlot.Dispositions)]
 public static class DispositionsSettings
 {
     [NumberOption(0, 14, 1)]

@@ -47,7 +47,7 @@ public sealed class Defector : Disposition
 
     private Faction GetFactionChoice()
     {
-        if (GameModifiers.IlluminatiUnleashed)
+        if (BadGuysSettings.IlluminatiUnleashed)
         {
             return DefectorFaction switch
             {
@@ -98,15 +98,15 @@ public sealed class Defector : Disposition
             }
         }
 
-        if (GameModifiers.OrderOfCompliance)
+        if (BadGuysSettings.OrderOfCompliance)
         {
             factions.Add(Faction.Compliance);
 
-            if (GameModifiers.ComplianceMembers == ComplianceType.Killers)
+            if (BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
                 factions.RemoveAll(Faction.Neutral);
         }
 
-        if (GameModifiers.PandoricaOpens)
+        if (BadGuysSettings.PandoricaOpens)
         {
             factions.RemoveAll(Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
             factions.Add(Faction.Pandorica);

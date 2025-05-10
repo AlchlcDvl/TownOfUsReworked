@@ -23,7 +23,7 @@ public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : 
             Option opt;
 
             if (att is not null)
-                opt = att.Set(member, this, ClientOnly);
+                opt = att.Set(member, this, ClientOnly, false);
             else
             {
                 var innerType = member switch
@@ -37,7 +37,7 @@ public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : 
                     continue;
 
                 opt = member.GetValue<Option>(null);
-                opt.Set(member, this, ClientOnly);
+                opt.Set(member, this, ClientOnly, true);
             }
 
             GroupMembers.Add(opt);
@@ -48,9 +48,8 @@ public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : 
     {
         var members = type.GetMembers(AccessTools.all);
         var sortedMembers = members
-           .Where(m => m.GetCustomAttribute<SortedAttribute>() is not null)
-           .OrderBy(m => m.GetCustomAttribute<SortedAttribute>()!.Order);
-
+            .Where(m => m.GetCustomAttribute<SortedAttribute>() is not null)
+            .OrderBy(m => m.GetCustomAttribute<SortedAttribute>()!.Order);
         return sortedMembers.Concat(members.Except(sortedMembers));
     }
 }

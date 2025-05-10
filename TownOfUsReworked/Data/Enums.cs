@@ -60,7 +60,8 @@ public enum CustomOptionType : byte
     MultiSelect,
     Alignment,
     LayerHeader,
-    ListHolder
+    ListHolder,
+    AlignmentHeader,
 }
 
 public enum MultiMenu : byte
@@ -130,7 +131,7 @@ public enum MoveElectrical : byte
     Electrical
 }
 
-public enum GameMode : byte
+public enum Mode : byte
 {
     Classic,
     AllAny,

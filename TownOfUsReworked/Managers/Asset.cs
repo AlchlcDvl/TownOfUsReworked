@@ -156,15 +156,15 @@ public static class AssetManager
 
     private static T Get<T>(string name) where T : UObject
     {
-        if (LoadedAssets.TryGetValue(name, out var objList) && objList.TryFinding(x => x is T, out var result) && result)
-            return result as T;
+        if (LoadedAssets.TryGetValue(name, out var objList) && objList.TryFinding<UObject, T>(out var result) && result)
+            return result;
 
         if (AssetToBundle.TryGetValue(name.ToLower(), out var bundle))
         {
             result = LoadAsset<T>(Bundles[bundle], name);
 
             if (result)
-                return (T)result;
+                return result;
         }
 
         if (!UnloadedAssets.TryGetValue(name, out var strings))
@@ -173,7 +173,7 @@ public static class AssetManager
         var tType = typeof(T);
 
         if (AssetTypeExtensions.TryGetValue(tType, out var pair) && strings.TryFinding(x => x.EndsWith($".{pair.Item1}"), out var path))
-            result = AddAsset(name, pair.Item2(path));
+            result = AddAsset(name, (T)pair.Item2(path));
         else
             throw new NotImplementedException($"{tType.Name} is not a loadable asset type");
 
@@ -183,7 +183,7 @@ public static class AssetManager
             UnloadedAssets.Remove(name);
 
         if (result)
-            return result as T;
+            return result;
 
         // Failure($"{name} does not exist");
         return null;

@@ -3,7 +3,7 @@ using AmongUs.Data.Legacy;
 using AmongUs.Data.Settings;
 using Discord;
 
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Technical;
 
 [HarmonyPatch(typeof(MapBehaviour))]
 public static class MapBehaviourPatches

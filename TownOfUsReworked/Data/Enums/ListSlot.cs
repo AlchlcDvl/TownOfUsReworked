@@ -229,5 +229,10 @@ public enum ListSlot : byte
     NonIlluminati,
     NonIllNeutral,
 
-    Any
+    Any,
+
+    GameMode,
+    Abilities,
+    Modifiers,
+    Dispositions
 }

@@ -192,7 +192,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
                 foreach (var bucket in GetValuesFromTo(ListSlot.CrewSupport, ListSlot.NonCrew))
                     yield return bucket;
 
-                if (GameModifiers.IlluminatiUnleashed)
+                if (BadGuysSettings.IlluminatiUnleashed)
                 {
                     foreach (var bucket in GetValuesFromTo(ListSlot.IlluminatiKill, ListSlot.NonIlluminati))
                         yield return bucket;
@@ -203,7 +203,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
                 }
                 else
                 {
-                    if (GameModifiers.PandoricaOpens)
+                    if (BadGuysSettings.PandoricaOpens)
                     {
                         foreach (var bucket in GetValuesFromTo(ListSlot.PandoraKill, ListSlot.NonPandora))
                             yield return bucket;
@@ -216,15 +216,15 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
                         yield return ListSlot.RandomApocalypse;
                     }
 
-                    if (GameModifiers.OrderOfCompliance)
+                    if (BadGuysSettings.OrderOfCompliance)
                     {
-                        if (GameModifiers.ComplianceMembers == ComplianceType.Killers)
+                        if (BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
                             yield return ListSlot.ComplianceKill;
 
-                        if (GameModifiers.ComplianceMembers == ComplianceType.Neophytes)
+                        if (BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes)
                             yield return ListSlot.ComplianceNeo;
 
-                        if (GameModifiers.ComplianceMembers == [ ComplianceType.Killers, ComplianceType.Neophytes ])
+                        if (BadGuysSettings.ComplianceMembers == [ ComplianceType.Killers, ComplianceType.Neophytes ])
                             yield return ListSlot.RandomCompliance;
 
                         foreach (var bucket in GetValuesFromTo(ListSlot.NeutralBen, ListSlot.RegularNeutral))

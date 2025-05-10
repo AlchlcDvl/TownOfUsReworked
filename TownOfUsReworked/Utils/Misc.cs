@@ -501,7 +501,7 @@ public static class MiscUtils
 
     public static void StopDragging(byte id) => BodyById(id)?.GetComponent<DeadBodyHandler>()?.StopDrag();
 
-    private static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false) =>
+    public static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false) =>
         (minInclusive ? num >= min : num > min) &&
         (maxInclusive ? num <= max : num < max);
 
@@ -1147,10 +1147,12 @@ public static class MiscUtils
         passive.OnMouseOver = new();
     }
 
-    public static T GetValue<T>(this MemberInfo member, object obj) => member switch
+    public static T GetValue<T>(this MemberInfo member, object obj) => (T)member.GetValue(obj);
+
+    public static object GetValue(this MemberInfo member, object obj) => member switch
     {
-        FieldInfo field => (T)field.GetValue(obj),
-        PropertyInfo prop => (T)prop.GetValue(obj),
+        FieldInfo field => field.GetValue(obj),
+        PropertyInfo prop => prop.GetValue(obj),
         _ => throw new ArgumentException($"Either the member doesn't have a defined GetValue method, or the value can't be fetched for this member: {member.GetType().Name}")
     };
 
@@ -1542,4 +1544,6 @@ public static class MiscUtils
         yield return coroutine;
         onCompletion();
     }
+
+    // public static float Average(params float[] values) => values.Sum() / values.Length;
 }

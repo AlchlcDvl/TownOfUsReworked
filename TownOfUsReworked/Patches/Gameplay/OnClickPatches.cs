@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches;
+namespace TownOfUsReworked.Patches.Gameplay;
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.OnClick))]
 public static class PlayerControlOnClick
@@ -84,7 +84,7 @@ public static class DeadBodyOnClick
             return true;
 
         if (!CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Target == __instance && x.Clickable(), out var button))
-            return GameModeSettings.GameMode is not (Data.GameMode.HideAndSeek or Data.GameMode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < CustomPlayer.Local.lightSource.viewDistance;
+            return GameModeSettings.GameMode is not (Mode.HideAndSeek or Mode.TaskRace) && GetDistance(CustomPlayer.Local, __instance) < CustomPlayer.Local.lightSource.viewDistance;
 
         button?.Clicked();
         return false;

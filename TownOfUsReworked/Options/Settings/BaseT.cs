@@ -2,15 +2,18 @@ namespace TownOfUsReworked.Options;
 
 public abstract class Option<T>(CustomOptionType type) : Option(type)
 {
-    public T Value { get; protected set; }
+    public T Value { get; set; }
 
     protected Type TargetType { get; } = typeof(T);
 
     public static implicit operator T(Option<T> opt) => opt.Value;
 
-    public override void Set(MemberInfo member, BaseHeaderOption header, bool clientOnly)
+    public override void Set(MemberInfo member, BaseHeaderOption header, bool clientOnly, bool selfMember)
     {
-        base.Set(member, header, clientOnly);
+        base.Set(member, header, clientOnly, selfMember);
+
+        if (selfMember)
+            return;
 
         try
         {
@@ -33,7 +36,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         if (IsInGame() && !(ClientOnly || TownOfUsReworked.MciActive))
             return;
 
-        if (Member is null)
+        if (Member is null || SelfMember)
             Value = value;
         else
         {
