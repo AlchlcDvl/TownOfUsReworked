@@ -37,6 +37,7 @@ public static class Generate
                 // Simple enough, I'm too cautious to let something fuck me up while I set the properties
                 opt.PostLoadSetup();
 
+                // Debugging and dropping ids in case I've forgotten to add translations for some settings and their values
                 if (TownOfUsReworked.IsDev)
                     opt.Debug();
             }

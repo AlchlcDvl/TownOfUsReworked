@@ -49,16 +49,13 @@ public sealed class Thief : Neutral, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or
-                LayerEnum.Impostor)))
+            if (IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive())
-                {
-                    GuessingMenu.Mapping.Add(layer);
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or LayerEnum.Impostor))
+                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                    if (layer == LayerEnum.Godfather)
-                        GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
-                }
+                if (GuessingMenu.Mapping.Contains(LayerEnum.Godfather))
+                    GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
             }
         }
 
@@ -66,22 +63,33 @@ public sealed class Thief : Neutral, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
+            if (SyndicateSettings.SyndicateMax > 0 && SyndicateSettings.SyndicateMin > 0)
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive())
-                {
-                    GuessingMenu.Mapping.Add(layer);
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee))
+                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                    if (layer == LayerEnum.Rebel)
-                        GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
-                }
+                if (GuessingMenu.Mapping.Contains(LayerEnum.Rebel))
+                    GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
+            }
+        }
+
+        if (ApocalypseSettings.ApocalypseCount > 0)
+        {
+            if (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None))
+                GuessingMenu.Mapping.Add(LayerEnum.Cultist);
+
+            if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0)
+            {
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Cannibal, LayerEnum.Void, x => x != LayerEnum.Cultist && !RoleGenManager.AD.Contains(x))
+                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
             }
         }
 
         if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0)
         {
             GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac,
-                LayerEnum.Werewolf, LayerEnum.BountyHunter, LayerEnum.Plaguebearer }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
+                LayerEnum.Werewolf, LayerEnum.BountyHunter, LayerEnum.Dracula, LayerEnum.Whisperer, LayerEnum.Zealot, LayerEnum.Jackal, LayerEnum.Necromancer }.Where(layer =>
+                RoleGenManager.GetSpawnItem(layer).IsActive()));
         }
     }
 

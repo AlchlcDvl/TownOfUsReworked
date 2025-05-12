@@ -316,6 +316,7 @@ public static class References
         { LayerEnum.Warper, new(typeof(Warper), CustomColorManager.Warper, LayerEnum.Warper) },
         { LayerEnum.Cannibal, new(typeof(Cannibal), CustomColorManager.Cannibal, LayerEnum.Cannibal) },
         { LayerEnum.Cultist, new(typeof(Cultist), CustomColorManager.Apocalypse, LayerEnum.Cultist) },
+        { LayerEnum.Gluttony, new(typeof(Gluttony), CustomColorManager.Gluttony, LayerEnum.Gluttony) },
         { LayerEnum.Pestilence, new(typeof(Pestilence), CustomColorManager.Pestilence, LayerEnum.Pestilence) },
         { LayerEnum.Plaguebearer, new(typeof(Plaguebearer), CustomColorManager.Plaguebearer, LayerEnum.Plaguebearer) },
         { LayerEnum.Void, new(typeof(PlayerLayers.Roles.Void), CustomColorManager.Void, LayerEnum.Void) },

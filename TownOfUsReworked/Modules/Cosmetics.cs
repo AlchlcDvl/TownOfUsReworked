@@ -26,6 +26,9 @@ public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
     [JsonPropertyName("artist")]
     public string Artist { get; set; }
 
+    [JsonPropertyName("mainhash")]
+    public string MainHash { get; set; }
+
     [JsonIgnore]
     public TView ViewData { get; set; }
 
@@ -33,10 +36,10 @@ public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
     public TData CosmeticData { get; set; }
 
     [JsonIgnore]
-    public string MainID => ID; // For reflection purposes
+    public PreviewViewData PreviewData { get; set; }
 
-    [JsonPropertyName("mainhash")]
-    public string MainHash { get; set; }
+    [JsonIgnore]
+    public string MainID => ID; // For reflection purposes
 }
 
 public abstract class TopCosmetic<TView, TData> : CustomCosmetic<TView, TData>

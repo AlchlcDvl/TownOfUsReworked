@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Cannibal)]
@@ -79,10 +78,10 @@ public sealed class Cannibal : Harbinger<Gluttony>
 
     public override void ReadRPC(NetData reader)
     {
-        var target = reader.ReadBody();
-        Spread(Player, PlayerByBody(target));
+        var id = reader.ReadByte();
+        Spread(Player, PlayerById(id));
+        FadeBody(BodyById(id));
         EatNeed--;
-        FadeBody(target);
     }
 
     protected override bool CanTransform() => EatNeed == 0;

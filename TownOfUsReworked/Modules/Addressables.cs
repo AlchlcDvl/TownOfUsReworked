@@ -8,7 +8,7 @@ public sealed class CustomAddressable<T>(T item, string guid) : CustomAddressabl
 {
     private T Asset { get; } = item;
 
-    public override AsyncOperationHandle LoadAsync() => Handle ??= Addressables.ResourceManager.CreateCompletedOperation(Asset, Asset ? string.Empty : "Unable to find asset");
+    public override AsyncOperationHandle AsyncLoad() => Handle ??= Addressables.ResourceManager.CreateCompletedOperation(Asset, Asset ? string.Empty : "Unable to find asset");
 }
 
 public abstract class CustomAddressable
@@ -24,5 +24,5 @@ public abstract class CustomAddressable
         CustomAddressables[guid] = this;
     }
 
-    public abstract AsyncOperationHandle LoadAsync();
+    public abstract AsyncOperationHandle AsyncLoad();
 }

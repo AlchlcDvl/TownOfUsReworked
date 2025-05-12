@@ -10,6 +10,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
     private string HexCode { get; } = hexCode;
     public LayerEnum Layer { get; } = layer;
     private byte Change { get; } = change;
+    public bool HideDivider { get; set; }
     private byte CachedCount { get; set; }
     private byte CachedChance { get; set; }
     private GameObject Unique { get; set; }
@@ -69,6 +70,9 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             Count.SetActive(false);
             Unique.SetActive(false);
             Active1.SetActive(false);
+
+            if (HideDivider)
+                Divider.SetActive(false);
         }
 
         var unique = Unique.GetComponent<PassiveButton>();
@@ -230,7 +234,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
             return;
 
         SavedMode = GameModeSettings.GameMode;
-        Divider.SetActive(SavedMode is Mode.Classic or Mode.AllAny);
+        Divider.SetActive(SavedMode is Mode.Classic or Mode.AllAny && !HideDivider);
 
         if (NoParts)
             return;

@@ -6,7 +6,7 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
     private PlayerControl Selected { get; set; }
     public ShapeshifterPanel SelectedPanel { get; set; }
 
-    public List<LayerEnum> Mapping { get; } = [];
+    public HashSet<LayerEnum> Mapping { get; } = [];
 
     private void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, LayerEnum role)
     {
@@ -50,9 +50,8 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
         __instance.potentialVictims = new();
         var list2 = new ISystem.List<UiElement>();
 
-        for (var i = 0; i < Mapping.Count; i++)
+        foreach (var (i, role) in Mapping.Indexed())
         {
-            var role = Mapping[i];
             var shapeshifterPanel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
             SetRole(shapeshifterPanel, i, role, () => Clicked(shapeshifterPanel, Selected, role));
             Menu.potentialVictims.Add(shapeshifterPanel);

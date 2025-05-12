@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Gluttony : Deity
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    private static Number RotCd = 25;
+    private static Number HungerCd = 25;
 
     [NumberOption(2, 10, 1)]
     public static Number MaxFoodPreTransformation = 4;
@@ -15,7 +15,7 @@ public sealed class Gluttony : Deity
     [NumberOption(10f, 1200f, 5f, Format.Time)]
     public static Number CycleDur = 30;
 
-    private CustomButton RotButton { get; set; }
+    private CustomButton HungerButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Gluttony;
     public override LayerEnum Type => LayerEnum.Gluttony;
@@ -25,11 +25,11 @@ public sealed class Gluttony : Deity
     protected override void Init()
     {
         base.Init();
-        RotButton ??= new(this, new SpriteName("Hunger"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)CauseHunger, "Hunger", new Cooldown(RotCd));
+        HungerButton ??= new(this, new SpriteName("Hunger"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)CauseHunger, "Hunger", new Cooldown(HungerCd));
     }
 
     private void CauseHunger()
     {
-        RotButton.StartCooldown();
+        HungerButton.StartCooldown();
     }
 }

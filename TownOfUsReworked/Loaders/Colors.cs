@@ -8,12 +8,6 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
 {
     protected override string DirectoryInfo => TownOfUsReworked.Colors;
     protected override string Manifest => "Colors";
-    protected override bool Downloading => false;
-    protected override string FileExtension => "";
-
-    protected override void BeforeLoading() {} // I don't want the type checking to occur for custom colors because they don't have hashes to compare with
-
-    protected override IEnumerable<string> GenerateDownloadList(CustomColor[] response, HashAlgorithm hasher) => []; // Same here since there's nothing to download
 
     protected override void LoadAsset(CustomColor item, int i)
     {

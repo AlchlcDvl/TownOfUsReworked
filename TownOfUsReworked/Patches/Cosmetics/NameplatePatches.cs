@@ -1,5 +1,4 @@
 using Innersloth.Assets;
-using static TownOfUsReworked.Loaders.NameplateLoader;
 
 namespace TownOfUsReworked.Patches.Cosmetics;
 
@@ -55,7 +54,7 @@ public static class NameplatesTabOnEnablePatch
             colorChip.SelectionHighlight.gameObject.SetActive(false);
             var chip = colorChip.GetComponent<NameplateChip>();
 
-            if (CustomNameplateRegistry.TryGetValue(colorChip.ProductId, out var cn))
+            if (NameplateLoader.CustomCosmeticRegistry.TryGetValue(colorChip.ProductId, out var cn))
                 chip.image.sprite = cn.ViewData.Image;
             else
                 __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(nameplate.ViewDataRef, (Action<NamePlateViewData>)(viewData => chip.image.sprite = viewData?.Image)));
@@ -86,7 +85,7 @@ public static class NameplatesTabOnEnablePatch
         {
             var package = "Innersloth";
 
-            if (CustomNameplateRegistry.TryGetValue(data.ProductId, out var cn))
+            if (NameplateLoader.CustomCosmeticRegistry.TryGetValue(data.ProductId, out var cn))
                 package = cn.StreamOnly ? "Stream" : cn.Artist;
 
             if (IsNullEmptyOrWhiteSpace(package))

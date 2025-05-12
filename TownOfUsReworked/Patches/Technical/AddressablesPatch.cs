@@ -38,7 +38,7 @@ public static class AddressablesPatch
         if (IsNullEmptyOrWhiteSpace(assetGuid) || !CustomAddressable.CustomAddressables.TryGetValue(assetGuid!, out var addressable))
             return Original(thisPtr, keyPtr, methodInfoPtr);
 
-        var op = addressable.LoadAsync();
+        var op = addressable.AsyncLoad();
         return op.IsValid() ? IL2CPP.il2cpp_object_unbox(op.Pointer) : Original(thisPtr, keyPtr, methodInfoPtr);
     }
 

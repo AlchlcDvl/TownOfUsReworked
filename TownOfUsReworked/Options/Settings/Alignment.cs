@@ -4,7 +4,7 @@ public sealed class AlignmentOption(ListSlot alignment, bool noParts = false) : 
 {
     public ListSlot Alignment { get; } = alignment;
     private bool NoParts { get; } = noParts;
-    public HeaderOption GroupHeader { get; private set; }
+    public AlignmentHeaderOption GroupHeader { get; private set; }
     private TextMeshPro Left { get; set; }
     private TextMeshPro Right { get; set; }
     private TextMeshPro Center { get; set; }
@@ -162,7 +162,8 @@ public sealed class AlignmentOption(ListSlot alignment, bool noParts = false) : 
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        GroupHeader = GetOption<HeaderOption>($"{Name.Replace("Roles", "")}Settings");
+        GroupHeader = GetOptions<AlignmentHeaderOption>().Find(x => x.Alignment == Alignment);
+        GroupMembers?.Cast<LayerOption>().Do(x => x.HideDivider = NoParts);
     }
 
     protected override bool Visible()

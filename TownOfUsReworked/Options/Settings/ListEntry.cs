@@ -168,6 +168,8 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
     protected override UColor TextColor(ListSlot value) => value.TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
 
     // What the hell is this? What am I even doing man...
+    // Future AD: kill me
+    // TODO: Account for the member options properly here
     private static IEnumerable<ListSlot> GetPossibleValues(ListEntryOption self)
     {
         var bans = GetOptions<ListEntryOption>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);

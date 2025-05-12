@@ -23,7 +23,21 @@ public static class LayerExtensions
 
     public static bool Is(this PlayerControl player, SubFaction subFaction) => player.GetRole()?.SubFaction == subFaction;
 
-    public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
+    public static bool Is(this PlayerControl player, Faction faction)
+    {
+        var playerFaction = player.GetFaction();
+        var part = faction switch
+        {
+            Faction.Intruder => (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders) || (!BadGuysSettings.IlluminatiUnleashed &&
+                BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Intruders),
+            Faction.Syndicate => (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate) || (!BadGuysSettings.IlluminatiUnleashed &&
+                BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate),
+            Faction.Apocalypse => (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse) || (!BadGuysSettings.IlluminatiUnleashed &&
+                BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse),
+            _ => false
+        };
+        return playerFaction == faction || part;
+    }
 
     private static bool Is(this PlayerControl player, params Faction[] factions) => factions.Contains(player.GetFaction());
 
@@ -43,13 +57,7 @@ public static class LayerExtensions
         if (player.Is<Role>(out var role))
             return role.Faction;
 
-        if (!player.IsImpostor())
-            return Faction.Crew;
-
-        if (BadGuysSettings.IlluminatiUnleashed)
-            return Faction.Illuminati;
-
-        return BadGuysSettings.PandoricaOpens ? Faction.Pandorica : Faction.Intruder;
+        return player.IsImpostor() ? Faction.Intruder : Faction.Crew;
     }
 
     public static SubFaction GetSubFaction(this PlayerControl player)

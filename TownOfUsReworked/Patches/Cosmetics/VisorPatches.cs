@@ -47,7 +47,7 @@ public static class VisorsTabOnEnablePatch
             else
                 colorChip.Button.OverrideOnClickListeners(() => __instance.SelectVisor(visor));
 
-            if (CustomVisorRegistry.ContainsKey(visor.ProductId))
+            if (VisorLoader.CustomCosmeticRegistry.ContainsKey(visor.ProductId))
             {
                 var background = colorChip.transform.FindChild("Background");
                 var foreground = colorChip.transform.FindChild("ForeGround");
@@ -96,7 +96,7 @@ public static class VisorsTabOnEnablePatch
         {
             var package = "Innersloth";
 
-            if (CustomVisorRegistry.TryGetValue(data.ProductId, out var cv))
+            if (VisorLoader.CustomCosmeticRegistry.TryGetValue(data.ProductId, out var cv))
                 package = cv.StreamOnly ? "Stream" : cv.Artist;
 
             if (IsNullEmptyOrWhiteSpace(package))
@@ -145,7 +145,7 @@ public static class VisorPatches
             return true;
         } catch {}
 
-        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+        if (!VisorLoader.CustomCosmeticRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         var maskType = __instance.matProperties.MaskType;
@@ -173,7 +173,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetFlipX)), HarmonyPrefix]
     public static bool SetFlipXPrefix(VisorLayer __instance, bool flipX)
     {
-        if (!__instance.visorData || !CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+        if (!__instance.visorData || !VisorLoader.CustomCosmeticRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         __instance.Image.flipX = flipX;
@@ -188,7 +188,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int)), HarmonyPrefix]
     public static bool SetVisorPrefix(VisorLayer __instance, VisorData data, int color)
     {
-        if (!CustomVisorRegistry.ContainsKey(data.ProductId))
+        if (!VisorLoader.CustomCosmeticRegistry.ContainsKey(data.ProductId))
             return true;
 
         __instance.visorData = data;
@@ -210,7 +210,7 @@ public static class VisorPatches
             return true;
         } catch {}
 
-        if (!CustomVisorRegistry.ContainsKey(__instance.visorData.ProductId))
+        if (!VisorLoader.CustomCosmeticRegistry.ContainsKey(__instance.visorData.ProductId))
             return true;
 
         __instance.UpdateMaterial();
@@ -231,7 +231,7 @@ public static class VisorPatches
             return true;
         } catch {}
 
-        if (!CustomVisorRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+        if (!VisorLoader.CustomCosmeticRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
             return true;
 
         __instance.Image.sprite = cv.ViewData.FloorFrame;
@@ -241,7 +241,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.SetClimbAnim)), HarmonyPrefix]
     public static bool SetClimbAnimPrefix(VisorLayer __instance, PlayerBodyTypes bodyType)
     {
-        if (!__instance.visorData || __instance.options.HideDuringClimb || bodyType == PlayerBodyTypes.Horse || !CustomVisorRegistry.TryGetValue(__instance.visorData.name, out var visor))
+        if (!__instance.visorData || __instance.options.HideDuringClimb || bodyType == PlayerBodyTypes.Horse || !VisorLoader.CustomCosmeticRegistry.TryGetValue(__instance.visorData.name, out var visor))
             return true;
 
         __instance.transform.SetLocalZ(0f);
@@ -252,7 +252,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.IsLoaded), MethodType.Getter)]
     public static bool Prefix(VisorLayer __instance, ref bool __result)
     {
-        if (!__instance.visorData || !CustomVisorRegistry.ContainsKey(__instance.visorData.ProductId))
+        if (!__instance.visorData || !VisorLoader.CustomCosmeticRegistry.ContainsKey(__instance.visorData.ProductId))
             return true;
 
         return !(__result = true);

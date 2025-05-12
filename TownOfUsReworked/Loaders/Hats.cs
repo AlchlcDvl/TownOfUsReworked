@@ -1,22 +1,14 @@
 namespace TownOfUsReworked.Loaders;
 
-public sealed class HatLoader : BaseCosmeticLoader<CustomHat>
+public sealed class HatLoader : BaseCosmeticLoader<HatViewData, HatData, CustomHat>
 {
-    public static readonly Dictionary<string, CustomHat> CustomHatRegistry = [];
-
     protected override string DirectoryInfo => TownOfUsReworked.Hats;
     protected override string Manifest => "Hats";
 
-    protected override void LoadAsset(CustomHat item, int i)
+    protected override CosmeticTypeEnum CosmeticType => CosmeticTypeEnum.Hat;
+
+    protected override void LoadData(CustomHat item, string path, HatViewData viewData, PreviewViewData preview, HatData data)
     {
-        var path = DirectoryInfo;
-
-        if (item.StreamOnly)
-            path = Path.Combine(DirectoryInfo, "Stream");
-        else if (item.TestOnly)
-            path = Path.Combine(DirectoryInfo, "Test");
-
-        var viewData = ScriptableObject.CreateInstance<HatViewData>().DontDestroy();
         viewData.MainImage = CreateCosmeticSprite(path, item.MainID, CosmeticTypeEnum.Hat);
         viewData.BackImage = item.BackID is not null ? CreateCosmeticSprite(path, item.BackID, CosmeticTypeEnum.Hat) : null;
         viewData.ClimbImage = item.ClimbID is not null ? CreateCosmeticSprite(path, item.ClimbID, CosmeticTypeEnum.Hat) : null;
@@ -27,26 +19,11 @@ public sealed class HatLoader : BaseCosmeticLoader<CustomHat>
         viewData.LeftFloorImage = item.FloorFlipID is not null ? CreateCosmeticSprite(path, item.FloorFlipID, CosmeticTypeEnum.Hat) : viewData.FloorImage;
         viewData.MatchPlayerColor = item.Adaptive;
 
-        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
         preview.PreviewSprite = viewData.MainImage;
 
-        var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
-        hat.name = item.Name;
-        hat.displayOrder = 99;
-        hat.ProductId = "customHat_" + item.Name.Replace(' ', '_');
-        hat.InFront = IsNullEmptyOrWhiteSpace(item.BackID) && IsNullEmptyOrWhiteSpace(item.BackFlipID);
-        hat.NoBounce = item.NoBounce;
-        hat.ChipOffset = new(0f, 0.2f);
-        hat.Free = true;
-        hat.NotInStore = true;
-        hat.PreviewCrewmateColor = item.Adaptive;
-        hat.ViewDataRef = new CustomAddressable<HatViewData>(viewData, hat.ProductId).Ref;
-        hat.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{hat.ProductId}_preview").Ref;
-
-        item.Artist ??= "Unknown";
-        item.ViewData = viewData;
-        item.CosmeticData = hat;
-
-        CustomHatRegistry[hat.ProductId] = item;
+        data.NoBounce = item.NoBounce;
+        data.InFront = IsNullEmptyOrWhiteSpace(item.BackID) && IsNullEmptyOrWhiteSpace(item.BackFlipID);
+        data.PreviewCrewmateColor = item.Adaptive;
+        data.ViewDataRef = new CustomAddressable<HatViewData>(viewData, data.ProductId).Ref;
     }
 }

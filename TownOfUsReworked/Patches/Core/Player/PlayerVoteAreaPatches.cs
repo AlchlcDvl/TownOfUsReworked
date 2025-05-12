@@ -49,7 +49,7 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.PreviewNameplate))]
     public static bool Prefix(PlayerVoteArea __instance, string plateID)
     {
-        if (!NameplateLoader.CustomNameplateRegistry.TryGetValue(plateID, out var cn))
+        if (!NameplateLoader.CustomCosmeticRegistry.TryGetValue(plateID, out var cn))
             return true;
 
         __instance.PlayerIcon.gameObject.SetActive(false);

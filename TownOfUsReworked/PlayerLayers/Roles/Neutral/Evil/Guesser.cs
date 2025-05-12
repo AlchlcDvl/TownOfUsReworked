@@ -111,8 +111,7 @@ public sealed class Guesser : Evil, IGuesser
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
         {
-            foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante, x => x is not (LayerEnum.Revealer or LayerEnum.Crewmate or LayerEnum.Coroner or LayerEnum.Detective or
-                LayerEnum.Medium or LayerEnum.Operative or LayerEnum.Seer or LayerEnum.Sheriff or LayerEnum.Tracker)))
+            foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante, x => x is not (LayerEnum.Revealer or LayerEnum.Crewmate) && !RoleGenManager.CI.Contains(x)))
             {
                 if (RoleGenManager.GetSpawnItem(layer).IsActive())
                     GuessingMenu.Mapping.Add(layer);
@@ -123,16 +122,13 @@ public sealed class Guesser : Evil, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or
-                LayerEnum.Impostor)))
+            if (IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive())
-                {
-                    GuessingMenu.Mapping.Add(layer);
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or LayerEnum.Impostor))
+                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                    if (layer == LayerEnum.Godfather)
-                        GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
-                }
+                if (GuessingMenu.Mapping.Contains(LayerEnum.Godfather))
+                    GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
             }
         }
 
@@ -140,15 +136,38 @@ public sealed class Guesser : Evil, IGuesser
         {
             GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
-            foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee)))
+            if (SyndicateSettings.SyndicateMax > 0 && SyndicateSettings.SyndicateMin > 0)
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive())
-                {
-                    GuessingMenu.Mapping.Add(layer);
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee))
+                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                    if (layer == LayerEnum.Rebel)
-                        GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
-                }
+                if (GuessingMenu.Mapping.Contains(LayerEnum.Rebel))
+                    GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
+            }
+        }
+
+        if (SyndicateSettings.SyndicateCount > 0)
+        {
+            GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
+
+            if (SyndicateSettings.SyndicateMax > 0 && SyndicateSettings.SyndicateMin > 0)
+            {
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee))
+                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
+
+                if (GuessingMenu.Mapping.Contains(LayerEnum.Rebel))
+                    GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
+            }
+        }
+
+        if (ApocalypseSettings.ApocalypseCount > 0)
+        {
+            GuessingMenu.Mapping.Add(LayerEnum.Cultist);
+
+            if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0)
+            {
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Cannibal, LayerEnum.Void, x => x != LayerEnum.Cultist && !RoleGenManager.AD.Contains(x))
+                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
             }
         }
 
@@ -156,12 +175,9 @@ public sealed class Guesser : Evil, IGuesser
         {
             foreach (var layer in GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer, x => x is not LayerEnum.Phantom))
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel) &&
-                    !GuessingMenu.Mapping.Contains(LayerEnum.Survivor)) || (layer == LayerEnum.Thief && GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac) &&
-                    !GuessingMenu.Mapping.Contains(LayerEnum.Thief)) || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter) &&
-                    !GuessingMenu.Mapping.Contains(LayerEnum.Troll)) || (layer == LayerEnum.Actor && GuessingMenu.Mapping.Contains(LayerEnum.Guesser) &&
-                    !GuessingMenu.Mapping.Contains(LayerEnum.Actor)) || (layer == LayerEnum.Jester && GuessingMenu.Mapping.Contains(LayerEnum.Executioner) &&
-                    !GuessingMenu.Mapping.Contains(LayerEnum.Jester)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel)) || (layer == LayerEnum.Thief &&
+                    GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac)) || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter)) || (layer == LayerEnum.Actor &&
+                    GuessingMenu.Mapping.Contains(LayerEnum.Guesser)) || (layer == LayerEnum.Jester && GuessingMenu.Mapping.Contains(LayerEnum.Executioner)))
                 {
                     GuessingMenu.Mapping.Add(layer);
                 }
@@ -178,6 +194,9 @@ public sealed class Guesser : Evil, IGuesser
 
             if (GuessingMenu.Mapping.Contains(LayerEnum.Dracula))
                 GuessingMenu.Mapping.Add(LayerEnum.Undead);
+
+            if (GuessingMenu.Mapping.Contains(LayerEnum.Zealot))
+                GuessingMenu.Mapping.Add(LayerEnum.Followers);
         }
     }
 
@@ -259,10 +278,10 @@ public sealed class Guesser : Evil, IGuesser
         var targetRole = TargetPlayer.GetRole();
         var something = "";
         var newRoleName = targetRole.Name;
-        var rolechanged = RoleName != newRoleName && !IsNullEmptyOrWhiteSpace(RoleName);
+        var roleChanged = RoleName != newRoleName && !IsNullEmptyOrWhiteSpace(RoleName);
         RoleName = newRoleName;
 
-        if (rolechanged)
+        if (roleChanged)
         {
             something = "Your target's role changed!";
             LettersGiven = 0;

@@ -155,7 +155,7 @@ public static class CustomAchievementManager
     {
         var id = CustomPlayer.Local.Data.DefaultOutfit.NamePlateId;
 
-        if (NameplateLoader.CustomNameplateRegistry.TryGetValue(id, out var cn))
+        if (NameplateLoader.CustomCosmeticRegistry.TryGetValue(id, out var cn))
             popup.nameplate.background.sprite = cn.ViewData.Image;
         else
         {

@@ -1,5 +1,4 @@
 using PowerTools;
-using static TownOfUsReworked.Loaders.HatLoader;
 
 namespace TownOfUsReworked.Patches.Cosmetics;
 
@@ -15,7 +14,7 @@ public static class HatPatches
             return true;
         } catch {}
 
-        if (!__instance.Hat || !CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
+        if (!__instance.Hat || !HatLoader.CustomCosmeticRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
             return true;
 
         if (!ch.ViewData)
@@ -75,7 +74,7 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.IsLoaded), MethodType.Getter)]
     public static bool Prefix(HatParent __instance, ref bool __result)
     {
-        if (!__instance.Hat || !CustomHatRegistry.ContainsKey(__instance.Hat.ProductId))
+        if (!__instance.Hat || !HatLoader.CustomCosmeticRegistry.ContainsKey(__instance.Hat.ProductId))
             return true;
 
         return !(__result = true);
@@ -90,7 +89,7 @@ public static class HatPatches
             return true;
         } catch {}
 
-        if (!__instance.Hat || !CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch) || !ch.ViewData)
+        if (!__instance.Hat || !HatLoader.CustomCosmeticRegistry.TryGetValue(__instance.Hat.ProductId, out var ch) || !ch.ViewData)
             return true;
 
         var asset = ch.ViewData;
@@ -142,7 +141,7 @@ public static class HatPatches
             return true;
         } catch {}
 
-        if (!CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch) || !ch.ViewData)
+        if (!HatLoader.CustomCosmeticRegistry.TryGetValue(__instance.Hat.ProductId, out var ch) || !ch.ViewData)
             return false;
 
         if (__instance.FrontLayer.sprite != ch.ViewData.ClimbImage && __instance.FrontLayer.sprite != ch.ViewData.FloorImage)
@@ -176,7 +175,7 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.SetHat), typeof(int)), HarmonyPrefix]
     public static bool SetHatPrefix(HatParent __instance, int color)
     {
-        if (!__instance.Hat || !CustomHatRegistry.ContainsKey(__instance.Hat.ProductId))
+        if (!__instance.Hat || !HatLoader.CustomCosmeticRegistry.ContainsKey(__instance.Hat.ProductId))
             return true;
 
         __instance.UnloadAsset();
@@ -198,7 +197,7 @@ public static class HatPatches
             return true;
         } catch {}
 
-        if (!CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
+        if (!HatLoader.CustomCosmeticRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
             return true;
 
         __instance.BackLayer.enabled = false;
@@ -220,7 +219,7 @@ public static class HatPatches
             return true;
         } catch {}
 
-        if (!CustomHatRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
+        if (!HatLoader.CustomCosmeticRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
             return true;
 
         if (!__instance.options.ShowForClimb)
@@ -240,9 +239,7 @@ public static class HatsTabOnEnablePatch
 
     private static void CreateHatPackage(List<HatData> hats, string packageName, ref float yStart, HatsTab __instance)
     {
-        var isDefaultPackage = packageName == "Innersloth";
-
-        if (!isDefaultPackage)
+        if (packageName != "Innersloth")
             hats = [ .. hats.OrderBy(x => x.name) ];
 
         var offset = yStart;
@@ -266,7 +263,7 @@ public static class HatsTabOnEnablePatch
         {
             var hat = hats[i];
             var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
-            var ypos = offset - (i / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset);
+            var ypos = offset - (i / __instance.NumPerRow * __instance.YOffset);
             var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
 
             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
@@ -278,7 +275,7 @@ public static class HatsTabOnEnablePatch
             else
                 colorChip.Button.OverrideOnClickListeners(() => __instance.SelectHat(hat));
 
-            if (CustomHatRegistry.ContainsKey(hat.ProductId))
+            if (HatLoader.CustomCosmeticRegistry.ContainsKey(hat.ProductId))
             {
                 var background = colorChip.transform.FindChild("Background");
                 var foreground = colorChip.transform.FindChild("ForeGround");
@@ -326,7 +323,7 @@ public static class HatsTabOnEnablePatch
         {
             var package = "Innersloth";
 
-            if (CustomHatRegistry.TryGetValue(data.ProductId, out var ch))
+            if (HatLoader.CustomCosmeticRegistry.TryGetValue(data.ProductId, out var ch))
                 package = ch.StreamOnly ? "Stream" : ch.Artist;
 
             if (IsNullEmptyOrWhiteSpace(package))
