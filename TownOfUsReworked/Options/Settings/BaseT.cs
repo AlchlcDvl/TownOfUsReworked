@@ -2,7 +2,18 @@ namespace TownOfUsReworked.Options;
 
 public abstract class Option<T>(CustomOptionType type) : Option(type)
 {
-    public T Value { get; set; }
+    private T value;
+    public T Value
+    {
+        get => value;
+        set
+        {
+            this.value = value;
+
+            if (Member is not null && !SelfMember)
+                Member.SetValue(null, value);
+        }
+    }
 
     protected Type TargetType { get; } = typeof(T);
 
@@ -17,7 +28,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
 
         try
         {
-            Value = member.GetValue<T>(null);
+            value = member.GetValue<T>(null);
         }
         catch
         {
@@ -36,13 +47,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         if (IsInGame() && !(ClientOnly || TownOfUsReworked.MciActive))
             return;
 
-        if (Member is null || SelfMember)
-            Value = value;
-        else
-        {
-            Member.SetValue(null, value);
-            Value = Member.GetValue<T>(null);
-        }
+        Value = value;
 
         if (!CustomPlayer.Local)
             return;

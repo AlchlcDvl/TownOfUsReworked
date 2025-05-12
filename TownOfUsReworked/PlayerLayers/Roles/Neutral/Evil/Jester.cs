@@ -16,7 +16,7 @@ public sealed class Jester : Evil
     public static bool JestEjectScreen = false;
 
     public bool VotedOut { get; set; }
-    private List<byte> ToHaunt { get; } = [];
+    private HashSet<byte> ToHaunt { get; } = [];
     private bool HasHaunted { get; set; }
     private CustomButton HauntButton { get; set; }
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !NeutralSettings.AvoidNeutralKingmakers;

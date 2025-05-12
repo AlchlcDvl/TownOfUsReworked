@@ -27,7 +27,7 @@ public sealed class Corrupted : Disposition
 
     private void Corrupt(PlayerControl target) => CorruptButton.StartCooldown(Interact(Player, target, true));
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (!GetLayers<Corrupted>().Any(x => x.Alive && x != this))
             return;

@@ -88,6 +88,7 @@ public abstract class Role : PlayerLayer, IRole
                 SubFaction.Cult => (CustomColorManager.Cult, "Λ"),
                 SubFaction.Cabal => (CustomColorManager.Cabal, "$"),
                 SubFaction.Reanimated => (CustomColorManager.Reanimated, "Σ"),
+                SubFaction.Followers => (CustomColorManager.Followers, "王"),
                 _ => (CustomColorManager.SubFaction, "φ")
             };
         }

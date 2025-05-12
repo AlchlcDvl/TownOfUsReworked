@@ -8,8 +8,6 @@ public sealed class DispositionGen : BaseGen
     private static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
     private static readonly LayerEnum[] NeutralDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
 
-    public override void Clear() => AllDispositions.Clear();
-
     public override void InitList()
     {
         if (IsList())
@@ -54,16 +52,9 @@ public sealed class DispositionGen : BaseGen
                 AllDispositions.AddMany(spawn.Clone, spawn.Count);
         }
 
-        int maxDisp = DispositionsSettings.MaxDispositions;
-        int minDisp = DispositionsSettings.MinDispositions;
         var playerCount = AllPlayers().Count(x => x != Pure);
-
-        while (maxDisp > playerCount)
-            maxDisp--;
-
-        while (minDisp > playerCount)
-            minDisp--;
-
+        var maxDisp = Mathf.Clamp(DispositionsSettings.MaxDispositions, 0, playerCount);
+        var minDisp = Mathf.Clamp(DispositionsSettings.MinDispositions, 0, playerCount);
         ModeFilters[GameModeSettings.GameMode].Filter(AllDispositions, GameModeSettings.IgnoreLayerCaps ? playerCount : URandom.RandomRangeInt(minDisp, maxDisp + 1), true);
     }
 

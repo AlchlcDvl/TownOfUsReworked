@@ -21,7 +21,7 @@ public sealed class Cryomaniac : NKilling, IDouser
     private CustomButton FreezeButton { get; set; }
     private CustomButton DouseButton { get; set; }
     private CustomButton KillButton { get; set; }
-    public List<byte> Doused { get; } = [];
+    public HashSet<byte> Doused { get; } = [];
     public bool FreezeUsed { get; set; }
     private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Neutral) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;

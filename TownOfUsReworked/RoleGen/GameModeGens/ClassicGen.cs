@@ -11,43 +11,21 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         if (Crew == 0)
             return;
 
-        int minCrew = CrewSettings.CrewMin;
-        int maxCrew = CrewSettings.CrewMax;
+        var minCrew = Mathf.Clamp(CrewSettings.CrewMin, 0, Crew);
+        var maxCrew = Mathf.Clamp(CrewSettings.CrewMax, 0, Crew);
 
         if (minCrew > maxCrew)
             (maxCrew, minCrew) = (minCrew, maxCrew);
-
-        while (maxCrew > Crew)
-            maxCrew--;
-
-        while (minCrew > Crew)
-            minCrew--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            int maxCi = CrewInvestigativeSettings.MaxCi;
-            int maxCs = CrewSupportSettings.MaxCs;
-            int maxCk = CrewKillingSettings.MaxCk;
-            int maxCrP = CrewProtectiveSettings.MaxCrP;
-            int maxCSv = CrewSovereignSettings.MaxCSv;
-
-            if (maxCi > RoleGenManager.CrewInvestigativeRoles.Count)
-                maxCi = RoleGenManager.CrewInvestigativeRoles.Count;
-
-            if (maxCs > RoleGenManager.CrewSupportRoles.Count)
-                maxCs = RoleGenManager.CrewSupportRoles.Count;
-
-            if (maxCk > RoleGenManager.CrewKillingRoles.Count)
-                maxCk = RoleGenManager.CrewKillingRoles.Count;
-
-            if (maxCrP > RoleGenManager.CrewProtectiveRoles.Count)
-                maxCrP = RoleGenManager.CrewProtectiveRoles.Count;
-
-            if (maxCSv > RoleGenManager.CrewSovereignRoles.Count)
-                maxCSv = RoleGenManager.CrewSovereignRoles.Count;
-
+            var maxCi = Mathf.Clamp(CrewInvestigativeSettings.MaxCi, 0, RoleGenManager.CrewInvestigativeRoles.Count);
+            var maxCs = Mathf.Clamp(CrewSupportSettings.MaxCs, 0, RoleGenManager.CrewSupportRoles.Count);
+            var maxCk = Mathf.Clamp(CrewKillingSettings.MaxCk, 0, RoleGenManager.CrewKillingRoles.Count);
+            var maxCrP = Mathf.Clamp(CrewProtectiveSettings.MaxCrP, 0, RoleGenManager.CrewProtectiveRoles.Count);
+            var maxCSv = Mathf.Clamp(CrewSovereignSettings.MaxCSv, 0, RoleGenManager.CrewSovereignRoles.Count);
             var maxCrewSum = maxCi + maxCk + maxCrP + maxCs + maxCSv;
 
             while (maxCrewSum > maxCrew && maxCrewSum > 0)
@@ -108,58 +86,30 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         while (CrewRoles.Count < Crew)
             CrewRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
-
-        RoleGenManager.CrewInvestigativeRoles.Clear();
-        RoleGenManager.CrewSupportRoles.Clear();
-        RoleGenManager.CrewProtectiveRoles.Clear();
-        RoleGenManager.CrewSovereignRoles.Clear();
-        RoleGenManager.CrewKillingRoles.Clear();
     }
 
     public override void InitIntList()
     {
         base.InitIntList();
 
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Intruder or Faction.Pandorica or Faction.Illuminati)) || Intruders == 0)
+        if (Intruders == 0)
             return;
 
-        int minInt = IntruderSettings.IntruderMin;
-        int maxInt = IntruderSettings.IntruderMax;
+        var minInt = Mathf.Clamp(IntruderSettings.IntruderMin, 0, Intruders);
+        var maxInt = Mathf.Clamp(IntruderSettings.IntruderMax, 0, Intruders);
 
         if (minInt > maxInt)
             (maxInt, minInt) = (minInt, maxInt);
-
-        while (maxInt > Intruders)
-            maxInt--;
-
-        while (minInt > Intruders)
-            minInt--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            int maxIc = IntruderConcealingSettings.MaxIc;
-            int maxID = IntruderDeceptionSettings.MaxID;
-            int maxIK = IntruderKillingSettings.MaxIK;
-            int maxIs = IntruderSupportSettings.MaxIs;
-            int maxIh = IntruderHeadSettings.MaxIh;
-
-            if (maxIc > RoleGenManager.IntruderConcealingRoles.Count)
-                maxIc = RoleGenManager.IntruderConcealingRoles.Count;
-
-            if (maxID > RoleGenManager.IntruderDeceptionRoles.Count)
-                maxID = RoleGenManager.IntruderDeceptionRoles.Count;
-
-            if (maxIK > RoleGenManager.IntruderKillingRoles.Count)
-                maxIK = RoleGenManager.IntruderKillingRoles.Count;
-
-            if (maxIs > RoleGenManager.IntruderSupportRoles.Count)
-                maxIs = RoleGenManager.IntruderSupportRoles.Count;
-
-            if (maxIh > RoleGenManager.IntruderHeadRoles.Count)
-                maxIh = RoleGenManager.IntruderHeadRoles.Count;
-
+            var maxIc = Mathf.Clamp(IntruderConcealingSettings.MaxIc, 0, RoleGenManager.IntruderConcealingRoles.Count);
+            var maxID = Mathf.Clamp(IntruderDeceptionSettings.MaxID, 0, RoleGenManager.IntruderDeceptionRoles.Count);
+            var maxIK = Mathf.Clamp(IntruderKillingSettings.MaxIK, 0, RoleGenManager.IntruderKillingRoles.Count);
+            var maxIs = Mathf.Clamp(IntruderSupportSettings.MaxIs, 0, RoleGenManager.IntruderSupportRoles.Count);
+            var maxIh = Mathf.Clamp(IntruderHeadSettings.MaxIh, 0, RoleGenManager.IntruderHeadRoles.Count);
             var maxIntSum = maxIc + maxID + maxIK + maxIs + maxIh;
 
             while (maxIntSum > maxInt && maxIntSum > 0)
@@ -220,12 +170,6 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         while (IntruderRoles.Count < Intruders)
             IntruderRoles.Add(GetSpawnItem(LayerEnum.Impostor));
-
-        RoleGenManager.IntruderConcealingRoles.Clear();
-        RoleGenManager.IntruderDeceptionRoles.Clear();
-        RoleGenManager.IntruderKillingRoles.Clear();
-        RoleGenManager.IntruderSupportRoles.Clear();
-        RoleGenManager.IntruderHeadRoles.Clear();
     }
 
     public override void InitNeutList()
@@ -235,39 +179,20 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         if (Neutrals == 0)
             return;
 
-        int minNeut = NeutralSettings.NeutralMin;
-        int maxNeut = NeutralSettings.NeutralMax;
+        var minNeut = Mathf.Clamp(NeutralSettings.NeutralMin, 0, Neutrals);
+        var maxNeut = Mathf.Clamp(NeutralSettings.NeutralMax, 0, Neutrals);
 
         if (minNeut > maxNeut)
             (maxNeut, minNeut) = (minNeut, maxNeut);
-
-        while (maxNeut > Neutrals)
-            maxNeut--;
-
-        while (minNeut > Neutrals)
-            minNeut--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            int maxNe = NeutralEvilSettings.MaxNe;
-            int maxNb = NeutralBenignSettings.MaxNb;
-            int maxNk = NeutralKillingSettings.MaxNk;
-            int maxNn = NeutralNeophyteSettings.MaxNn;
-
-            if (maxNe > RoleGenManager.NeutralEvilRoles.Count)
-                maxNe = RoleGenManager.NeutralEvilRoles.Count;
-
-            if (maxNb > RoleGenManager.NeutralBenignRoles.Count)
-                maxNb = RoleGenManager.NeutralBenignRoles.Count;
-
-            if (maxNk > RoleGenManager.NeutralKillingRoles.Count)
-                maxNk = RoleGenManager.NeutralKillingRoles.Count;
-
-            if (maxNn > RoleGenManager.NeutralNeophyteRoles.Count)
-                maxNn = RoleGenManager.NeutralNeophyteRoles.Count;
-
+            var maxNe = Mathf.Clamp(NeutralEvilSettings.MaxNe, 0, RoleGenManager.NeutralEvilRoles.Count);
+            var maxNb = Mathf.Clamp(NeutralBenignSettings.MaxNb, 0, RoleGenManager.NeutralBenignRoles.Count);
+            var maxNk = Mathf.Clamp(NeutralKillingSettings.MaxNk, 0, RoleGenManager.NeutralKillingRoles.Count);
+            var maxNn = Mathf.Clamp(NeutralNeophyteSettings.MaxNn, 0, RoleGenManager.NeutralNeophyteRoles.Count);
             var maxNeutSum = maxNe + maxNb + maxNk + maxNn;
 
             while (maxNeutSum > maxNeut && maxNeutSum > 0)
@@ -313,47 +238,43 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
             filter.Filter(RoleGenManager.NeutralNeophyteRoles, maxNn);
         }
 
-        NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles, RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles);
+        NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles);
+
+        if (BadGuysSettings.OrderOfCompliance)
+        {
+            var type = BadGuysSettings.ComplianceMembers;
+
+            if (type != ComplianceType.Killers)
+                NeutralRoles.AddRange(RoleGenManager.NeutralKillingRoles);
+
+            if (type != ComplianceType.Neophytes)
+                NeutralRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
+        }
 
         filter.Filter(NeutralRoles, GameModeSettings.IgnoreFactionCaps ? Neutrals : URandom.RandomRangeInt(minNeut, maxNeut + 1));
 
         while (NeutralRoles.Count < Neutrals)
             NeutralRoles.Add(GetSpawnItem(LayerEnum.Amnesiac));
-
-        RoleGenManager.NeutralBenignRoles.Clear();
-        RoleGenManager.NeutralEvilRoles.Clear();
-        RoleGenManager.NeutralKillingRoles.Clear();
-        RoleGenManager.NeutralNeophyteRoles.Clear();
     }
 
     public override void InitApocList()
     {
         base.InitApocList();
 
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Apocalypse or Faction.Pandorica or Faction.Illuminati)) || Apocalypse == 0)
+        if (Apocalypse == 0)
             return;
 
-        int minApoc = ApocalypseSettings.ApocalypseMin;
-        int maxApoc = ApocalypseSettings.ApocalypseMax;
+        var minApoc = Mathf.Clamp(ApocalypseSettings.ApocalypseMin, 0, Apocalypse);
+        var maxApoc = Mathf.Clamp(ApocalypseSettings.ApocalypseMax, 0, Apocalypse);
 
         if (minApoc > maxApoc)
             (maxApoc, minApoc) = (minApoc, maxApoc);
-
-        while (maxApoc > Apocalypse)
-            maxApoc--;
-
-        while (minApoc > Apocalypse)
-            minApoc--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            int maxAh = ApocalypseHarbingerSettings.MaxAh;
-
-            if (maxAh > RoleGenManager.ApocalypseHarbingerRoles.Count)
-                maxAh = RoleGenManager.ApocalypseHarbingerRoles.Count;
-
+            var maxAh = Mathf.Clamp(ApocalypseHarbingerSettings.MaxAh, 0, RoleGenManager.ApocalypseHarbingerRoles.Count);
             var maxApocSum = maxAh;
 
             while (maxApocSum > maxApoc && maxApocSum > 0)
@@ -373,50 +294,29 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         while (ApocalypseRoles.Count < Apocalypse)
             ApocalypseRoles.Add(GetSpawnItem(LayerEnum.Cultist));
-
-        RoleGenManager.ApocalypseHarbingerRoles.Clear();
     }
 
     public override void InitSynList()
     {
         base.InitSynList();
 
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Syndicate or Faction.Pandorica or Faction.Illuminati)) || Syndicate == 0)
+        if (Syndicate == 0)
             return;
 
-        int minSyn = SyndicateSettings.SyndicateMin;
-        int maxSyn = SyndicateSettings.SyndicateMax;
+        var minSyn = Mathf.Clamp(SyndicateSettings.SyndicateMin, 0, Syndicate);
+        var maxSyn = Mathf.Clamp(SyndicateSettings.SyndicateMax, 0, Syndicate);
 
         if (minSyn > maxSyn)
             (maxSyn, minSyn) = (minSyn, maxSyn);
-
-        while (maxSyn > Syndicate)
-            maxSyn--;
-
-        while (minSyn > Syndicate)
-            minSyn--;
 
         var filter = ModeFilters[GameModeSettings.GameMode];
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            int maxSSu = SyndicateSupportSettings.MaxSSu;
-            int maxSD = SyndicateDisruptionSettings.MaxSD;
-            int maxSyK = SyndicateKillingSettings.MaxSyK;
-            int maxSp = SyndicatePowerSettings.MaxSp;
-
-            if (maxSSu > RoleGenManager.SyndicateSupportRoles.Count)
-                maxSSu = RoleGenManager.SyndicateSupportRoles.Count;
-
-            if (maxSD > RoleGenManager.SyndicateDisruptionRoles.Count)
-                maxSD = RoleGenManager.SyndicateDisruptionRoles.Count;
-
-            if (maxSyK > RoleGenManager.SyndicateKillingRoles.Count)
-                maxSyK = RoleGenManager.SyndicateKillingRoles.Count;
-
-            if (maxSp > RoleGenManager.SyndicatePowerRoles.Count)
-                maxSp = RoleGenManager.SyndicatePowerRoles.Count;
-
+            var maxSSu = Mathf.Clamp(SyndicateSupportSettings.MaxSSu, 0, RoleGenManager.SyndicateSupportRoles.Count);
+            var maxSD = Mathf.Clamp(SyndicateDisruptionSettings.MaxSD, 0, RoleGenManager.SyndicateDisruptionRoles.Count);
+            var maxSyK = Mathf.Clamp(SyndicateKillingSettings.MaxSyK, 0, RoleGenManager.SyndicateKillingRoles.Count);
+            var maxSp = Mathf.Clamp(SyndicatePowerSettings.MaxSp, 0, RoleGenManager.SyndicatePowerRoles.Count);
             var maxSynSum = maxSSu + maxSD + maxSyK + maxSp;
 
             while (maxSynSum > maxSyn && maxSynSum > 0)
@@ -468,10 +368,90 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         while (SyndicateRoles.Count < Syndicate)
             SyndicateRoles.Add(GetSpawnItem(LayerEnum.Anarchist));
+    }
 
-        RoleGenManager.SyndicateSupportRoles.Clear();
-        RoleGenManager.SyndicateKillingRoles.Clear();
-        RoleGenManager.SyndicatePowerRoles.Clear();
-        RoleGenManager.SyndicateDisruptionRoles.Clear();
+    public override void PreFilter()
+    {
+        var filter = ModeFilters[GameModeSettings.GameMode];
+
+        if (BadGuysSettings.IlluminatiUnleashed)
+        {
+            var type = BadGuysSettings.IlluminatiMembers;
+
+            if (type == IlluminatiType.Syndicate)
+                IlluminatiRoles.AddRange(SyndicateRoles);
+
+            if (type == IlluminatiType.Intruders)
+                IlluminatiRoles.AddRange(IntruderRoles);
+
+            if (type == IlluminatiType.Apocalypse)
+                IlluminatiRoles.AddRange(ApocalypseRoles);
+
+            if (type == IlluminatiType.Killers)
+                IlluminatiRoles.AddRange(RoleGenManager.NeutralKillingRoles);
+
+            if (type == IlluminatiType.Neophytes)
+                IlluminatiRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
+
+            var minIll = Mathf.Clamp(IlluminatiSettings.IlluminatiMin, 0, IlluminatiSettings.IlluminatiCount);
+            var maxIll = Mathf.Clamp(IlluminatiSettings.IlluminatiMax, 0, IlluminatiSettings.IlluminatiCount);
+
+            if (minIll > maxIll)
+                (maxIll, minIll) = (minIll, maxIll);
+
+            filter.Filter(IlluminatiRoles, GameModeSettings.IgnoreFactionCaps ? IlluminatiSettings.IlluminatiCount : URandom.RandomRangeInt(minIll, maxIll + 1));
+
+            while (IlluminatiRoles.Count < IlluminatiSettings.IlluminatiCount)
+                IlluminatiRoles.Add(GetSpawnItem(GetRandomBaseEvil(Faction.Illuminati)));
+
+            return;
+        }
+
+        if (BadGuysSettings.OrderOfCompliance)
+        {
+            var type = BadGuysSettings.ComplianceMembers;
+
+            if (type == ComplianceType.Killers)
+                ComplianceRoles.AddRange(RoleGenManager.NeutralKillingRoles);
+
+            if (type == ComplianceType.Neophytes)
+                ComplianceRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
+
+            var minComp = Mathf.Clamp(ComplianceSettings.ComplianceMin, 0, ComplianceSettings.ComplianceCount);
+            var maxComp = Mathf.Clamp(ComplianceSettings.ComplianceMax, 0, ComplianceSettings.ComplianceCount);
+
+            if (minComp > maxComp)
+                (maxComp, minComp) = (minComp, maxComp);
+
+            filter.Filter(ComplianceRoles, GameModeSettings.IgnoreFactionCaps ? ComplianceSettings.ComplianceCount : URandom.RandomRangeInt(minComp, maxComp + 1));
+
+            while (ComplianceRoles.Count < ComplianceSettings.ComplianceCount)
+                ComplianceRoles.Add(GetSpawnItem(GetRandomBaseEvil(Faction.Compliance)));
+        }
+
+        if (BadGuysSettings.PandoricaOpens)
+        {
+            var type = BadGuysSettings.PandoricaMembers;
+
+            if (type == PandoricaType.Syndicate)
+                PandoricaRoles.AddRange(SyndicateRoles);
+
+            if (type == PandoricaType.Intruders)
+                PandoricaRoles.AddRange(IntruderRoles);
+
+            if (type == PandoricaType.Apocalypse)
+                PandoricaRoles.AddRange(ApocalypseRoles);
+
+            var minPand = Mathf.Clamp(PandoricaSettings.PandoricaMin, 0, PandoricaSettings.PandoricaCount);
+            var maxPand = Mathf.Clamp(PandoricaSettings.PandoricaMax, 0, PandoricaSettings.PandoricaCount);
+
+            if (minPand > maxPand)
+                (maxPand, minPand) = (minPand, maxPand);
+
+            filter.Filter(PandoricaRoles, GameModeSettings.IgnoreFactionCaps ? PandoricaSettings.PandoricaCount : URandom.RandomRangeInt(minPand, maxPand + 1));
+
+            while (PandoricaRoles.Count < PandoricaSettings.PandoricaCount)
+                PandoricaRoles.Add(GetSpawnItem(GetRandomBaseEvil(Faction.Pandorica)));
+        }
     }
 }

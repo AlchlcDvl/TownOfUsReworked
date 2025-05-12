@@ -21,7 +21,7 @@ public sealed class Mafia : Disposition
         Player.GetRole().Faction = Faction.Neutral;
     }
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (AllPlayers().Any(x => !x.HasDied() && !x.Is<Mafia>()))
             return;

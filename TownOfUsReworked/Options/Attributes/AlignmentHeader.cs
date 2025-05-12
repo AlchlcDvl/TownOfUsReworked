@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class AlignmentHeaderOptionAttribute(ListSlot alignment = ListSlot.None) : BaseHeaderOptionAttribute<AlignmentHeaderOption>(MultiMenu.LayerSubOptions)
+public sealed class AlignmentHeaderOptionAttribute(ListSlot alignment = ListSlot.None) : BaseHeaderOptionAttribute<AlignmentHeaderOption>(MultiMenu.AlignmentSubOptions)
 {
     private ListSlot Alignment { get; } = alignment;
 

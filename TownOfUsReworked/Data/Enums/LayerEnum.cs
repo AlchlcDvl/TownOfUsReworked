@@ -36,7 +36,6 @@ public enum LayerEnum : byte
     Arsonist,
     Betrayer,
     BountyHunter,
-    Cannibal,
     Cryomaniac,
     Dracula,
     Executioner,
@@ -55,6 +54,7 @@ public enum LayerEnum : byte
     Troll,
     Werewolf,
     Whisperer,
+    Zealot,
 
     Ambusher,
     Blackmailer,
@@ -92,7 +92,9 @@ public enum LayerEnum : byte
     Timekeeper,
     Warper,
 
+    Cannibal,
     Cultist,
+    Gluttony,
     Plaguebearer,
     Pestilence,
     Void,
@@ -156,5 +158,6 @@ public enum LayerEnum : byte
     Undead,
     Cult,
     Cabal,
-    Reanimated
+    Reanimated,
+    Followers
 }

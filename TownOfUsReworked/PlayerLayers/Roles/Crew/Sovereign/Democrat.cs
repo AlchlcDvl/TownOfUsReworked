@@ -12,7 +12,7 @@ public sealed class Democrat : Sovereign
     [ToggleOption]
     public static bool DemocratButton = true;
 
-    public List<byte> Campaigned { get; } = [];
+    public HashSet<byte> Campaigned { get; } = [];
     private CustomButton RevealButton { get; set; }
     private CustomButton CampaignButton { get; set; }
     private bool RoundOne { get; set; }

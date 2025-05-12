@@ -15,7 +15,7 @@ public sealed class Overlord : Disposition
     public override Func<string> Description => () => $"- Stay alive for {OverlordMeetingWinCount} rounds";
     public override bool Hidden => !OverlordKnows && !Dead;
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (!Alive || MeetingPatches.MeetingCount < OverlordMeetingWinCount)
             return;

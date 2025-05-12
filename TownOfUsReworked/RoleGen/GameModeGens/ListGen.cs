@@ -16,7 +16,7 @@ public sealed class ListGen : BaseRoleGen
             foreach (var id in entry.Value)
             {
                 if (id == ListSlot.None)
-                    break;
+                    continue;
 
                 var rateLimit = 0;
                 var cachedCount = AllRoles.Count;
@@ -25,7 +25,7 @@ public sealed class ListGen : BaseRoleGen
                 {
                     if (!id.TryCastToLayer(out var layer))
                     {
-                        layer = (LayerEnum)(id switch
+                        layer = id switch
                         {
                             ListSlot.CrewInvest => CI.Random(),
                             ListSlot.CrewSupport => CS.Random(),
@@ -33,69 +33,72 @@ public sealed class ListGen : BaseRoleGen
                             ListSlot.CrewKill => CK.Random(),
                             ListSlot.CrewSov => CSv.Random(),
                             ListSlot.CrewUtil => CU.Random(),
-                            ListSlot.RegularCrew => RegCrew.Random().Random(),
-                            ListSlot.PowerCrew => PowerCrew.Random().Random(),
-                            ListSlot.RandomCrew => RoleGenManager.Crew.Random().Random(),
-                            ListSlot.NonCrew => NonCrew.Random().Random().Random(),
+                            ListSlot.RegularCrew => RegCrew.Random(),
+                            ListSlot.PowerCrew => PowerCrew.Random(),
+                            ListSlot.RandomCrew => RoleGenManager.Crew.Random(),
+                            ListSlot.NonCrew => NonCrew.Random(),
                             ListSlot.NeutralKill or ListSlot.ComplianceKill => NK.Random(),
                             ListSlot.NeutralNeo or ListSlot.ComplianceNeo => NN.Random(),
                             ListSlot.NeutralBen => NB.Random(),
                             ListSlot.NeutralEvil => NE.Random(),
-                            ListSlot.RandomNeutral => RoleGenManager.Neutral.Random().Random(),
-                            ListSlot.RegularNeutral or ListSlot.NonCompNeutral => RegNeutral.Random().Random(),
-                            ListSlot.HarmfulNeutral or ListSlot.RandomCompliance => HarmNeutral.Random().Random(),
-                            ListSlot.NonNeutral => NonNeutral.Random().Random().Random(),
+                            ListSlot.RandomNeutral => RoleGenManager.Neutral.Random(),
+                            ListSlot.RegularNeutral => RegNeutral.Random(),
+                            ListSlot.HarmfulNeutral => HarmNeutral.Random(),
+                            ListSlot.NonNeutral => NonNeutral.Random(),
                             ListSlot.IntruderSupport => IS.Random(),
                             ListSlot.IntruderConceal => IC.Random(),
                             ListSlot.IntruderDecep => ID.Random(),
                             ListSlot.IntruderKill => IK.Random(),
                             ListSlot.IntruderUtil => IU.Random(),
                             ListSlot.IntruderHead => IH.Random(),
-                            ListSlot.RandomIntruder => RoleGenManager.Intruders.Random().Random(),
-                            ListSlot.RegularIntruder => RegIntruders.Random().Random(),
-                            ListSlot.PowerIntruder => PowerIntruders.Random().Random(),
-                            ListSlot.NonIntruder => NonIntruders.Random().Random().Random(),
+                            ListSlot.RandomIntruder => RoleGenManager.Intruders.Random(),
+                            ListSlot.RegularIntruder => RegIntruders.Random(),
+                            ListSlot.PowerIntruder => PowerIntruders.Random(),
+                            ListSlot.NonIntruder => NonIntruders.Random(),
                             ListSlot.SyndicateKill => SyK.Random(),
                             ListSlot.SyndicateSupport => SSu.Random(),
                             ListSlot.SyndicateDisrup => SD.Random(),
                             ListSlot.SyndicatePower => SP.Random(),
                             ListSlot.SyndicateUtil => SU.Random(),
-                            ListSlot.RandomSyndicate => RoleGenManager.Syndicate.Random().Random(),
-                            ListSlot.RegularSyndicate => RegSyndicate.Random().Random(),
-                            ListSlot.PowerSyndicate => PowerSyndicate.Random().Random(),
-                            ListSlot.NonSyndicate => NonSyndicate.Random().Random().Random(),
+                            ListSlot.RandomSyndicate => RoleGenManager.Syndicate.Random(),
+                            ListSlot.RegularSyndicate => RegSyndicate.Random(),
+                            ListSlot.PowerSyndicate => PowerSyndicate.Random(),
+                            ListSlot.NonSyndicate => NonSyndicate.Random(),
                             ListSlot.ApocHarb => AH.Random(),
-                            ListSlot.NonApocalypse => NonApocalypse.Random().Random().Random(),
-                            ListSlot.RandomApocalypse => RoleGenManager.Apocalypse.Random().Random(),
-                            ListSlot.PandoraKill => PK.Random(),
-                            ListSlot.PandoraConceal => PC.Random(),
-                            ListSlot.PandoraDecep => PDe.Random(),
-                            ListSlot.PandoraDisrup => PDi.Random(),
-                            ListSlot.PandoraPower => PP.Random(),
-                            ListSlot.PandoraSupport => PS.Random(),
-                            ListSlot.PandoraHead => PH.Random(),
-                            ListSlot.PandoraUtil => PU.Random(),
-                            ListSlot.RandomPandora => Pandorica.Random().Random(),
-                            ListSlot.RegularPandora => RegPandorica.Random().Random(),
-                            ListSlot.PowerPandora => PowerPandorica.Random().Random(),
-                            ListSlot.NonPandora => NonPandorica.Random().Random().Random(),
-                            ListSlot.NonCompliance => NonCompliance.Random().Random().Random(),
-                            ListSlot.IlluminatiKill => IlK.Random(),
-                            ListSlot.IlluminatiConceal => IlC.Random(),
-                            ListSlot.IlluminatiDecep => IlDe.Random(),
-                            ListSlot.IlluminatiDisrup => IlDi.Random(),
-                            ListSlot.IlluminatiPower => IP.Random(),
-                            ListSlot.IlluminatiSupport => IlS.Random(),
-                            ListSlot.IlluminatiHead => IlHe.Random(),
-                            ListSlot.IlluminatiUtil => IlU.Random(),
-                            ListSlot.IlluminatiHarb => IlHa.Random(),
-                            ListSlot.IlluminatiNeo => IN.Random(),
-                            ListSlot.RandomIlluminati => Illuminati.Random().Random(),
-                            ListSlot.RegularIlluminati => RegIlluminati.Random().Random(),
-                            ListSlot.PowerIlluminati => PowerIlluminati.Random().Random(),
-                            ListSlot.NonIlluminati => NonIlluminati.Random().Random().Random(),
-                            _ => Alignments.Random().Random(),
-                        });
+                            ListSlot.NonApocalypse => NonApocalypse.Random(),
+                            ListSlot.RandomApocalypse => RoleGenManager.Apocalypse.Random(),
+                            ListSlot.NonCompNeutral => NonCompNeutral().Random(),
+                            ListSlot.RandomCompliance => Compliance().Random(),
+                            ListSlot.PandoraKill => PK().Random(),
+                            ListSlot.PandoraConceal => PC().Random(),
+                            ListSlot.PandoraDecep => PDe().Random(),
+                            ListSlot.PandoraDisrup => PDi().Random(),
+                            ListSlot.PandoraPower => PP().Random(),
+                            ListSlot.PandoraSupport => PS().Random(),
+                            ListSlot.PandoraHead => PHa().Random(),
+                            ListSlot.PandoraUtil => PU().Random(),
+                            ListSlot.RandomPandora => Pandorica().Random(),
+                            ListSlot.RegularPandora => RegPandorica().Random(),
+                            ListSlot.PowerPandora => PowerPandorica().Random(),
+                            ListSlot.NonPandora => NonPandorica().Random(),
+                            ListSlot.NonCompliance => NonCompliance().Random(),
+                            ListSlot.IlluminatiKill => IlK().Random(),
+                            ListSlot.IlluminatiConceal => IlC().Random(),
+                            ListSlot.IlluminatiDecep => IlDe().Random(),
+                            ListSlot.IlluminatiDisrup => IlDi().Random(),
+                            ListSlot.IlluminatiPower => IP().Random(),
+                            ListSlot.IlluminatiSupport => IlS().Random(),
+                            ListSlot.IlluminatiHead => IlHe().Random(),
+                            ListSlot.IlluminatiUtil => IlU().Random(),
+                            ListSlot.IlluminatiHarb => IlHa().Random(),
+                            ListSlot.IlluminatiNeo => IN().Random(),
+                            ListSlot.RandomIlluminati => Illuminati().Random(),
+                            ListSlot.RegularIlluminati => RegIlluminati().Random(),
+                            ListSlot.PowerIlluminati => PowerIlluminati().Random(),
+                            ListSlot.NonIlluminati => NonIlluminati().Random(),
+                            ListSlot.NonIllNeutral => NonIlluminati().Random(),
+                            _ => Alignments.Random(),
+                        };
                     }
 
                     if (CannotAdd(layer, AllRoles))
@@ -118,5 +121,5 @@ public sealed class ListGen : BaseRoleGen
 
     public static bool CannotAdd(LayerEnum id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryOption.IsBanned(id.CastToSlot()) || (id == LayerEnum.Anarchist &&
         GameModeSettings.BanAnarchist) || (id == LayerEnum.Crewmate && GameModeSettings.BanCrewmate) || (id == LayerEnum.Impostor && GameModeSettings.BanImpostor) || (id == LayerEnum.Murderer &&
-        GameModeSettings.BanMurderer) || (id == LayerEnum.Cultist && GameModeSettings.BanCultist);
+        GameModeSettings.BanMurderer) || (id == LayerEnum.Cultist && GameModeSettings.BanCultist) || (id == LayerEnum.Zealot && GameModeSettings.BanZealot);
 }

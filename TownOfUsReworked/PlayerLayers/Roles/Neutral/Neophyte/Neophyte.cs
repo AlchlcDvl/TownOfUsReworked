@@ -4,14 +4,16 @@ public abstract class Neophyte : Neutral
 {
     public override bool AffectedByLights => base.AffectedByLights && !NeutralNeophyteSettings.NnHaveImpVision;
 
-    public List<byte> Members { get; } = [];
+    public HashSet<byte> Members { get; } = [];
 
     protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Neophyte;
-        Faction = BadGuysSettings.IlluminatiUnleashed ? Faction.Illuminati : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes ?
-            Faction.Compliance : Faction.Neutral);
+        Faction = BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Neophytes
+            ? Faction.Illuminati
+            : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes
+                ? Faction.Compliance : Faction.Neutral);
         Members.Clear();
         Members.Add(PlayerId);
     }

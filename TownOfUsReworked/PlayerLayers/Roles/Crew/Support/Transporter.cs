@@ -62,7 +62,7 @@ public sealed class Transporter : Crew, IMover
                 yield break;
         }
 
-        References.Moving.Add(transport1.PlayerId, transport2.PlayerId);
+        References.Moving.AddRange(transport1.PlayerId, transport2.PlayerId);
 
         if (transport1.inVent)
         {

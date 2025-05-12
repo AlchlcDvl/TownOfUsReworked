@@ -8,8 +8,6 @@ public sealed class AbilityGen : BaseGen
     private static readonly LayerEnum[] Tasked = [ LayerEnum.Insider, LayerEnum.Multitasker ];
     private static readonly LayerEnum[] GlobalAb = [ LayerEnum.Radar, LayerEnum.Tiebreaker ];
 
-    public override void Clear() => AllAbilities.Clear();
-
     public override void InitList()
     {
         if (IsList())
@@ -54,16 +52,9 @@ public sealed class AbilityGen : BaseGen
                 AllAbilities.AddMany(spawn.Clone, spawn.Count);
         }
 
-        int maxAb = AbilitiesSettings.MaxAbilities;
-        int minAb = AbilitiesSettings.MinAbilities;
         var players = GameData.Instance.PlayerCount;
-
-        while (maxAb > players)
-            maxAb--;
-
-        while (minAb > players)
-            minAb--;
-
+        var maxAb = Mathf.Clamp(AbilitiesSettings.MaxAbilities, 0, players);
+        var minAb = Mathf.Clamp(AbilitiesSettings.MinAbilities, 0, players);
         ModeFilters[GameModeSettings.GameMode].Filter(AllAbilities, GameModeSettings.IgnoreLayerCaps ? players : URandom.RandomRangeInt(minAb, maxAb + 1), true);
     }
 

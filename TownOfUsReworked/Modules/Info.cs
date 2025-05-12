@@ -76,6 +76,7 @@ public sealed class SubFactionInfo(SubFaction sub, bool footer = false) : Info($
     SubFaction.Reanimated => CustomColorManager.Reanimated,
     SubFaction.Cabal => CustomColorManager.Cabal,
     SubFaction.Cult => CustomColorManager.Cult,
+    SubFaction.Followers => CustomColorManager.Followers,
     _ => CustomColorManager.SubFaction
 }, footer)
 {
@@ -85,6 +86,7 @@ public sealed class SubFactionInfo(SubFaction sub, bool footer = false) : Info($
         SubFaction.Reanimated => "Σ",
         SubFaction.Cabal => "$",
         SubFaction.Cult => "Λ",
+        SubFaction.Followers => "王",
         _ => "φ"
     };
 

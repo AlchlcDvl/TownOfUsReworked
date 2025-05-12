@@ -36,7 +36,7 @@ public sealed class Defector : Disposition
         TurnSides(faction);
     }
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (Side != Faction.Neutral || AllPlayers().Any(x => !x.HasDied() && !x.Is<Defector>() && !x.Is(Faction.Neutral)))
             return;
@@ -47,16 +47,6 @@ public sealed class Defector : Disposition
 
     private Faction GetFactionChoice()
     {
-        if (BadGuysSettings.IlluminatiUnleashed)
-        {
-            return DefectorFaction switch
-            {
-                DefectorFaction.Neutral or DefectorFaction.NonCrew => Faction.Neutral,
-                DefectorFaction.Crew or DefectorFaction.NonNeutral => Faction.Crew,
-                _ => Side
-            };
-        }
-
         var factions = new List<Faction>();
 
         switch (DefectorFaction)
@@ -98,18 +88,45 @@ public sealed class Defector : Disposition
             }
         }
 
-        if (BadGuysSettings.OrderOfCompliance)
+        if (BadGuysSettings.IlluminatiUnleashed)
         {
-            factions.Add(Faction.Compliance);
+            factions.Add(Faction.Illuminati);
 
-            if (BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
-                factions.RemoveAll(Faction.Neutral);
+            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Killers || BadGuysSettings.IlluminatiMembers == IlluminatiType.Neophytes)
+                factions.Remove(Faction.Neutral);
+
+            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders)
+                factions.Remove(Faction.Intruder);
+
+            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate)
+                factions.Remove(Faction.Syndicate);
+
+            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse)
+                factions.Remove(Faction.Apocalypse);
         }
-
-        if (BadGuysSettings.PandoricaOpens)
+        else
         {
-            factions.RemoveAll(Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
-            factions.Add(Faction.Pandorica);
+            if (BadGuysSettings.OrderOfCompliance)
+            {
+                factions.Add(Faction.Compliance);
+
+                if (BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
+                    factions.Remove(Faction.Neutral);
+            }
+
+            if (BadGuysSettings.PandoricaOpens)
+            {
+                factions.Add(Faction.Pandorica);
+
+                if (BadGuysSettings.PandoricaMembers == PandoricaType.Intruders)
+                    factions.Remove(Faction.Intruder);
+
+                if (BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate)
+                    factions.Remove(Faction.Syndicate);
+
+                if (BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse)
+                    factions.Remove(Faction.Apocalypse);
+            }
         }
 
         var players = AllPlayers();

@@ -103,7 +103,7 @@ public sealed class Hunter : HideAndSeek
             CheckEndGame.CheckPlayerWins();
     }
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (AllPlayers().Any(x => !x.HasDied() && x.Is<Hunted>()))
             return;

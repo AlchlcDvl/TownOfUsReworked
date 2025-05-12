@@ -18,7 +18,7 @@ public sealed class Rivals : Paired
     protected override bool RevealRole => RivalsRoles;
     protected override ChatChannel Channel => ChatChannel.Rivals;
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (AllPlayers().Count(x => !x.HasDied()) <= 2 &&  IsWinningRival)
             return;

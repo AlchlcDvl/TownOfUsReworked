@@ -2,5 +2,5 @@
 
 public interface IShaman : IPlayerLayer
 {
-    List<byte> MediatedPlayers { get; }
+    HashSet<byte> MediatedPlayers { get; }
 }

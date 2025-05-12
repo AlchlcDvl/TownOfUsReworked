@@ -16,6 +16,7 @@ public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : 
         ID = $"CustomOption.{Name}";
         Order = type.GetCustomAttribute<SortedAttribute>()?.Order ?? -1;
         AllOptions.Add(this);
+        var optionType = typeof(Option);
 
         foreach (var member in GetOrderedOptions(type))
         {
@@ -33,7 +34,7 @@ public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : 
                     _ => null
                 };
 
-                if (!typeof(Option).IsAssignableFrom(innerType))
+                if (!optionType.IsAssignableFrom(innerType))
                     continue;
 
                 opt = member.GetValue<Option>(null);

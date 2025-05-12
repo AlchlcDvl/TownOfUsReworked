@@ -7,8 +7,6 @@ public sealed class ModifierGen : BaseGen
     private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.Vip, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
         LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];
 
-    public override void Clear() => AllModifiers.Clear();
-
     public override void InitList()
     {
         if (IsList())
@@ -53,16 +51,9 @@ public sealed class ModifierGen : BaseGen
                 AllModifiers.AddMany(spawn.Clone, spawn.Count);
         }
 
-        int maxMod = ModifiersSettings.MaxModifiers;
-        int minMod = ModifiersSettings.MinModifiers;
         var players = GameData.Instance.PlayerCount;
-
-        while (maxMod > players)
-            maxMod--;
-
-        while (minMod > players)
-            minMod--;
-
+        var maxMod = Mathf.Clamp(ModifiersSettings.MaxModifiers, 0, players);
+        var minMod = Mathf.Clamp(ModifiersSettings.MinModifiers, 0, players);
         ModeFilters[GameModeSettings.GameMode].Filter(AllModifiers, GameModeSettings.IgnoreLayerCaps ? players : URandom.RandomRangeInt(minMod, maxMod + 1), true);
     }
 

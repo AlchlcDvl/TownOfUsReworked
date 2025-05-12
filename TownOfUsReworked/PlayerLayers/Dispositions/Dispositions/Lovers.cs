@@ -30,7 +30,7 @@ public sealed class Lovers : Paired
             Other.Suicide();
     }
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (AllPlayers().Count(x => !x.HasDied()) <= 3 && LoversAlive)
             return;

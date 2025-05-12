@@ -146,7 +146,7 @@ public static class ChatPatches
         }
     }
 
-    public static readonly List<byte> Ignored = [];
+    public static readonly HashSet<byte> Ignored = [];
 
     [HarmonyPatch(nameof(ChatController.AddChat)), HarmonyPrefix]
     public static bool AddChatPrefix(ChatController __instance, PlayerControl sourcePlayer, string chatText)

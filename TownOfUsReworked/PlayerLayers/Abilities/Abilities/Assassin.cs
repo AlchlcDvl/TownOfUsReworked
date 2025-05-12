@@ -206,6 +206,12 @@ public abstract class Assassin : Ability, IGuesser
                 GuessingMenu.Mapping.Add(LayerEnum.Cult);
             }
 
+            if (RoleGenManager.GetSpawnItem(LayerEnum.Zealot).IsActive() && !Player.Is(SubFaction.Followers))
+            {
+                GuessingMenu.Mapping.Add(LayerEnum.Zealot);
+                GuessingMenu.Mapping.Add(LayerEnum.Followers);
+            }
+
             // Add certain Neutral roles if enabled
             if (AssassinGuessNeutralBenign)
             {

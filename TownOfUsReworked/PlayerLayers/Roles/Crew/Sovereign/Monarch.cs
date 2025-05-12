@@ -23,8 +23,8 @@ public sealed class Monarch : Sovereign
 
     private bool RoundOne { get; set; }
     private CustomButton KnightingButton { get; set; }
-    public List<byte> ToBeKnighted { get; } = [];
-    public List<byte> Knighted { get; } = [];
+    public HashSet<byte> ToBeKnighted { get; } = [];
+    public HashSet<byte> Knighted { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Monarch;
     public override LayerEnum Type => LayerEnum.Monarch;

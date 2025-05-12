@@ -253,6 +253,7 @@ public static class CustomStatsManager
                 SubFaction.Cabal => LayerEnum.Cabal,
                 SubFaction.Cult => LayerEnum.Cult,
                 SubFaction.Reanimated => LayerEnum.Reanimated,
+                SubFaction.Followers => LayerEnum.Followers,
                 _ => LayerEnum.None
             };
             IncrementStat(type);

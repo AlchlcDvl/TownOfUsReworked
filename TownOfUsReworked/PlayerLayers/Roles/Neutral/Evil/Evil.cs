@@ -18,7 +18,7 @@ public abstract class Evil : Neutral
         Alignment = Alignment.Evil;
     }
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (!HasWon)
             return;

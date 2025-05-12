@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Data;
 
 public static class References
 {
-    public static readonly List<byte> RecentlyKilled = [];
-    public static readonly List<byte> Cleaned = [];
-    public static readonly List<byte> Moving = [];
+    public static readonly HashSet<byte> RecentlyKilled = [];
+    public static readonly HashSet<byte> Cleaned = [];
+    public static readonly HashSet<byte> Moving = [];
     public static readonly Dictionary<byte, byte> CachedMorphs = [];
     public static readonly List<DeadPlayer> KilledPlayers = [];
     public static readonly Dictionary<byte, float> TransitioningSize = []; // Wheeze
@@ -261,7 +261,6 @@ public static class References
         { LayerEnum.Arsonist, new(typeof(Arsonist), CustomColorManager.Arsonist, LayerEnum.Arsonist) },
         { LayerEnum.Betrayer, new(typeof(Betrayer), CustomColorManager.Betrayer, LayerEnum.Betrayer) },
         { LayerEnum.BountyHunter, new(typeof(BountyHunter), CustomColorManager.BountyHunter, LayerEnum.BountyHunter) },
-        { LayerEnum.Cannibal, new(typeof(Cannibal), CustomColorManager.Cannibal, LayerEnum.Cannibal) },
         { LayerEnum.Cryomaniac, new(typeof(Cryomaniac), CustomColorManager.Cryomaniac, LayerEnum.Cryomaniac) },
         { LayerEnum.Dracula, new(typeof(Dracula), CustomColorManager.Dracula, LayerEnum.Dracula) },
         { LayerEnum.Executioner, new(typeof(Executioner), CustomColorManager.Executioner, LayerEnum.Executioner) },
@@ -280,6 +279,7 @@ public static class References
         { LayerEnum.Troll, new(typeof(Troll), CustomColorManager.Troll, LayerEnum.Troll) },
         { LayerEnum.Werewolf, new(typeof(Werewolf), CustomColorManager.Werewolf, LayerEnum.Werewolf) },
         { LayerEnum.Whisperer, new(typeof(Whisperer), CustomColorManager.Whisperer, LayerEnum.Whisperer) },
+        { LayerEnum.Zealot, new(typeof(Zealot), CustomColorManager.Zealot, LayerEnum.Zealot) },
         { LayerEnum.Ambusher, new(typeof(Ambusher), CustomColorManager.Ambusher, LayerEnum.Ambusher) },
         { LayerEnum.Blackmailer, new(typeof(Blackmailer), CustomColorManager.Blackmailer, LayerEnum.Blackmailer) },
         { LayerEnum.Camouflager, new(typeof(Camouflager), CustomColorManager.Camouflager, LayerEnum.Camouflager) },
@@ -314,6 +314,7 @@ public static class References
         { LayerEnum.Stalker, new(typeof(Stalker), CustomColorManager.Stalker, LayerEnum.Stalker) },
         { LayerEnum.Timekeeper, new(typeof(Timekeeper), CustomColorManager.Timekeeper, LayerEnum.Timekeeper) },
         { LayerEnum.Warper, new(typeof(Warper), CustomColorManager.Warper, LayerEnum.Warper) },
+        { LayerEnum.Cannibal, new(typeof(Cannibal), CustomColorManager.Cannibal, LayerEnum.Cannibal) },
         { LayerEnum.Cultist, new(typeof(Cultist), CustomColorManager.Apocalypse, LayerEnum.Cultist) },
         { LayerEnum.Pestilence, new(typeof(Pestilence), CustomColorManager.Pestilence, LayerEnum.Pestilence) },
         { LayerEnum.Plaguebearer, new(typeof(Plaguebearer), CustomColorManager.Plaguebearer, LayerEnum.Plaguebearer) },
@@ -367,6 +368,7 @@ public static class References
         { LayerEnum.Cabal, new(null, CustomColorManager.Cabal, LayerEnum.Cabal) },
         { LayerEnum.Cult, new(null, CustomColorManager.Cult, LayerEnum.Cult) },
         { LayerEnum.Reanimated, new(null, CustomColorManager.Reanimated, LayerEnum.Reanimated) },
+        { LayerEnum.Followers, new(null, CustomColorManager.Followers, LayerEnum.Followers) },
         { LayerEnum.Undead, new(null, CustomColorManager.Undead, LayerEnum.Undead) }
     };
     public static readonly string[] Splashes =

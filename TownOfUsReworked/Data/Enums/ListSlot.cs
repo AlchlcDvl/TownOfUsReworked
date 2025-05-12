@@ -33,7 +33,6 @@ public enum ListSlot : byte
     Amnesiac,
     Arsonist,
     BountyHunter,
-    Cannibal,
     Cryomaniac,
     Dracula,
     Executioner,
@@ -51,6 +50,7 @@ public enum ListSlot : byte
     Troll,
     Werewolf,
     Whisperer,
+    Zealot,
 
     Ambusher,
     Blackmailer,
@@ -83,6 +83,8 @@ public enum ListSlot : byte
     Timekeeper,
     Warper,
 
+    Cannibal,
+    Cultist,
     Plaguebearer,
 
     Astral,

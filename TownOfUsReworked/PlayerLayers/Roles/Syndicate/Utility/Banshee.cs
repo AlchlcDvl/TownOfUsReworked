@@ -10,7 +10,7 @@ public sealed class Banshee : Syndicate, IGhosty
     private static Number ScreamDur = 10;
 
     private CustomButton ScreamButton { get; set; }
-    public List<byte> Blocked { get; } = [];
+    public HashSet<byte> Blocked { get; } = [];
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 

@@ -28,7 +28,7 @@ public static class CheckEndGame
             });
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
             winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
-            CallRpc(CustomRPC.Misc, [MiscRPC.WinLose, WinState, .. winners.Distinct()]);
+            CallRpc(CustomRPC.Misc, [MiscRPC.WinLose, WinState, .. winners]);
             var somethingReallyNice = Monos.Range.AllItems;
         }
 
@@ -49,7 +49,7 @@ public static class CheckEndGame
     public static void CheckPlayerWins()
     {
         // Only run the subsequent checks if and only if no previous condition as been fulfilled
-        var winnerIds = new List<byte>();
+        var winnerIds = new HashSet<byte>();
 
         if (WinState == WinLose.None)
             DetectStalemate();
@@ -72,7 +72,7 @@ public static class CheckEndGame
         if (WinState != WinLose.None)
         {
             winnerIds.Select(x => PlayerById(x)).Do(x => x.GetLayers().Do(y => y.Winner = true));
-            CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds.Distinct() ]);
+            CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds ]);
         }
     }
 
@@ -127,12 +127,13 @@ public static class CheckEndGame
             SubFaction.Undead => WinLose.UndeadWins,
             SubFaction.Reanimated => WinLose.ReanimatedWins,
             SubFaction.Cult => WinLose.CultWins,
+            SubFaction.Followers => WinLose.FollowersWin,
             _ => WinLose.NobodyWins
         };
-        CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. players.Where(factionCheck).Distinct() ]);
+        CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. players.Where(factionCheck) ]);
     }
 
-    private static void CheckFactionWin(List<byte> winnerIds)
+    private static void CheckFactionWin(HashSet<byte> winnerIds)
     {
         var winner = FactionsToKill.FirstOrDefault(CheckFactionWin);
 
@@ -143,7 +144,7 @@ public static class CheckEndGame
         }
     }
 
-    private static void CheckSubFactionWin(List<byte> winnerIds)
+    private static void CheckSubFactionWin(HashSet<byte> winnerIds)
     {
         if (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes)
             return;
@@ -157,7 +158,7 @@ public static class CheckEndGame
         }
     }
 
-    private static void CheckNeutralKillers(List<byte> winnerIds)
+    private static void CheckNeutralKillers(HashSet<byte> winnerIds)
     {
         if (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
             return;

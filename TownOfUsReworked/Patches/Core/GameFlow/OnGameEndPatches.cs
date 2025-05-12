@@ -142,7 +142,7 @@ public static class OnGameEndPatches
                     WinLose.ActorWins => ("Actor Wins", "IntruderWin", CustomColorManager.Actor),
                     WinLose.JesterWins => ("Jester Wins", "IntruderWin", CustomColorManager.Jester),
                     WinLose.ExecutionerWins => ("Executioner Wins", "IntruderWin", CustomColorManager.Executioner),
-                    WinLose.CannibalWins => ("Cannibal Wins", "IntruderWin", CustomColorManager.Cannibal),
+                    WinLose.FollowersWin => ("Followers Win", "IntruderWin", CustomColorManager.Followers),
                     WinLose.TrollWins => ("Troll Wins", "IntruderWin", CustomColorManager.Troll),
                     WinLose.PhantomWins => ("Phantom Wins", "IntruderWin", CustomColorManager.Phantom),
                     WinLose.GuesserWins => ("Guesser Wins", "IntruderWin", CustomColorManager.Guesser),

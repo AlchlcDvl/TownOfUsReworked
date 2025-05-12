@@ -99,7 +99,7 @@ public sealed class LayerHandler : RoleBehaviour
                 WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
                 var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
                 winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
-                CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners.Distinct() ]);
+                CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners ]);
             }
             else if (CustomRole is Runner { TasksDone: true })
             {

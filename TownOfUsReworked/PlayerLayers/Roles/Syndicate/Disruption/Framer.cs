@@ -11,7 +11,7 @@ public sealed class Framer : Syndicate
 
     private CustomButton FrameButton { get; set; }
     private CustomButton RadialFrameButton { get; set; }
-    public List<byte> Framed { get; } = [];
+    public HashSet<byte> Framed { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Framer;
     public override LayerEnum Type => LayerEnum.Framer;

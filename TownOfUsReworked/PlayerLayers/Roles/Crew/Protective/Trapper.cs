@@ -18,7 +18,7 @@ public sealed class Trapper : Crew, ITrapper
     private CustomButton BuildButton { get; set; }
     private CustomButton TrapButton { get; set; }
     public bool Building { get ; private set; }
-    public List<byte> Trapped { get; } = [];
+    public HashSet<byte> Trapped { get; } = [];
     private List<Role> TriggeredRoles { get; } = [];
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }

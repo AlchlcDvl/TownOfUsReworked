@@ -122,7 +122,7 @@ public static class SetPostmortals
         player.MyPhysics.RpcEnterVent(startingVent.Id);
     }
 
-    public static readonly List<byte> WillBeRevealers = [];
+    public static readonly HashSet<byte> WillBeRevealers = [];
     public static byte Revealers;
 
     private static void SetRevealers(PlayerControl dead, bool ejection)
@@ -133,13 +133,13 @@ public static class SetPostmortals
         TryAddRevealer(dead);
         var remove = new List<byte>();
 
-        foreach (var revid in WillBeRevealers)
+        foreach (var revId in WillBeRevealers)
         {
-            var rev = PlayerById(revid);
+            var rev = PlayerById(revId);
 
             if (!rev.HasDied())
             {
-                remove.Add(revid);
+                remove.Add(revId);
                 continue;
             }
 
@@ -167,7 +167,7 @@ public static class SetPostmortals
             WillBeRevealers.Add(dead.PlayerId);
     }
 
-    public static readonly List<byte> WillBePhantoms = [];
+    public static readonly HashSet<byte> WillBePhantoms = [];
     public static byte Phantoms;
 
     private static void SetPhantoms(PlayerControl dead, bool ejection)
@@ -178,13 +178,13 @@ public static class SetPostmortals
         TryAddPhantom(dead);
         var remove = new List<byte>();
 
-        foreach (var phanid in WillBePhantoms)
+        foreach (var phanId in WillBePhantoms)
         {
-            var phan = PlayerById(phanid);
+            var phan = PlayerById(phanId);
 
             if (!phan.HasDied())
             {
-                remove.Add(phanid);
+                remove.Add(phanId);
                 continue;
             }
 
@@ -209,7 +209,7 @@ public static class SetPostmortals
             WillBePhantoms.Add(dead.PlayerId);
     }
 
-    public static readonly List<byte> WillBeBanshees = [];
+    public static readonly HashSet<byte> WillBeBanshees = [];
     public static byte Banshees;
 
     private static void SetBanshees(PlayerControl dead, bool ejection)
@@ -220,13 +220,13 @@ public static class SetPostmortals
         TryAddBanshee(dead);
         var remove = new List<byte>();
 
-        foreach (var banid in WillBeBanshees)
+        foreach (var banId in WillBeBanshees)
         {
-            var ban = PlayerById(banid);
+            var ban = PlayerById(banId);
 
             if (!ban.HasDied())
             {
-                remove.Add(banid);
+                remove.Add(banId);
                 continue;
             }
 
@@ -251,7 +251,7 @@ public static class SetPostmortals
             WillBeBanshees.Add(dead.PlayerId);
     }
 
-    public static readonly List<byte> WillBeGhouls = [];
+    public static readonly HashSet<byte> WillBeGhouls = [];
     public static byte Ghouls;
 
     private static void SetGhouls(PlayerControl dead, bool ejection)
@@ -262,13 +262,13 @@ public static class SetPostmortals
         TryAddGhoul(dead);
         var remove = new List<byte>();
 
-        foreach (var ghoulid in WillBeGhouls)
+        foreach (var ghoulId in WillBeGhouls)
         {
-            var ghoul = PlayerById(ghoulid);
+            var ghoul = PlayerById(ghoulId);
 
             if (!ghoul.HasDied())
             {
-                remove.Add(ghoulid);
+                remove.Add(ghoulId);
                 continue;
             }
 

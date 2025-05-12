@@ -23,8 +23,8 @@ public sealed class Dracula : Neophyte
     protected override UColor MainColor => CustomColorManager.Dracula;
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText { get; } = () => "Lead The <#7B8968FF>Undead</color> To Victory";
-    public override Func<string> Description => () => "- You can convert the <#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive" +
-        $" <#7B8968FF>Undead</color> exceeds {AliveVampCount}, you will kill them instead";
+    public override Func<string> Description => () => "- You can bite a player in an attempt to convert them\n- If the target cannot be converted or the number of alive <#7B8968FF>Undead</color> " +
+        $"exceeds {AliveVampCount}, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && DracVent;
 

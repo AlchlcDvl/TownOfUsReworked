@@ -2,5 +2,5 @@
 
 public interface IDouser : IPlayerLayer
 {
-    List<byte> Doused { get; }
+    HashSet<byte> Doused { get; }
 }

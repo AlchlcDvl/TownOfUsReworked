@@ -10,7 +10,6 @@ namespace TownOfUsReworked;
 // TODO: Refactor code for handling appearances, sizes and speed
 // TODO: Re-add version handling
 // TODO: Finish adding missing translation keys before the next release
-// TODO: Change how Ret works by using its substituted roles rather than copy pasted code
 [BepInAutoPlugin("me.alchlcdvl.reworked", "Reworked")]
 [BepInDependency(ReactorPlugin.Id)]
 [BepInIncompatibility("MalumMenu")]
@@ -27,7 +26,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 48;
+    private const int DevBuild = 49;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -183,7 +182,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         SetUpConfigs();
         Harmony.PatchAll();
         AddressablesPatch.Initialize();
-        Application.add_logMessageReceived((Action<string, string, LogType>)RedirectLoggerPatch2.UnityLog);
+        Application.add_logMessageReceived((Application.LogCallback)RedirectLoggerPatch2.UnityLog);
         IL2CPPChainloader.Instance.Finished += Initialise;
     }
 }

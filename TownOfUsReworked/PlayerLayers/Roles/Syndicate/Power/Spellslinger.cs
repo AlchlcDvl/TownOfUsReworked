@@ -10,7 +10,7 @@ public sealed class Spellslinger : Syndicate
     public static Number SpellCdIncrease { get; set; } = 5;
 
     private CustomButton SpellButton { get; set; }
-    public List<byte> Spelled { get; } = [];
+    public HashSet<byte> Spelled { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Spellslinger;
     public override LayerEnum Type => LayerEnum.Spellslinger;

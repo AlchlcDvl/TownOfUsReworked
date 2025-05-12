@@ -448,13 +448,13 @@ public static class MeetingPatches
                 dictionary[id] = 1 + Mayor.MayorVoteCount;
         }
 
-        var knighted = new List<byte>();
+        var knighted = new HashSet<byte>();
 
         foreach (var role in PlayerLayer.GetLayers<Monarch>())
         {
             foreach (var id in role.Knighted)
             {
-                if (knighted.Contains(id))
+                if (!knighted.Add(id))
                     continue;
 
                 var area = VoteAreaById(id);
@@ -463,8 +463,6 @@ public static class MeetingPatches
                     dictionary[area.VotedFor] = num + Monarch.KnightVoteCount;
                 else
                     dictionary[area.VotedFor] = 1 + Monarch.KnightVoteCount;
-
-                knighted.Add(id);
             }
         }
 

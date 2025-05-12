@@ -28,7 +28,7 @@ public sealed class Arsonist : NKilling, IDouser
     private CustomButton DouseButton { get; set; }
     private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Neutral) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
-    public List<byte> Doused { get; } = [];
+    public HashSet<byte> Doused { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Arsonist;
     public override LayerEnum Type => LayerEnum.Arsonist;

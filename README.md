@@ -1,4 +1,3 @@
-
 > [!NOTE]
 > This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is under constant development, expect bugs.
 > This mod is NOT for mobile or console versions of Among Us and is NOT host only either, please do not ask for a port or a rewrite.
@@ -88,30 +87,30 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 | [Intruders](#intruder-roles)       | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Apocalypse](#apocalypse-roles) | [Game Mode](#game-mode-roles) |
 |------------------------------------|-------------------------------|-----------------------------------|-----------------------------------|---------------------------------|-------------------------------|
-| [Ambusher](#ambusher)              | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Cultist](#cultist)             | [Hunted](#hunted)             |
-| [Blackmailer](#blackmailer)        | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Pestilence](#pestilence)       | [Hunter](#hunter)             |
-| [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Plaguebearer](#plaguebearer)   | [Runner](#runner)             |
-| [Consigliere](#consigliere)        | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              | [Void](#void)                   |                               |
-| [Consort](#consort)                | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |                                 |                               |
-| [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Democrat](#democrat)             | [Cannibal](#cannibal)             |                                 |                               |
-| [Enforcer](#enforcer)              | [Drunkard](#drunkard)         | [Detective](#detective)           | [Cryomaniac](#cryomaniac)         |                                 |                               |
-| [Ghoul](#ghoul)                    | [Framer](#framer)             | [Dictator](#dictator)             | [Dracula](#dracula)               |                                 |                               |
-| [Godfather](#godfather)            | [Poisoner](#poisoner)         | [Engineer](#engineer)             | [Executioner](#executioner)       |                                 |                               |
-| [Grenadier](#grenadier)            | [Rebel](#rebel)               | [Escort](#escort)                 | [Glitch](#glitch)                 |                                 |                               |
-| [Impostor](#impostor)              | [Shapeshifter](#shapeshifter) | [Mayor](#mayor)                   | [Guardian Angel](#guardian-angel) |                                 |                               |
-| [Janitor](#janitor)                | [Sidekick](#sidekick)         | [Medic](#medic)                   | [Guesser](#guesser)               |                                 |                               |
-| [Mafioso](#mafioso)                | [Silencer](#silencer)         | [Medium](#medium)                 | [Jackal](#jackal)                 |                                 |                               |
-| [Miner/Herbalist](#minerherbalist) | [Spellslinger](#spellslinger) | [Monarch](#monarch)               | [Jester](#jester)                 |                                 |                               |
-| [Morphling](#morphling)            | [Stalker](#stalker)           | [Mystic](#mystic)                 | [Juggernaut](#juggernaut)         |                                 |                               |
-| [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Operative](#operative)           | [Murderer](#murderer)             |                                 |                               |
-| [Wraith](#wraith)                  | [Warper](#warper)             | [Retributionist](#retributionist) | [Necromancer](#necromancer)       |                                 |                               |
-|                                    |                               | [Revealer](#revealer)             | [Phantom](#phantom)               |                                 |                               |
-|                                    |                               | [Seer](#seer)                     | [Serial Killer](#serial-killer)   |                                 |                               |
-|                                    |                               | [Sheriff](#sheriff)               | [Survivor](#survivor)             |                                 |                               |
-|                                    |                               | [Shifter](#shifter)               | [Thief](#thief)                   |                                 |                               |
-|                                    |                               | [Tracker](#tracker)               | [Troll](#troll)                   |                                 |                               |
-|                                    |                               | [Transporter](#transporter)       | [Werewolf](#werewolf)             |                                 |                               |
-|                                    |                               | [Trapper](#trapper)               | [Whisperer](#whisperer)           |                                 |                               |
+| [Ambusher](#ambusher)              | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Cannibal](#cannibal)           | [Hunted](#hunted)             |
+| [Blackmailer](#blackmailer)        | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Cultist](#cultist)             | [Hunter](#hunter)             |
+| [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Gluttony](#gluttony)               | [Runner](#runner)             |
+| [Consigliere](#consigliere)        | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              | [Pestilence](#pestilence)       |                               |
+| [Consort](#consort)                | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   | [Plaguebearer](#plaguebearer)   |                               |
+| [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Democrat](#democrat)             | [Cryomaniac](#cryomaniac)         | [Void](#void)                   |                               |
+| [Enforcer](#enforcer)              | [Drunkard](#drunkard)         | [Detective](#detective)           | [Dracula](#dracula)               |                                 |                               |
+| [Ghoul](#ghoul)                    | [Framer](#framer)             | [Dictator](#dictator)             | [Executioner](#executioner)       |                                 |                               |
+| [Godfather](#godfather)            | [Poisoner](#poisoner)         | [Engineer](#engineer)             | [Glitch](#glitch)                 |                                 |                               |
+| [Grenadier](#grenadier)            | [Rebel](#rebel)               | [Escort](#escort)                 | [Guardian Angel](#guardian-angel) |                                 |                               |
+| [Impostor](#impostor)              | [Shapeshifter](#shapeshifter) | [Mayor](#mayor)                   | [Guesser](#guesser)               |                                 |                               |
+| [Janitor](#janitor)                | [Sidekick](#sidekick)         | [Medic](#medic)                   | [Jackal](#jackal)                 |                                 |                               |
+| [Mafioso](#mafioso)                | [Silencer](#silencer)         | [Medium](#medium)                 | [Jester](#jester)                 |                                 |                               |
+| [Miner/Herbalist](#minerherbalist) | [Spellslinger](#spellslinger) | [Monarch](#monarch)               | [Juggernaut](#juggernaut)         |                                 |                               |
+| [Morphling](#morphling)            | [Stalker](#stalker)           | [Mystic](#mystic)                 | [Murderer](#murderer)             |                                 |                               |
+| [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Operative](#operative)           | [Necromancer](#necromancer)       |                                 |                               |
+| [Wraith](#wraith)                  | [Warper](#warper)             | [Retributionist](#retributionist) | [Phantom](#phantom)               |                                 |                               |
+|                                    |                               | [Revealer](#revealer)             | [Serial Killer](#serial-killer)   |                                 |                               |
+|                                    |                               | [Seer](#seer)                     | [Survivor](#survivor)             |                                 |                               |
+|                                    |                               | [Sheriff](#sheriff)               | [Thief](#thief)                   |                                 |                               |
+|                                    |                               | [Shifter](#shifter)               | [Troll](#troll)                   |                                 |                               |
+|                                    |                               | [Tracker](#tracker)               | [Werewolf](#werewolf)             |                                 |                               |
+|                                    |                               | [Transporter](#transporter)       | [Whisperer](#whisperer)           |                                 |                               |
+|                                    |                               | [Trapper](#trapper)               | [Zealot](#zealot)                 |                                 |                               |
 |                                    |                               | [Veteran](#veteran)               |                                   |                                 |                               |
 |                                    |                               | [Vigilante](#vigilante)           |                                   |                                 |                               |
 
@@ -211,7 +210,7 @@ All layers provide an attack or defense value to the player, which dictates the 
 
 # Crew Roles <img height="25" src="./Images/Crew.png">
 
-Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is deduction and goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which act like a timer for non-Crew.
+Each member has a special ability which determines who's who and can help weed out the evils. The main theme of this faction is deduction and goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which act like a timer for non-Crew.
 
 ## Altruist <img height="17" src="./Images/Altruist.png">
 

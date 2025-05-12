@@ -32,7 +32,6 @@ public sealed class Whisperer : Neophyte
 
     private CustomButton WhisperButton { get; set; }
     private int WhisperCount { get; set; }
-    private int ConversionCount { get; set; }
     public Dictionary<byte, byte> PlayerConversion { get; } = [];
     private int WhisperConversion { get; set; }
 
@@ -54,14 +53,12 @@ public sealed class Whisperer : Neophyte
             (DifferenceFunc)Difference);
         PlayerConversion.Clear();
         AllPlayers().Do(x => PlayerConversion.Add(x.PlayerId, 100));
-        Members.ForEach(x => PlayerConversion.Remove(x));
+        Members.Do(x => PlayerConversion.Remove(x));
     }
 
     private void Whisper()
     {
-        var closestPlayers = GetClosestPlayers(Player, WhisperRadius, x => !Members.Contains(x.PlayerId));
-
-        foreach (var player in closestPlayers)
+        foreach (var player in GetClosestPlayers(Player, WhisperRadius, x => !Members.Contains(x.PlayerId)))
         {
             if (PlayerConversion.ContainsKey(player.PlayerId))
                 PlayerConversion[player.PlayerId] -= (byte)WhisperConversion;
@@ -82,13 +79,12 @@ public sealed class Whisperer : Neophyte
             if (WhisperConversion < 2)
                 WhisperConversion = 2;
 
-            ConversionCount++;
             RpcConvert(player, PlayerId, SubFaction.Cult);
             removals.Add(player);
         }
 
         WhisperCount++;
-        Members.ForEach(x => PlayerConversion.Remove(x));
+        Members.Do(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
         using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, (byte)PlayerConversion.Count);
@@ -114,7 +110,7 @@ public sealed class Whisperer : Neophyte
         while (count-- > 0)
             PlayerConversion[reader.ReadByte()] = reader.ReadByte();
 
-        Members.ForEach(x => PlayerConversion.Remove(x));
+        Members.Do(x => PlayerConversion.Remove(x));
     }
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)

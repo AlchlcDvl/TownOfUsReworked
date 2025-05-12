@@ -71,10 +71,7 @@ public static class BetterFungle
         // Create a list of all IDs from the cached outfits
         List<byte> list = [ .. __instance.cachedOutfitsByPlayerId.keys ];
 
-        // Remove players with changing colors
-        list.RemoveAll(x => __instance.cachedOutfitsByPlayerId[x].ColorId.IsChanging());
-
         // Select a random ID from the filtered list for color assignment
-        __result.ColorPlayerId = list.Random();
+        __result.ColorPlayerId = list.Random(x => !__instance.cachedOutfitsByPlayerId[x].ColorId.IsChanging());
     }
 }

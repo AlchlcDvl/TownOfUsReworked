@@ -360,7 +360,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Checks if this layer has achieved their win. Runs for the host.
     /// </summary>
-    protected virtual void CheckWin(List<byte> winnerIds) {}
+    protected virtual void CheckWin(HashSet<byte> winnerIds) {}
 
     /// <summary>
     /// Updates the player's name (called in <see cref="NameHandler.UpdateGameName"/>). Runs for everyone.
@@ -386,7 +386,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Checks and ends the game as needed.
     /// </summary>
-    public void GameEnd(List<byte> winnerIds)
+    public void GameEnd(HashSet<byte> winnerIds)
     {
         if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Deinitialised)
             return;

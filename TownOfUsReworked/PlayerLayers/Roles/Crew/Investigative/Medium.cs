@@ -26,7 +26,7 @@ public sealed class Medium : Crew, IShaman
     private CustomButton MediateButton { get; set; }
     // private CustomButton SeanceButton { get; set; }
     // public bool HasSeanced { get; set; }
-    public List<byte> MediatedPlayers { get; } = [];
+    public HashSet<byte> MediatedPlayers { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Medium;
     public override LayerEnum Type => LayerEnum.Medium;

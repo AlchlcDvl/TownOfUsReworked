@@ -24,7 +24,7 @@ public sealed class Coroner : Crew, IExaminer
     private CustomButton CompareButton { get; set; }
     private CustomButton AutopsyButton { get; set; }
 
-    public List<byte> Reported { get; } = [];
+    public HashSet<byte> Reported { get; } = [];
     private List<DeadPlayer> ReferenceBodies { get; } = [];
     private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
 

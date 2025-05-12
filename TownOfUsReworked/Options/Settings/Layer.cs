@@ -287,9 +287,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        var value = new RoleOptionData(0, 0, false, false, Layer);
-        Member.SetValue(null, value);
-        Value = Member.GetValue<RoleOptionData>(null);
+        Value = new RoleOptionData(0, 0, false, false, Layer);
         GroupHeader = GetOptions<LayerHeaderOption>().Find(x => x.Layer == Layer);
     }
 

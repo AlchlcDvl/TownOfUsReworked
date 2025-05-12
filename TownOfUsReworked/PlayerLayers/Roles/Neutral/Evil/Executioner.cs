@@ -32,7 +32,7 @@ public sealed class Executioner : Evil
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetVotedOut { get; set; }
-    private List<byte> ToDoom { get; } = [];
+    private HashSet<byte> ToDoom { get; } = [];
     private bool HasDoomed { get; set; }
     private CustomButton DoomButton { get; set; }
     private bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !NeutralSettings.AvoidNeutralKingmakers;

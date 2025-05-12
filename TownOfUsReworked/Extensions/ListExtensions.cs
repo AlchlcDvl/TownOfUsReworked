@@ -21,6 +21,13 @@ public static class CollectionExtensions
 
     public static T TakeFirst<T>(this List<T> list) => list.RemoveAndReturn(0);
 
+    public static T TakeFirst<T>(this HashSet<T> set)
+    {
+        var first = set.First();
+        set.Remove(first);
+        return first;
+    }
+
     public static T TakeLast<T>(this List<T> list) => list.RemoveAndReturn(list.Count - 1);
 
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
@@ -30,6 +37,22 @@ public static class CollectionExtensions
     public static int AddRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Add);
 
     public static int RemoveRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Remove);
+
+    public static int RemoveAll<T>(this HashSet<T> set, Predicate<T> predicate)
+    {
+        var result = 0;
+
+        foreach (var item in set.Clone())
+        {
+            if (!predicate(item))
+                continue;
+
+            set.Remove(item);
+            result++;
+        }
+
+        return result;
+    }
 
     public static void AddRanges<T>(this List<T> main, params IEnumerable<T>[] items) => items.Do(main.AddRange);
 

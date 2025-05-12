@@ -10,7 +10,7 @@ public sealed class Consigliere : Intruder
     [StringOption<ConsigInfo>]
     public static ConsigInfo ConsigInfo = ConsigInfo.Role;
 
-    public List<byte> Investigated { get; } = [];
+    public HashSet<byte> Investigated { get; } = [];
     private CustomButton InvestigateButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Consigliere;

@@ -7,4 +7,5 @@ public enum SubFaction : byte
     Cabal,
     Reanimated,
     Cult,
+    Followers
 }

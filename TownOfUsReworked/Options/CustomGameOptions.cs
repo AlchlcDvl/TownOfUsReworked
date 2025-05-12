@@ -119,6 +119,9 @@ public static class GameModeSettings
 
     [ToggleOption]
     public static bool BanCultist = true;
+
+    [ToggleOption]
+    public static bool BanZealot = true;
 }
 
 [ListHolderOption(PlayerLayerEnum.Role, false)]
@@ -766,9 +769,6 @@ public static class NeutralEvilRoles
     [LayerOption("#B51E39FF", LayerEnum.BountyHunter)]
     public static RoleOptionData BountyHunter;
 
-    [LayerOption("#8C4005FF", LayerEnum.Cannibal)]
-    public static RoleOptionData Cannibal;
-
     [LayerOption("#CCCCCCFF", LayerEnum.Executioner)]
     public static RoleOptionData Executioner;
 
@@ -821,6 +821,9 @@ public static class NeutralNeophyteRoles
 
     [LayerOption("#2D6AA5FF", LayerEnum.Whisperer)]
     public static RoleOptionData Whisperer;
+
+    [LayerOption("#7EFBC2FF", LayerEnum.Zealot)]
+    public static RoleOptionData Zealot;
 }
 
 [AlignmentOption(ListSlot.NeutralPros)]
@@ -976,6 +979,9 @@ public static class SyndicateUtilityRoles
 [AlignmentOption(ListSlot.ApocDeity, true)]
 public static class ApocalypseDeityRoles
 {
+    [LayerOption("#A7C596FF", LayerEnum.Gluttony, true)]
+    public static RoleOptionData Gluttony;
+
     [LayerOption("#424242FF", LayerEnum.Pestilence, true)]
     public static RoleOptionData Pestilence;
 
@@ -986,6 +992,9 @@ public static class ApocalypseDeityRoles
 [AlignmentOption(ListSlot.ApocHarb)]
 public static class ApocalypseHarbingerRoles
 {
+    [LayerOption("#8C4005FF", LayerEnum.Cannibal)]
+    public static RoleOptionData Cannibal;
+
     [LayerOption("#99007FFF", LayerEnum.Cultist, true)]
     public static RoleOptionData Cultist;
 
@@ -993,7 +1002,7 @@ public static class ApocalypseHarbingerRoles
     public static RoleOptionData Plaguebearer;
 }
 
-[AlignmentOption(ListSlot.GameMode)]
+[AlignmentOption(ListSlot.GameMode, true)]
 public static class GameModeRoles
 {
     [LayerOption("#ECC23EFF", LayerEnum.Runner, true)]

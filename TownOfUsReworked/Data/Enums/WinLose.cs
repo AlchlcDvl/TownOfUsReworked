@@ -8,7 +8,6 @@ public enum WinLose : byte
 
     JesterWins,
     ExecutionerWins,
-    CannibalWins,
     TrollWins,
     PhantomWins,
     GuesserWins,
@@ -28,6 +27,7 @@ public enum WinLose : byte
     CabalWins,
     CultWins,
     ReanimatedWins,
+    FollowersWin,
 
     ArsonistWins,
     CryomaniacWins,

@@ -43,7 +43,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitIntList()
     {
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Intruder or Faction.Pandorica or Faction.Illuminati)) || Intruders == 0)
+        if (Intruders == 0)
             return;
 
         foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not LayerEnum.Mafioso))
@@ -78,7 +78,6 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitNeutList()
     {
-        // TODO: Implement OnlyBadGuys Compliance version for this method
         if (Neutrals == 0)
             return;
 
@@ -110,11 +109,11 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitApocList()
     {
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Apocalypse or Faction.Pandorica or Faction.Illuminati)) || Apocalypse == 0)
+        if (Apocalypse == 0)
             return;
 
         // TODO: Implement a ghost role for apoc
-        foreach (var layer in new[] { LayerEnum.Plaguebearer, LayerEnum.Cultist })
+        foreach (var layer in GetValuesFromTo(LayerEnum.Cannibal, LayerEnum.Void))
         {
             var spawn = GetSpawnItem(layer);
 
@@ -128,7 +127,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitSynList()
     {
-        if ((BadGuysSettings.OnlyMainBadGuys && BadGuysSettings.MainBadGuys is not (Faction.Syndicate or Faction.Pandorica or Faction.Illuminati)) || Syndicate == 0)
+        if (Syndicate == 0)
             return;
 
         foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not LayerEnum.Sidekick))

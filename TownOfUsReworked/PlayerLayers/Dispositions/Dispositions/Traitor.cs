@@ -32,19 +32,37 @@ public sealed class Traitor : FactionChanger
     {
         var factions = new List<Faction>() { Faction.Intruder, Faction.Syndicate, Faction.Apocalypse };
 
-        if (BadGuysSettings.OrderOfCompliance)
-            factions.Add(Faction.Compliance);
-
-        if (BadGuysSettings.PandoricaOpens)
-        {
-            factions.RemoveAll(Faction.Apocalypse, Faction.Intruder, Faction.Syndicate);
-            factions.Add(Faction.Pandorica);
-        }
-
         if (BadGuysSettings.IlluminatiUnleashed)
         {
-            factions.Clear();
             factions.Add(Faction.Illuminati);
+
+            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders)
+                factions.Remove(Faction.Intruder);
+
+            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate)
+                factions.Remove(Faction.Syndicate);
+
+            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse)
+                factions.Remove(Faction.Apocalypse);
+        }
+        else
+        {
+            if (BadGuysSettings.OrderOfCompliance)
+                factions.Add(Faction.Compliance);
+
+            if (BadGuysSettings.PandoricaOpens)
+            {
+                factions.Add(Faction.Pandorica);
+
+                if (BadGuysSettings.PandoricaMembers == PandoricaType.Intruders)
+                    factions.Remove(Faction.Intruder);
+
+                if (BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate)
+                    factions.Remove(Faction.Syndicate);
+
+                if (BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse)
+                    factions.Remove(Faction.Apocalypse);
+            }
         }
 
         var players = AllPlayers();

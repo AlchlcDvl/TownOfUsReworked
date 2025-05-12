@@ -58,7 +58,7 @@ public static class AdminPatch
 
     private static void UpdateBlips(MapCountOverlay __instance, bool isOp)
     {
-        var colorMapDuplicate = new List<byte>();
+        var colorMapDuplicate = new HashSet<byte>();
 
         foreach (var area in __instance.CountAreas)
         {
@@ -82,11 +82,10 @@ public static class AdminPatch
                 {
                     var component = collider.GetComponent<PlayerControl>();
 
-                    if (component.HasDied() || (!__instance.showLivePlayerPosition && component!.AmOwner) || colorMapDuplicate.Contains(component!.PlayerId))
+                    if (component.HasDied() || (!__instance.showLivePlayerPosition && component!.AmOwner) || !colorMapDuplicate.Add(component!.PlayerId))
                         continue;
 
                     colorMap.Add(component.PlayerId);
-                    colorMapDuplicate.Add(component.PlayerId);
                 }
             }
 

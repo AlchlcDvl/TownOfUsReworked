@@ -20,8 +20,6 @@ public abstract class BaseRoleGen : BaseGen
         Syndicate = 0;
         Apocalypse = 0;
         Neutrals = 0;
-
-        AllRoles.Clear();
     }
 
     public override void Assign()
@@ -49,6 +47,8 @@ public abstract class BaseRoleGen : BaseGen
 
     public virtual void InitApocList() {}
 
+    public virtual void PreFilter() {}
+
     protected virtual void GetAdjustedFactions()
     {
         var players = GameData.Instance.PlayerCount;
@@ -68,7 +68,7 @@ public abstract class BaseRoleGen : BaseGen
             };
         }
 
-        while (Intruders + Syndicate + Apocalypse >= players)
+        while (Intruders + Syndicate + Apocalypse > players)
         {
             var max = Mathf.Max(Intruders, Syndicate, Apocalypse);
 
@@ -80,12 +80,54 @@ public abstract class BaseRoleGen : BaseGen
                 Apocalypse--;
         }
 
-        while (Neutrals >= players - Intruders - Syndicate - Apocalypse)
+        while (Neutrals > players - Intruders - Syndicate - Apocalypse)
             Neutrals--;
 
         Crew = players - Intruders - Syndicate - Neutrals - Apocalypse;
 
         if (TownOfUsReworked.MciActive)
             Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}, Apoc = {Apocalypse}");
+    }
+
+    protected static LayerEnum GetRandomBaseEvil(Faction faction)
+    {
+        if (faction is < Faction.Neutral and > Faction.Crew)
+        {
+            return faction switch
+            {
+                Faction.Intruder => LayerEnum.Impostor,
+                Faction.Syndicate => LayerEnum.Anarchist,
+                _ => LayerEnum.Cultist,
+            };
+        }
+
+        var choices = new List<LayerEnum>();
+        string values = faction switch
+        {
+            Faction.Illuminati => BadGuysSettings.IlluminatiMembers,
+            Faction.Compliance => BadGuysSettings.ComplianceMembers,
+            Faction.Pandorica => BadGuysSettings.PandoricaMembers,
+            _ => "",
+        };
+
+        if (IsNullEmptyOrWhiteSpace(values))
+            return LayerEnum.Crewmate;
+
+        if (values.Contains("Intruders"))
+            choices.Add(LayerEnum.Impostor);
+
+        if (values.Contains("Apocalypse"))
+            choices.Add(LayerEnum.Cultist);
+
+        if (values.Contains("Syndicate"))
+            choices.Add(LayerEnum.Anarchist);
+
+        if (values.Contains("Killers"))
+            choices.Add(LayerEnum.Murderer);
+
+        if (values.Contains("Neophytes"))
+            choices.Add(LayerEnum.Zealot);
+
+        return choices.Random();
     }
 }

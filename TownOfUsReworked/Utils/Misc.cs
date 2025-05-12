@@ -1473,7 +1473,7 @@ public static class MiscUtils
 
     // public static bool TryCast(this Il2CppObjectBase obj, Type type, out object result) => (result = obj.TryCast(type)) is not null;
 
-    public static IEnumerable<ListSlot> GetValues(this IEnumerable<Enum> enums) => enums.WhereSelect((Enum x, out ListSlot y) => Enum.TryParse(x.ToString(), out y));
+    public static IEnumerable<ListSlot> GetValues(this IEnumerable<LayerEnum> enums) => enums.WhereSelect((LayerEnum x, out ListSlot y) => Enum.TryParse(x.ToString(), out y));
 
     public static IEnumerator WaitUntil(Func<bool> predicate)
     {

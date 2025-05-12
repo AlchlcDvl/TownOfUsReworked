@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+// TODO: Change how this works by using its substituted roles rather than copy pasted code
 public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger
 {
     protected override void Init()
@@ -481,7 +482,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private CustomButton AutopsyButton { get; set; }
     private CustomButton CompareButton { get; set; }
     private List<DeadPlayer> ReferenceBodies { get; } = [];
-    private List<byte> Reported { get; } = [];
+    private HashSet<byte> Reported { get; } = [];
     private bool IsCor => RevivedRole is Coroner;
 
     private void Autopsy(DeadBody target)
@@ -527,7 +528,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     // Medium Stuff
     private Dictionary<byte, PlayerArrow> MediateArrows { get; } = [];
     private CustomButton MediateButton { get; set; }
-    public List<byte> MediatedPlayers { get; } = [];
+    public HashSet<byte> MediatedPlayers { get; } = [];
     private bool IsMed => RevivedRole is Medium;
 
     private void Mediate()
@@ -924,7 +925,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private CustomButton BuildButton { get; set; }
     private CustomButton TrapButton { get; set; }
     public bool Building { get; private set; }
-    public List<byte> Trapped { get; } = [];
+    public HashSet<byte> Trapped { get; } = [];
     private List<Role> TriggeredRoles { get; } = [];
     private int TrapsMade { get; set; }
     private bool AttackedSomeone { get; set; }

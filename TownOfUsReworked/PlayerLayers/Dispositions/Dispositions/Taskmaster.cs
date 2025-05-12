@@ -25,7 +25,7 @@ public sealed class Taskmaster : Disposition
             Flash(Color);
     }
 
-    protected override void CheckWin(List<byte> winnerIds)
+    protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (!TasksDone)
             return;

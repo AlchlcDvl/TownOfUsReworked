@@ -191,6 +191,7 @@ public static class AllInfo
         new(SubFaction.Cult),
         new(SubFaction.Cabal),
         new(SubFaction.Undead),
+        new(SubFaction.Followers),
         new(SubFaction.Reanimated, true)
     ];
 

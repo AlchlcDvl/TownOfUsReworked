@@ -362,6 +362,7 @@ public static class LayerExtensions
                 SubFaction.Cabal => Jackal.RecruitVent,
                 SubFaction.Reanimated => Necromancer.ResurrectVent,
                 SubFaction.Cult => Whisperer.PersuadedVent,
+                SubFaction.Followers => Zealot.FollowersVent,
                 _ => false
             };
         }
@@ -772,8 +773,8 @@ public static class LayerExtensions
 
                 if (role1 is Whisperer whisperer1 && role2 is Whisperer whisperer2)
                 {
-                    whisperer1.Members.ForEach(x => whisperer2.PlayerConversion.Remove(x));
-                    whisperer2.Members.ForEach(x => whisperer1.PlayerConversion.Remove(x));
+                    whisperer1.Members.Do(x => whisperer2.PlayerConversion.Remove(x));
+                    whisperer2.Members.Do(x => whisperer1.PlayerConversion.Remove(x));
                 }
             }
         }
