@@ -2,8 +2,7 @@ namespace TownOfUsReworked.Managers;
 
 public static class AssetManager
 {
-    public static readonly Sprite[] PortalAnimation = new Sprite[205];
-    public static readonly string[] PortalPaths = new string[205];
+    public static Sprite[] PortalAnimation;
     public static readonly Dictionary<string, AssetBundle> Bundles = [];
     public static readonly Dictionary<string, string> AssetToBundle = [];
     private static readonly Dictionary<string, HashSet<UObject>> LoadedAssets = [];
@@ -19,6 +18,16 @@ public static class AssetManager
 //         [typeof(AssetBundle)] = ("bundle_pc", LoadBundle),
 // #endif
     };
+
+    public static void LoadPortalFrames()
+    {
+        if (PortalAnimation != null)
+            return;
+
+        PortalAnimation = [.. Bundles[AssetToBundle["portal"]].LoadAssetWithSubAssets("Portal", Il2CppType.Of<Sprite>()).ToArray().Select(x => x.TryCast<Sprite>()).Where(x => x)];
+        PortalAnimation.ForEach((i, x) => AddAsset($"Portal_{i}", x));
+        AssetToBundle.Remove("portal");
+    }
 
     public static AudioClip GetAudio(string path, bool placeholder = true) => Get<AudioClip>(path) ?? (placeholder ? Get<AudioClip>("Placeholder") : null);
 

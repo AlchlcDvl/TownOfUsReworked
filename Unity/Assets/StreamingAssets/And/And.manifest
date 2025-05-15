@@ -1,10 +1,10 @@
 ManifestFileVersion: 0
-CRC: 1488762560
+CRC: 3930263615
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: reworked
       Dependencies: {}
     Info_1:
-      Name: soundvision
+      Name: vision
       Dependencies: {}

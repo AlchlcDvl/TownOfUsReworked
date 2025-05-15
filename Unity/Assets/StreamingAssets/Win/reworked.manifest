@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2271239765
+CRC: 1383230811
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 7b38cefdcdfcfd28d881e992105f0e3e
+    Hash: 15cb0635c210cf86bb8cd8c12f0aff51
   TypeTreeHash:
     serializedVersion: 2
     Hash: 89f497261f94dfccbec12e6201a1c3bb
@@ -27,6 +27,7 @@ Assets:
 - Assets/Materials/GlitchedMaterial.mat
 - Assets/AnimationClips/Medical.anim
 - Assets/Sprites/CallButton.png
+- Assets/Sprites/Portal.png
 - Assets/AnimationClips/Cokpit.anim
 - Assets/Sprites/Medical.png
 - Assets/Sprites/Cockpit.png

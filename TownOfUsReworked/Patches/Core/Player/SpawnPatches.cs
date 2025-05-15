@@ -4,8 +4,10 @@ namespace TownOfUsReworked.Patches.Core.Player;
 [HarmonyPatch]
 public static class SpawnPatches
 {
+#if PC
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
     public static void Prefix() => DoTheThing(true);
+#endif
 
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]

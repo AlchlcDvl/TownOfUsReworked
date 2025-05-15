@@ -11,7 +11,19 @@ public abstract class Apocalypse : Role
 
     protected override UColor MainColor => CustomColorManager.Apocalypse;
     protected override UColor LayerColor => CustomColorManager.Apocalypse;
-    public override bool CanVent => ApocalypseSettings.ApocalypseVent;
+    public override bool CanVent
+    {
+        get
+        {
+            var part = faction switch
+            {
+                Faction.Pandorica => PandoricaSettings.PandoricaVent,
+                Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
+                _ => true
+            };
+            return ApocalypseSettings.ApocalypseVent && part;
+        }
+    }
     protected override bool UseMainColor => ClientOptions.CustomApocColors;
 
     protected string CommonAbilities => Player.CanSabotage() ? "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "";

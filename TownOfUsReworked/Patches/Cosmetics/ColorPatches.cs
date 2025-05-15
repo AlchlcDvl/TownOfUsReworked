@@ -3,9 +3,40 @@ namespace TownOfUsReworked.Patches.Cosmetics;
 [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
 public static class PlayerTabPatches
 {
+    // private static bool VisorsActive;
+
+    // private static PassiveButton SwapButton;
+    // private static TextMeshPro ButtonText;
+    // private static TextMeshPro Title;
+
+    // private static void SwitchSelector(PlayerTab __instance)
+    // {
+    //     VisorsActive = !VisorsActive;
+    //     __instance.currentColor = VisorsActive ? ReworkedDataManager.VisorColorId : DataManager.Player.Customization.Color;
+    //     Title.text = (VisorsActive ? "Visor" : "Player") + " Color";
+    //     ButtonText.text = (VisorsActive ? "Player" : "Visor") + " Color";
+    // }
+
     [HarmonyPatch(nameof(PlayerTab.OnEnable)), HarmonyPostfix]
     public static void OnEnablePostfix(PlayerTab __instance)
     {
+        // if (!SwapButton)
+        // {
+        //     Title = __instance.transform.FindChild("Text").GetComponent<TextMeshPro>();
+        //     Title.GetComponent<TextTranslatorTMP>().Destroy();
+        //     Title.text = (VisorsActive ? "Visor" : "Player") + " Color";
+
+        //     SwapButton = UObject.Instantiate(PlayerCustomizationMenu.Instance.transform.FindRecursive("Equip").GetComponent<PassiveButton>(), __instance.ColorTabArea);
+        //     SwapButton.transform.localScale = Vector3.one * 0.5f;
+        //     SwapButton.transform.localPosition = new(4f, 1.5f, -2);
+        //     SwapButton.OverrideOnClickListeners(() => SwitchSelector(__instance));
+        //     SwapButton.gameObject.SetActive(true);
+
+        //     ButtonText = SwapButton.GetComponentInChildren<TextMeshPro>();
+        //     ButtonText.GetComponent<TextTranslatorTMP>().Destroy();
+        //     ButtonText.text = (VisorsActive ? "Player" : "Visor") + " Color";
+        // }
+
         var tab = PlayerCustomizationMenu.Instance.Tabs[1].Tab;
 
         if (!__instance.scroller && tab)
@@ -47,21 +78,61 @@ public static class PlayerTabPatches
     {
         for (var i = 0; i < __instance.ColorChips.Count; i++)
             __instance.ColorChips[i].Inner.SpriteColor = i.GetColor(false);
+
+        // if (VisorsActive)
+        //     __instance.currentColorIsEquipped = __instance.currentColor == ReworkedDataManager.VisorColorId;
     }
 
-    [HarmonyPatch(nameof(PlayerTab.UpdateAvailableColors))]
-    public static bool Prefix(PlayerTab __instance)
+    [HarmonyPatch(nameof(PlayerTab.UpdateAvailableColors)), HarmonyPrefix]
+    public static bool UpdateAvailableColorsPrefix(PlayerTab __instance)
     {
         __instance.AvailableColors.Clear();
 
-        for (var i = 0; i < Palette.PlayerColors.Count; i++)
+        foreach (var i in CustomColorManager.AllColors.Keys)
         {
-            if (DataManager.Player.Customization.Color != i)
+            // if (i != (VisorsActive ? ReworkedDataManager.VisorColorId : DataManager.Player.Customization.Color))
+            if (i != DataManager.Player.Customization.Color)
                 __instance.AvailableColors.Add(i);
         }
 
         return false;
     }
+
+    // [HarmonyPatch(nameof(PlayerTab.GetCurrentColorId)), HarmonyPrefix]
+    // public static bool GetCurrentColorPrefix(ref int __result)
+    // {
+    //     if (!VisorsActive)
+    //         return true;
+
+    //     __result = ReworkedDataManager.VisorColorId;
+    //     return false;
+    // }
+
+    // [HarmonyPatch(nameof(PlayerTab.ClickEquip)), HarmonyPrefix]
+    // public static bool ClickPrefix(PlayerTab __instance)
+    // {
+    //     if (VisorsActive && __instance.AvailableColors.Remove(__instance.currentColor))
+    //     {
+    //         ReworkedDataManager.VisorColorId = __instance.currentColor;
+    //         __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+    //         return false;
+    //     }
+
+    //     return true;
+    // }
+
+    // [HarmonyPatch(nameof(PlayerTab.SelectColor)), HarmonyPrefix]
+    // public static bool SelectPrefix(PlayerTab __instance, int colorId)
+    // {
+    //     if (!VisorsActive)
+    //         return true;
+
+    //     __instance.UpdateAvailableColors();
+    //     __instance.currentColor = colorId;
+    //     PlayerCustomizationMenu.Instance.SetItemName(Palette.GetColorName(colorId));
+    //     __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+    //     return false;
+    // }
 }
 
 [HarmonyPatch(typeof(PlayerMaterial))]
@@ -79,3 +150,13 @@ public static class SetPlayerMaterialPatch2
 {
     public static void Prefix(RoleEffectAnimation __instance, int colorId) => Colors.Instance.SetRend(__instance.Renderer, colorId);
 }
+
+// [HarmonyPatch(typeof(Material), nameof(Material.SetColor), typeof(int), typeof(UColor))]
+// public static class VisorColorPatches
+// {
+//     public static void Prefix(int nameID, ref UColor value)
+//     {
+//         if (nameID == PlayerMaterial.VisorColor && value == Palette.VisorColor)
+//             value = ReworkedDataManager.VisorColorId.GetColor(false);
+//     }
+// }

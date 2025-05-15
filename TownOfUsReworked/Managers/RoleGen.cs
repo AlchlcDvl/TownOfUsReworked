@@ -549,6 +549,8 @@ public static class RoleGenManager
         CustomArrow.AllArrows.Clear();
         CustomMenu.AllMenus.Clear();
         CustomButton.AllButtons.Clear();
+
+        Ash.AllPiles.ForEach(x => x?.gameObject?.Destroy());
         Ash.AllPiles.Clear();
 
         Client.Instance.CloseMenus();

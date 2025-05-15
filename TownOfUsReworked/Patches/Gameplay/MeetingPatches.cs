@@ -26,7 +26,10 @@ public static class MeetingPatches
         __instance.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
         Client.Instance.CloseMenus();
         CustomPlayer.Local.DisableButtons();
+
+        Ash.AllPiles.ForEach(x => x?.gameObject?.Destroy());
         Ash.AllPiles.Clear();
+
         MeetingCount++;
 
         if ((MeetingCount == SyndicateSettings.ChaosDriveMeetingCount || SyndicateSettings.AssignOnGameStart) && !Syndicate.SyndicateHasChaosDrive)

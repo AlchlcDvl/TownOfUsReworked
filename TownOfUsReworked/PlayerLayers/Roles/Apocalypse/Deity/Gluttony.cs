@@ -6,14 +6,11 @@ public sealed class Gluttony : Deity
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number HungerCd = 25;
 
-    [NumberOption(2, 10, 1)]
-    public static Number MaxFoodPreTransformation = 4;
+    [NumberOption(5f, 30f, 1f, Format.Time)]
+    public static Number HungerDur = 10;
 
     [ToggleOption]
     private static bool GlutVent = true;
-
-    [NumberOption(10f, 1200f, 5f, Format.Time)]
-    public static Number CycleDur = 30;
 
     private CustomButton HungerButton { get; set; }
 
@@ -25,7 +22,8 @@ public sealed class Gluttony : Deity
     protected override void Init()
     {
         base.Init();
-        HungerButton ??= new(this, new SpriteName("Hunger"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)CauseHunger, "Hunger", new Cooldown(HungerCd));
+        HungerButton ??= new(this, new SpriteName("Hunger"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)CauseHunger, "Hunger", new Cooldown(HungerCd),
+            new Duration(HungerDur));
     }
 
     private void CauseHunger()

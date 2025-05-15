@@ -809,13 +809,13 @@ public static class SettingsPatches
                     tmp.text = CurrentPreset;
             }
 
-            var ml = GameObject.Find("ModeLabel")?.transform?.GetChild(1).gameObject;
+            var ml = GameObject.Find("ModeLabel")?.transform?.GetChild(1);
 
             if (!ml)
                 return;
 
             var tmp2 = ml.GetComponent<TextMeshPro>();
-            var translation = TranslationManager.Translate($"CustomOption.GameMode.{GameModeSettings.GameMode}");
+            var translation = TranslationManager.Translate($"CustomOption.Mode.{GameModeSettings.GameMode}");
 
             if (tmp2.text != translation)
                 tmp2.text = translation;

@@ -10,6 +10,12 @@ public static class CustomColorManager
             SetColor(rend, color.GetMainColor(), color.GetShadowColor());
     }
 
+    // public static void SetVisorColor(Renderer rend, int id)
+    // {
+    //     if (AllColors.TryGetValue(id, out var color))
+    //         SetVisorColor(rend, color.GetMainColor());
+    // }
+
     public static void SetColor(Renderer rend, UColor color, UColor? shadow = null)
     {
         if (!rend)
@@ -19,6 +25,12 @@ public static class CustomColorManager
         rend.material.SetColor(PlayerMaterial.BodyColor, color);
         rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
     }
+
+    // public static void SetVisorColor(Renderer rend, UColor color)
+    // {
+    //     if (rend)
+    //         rend.material.SetColor(PlayerMaterial.VisorColor, color);
+    // }
 
     public static bool IsChanging(this int id) => AllColors.TryGetValue(id, out var color) && color.Changing;
 

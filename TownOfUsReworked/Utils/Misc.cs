@@ -1012,15 +1012,15 @@ public static class MiscUtils
 
     public static byte ClampByte(float value, float min, float max) => (byte)Mathf.Clamp(value, min, max);
 
+    private static string ReplaceAll(this string @string, string newValue, params string[] valuesToReplace)
+    {
+        valuesToReplace.Do(x => @string = @string.Replace(x, newValue));
+        return @string;
+    }
+
     public static string SanitisePath(this string path)
     {
-        path = path.Replace(".png", "");
-        path = path.Replace(".wav", "");
-        path = path.Replace(".txt", "");
-        path = path.Replace(".mat", "");
-        path = path.Replace(".json", "");
-        path = path.Replace(".anim", "");
-        path = path.Replace(".shader", "");
+        path = path.ReplaceAll("", ".png", ".wav", ".txt", ".mat", ".json", ".anim", ".shader");
 #if ANDROID
         path = path.Replace(".bundle_android", "");
 #else
@@ -1240,7 +1240,7 @@ public static class MiscUtils
             if (killer.AmOwner)
             {
                 CustomStatsManager.IncrementStat(CustomStatsManager.StatsKilled);
-                CustomAchievementManager.UnlockAchievement("TasteForDeath");
+                CustomAchievementManager.UnlockAchievement("AppetiteForDeath");
 
                 if (IsNullEmptyOrWhiteSpace(prevKiller))
                     CustomAchievementManager.UnlockAchievement("FirstBlood");
@@ -1405,11 +1405,7 @@ public static class MiscUtils
 
     public static void AnimatePortal(PlayerControl player, float duration)
     {
-        if (PortalPaths.Length > 0 && !IsNullEmptyOrWhiteSpace(PortalPaths[0]))
-        {
-            PortalPaths.Select(LoadDiskSprite).ForEach((x, y) => PortalAnimation[x] = y);
-            Array.Clear(PortalPaths);
-        }
+        LoadPortalFrames();
 
         if (!player.HasDied())
         {

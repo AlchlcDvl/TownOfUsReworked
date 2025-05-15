@@ -10,10 +10,15 @@ public abstract class AssetLoader<T> : AssetLoader
         if (!Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
-        string jsonText;
+        byte[] json;
+        var path = Path.Combine(DirectoryInfo, $"{Manifest}.json");
 
         if (ClientOptions.ForceUseLocal)
-            jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
+        {
+            var task = File.ReadAllBytesAsync(path);
+            yield return WaitUntilTaskComplete(task);
+            json = task.Result;
+        }
         else
         {
             var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}.json");
@@ -24,26 +29,33 @@ public abstract class AssetLoader<T> : AssetLoader
             if (isError)
             {
                 Error(www.error);
-                jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
+                var task = File.ReadAllBytesAsync(path);
+                yield return WaitUntilTaskComplete(task);
+                json = task.Result;
             }
             else
             {
-                jsonText = www.downloadHandler.text;
-                var task = File.WriteAllTextAsync(Path.Combine(DirectoryInfo, $"{Manifest}.json"), jsonText);
-                yield return WaitUntilTaskComplete(task);
+                json = www.downloadHandler.data;
+
+                if (json?.Length is null or 0)
+                {
+                    Warning($"Online JSON for {Manifest} was missing");
+                    var task = File.ReadAllBytesAsync(path);
+                    yield return WaitUntilTaskComplete(task);
+                    json = task.Result;
+                }
+                else
+                {
+                    var task = File.WriteAllBytesAsync(path, json);
+                    yield return WaitUntilTaskComplete(task);
+                }
             }
 
             www.downloadHandler.Dispose();
             www.Dispose();
-
-            if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
-            {
-                jsonText = ReadDiskText($"{Manifest}.json", DirectoryInfo);
-                Warning($"Online JSON for {Manifest} was missing");
-            }
         }
 
-        if (IsNullEmptyOrWhiteSpace(jsonText))
+        if (json?.Length is null or 0)
         {
             Error($"Unable to load online or local JSON data for {Manifest}");
             yield break;
@@ -52,7 +64,7 @@ public abstract class AssetLoader<T> : AssetLoader
         BeforeLoading();
         yield return null;
 
-        var response = JsonSerializer.Deserialize<T[]>(jsonText);
+        var response = JsonSerializer.Deserialize<T[]>(json);
         float time;
 
         if (Downloading)
@@ -81,11 +93,12 @@ public abstract class AssetLoader<T> : AssetLoader
                 }
 
                 using var stream = File.OpenWrite(Path.Combine(TownOfUsReworked.Hashes, $"{Manifest}.json"));
-                JsonSerializer.Serialize(stream, response, new JsonSerializerOptions()
+                var task = JsonSerializer.SerializeAsync(stream, response, new JsonSerializerOptions()
                 {
                     WriteIndented = true,
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
                 });
+                yield return WaitUntilTaskComplete(task);
             }
         }
 

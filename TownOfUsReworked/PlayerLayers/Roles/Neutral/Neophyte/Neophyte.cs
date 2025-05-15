@@ -3,6 +3,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Neophyte : Neutral
 {
     public override bool AffectedByLights => base.AffectedByLights && !NeutralNeophyteSettings.NnHaveImpVision;
+    public override bool CanVent
+    {
+        get
+        {
+            var part = faction switch
+            {
+                Faction.Compliance => ComplianceSettings.ComplianceVent,
+                Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
+                _ => true
+            };
+            return base.CanVent && part;
+        }
+    }
 
     public HashSet<byte> Members { get; } = [];
 

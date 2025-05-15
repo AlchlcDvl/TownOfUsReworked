@@ -106,7 +106,7 @@ public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValu
         }
     }
 
-    public bool Contains(string value) => Value.Contains(value);
+    public bool Contains(string value) => value.TrueSplit(',').Any(Value.Contains);
 }
 
 public interface IMultiSelectOption

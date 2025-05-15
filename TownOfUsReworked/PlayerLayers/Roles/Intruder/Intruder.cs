@@ -17,7 +17,19 @@ public abstract class Intruder : Role, IPromoter
     protected override UColor LayerColor => CustomColorManager.Intruder;
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool AffectedByLights => false;
-    public override bool CanVent => IntruderSettings.IntrudersVent;
+    public override bool CanVent
+    {
+        get
+        {
+            var part = faction switch
+            {
+                Faction.Pandorica => PandoricaSettings.PandoricaVent,
+                Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
+                _ => true
+            };
+            return IntruderSettings.IntrudersVent && part;
+        }
+    }
     protected override bool UseMainColor => ClientOptions.CustomIntColors;
 
     protected override void Init()

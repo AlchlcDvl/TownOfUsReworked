@@ -61,7 +61,7 @@ public sealed class Shifter : Crew
         ShiftButton.Destroy();
 
         if (role.Type == LayerEnum.Mayor)
-            CustomAchievementManager.UnlockAchievement("ImTheCaptainNow");
+            CustomAchievementManager.UnlockAchievement("ImTheLeaderNow");
 
         if (ShiftedBecomes == BecomeEnum.Crewmate)
         {

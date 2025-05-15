@@ -1,9 +1,15 @@
 namespace TownOfUsReworked.Patches.UI;
 
-[HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__38), nameof(IntroCutscene._ShowTeam_d__38.MoveNext))]
+[HarmonyPatch]
 public static class ShowTeamPatch
 {
+#if ANDROID
+    [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__37), "MoveNext")]
+    public static void Postfix(IntroCutscene._ShowTeam_d__37 __instance)
+#else
+    [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__38), nameof(IntroCutscene._ShowTeam_d__38.MoveNext))]
     public static void Postfix(IntroCutscene._ShowTeam_d__38 __instance)
+#endif
     {
         if (IsHnS())
             return;
@@ -17,10 +23,16 @@ public static class ShowTeamPatch
     }
 }
 
-[HarmonyPatch(typeof(IntroCutscene._ShowRole_d__41), nameof(IntroCutscene._ShowRole_d__41.MoveNext))]
+[HarmonyPatch]
 public static class ShowRolePatch
 {
+#if ANDROID
+    [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__40), "MoveNext")]
+    public static void Postfix(IntroCutscene._ShowRole_d__40 __instance)
+#else
+    [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__41), nameof(IntroCutscene._ShowRole_d__41.MoveNext))]
     public static void Postfix(IntroCutscene._ShowRole_d__41 __instance)
+#endif
     {
         if (IsHnS())
             return;
@@ -51,7 +63,12 @@ public static class ShowRolePatch
         __instance.__4__this.RoleText.text = role.Name;
         __instance.__4__this.RoleText.color = __instance.__4__this.YouAreText.color = __instance.__4__this.RoleBlurbText.color = __instance.__4__this.BackgroundBar.material.color = role.Color;
         __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
+#if ANDROID
+        var pos = __instance.__4__this.BackgroundBar.transform.localPosition;
+        __instance.__4__this.BackgroundBar.transform.localPosition = new(pos.x, pos.y, -15f);
+#else
         __instance.__4__this.BackgroundBar.transform.SetLocalZ(-15f);
+#endif
         __instance.__4__this.YouAreText.GetComponent<TextTranslatorTMP>()?.Destroy();
         __instance.__4__this.YouAreText.text = "You Are The";
     }

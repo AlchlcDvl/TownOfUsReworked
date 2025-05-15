@@ -15,7 +15,7 @@ public abstract class BaseCosmeticLoader<T> : AssetLoader<T>
         if (!File.Exists(filePath))
             return;
 
-        var data = JsonSerializer.Deserialize<T[]>(File.ReadAllText(filePath));
+        var data = JsonSerializer.Deserialize<T[]>(File.ReadAllBytes(filePath));
         data.Do(x => x.StreamOnly = true);
         response.AddRange(data);
         Array.Clear(data);

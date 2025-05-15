@@ -464,7 +464,11 @@ public static class OverlayKillAnimationPatches
     public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
 }
 
+#if ANDROID
+[HarmonyPatch(typeof(OverlayKillAnimation._CoShow_d__18), "MoveNext")]
+#else
 [HarmonyPatch(typeof(OverlayKillAnimation._CoShow_d__18), nameof(OverlayKillAnimation._CoShow_d__18.MoveNext))]
+#endif
 public static class FixMeetingKills
 {
     public static void Postfix(bool __result)

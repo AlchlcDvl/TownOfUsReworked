@@ -32,10 +32,15 @@ public static class UpdateManager
         UpdateSplashPatch.SetText($"Fetching {updateType} Data");
         Message($"Getting update info for {updateType}");
 
-        string jsonText;
+        byte[] json;
+        var path = Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json");
 
         if (ClientOptions.ForceUseLocal)
-            jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
+        {
+            var task = File.ReadAllBytesAsync(path);
+            yield return WaitUntilTaskComplete(task);
+            json = task.Result;
+        }
         else
         {
             // Checks the GitHub api for tags. Compares the current version to the latest tag version on GitHub
@@ -47,32 +52,39 @@ public static class UpdateManager
             if (isError)
             {
                 Error(www.error);
-                jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
+                var task = File.ReadAllBytesAsync(path);
+                yield return WaitUntilTaskComplete(task);
+                json = task.Result;
             }
             else
             {
-                jsonText = www.downloadHandler.text;
-                var task = File.WriteAllTextAsync(Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json"), jsonText);
-                yield return WaitUntilTaskComplete(task);
+                json = www.downloadHandler.data;
+
+                if (json?.Length is null or 0)
+                {
+                    var task = File.ReadAllBytesAsync(path);
+                    yield return WaitUntilTaskComplete(task);
+                    json = task.Result;
+                    Warning($"Online JSON for {updateType} was missing");
+                }
+                else
+                {
+                    var task = File.WriteAllBytesAsync(path, json);
+                    yield return WaitUntilTaskComplete(task);
+                }
             }
 
             www.downloadHandler.Dispose();
             www.Dispose();
-
-            if (IsNullEmptyOrWhiteSpace(jsonText) && !isError)
-            {
-                jsonText = ReadDiskText($"{updateType}UpdateData.json", TownOfUsReworked.Other);
-                Warning($"Online JSON for {updateType} was missing");
-            }
         }
 
-        if (IsNullEmptyOrWhiteSpace(jsonText))
+        if (json?.Length is null or 0)
         {
             Failure($"Unable to load online or local JSON data for {updateType}");
             yield break;
         }
 
-        var data = JsonSerializer.Deserialize<GitHubApiObject[]>(jsonText)[0];
+        var data = JsonSerializer.Deserialize<GitHubApiObject[]>(json)[0];
 
         if (data.Tag is null)
         {

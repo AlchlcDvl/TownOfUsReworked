@@ -27,21 +27,6 @@ public sealed class GitHubApiAsset
     public string URL { get; set; }
 }
 
-public abstract class Asset
-{
-    [JsonPropertyName("id")]
-    public string ID { get; set; }
-
-    [JsonPropertyName("custom")]
-    public bool IsCustom { get; set; }
-}
-
-public sealed class DownloadableAsset : Asset
-{
-    [JsonPropertyName("hash")]
-    public string Hash { get; set; }
-}
-
 [Serializable]
 public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable
 {

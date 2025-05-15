@@ -16,7 +16,19 @@ public abstract class Syndicate : Role, IPromoter
     protected override UColor LayerColor => CustomColorManager.Syndicate;
     public override AttackEnum AttackVal => KillUsable() ? AttackEnum.Basic : AttackEnum.None;
     public override bool AffectedByLights => false;
-    public override bool CanVent => (HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0;
+    public override bool CanVent
+    {
+        get
+        {
+            var part = faction switch
+            {
+                Faction.Pandorica => PandoricaSettings.PandoricaVent,
+                Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
+                _ => true
+            };
+            return ((HoldsDrive && (int)SyndicateSettings.SyndicateVent is 1) || (int)SyndicateSettings.SyndicateVent is 0) && part;
+        }
+    }
     protected override bool UseMainColor => ClientOptions.CustomSynColors;
 
     public static bool SyndicateHasChaosDrive { get; set; }

@@ -1,23 +1,41 @@
 namespace TownOfUsReworked.Loaders;
 
-#if ANDROID
-public sealed class BundleLoader() : BaseDownloader(TownOfUsReworked.Bundles, "Bundles", "bundle_android")
-#else
-public sealed class BundleLoader() : BaseDownloader(TownOfUsReworked.Bundles, "Bundles", "bundle_pc")
-#endif
+public sealed class BundleLoader : AssetLoader<BundleAsset>
 {
     private static readonly int GlitchTimer = Shader.PropertyToID("_GlitchTimer");
 
-    protected override void LoadAsset(DownloadableAsset item, int i)
+    protected override string DirectoryInfo => TownOfUsReworked.Bundles;
+    protected override string Manifest => "Bundles";
+    protected override bool Downloading => true;
+    protected override string FileExtension =>
+#if ANDROID
+        "bundle_android";
+#else
+        "bundle_pc";
+#endif
+
+    private const string OtherFileExtension =
+#if ANDROID
+        "bundle_pc";
+#else
+        "bundle_android";
+#endif
+
+    protected override IEnumerable<string> GenerateDownloadList(BundleAsset[] response, HashAlgorithm hasher) => response.Where(x => !x.IsCustom && ShouldDownload(Path.Combine(DirectoryInfo,
+        $"{x.ID}.{FileExtension}"), x.Hash, hasher)).Select(x => x.ID);
+
+    protected override void GenerateHash(BundleAsset item, HashAlgorithm hasher)
+    {
+        item.Hash = GenerateHash(Path.Combine(DirectoryInfo, $"{item.ID}.{FileExtension}"), hasher);
+        item.OtherHash = GenerateHash(Path.Combine(DirectoryInfo, $"{item.ID}.{OtherFileExtension}"), hasher);
+    }
+
+    protected override void LoadAsset(BundleAsset item, int i)
     {
         var bundle = LoadBundle(File.ReadAllBytes(Path.Combine(DirectoryInfo, $"{item.ID}.{FileExtension}")));
         Bundles[item.ID] = bundle;
         bundle.GetAllAssetNames().Do(x => AssetToBundle[x.SanitisePath()] = item.ID);
     }
 
-    protected override void AfterLoading(List<DownloadableAsset> response)
-    {
-        var mat = UpdateSplashPatch.Rend.material = new(GetMaterial("GlitchedMaterial"));
-        mat.SetFloat(GlitchTimer, 1);
-    }
+    protected override void AfterLoading(List<BundleAsset> response) => (UpdateSplashPatch.Rend.material = new(GetMaterial("GlitchedMaterial"))).SetFloat(GlitchTimer, 1);
 }

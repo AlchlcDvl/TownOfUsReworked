@@ -50,7 +50,6 @@ public abstract class AssetLoader
         yield return new ColorLoader().CoFetch(hasher);
         yield return new BaseDownloader(TownOfUsReworked.Options, "Presets", "txt").CoFetch(hasher);
         yield return new BaseDownloader(TownOfUsReworked.Images, "Images", "png").CoFetch(hasher);
-        yield return new PortalLoader().CoFetch(hasher);
         yield return new BaseDownloader(TownOfUsReworked.Sounds, "Sounds", "wav").CoFetch(hasher);
     }
 

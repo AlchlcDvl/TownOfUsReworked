@@ -29,7 +29,7 @@ public abstract class Role : PlayerLayer, IRole
 
     public List<LayerEnum> RoleHistory { get; } = [];
 
-    private Faction faction;
+    protected Faction faction;
     public Faction Faction
     {
         get => faction;

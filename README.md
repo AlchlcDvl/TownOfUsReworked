@@ -89,7 +89,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 |------------------------------------|-------------------------------|-----------------------------------|-----------------------------------|---------------------------------|-------------------------------|
 | [Ambusher](#ambusher)              | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Cannibal](#cannibal)           | [Hunted](#hunted)             |
 | [Blackmailer](#blackmailer)        | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Cultist](#cultist)             | [Hunter](#hunter)             |
-| [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Gluttony](#gluttony)               | [Runner](#runner)             |
+| [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Gluttony](#gluttony)           | [Runner](#runner)             |
 | [Consigliere](#consigliere)        | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              | [Pestilence](#pestilence)       |                               |
 | [Consort](#consort)                | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   | [Plaguebearer](#plaguebearer)   |                               |
 | [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Democrat](#democrat)             | [Cryomaniac](#cryomaniac)         | [Void](#void)                   |                               |
@@ -105,14 +105,13 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 | [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Operative](#operative)           | [Necromancer](#necromancer)       |                                 |                               |
 | [Wraith](#wraith)                  | [Warper](#warper)             | [Retributionist](#retributionist) | [Phantom](#phantom)               |                                 |                               |
 |                                    |                               | [Revealer](#revealer)             | [Serial Killer](#serial-killer)   |                                 |                               |
-|                                    |                               | [Seer](#seer)                     | [Survivor](#survivor)             |                                 |                               |
-|                                    |                               | [Sheriff](#sheriff)               | [Thief](#thief)                   |                                 |                               |
-|                                    |                               | [Shifter](#shifter)               | [Troll](#troll)                   |                                 |                               |
-|                                    |                               | [Tracker](#tracker)               | [Werewolf](#werewolf)             |                                 |                               |
-|                                    |                               | [Transporter](#transporter)       | [Whisperer](#whisperer)           |                                 |                               |
-|                                    |                               | [Trapper](#trapper)               | [Zealot](#zealot)                 |                                 |                               |
-|                                    |                               | [Veteran](#veteran)               |                                   |                                 |                               |
-|                                    |                               | [Vigilante](#vigilante)           |                                   |                                 |                               |
+|                                    |                               | [Seer](#seer)                     | [Shifter](#shifter)               |                                 |                               |
+|                                    |                               | [Sheriff](#sheriff)               | [Survivor](#survivor)             |                                 |                               |
+|                                    |                               | [Tracker](#tracker)               | [Thief](#thief)                   |                                 |                               |
+|                                    |                               | [Transporter](#transporter)       | [Troll](#troll)                   |                                 |                               |
+|                                    |                               | [Trapper](#trapper)               | [Werewolf](#werewolf)             |                                 |                               |
+|                                    |                               | [Veteran](#veteran)               | [Whisperer](#whisperer)           |                                 |                               |
+|                                    |                               | [Vigilante](#vigilante)           | [Zealot](#zealot)                 |                                 |                               |
 
 
 | [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Dispositions](#dispositions) |

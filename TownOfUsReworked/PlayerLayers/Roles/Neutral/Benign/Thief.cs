@@ -176,7 +176,7 @@ public sealed class Thief : Neutral, IGuesser
 
             if (cooldown != CooldownType.Fail)
             {
-                if (target.GetRole() is NKilling or IPromoter or Neophyte or Apocalypse or Betrayer or CKilling)
+                if (target.GetRole() is NKilling or IPromoter or Neophyte or Harbinger or Betrayer or CKilling)
                 {
                     Player.RpcMurderPlayer(target);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);

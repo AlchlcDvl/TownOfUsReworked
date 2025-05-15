@@ -30,7 +30,7 @@ public static class PingTrackerUpdate
         if (!__instance?.text || !AmongUsClient.Instance)
             return true;
 
-        __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {Mathf.RoundToInt(1f / Time.deltaTime)}</size>";
+        __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms | FPS: {Mathf.RoundToInt(1f / Time.deltaTime)}</size>";
         return false;
     }
 }

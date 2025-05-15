@@ -312,11 +312,11 @@ public static class OnGameEndPatches
 
         if (role!.Type != LayerEnum.NoneRole)
         {
-            foreach (var role2 in role.RoleHistory)
+            foreach (var (i, role2) in role.RoleHistory.Indexed())
             {
                 var part = TranslationManager.Translate($"Layer.{role2}");
 
-                if (LayerDictionary.TryGetValue(role2, out var entry))
+                if (i == role.RoleHistory.Count - 1 && LayerDictionary.TryGetValue(role2, out var entry))
                     summary += $"<color=#{entry.Color.ToHtmlStringRGBA()}>{part}</color> → ";
 
                 cache += $"{part} → ";

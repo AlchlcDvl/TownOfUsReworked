@@ -17,6 +17,8 @@ public abstract class BaseCosmeticLoader<TView, TData, TAsset> : BaseCosmeticLoa
 
     private readonly Dictionary<PropertyInfo, PropertyInfo> IDsAndHashes = [];
 
+    protected abstract void LoadData(TAsset item, string path, TView viewData, PreviewViewData preview, TData data);
+
     protected override void BeforeLoading()
     {
         if (IDsAndHashes.Count > 0)
@@ -93,8 +95,6 @@ public abstract class BaseCosmeticLoader<TView, TData, TAsset> : BaseCosmeticLoa
     }
 
     protected override void AfterLoading(List<TAsset> response) => IDsAndHashes.Clear();
-
-    protected abstract void LoadData(TAsset item, string path, TView viewData, PreviewViewData preview, TData data);
 
     protected static Sprite CreateCosmeticSprite(string dir, string path, CosmeticTypeEnum cosmetic)
     {

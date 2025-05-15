@@ -29,6 +29,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<FootprintHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<StatsHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<StatusHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<CameraEffectHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -36,15 +37,19 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<MeetingPagingBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
 
-        // Misc
+        // Behaviours
         ClassInjector.RegisterTypeInIl2Cpp<DebuggerBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<BlankBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
-        ClassInjector.RegisterTypeInIl2Cpp<CameraEffectHandler>();
+
+        // Objects
         ClassInjector.RegisterTypeInIl2Cpp<Range>();
         ClassInjector.RegisterTypeInIl2Cpp<Bug>();
         ClassInjector.RegisterTypeInIl2Cpp<Bomb>();
         ClassInjector.RegisterTypeInIl2Cpp<Footprint>();
+        ClassInjector.RegisterTypeInIl2Cpp<Ash>();
+
+        // Misc
+        ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
     }
 
     /// <summary>
