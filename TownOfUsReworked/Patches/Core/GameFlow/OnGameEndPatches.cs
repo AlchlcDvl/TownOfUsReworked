@@ -177,6 +177,7 @@ public static class OnGameEndPatches
                     WinLose.IlluminatiWins => ("The Illuminati Wins", "IntruderWin", CustomColorManager.Illuminati),
                     WinLose.ComplianceWins => ("The Compliance Wins", "IntruderWin", CustomColorManager.Compliance),
                     WinLose.NeutralsWin => ("Neutrals Wins", "IntruderWin", CustomColorManager.Neutral),
+                    WinLose.EveryoneWins => ("Everyone Wins", "IntruderWin", CustomColorManager.Stalemate),
                     _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
                 };
                 __instance.BackgroundBar.material.color = text.color = color;

@@ -1,13 +1,13 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface IGhosty : IRole
+public interface IGhosty : IPlayerLayer
 {
     bool Caught { get; set; }
     bool Faded { get; set; }
 
-    public bool IsEvil => Faction is not (Faction.Crew or Faction.Neutral);
+    public bool CanBeClicked(PlayerControl clicker);
 
-    public void Fade()
+    private void Fade()
     {
         if (Disconnected)
             return;
@@ -23,7 +23,7 @@ public interface IGhosty : IRole
         var velocity = Player.GetComponent<Rigidbody2D>().velocity.magnitude;
 
         if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-            Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
+            Player.CustomSetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
 
         Player.SetAlpha(Mathf.Lerp(0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f), 0, distPercent));
         Player.NameText().color = Player.cosmetics.colorBlindText.color = UColor.clear;
@@ -32,7 +32,7 @@ public interface IGhosty : IRole
             Camouflage();
     }
 
-    public void UnFade()
+    private void UnFade()
     {
         Player.MyRend().color = UColor.white;
         Player.gameObject.layer = LayerMask.NameToLayer("Ghost");

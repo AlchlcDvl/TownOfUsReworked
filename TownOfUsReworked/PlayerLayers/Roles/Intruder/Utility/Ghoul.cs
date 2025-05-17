@@ -44,4 +44,6 @@ public sealed class Ghoul : Intruder, IGhosty
         base.UpdatePlayer();
         (this as IGhosty).UpdateGhost();
     }
+
+    public bool CanBeClicked(PlayerControl clicker) => !clicker.Is(Faction);
 }

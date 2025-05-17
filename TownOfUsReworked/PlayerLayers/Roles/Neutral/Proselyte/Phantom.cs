@@ -16,6 +16,8 @@ public sealed class Phantom : Neutral, IGhosty
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText { get; } = () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";
+    public override bool HasWon => TasksDone;
+    public override WinLose EndState => WinLose.PhantomWins;
 
     protected override void Init()
     {
@@ -30,12 +32,6 @@ public sealed class Phantom : Neutral, IGhosty
     {
         if (TasksLeft == PhantomTasksRemaining && PhantomPlayersAlerted && !Caught)
             Flash(Color);
-
-        if (!AmongUsClient.Instance.AmHost || !TasksDone)
-            return;
-
-        WinState = WinLose.PhantomWins;
-        // CallRpc(CustomRPC.WinLose, WinLose.PhantomWins);
     }
 
     public override void UpdatePlayer()
@@ -43,4 +39,17 @@ public sealed class Phantom : Neutral, IGhosty
         base.UpdatePlayer();
         (this as IGhosty).UpdateGhost();
     }
+
+    protected override void CheckWin(HashSet<byte> winnerIds)
+    {
+        if (!HasWon)
+            return;
+
+        if (NeutralEvilSettings.NeutralEvilsEndGame && !WinState.IsAny(EndState, WinLose.NeutralsWin))
+            WinState = WinState is > WinLose.NobodyWins and < WinLose.NeutralsWin ? WinLose.NeutralsWin : EndState;
+
+        winnerIds.Add(PlayerId);
+    }
+
+    public bool CanBeClicked(PlayerControl _) => TasksLeft <= PhantomTasksRemaining;
 }

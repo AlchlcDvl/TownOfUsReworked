@@ -303,7 +303,27 @@ public static class CollectionExtensions
         }
     }
 
+    public static IEnumerable<(T1, T2)> Zip<T1, T2>(this (IEnumerable<T1>, IEnumerable<T2>) source)
+    {
+        var c1 = source.Item1.Count();
+        var c2 = source.Item2.Count();
+
+        if (c1 != c2)
+            throw new ArgumentOutOfRangeException(nameof(source), "The elements must be equal in size");
+
+        var count = (c1 + c2) / 2; // Idk why, I just felt like doing this; no, I am not changing it
+
+        for (var i = 0; i < count; i++)
+            yield return (source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
+    }
+
     /* These methods are unused at the moment, so they've been commented until needed
+
+    public static IEnumerable<T3> Select<T1, T2, T3>(this IEnumerable<(T1, T2)> source, Func<T1, T2, T3> selector)
+    {
+        foreach (var (item1, item2) in source)
+            yield return selector(item1, item2);
+    }
 
     public static bool TryAddItemIfNoContains<T>(this Il2CppReferenceArray<T> arr, T checkItem, out T[] newArr) where T : Il2CppObjectBase
     {

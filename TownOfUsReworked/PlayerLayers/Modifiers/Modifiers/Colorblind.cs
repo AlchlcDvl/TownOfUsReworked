@@ -43,7 +43,7 @@ public sealed class Colorblind : Modifier
         var fit = player.GetCustomOutfitType();
 
         if (fit is not (CustomPlayerOutfitType.Colorblind or CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly))
-            player.SetOutfit(CustomPlayerOutfitType.Colorblind, ColorblindOutfit());
+            player.CustomSetOutfit(CustomPlayerOutfitType.Colorblind, ColorblindOutfit());
     }
 
     private static void AllToNormal()

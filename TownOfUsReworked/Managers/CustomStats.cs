@@ -46,7 +46,7 @@ public static class CustomStatsManager
     private static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
     private static readonly ValueMap<StringNames, StatID> StatsMap = [];
 
-    private static int NextID = -1;
+    private static readonly EnumInjector<StatID> Injector = new();
 
     public static void Setup()
     {
@@ -135,14 +135,8 @@ public static class CustomStatsManager
         foreach (var stat in OrderedStats)
         {
             if (!StatsMap.ContainsKey(stat))
-                StatsMap.Add(stat, GetNextStat());
+                StatsMap.Add(stat, Injector.InjectAndReturn(stat.ToString()));
         }
-    }
-
-    private static StatID GetNextStat()
-    {
-        NextID--;
-        return (StatID)NextID;
     }
 
     public static void Reset()

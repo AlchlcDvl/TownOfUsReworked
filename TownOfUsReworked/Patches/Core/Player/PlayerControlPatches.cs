@@ -243,3 +243,94 @@ public static class PlayerControlPatches
         return false;
     }
 }
+
+[HarmonyPatch(typeof(NetworkedPlayerInfo))]
+public static class PlayerInfoPatches
+{
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.ColorName), MethodType.Getter)]
+    public static bool Prefix(NetworkedPlayerInfo __instance, ref string __result)
+    {
+        __result = __instance.GetPlayerColorString();
+        return false;
+    }
+
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.Init))]
+    public static void Postfix(NetworkedPlayerInfo __instance)
+    {
+        var outfit = __instance.Outfits[PlayerOutfitType.Default];
+        __instance.Outfits[PlayerOutfitType.Default] = new CustomOutfit(outfit);
+    }
+
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.DefaultOutfit), MethodType.Getter)]
+    public static bool Prefix(NetworkedPlayerInfo __instance, ref PlayerOutfit  __result)
+    {
+        if (IsInGame() && __instance.Outfits.TryGetValue((PlayerOutfitType)CustomPlayerOutfitType.GameDefault, out var outfit))
+            __result = outfit;
+        else
+            __result = __instance.Outfits[PlayerOutfitType.Default];
+
+        return false;
+    }
+
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.GetPlayerColorString))]
+    public static bool Prefix(NetworkedPlayerInfo __instance, PlayerOutfitType outfitType, ref string __result)
+    {
+        if (__instance.Outfits.TryGetValue(outfitType, out var outfit))
+        {
+            var translation = Palette.GetColorName(outfit.ColorId);
+            __result = outfit.ColorId.IsDefault() ? (translation[0] + translation[1..].ToLower()) : translation;
+        }
+        else
+            __result = "";
+
+        return false;
+    }
+
+    [HarmonyPatch(nameof(NetworkedPlayerInfo.Deserialize))]
+    public static bool Prefix(NetworkedPlayerInfo __instance, MessageReader reader, bool initialState)
+    {
+        __instance.PlayerId = reader.ReadByte();
+        __instance.ClientId = reader.ReadPackedInt32();
+        var b = reader.ReadByte();
+        __instance.Outfits.Clear();
+
+        for (var i = 0; i < b; i++)
+        {
+            var playerOutfitType = (PlayerOutfitType)reader.ReadByte();
+            var playerOutfit = new CustomOutfit();
+            playerOutfit.Deserialize(reader);
+            __instance.Outfits[playerOutfitType] = playerOutfit;
+        }
+
+        __instance.PlayerLevel = reader.ReadPackedUInt32();
+        var b2 = reader.ReadByte();
+        __instance.Disconnected = (b2 & 1) > 0;
+        __instance.IsDead = (b2 & 4) > 0;
+        __instance.RoleType = (RoleTypes)reader.ReadUInt16();
+
+        if (reader.ReadBoolean())
+            __instance.RoleWhenAlive = new((RoleTypes)reader.ReadUInt16());
+
+        var b3 = reader.ReadByte();
+        __instance.Tasks.Clear();
+
+        for (var j = 0; j < b3; j++)
+        {
+            var taskInfo = new NetworkedPlayerInfo.TaskInfo();
+            taskInfo.Deserialize(reader);
+            __instance.Tasks.Add(taskInfo);
+        }
+
+        __instance.FriendCode = reader.ReadString();
+        __instance.Puid = reader.ReadString();
+
+        if (initialState && !GameData.Instance.GetPlayerById(__instance.PlayerId) && !GameData.Instance.IsProcessingInfo(__instance))
+            GameData.Instance.AddPlayerInfo(__instance);
+
+        if (!initialState && __instance.Object)
+            __instance.Object.MyPhysics.ResetAnimState();
+
+        GameData.Instance.RecomputeTaskCounts();
+        return false;
+    }
+}

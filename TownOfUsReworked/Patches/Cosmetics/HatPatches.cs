@@ -21,30 +21,13 @@ public static class HatPatches
             return false;
 
         var maskType = __instance.matProperties.MaskType;
+        var loaded = __instance.IsLoaded && ch.ViewData.MatchPlayerColor;
 
-        if (__instance.IsLoaded && ch.ViewData.MatchPlayerColor)
+        __instance.BackLayer.sharedMaterial = __instance.FrontLayer.sharedMaterial = maskType switch
         {
-            if (maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI)
-            {
-                __instance.BackLayer.sharedMaterial = HatManager.Instance.MaskedPlayerMaterial;
-                __instance.FrontLayer.sharedMaterial = HatManager.Instance.MaskedPlayerMaterial;
-            }
-            else
-            {
-                __instance.BackLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
-                __instance.FrontLayer.sharedMaterial = HatManager.Instance.PlayerMaterial;
-            }
-        }
-        else if (maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI)
-        {
-            __instance.BackLayer.sharedMaterial = HatManager.Instance.MaskedMaterial;
-            __instance.FrontLayer.sharedMaterial = HatManager.Instance.MaskedMaterial;
-        }
-        else
-        {
-            __instance.BackLayer.sharedMaterial = HatManager.Instance.DefaultShader;
-            __instance.FrontLayer.sharedMaterial = HatManager.Instance.DefaultShader;
-        }
+            PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI => loaded ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial,
+            _ => loaded ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader
+        };
 
         __instance.BackLayer.maskInteraction = __instance.FrontLayer.maskInteraction = maskType switch
         {
@@ -56,7 +39,7 @@ public static class HatPatches
         __instance.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
         __instance.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
 
-        if (__instance.IsLoaded && ch.ViewData.MatchPlayerColor)
+        if (loaded)
         {
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.BackLayer);
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.FrontLayer);

@@ -28,50 +28,13 @@ public static class PlayerControlOnClick
         return false;
     }
 
-    public static void CatchPostmortal(PlayerControl player, PlayerControl clicker)
+    public static void CatchPostmortal(PlayerControl ghosty, PlayerControl clicker)
     {
-        var role = player.GetRole();
+        if (!ghosty.Is<IGhosty>(out var role) || !role.CanBeClicked(clicker))
+            return;
 
-        switch (role)
-        {
-            case Phantom phantom:
-            {
-                if (role.TasksLeft <= Phantom.PhantomTasksRemaining)
-                    phantom.Caught = true;
-                else
-                    return;
-
-                break;
-            }
-            case Revealer revealer:
-            {
-                if ((Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral))) ||
-                    (Revealer.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && CustomPlayer.Local.Is(Faction.Crew)))
-                {
-                    return;
-                }
-
-                if (role.TasksLeft <= Revealer.RevealerTasksRemainingClicked)
-                    revealer.Caught = true;
-                else
-                    return;
-
-                break;
-            }
-            case IGhosty { IsEvil: true } evilGhosty:
-            {
-                if (!CustomPlayer.Local.Is(evilGhosty.Faction))
-                    evilGhosty.Caught = true;
-                else
-                    return;
-
-                break;
-            }
-            default:
-                return;
-        }
-
-        player.CustomDie(DeathReasonEnum.Caught, clicker);
+        role.Caught = true;
+        ghosty.CustomDie(DeathReasonEnum.Caught, clicker);
     }
 }
 

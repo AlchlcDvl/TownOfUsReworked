@@ -5,6 +5,7 @@ public enum WinLose : byte
     None,
 
     NobodyWins,
+    EveryoneWins,
 
     JesterWins,
     ExecutionerWins,

@@ -56,6 +56,7 @@ global using static TownOfUsReworked.Managers.RpcManager;
 global using static TownOfUsReworked.Managers.LogManager;
 global using static TownOfUsReworked.Modules.ChatCommand;
 global using static TownOfUsReworked.Managers.AssetManager;
+global using PlayerOutfit = NetworkedPlayerInfo.PlayerOutfit;
 global using static TownOfUsReworked.Extensions.LayerExtensions;
 global using static TownOfUsReworked.Managers.ModCompatibilityManager;
 global using Hud = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.HudHandler>;

@@ -71,4 +71,15 @@ public sealed class Revealer : Crew, IGhosty
         base.UpdatePlayer();
         (this as IGhosty).UpdateGhost();
     }
+
+    public bool CanBeClicked(PlayerControl clicker)
+    {
+        if ((RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(clicker.GetFaction() is not (Faction.Crew or Faction.Neutral))) || (RevealerCanBeClickedBy ==
+            RevealerCanBeClickedBy.NonCrew && clicker.Is(Faction.Crew)))
+        {
+            return false;
+        }
+
+        return TasksLeft <= RevealerTasksRemainingClicked;
+    }
 }

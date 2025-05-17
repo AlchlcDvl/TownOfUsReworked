@@ -68,7 +68,7 @@ public sealed class Medium : Crew, IShaman
         if (ShowMediatePlayer)
             return;
 
-        __instance.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
+        __instance.CustomSetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
         PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
     }
 

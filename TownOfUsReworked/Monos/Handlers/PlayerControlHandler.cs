@@ -14,6 +14,7 @@ public sealed class PlayerControlHandler : NameHandler
         Color.transform.localPosition = new(0f, -1.5f, -0.5f);
         Name.transform.localPosition = new(0f, -0.2f, -0.5f);
         Size = Player.transform.localScale;
+        gameObject.AddComponent<AppearanceHandler>();
     }
 
     public void Update()
@@ -36,7 +37,7 @@ public sealed class PlayerControlHandler : NameHandler
         localHandler.UpdatePlayer(Player);
         (Name.text, Name.color) = UpdateGameName(handler, localHandler, out var revealed);
         Name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
-        Player.transform.localScale = Size * Custom.Size;
+        // Player.transform.localScale = Size * Custom.Size;
     }
 
     public void OnDestroy() => CustomPlayer.AllCustomPlayers.RemoveAll([HideFromIl2Cpp] (x) => x.Player == Player || !x.Player);

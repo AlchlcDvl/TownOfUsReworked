@@ -5,10 +5,10 @@ public static class TranslationManager
     public static readonly Dictionary<string, Language> AllTranslations = []; // Used to store all translations
     private static readonly ValueMap<StringNames, string> CustomStringNames = []; // Used to store custom string names that trace to a string id
     public static readonly Dictionary<StringNames, StringNames> VanillaToCustomMap = []; // Used to remap vanilla string names to custom ones
-    private static readonly Dictionary<StringNames, List<StringNames>> CustomToCustom = []; // Used to map multiple custom ids to the same one
+    private static readonly Dictionary<StringNames, HashSet<StringNames>> CustomToCustom = []; // Used to map multiple custom ids to the same one
     private static readonly Dictionary<string, (string Key, Func<string> Value)[]> ReplacementsMap = [];
     private static readonly List<string> MissingIds = [];
-    private static int NextID;
+    private static readonly EnumInjector<StringNames> Injector = new();
 
     private static string Translate(string id, (string Key, string Value)[] toReplace, string language)
     {
@@ -49,9 +49,8 @@ public static class TranslationManager
 
     private static StringNames AddNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
+        var value = Injector.InjectAndReturn(id.Replace(".", "")); // Inject and find the translations
         id = id.ToLower();
-        NextID--; // Decrement to the next value
-        var value = (StringNames)NextID; // Cast the int to the enum
         CustomStringNames[value] = id; // Add the id to the dictionary
 
         // If the custom value overrides translations of a vanilla one, add it to the dictionary for later remapping

@@ -7,16 +7,20 @@ public static class MciUtils
     public static readonly Dictionary<int, ClientData> Clients = [];
     public static readonly Dictionary<byte, int> PlayerClientIDs = [];
 
-    private static int AvailableId()
+    public static int GetAvailableId(bool mci)
     {
-        for (var i = 1; i < 128; i++)
+        for (var i = 1; i < 251; i++)
         {
-            if (!AmongUsClient.Instance.allClients.Any(x => x.Id == i) && !Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i)
+            if (IsAvailable(i, mci))
                 return i;
         }
 
         return -1;
     }
+
+    private static bool IsAvailable(int i, bool mci) => mci
+        ? !AmongUsClient.Instance.allClients.Any(x => x.Id == i) && !Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i
+        : !GameData.Instance.AllPlayers.Any(p => p.PlayerId == i) && !GameData.Instance.PlayerQueue.Any(p => p.PlayerId == i);
 
     public static void CleanUpLoad()
     {
@@ -37,7 +41,7 @@ public static class MciUtils
 
     private static IEnumerator CoCreatePlayerInstance()
     {
-        var sampleId = AvailableId();
+        var sampleId = GetAvailableId(true);
         var sampleC = new ClientData(sampleId, $"Bot-{sampleId}", new()
         {
 #if ANDROID

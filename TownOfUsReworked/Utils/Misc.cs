@@ -33,13 +33,13 @@ public static class MiscUtils
 
     // public static bool IsImpostor(this PlayerVoteArea playerinfo) => PlayerByVoteArea(playerinfo).IsImpostor();
 
-    public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfitType, NetworkedPlayerInfo.PlayerOutfit outfit)
+    public static void CustomSetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfitType, PlayerOutfit outfit)
     {
         playerControl.Data.SetOutfit((PlayerOutfitType)customOutfitType, outfit);
-        playerControl.SetOutfit(customOutfitType);
+        playerControl.CustomSetOutfit(customOutfitType);
     }
 
-    private static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfit)
+    private static void CustomSetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfit)
     {
         if (!playerControl)
             return;
@@ -93,7 +93,7 @@ public static class MiscUtils
             player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(p);
         });
 
-        player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
+        player.CustomSetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
     }
 
     public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(CoDefaultOutfit(player));
@@ -157,7 +157,7 @@ public static class MiscUtils
                     player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
                 });
 
-                player.SetOutfit(CustomPlayerOutfitType.Default);
+                player.CustomSetOutfit(CustomPlayerOutfitType.Default);
 
                 yield return PerformTimedAction(0.5f, p =>
                 {
@@ -167,13 +167,13 @@ public static class MiscUtils
                 });
 
                 CachedMorphs.Remove(player.PlayerId);
-                player.SetOutfit(CustomPlayerOutfitType.Default);
+                player.CustomSetOutfit(CustomPlayerOutfitType.Default);
                 break;
             }
         }
 
         if (!Hud.Instance.IsCamoed && player.GetCustomOutfitType() != CustomPlayerOutfitType.Default)
-            player.SetOutfit(CustomPlayerOutfitType.Default);
+            player.CustomSetOutfit(CustomPlayerOutfitType.Default);
 
         Shapeshifted = false;
     }
@@ -185,7 +185,7 @@ public static class MiscUtils
         if (player.HasDied() || (int)player.GetCustomOutfitType() is 4 or 5 or 6 or 7 || CustomPlayer.Local.HasDied() || player.AmOwner)
             return;
 
-        player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
+        player.CustomSetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
         var speed = player.GetSpeed();
         var size = player.GetSize();
         var rend = player.MyRend();
@@ -217,7 +217,7 @@ public static class MiscUtils
             return;
 
         var ca = condition || CustomPlayer.Local.HasDied() || player.AmOwner || CustomPlayer.Local.Is<Torch>() ? 0.1f : 0f;
-        player.SetOutfit(CustomPlayerOutfitType.Invis, CurrentOutfit(player));
+        player.CustomSetOutfit(CustomPlayerOutfitType.Invis, CurrentOutfit(player));
         Coroutines.Start(PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(1, ca, p), !player.AmOwner)));
     }
 
@@ -241,9 +241,11 @@ public static class MiscUtils
 
     public static IEnumerator Wait(float duration) => Effects.Wait(duration).WrapToManaged();
 
-    private static NetworkedPlayerInfo.PlayerOutfit CurrentOutfit(PlayerControl player) => player.CurrentOutfit;
+    private static PlayerOutfit CurrentOutfit(PlayerControl player) => player.CurrentOutfit;
 
-    public static NetworkedPlayerInfo.PlayerOutfit BlankOutfit(PlayerControl player) => new()
+    public static CustomOutfit CloneOutfit(this PlayerControl player) => new(player);
+
+    public static CustomOutfit BlankOutfit(PlayerControl player) => new()
     {
         ColorId = player.Data.DefaultOutfit.ColorId,
         HatId = "hat_NoHat",
@@ -254,7 +256,7 @@ public static class MiscUtils
         PetId = "pet_EmptyPet"
     };
 
-    private static NetworkedPlayerInfo.PlayerOutfit CamoOutfit(PlayerControl player) => new()
+    private static CustomOutfit CamoOutfit(PlayerControl player) => new()
     {
         ColorId = player.CurrentOutfit.ColorId,
         HatId = player.CurrentOutfit.HatId,
@@ -262,10 +264,12 @@ public static class MiscUtils
         VisorId = player.CurrentOutfit.VisorId,
         NamePlateId = "nameplate_NoPlate",
         PlayerName = ClientOptions.OptimisationMode ? "" : GetRandomisedName(),
+        Size = BetterSabotages.CamoHideSize ? 1f : player.GetSize(),
+        Speed = BetterSabotages.CamoHideSpeed ? 1f : player.GetSpeed(),
         PetId = "pet_EmptyPet"
     };
 
-    public static NetworkedPlayerInfo.PlayerOutfit ColorblindOutfit() => new()
+    public static CustomOutfit ColorblindOutfit() => new()
     {
         ColorId = 39,
         HatId = "hat_NoHat",
@@ -273,10 +277,11 @@ public static class MiscUtils
         VisorId = "visor_EmptyVisor",
         NamePlateId = "nameplate_NoPlate",
         PlayerName = " ",
-        PetId = "pet_EmptyPet"
+        PetId = "pet_EmptyPet",
+        Alpha = 1f
     };
 
-    public static NetworkedPlayerInfo.PlayerOutfit NightVisionOutfit() => new()
+    public static CustomOutfit NightVisionOutfit() => new()
     {
         ColorId = 6,
         HatId = "hat_NoHat",
@@ -1088,7 +1093,7 @@ public static class MiscUtils
         player.MyPhysics.ResetAnimState();
     }
 
-    public static NetworkedPlayerInfo.PlayerOutfit GetCurrentOutfit(this PlayerControl player) => player.Data.Outfits.TryGetValue(player.CurrentOutfitType, out var outfit) ? outfit :
+    public static PlayerOutfit GetCurrentOutfit(this PlayerControl player) => player.Data.Outfits.TryGetValue(player.CurrentOutfitType, out var outfit) ? outfit :
         player.Data.DefaultOutfit;
 
     public static IEnumerator PerformTimedAction(float duration, Action<float> action)

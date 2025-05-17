@@ -11,5 +11,7 @@ public enum CustomPlayerOutfitType : byte
     Invis,
     PlayerNameOnly,
     Colorblind,
-    NightVision
+    NightVision,
+    Custom,
+    GameDefault
 }

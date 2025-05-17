@@ -74,4 +74,7 @@ public static class BetterFungle
         // Select a random ID from the filtered list for color assignment
         __result.ColorPlayerId = list.Random(x => !__instance.cachedOutfitsByPlayerId[x].ColorId.IsChanging());
     }
+
+    [HarmonyPatch(nameof(MushroomMixupSabotageSystem.ConvertToPlayerOutfit))]
+    public static void Postfix(ref PlayerOutfit __result) => __result = new CustomOutfit(__result);
 }

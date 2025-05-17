@@ -216,9 +216,10 @@ public static class AirshipSpawnInPatch
     }
 }
 
-[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
-public static class ExitGamePatch
+[HarmonyPatch(typeof(AmongUsClient))]
+public static class AmongUsClientPatches
 {
+    [HarmonyPatch(nameof(AmongUsClient.ExitGame))]
     public static void Prefix()
     {
         var filePath = Path.Combine(TownOfUsReworked.Logs, "ReworkedLogs.log");
@@ -228,6 +229,78 @@ public static class ExitGamePatch
 
         SaveText($"{filePath.SanitisePath()}.log", SavedLogs, TownOfUsReworked.Logs);
         Option.SaveSettings("LastUsed");
+    }
+
+    [HarmonyPatch(nameof(AmongUsClient.CreatePlayer))]
+    public static bool Prefix(AmongUsClient __instance, ClientData clientData, ref Il2CppSystem.Collections.IEnumerator __result)
+    {
+        __result = BetterCreatePlayer(__instance, clientData).WrapToIl2Cpp();
+        return false;
+    }
+
+    private static IEnumerator BetterCreatePlayer(AmongUsClient __instance, ClientData clientData)
+    {
+        if (clientData.IsBeingCreated || clientData.Character)
+            yield break;
+
+        if (!__instance.AmHost)
+        {
+            __instance.logger.Debug("Waiting for host to make my player", null);
+            yield break;
+        }
+
+        clientData.IsBeingCreated = true;
+        var isOwnerOfPlayerData = __instance.NetworkMode is NetworkModes.LocalGame or NetworkModes.FreePlay || __instance.AmModdedHost;
+        int b;
+
+        if (isOwnerOfPlayerData)
+        {
+            b = GameData.Instance.HasPlayer(clientData) ? GameData.Instance.GetPlayerIdFromClient(clientData) : MciUtils.GetAvailableId(false);
+
+            if (b == -1)
+            {
+                __instance.SendLateRejection(clientData.Id, DisconnectReasons.GameFull);
+                __instance.logger.Info("Overfilled room.");
+                clientData.IsBeingCreated = false;
+                yield break;
+            }
+        }
+        else
+        {
+            yield return WaitUntil(() => GameData.Instance.HasPlayer(clientData));
+            b = GameData.Instance.GetPlayerIdFromClient(clientData);
+        }
+
+        var zero = Vector2.zero;
+
+        if (DestroyableSingleton<TutorialManager>.InstanceExists)
+            zero = new(-1.9f, 3.25f);
+
+        var pc = UObject.Instantiate(__instance.PlayerPrefab, zero, Quaternion.identity);
+        pc.PlayerId = (byte)b;
+        pc.FriendCode = clientData.FriendCode;
+        pc.Puid = clientData.ProductUserId;
+        clientData.Character = pc;
+        __instance.UpdateCachedClients(clientData, clientData.Character);
+        var ship = Ship();
+
+        if (ship)
+            ship.SpawnPlayer(pc, Palette.PlayerColors.Length, false);
+
+        if (isOwnerOfPlayerData)
+            __instance.Spawn(GameData.Instance.AddPlayer(pc, clientData));
+        else
+            yield return WaitUntil(() => GameData.Instance.GetPlayerByClient(clientData));
+
+        __instance.Spawn(pc, clientData.Id, SpawnFlags.IsClientCharacter);
+
+        if (isOwnerOfPlayerData)
+            GameData.Instance.DirtyAllData();
+
+        if (GameManager.Instance.LogicOptions.IsDefaults)
+            GameManager.Instance.LogicOptions.SetRecommendations(GameData.Instance.PlayerCount, AmongUsClient.Instance.NetworkMode);
+
+        clientData.IsBeingCreated = false;
     }
 }
 
@@ -381,10 +454,10 @@ public static class ShowCustomAnim
             // DO NOT TOUCH THIS GETTER
             // LITERALLY DO NOT TOUCH IT
             //
-            // The objects used in this method are in some kind of ethereal state.
+            // The objects used in __instance method are in some kind of ethereal state.
             // After very careful manipulation and a lot of time and patience,
             // I have managed to come up with a very meticulous recipe for modifying
-            // the death animation. If you change this...you will pay with your blood!
+            // the death animation. If you change __instance...you will pay with your blood!
             //
             // - Alex
 
@@ -550,31 +623,6 @@ public static class OverrideKillAnim
     }
 }
 
-[HarmonyPatch(typeof(NetworkedPlayerInfo))]
-public static class PlayerDataPatches
-{
-    [HarmonyPatch(nameof(NetworkedPlayerInfo.ColorName), MethodType.Getter)]
-    public static bool Prefix(NetworkedPlayerInfo __instance, ref string __result)
-    {
-        __result = __instance.GetPlayerColorString();
-        return false;
-    }
-
-    [HarmonyPatch(nameof(NetworkedPlayerInfo.GetPlayerColorString))]
-    public static bool Prefix(NetworkedPlayerInfo __instance, PlayerOutfitType outfitType, ref string __result)
-    {
-        if (__instance.Outfits.TryGetValue(outfitType, out var outfit))
-        {
-            var translation = Palette.GetColorName(outfit.ColorId);
-            __result = outfit.ColorId.IsDefault() ? (translation[0] + translation[1..].ToLower()) : translation;
-        }
-        else
-            __result = "";
-
-        return false;
-    }
-}
-
 [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames), typeof(Il2CppReferenceArray<IObject>))]
 public static class PatchColours
 {
@@ -629,7 +677,7 @@ public static class MedScanMinigamePatch
 [HarmonyPatch]
 public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
 {
-    [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with this fucked-up class
+    [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with __instance fucked-up class
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
     public static Exception Finalizer() => null; // My first use of a finalizer ong
 }
@@ -645,4 +693,31 @@ public static class RPCHandling
         using var data = new NetData(reader.ReadBytes(reader.ReadUInt16()));
         HandleRpc(data);
     }
+}
+
+[HarmonyPatch(typeof(Enum))]
+public static class EnumPatches
+{
+    [HarmonyPatch(nameof(Enum.GetValues), typeof(Type))]
+    public static bool Prefix(Type enumType, ref Array __result)
+    {
+        if (!CustomEnumInjector.Injectors.TryGetValue(enumType, out var injector))
+            return true;
+
+        __result = injector.Values();
+        return false;
+    }
+
+    [HarmonyPatch(nameof(Enum.ToString), [])]
+    public static bool Prefix(Enum __instance, ref string __result)
+    {
+        if (!CustomEnumInjector.Injectors.TryGetValue(__instance.GetType(), out var injector))
+            return true;
+
+        __result = injector.ToString(__instance);
+        return false;
+    }
+
+    [HarmonyPatch(nameof(Enum.ToString), []), HarmonyReversePatch]
+    public static string OriginalToString(Enum instance) => throw new NotSupportedException();
 }

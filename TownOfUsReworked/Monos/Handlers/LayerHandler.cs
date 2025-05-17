@@ -195,11 +195,12 @@ public sealed class LayerHandler : RoleBehaviour
         CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
         ResetButtons();
 
-        TasksCountTowardProgress = Player.CanDoTasks() && (CustomRole.Faction == Faction.Crew || CustomRole is Runner or Hunted);
+        TasksCountTowardProgress = Player.CanDoTasks() && ((CustomRole.Faction == Faction.Crew  && CustomRole.SubFaction == SubFaction.None)|| CustomRole is Runner or Hunted);
         CanVent = Player.CanVent();
         AffectedByLightAffectors = !(CustomAbility is Torch || !CustomRole.AffectedByLights);
 
         CustomLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
+        Player.CustomSetOutfit(CustomPlayerOutfitType.GameDefault, new CustomOutfit(Player));
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;

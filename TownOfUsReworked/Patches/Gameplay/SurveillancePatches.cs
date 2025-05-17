@@ -135,7 +135,7 @@ public static class SurveillancePatches
                 continue;
 
             if (LightsOut && Overlays.Any() && NvActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))
-                player.SetOutfit(CustomPlayerOutfitType.NightVision, NightVisionOutfit());
+                player.CustomSetOutfit(CustomPlayerOutfitType.NightVision, NightVisionOutfit());
         }
     }
 }

@@ -30,6 +30,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<StatsHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<StatusHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<CameraEffectHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<AppearanceHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -50,6 +51,7 @@ public static class AllMonos
 
         // Misc
         ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
+        ClassInjector.RegisterTypeInIl2Cpp<CustomOutfit>();
     }
 
     /// <summary>

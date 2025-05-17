@@ -195,7 +195,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             if (Medium.ShowMediatePlayer)
                 return;
 
-            __instance.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
+            __instance.CustomSetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
             PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
         }
     }

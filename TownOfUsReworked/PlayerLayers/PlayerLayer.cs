@@ -57,6 +57,16 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public virtual bool CanVent => false;
 
     /// <summary>
+    /// Gets a value indicating whether or not the layer has won.
+    /// </summary>
+    public virtual bool HasWon => false;
+
+    /// <summary>
+    /// Gets the related wing related end state for the layer.
+    /// </summary>
+    public virtual WinLose EndState { get; }
+
+    /// <summary>
     /// Gets or sets the name of the layer.
     /// </summary>
     public string Name { get; set; }

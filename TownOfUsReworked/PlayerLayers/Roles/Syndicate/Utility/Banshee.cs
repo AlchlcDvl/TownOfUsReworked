@@ -60,4 +60,6 @@ public sealed class Banshee : Syndicate, IGhosty
         base.UpdatePlayer();
         (this as IGhosty).UpdateGhost();
     }
+
+    public bool CanBeClicked(PlayerControl clicker) => !clicker.Is(Faction);
 }

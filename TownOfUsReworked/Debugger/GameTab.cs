@@ -25,8 +25,15 @@ public sealed class GameTab : BaseTab
             MciUtils.SwitchTo(Debugging.Instance.ControllingFigure);
         }
 
-        if (GUILayout.Button("End Game"))
+        if (GUILayout.Button("End Game (Lose)"))
             CheckEndGame.PerformStalemate();
+
+        if (GUILayout.Button("End Game (Win)"))
+        {
+            WinState = WinLose.EveryoneWins;
+            AllPlayers().Do(x => x.GetLayers().Do(y => y.Winner = true));
+            CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState);
+        }
 
         if (Syndicate.DriveHolder)
         {
