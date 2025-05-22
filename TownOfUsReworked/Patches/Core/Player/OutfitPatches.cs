@@ -12,6 +12,11 @@ public static class PlayerOutfitPatches
         writer.Write(outfit.Size);
         writer.Write(outfit.Speed);
         writer.Write(outfit.Alpha);
+        // writer.Write(outfit.Color); For when my reactor pr is approved
+        writer.Write(outfit.Color.r);
+        writer.Write(outfit.Color.g);
+        writer.Write(outfit.Color.b);
+        writer.Write(outfit.Color.a);
     }
 
     [HarmonyPatch(nameof(PlayerOutfit.Deserialize))]
@@ -23,6 +28,13 @@ public static class PlayerOutfitPatches
         outfit.Size = reader.ReadSingle();
         outfit.Speed = reader.ReadSingle();
         outfit.Alpha = reader.ReadSingle();
+        // outfit.Color = reader.ReadColor(); For when my reactor pr is approved
+        var color = (Color32)default;
+        color.r = reader.ReadByte();
+        color.g = reader.ReadByte();
+        color.b = reader.ReadByte();
+        color.a = reader.ReadByte();
+        outfit.Color = color;
     }
 }
 

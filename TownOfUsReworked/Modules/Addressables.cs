@@ -1,14 +1,15 @@
 ﻿using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace TownOfUsReworked.Modules;
 
-public sealed class CustomAddressable<T>(T item, string guid) : CustomAddressable($"asset/reworked:{guid.ToLower().Trim()}")
+public sealed class CustomAddressable<T> : CustomAddressable
     where T : UObject
 {
-    private T Asset { get; } = item;
-
-    public override AsyncOperationHandle AsyncLoad() => Handle ??= Addressables.ResourceManager.CreateCompletedOperation(Asset, Asset ? string.Empty : "Unable to find asset");
+    public CustomAddressable(T item, string guid) : base($"asset/reworked:{guid.ToLower().Trim()}")
+    {
+        item = item.DontDestroy();
+        Ref.OperationHandle = Addressables.ResourceManager.CreateCompletedOperation(item, item ? string.Empty : "Unable to find asset");
+    }
 }
 
 public abstract class CustomAddressable
@@ -16,13 +17,10 @@ public abstract class CustomAddressable
     public static readonly Dictionary<string, CustomAddressable> CustomAddressables = [];
 
     public AssetReference Ref { get; }
-    protected AsyncOperationHandle Handle { get; set; }
 
     protected CustomAddressable(string guid)
     {
         Ref = new(guid);
         CustomAddressables[guid] = this;
     }
-
-    public abstract AsyncOperationHandle AsyncLoad();
 }

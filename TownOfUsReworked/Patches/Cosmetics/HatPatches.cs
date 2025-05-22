@@ -8,49 +8,7 @@ public static class HatPatches
     [HarmonyPatch(nameof(HatParent.UpdateMaterial)), HarmonyPrefix]
     public static bool UpdateMaterialPrefix(HatParent __instance)
     {
-        try
-        {
-            __instance.viewAsset.GetAsset();
-            return true;
-        } catch {}
-
-        if (!__instance.Hat || !HatLoader.CustomCosmeticRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
-            return true;
-
-        if (!ch.ViewData)
-            return false;
-
-        var maskType = __instance.matProperties.MaskType;
-        var loaded = __instance.IsLoaded && ch.ViewData.MatchPlayerColor;
-
-        __instance.BackLayer.sharedMaterial = __instance.FrontLayer.sharedMaterial = maskType switch
-        {
-            PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI => loaded ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial,
-            _ => loaded ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader
-        };
-
-        __instance.BackLayer.maskInteraction = __instance.FrontLayer.maskInteraction = maskType switch
-        {
-            PlayerMaterial.MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
-            PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
-            _ => SpriteMaskInteraction.None
-        };
-
-        __instance.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
-        __instance.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
-
-        if (loaded)
-        {
-            PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.BackLayer);
-            PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.FrontLayer);
-        }
-
-        if (__instance.matProperties.MaskLayer <= 0)
-        {
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.BackLayer, __instance.matProperties.IsLocalPlayer);
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.FrontLayer, __instance.matProperties.IsLocalPlayer);
-        }
-
+        __instance.UpdateMaterial(__instance.matProperties.ColorId);
         return false;
     }
 

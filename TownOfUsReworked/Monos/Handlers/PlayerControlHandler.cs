@@ -5,16 +5,19 @@ public sealed class PlayerControlHandler : NameHandler
     private TextMeshPro Name { get; set; }
     private TextMeshPro Color { get; set; }
 
+    [HideFromIl2Cpp]
+    public AppearanceHandler Appearance { get; private set; }
+
     public void Awake()
     {
         Player = GetComponent<PlayerControl>();
-        Custom = CustomPlayer.Custom(Player);
+        // Custom = CustomPlayer.Custom(Player);
         Name = Player.NameText();
         Color = Player.ColorBlindText();
         Color.transform.localPosition = new(0f, -1.5f, -0.5f);
         Name.transform.localPosition = new(0f, -0.2f, -0.5f);
-        Size = Player.transform.localScale;
-        gameObject.AddComponent<AppearanceHandler>();
+        // Size = Player.transform.localScale;
+        Appearance = gameObject.AddComponent<AppearanceHandler>();
     }
 
     public void Update()

@@ -92,6 +92,7 @@ public abstract class AssetLoader<T> : AssetLoader
                     yield return null;
                 }
 
+                UpdateSplashPatch.SetText($"Dumping {Manifest} Hashes");
                 using var stream = File.OpenWrite(Path.Combine(TownOfUsReworked.Hashes, $"{Manifest}.json"));
                 var task = JsonSerializer.SerializeAsync(stream, response, new JsonSerializerOptions()
                 {

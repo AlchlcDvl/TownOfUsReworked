@@ -237,7 +237,7 @@ public static class BetterPolus
         if (!SpeciVent)
             return;
 
-        SpeciVent.Id = GetAvailableId();
+        SpeciVent.Id = GetAvailableVentId();
         var vents = Ship().AllVents.ToList();
         vents.Add(SpeciVent);
         Ship().AllVents = vents.ToArray();

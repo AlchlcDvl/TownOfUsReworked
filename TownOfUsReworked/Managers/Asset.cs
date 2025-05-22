@@ -89,9 +89,9 @@ public static class AssetManager
 
     private static Sprite LoadResourceSprite(string path) => LoadSprite(LoadResourceTexture(path), path.SanitisePath());
 
-    public static Sprite LoadSprite(Texture2D tex, string name, float size = float.NaN, SpriteMeshType meshType = SpriteMeshType.Tight)
+    public static Sprite LoadSprite(Texture2D tex, string name, float ppu = float.NaN, SpriteMeshType meshType = SpriteMeshType.Tight)
     {
-        var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), float.IsNaN(size) ? GetSize(name) : size, 0, meshType);
+        var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), float.IsNaN(ppu) ? GetSize(name) : ppu, 0, meshType);
         sprite.name = name;
         return sprite;
     }
@@ -224,7 +224,7 @@ public static class AssetManager
             return null;
 
         if (!LoadedAssets.TryGetValue(name, out var value))
-            LoadedAssets[name] = value = [ ];
+            LoadedAssets[name] = value = [];
 
         value.Add(obj);
         return obj.DontDestroy();
@@ -233,7 +233,7 @@ public static class AssetManager
     public static void AddPath(string name, string path)
     {
         if (!UnloadedAssets.TryGetValue(name, out var value))
-            UnloadedAssets[name] = value = [ ];
+            UnloadedAssets[name] = value = [];
 
         value.Add(path);
     }

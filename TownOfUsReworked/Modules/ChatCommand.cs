@@ -129,7 +129,7 @@ public sealed class ChatCommand
                 chat.notificationRoutine ??= chat.StartCoroutine(chat.BounceDot());
             }
 
-            Play("Chat", pitch: 0.5f + (CustomPlayer.Local.PlayerId / 15f));
+            Play("Chat", pitch: 0.5f + (CustomPlayer.Local.PlayerId / GameSettings.LobbySize.Value));
         }
         catch (Exception ex)
         {

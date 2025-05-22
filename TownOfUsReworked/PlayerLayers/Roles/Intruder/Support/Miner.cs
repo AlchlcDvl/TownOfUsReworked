@@ -53,7 +53,7 @@ public sealed class Miner : Intruder
         var ventPrefab = vents.FirstOrDefault() ?? UObject.FindObjectOfType<Vent>();
         var vent = UObject.Instantiate(ventPrefab, ventPrefab.transform.parent);
 
-        vent.Id = GetAvailableId();
+        vent.Id = GetAvailableVentId();
         vent.transform.position = new(position.x, position.y, zAxis + 0.001f);
 
         if (vents.Any())

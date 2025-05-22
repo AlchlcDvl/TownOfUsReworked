@@ -15,7 +15,7 @@ public sealed class Footprint : MonoBehaviour
     {
         Time2 = 0f;
 
-        Color = (Grey ? 39 : Player.GetCurrentOutfit().ColorId).GetColor(false);
+        Color = (Grey ? 39 : Player.CurrentOutfit().ColorId).GetColor(false);
 
         gameObject.transform.localScale *= Player.GetModifiedSize();
         gameObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Player.MyPhysics.body.velocity));

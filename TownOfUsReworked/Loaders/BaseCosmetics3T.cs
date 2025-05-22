@@ -1,6 +1,8 @@
 // ReSharper disable HeuristicUnreachableCode
 #pragma warning disable CS0162 // Unreachable code detected
 
+using static CosmeticsLayer;
+
 namespace TownOfUsReworked.Loaders;
 
 public abstract class BaseCosmeticLoader<TView, TData, TAsset> : BaseCosmeticLoader<TAsset>
@@ -13,7 +15,7 @@ public abstract class BaseCosmeticLoader<TView, TData, TAsset> : BaseCosmeticLoa
     protected override bool Downloading => true;
     protected override string FileExtension => "png";
 
-    protected abstract CosmeticTypeEnum CosmeticType { get; }
+    protected abstract CosmeticKind CosmeticType { get; }
 
     private readonly Dictionary<PropertyInfo, PropertyInfo> IDsAndHashes = [];
 
@@ -62,23 +64,22 @@ public abstract class BaseCosmeticLoader<TView, TData, TAsset> : BaseCosmeticLoa
         else if (item.TestOnly)
             path = Path.Combine(DirectoryInfo, "Test");
 
-        var data = ScriptableObject.CreateInstance<TData>().DontDestroy();
-        var viewData = ScriptableObject.CreateInstance<TView>().DontDestroy();
-        var preview = ScriptableObject.CreateInstance<PreviewViewData>().DontDestroy();
+        var data = ScriptableObject.CreateInstance<TData>();
+        var viewData = ScriptableObject.CreateInstance<TView>();
+        var preview = ScriptableObject.CreateInstance<PreviewViewData>();
 
         data.name = item.Name;
-        data.ProductId = $"custom{CosmeticType}_" + item.ID.Replace(' ', '_');
+        data.ProductId = $"{CosmeticType}_" + item.ID.Replace(' ', '_');
         data.ChipOffset = new(0f, 0.2f);
         data.Free = true;
         data.NotInStore = true;
 
         LoadData(item, path, viewData, preview, data);
 
-        data.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{item.ID}_preview").Ref;
+        data.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{data.ProductId}_preview").Ref;
 
         item.ViewData = viewData;
         item.CosmeticData = data;
-        item.PreviewData = preview;
 
         CustomCosmeticRegistry[data.ProductId] = item;
     }
@@ -96,13 +97,13 @@ public abstract class BaseCosmeticLoader<TView, TData, TAsset> : BaseCosmeticLoa
 
     protected override void AfterLoading(List<TAsset> response) => IDsAndHashes.Clear();
 
-    protected static Sprite CreateCosmeticSprite(string dir, string path, CosmeticTypeEnum cosmetic)
+    protected static Sprite CreateCosmeticSprite(string dir, string path, CosmeticKind cosmetic)
     {
-        var texture = LoadDiskTexture(Path.Combine(dir, $"{path}.png"));
+        var texture = LoadDiskTexture(Path.Combine(dir, $"{path}.png")).DontDestroy();
         return LoadSprite(texture, path.SanitisePath(), cosmetic switch
         {
-            CosmeticTypeEnum.Hat or CosmeticTypeEnum.Visor => 100f,
-            _ => texture.width * 0.375f
-        });
+            _ when cosmetic == NameplateLoader.Nameplate => texture.width * 0.375f,
+            _ => 100f
+        }).DontDestroy();
     }
 }

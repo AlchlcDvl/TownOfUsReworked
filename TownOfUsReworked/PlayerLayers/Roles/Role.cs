@@ -336,7 +336,6 @@ public abstract class Role : PlayerLayer
         AllArrows.AddRange(allArrows);
         RoleHistory.AddRange(history);
         RoleHistory.Add(former.Type);
-        PostAssignment();
 
         if (!retainFaction)
             Faction = former.Faction;

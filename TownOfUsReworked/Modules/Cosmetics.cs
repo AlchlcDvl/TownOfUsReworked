@@ -26,7 +26,7 @@ public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
     [JsonPropertyName("artist")]
     public string Artist { get; set; }
 
-    [JsonPropertyName("mainhash")]
+    [JsonPropertyName("mainHash")]
     public string MainHash { get; set; }
 
     [JsonIgnore]
@@ -36,85 +36,100 @@ public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
     public TData CosmeticData { get; set; }
 
     [JsonIgnore]
-    public PreviewViewData PreviewData { get; set; }
-
-    [JsonIgnore]
     public string MainID => ID; // For reflection purposes
 }
 
-public abstract class TopCosmetic<TView, TData> : CustomCosmetic<TView, TData>
+[JsonSerializable(typeof(CustomNameplate))]
+public sealed class CustomNameplate : CustomCosmetic<NamePlateViewData, NamePlateData>; // Simplifying the definition
+
+public abstract class AdaptiveCosmetic<TView, TData> : CustomCosmetic<TView, TData>
     where TView : ScriptableObject
     where TData : CosmeticData
 {
-    [JsonPropertyName("flipid")]
-    public string FlipID { get; set; }
-
-    [JsonPropertyName("climbid")]
-    public string ClimbID { get; set; }
-
-    [JsonPropertyName("floorid")]
-    public string FloorID { get; set; }
-
-    [JsonPropertyName("fliphash")]
-    public string FlipHash { get; set; }
-
-    [JsonPropertyName("climbhash")]
-    public string ClimbHash { get; set; }
-
-    [JsonPropertyName("floorhash")]
-    public string FloorHash { get; set; }
-
     [JsonPropertyName("adaptive")]
     public bool Adaptive { get; set; }
 }
 
+// [JsonSerializable(typeof(CustomSkin))]
+// public sealed class CustomSkin : AdaptiveCosmetic<SkinViewData, SkinData>
+// {
+//     [JsonPropertyName("previewHash")]
+//     public string PreviewHash { get; set; }
+
+//     [JsonPropertyName("baseSkin")]
+//     public string BaseSkin { get; set; }
+// }
+
+public abstract class TopCosmetic<TView, TData> : AdaptiveCosmetic<TView, TData>
+    where TView : ScriptableObject
+    where TData : CosmeticData
+{
+    [JsonPropertyName("flipId")]
+    public string FlipID { get; set; }
+
+    [JsonPropertyName("climbId")]
+    public string ClimbID { get; set; }
+
+    [JsonPropertyName("floorId")]
+    public string FloorID { get; set; }
+
+    [JsonPropertyName("flipHash")]
+    public string FlipHash { get; set; }
+
+    [JsonPropertyName("climbHash")]
+    public string ClimbHash { get; set; }
+
+    [JsonPropertyName("floorHash")]
+    public string FloorHash { get; set; }
+
+    [JsonPropertyName("behind")]
+    public bool Behind { get; set; }
+}
+
+[JsonSerializable(typeof(CustomHat))]
 public sealed class CustomHat : TopCosmetic<HatViewData, HatData>
 {
-    [JsonPropertyName("backid")]
+    [JsonPropertyName("backId")]
     public string BackID { get; set; }
 
-    [JsonPropertyName("backflipid")]
+    [JsonPropertyName("backFlipId")]
     public string BackFlipID { get; set; }
 
-    [JsonPropertyName("climbflipid")]
+    [JsonPropertyName("climbFlipId")]
     public string ClimbFlipID { get; set; }
 
-    [JsonPropertyName("floorflipid")]
+    [JsonPropertyName("floorFlipId")]
     public string FloorFlipID { get; set; }
 
-    [JsonPropertyName("backhash")]
+    [JsonPropertyName("backHash")]
     public string BackHash { get; set; }
 
-    [JsonPropertyName("backfliphash")]
+    [JsonPropertyName("backFlipHash")]
     public string BackFlipHash { get; set; }
 
-    [JsonPropertyName("climbfliphash")]
+    [JsonPropertyName("climbFlipHash")]
     public string ClimbFlipHash { get; set; }
 
-    [JsonPropertyName("floorfliphash")]
+    [JsonPropertyName("floorFlipHash")]
     public string FloorFlipHash { get; set; }
 
-    [JsonPropertyName("nobounce")]
+    [JsonPropertyName("noBounce")]
     public bool NoBounce { get; set; }
 }
 
-public sealed class CustomVisor : TopCosmetic<VisorViewData, VisorData>
-{
-    [JsonPropertyName("infront")]
-    public bool InFront { get; set; }
-}
+[JsonSerializable(typeof(CustomVisor))]
+public sealed class CustomVisor : TopCosmetic<VisorViewData, VisorData>; // Simplifying the definition again
 
-public sealed class CustomNameplate : CustomCosmetic<NamePlateViewData, NamePlateData>; // Simplifying the definition
-
-public sealed class CustomColor : CustomCosmetic // There's no view or data for this, so we don't need to specify them
+[JsonSerializable(typeof(CustomColor))]
+public sealed class CustomColor : CustomCosmetic // There's no view or regular data for this, so we don't need to specify them
 {
-    [JsonPropertyName("stringid")]
+    [JsonPropertyName("stringId")]
     public StringNames StringID { get; set; }
 
     [JsonPropertyName("default")]
     public bool Default { get; set; }
 
-    // Reserved for future use; do not remove.
+    // Reserved for future use; do not remove
     // [JsonPropertyName("contrasting")]
     // public bool Contrasting { get; set; }
 
@@ -179,6 +194,6 @@ public sealed class CustomColor : CustomCosmetic // There's no view or data for 
         var dx = mul * Time.time;
         var floor = Mathf.FloorToInt(dx);
         var phase = floor % 2; // 0 = forward, 1 = backward
-        return Mathf.Clamp(((dx - floor) * ((2 * phase) - 1)) + 1 - phase, 0f, 1f);
+        return Mathf.Clamp01(((dx - floor) * ((2 * phase) - 1)) + 1 - phase);
     }
 }

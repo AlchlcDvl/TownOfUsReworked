@@ -9,6 +9,7 @@ public readonly struct PointInTime(Vector3 position)
     public Vector3 Position { get; } = position;
 }
 
+[JsonSerializable(typeof(GitHubApiObject))]
 public sealed class GitHubApiObject
 {
     [JsonPropertyName("tag_name")]
@@ -21,6 +22,7 @@ public sealed class GitHubApiObject
     public GitHubApiAsset[] Assets { get; set; }
 }
 
+[JsonSerializable(typeof(GitHubApiAsset))]
 public sealed class GitHubApiAsset
 {
     [JsonPropertyName("browser_download_url")]
@@ -73,3 +75,16 @@ public sealed class SortedAttribute(int order) : Attribute
 }
 
 public delegate bool WhereSelectFilter<T1, T2>(T1 param, out T2 value);
+
+/// <summary>
+/// Wrapper to act as an out parameter for coroutines.
+/// </summary>
+/// <typeparam name="T">The type of the value being sent.</typeparam>
+public sealed class Out<T>(T value = default)
+{
+    public T Value = value;
+
+    public static implicit operator T(Out<T> outVal) => outVal.Value;
+
+    public static implicit operator Out<T>(T val) => new(val);
+}

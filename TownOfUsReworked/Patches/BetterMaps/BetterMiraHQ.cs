@@ -151,7 +151,7 @@ public static class BetterMiraHq
 
         MoveCommsVent();
         ReconnectVents();
-        CommsVent.Id = GetAvailableId();
+        CommsVent.Id = GetAvailableVentId();
         var vents = Ship().AllVents.ToList();
         vents.Add(CommsVent);
         Ship().AllVents = vents.ToArray();

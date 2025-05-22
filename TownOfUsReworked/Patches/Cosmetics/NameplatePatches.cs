@@ -9,9 +9,7 @@ public static class NameplatesTabOnEnablePatch
 
     private static void CreateNameplatePackage(List<NamePlateData> nameplates, string packageName, ref float yStart, NameplatesTab __instance)
     {
-        var isDefaultPackage = packageName == "Innersloth";
-
-        if (!isDefaultPackage)
+        if (packageName != "Innersloth")
             nameplates = [ .. nameplates.OrderBy(x => x.name) ];
 
         var offset = yStart;

@@ -1,11 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace TownOfUsReworked.Utils;
+﻿namespace TownOfUsReworked.Utils;
 
 public static class MiscUtils
 {
-    public static bool HasDied(this PlayerControl player) => !player || !player.Data || player.Data.IsDead || player.Data.Disconnected;
-
     public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
     public static TextMeshPro ColorBlindText(this PlayerControl p) => p.cosmetics.colorBlindText;
@@ -30,6 +26,28 @@ public static class MiscUtils
     public static bool IsImpostor(this NetworkedPlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
     public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.IsImpostor() == true;
+
+    public static float MultiLerp(float[] values, float t)
+    {
+        if (values.Length < 2)
+            throw new InvalidOperationException("Why are you trying to lerp a single/no value"); // Note to future self if I ever screw up the usage
+
+        t = Mathf.Clamp01(t);
+
+        if (t == 0)
+            return values[0];
+
+        if (t == 1)
+            return values[^1];
+
+        var index = 0;
+        var calcT = t * (values.Length - 1);
+
+        for (var i = 0; i < values.Length && i < calcT; i++)
+            index = i;
+
+        return Mathf.Lerp(values[index], values[index + 1], calcT - index);
+    }
 
     // public static bool IsImpostor(this PlayerVoteArea playerinfo) => PlayerByVoteArea(playerinfo).IsImpostor();
 
@@ -239,34 +257,22 @@ public static class MiscUtils
 
     public static float GetAlpha(this PlayerControl player) => player.cosmetics.currentBodySprite.BodySprite.color.a;
 
-    public static IEnumerator Wait(float duration) => Effects.Wait(duration).WrapToManaged();
-
-    private static PlayerOutfit CurrentOutfit(PlayerControl player) => player.CurrentOutfit;
+    public static PlayerOutfit CurrentOutfit(this PlayerControl player) => player.CurrentOutfit;
 
     public static CustomOutfit CloneOutfit(this PlayerControl player) => new(player);
 
-    public static CustomOutfit BlankOutfit(PlayerControl player) => new()
+    public static CustomOutfit BlankOutfit(PlayerControl player)
     {
-        ColorId = player.Data.DefaultOutfit.ColorId,
-        HatId = "hat_NoHat",
-        SkinId = "skin_None",
-        VisorId = "visor_EmptyVisor",
-        NamePlateId = "nameplate_NoPlate",
-        PlayerName = " ",
-        PetId = "pet_EmptyPet"
-    };
+        var result = NightVisionOutfit();
+        result.ColorId = player.Data.DefaultOutfit.ColorId;
+        return result;
+    }
 
-    private static CustomOutfit CamoOutfit(PlayerControl player) => new()
+    private static CustomOutfit CamoOutfit(PlayerControl player) => new(player)
     {
-        ColorId = player.CurrentOutfit.ColorId,
-        HatId = player.CurrentOutfit.HatId,
-        SkinId = player.CurrentOutfit.SkinId,
-        VisorId = player.CurrentOutfit.VisorId,
-        NamePlateId = "nameplate_NoPlate",
         PlayerName = ClientOptions.OptimisationMode ? "" : GetRandomisedName(),
         Size = BetterSabotages.CamoHideSize ? 1f : player.GetSize(),
-        Speed = BetterSabotages.CamoHideSpeed ? 1f : player.GetSpeed(),
-        PetId = "pet_EmptyPet"
+        Speed = BetterSabotages.CamoHideSpeed ? 1f : player.GetSpeed()
     };
 
     public static CustomOutfit ColorblindOutfit() => new()
@@ -549,7 +555,7 @@ public static class MiscUtils
         }));
     }
 
-    public static int GetAvailableId()
+    public static int GetAvailableVentId()
     {
         var id = 0;
 
@@ -560,42 +566,6 @@ public static class MiscUtils
 
             id++;
         }
-    }
-
-    public static void Flash(Color32 color, float duration = 0.5f, float a = 0.3f) => Coroutines.Start(CoFlash(color, duration, a));
-
-    public static void Flash(UColor color, float duration = 0.5f, float a = 0.3f) => Coroutines.Start(CoFlash(color, duration, a));
-
-    private static IEnumerator CoFlash(UColor color, float duration, float a)
-    {
-        if (HUD().IsIntroDisplayed || !HudManager.InstanceExists)
-            yield break;
-
-        color.a = a;
-        HUD().FullScreen.color = color;
-        yield return Wait(duration);
-        SetFullScreenHUD();
-    }
-
-    // public static void TransitionFlash(Color32 color, float duration = 2f, float a = 1f, float transitionDur = 0.5f) => Coroutines.Start(CoTransitionFlash(color, duration, a, transitionDur));
-
-    public static void TransitionFlash(UColor color, float duration = 2f, float a = 1f, float transitionDur = 0.5f) => Coroutines.Start(CoTransitionFlash(color, duration, a, transitionDur));
-
-    private static IEnumerator CoTransitionFlash(UColor color, float duration, float a, float transitionDur)
-    {
-        if (HUD().IsIntroDisplayed || !HudManager.InstanceExists)
-            yield break;
-
-        if (2 * transitionDur > duration)
-            transitionDur = duration / 2f;
-
-        color.a = a;
-        var fullscreen = HUD().FullScreen;
-        yield return PerformTimedAction(transitionDur, t => fullscreen.color = color.SetAlpha(Mathf.Lerp(0f, a, t)));
-        fullscreen.color = color;
-        yield return Wait(duration - (2 * transitionDur));
-        yield return PerformTimedAction(transitionDur, t => fullscreen.color = color.SetAlpha(Mathf.Lerp(a, 0f, t)));
-        SetFullScreenHUD();
     }
 
     public static void SetFullScreenHUD()
@@ -1093,20 +1063,6 @@ public static class MiscUtils
         player.MyPhysics.ResetAnimState();
     }
 
-    public static PlayerOutfit GetCurrentOutfit(this PlayerControl player) => player.Data.Outfits.TryGetValue(player.CurrentOutfitType, out var outfit) ? outfit :
-        player.Data.DefaultOutfit;
-
-    public static IEnumerator PerformTimedAction(float duration, Action<float> action)
-    {
-        for (var t = 0f; t < duration; t += Time.deltaTime)
-        {
-            action(t / duration);
-            yield return null;
-        }
-
-        action(1f);
-    }
-
     public static void OverrideOnClickListeners(this PassiveButton passive, Action action, bool enabled = true)
     {
         if (!passive)
@@ -1476,22 +1432,6 @@ public static class MiscUtils
 
     public static IEnumerable<ListSlot> GetValues(this IEnumerable<LayerEnum> enums) => enums.WhereSelect((LayerEnum x, out ListSlot y) => Enum.TryParse(x.ToString(), out y));
 
-    public static IEnumerator WaitUntil(Func<bool> predicate)
-    {
-        while (!predicate())
-            yield return null;
-    }
-
-    // public static IEnumerator WaitWhile(Func<bool> predicate)
-    // {
-    //     while (predicate())
-    //         yield return null;
-    // }
-
-    public static IEnumerator WaitUntilTaskComplete(Task task) => WaitUntil(() => task.IsCompleted);
-
-    // public static T CoStart<T>(T coroutine) where T : IEnumerator => (T)Coroutines.Start(coroutine);
-
     public static T CreateInstance<T>(params object[] args) => (T)Activator.CreateInstance(typeof(T), args);
 
     // Graciously yoinked these two methods from MiraAPI
@@ -1515,35 +1455,6 @@ public static class MiscUtils
         }
 
         return newMessage;
-    }
-
-    public static IEnumerator CoDownloadItem(string url, string location)
-    {
-        var www = UnityWebRequest.Get(url);
-        yield return www.SendWebRequest();
-        yield return CoDownloadItem(www, location);
-        www.downloadHandler.Dispose();
-        www.Dispose();
-    }
-
-    public static IEnumerator CoDownloadItem(UnityWebRequest www, string location)
-    {
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            var persistTask = File.WriteAllBytesAsync(location, www.downloadHandler.data);
-            yield return WaitUntilTaskComplete(persistTask);
-
-            if (persistTask.Exception is not null)
-                Error(persistTask.Exception);
-        }
-        else
-            Error(www.error);
-    }
-
-    public static IEnumerator CoRun(IEnumerator coroutine, Action onCompletion)
-    {
-        yield return coroutine;
-        onCompletion();
     }
 
     // public static float Average(params float[] values) => values.Sum() / values.Length;

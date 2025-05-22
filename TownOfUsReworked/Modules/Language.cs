@@ -1,6 +1,7 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 namespace TownOfUsReworked.Modules;
 
+[JsonSerializable(typeof(Language))]
 public sealed class Language : Asset
 {
     [JsonPropertyName("isBlank")]

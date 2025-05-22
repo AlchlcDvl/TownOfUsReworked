@@ -1,5 +1,5 @@
 > [!NOTE]
-> This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is under constant development, expect bugs.
+> This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is under constant development, expect bugs.\
 > This mod is NOT for mobile or console versions of Among Us and is NOT host only either, please do not ask for a port or a rewrite.
 
 -----------------------
@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-    <img src="https://badgen.net/static/AmongUs/2024.11.26/yellow">
+    <img src="https://badgen.net/static/AmongUs/2025.5.20/yellow">
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a>
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/AlchlcDvl/TownOfUsReworked/total"></a>
     <a href="https://discord.gg/cd27aDQDY9"> <img src="https://img.shields.io/discord/1039196456667582555.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2"></a>
@@ -20,10 +20,8 @@ An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds 
 
 This mod is a mish mash of code and ideas from different games, mods and forks, mainly from Town Of Salem, Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
 
-> [!NOTE]
-> Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
-
-> [!NOTE]
+> [!TIP]
+> Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!\
 > Check out the mod's [wiki](https://github.com/AlchlcDvl/TownOfUsReworked/wiki) for info!
 
 > [!WARNING]

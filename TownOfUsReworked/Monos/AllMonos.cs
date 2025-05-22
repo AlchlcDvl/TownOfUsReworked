@@ -23,7 +23,6 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<ColorHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<LayerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<NameHandler>();
-        ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<VoteAreaHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DeadBodyHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<FootprintHandler>();
@@ -31,6 +30,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<StatusHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<CameraEffectHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<AppearanceHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
 
         // Paging
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -82,7 +82,7 @@ public static class AllMonos
         prefab.TasksCountTowardProgress = false;
         prefab.Ability = LayerHandler.CrewmateGhost.Ability;
 
-        RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.Concat([prefab]).ToArray();
+        RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.AddItem(prefab).ToArray();
 
         ComponentsAdded = true;
     }

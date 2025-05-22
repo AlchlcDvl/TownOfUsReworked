@@ -38,13 +38,12 @@ public static class AddressablesPatch
         if (IsNullEmptyOrWhiteSpace(assetGuid) || !CustomAddressable.CustomAddressables.TryGetValue(assetGuid!, out var addressable))
             return Original(thisPtr, keyPtr, methodInfoPtr);
 
-        var op = addressable.AsyncLoad();
-        return op.IsValid() ? IL2CPP.il2cpp_object_unbox(op.Pointer) : Original(thisPtr, keyPtr, methodInfoPtr);
+        return addressable.Ref.OperationHandle.IsValid() ? IL2CPP.il2cpp_object_unbox(addressable.Ref.OperationHandle.Pointer) : Original(thisPtr, keyPtr, methodInfoPtr);
     }
 
     public static bool Prefix(AssetReference __instance, ref bool __result)
     {
-        __result = RuntimeKeyIsValidOriginal(__instance) || CustomAddressable.CustomAddressables.ContainsKey(__instance.AssetGUID);
+        __result = CustomAddressable.CustomAddressables.ContainsKey(__instance.AssetGUID) || RuntimeKeyIsValidOriginal(__instance);
         return false;
     }
 

@@ -9,7 +9,7 @@ public static class MciUtils
 
     public static int GetAvailableId(bool mci)
     {
-        for (var i = 1; i < 251; i++)
+        for (var i = 0; i < 251; i++)
         {
             if (IsAvailable(i, mci))
                 return i;
@@ -18,9 +18,8 @@ public static class MciUtils
         return -1;
     }
 
-    private static bool IsAvailable(int i, bool mci) => mci
-        ? !AmongUsClient.Instance.allClients.Any(x => x.Id == i) && !Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i
-        : !GameData.Instance.AllPlayers.Any(p => p.PlayerId == i) && !GameData.Instance.PlayerQueue.Any(p => p.PlayerId == i);
+    private static bool IsAvailable(int i, bool mci) => !GameData.Instance.AllPlayers.Any(p => p.PlayerId == i) && !GameData.Instance.PlayerQueue.Any(p => p.PlayerId == i) &&
+        (!mci || (!AmongUsClient.Instance.allClients.Any(x => x.Id == i) && !Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i));
 
     public static void CleanUpLoad()
     {

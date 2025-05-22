@@ -14,7 +14,7 @@ public abstract class CustomEnumInjector
 /// A wrapper class to help with injecting values to enum classes.
 /// </summary>
 /// <typeparam name="T">The relevant enum Type.</typeparam>
-public class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
+public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
 {
     public readonly List<T> AllValues;
     public readonly List<T> InjectedValues;

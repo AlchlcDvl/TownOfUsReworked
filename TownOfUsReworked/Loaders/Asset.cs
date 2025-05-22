@@ -47,6 +47,7 @@ public abstract class AssetLoader
         yield return new HatLoader().CoFetch(hasher);
         yield return new VisorLoader().CoFetch(hasher);
         yield return new NameplateLoader().CoFetch(hasher);
+        // yield return new SkinLoader().CoFetch(hasher);
         yield return new ColorLoader().CoFetch(hasher);
         yield return new BaseDownloader(TownOfUsReworked.Options, "Presets", "txt").CoFetch(hasher);
         yield return new BaseDownloader(TownOfUsReworked.Images, "Images", "png").CoFetch(hasher);

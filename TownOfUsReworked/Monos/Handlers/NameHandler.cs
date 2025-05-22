@@ -16,7 +16,7 @@ public abstract class NameHandler : MonoBehaviour
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
             return ("", UColor.clear);
 
-        var color = player.GetCurrentOutfit().ColorId.GetColor(false);
+        var color = player.CurrentOutfit().ColorId.GetColor(false);
 
         if (IsLobby())
             return (ColorNames[player.PlayerId], color);

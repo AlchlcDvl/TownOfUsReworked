@@ -11,12 +11,14 @@ public abstract class Asset
     public bool IsCustom { get; set; }
 }
 
+[JsonSerializable(typeof(DownloadableAsset))]
 public sealed class DownloadableAsset : Asset
 {
     [JsonPropertyName("hash")]
     public string Hash { get; set; }
 }
 
+[JsonSerializable(typeof(BundleAsset))]
 public sealed class BundleAsset : Asset
 {
 #if ANDROID

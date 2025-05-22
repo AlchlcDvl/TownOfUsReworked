@@ -454,10 +454,10 @@ public static class ShowCustomAnim
             // DO NOT TOUCH THIS GETTER
             // LITERALLY DO NOT TOUCH IT
             //
-            // The objects used in __instance method are in some kind of ethereal state.
+            // The objects used in here are in some kind of ethereal state.
             // After very careful manipulation and a lot of time and patience,
             // I have managed to come up with a very meticulous recipe for modifying
-            // the death animation. If you change __instance...you will pay with your blood!
+            // the death animation. If you change it...you will pay with your blood!
             //
             // - Alex
 
@@ -526,7 +526,7 @@ public static class OverlayKillAnimationPatches
     [HarmonyPatch(nameof(OverlayKillAnimation.Initialize))]
     public static void Prefix(KillOverlayInitData initData)
     {
-        var playerControl = AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit);
+        var playerControl = AllPlayers().Find(x => x.CurrentOutfit() == initData.killerOutfit);
         OutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
         if (!GameModifiers.AppearanceAnimation)
@@ -534,7 +534,7 @@ public static class OverlayKillAnimationPatches
     }
 
     [HarmonyPatch(nameof(OverlayKillAnimation.Initialize))]
-    public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.GetCurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
+    public static void Postfix(KillOverlayInitData initData) => AllPlayers().Find(x => x.CurrentOutfit() == initData.killerOutfit).CurrentOutfitType = (PlayerOutfitType)OutfitTypeCache;
 }
 
 #if ANDROID
@@ -677,7 +677,7 @@ public static class MedScanMinigamePatch
 [HarmonyPatch]
 public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
 {
-    [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with __instance fucked-up class
+    [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with ModManager
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
     public static Exception Finalizer() => null; // My first use of a finalizer ong
 }

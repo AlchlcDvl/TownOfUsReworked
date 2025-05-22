@@ -200,6 +200,7 @@ public sealed class LayerHandler : RoleBehaviour
         AffectedByLightAffectors = !(CustomAbility is Torch || !CustomRole.AffectedByLights);
 
         CustomLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
+
         Player.CustomSetOutfit(CustomPlayerOutfitType.GameDefault, new CustomOutfit(Player));
     }
 
