@@ -26,7 +26,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 50;
+    private const int DevBuild = 51;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -36,7 +36,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     private static readonly string PersistentDataPath = Path.GetDirectoryName(Application.persistentDataPath);
     public static readonly string Assets = Path.Combine(PersistentDataPath, "Among Us", "ReworkedAssets");
     public static readonly string Hats = Path.Combine(Assets, "Hats");
-    public static readonly string Skins = Path.Combine(Assets, "Skins");
+    // public static readonly string Skins = Path.Combine(Assets, "Skins");
     public static readonly string Visors = Path.Combine(Assets, "Visors");
     public static readonly string Nameplates = Path.Combine(Assets, "Nameplates");
     public static readonly string Colors = Path.Combine(Assets, "Colors");

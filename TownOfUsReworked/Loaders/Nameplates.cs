@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.Loaders;
 
 public sealed class NameplateLoader : BaseCosmeticLoader<NamePlateViewData, NamePlateData, CustomNameplate>

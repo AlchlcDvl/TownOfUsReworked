@@ -1,3 +1,5 @@
+using Innersloth.Assets;
+
 namespace TownOfUsReworked.Patches.Core.Player;
 
 [HarmonyPatch(typeof(PlayerVoteArea))]
@@ -49,13 +51,18 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.PreviewNameplate))]
     public static bool Prefix(PlayerVoteArea __instance, string plateID)
     {
-        if (!NameplateLoader.CustomCosmeticRegistry.TryGetValue(plateID, out var cn))
-            return true;
-
         __instance.PlayerIcon.gameObject.SetActive(false);
         __instance.NameText.text = DataManager.Player.Customization.Name;
         __instance.LevelNumberText.text = ProgressionManager.Instance.CurrentVisualLevel;
-        __instance.Background.sprite = cn.ViewData.Image;
+
+        if (NameplateLoader.CustomCosmeticRegistry.TryGetValue(plateID, out var cn))
+            __instance.Background.sprite = cn.ViewData.Image;
+        else
+        {
+            __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance.GetNamePlateById(plateID).ViewDataRef, (Action<NamePlateViewData>)(viewData =>
+                __instance.Background.sprite = viewData?.Image)));
+        }
+
         return false;
     }
 

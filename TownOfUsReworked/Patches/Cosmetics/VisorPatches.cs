@@ -1,131 +1,17 @@
-using static TownOfUsReworked.Loaders.VisorLoader;
-
 namespace TownOfUsReworked.Patches.Cosmetics;
 
 [HarmonyPatch(typeof(VisorsTab), nameof(VisorsTab.OnEnable))]
 public static class VisorsTabOnEnablePatch
 {
-    private static TMP_Text Template;
-
-    private static void CreateVisorPackage(List<VisorData> visors, string packageName, ref float yStart, VisorsTab __instance)
-    {
-        var isDefaultPackage = packageName == "Innersloth";
-
-        if (!isDefaultPackage)
-            visors = [ .. visors.OrderBy(x => x.name) ];
-
-        var offset = yStart;
-
-        if (Template)
-        {
-            var title = UObject.Instantiate(Template, __instance.scroller.Inner);
-            var material = title.GetComponent<MeshRenderer>().material;
-            material.SetFloat(StencilComp, 4f);
-            material.SetFloat(Stencil, 1f);
-            title.transform.localPosition = new(2.25f, offset, -1f);
-            title.transform.localScale = Vector3.one * 1.5f;
-            title.fontSize *= 0.5f;
-            title.enableAutoSizing = false;
-            title.GetComponent<TextTranslatorTMP>().Destroy();
-            title.text = packageName;
-            offset -= 0.8f * __instance.YOffset;
-        }
-
-        for (var i = 0; i < visors.Count; i++)
-        {
-            var visor = visors[i];
-            var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
-            var ypos = offset - (i / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset);
-            var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
-
-            if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
-            {
-                colorChip.Button.OverrideOnMouseOverListeners(() => __instance.SelectVisor(visor));
-                colorChip.Button.OverrideOnMouseOutListeners(() => __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.Visor)));
-                colorChip.Button.OverrideOnClickListeners(__instance.ClickEquip);
-            }
-            else
-                colorChip.Button.OverrideOnClickListeners(() => __instance.SelectVisor(visor));
-
-            if (VisorLoader.CustomCosmeticRegistry.ContainsKey(visor.ProductId))
-            {
-                var background = colorChip.transform.FindChild("Background");
-                var foreground = colorChip.transform.FindChild("ForeGround");
-
-                if (background)
-                {
-                    background.localPosition = Vector3.down * 0.243f;
-                    background.localScale = new(background.localScale.x, 0.8f, background.localScale.y);
-                }
-
-                if (foreground)
-                    foreground.localPosition = Vector3.down * 0.243f;
-            }
-
-            colorChip.Button.ClickMask = __instance.scroller.Hitbox;
-            colorChip.transform.localPosition = new(xpos, ypos, -1f);
-            colorChip.Inner.SetMaskType(PlayerMaterial.MaskType.SimpleUI);
-            colorChip.Inner.transform.localPosition = visor.ChipOffset;
-            colorChip.ProductId = visor.ProductId;
-            colorChip.Tag = visor;
-            __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
-            visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.Local.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
-            colorChip.SelectionHighlight.gameObject.SetActive(false);
-            __instance.ColorChips.Add(colorChip);
-            yStart = ypos;
-        }
-
-        yStart -= 1.5f;
-    }
-
     public static bool Prefix(VisorsTab __instance)
     {
-        __instance.PlayerPreview.gameObject.SetActive(true);
-
-        if (__instance.HasLocalPlayer())
-            __instance.PlayerPreview.UpdateFromLocalPlayer(PlayerMaterial.MaskType.None);
-        else
-            __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
-
-        __instance.scroller.Inner.DestroyChildren();
-        __instance.ColorChips = new();
+        __instance.BaseOnEnable();
         var array = HatManager.Instance.GetUnlockedVisors();
-        var packages = new Dictionary<string, List<VisorData>>();
-
-        foreach (var data in array)
-        {
-            var package = "Innersloth";
-
-            if (VisorLoader.CustomCosmeticRegistry.TryGetValue(data.ProductId, out var cv))
-                package = cv.StreamOnly ? "Stream" : cv.Artist;
-
-            if (IsNullEmptyOrWhiteSpace(package))
-                package = "Misc";
-
-            if (!packages.TryGetValue(package, out var value))
-                packages[package] = value = [];
-
-            value.Add(data);
-        }
-
-        Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
-        var keys = packages.Keys.OrderBy(x => x switch
-        {
-            "Innersloth" => 4,
-            "Stream" => 1,
-            "Misc" => 3,
-            _ => 2
-        });
-        var yOffset = __instance.YStart;
-        keys.Do(key => CreateVisorPackage(packages[key], key, ref yOffset, __instance));
+        var packages = CosmeticTabPatches.GeneratePackages<VisorData, CustomVisor, VisorViewData>(array, VisorLoader.CustomCosmeticRegistry);
+        __instance.CreatePackages(packages, false, __instance.SelectVisor, () => __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.visor)), out var yOffset);
         __instance.visorId = DataManager.Player.Customization.Visor;
         __instance.currentVisorIsEquipped = true;
-        __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
-        __instance.scroller.UpdateScrollBars();
-
-        if (array.Length != 0)
-            __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
-
+        __instance.EndOnEnable(yOffset, array);
         return false;
     }
 }

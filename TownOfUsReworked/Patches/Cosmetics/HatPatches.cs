@@ -2,6 +2,22 @@ using PowerTools;
 
 namespace TownOfUsReworked.Patches.Cosmetics;
 
+[HarmonyPatch(typeof(HatsTab), nameof(HatsTab.OnEnable))]
+public static class HatsTabOnEnablePatch
+{
+    public static bool Prefix(HatsTab __instance)
+    {
+        __instance.BaseOnEnable();
+        var array = HatManager.Instance.GetUnlockedHats();
+        var packages = CosmeticTabPatches.GeneratePackages<HatData, CustomHat, HatViewData>(array, HatLoader.CustomCosmeticRegistry);
+        __instance.CreatePackages(packages, false, __instance.SelectHat, () => __instance.SelectHat(HatManager.Instance.GetHatById(DataManager.Player.Customization.visor)), out var yOffset);
+        __instance.currentHatIsEquipped = true;
+        __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
+        __instance.EndOnEnable(yOffset, array);
+        return false;
+    }
+}
+
 [HarmonyPatch(typeof(HatParent))]
 public static class HatPatches
 {
@@ -169,130 +185,6 @@ public static class HatPatches
         __instance.BackLayer.enabled = false;
         __instance.FrontLayer.enabled = true;
         __instance.FrontLayer.sprite = ch.ViewData.ClimbImage;
-        return false;
-    }
-}
-
-[HarmonyPatch(typeof(HatsTab), nameof(HatsTab.OnEnable))]
-public static class HatsTabOnEnablePatch
-{
-    private static TMP_Text Template;
-
-    private static void CreateHatPackage(List<HatData> hats, string packageName, ref float yStart, HatsTab __instance)
-    {
-        if (packageName != "Innersloth")
-            hats = [ .. hats.OrderBy(x => x.name) ];
-
-        var offset = yStart;
-
-        if (Template)
-        {
-            var title = UObject.Instantiate(Template, __instance.scroller.Inner);
-            var material = title.GetComponent<MeshRenderer>().material;
-            material.SetFloat(StencilComp, 4f);
-            material.SetFloat(Stencil, 1f);
-            title.transform.localPosition = new(2.25f, yStart, -1f);
-            title.transform.localScale = Vector3.one * 1.5f;
-            title.fontSize *= 0.5f;
-            title.enableAutoSizing = false;
-            title.GetComponent<TextTranslatorTMP>().Destroy();
-            title.text = packageName;
-            offset -= 0.8f * __instance.YOffset;
-        }
-
-        for (var i = 0; i < hats.Count; i++)
-        {
-            var hat = hats[i];
-            var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
-            var ypos = offset - (i / __instance.NumPerRow * __instance.YOffset);
-            var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
-
-            if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
-            {
-                colorChip.Button.OverrideOnMouseOverListeners(() => __instance.SelectHat(hat));
-                colorChip.Button.OverrideOnMouseOutListeners(() => __instance.SelectHat(HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat)));
-                colorChip.Button.OverrideOnClickListeners(__instance.ClickEquip);
-            }
-            else
-                colorChip.Button.OverrideOnClickListeners(() => __instance.SelectHat(hat));
-
-            if (HatLoader.CustomCosmeticRegistry.ContainsKey(hat.ProductId))
-            {
-                var background = colorChip.transform.FindChild("Background");
-                var foreground = colorChip.transform.FindChild("ForeGround");
-
-                if (background)
-                {
-                    background.localPosition = Vector3.down * 0.243f;
-                    background.localScale = new(background.localScale.x, 0.8f, background.localScale.y);
-                }
-
-                if (foreground)
-                    foreground.localPosition = Vector3.down * 0.243f;
-            }
-
-            colorChip.transform.localPosition = new(xpos, ypos, -1f);
-            colorChip.Button.ClickMask = __instance.scroller.Hitbox;
-            colorChip.Inner.SetMaskType(PlayerMaterial.MaskType.SimpleUI);
-            __instance.UpdateMaterials(colorChip.Inner.FrontLayer, hat);
-            colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? CustomPlayer.Local.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
-            colorChip.Inner.transform.localPosition = hat.ChipOffset;
-            colorChip.Tag = hat;
-            colorChip.SelectionHighlight.gameObject.SetActive(false);
-            __instance.ColorChips.Add(colorChip);
-            yStart = ypos;
-        }
-
-        yStart -= 1.75f;
-    }
-
-    public static bool Prefix(HatsTab __instance)
-    {
-        __instance.PlayerPreview.gameObject.SetActive(true);
-
-        if (__instance.HasLocalPlayer())
-            __instance.PlayerPreview.UpdateFromLocalPlayer(PlayerMaterial.MaskType.None);
-        else
-            __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
-
-        __instance.scroller.Inner.DestroyChildren();
-        __instance.ColorChips = new();
-        var array = HatManager.Instance.GetUnlockedHats();
-        var packages = new Dictionary<string, List<HatData>>();
-
-        foreach (var data in array)
-        {
-            var package = "Innersloth";
-
-            if (HatLoader.CustomCosmeticRegistry.TryGetValue(data.ProductId, out var ch))
-                package = ch.StreamOnly ? "Stream" : ch.Artist;
-
-            if (IsNullEmptyOrWhiteSpace(package))
-                package = "Misc";
-
-            if (!packages.TryGetValue(package, out var value))
-                packages[package] = value = [];
-
-            value.Add(data);
-        }
-
-        Template = __instance.transform.FindChild("Text").GetComponent<TMP_Text>();
-        var keys = packages.Keys.OrderBy(x => x switch
-        {
-            "Innersloth" => 4,
-            "Stream" => 1,
-            "Misc" => 3,
-            _ => 2
-        });
-        var yOffset = __instance.YStart;
-        keys.Do(key => CreateHatPackage(packages[key], key, ref yOffset, __instance));
-        __instance.currentHatIsEquipped = true;
-        __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
-        __instance.scroller.UpdateScrollBars();
-
-        if (array.Length != 0)
-            __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
-
         return false;
     }
 }

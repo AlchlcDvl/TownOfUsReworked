@@ -12,6 +12,10 @@ public static class PlayerOutfitPatches
         writer.Write(outfit.Size);
         writer.Write(outfit.Speed);
         writer.Write(outfit.Alpha);
+
+        if (outfit.ColorId != -2)
+            return;
+
         // writer.Write(outfit.Color); For when my reactor pr is approved
         writer.Write(outfit.Color.r);
         writer.Write(outfit.Color.g);
@@ -28,6 +32,10 @@ public static class PlayerOutfitPatches
         outfit.Size = reader.ReadSingle();
         outfit.Speed = reader.ReadSingle();
         outfit.Alpha = reader.ReadSingle();
+
+        if (outfit.ColorId != -2)
+            return;
+
         // outfit.Color = reader.ReadColor(); For when my reactor pr is approved
         var color = (Color32)default;
         color.r = reader.ReadByte();

@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.Loaders;
 
 public sealed class HatLoader : BaseCosmeticLoader<HatViewData, HatData, CustomHat>
@@ -23,7 +22,7 @@ public sealed class HatLoader : BaseCosmeticLoader<HatViewData, HatData, CustomH
         preview.PreviewSprite = viewData.MainImage;
 
         data.NoBounce = item.NoBounce;
-        data.InFront = item.Behind && IsNullEmptyOrWhiteSpace(item.BackID) && IsNullEmptyOrWhiteSpace(item.BackFlipID);
+        data.InFront = !item.Behind && IsNullEmptyOrWhiteSpace(item.BackID) && IsNullEmptyOrWhiteSpace(item.BackFlipID);
         data.PreviewCrewmateColor = item.Adaptive;
         data.ViewDataRef = new CustomAddressable<HatViewData>(viewData, data.ProductId).Ref;
     }

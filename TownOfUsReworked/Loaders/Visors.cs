@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.Loaders;
 
 public sealed class VisorLoader : BaseCosmeticLoader<VisorViewData, VisorData, CustomVisor>

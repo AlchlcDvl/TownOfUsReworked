@@ -58,6 +58,9 @@ public abstract class AdaptiveCosmetic<TView, TData> : CustomCosmetic<TView, TDa
 
 //     [JsonPropertyName("baseSkin")]
 //     public string BaseSkin { get; set; }
+
+//    [JsonIgnore]
+//    public bool AnimsInitialised { get; set; }
 // }
 
 public abstract class TopCosmetic<TView, TData> : AdaptiveCosmetic<TView, TData>

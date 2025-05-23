@@ -33,7 +33,7 @@
 //         {
 //             var skin = skins[i];
 //             var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
-//             var ypos = offset - (i / __instance.NumPerRow * __instance.YOffset);
+//             var ypos = offset - (i / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset);
 //             var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
 
 //             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
@@ -44,6 +44,21 @@
 //             }
 //             else
 //                 colorChip.Button.OverrideOnClickListeners(() => __instance.SelectSkin(skin));
+
+//             if (SkinLoader.CustomCosmeticRegistry.ContainsKey(skin.ProductId))
+//             {
+//                 var background = colorChip.transform.FindChild("Background");
+//                 var foreground = colorChip.transform.FindChild("ForeGround");
+
+//                 if (background)
+//                 {
+//                     background.localPosition = Vector3.down * 0.243f;
+//                     background.localScale = new(background.localScale.x, 0.8f, background.localScale.y);
+//                 }
+
+//                 if (foreground)
+//                     foreground.localPosition = Vector3.down * 0.243f;
+//             }
 
 //             colorChip.Button.ClickMask = __instance.scroller.Hitbox;
 //             colorChip.transform.localPosition = new(xpos, ypos, -1f);
