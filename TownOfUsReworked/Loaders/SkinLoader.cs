@@ -15,6 +15,7 @@
 //         preview.PreviewSprite = CreateCosmeticSprite(path, item.MainID + "_preview", CosmeticType);
 
 //         data.PreviewCrewmateColor = item.Adaptive;
+//         data.ChipOffset = item.ChipOffset;
 //         data.ViewDataRef = new CustomAddressable<SkinViewData>(viewData, data.ProductId).Ref;
 //     }
 

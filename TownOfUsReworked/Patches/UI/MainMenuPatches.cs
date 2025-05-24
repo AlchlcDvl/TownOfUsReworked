@@ -153,7 +153,7 @@ public static class MainMenuPatches
 
         var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
         credObj.name = "ReworkedAssets";
-        ghObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.AssetsLink));
+        credObj.OverrideOnClickListeners(() => Application.OpenURL(TownOfUsReworked.AssetsLink));
         credObj.transform.localPosition = pos;
         credObj.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>().sprite = credObj.transform.GetChild(2).GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("Assets");
         credObj.buttonText.GetComponent<TextTranslatorTMP>().Destroy();

@@ -19,6 +19,7 @@ public sealed class VisorLoader : BaseCosmeticLoader<VisorViewData, VisorData, C
 
         data.behindHats = item.Behind;
         data.PreviewCrewmateColor = item.Adaptive;
+        data.ChipOffset = item.ChipOffset;
         data.ViewDataRef = new CustomAddressable<VisorViewData>(viewData, data.ProductId).Ref;
     }
 }

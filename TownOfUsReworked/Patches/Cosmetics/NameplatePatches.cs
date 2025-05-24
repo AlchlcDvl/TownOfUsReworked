@@ -8,7 +8,7 @@ public static class NameplatesTabOnEnablePatch
     public static bool Prefix(NameplatesTab __instance)
     {
         __instance.BaseOnEnable();
-		__instance.PlayerPreview.gameObject.SetActive(false);
+        __instance.PlayerPreview.gameObject.SetActive(false);
         __instance.StartCoroutine(__instance.CoLoadNameplatePreview());
         var array = HatManager.Instance.GetUnlockedNamePlates();
         var packages = CosmeticTabPatches.GeneratePackages<NamePlateData, CustomNameplate, NamePlateViewData>(array, NameplateLoader.CustomCosmeticRegistry);

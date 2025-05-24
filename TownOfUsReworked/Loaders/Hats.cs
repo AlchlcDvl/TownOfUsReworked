@@ -22,8 +22,10 @@ public sealed class HatLoader : BaseCosmeticLoader<HatViewData, HatData, CustomH
         preview.PreviewSprite = viewData.MainImage;
 
         data.NoBounce = item.NoBounce;
+        data.BlocksVisors = item.BlocksVisors;
         data.InFront = !item.Behind && IsNullEmptyOrWhiteSpace(item.BackID) && IsNullEmptyOrWhiteSpace(item.BackFlipID);
         data.PreviewCrewmateColor = item.Adaptive;
+        data.ChipOffset = item.ChipOffset;
         data.ViewDataRef = new CustomAddressable<HatViewData>(viewData, data.ProductId).Ref;
     }
 }

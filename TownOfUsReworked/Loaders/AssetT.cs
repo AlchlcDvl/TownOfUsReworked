@@ -21,7 +21,7 @@ public abstract class AssetLoader<T> : AssetLoader
         }
         else
         {
-            var www = UnityWebRequest.Get($"{RepositoryUrl}/{Manifest}.json");
+            var www = UnityWebRequest.Get(Downloading ? $"{RepositoryUrl}/{Manifest}/{Manifest}.json" : $"{RepositoryUrl}/{Manifest}.json");
             yield return www.SendWebRequest();
 
             var isError = www.result != UnityWebRequest.Result.Success;

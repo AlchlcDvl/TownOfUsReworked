@@ -8,7 +8,7 @@ public static class VisorsTabOnEnablePatch
         __instance.BaseOnEnable();
         var array = HatManager.Instance.GetUnlockedVisors();
         var packages = CosmeticTabPatches.GeneratePackages<VisorData, CustomVisor, VisorViewData>(array, VisorLoader.CustomCosmeticRegistry);
-        __instance.CreatePackages(packages, false, __instance.SelectVisor, () => __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.visor)), out var yOffset);
+        __instance.CreatePackages(packages, false, __instance.SelectVisor, () => __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.Visor)), out var yOffset);
         __instance.visorId = DataManager.Player.Customization.Visor;
         __instance.currentVisorIsEquipped = true;
         __instance.EndOnEnable(yOffset, array);

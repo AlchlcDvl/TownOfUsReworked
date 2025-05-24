@@ -10,9 +10,9 @@ public static class HatsTabOnEnablePatch
         __instance.BaseOnEnable();
         var array = HatManager.Instance.GetUnlockedHats();
         var packages = CosmeticTabPatches.GeneratePackages<HatData, CustomHat, HatViewData>(array, HatLoader.CustomCosmeticRegistry);
-        __instance.CreatePackages(packages, false, __instance.SelectHat, () => __instance.SelectHat(HatManager.Instance.GetHatById(DataManager.Player.Customization.visor)), out var yOffset);
+        __instance.CreatePackages(packages, false, __instance.SelectHat, () => __instance.SelectHat(HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat)), out var yOffset);
+        __instance.currentHat = HatManager.Instance.GetHatById(DataManager.Player.Customization.Hat);
         __instance.currentHatIsEquipped = true;
-        __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
         __instance.EndOnEnable(yOffset, array);
         return false;
     }

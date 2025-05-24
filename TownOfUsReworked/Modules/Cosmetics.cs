@@ -48,6 +48,12 @@ public abstract class AdaptiveCosmetic<TView, TData> : CustomCosmetic<TView, TDa
 {
     [JsonPropertyName("adaptive")]
     public bool Adaptive { get; set; }
+
+    [JsonPropertyName("chipOffset"), JsonConverter(typeof(Vector2JsonConverter))]
+    public Vector2 ChipOffset { get; set; }
+
+    [JsonPropertyName("noLongMode")]
+    public bool NoLongMode { get; set; }
 }
 
 // [JsonSerializable(typeof(CustomSkin))]
@@ -117,7 +123,10 @@ public sealed class CustomHat : TopCosmetic<HatViewData, HatData>
     public string FloorFlipHash { get; set; }
 
     [JsonPropertyName("noBounce")]
-    public bool NoBounce { get; set; }
+    public bool NoBounce { get; set; } = true;
+
+    [JsonPropertyName("blocksVisors")]
+    public bool BlocksVisors { get; set; }
 }
 
 [JsonSerializable(typeof(CustomVisor))]

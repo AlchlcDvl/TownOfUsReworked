@@ -1,6 +1,7 @@
 // ReSharper disable HeuristicUnreachableCode
 #pragma warning disable CS0162 // Unreachable code detected
 
+using TownOfUsReworked.Patches.Cosmetics;
 using static CosmeticsLayer;
 
 namespace TownOfUsReworked.Loaders;
@@ -70,13 +71,14 @@ public abstract class BaseCosmeticLoader<TView, TData, TAsset> : BaseCosmeticLoa
 
         data.name = item.Name;
         data.ProductId = $"{CosmeticType}_" + item.ID.Replace(' ', '_');
-        data.ChipOffset = new(0f, 0.2f);
         data.Free = true;
         data.NotInStore = true;
 
         LoadData(item, path, viewData, preview, data);
 
         data.PreviewData = new CustomAddressable<PreviewViewData>(preview, $"{data.ProductId}_preview").Ref;
+
+        ProperlySetPreviews.Previews[data.ProductId] = preview.PreviewSprite;
 
         item.ViewData = viewData;
         item.CosmeticData = data;

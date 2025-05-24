@@ -29,7 +29,7 @@ public static class InjectCustomCosmeticsPatch
         // {
         //     if (skin.AnimsInitialised)
         //         continue;
-        //
+
         //     var refAsset = allSkins.Find(x => x.ProductId == skin.BaseSkin).CreateAddressableAsset();
         //     refAsset.LoadAsync((Action)CloneProps);
 
@@ -59,6 +59,24 @@ public static class InjectCustomCosmeticsPatch
         //         skin.ViewData.KillRHMVictim = asset.KillRHMVictim;
         //         skin.AnimsInitialised = true;
         //     }
+        // }
+
+        foreach (var hat in HatLoader.CustomCosmeticRegistry.Values)
+        {
+            if (hat.NoLongMode)
+                __instance.longModeBlackList.Add(hat.CosmeticData);
+        }
+
+        foreach (var visor in VisorLoader.CustomCosmeticRegistry.Values)
+        {
+            if (visor.NoLongMode)
+                __instance.longModeBlackList.Add(visor.CosmeticData);
+        }
+
+        // foreach (var skin in SkinLoader.CustomCosmeticRegistry.Values)
+        // {
+        //     if (skin.NoLongMode)
+        //         __instance.longModeBlackList.Add(skin.CosmeticData);
         // }
     }
 }
@@ -157,19 +175,13 @@ public static class CosmeticTabPatches
         InventoryTab> setPreview)
         where T : CosmeticData
     {
-        var isDefaultPackage = packageName == "Innersloth";
-
-        if (!isDefaultPackage)
-            cosmetics = [ .. cosmetics.OrderBy(x => x.name) ];
-
         var offset = yStart;
 
         if (Template)
         {
             var title = UObject.Instantiate(Template, __instance.scroller.Inner);
-            var material = title.GetComponent<MeshRenderer>().material;
-            material.SetFloat(StencilComp, 4f);
-            material.SetFloat(Stencil, 1f);
+            title.fontMaterial.SetFloat(StencilComp, 4f);
+            title.fontMaterial.SetFloat(Stencil, 1f);
             title.transform.localPosition = new(2.25f, offset, -1f);
             title.transform.localScale = Vector3.one * 1.5f;
             title.fontSize *= 0.5f;
@@ -183,7 +195,7 @@ public static class CosmeticTabPatches
         {
             var cosmetic = cosmetics[i];
             var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
-            var ypos = offset - (i / __instance.NumPerRow * (isDefaultPackage || isNameplate ? 1f : 1.5f) * __instance.YOffset);
+            var ypos = offset - (i / __instance.NumPerRow * __instance.YOffset);
             var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
 
             if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
@@ -197,7 +209,7 @@ public static class CosmeticTabPatches
 
             colorChip.Button.ClickMask = __instance.scroller.Hitbox;
             colorChip.transform.localPosition = new(xpos, ypos, -1f);
-            colorChip.ProductId = cosmetic.ProductId;
+            colorChip.ProductId = colorChip.name = cosmetic.ProductId;
             colorChip.Tag = cosmetic;
             colorChip.SelectionHighlight.gameObject.SetActive(false);
 
@@ -205,21 +217,6 @@ public static class CosmeticTabPatches
             {
                 colorChip.Inner.SetMaskType(PlayerMaterial.MaskType.SimpleUI);
                 colorChip.Inner.transform.localPosition = cosmetic.ChipOffset;
-
-                if (!isDefaultPackage)
-                {
-                    var background = colorChip.transform.FindChild("Background");
-                    var foreground = colorChip.transform.FindChild("ForeGround");
-
-                    if (background)
-                    {
-                        background.localPosition = Vector3.down * 0.243f;
-                        background.localScale = new(background.localScale.x, 0.8f, background.localScale.y);
-                    }
-
-                    if (foreground)
-                        foreground.localPosition = Vector3.down * 0.243f;
-                }
             }
 
             if (setPreview != null)
@@ -228,6 +225,10 @@ public static class CosmeticTabPatches
                 cosmetic.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.Local.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
 
             __instance.ColorChips.Add(colorChip);
+
+            if (!HatManager.Instance.CheckLongModeValidCosmetic(cosmetic.ProductId, __instance.PlayerPreview.GetIgnoreLongMode()))
+                colorChip.SetUnavailable();
+
             yStart = ypos;
         }
 
@@ -258,5 +259,24 @@ public static class CosmeticTabPatches
 
         if (array.Length != 0)
             __instance.GetDefaultSelectable().PlayerEquippedForeground.SetActive(true);
+    }
+}
+
+[HarmonyPatch(typeof(CosmeticData), nameof(CosmeticData.SetPreview))]
+public static class ProperlySetPreviews
+{
+    public static readonly Dictionary<string, Sprite> Previews = [];
+
+    public static bool Prefix(CosmeticData __instance, SpriteRenderer renderer, int color)
+    {
+        if (!Previews.TryGetValue(__instance.ProductId, out var sprite))
+            return true;
+
+        renderer.sprite = sprite;
+
+        if (Application.isPlaying)
+            PlayerMaterial.SetColors(color, renderer);
+
+        return false;
     }
 }
