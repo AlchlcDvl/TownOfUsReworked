@@ -1,4 +1,5 @@
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
+
 namespace TownOfUsReworked.Options;
 
 public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15, byte change = 1) : Option<RoleOptionData>(CustomOptionType.Layer)

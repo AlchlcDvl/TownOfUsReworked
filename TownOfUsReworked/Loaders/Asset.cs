@@ -1,4 +1,5 @@
 // ReSharper disable HeuristicUnreachableCode
+
 namespace TownOfUsReworked.Loaders;
 
 public abstract class AssetLoader

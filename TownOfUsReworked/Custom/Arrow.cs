@@ -31,7 +31,7 @@ public class CustomArrow : IDisposable
         AllArrows.Add(this);
     }
 
-    ~CustomArrow() => Dispose();
+    ~CustomArrow() => InternalDispose();
 
     private void Instantiate()
     {
@@ -121,13 +121,18 @@ public class CustomArrow : IDisposable
         PlayerMaterial.SetColors(ArrowColor, Point);
     }
 
-    public void Dispose()
+    public void InternalDispose()
     {
         if (Disposed)
             return;
 
         Destroy();
-        GC.SuppressFinalize(this);
         Disposed = true;
+    }
+
+    public void Dispose()
+    {
+        InternalDispose();
+        GC.SuppressFinalize(this);
     }
 }

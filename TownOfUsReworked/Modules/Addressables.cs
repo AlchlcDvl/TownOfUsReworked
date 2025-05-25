@@ -17,7 +17,6 @@ public abstract class CustomAddressable
     public static readonly Dictionary<string, CustomAddressable> CustomAddressables = [];
 
     public AssetReference Ref { get; }
-    private bool Disposed { get; set; }
 
     protected CustomAddressable(string guid)
     {

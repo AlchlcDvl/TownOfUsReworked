@@ -1,4 +1,5 @@
 // ReSharper disable InconsistentNaming
+
 namespace TownOfUsReworked.Managers;
 
 public static class RoleGenManager

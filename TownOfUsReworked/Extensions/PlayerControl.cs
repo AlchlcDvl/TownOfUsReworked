@@ -172,16 +172,16 @@ public static class PlayerControlExtensions
             SetRendererColor(colorVal, __instance.Image);
     }
 
-	public static void RawSetSkin(this PlayerControl player, string skinId, UColor color) => player.MyPhysics.SetSkin(skinId, color);
+    public static void RawSetSkin(this PlayerControl player, string skinId, UColor color) => player.MyPhysics.SetSkin(skinId, color);
 
-	public static void SetSkin(this PlayerPhysics physics, string skinId, UColor color)
-	{
-		physics.myPlayer.cosmetics.SetSkin(skinId, color, () =>
-		{
-			if (physics.Animations.IsPlayingSpawnAnimation())
-				physics.myPlayer.cosmetics.AnimateSkinSpawn(physics.Animations.Time);
+    public static void SetSkin(this PlayerPhysics physics, string skinId, UColor color)
+    {
+        physics.myPlayer.cosmetics.SetSkin(skinId, color, () =>
+        {
+            if (physics.Animations.IsPlayingSpawnAnimation())
+                physics.myPlayer.cosmetics.AnimateSkinSpawn(physics.Animations.Time);
 
-			if (Ship()?.Type != ShipStatus.MapType.Fungle)
+            if (Ship()?.Type != ShipStatus.MapType.Fungle)
                 return;
 
             if (physics.myPlayer.inMovingPlat)
@@ -193,30 +193,30 @@ public static class PlayerControlExtensions
                 physics.Animations.PlayClimbAnimation(flag);
                 physics.myPlayer.cosmetics.AnimateClimb(flag);
             }
-		});
-	}
+        });
+    }
 
-	public static void SetSkin(this CosmeticsLayer layer, string skinId, UColor color, Action onLoaded)
-	{
+    public static void SetSkin(this CosmeticsLayer layer, string skinId, UColor color, Action onLoaded)
+    {
         if (HatManager.InstanceExists)
             layer.SetSkin(HatManager.Instance.GetSkinById(skinId), color, onLoaded);
-	}
+    }
 
-	public static void SetSkin(this CosmeticsLayer layer, SkinData skin, UColor color, Action onLoaded)
-	{
-		if (!layer.skin)
-			return;
+    public static void SetSkin(this CosmeticsLayer layer, SkinData skin, UColor color, Action onLoaded)
+    {
+        if (!layer.skin)
+            return;
 
-		if (AprilFoolsMode.ShouldLongAround() && HatManager.Instance.CheckLongModeValidCosmetic(skin.ProductId, false))
-			skin = HatManager.Instance.GetSkinById("skin_None");
+        if (AprilFoolsMode.ShouldLongAround() && HatManager.Instance.CheckLongModeValidCosmetic(skin.ProductId, false))
+            skin = HatManager.Instance.GetSkinById("skin_None");
 
-		layer.skin.SetSkin(skin, color, layer.currentBodySprite.BodySprite.flipX, layer, onLoaded);
-		layer.skin.Flipped = layer.currentBodySprite.BodySprite.flipX;
-	}
+        layer.skin.SetSkin(skin, color, layer.currentBodySprite.BodySprite.flipX, layer, onLoaded);
+        layer.skin.Flipped = layer.currentBodySprite.BodySprite.flipX;
+    }
 
-	public static void SetSkin(this SkinLayer layer, SkinData skinData, UColor color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded )
-	{
-		layer.LoadAssetAsync(skinData.Cast<IAddressableAssetProvider<SkinViewData>>(), (Action<SkinViewData>)(skinView =>
+    public static void SetSkin(this SkinLayer layer, SkinData skinData, UColor color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded )
+    {
+        layer.LoadAssetAsync(skinData.Cast<IAddressableAssetProvider<SkinViewData>>(), (Action<SkinViewData>)(skinView =>
         {
             if (layer.IsDestroyedOrNull() || layer.gameObject.IsDestroyedOrNull())
                 return;
@@ -226,20 +226,20 @@ public static class PlayerControlExtensions
             cosmeticsLayer.OnCosmeticSet?.Invoke(skinData.ProdId, -2, CosmeticsLayer.CosmeticKind.SKIN);
             onLoaded?.Invoke();
         }));
-	}
+    }
 
-	public static void SetSkin(this SkinLayer layer, SkinViewData skin, UColor color, bool isLeft)
-	{
-		layer.skin = skin;
+    public static void SetSkin(this SkinLayer layer, SkinViewData skin, UColor color, bool isLeft)
+    {
+        layer.skin = skin;
         var props = layer.matProperties;
         props.ColorId = -2;
         layer.matProperties = props;
-		layer.UpdateMaterial(color);
-		layer.SetIdle(isLeft);
-	}
+        layer.UpdateMaterial(color);
+        layer.SetIdle(isLeft);
+    }
 
-	public static void UpdateMaterial(this SkinLayer __instance, object colorVal)
-	{
+    public static void UpdateMaterial(this SkinLayer __instance, object colorVal)
+    {
         var maskType = __instance.matProperties.MaskType;
         var loaded = __instance.skin && __instance.IsLoaded && __instance.skin.MatchPlayerColor;
         __instance.layer.sharedMaterial = maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
@@ -253,88 +253,88 @@ public static class PlayerControlExtensions
         };
         __instance.layer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
 
-		if (__instance.matProperties.MaskLayer <= 0)
-			PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.layer, __instance.matProperties.IsLocalPlayer);
+        if (__instance.matProperties.MaskLayer <= 0)
+            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.layer, __instance.matProperties.IsLocalPlayer);
 
         if (loaded)
             SetRendererColor(colorVal, __instance.layer);
-	}
+    }
 
-	public static void RawSetPet(this PlayerControl player, string petId, UColor color)
-	{
-		player.cosmetics.SetPetIdle(petId, color, () =>
-		{
-			player.cosmetics.SetPetSource(player);
+    public static void RawSetPet(this PlayerControl player, string petId, UColor color)
+    {
+        player.cosmetics.SetPetIdle(petId, color, () =>
+        {
+            player.cosmetics.SetPetSource(player);
 
-			if (player.inMovingPlat)
-				player.cosmetics.SetPetVisible(false);
-		});
-	}
+            if (player.inMovingPlat)
+                player.cosmetics.SetPetVisible(false);
+        });
+    }
 
-	public static void SetPetIdle(this CosmeticsLayer layer, string petId, UColor color, Action onComplete)
-	{
+    public static void SetPetIdle(this CosmeticsLayer layer, string petId, UColor color, Action onComplete)
+    {
         if (HatManager.InstanceExists)
             layer.SetPetIdle(HatManager.Instance.GetPetById(petId), color, onComplete);
-	}
+    }
 
-	public static void SetPetIdle(this CosmeticsLayer layer, PetData petData, UColor color, Action onComplete)
-	{
-		layer.StopAllCoroutines();
+    public static void SetPetIdle(this CosmeticsLayer layer, PetData petData, UColor color, Action onComplete)
+    {
+        layer.StopAllCoroutines();
 
-		if (layer.currentPet && layer.currentPet.Data.ProdId == petData.ProdId)
-		{
-			layer.currentPet.SetIdle();
+        if (layer.currentPet && layer.currentPet.Data.ProdId == petData.ProdId)
+        {
+            layer.currentPet.SetIdle();
             onComplete?.Invoke();
-		}
-		else
-			layer.StartCoroutine(layer.CoLoadAndSetPetIdle(petData, color, onComplete));
-	}
+        }
+        else
+            layer.StartCoroutine(layer.CoLoadAndSetPetIdle(petData, color, onComplete));
+    }
 
-	private static IEnumerator CoLoadAndSetPetIdle(this CosmeticsLayer layer, PetData petData, UColor color, Action onComplete)
-	{
-		layer.UnloadAddressableAsset(layer.petAsset);
-		yield return layer.CoLoadAssetAsync(petData.Cast<IAddressableAssetProvider<PetBehaviour>>(), (Action<PetBehaviour>)(pet => layer.SetPetIdle(pet, color, onComplete)));
-	}
+    private static IEnumerator CoLoadAndSetPetIdle(this CosmeticsLayer layer, PetData petData, UColor color, Action onComplete)
+    {
+        layer.UnloadAddressableAsset(layer.petAsset);
+        yield return layer.CoLoadAssetAsync(petData.Cast<IAddressableAssetProvider<PetBehaviour>>(), (Action<PetBehaviour>)(pet => layer.SetPetIdle(pet, color, onComplete)));
+    }
 
-	public static void SetPetIdle(this CosmeticsLayer layer, PetBehaviour petBehaviour, UColor color, Action onComplete)
-	{
-		layer.StopAllCoroutines();
-		layer.InstantiatePetCopy(petBehaviour, color);
-		layer.currentPet.SetIdle();
-		layer.currentPet.Visible = layer.visible;
+    public static void SetPetIdle(this CosmeticsLayer layer, PetBehaviour petBehaviour, UColor color, Action onComplete)
+    {
+        layer.StopAllCoroutines();
+        layer.InstantiatePetCopy(petBehaviour, color);
+        layer.currentPet.SetIdle();
+        layer.currentPet.Visible = layer.visible;
         onComplete?.Invoke();
-		layer.OnCosmeticSet?.Invoke(petBehaviour.Data.ProdId, -2, CosmeticsLayer.CosmeticKind.PET);
-	}
+        layer.OnCosmeticSet?.Invoke(petBehaviour.Data.ProdId, -2, CosmeticsLayer.CosmeticKind.PET);
+    }
 
-	private static void InstantiatePetCopy(this CosmeticsLayer layer, PetBehaviour petBehaviour, UColor color)
-	{
-		if (layer.currentPet)
-		{
-			UObject.Destroy(layer.currentPet.gameObject);
-			layer.currentPet = null;
-		}
+    private static void InstantiatePetCopy(this CosmeticsLayer layer, PetBehaviour petBehaviour, UColor color)
+    {
+        if (layer.currentPet)
+        {
+            UObject.Destroy(layer.currentPet.gameObject);
+            layer.currentPet = null;
+        }
 
-		layer.currentPet = UObject.Instantiate(petBehaviour, layer.petParent);
+        layer.currentPet = UObject.Instantiate(petBehaviour, layer.petParent);
 
-		if (layer.uiPet)
-			layer.currentPet.PrepareForUI();
+        if (layer.uiPet)
+            layer.currentPet.PrepareForUI();
 
-		layer.currentPet.SetCrewmateColor(color);
-		layer.currentPet.transform.localPosition = Vector3.zero;
-		layer.currentPet.SetDefaultMaterial();
-		layer.SetPetFlipX(layer.FlipX);
+        layer.currentPet.SetCrewmateColor(color);
+        layer.currentPet.transform.localPosition = Vector3.zero;
+        layer.currentPet.SetDefaultMaterial();
+        layer.SetPetFlipX(layer.FlipX);
 
-		if (layer.localPlayer)
-			layer.currentPet.SetAsLocalPlayer();
-	}
+        if (layer.localPlayer)
+            layer.currentPet.SetAsLocalPlayer();
+    }
 
-	public static void SetCrewmateColor(this PetBehaviour pet, object colorVal)
-	{
+    public static void SetCrewmateColor(this PetBehaviour pet, object colorVal)
+    {
         if (colorVal is int colorId and not (-2 or -1))
             pet.ForEachRenderer(false, (Action<SpriteRenderer>)(x => PlayerMaterial.SetColors(colorId, x)));
         else if (colorVal is UColor color)
             pet.ForEachRenderer(false, (Action<SpriteRenderer>)(x => PlayerMaterial.SetColors(color, x)));
-	}
+    }
 
     private static void SetRendererColor(object colorVal, SpriteRenderer rend)
     {

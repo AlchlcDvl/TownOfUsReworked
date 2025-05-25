@@ -2,6 +2,7 @@
 // ReSharper disable UnusedType.Global
 // ReSharper disable UnassignedField.Global
 // ReSharper disable RedundantDefaultMemberInitializer
+
 namespace TownOfUsReworked.Options;
 
 // DO NOT OVERRIDE VALUES OF THE OPTION PROPERTIES ANYWHERE IN THE CODE, OR ELSE THE OPTIONS WILL START TO FUCK OFF

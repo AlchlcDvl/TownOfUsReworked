@@ -1,4 +1,5 @@
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace TownOfUsReworked.Modules;
 
 [JsonSerializable(typeof(Language))]

@@ -1,4 +1,5 @@
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
+
 namespace TownOfUsReworked.Utils;
 
 public static class InteractionManager

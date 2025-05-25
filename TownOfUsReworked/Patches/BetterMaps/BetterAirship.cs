@@ -1,4 +1,5 @@
 // ReSharper disable UnusedMember.Local
+
 namespace TownOfUsReworked.Patches.BetterMaps;
 
 /// <summary>

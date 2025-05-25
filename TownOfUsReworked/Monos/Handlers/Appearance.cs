@@ -102,10 +102,7 @@ public sealed class AppearanceHandler : MonoBehaviour
     }
 
     [HideFromIl2Cpp]
-    private void ChangeTo(CustomOutfit former, CustomOutfit newOutfit, PlayerOutfitType type) => this.StartCoroutine(CoChangeTo(former, newOutfit, type));
-
-    [HideFromIl2Cpp]
-    private IEnumerator CoChangeTo(CustomOutfit former, CustomOutfit newOutfit, PlayerOutfitType type)
+    private void ChangeTo(CustomOutfit former, CustomOutfit newOutfit, PlayerOutfitType type)
     {
         if (former == null)
             throw new ArgumentNullException(nameof(former));
@@ -113,35 +110,34 @@ public sealed class AppearanceHandler : MonoBehaviour
         if (newOutfit == null)
             throw new ArgumentNullException(nameof(newOutfit));
 
-        return CoChangeTo2();
+        this.StartCoroutine(CoChangeTo(former, newOutfit, type));
+    }
 
-        IEnumerator CoChangeTo2()
+    [HideFromIl2Cpp]
+    private IEnumerator CoChangeTo(CustomOutfit former, CustomOutfit newOutfit, PlayerOutfitType type)
+    {
+        yield return PerformTimedAction(0.5f, t => HandleAlpha(t, former, newOutfit, 0f));
+
+        if (newOutfit.ColorId == -2) // The reason why I'm using -2 is because -1 is used to indicate if the outfit is incomplete
         {
-            Critical(newOutfit.ToString());
-
-            yield return PerformTimedAction(0.5f, t => HandleAlpha(t, former, newOutfit, 0f));
-
-            if (newOutfit.ColorId == -2) // The reason why I'm using -2 is because -1 is used to indicate if the outfit is incomplete
-            {
-                Player.RawSetHat(newOutfit.HatId, newOutfit.Color);
-                Player.RawSetVisor(newOutfit.VisorId, newOutfit.Color);
-                Player.RawSetSkin(newOutfit.SkinId, newOutfit.Color);
-                Player.RawSetPet(newOutfit.PetId, newOutfit.Color);
-            }
-            else
-            {
-                Player.RawSetHat(newOutfit.HatId, newOutfit.ColorId);
-                Player.RawSetPet(newOutfit.PetId, newOutfit.ColorId);
-                Player.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
-                Player.RawSetVisor(newOutfit.VisorId, newOutfit.ColorId);
-            }
-
-            Player.RawSetName(newOutfit.PlayerName);
-
-            yield return PerformTimedAction(0.5f, t => HandleAlpha(t, former, newOutfit, 0.5f));
-
-            Player.Data.Outfits[type] = newOutfit;
+            Player.RawSetHat(newOutfit.HatId, newOutfit.Color);
+            Player.RawSetVisor(newOutfit.VisorId, newOutfit.Color);
+            Player.RawSetSkin(newOutfit.SkinId, newOutfit.Color);
+            Player.RawSetPet(newOutfit.PetId, newOutfit.Color);
         }
+        else
+        {
+            Player.RawSetHat(newOutfit.HatId, newOutfit.ColorId);
+            Player.RawSetPet(newOutfit.PetId, newOutfit.ColorId);
+            Player.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
+            Player.RawSetVisor(newOutfit.VisorId, newOutfit.ColorId);
+        }
+
+        Player.RawSetName(newOutfit.PlayerName);
+
+        yield return PerformTimedAction(0.5f, t => HandleAlpha(t, former, newOutfit, 0.5f));
+
+        Player.Data.Outfits[type] = newOutfit;
     }
 
     private void HandleAlpha(float t, CustomOutfit former, CustomOutfit newOutfit, float offset)
