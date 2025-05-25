@@ -147,8 +147,8 @@ public static class CosmeticTabPatches
 
     public static Dictionary<string, List<TData>> GeneratePackages<TData, TCustomData, TView>(Il2CppReferenceArray<TData> array, Dictionary<string, TCustomData> registry)
         where TData : CosmeticData
-        where TView : ScriptableObject
         where TCustomData : CustomCosmetic<TView, TData>
+        where TView : ScriptableObject
     {
         var packages = new Dictionary<string, List<TData>>();
 

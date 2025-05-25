@@ -112,7 +112,7 @@ public static class InnerNetSererHandleNewGameJoin
 
         if (__instance.HostId == -1)
         {
-            __instance.HostId = __instance.Clients[0].Id;
+            __instance.HostId = __instance.Clients._items[0].Id;
 
             if (__instance.HostId == client.Id)
                 client.LimboState = LimboStates.NotLimbo;
@@ -150,7 +150,7 @@ public static class CreateOptionsPickerPatches
 
         var skeld = __instance.MapMenu.MapButtons.Find(x => x.MapId == MapNames.Skeld);
 
-        if (!__instance.MapMenu.MapButtons.Any(x => x.MapId == MapNames.Dleks))
+        if (__instance.MapMenu.MapButtons.All(x => x.MapId != MapNames.Dleks))
         {
             var dleksButton = UObject.Instantiate(skeld, skeld.transform.parent);
             dleksButton.ButtonImage.sprite = skeld.ButtonImage.sprite;
@@ -161,7 +161,7 @@ public static class CreateOptionsPickerPatches
             __instance.MapMenu.MapButtons = __instance.MapMenu.MapButtons.AddItem(dleksButton).ToArray();
         }
 
-        if (!__instance.MapMenu.MapButtons.Any(x => x.MapId == (MapNames)8))
+        if (__instance.MapMenu.MapButtons.All(x => x.MapId != (MapNames)8))
         {
             var randomButton = UObject.Instantiate(skeld, skeld.transform.parent);
             randomButton.ButtonImage.sprite = GetSprite("RandomMapIcon");

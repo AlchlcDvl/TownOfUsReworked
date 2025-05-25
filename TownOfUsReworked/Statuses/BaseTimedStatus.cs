@@ -28,7 +28,7 @@ public abstract class BaseTimedStatus : BaseStatus
     /// <summary>
     /// Gets a value indicating whether or not the timed status is currently active and running.
     /// </summary>
-    public bool Active => Timer > 0;
+    public bool TimerActive => Timer > 0;
 
     /// <summary>
     /// The event that's invoked once the timer's ended.

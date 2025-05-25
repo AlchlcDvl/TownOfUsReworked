@@ -184,7 +184,7 @@ public static class AssetManager
         if (AssetTypeExtensions.TryGetValue(tType, out var pair) && strings.TryFinding(x => x.EndsWith($".{pair.Item1}"), out var path))
             result = AddAsset(name, (T)pair.Item2(path));
         else
-            throw new NotImplementedException($"{tType.Name} is not a loadable asset type");
+            throw new NotSupportedException($"{tType.Name} is not a loadable asset type");
 
         strings.Remove(path);
 

@@ -40,7 +40,7 @@ public static class Keybinds
             _modifierKey3 = ModifierKey.None
         };
 
-        self.keyboardMaps[0].actionElementMaps.Add(map);
-        self.joystickMaps[0].actionElementMaps.Add(map);
+        self.keyboardMaps._items[0].actionElementMaps.Add(map);
+        self.joystickMaps._items[0].actionElementMaps.Add(map);
     }
 }

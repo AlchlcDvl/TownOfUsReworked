@@ -5,6 +5,7 @@ global using TBMode = AmongUs.GameOptions.TaskBarMode;
 global using BepInEx;
 global using BepInEx.Unity.IL2CPP;
 global using BepInEx.Configuration;
+global using BepInEx.Unity.IL2CPP.Utils;
 global using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 global using Il2CppInterop.Runtime;
@@ -61,7 +62,7 @@ global using static TownOfUsReworked.Managers.ModCompatibilityManager;
 global using Hud = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.HudHandler>;
 global using Colors = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.ColorHandler>;
 global using Client = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.ClientHandler>;
-global using Debugging = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.DebuggerBehaviour>;
+global using Debugging = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.DebuggerHandler>;
 
 global using System;
 global using System.IO;

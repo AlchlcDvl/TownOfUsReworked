@@ -8,6 +8,7 @@ public abstract class CustomMenu : IDisposable
     public ShapeshifterMinigame Menu { get; private set; }
     public PlayerControl Owner { get; set; }
     private MenuType Type { get; }
+    private bool Disposed { get; set; }
 
     protected CustomMenu(PlayerControl owner, MenuType type)
     {
@@ -15,6 +16,8 @@ public abstract class CustomMenu : IDisposable
         Type = type;
         AllMenus.Add(this);
     }
+
+    ~CustomMenu() => InternalDispose();
 
     public void Open()
     {
@@ -47,9 +50,18 @@ public abstract class CustomMenu : IDisposable
         Menu = null;
     }
 
+    private void InternalDispose()
+    {
+        if (Disposed)
+            return;
+
+        Destroy();
+        Disposed = true;
+    }
+
     public void Dispose()
     {
-        Destroy();
+        InternalDispose();
         GC.SuppressFinalize(this);
     }
 }

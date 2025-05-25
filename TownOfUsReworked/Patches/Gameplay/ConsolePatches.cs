@@ -28,13 +28,12 @@ public static class OpenDoorConsolePatches
     {
         __instance.CanUse(CustomPlayer.Local.Data, out var canUse, out _);
 
-        if (canUse)
-        {
-            Ship().RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
-            CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.myDoor.Id);
-            __instance.myDoor.SetDoorway(true);
-        }
+        if (!canUse)
+            return false;
 
+        Ship().RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
+        CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.myDoor.Id);
+        __instance.myDoor.SetDoorway(true);
         return false;
     }
 }

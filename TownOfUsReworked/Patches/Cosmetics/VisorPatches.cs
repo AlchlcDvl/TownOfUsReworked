@@ -22,37 +22,7 @@ public static class VisorPatches
     [HarmonyPatch(nameof(VisorLayer.UpdateMaterial)), HarmonyPrefix]
     public static bool UpdateMaterialPrefix(VisorLayer __instance)
     {
-        if (!__instance.visorData)
-            return true;
-
-        try
-        {
-            __instance.viewAsset.GetAsset();
-            return true;
-        } catch {}
-
-        if (!VisorLoader.CustomCosmeticRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
-            return true;
-
-        var maskType = __instance.matProperties.MaskType;
-        var masked = __instance.visorData && __instance.IsLoaded && cv.ViewData.MatchPlayerColor;
-        __instance.Image.sharedMaterial = maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
-            ? (masked ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial)
-            : (masked ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader);
-        __instance.Image.maskInteraction = maskType switch
-        {
-            PlayerMaterial.MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
-            PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
-            _ => SpriteMaskInteraction.None,
-        };
-        __instance.Image.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
-
-        if (__instance.visorData && __instance.IsLoaded && cv.ViewData.MatchPlayerColor)
-            PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.Image);
-
-        if (__instance.matProperties.MaskLayer <= 0)
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.Image, __instance.matProperties.IsLocalPlayer);
-
+        __instance.UpdateMaterial(__instance.matProperties.ColorId);
         return false;
     }
 

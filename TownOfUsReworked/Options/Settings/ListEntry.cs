@@ -1,5 +1,3 @@
-
-
 namespace TownOfUsReworked.Options;
 
 public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int num) : BaseMultiSelectOption<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None)

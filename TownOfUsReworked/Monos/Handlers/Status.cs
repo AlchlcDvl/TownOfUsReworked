@@ -15,7 +15,10 @@ public sealed class StatusHandler : MonoBehaviour
     {
         foreach (var status in Statuses)
         {
-            if (status is BaseTimedStatus { Active: true } timed)
+            if (!status.Active)
+                continue;
+
+            if (status is BaseTimedStatus { TimerActive: true } timed)
             {
                 timed.Timer -= Time.deltaTime;
 

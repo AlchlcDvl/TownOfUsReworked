@@ -11,7 +11,7 @@ public abstract class Option(CustomOptionType type)
     public CustomOptionType Type => type;
     public bool All { get; set; }
     public bool ClientOnly { get; set; }
-    public bool SelfMember { get; set; }
+    protected bool SelfMember { get; private set; }
     protected MemberInfo Member { get; private set; }
     public string Name { get; set; } // Not actually the setting text, just the member name :]
     public KeyValuePair<byte, byte> RpcId { get; protected set; }
@@ -62,9 +62,9 @@ public abstract class Option(CustomOptionType type)
         (["RoundOneNoMayorReveal"], ["MayorDirectSpawn"]),
         (["AssassinChances"], ["AssassinChance"]),
         (["FinalTwoDisableVenting"], ["not+WhoCanVent+NoOne"]),
-        (["ComplianceType", "ComplianceSettings"], ["OrderOfCompliance"]),
-        (["PandoricaType", "PandoricaSettings"], ["PandoricaOpens"]),
-        (["IlluminatiType", "IlluminatiSettings"], ["IlluminatiUnleashed"])
+        (["ComplianceMembers", "ComplianceSettings"], ["OrderOfCompliance"]),
+        (["PandoricaMembers", "PandoricaSettings"], ["PandoricaOpens"]),
+        (["IlluminatiMembers", "IlluminatiSettings"], ["IlluminatiUnleashed"])
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
@@ -90,7 +90,7 @@ public abstract class Option(CustomOptionType type)
         (["CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin"], [Mode.Classic, Mode.AllAny]),
         (["HowIsVigilanteNotified"], [VigiOptions.PostMeeting, VigiOptions.PreMeeting]),
         (["RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleEntryList", "ModifierEntryList", "ModifierBanList",
-            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist"], [Mode.List]),
+            "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist", "BanZealot"], [Mode.List]),
         (["RunnerVision"], [Mode.TaskRace]),
         (["Dispositions", "Modifiers", "Abilities"], [Mode.Classic, Mode.List, Mode.AllAny]),
         (["Runner", "Runner1"], [Mode.TaskRace]),

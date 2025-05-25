@@ -85,7 +85,7 @@ public static class UpdateSplashPatch
         Message("Setting mod data");
 
         ReworkedDataManager.Setup();
-        Generate.GenerateAll();
+        Generate.GenerateOptions();
         Modules.Info.SetAllInfo();
         RegionInfoOpenPatch.UpdateRegions();
 

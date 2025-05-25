@@ -13,6 +13,7 @@ public sealed class CustomMeeting : IDisposable
     public Dictionary<byte, bool> Actives { get; }
     private Dictionary<byte, GameObject> Buttons { get; }
     private Dictionary<byte, SpriteRenderer> ButtonSprites { get; }
+    private bool Disposed { get; set; }
 
     public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
     public delegate bool Exemption(PlayerVoteArea voteArea);
@@ -43,7 +44,7 @@ public sealed class CustomMeeting : IDisposable
         AllCustomMeetings.Add(this);
     }
 
-    ~CustomMeeting() => Destroy();
+    ~CustomMeeting() => InternalDispose();
 
     public void HideButtons()
     {
@@ -125,9 +126,18 @@ public sealed class CustomMeeting : IDisposable
 
     private void Destroy() => HideButtons();
 
+    private void InternalDispose()
+    {
+        if (Disposed)
+            return;
+
+        Destroy();
+        Disposed = true;
+    }
+
     public void Dispose()
     {
-        Destroy();
+        InternalDispose();
         GC.SuppressFinalize(this);
     }
 }

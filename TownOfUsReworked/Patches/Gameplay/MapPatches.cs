@@ -50,7 +50,7 @@ public static class MapPatches
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
             AdjustSettings(true);
             // __instance.ShipLoadingAsyncHandle seems to be having an issue when setting its value; I wonder what's up with that
-            var async = __instance.ShipPrefabs[CurrentMap].InstantiateAsync();
+            var async = __instance.ShipPrefabs._items[CurrentMap].InstantiateAsync();
             yield return async;
             ShipStatus.Instance = async.Result.GetComponent<ShipStatus>();
             __instance.Spawn(Ship());

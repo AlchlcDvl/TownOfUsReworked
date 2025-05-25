@@ -4,8 +4,6 @@ namespace TownOfUsReworked.Utils;
 
 public static class StatusUtils
 {
-    private static readonly Dictionary<Type, ParameterInfo[]> TypeToConstructorParamsMap = [];
-
     public static T AddStatus<T>(this PlayerControl player, params object[] args) where T : BaseStatus
     {
         var status = CreateInstance<T>(args);
@@ -33,17 +31,46 @@ public static class StatusUtils
 
     public static T RpcAddStatus<T>(this PlayerControl player, params object[] args) where T : BaseStatus
     {
-        CallRpc(CustomRPC.Misc, [ MiscRPC.SetStatus, typeof(T), .. args, player ]);
+        var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SetStatus, typeof(T), player, (ushort)args.Length);
+        writer.WriteWithTypeCode(args);
+        writer?.Send();
         return player.AddStatus<T>(args);
     }
 
-    public static void AddStatusFromRpc(NetData data)
+    public static T RpcAddStatusWithoutType<T>(this PlayerControl player, params object[] args) where T : BaseStatus
+    {
+        var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SetStatus, player, (ushort)args.Length);
+        writer.WriteWithTypeCode(args);
+        writer?.Send();
+        return player.AddStatus<T>(args);
+    }
+
+    public static BaseStatus AddStatusFromRpc(NetData data)
     {
         var type = data.ReadType();
+        var player = data.ReadPlayer();
+        var count = data.ReadUShort();
+        var args = new List<object>();
 
-        if (!TypeToConstructorParamsMap.TryGetValue(type, out var parameters))
-            TypeToConstructorParamsMap[type] = parameters = type.GetConstructors(AccessTools.all)[0].GetParameters();
+        while (count-- > 0)
+            args.Add(data.Read());
 
-        ((BaseStatus)Activator.CreateInstance(type, [ .. parameters.Select(x => data.Read(x.ParameterType)) ])).Start(data.ReadPlayer());
+        var status = (BaseStatus)Activator.CreateInstance(type, [.. args]);
+        status?.Start(player);
+        return status;
+    }
+
+    public static T AddStatusFromRpcWithoutType<T>(NetData data) where T : BaseStatus
+    {
+        var player = data.ReadPlayer();
+        var count = data.ReadUShort();
+        var args = new List<object>();
+
+        while (count-- > 0)
+            args.Add(data.Read());
+
+        var status = CreateInstance<T>([.. args]);
+        status.Start(player);
+        return status;
     }
 }

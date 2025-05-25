@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches.UI;
 [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
 public static class VersionShowerPatch
 {
-    public static TextMeshPro ModVersion;
+    private static TextMeshPro ModVersion;
 
     public static void Postfix(VersionShower __instance)
     {

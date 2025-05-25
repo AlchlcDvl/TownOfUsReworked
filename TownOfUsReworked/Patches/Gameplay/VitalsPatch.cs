@@ -19,7 +19,7 @@ public static class VitalsPatch
         for (var i = 0; i < __instance.vitals.Count; i++)
         {
             var panel = __instance.vitals[i];
-            var info = GameData.Instance.AllPlayers[i];
+            var info = GameData.Instance.AllPlayers._items[i];
 
             if (!panel.IsDead || !KilledPlayers.TryFinding(x => x.PlayerId == info.PlayerId, out var deadBody))
                 continue;

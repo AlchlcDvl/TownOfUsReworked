@@ -78,7 +78,7 @@ public static class CoroutineUtils
         www.Dispose();
     }
 
-    public static IEnumerator CoDownloadItem(UnityWebRequest www, string location)
+    private static IEnumerator CoDownloadItem(UnityWebRequest www, string location)
     {
         if (www.result == UnityWebRequest.Result.Success)
         {

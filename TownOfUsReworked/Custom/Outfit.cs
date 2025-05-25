@@ -7,7 +7,9 @@ public sealed class CustomOutfit : PlayerOutfit
     public float Alpha { get; set; } = 1f;
     public Color32 Color { get; set; } = UColor.white;
 
-    public CustomOutfit() {}
+    public CustomOutfit() : base(IL2CPP.il2cpp_object_new(Il2CppClassPointerStore<CustomOutfit>.NativeClassPtr)) {}
+
+    public CustomOutfit(nint ptr) : base(ptr) {}
 
     public CustomOutfit(PlayerOutfit source)
     {
@@ -30,11 +32,12 @@ public sealed class CustomOutfit : PlayerOutfit
 
     public CustomOutfit(PlayerControl player) : this(player.CurrentOutfit)
     {
-        Size = player.GetSize();
-        Speed = player.GetSpeed();
-        Alpha = player.GetAlpha();
-        Color = ColorId == -1 ? player.MyRend().material.GetColor(PlayerMaterial.BodyColor) : ColorId.GetColor(false);
+        var lobby = IsLobby();
+        Size = lobby ? 1f : player.GetSize();
+        Speed = lobby ? 1f : player.GetSpeed();
+        Alpha = lobby ? 1f : player.GetAlpha();
+        Color = ColorId is -1 or -2 ? player.MyRend().material.GetColor(PlayerMaterial.BodyColor) : ColorId.GetColor(false);
     }
 
-    public override string ToString() => $"{base.ToString()},size={Size},speed={Speed},alpha={Alpha}";
+    public override string ToString() => $"name={PlayerName},colorId={ColorId},hat={HatId},pet={PetId},skin={SkinId},visor={VisorId},nameplate={NamePlateId},size={Size},speed={Speed},alpha={Alpha},color=({Color.r},{Color.g},{Color.b},{Color.a})";
 }

@@ -11,12 +11,114 @@ public static class RpcManager
     public const byte CustomRPCCallID = 254;
 
     /// <summary>
+    /// Gets the custom type code associated with the value's type.
+    /// </summary>
+    /// <param name="value">The value whose custom type code must be fetched.</param>
+    /// <returns>A type code enum value that represents the type of the value.</returns>
+    public static CustomTypeCode GetCustomTypeCode(this object value) => value switch
+    {
+        // Types from the base game
+        PlayerControl => CustomTypeCode.PlayerControl,
+        DeadBody => CustomTypeCode.DeadBody,
+        PlayerVoteArea => CustomTypeCode.PlayerVoteArea,
+        Vent => CustomTypeCode.Vent,
+        Vector2 => CustomTypeCode.Vector2,
+
+        // Custom types using the interface
+        INetSerializable i => i.TypeCode,
+
+        // Base C# types
+        char => CustomTypeCode.Char,
+        bool => CustomTypeCode.Boolean,
+        byte => CustomTypeCode.Byte,
+        sbyte => CustomTypeCode.SByte,
+        ushort => CustomTypeCode.UShort,
+        short => CustomTypeCode.Short,
+        int => CustomTypeCode.Int,
+        uint => CustomTypeCode.UInt,
+        ulong => CustomTypeCode.ULong,
+        long => CustomTypeCode.Long,
+        float => CustomTypeCode.Float,
+        double => CustomTypeCode.Double,
+        Half => CustomTypeCode.Half,
+        decimal => CustomTypeCode.Decimal,
+        string => CustomTypeCode.String,
+        Enum => CustomTypeCode.Enum,
+        Type => CustomTypeCode.Type,
+
+        // WIP
+        // IDictionary i => CustomTypeCode.IDictionary,
+        // ICollection i => CustomTypeCode.ICollection,
+
+        // Special cases
+        Array => CustomTypeCode.Array,
+        IEnumerable => CustomTypeCode.IEnumerable,
+
+        // Edge cases
+        null => throw new ArgumentNullException(nameof(value)),
+        _ => throw new NotSupportedException($"Either {value.GetType().Name} does not extend INetSerializable, or does not have a relevant custom type code for it")
+    };
+
+    /// <summary>
+    /// Gets the type associated with a custom type code.
+    /// </summary>
+    /// <param name="typeCode">The custom type code to resolve.</param>
+    /// <returns>The type associated with the custom type code.</returns>
+    /// <exception cref="NotSupportedException">Thrown when the type code cannot be resolved to a type.</exception>
+    public static Type ToType(this CustomTypeCode typeCode) => typeCode switch
+    {
+        // Types from the base game
+        CustomTypeCode.PlayerControl => typeof(PlayerControl),
+        CustomTypeCode.DeadBody => typeof(DeadBody),
+        CustomTypeCode.PlayerVoteArea => typeof(PlayerVoteArea),
+        CustomTypeCode.Vent => typeof(Vent),
+        CustomTypeCode.Vector2 => typeof(Vector2),
+
+        // Base C# types
+        CustomTypeCode.Char => typeof(char),
+        CustomTypeCode.Boolean => typeof(bool),
+        CustomTypeCode.Byte => typeof(byte),
+        CustomTypeCode.SByte => typeof(sbyte),
+        CustomTypeCode.UShort => typeof(ushort),
+        CustomTypeCode.Short => typeof(short),
+        CustomTypeCode.Int => typeof(int),
+        CustomTypeCode.UInt => typeof(uint),
+        CustomTypeCode.ULong => typeof(ulong),
+        CustomTypeCode.Long => typeof(long),
+        CustomTypeCode.Float => typeof(float),
+        CustomTypeCode.Double => typeof(double),
+        CustomTypeCode.Half => typeof(Half),
+        CustomTypeCode.Decimal => typeof(decimal),
+        CustomTypeCode.String => typeof(string),
+        CustomTypeCode.Enum => typeof(Enum),
+        CustomTypeCode.Type => typeof(Type),
+
+        // Custom classes
+        CustomTypeCode.NetData => typeof(NetData),
+        CustomTypeCode.Button => typeof(CustomButton),
+        CustomTypeCode.Number => typeof(Number),
+        CustomTypeCode.RoleOptionData => typeof(RoleOptionData),
+        CustomTypeCode.PlayerLayer => typeof(PlayerLayer),
+
+        // Edge cases
+        _ => throw new NotSupportedException($"Custom type code {typeCode} cannot be resolved to a type")
+    };
+
+    /// <summary>
     /// Creates a writer instance of <see cref="NetData"/> to potentially write more data to.
     /// </summary>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
     /// <returns>A writer instance of <see cref="NetData"/>.</returns>
-    public static NetData CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(rpc, data);
+    public static NetData CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(rpc, false, data);
+
+    /// <summary>
+    /// Creates a writer instance of <see cref="NetData"/> to potentially write more data to.
+    /// </summary>
+    /// <param name="rpc">The main rpc header.</param>
+    /// <param name="data">The data associated to the rpc.</param>
+    /// <returns>A writer instance of <see cref="NetData"/>.</returns>
+    public static NetData CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(rpc, true, data);
 
     /// <summary>
     /// Sends an RPC message to all players.
@@ -24,6 +126,13 @@ public static class RpcManager
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
+
+    /// <summary>
+    /// Sends an RPC message to all players.
+    /// </summary>
+    /// <param name="rpc">The main rpc header.</param>
+    /// <param name="data">The data associated to the rpc.</param>
+    public static void CallRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallTargetedRpcUsingTypeCodes(-1, rpc, data);
 
     /// <summary>
     /// Sends an RPC message to a specific player.
@@ -34,6 +143,18 @@ public static class RpcManager
     public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
     {
         using var writer = CreateWriter(rpc, data);
+        writer?.Send(targetClientId);
+    }
+
+    /// <summary>
+    /// Sends an RPC message to a specific player.
+    /// </summary>
+    /// <param name="targetClientId">The player to send the data to.</param>
+    /// <param name="rpc">The main rpc header.</param>
+    /// <param name="data">The data associated to the rpc.</param>
+    public static void CallTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
+    {
+        using var writer = CreateWriterUsingTypeCodes(rpc, data);
         writer?.Send(targetClientId);
     }
 

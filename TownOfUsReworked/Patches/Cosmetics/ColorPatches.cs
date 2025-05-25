@@ -58,7 +58,7 @@ public static class PlayerTabPatches
 
         for (var i = 0; i < __instance.ColorChips.Count; i++)
         {
-            var colorChip = __instance.ColorChips[i];
+            var colorChip = __instance.ColorChips._items[i];
             var xpos = __instance.XRange.min + (i % 5);
             var ypos = __instance.YStart - (i  / 5* __instance.YOffset);
             colorChip.transform.localPosition = new(xpos, ypos, -1f);
@@ -77,7 +77,7 @@ public static class PlayerTabPatches
     public static void UpdatePostfix(PlayerTab __instance)
     {
         for (var i = 0; i < __instance.ColorChips.Count; i++)
-            __instance.ColorChips[i].Inner.SpriteColor = i.GetColor(false);
+            __instance.ColorChips._items[i].Inner.SpriteColor = i.GetColor(false);
 
         // if (VisorsActive)
         //     __instance.currentColorIsEquipped = __instance.currentColor == ReworkedDataManager.VisorColorId;

@@ -142,7 +142,7 @@ public static class CollectionExtensions
         return value.Any();
     }
 
-    public static bool TryFindingAll<T1, T2>(this IEnumerable<T1> source, out IEnumerable<T2> value, Func<T2, bool> predicate1 = null, Func<T1, bool> predicate2 = null)
+    private static bool TryFindingAll<T1, T2>(this IEnumerable<T1> source, out IEnumerable<T2> value, Func<T2, bool> predicate1 = null, Func<T1, bool> predicate2 = null)
     {
         if (predicate2 is not null)
             source = source.Where(predicate2);
@@ -153,12 +153,6 @@ public static class CollectionExtensions
             value = value.Where(predicate1);
 
         return value.Any();
-    }
-
-    public static void AddMany<T>(this List<T> list, T item, int count)
-    {
-        while (count-- > 0)
-            list.Add(item);
     }
 
     public static void AddMany<T>(this List<T> list, Func<T> item, int count)
@@ -303,6 +297,14 @@ public static class CollectionExtensions
         }
     }
 
+    /* These methods are unused at the moment, so they've been commented until needed
+
+    public static void AddMany<T>(this List<T> list, T item, int count)
+    {
+        while (count-- > 0)
+            list.Add(item);
+    }
+
     public static IEnumerable<(T1, T2)> Zip<T1, T2>(this (IEnumerable<T1>, IEnumerable<T2>) source)
     {
         var c1 = source.Item1.Count();
@@ -316,8 +318,6 @@ public static class CollectionExtensions
         for (var i = 0; i < count; i++)
             yield return (source.Item1.ElementAtOrDefault(i), source.Item2.ElementAtOrDefault(i));
     }
-
-    /* These methods are unused at the moment, so they've been commented until needed
 
     public static IEnumerable<T3> Select<T1, T2, T3>(this IEnumerable<(T1, T2)> source, Func<T1, T2, T3> selector)
     {

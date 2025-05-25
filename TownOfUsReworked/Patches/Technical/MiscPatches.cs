@@ -245,7 +245,7 @@ public static class AmongUsClientPatches
 
         if (!__instance.AmHost)
         {
-            __instance.logger.Debug("Waiting for host to make my player", null);
+            __instance.logger.Debug("Waiting for host to make my player");
             yield break;
         }
 

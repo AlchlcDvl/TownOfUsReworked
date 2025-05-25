@@ -7,7 +7,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
     private static Number EatCd = 25;
 
     [NumberOption(1, 5, 1)]
-    private static Number BodiesNeeded = 2;
+    private static Number BodiesNeeded = 3;
 
     [ToggleOption]
     private static bool EatArrows = false;
@@ -27,6 +27,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
     public override Func<string> StartText { get; } = () => "Eat The Bodies Of The Dead";
     public override Func<string> Description => () => "- You can consume a body, making it disappear" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" : "");
     public override bool CanVent => base.CanVent && CannibalVent;
+    public override DefenseEnum DefenseVal => EatNeed <= 2 ? DefenseEnum.None : DefenseEnum.Basic;
 
     protected override void Init()
     {

@@ -39,7 +39,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
 
         // Behaviours
-        ClassInjector.RegisterTypeInIl2Cpp<DebuggerBehaviour>();
+        ClassInjector.RegisterTypeInIl2Cpp<DebuggerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<BlankBehaviour>();
 
         // Objects

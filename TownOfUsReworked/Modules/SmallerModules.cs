@@ -4,10 +4,7 @@ namespace TownOfUsReworked.Modules;
 
 public record SummaryInfo(string PlayerName, string History, string CachedHistory);
 
-public readonly struct PointInTime(Vector3 position)
-{
-    public Vector3 Position { get; } = position;
-}
+public record struct PointInTime(Vector3 Position);
 
 [JsonSerializable(typeof(GitHubApiObject))]
 public sealed class GitHubApiObject
@@ -38,6 +35,9 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     public bool Active { get; set; } = active;
     public LayerEnum ID { get; set; } = layer;
 
+    /// <inheritdoc/>
+    public CustomTypeCode TypeCode => CustomTypeCode.RoleOptionData;
+
     public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 
     public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
@@ -54,7 +54,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     }
 }
 
-public record LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
+public record struct LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
 {
     public string Name => TranslationManager.Translate($"Layer.{Layer}");
 }
@@ -74,12 +74,12 @@ public sealed class SortedAttribute(int order) : Attribute
     public int Order { get; } = order;
 }
 
-public delegate bool WhereSelectFilter<T1, T2>(T1 param, out T2 value);
+public delegate bool WhereSelectFilter<in T1, T2>(T1 param, out T2 value);
 
 /// <summary>
 /// Wrapper to act as an out parameter for coroutines.
 /// </summary>
-/// <typeparam name="T">The type of the value being sent.</typeparam>
+/// <typeparam name="T">The type of the value being set.</typeparam>
 public sealed class Out<T>(T value = default)
 {
     public T Value = value;

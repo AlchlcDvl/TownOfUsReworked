@@ -27,6 +27,13 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// <inheritdoc/>
     public bool IsReadOnly => false;
 
+    private bool Disposed { get; set; }
+
+    /// <inheritdoc/>
+    public CustomTypeCode TypeCode => CustomTypeCode.MultiSelectValue;
+
+    ~MultiSelectValue() => InternalDispose();
+
     /// <inheritdoc/>
     public void Add(T item) => values.Add(item);
 
@@ -101,8 +108,21 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// <inheritdoc/>
     public override int GetHashCode() => Values.GetHashCode();
 
+    private void InternalDispose()
+    {
+        if (Disposed)
+            return;
+
+        values.Clear();
+        Disposed = true;
+    }
+
     /// <inheritdoc/>
-    public void Dispose() => values.Clear();
+    public void Dispose()
+    {
+        InternalDispose();
+        GC.SuppressFinalize(this);
+    }
 
     /// <inheritdoc/>
     public byte[] ToBytes() => [ (byte)Count, .. values.Select(x => (byte)Convert.ChangeType(x, typeof(byte))) ]; // All enums within the code base use byte

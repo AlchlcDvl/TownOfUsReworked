@@ -45,7 +45,7 @@ public sealed class CustomKillAnimationPlayer : MonoBehaviour
     {
         Overlay = GetComponent<OverlayKillAnimation>();
         Victim = Overlay.victimParts.gameObject;
-        BodyAnim = Overlay.victimParts.cosmetics.bodySprites[0].BodySprite.GetComponent<SpriteAnim>();
+        BodyAnim = Overlay.victimParts.cosmetics.bodySprites._items[0].BodySprite.GetComponent<SpriteAnim>();
         SkinAnim = Overlay.victimParts.GetSkinSpriteAnim();
 
         LoadFrom(DeathAnim);
@@ -80,7 +80,7 @@ public sealed class CustomKillAnimationPlayer : MonoBehaviour
     public void UpdateVisuals(float sampleTime, Vector2 characterOffset, int animation)
     {
         var skinData = Overlay.victimParts.cosmetics.skin.skin;
-        UpdateVisuals(sampleTime, characterOffset, HUD().KillOverlay.KillAnims[animation].victimParts.cosmetics.bodySprites[0].BodySprite.GetComponent<SpriteAnim>().m_defaultAnim,
+        UpdateVisuals(sampleTime, characterOffset, HUD().KillOverlay.KillAnims[animation].victimParts.cosmetics.bodySprites._items[0].BodySprite.GetComponent<SpriteAnim>().m_defaultAnim,
             animation switch
             {
                 0 => skinData.KillStabVictim,

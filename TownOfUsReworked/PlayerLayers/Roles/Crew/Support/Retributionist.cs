@@ -352,8 +352,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
                 return;
 
             Reported.Add(info.PlayerId);
-            body.Reporter = Player;
-            var reportMsg = body.ParseBodyReport();
+            var reportMsg = body.ParseBodyReport(Player);
 
             if (!IsNullEmptyOrWhiteSpace(reportMsg))
                 Run("<#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);

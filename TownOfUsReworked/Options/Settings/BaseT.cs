@@ -2,13 +2,13 @@ namespace TownOfUsReworked.Options;
 
 public abstract class Option<T>(CustomOptionType type) : Option(type)
 {
-    private T value;
+    private T innerValue;
     public T Value
     {
-        get => value;
-        set
+        get => innerValue;
+        protected set
         {
-            this.value = value;
+            innerValue = value;
 
             if (Member is not null && !SelfMember)
                 Member.SetValue(null, value);
@@ -28,7 +28,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
 
         try
         {
-            value = member.GetValue<T>(null);
+            innerValue = member.GetValue<T>(null);
         }
         catch
         {

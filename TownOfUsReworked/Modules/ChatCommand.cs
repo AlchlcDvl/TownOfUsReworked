@@ -1,10 +1,11 @@
 namespace TownOfUsReworked.Modules;
 
-public sealed class ChatCommand
+public sealed class ChatCommand : IDisposable
 {
     private string[] Aliases { get; }
     private string[] Parameters { get; }
     private string Description { get; }
+    private bool Disposed { get; set; }
 
     private ExecuteArgsCommand ExecuteArgs { get; }
     private ExecuteArglessCommand ExecuteArgless { get; }
@@ -60,6 +61,24 @@ public sealed class ChatCommand
         ExecuteArgless = null;
         ExecuteArgsMessage = executeArgsMessage;
         Parameters = parameters;
+    }
+
+    ~ChatCommand() => InternalDispose();
+
+    private void InternalDispose()
+    {
+        if (Disposed)
+            return;
+
+        Array.Clear(Aliases);
+        Array.Clear(Parameters);
+        Disposed = true;
+    }
+
+    public void Dispose()
+    {
+        InternalDispose();
+        GC.SuppressFinalize(this);
     }
 
     public string ConstructParameters(string[] parts = null)

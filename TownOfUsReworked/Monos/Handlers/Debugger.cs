@@ -3,7 +3,7 @@ using Reactor.Utilities.ImGui;
 namespace TownOfUsReworked.Monos;
 
 // Based off of Reactor.Debugger but merged with MCI and added some functions and changes of my own for testing
-public sealed class DebuggerBehaviour : MonoBehaviour
+public sealed class DebuggerHandler : MonoBehaviour
 {
     [HideFromIl2Cpp]
     public DragWindow TestWindow { get; }
@@ -21,7 +21,7 @@ public sealed class DebuggerBehaviour : MonoBehaviour
 
     public byte ControllingFigure { get; set; }
 
-    public DebuggerBehaviour(IntPtr ptr) : base(ptr)
+    public DebuggerHandler(IntPtr ptr) : base(ptr)
     {
         SelectedTab = Tabs[0];
 

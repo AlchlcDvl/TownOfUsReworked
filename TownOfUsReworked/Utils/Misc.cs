@@ -239,14 +239,18 @@ public static class MiscUtils
         Coroutines.Start(PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(1, ca, p), !player.AmOwner)));
     }
 
+    public static void SetAlpha(this SpriteRenderer rend, float alpha) => rend.color = rend.color.SetAlpha(alpha);
+
     public static void SetAlpha(this PlayerControl player, float alpha, bool setName = true)
     {
-        player.SetHatAndVisorAlpha(alpha);
-        player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(alpha);
-        player.cosmetics.currentPet.renderers.Do(x => x.color = x.color.SetAlpha(alpha));
-        player.cosmetics.currentPet.shadows.Do(x => x.color = x.color.SetAlpha(alpha));
-        player.cosmetics.PettingHand.HandSprite.color = player.cosmetics.PettingHand.HandSprite.color.SetAlpha(alpha);
-        player.cosmetics.currentBodySprite.BodySprite.color = player.cosmetics.currentBodySprite.BodySprite.color.SetAlpha(alpha);
+        player.cosmetics.hat.BackLayer.SetAlpha(alpha);
+        player.cosmetics.hat.FrontLayer.SetAlpha(alpha);
+        player.cosmetics.visor.Image.SetAlpha(alpha);
+        player.cosmetics.skin.layer.SetAlpha(alpha);
+        player.cosmetics.currentPet.renderers.Do(x => x.SetAlpha(alpha));
+        player.cosmetics.currentPet.shadows.Do(x => x.SetAlpha(alpha));
+        player.cosmetics.PettingHand.HandSprite.SetAlpha(alpha);
+        player.cosmetics.currentBodySprite.BodySprite.SetAlpha(alpha);
 
         if (!setName)
             return;
@@ -516,7 +520,7 @@ public static class MiscUtils
         (minInclusive ? num >= min : num > min) &&
         (maxInclusive ? num <= max : num < max);
 
-    public static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
+    private static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 
     public static bool IsInRange(this byte num, float min, float max, bool minInclusive = false, bool maxInclusive = false) => ((float)num).IsInRange(min, max, minInclusive, maxInclusive);
 
@@ -623,7 +627,7 @@ public static class MiscUtils
             x => x != refPlayer && predicate(x), includeDead) : GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls, x => x
             != refPlayer, includeDead);
 
-    public static PlayerControl GetClosestPlayer(Vector2 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
+    private static PlayerControl GetClosestPlayer(Vector2 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
         bool> predicate = null, bool includeDead = false)
     {
         var closestDistance = float.MaxValue;
@@ -701,7 +705,7 @@ public static class MiscUtils
     public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool>
         predicate = null) => GetClosestBody(refPlayer.GetTruePosition(), allBodies, maxDistance, ignoreWalls, predicate);
 
-    public static DeadBody GetClosestBody(Vector2 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool> predicate =
+    private static DeadBody GetClosestBody(Vector2 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool> predicate =
         null)
     {
         var closestDistance = float.MaxValue;
@@ -1110,7 +1114,7 @@ public static class MiscUtils
 
     public static T GetValue<T>(this MemberInfo member, object obj) => (T)member.GetValue(obj);
 
-    public static object GetValue(this MemberInfo member, object obj) => member switch
+    private static object GetValue(this MemberInfo member, object obj) => member switch
     {
         FieldInfo field => field.GetValue(obj),
         PropertyInfo prop => prop.GetValue(obj),
@@ -1303,6 +1307,7 @@ public static class MiscUtils
         }
 
         var deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
+        deadBody.name = target.name + "Body";
         deadBody.enabled = false;
         deadBody.ParentId = target.PlayerId;
         deadBody.AddComponent<DeadBodyHandler>();
@@ -1438,7 +1443,7 @@ public static class MiscUtils
     public static LobbyNotificationMessage PopNotif(string text, UColor color, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f) => PopNotif(text, color, new(0f, 0f, -2f),
         sprite, clip, thickness);
 
-    public static LobbyNotificationMessage PopNotif(string text, UColor color, Vector3 localPos, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f)
+    private static LobbyNotificationMessage PopNotif(string text, UColor color, Vector3 localPos, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f)
     {
         var popper = HUD().Notifier;
         var newMessage = UObject.Instantiate(popper.notificationMessageOrigin, Vector3.zero, Quaternion.identity, popper.transform);
@@ -1448,12 +1453,11 @@ public static class MiscUtils
         popper.AddMessageToQueue(newMessage);
         newMessage.Text.SetOutlineThickness(thickness);
 
-        if (clip)
-        {
-            SoundManager.Instance.StopSound(clip);
-            SoundManager.Instance.PlaySound(clip, false, 2f);
-        }
+        if (!clip)
+            return newMessage;
 
+        SoundManager.Instance.StopSound(clip);
+        SoundManager.Instance.PlaySound(clip, false, 2f);
         return newMessage;
     }
 

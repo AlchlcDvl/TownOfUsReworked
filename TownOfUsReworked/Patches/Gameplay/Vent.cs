@@ -132,7 +132,7 @@ public static class VentPatches
     [HarmonyPatch(nameof(Vent.ExitVent)), HarmonyPrefix]
     public static bool ExitVentPrefix(Vent __instance, PlayerControl pc) => EnterExitVentPrefix(pc, __instance.ExitVentAnim);
 
-    public static bool EnterExitVentPrefix(PlayerControl pc, AnimationClip clip)
+    private static bool EnterExitVentPrefix(PlayerControl pc, AnimationClip clip)
     {
         if (!clip || !GameModifiers.HideVentAnims)
             return true;

@@ -12,12 +12,12 @@ public static class FixUtils
         ship.RpcUpdateSystem(SystemTypes.Comms, 16 | 1);
     }
 
-    private static void FixHeli()
-    {
-        var ship = Ship();
-        ship.RpcUpdateSystem(SystemTypes.HeliSabotage, 16 | 0);
-        ship.RpcUpdateSystem(SystemTypes.HeliSabotage, 16 | 1);
-    }
+    // private static void FixHeli()
+    // {
+    //     var ship = Ship();
+    //     ship.RpcUpdateSystem(SystemTypes.HeliSabotage, 16 | 0);
+    //     ship.RpcUpdateSystem(SystemTypes.HeliSabotage, 16 | 1);
+    // }
 
     private static void FixReactor(SystemTypes system) => Ship().RpcUpdateSystem(system, 16);
 
@@ -110,34 +110,11 @@ public static class FixUtils
 
                 break;
             }
-            case 2:
+            case 2 or 0 or 3 or 4:
+            case 6 when SubLoaded:
+            case 7 when LiLoaded:
             {
-                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixComms();
-
-                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
-                    FixLights(lights);
-
-                break;
-            }
-            case 0 or 3:
-            {
-                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixComms();
-
-                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
-                    FixLights(lights);
-
-                break;
-            }
-            case 4:
-            {
-                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixComms();
-
-                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
-                    FixLights(lights);
-
+                FixCommsAndLights();
                 break;
             }
             case 5:
@@ -150,26 +127,23 @@ public static class FixUtils
 
                 break;
             }
-            case 6 when SubLoaded:
-            {
-                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixComms();
-
-                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
-                    FixLights(lights);
-
-                break;
-            }
-            case 7 when LiLoaded:
-            {
-                if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
-                    FixComms();
-
-                if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
-                    FixLights(lights);
-
-                break;
-            }
         }
+    }
+
+    private static void FixCommsAndLights()
+    {
+        var ship = Ship();
+
+        if (ship.Systems is null)
+            return;
+
+        if (ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>(out var system) || !system.AnyActive)
+            return;
+
+        if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
+            FixComms();
+
+        if (ship.Systems[SystemTypes.Electrical].TryCast<SwitchSystem>(out var lights) && lights.IsActive)
+            FixLights(lights);
     }
 }

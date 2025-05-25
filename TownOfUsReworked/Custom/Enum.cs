@@ -16,10 +16,10 @@ public abstract class CustomEnumInjector
 /// <typeparam name="T">The relevant enum Type.</typeparam>
 public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
 {
-    public readonly List<T> AllValues;
-    public readonly List<T> InjectedValues;
-    public readonly ValueMap<string, T> NamedValues;
-    public readonly ValueMap<dynamic, T> IndexedValues;
+    private readonly List<T> AllValues;
+    private readonly List<T> InjectedValues;
+    private readonly ValueMap<string, T> NamedValues;
+    private readonly ValueMap<dynamic, T> IndexedValues;
 
     private readonly object Lock;
     private readonly Type Type;
@@ -30,6 +30,9 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     private dynamic Max;
     private bool MinReached;
     private bool MaxReached;
+
+    public readonly T MaxPossibleValue;
+    // public readonly T MinPossibleValue;
 
     public EnumInjector()
     {
@@ -44,6 +47,8 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
         Max = Convert.ChangeType(AccessTools.Field(underlying, "MaxValue").GetRawConstantValue(), underlying);
         MinReached = First == Min;
         MaxReached = Last == Max;
+        MaxPossibleValue = (T)Enum.ToObject(Type, Max);
+        // MinPossibleValue = (T)Enum.ToObject(Type, Min);
         InjectedValues = [];
         IndexedValues = [];
         NamedValues = [];
@@ -65,15 +70,12 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
         if (value is not T enumVal)
             throw new InvalidOperationException();
 
-        if (NamedValues.TryGetKey(enumVal, out var name))
-            return name;
-        else
-            return EnumPatches.OriginalToString(value);
+        return NamedValues.TryGetKey(enumVal, out var name) ? name : EnumPatches.OriginalToString(value);
     }
 
     public override Array Values() => GetValues();
 
-    public T[] GetValues() => [.. AllValues];
+    private T[] GetValues() => [.. AllValues];
 
     private void InsertValue(T result, string value, dynamic index)
     {
@@ -97,19 +99,19 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
 
     private string Diagnostic(object value) => $"Min = {Min}, Max = {Max}, First = {First}, Last = {Last}, Parameter = {value ?? "None"}";
 
-    public bool TryInjectAndReturn(string value, out T result, bool decrement = false)
-    {
-        try
-        {
-            result = InjectAndReturn(value, decrement);
-            return true;
-        }
-        catch
-        {
-            result = default;
-            return false;
-        }
-    }
+    // public bool TryInjectAndReturn(string value, out T result, bool decrement = false)
+    // {
+    //     try
+    //     {
+    //         result = InjectAndReturn(value, decrement);
+    //         return true;
+    //     }
+    //     catch
+    //     {
+    //         result = default;
+    //         return false;
+    //     }
+    // }
 
     public T InjectAndReturn(string value, bool decrement = false)
     {
@@ -135,157 +137,157 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
         }
     }
 
-    public bool TryInjectAndReturn(string[] values, out IEnumerable<T> result, bool[] decrements = null)
-    {
-        try
-        {
-            result = InjectAndReturn(values, decrements);
-            return true;
-        }
-        catch
-        {
-            result = default;
-            return false;
-        }
-    }
+    // public bool TryInjectAndReturn(string[] values, out IEnumerable<T> result, bool[] decrements = null)
+    // {
+    //     try
+    //     {
+    //         result = InjectAndReturn(values, decrements);
+    //         return true;
+    //     }
+    //     catch
+    //     {
+    //         result = null;
+    //         return false;
+    //     }
+    // }
+    //
+    // private IEnumerable<T> InjectAndReturn(string[] values, bool[] decrements = null)
+    // {
+    //     lock (Lock)
+    //     {
+    //         decrements ??= new bool[values.Length];
+    //
+    //         if (decrements.Length != values.Length)
+    //             Array.Resize(ref decrements, values.Length);
+    //
+    //         var valuesToAdd = new Dictionary<string, object>();
+    //
+    //         foreach (var (value, decrement) in (values, decrements).Zip())
+    //         {
+    //             if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
+    //             {
+    //                 Warning($"{value} has already been injected, skipping injection... {Diagnostic(decrement)}");
+    //                 continue;
+    //             }
+    //
+    //             if ((MinReached && decrement) || (MaxReached && !decrement))
+    //             {
+    //                 Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(decrement)}");
+    //                 continue;
+    //             }
+    //
+    //             var index = decrement ? --First : ++Last;
+    //             MinReached = First == Min;
+    //             MaxReached = Last == Max;
+    //
+    //             if (IndexedValues.ContainsKey(index))
+    //             {
+    //                 Warning($"{index} is already injected, skipping injection... {Diagnostic(decrement)}");
+    //                 continue;
+    //             }
+    //
+    //             valuesToAdd.Add(value, (object)index);
+    //         }
+    //
+    //         EnumInjector.InjectEnumValues<T>(valuesToAdd);
+    //
+    //         foreach (var (value, index) in valuesToAdd)
+    //         {
+    //             var result = (T)Enum.ToObject(Type, index);
+    //             InsertValue(result, value, index);
+    //             yield return result;
+    //         }
+    //     }
+    // }
 
-    public IEnumerable<T> InjectAndReturn(string[] values, bool[] decrements = null)
-    {
-        lock (Lock)
-        {
-            decrements ??= new bool[values.Length];
+    // public bool TryInjectAndReturn(string value, dynamic index , out T result)
+    // {
+    //     try
+    //     {
+    //         result = InjectAndReturn(value, index);
+    //         return true;
+    //     }
+    //     catch
+    //     {
+    //         result = default;
+    //         return false;
+    //     }
+    // }
 
-            if (decrements.Length != values.Length)
-                Array.Resize(ref decrements, values.Length);
+    // private T InjectAndReturn(string value, dynamic index)
+    // {
+    //     lock (Lock)
+    //     {
+    //         if (NamedValues.ContainsKey(value))
+    //             throw new ArgumentException($"{value} has already been injected. {Diagnostic(index)}");
+    //
+    //         if (IndexedValues.ContainsKey(index))
+    //             throw new ArgumentException($"{index} has already been injected. {Diagnostic(index)}");
+    //
+    //         if (index < Min || index > Max)
+    //             throw new OverflowException($"Overflow for Type {Type.Name} detected");
+    //
+    //         EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
+    //         var result = (T)Enum.ToObject(Type, index);
+    //         InsertValue(result, value, index);
+    //         return result;
+    //     }
+    // }
 
-            var valuesToAdd = new Dictionary<string, object>();
+    // public bool TryInjectAndReturn(string[] values, dynamic[] indices, out IEnumerable<T> result)
+    // {
+    //     try
+    //     {
+    //         result = InjectAndReturn(values, indices);
+    //         return true;
+    //     }
+    //     catch
+    //     {
+    //         result = null;
+    //         return false;
+    //     }
+    // }
 
-            foreach (var (value, decrement) in (values, decrements).Zip())
-            {
-                if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
-                {
-                    Warning($"{value} has already been injected, skipping injection... {Diagnostic(decrement)}");
-                    continue;
-                }
-
-                if ((MinReached && decrement) || (MaxReached && !decrement))
-                {
-                    Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(decrement)}");
-                    continue;
-                }
-
-                var index = decrement ? --First : ++Last;
-                MinReached = First == Min;
-                MaxReached = Last == Max;
-
-                if (IndexedValues.ContainsKey(index))
-                {
-                    Warning($"{index} is already injected, skipping injection... {Diagnostic(decrement)}");
-                    continue;
-                }
-
-                valuesToAdd.Add(value, (object)index);
-            }
-
-            EnumInjector.InjectEnumValues<T>(valuesToAdd);
-
-            foreach (var (value, index) in valuesToAdd)
-            {
-                var result = (T)Enum.ToObject(Type, index);
-                InsertValue(result, value, index);
-                yield return result;
-            }
-        }
-    }
-
-    public bool TryInjectAndReturn(string value, dynamic index , out T result)
-    {
-        try
-        {
-            result = InjectAndReturn(value, index);
-            return true;
-        }
-        catch
-        {
-            result = default;
-            return false;
-        }
-    }
-
-    public T InjectAndReturn(string value, dynamic index)
-    {
-        lock (Lock)
-        {
-            if (NamedValues.ContainsKey(value))
-                throw new ArgumentException($"{value} has already been injected. {Diagnostic(index)}");
-
-            if (IndexedValues.ContainsKey(index))
-                throw new ArgumentException($"{index} has already been injected. {Diagnostic(index)}");
-
-            if (index < Min || index > Max)
-                throw new OverflowException($"Overflow for Type {Type.Name} detected");
-
-            EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
-            var result = (T)Enum.ToObject(Type, index);
-            InsertValue(result, value, index);
-            return result;
-        }
-    }
-
-    public bool TryInjectAndReturn(string[] values, dynamic[] indices, out IEnumerable<T> result)
-    {
-        try
-        {
-            result = InjectAndReturn(values, indices);
-            return true;
-        }
-        catch
-        {
-            result = default;
-            return false;
-        }
-    }
-
-    public IEnumerable<T> InjectAndReturn(string[] values, dynamic[] indices)
-    {
-        lock (Lock)
-        {
-            if (indices.Length != values.Length)
-                throw new InvalidOperationException($"Not all string names have a corresponding index. {Diagnostic(null)}");
-
-            var valuesToAdd = new Dictionary<string, object>();
-
-            foreach (var (value, index) in (values, indices).Zip())
-            {
-                if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
-                {
-                    Warning($"{value} has already been injected, skipping injection... {Diagnostic(index)}");
-                    continue;
-                }
-
-                if (IndexedValues.ContainsKey(index))
-                {
-                    Warning($"{index} is already injected, skipping injection... {Diagnostic(index)}");
-                    continue;
-                }
-
-                if (index < Min || index > Max)
-                {
-                    Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(index)}");
-                    continue;
-                }
-
-                valuesToAdd.Add(value, (object)index);
-            }
-
-            EnumInjector.InjectEnumValues<T>(valuesToAdd);
-
-            foreach (var (value, index) in valuesToAdd)
-            {
-                var result = (T)Enum.ToObject(Type, index);
-                InsertValue(result, value, index);
-                yield return result;
-            }
-        }
-    }
+    // private IEnumerable<T> InjectAndReturn(string[] values, dynamic[] indices)
+    // {
+    //     lock (Lock)
+    //     {
+    //         if (indices.Length != values.Length)
+    //             throw new InvalidOperationException($"Not all string names have a corresponding index. {Diagnostic(null)}");
+    //
+    //         var valuesToAdd = new Dictionary<string, object>();
+    //
+    //         foreach (var (value, index) in (values, indices).Zip())
+    //         {
+    //             if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
+    //             {
+    //                 Warning($"{value} has already been injected, skipping injection... {Diagnostic(index)}");
+    //                 continue;
+    //             }
+    //
+    //             if (IndexedValues.ContainsKey(index))
+    //             {
+    //                 Warning($"{index} is already injected, skipping injection... {Diagnostic(index)}");
+    //                 continue;
+    //             }
+    //
+    //             if (index < Min || index > Max)
+    //             {
+    //                 Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(index)}");
+    //                 continue;
+    //             }
+    //
+    //             valuesToAdd.Add(value, (object)index);
+    //         }
+    //
+    //         EnumInjector.InjectEnumValues<T>(valuesToAdd);
+    //
+    //         foreach (var (value, index) in valuesToAdd)
+    //         {
+    //             var result = (T)Enum.ToObject(Type, index);
+    //             InsertValue(result, value, index);
+    //             yield return result;
+    //         }
+    //     }
+    // }
 }

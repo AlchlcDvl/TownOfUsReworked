@@ -130,12 +130,12 @@ public static class BetterAirship
     /// The common setter method that modifies the resulting value to reflect skipping over the other location settings.
     /// </summary>
     /// <returns>The resulting airship spawn location after comparing with other settings and the previous value.</returns>
-    private static AirshipSpawnLocation SetLocation(AirshipSpawnLocation value, AirshipSpawnLocation loc1, AirshipSpawnLocation loc2, AirshipSpawnLocation prev)
+    private static AirshipSpawnLocation SetLocation(AirshipSpawnLocation value, AirshipSpawnLocation loc1Param, AirshipSpawnLocation loc2Param, AirshipSpawnLocation prev)
     {
         if (value == prev)
             return value;
 
-        while (value.IsAny(loc1, loc2))
+        while (value.IsAny(loc1Param, loc2Param))
             value = (AirshipSpawnLocation)CycleByte(8, 0, (byte)value, value > prev);
 
         return value;

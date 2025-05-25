@@ -10,16 +10,14 @@ public sealed class DeadPlayer(byte killer, byte player)
 
     public float KillAge => Time.time - KillTime;
 
-    public PlayerControl Reporter { get; set; }
-
-    public string ParseBodyReport()
+    public string ParseBodyReport(PlayerControl reporter)
     {
-        if (!Reporter.Is<IExaminer>())
+        if (!reporter.Is<IExaminer>())
             return "";
 
         var report = $"{Body.name}'s Report:";
 
-        if (Reporter.IsFlashed())
+        if (reporter.IsFlashed())
             report += "\nYou have been blinded so you cannot tell what happened to the body!";
         else
         {

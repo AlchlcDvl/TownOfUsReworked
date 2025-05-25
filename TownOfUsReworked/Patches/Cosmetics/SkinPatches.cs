@@ -1,4 +1,4 @@
-// namespace TownOfUsReworked.Patches.Cosmetics;
+namespace TownOfUsReworked.Patches.Cosmetics;
 
 // [HarmonyPatch(typeof(SkinsTab), nameof(SkinsTab.OnEnable))]
 // public static class SkinTabOnEnablePatch
@@ -15,3 +15,14 @@
 //         return false;
 //     }
 // }
+
+[HarmonyPatch(typeof(SkinLayer))]
+public static class SkinLayerPatches
+{
+    [HarmonyPatch(nameof(SkinLayer.UpdateMaterial))]
+    public static bool Prefix(SkinLayer __instance)
+    {
+        __instance.UpdateMaterial(__instance.matProperties.ColorId);
+        return false;
+    }
+}

@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.Modules;
 
 public sealed class Vector2JsonConverter : JsonConverter<Vector2>

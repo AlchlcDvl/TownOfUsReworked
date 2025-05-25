@@ -44,5 +44,28 @@ public sealed class TestingTab : BaseTab
 
         if (GUILayout.Button("Test Achievement"))
             CustomAchievementManager.UnlockAchievement("Test");
+
+        if (!GUILayout.Button("Randomise Outfit"))
+            return;
+
+        var r = (byte)URandom.RandomRangeInt(0, 256);
+        var g = (byte)URandom.RandomRangeInt(0, 256);
+        var b = (byte)URandom.RandomRangeInt(0, 256);
+
+        var outfit = new CustomOutfit()
+        {
+            ColorId = CustomColorManager.AllColors.Keys.AddItem(-2).Random(),
+            HatId = HatManager.Instance.allHats.Random().ProductId,
+            SkinId = HatManager.Instance.allSkins.Random().ProductId,
+            VisorId = HatManager.Instance.allVisors.Random().ProductId,
+            NamePlateId = HatManager.Instance.allNamePlates.Random().ProductId,
+            PetId = HatManager.Instance.allPets.Random().ProductId,
+            PlayerName = "",
+            Size = URandom.RandomRange(Dwarf.DwarfScale.Value, Giant.GiantScale),
+            Speed = URandom.RandomRange(GameSettings.PlayerSpeed.Value, GameSettings.GhostSpeed),
+            Alpha = URandom.RandomRange(0f, 1f),
+            Color = new(r, g, b, 255)
+        };
+        CustomPlayer.Local.GetComponent<AppearanceHandler>().OverrideOutfit(outfit, CustomPlayerOutfitType.Custom, 10f);
     }
 }

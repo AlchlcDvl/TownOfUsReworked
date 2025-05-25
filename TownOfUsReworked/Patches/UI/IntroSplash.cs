@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Patches.UI;
 
+[HarmonyPatch]
 public static class IntroSplash
 {
     private static TextMeshPro Intro;

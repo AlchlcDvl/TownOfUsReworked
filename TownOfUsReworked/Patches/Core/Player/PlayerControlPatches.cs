@@ -242,6 +242,13 @@ public static class PlayerControlPatches
         __instance.CustomDie(DeathReasonEnum.Killed, reason: reason);
         return false;
     }
+
+    [HarmonyPatch(nameof(PlayerControl.RawSetName))]
+    public static void Postfix(PlayerControl __instance, string name)
+    {
+        if (AllBodies().TryFinding(x => x.ParentId == __instance.PlayerId, out var body))
+            body.name = name + "Body";
+    }
 }
 
 [HarmonyPatch(typeof(NetworkedPlayerInfo))]
@@ -324,11 +331,19 @@ public static class PlayerInfoPatches
         __instance.FriendCode = reader.ReadString();
         __instance.Puid = reader.ReadString();
 
-        if (initialState && !GameData.Instance.GetPlayerById(__instance.PlayerId) && !GameData.Instance.IsProcessingInfo(__instance))
-            GameData.Instance.AddPlayerInfo(__instance);
-
-        if (!initialState && __instance.Object)
-            __instance.Object.MyPhysics.ResetAnimState();
+        switch (initialState)
+        {
+            case true when !GameData.Instance.GetPlayerById(__instance.PlayerId) && !GameData.Instance.IsProcessingInfo(__instance):
+            {
+                GameData.Instance.AddPlayerInfo(__instance);
+                break;
+            }
+            case false when __instance.Object:
+            {
+                __instance.Object.MyPhysics.ResetAnimState();
+                break;
+            }
+        }
 
         GameData.Instance.RecomputeTaskCounts();
         return false;

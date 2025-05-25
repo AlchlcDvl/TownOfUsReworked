@@ -4,13 +4,12 @@ public abstract class BasePagingBehaviour : MonoBehaviour
 {
     protected virtual int MaxPageIndex => 1;
 
-    private int Page;
     public int PageIndex
     {
-        get => Page;
+        get;
         set
         {
-            Page = value;
+            field = value;
             OnPageChanged();
         }
     }

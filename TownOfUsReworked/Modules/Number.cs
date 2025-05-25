@@ -12,6 +12,9 @@ public readonly struct Number(float num) : IComparable, IFormattable, INetSerial
     /// </summary>
     public float Value { get; } = num;
 
+    /// <inheritdoc/>
+    public CustomTypeCode TypeCode => CustomTypeCode.Number;
+
     /// <summary>
     /// Implicitly converts to float.
     /// </summary>

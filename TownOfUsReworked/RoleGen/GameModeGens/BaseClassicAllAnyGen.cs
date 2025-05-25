@@ -117,7 +117,15 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         {
             var spawn = GetSpawnItem(layer);
 
-            if (spawn.IsActive())
+            /*if (layer == LayerEnum.Phantom)
+            {
+                for (var j = 0; j < spawn.Count; j++)
+                {
+                    if (Check(spawn.Chance))
+                        SetPostmortals.Phantoms++;
+                }
+            }
+            else  */if (spawn.IsActive())
             {
                 if (AH.Contains(layer) || AD.Contains(layer))
                     RoleGenManager.ApocalypseHarbingerRoles.AddMany(spawn.Clone, spawn.Count);

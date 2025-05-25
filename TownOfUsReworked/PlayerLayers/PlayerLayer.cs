@@ -156,6 +156,9 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// </summary>
     public string ColorString => $"<#{Color.ToHtmlStringRGBA()}>";
 
+    /// <inheritdoc/>
+    public CustomTypeCode TypeCode => CustomTypeCode.PlayerLayer;
+
     /// <summary>
     /// A list that contains all layers for the current game, initialised or not.
     /// </summary>

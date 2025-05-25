@@ -110,8 +110,7 @@ public sealed class Coroner : Crew, IExaminer
             return;
 
         Reported.Add(info.PlayerId);
-        body.Reporter = Player;
-        var reportMsg = body.ParseBodyReport();
+        var reportMsg = body.ParseBodyReport(Player);
 
         if (!IsNullEmptyOrWhiteSpace(reportMsg))
             Run("<#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);

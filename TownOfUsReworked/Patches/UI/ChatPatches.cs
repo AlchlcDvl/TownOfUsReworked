@@ -237,14 +237,13 @@ public static class ChatPatches
             }
         }
 
-        if (chatHandled)
-        {
-            __instance.freeChatField.Clear();
-            __instance.quickChatMenu.Clear();
-            __instance.quickChatField.Clear();
-            __instance.UpdateChatMode();
-        }
+        if (!chatHandled)
+            return false;
 
+        __instance.freeChatField.Clear();
+        __instance.quickChatMenu.Clear();
+        __instance.quickChatField.Clear();
+        __instance.UpdateChatMode();
         return false;
     }
 

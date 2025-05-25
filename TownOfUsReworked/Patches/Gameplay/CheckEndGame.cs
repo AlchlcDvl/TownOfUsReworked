@@ -29,7 +29,6 @@ public static class CheckEndGame
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
             winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
             CallRpc(CustomRPC.Misc, [MiscRPC.WinLose, WinState, .. winners]);
-            var somethingReallyNice = Monos.Range.AllItems;
         }
 
         if (WinState == WinLose.None)
@@ -137,11 +136,11 @@ public static class CheckEndGame
     {
         var winner = FactionsToKill.FirstOrDefault(CheckFactionWin);
 
-        if (winner != Faction.None)
-        {
-            WinState = WinLoseGroupMappings[winner];
-            winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
-        }
+        if (winner == Faction.None)
+            return;
+
+        WinState = WinLoseGroupMappings[winner];
+        winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
     }
 
     private static void CheckSubFactionWin(HashSet<byte> winnerIds)
@@ -151,11 +150,11 @@ public static class CheckEndGame
 
         var winner = SubFactionsToKill.FirstOrDefault(CheckSubFactionWin);
 
-        if (winner != SubFaction.None)
-        {
-            WinState = WinLoseGroupMappings[winner];
-            winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
-        }
+        if (winner == SubFaction.None)
+            return;
+
+        WinState = WinLoseGroupMappings[winner];
+        winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
     }
 
     private static void CheckNeutralKillers(HashSet<byte> winnerIds)
@@ -165,11 +164,11 @@ public static class CheckEndGame
 
         var winner = NksToKill.FirstOrDefault(CheckNkWin);
 
-        if (winner != LayerEnum.None)
-        {
-            WinState = WinLoseGroupMappings[winner];
-            winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
-        }
+        if (winner == LayerEnum.None)
+            return;
+
+        WinState = WinLoseGroupMappings[winner];
+        winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
     }
 
     private static readonly Faction[] FactionsToKill = [ .. Enum.GetValues<Faction>().Except([ Faction.None, Faction.Neutral, Faction.GameMode ]) ];
@@ -186,43 +185,23 @@ public static class CheckEndGame
 
     private static bool CheckFactionWin(Faction faction)
     {
-        if (faction == Faction.Compliance && !BadGuysSettings.OrderOfCompliance)
-            return false;
-
-        if (faction == Faction.Pandorica && !BadGuysSettings.PandoricaOpens)
-            return false;
-
-        if (faction == Faction.Illuminati && !BadGuysSettings.IlluminatiUnleashed)
-            return false;
-
-        var toKill = FactionsToKill.Except([ faction ]);
-
-        foreach (var player in AllPlayers())
+        switch (faction)
         {
-            if (player.HasDied())
-                continue;
-
-            if (toKill.Any(player.Is) || SubFactionsToKill.Any(player.Is) || (player.Is(Faction.Neutral) && AlignmentsToKill.Any(player.Is)))
+            case Faction.Compliance when !BadGuysSettings.OrderOfCompliance:
+            case Faction.Pandorica when !BadGuysSettings.PandoricaOpens:
+            case Faction.Illuminati when !BadGuysSettings.IlluminatiUnleashed:
                 return false;
         }
 
-        return true;
+        var toKill = FactionsToKill.Except([ faction ]);
+
+        return AllPlayers().Where(player => !player.HasDied()).All(player => !toKill.Any(player.Is) && !SubFactionsToKill.Any(player.Is) && (!player.Is(Faction.Neutral) || !AlignmentsToKill.Any(player.Is)));
     }
 
     private static bool CheckSubFactionWin(SubFaction subFaction)
     {
         var toKill = SubFactionsToKill.Except([ subFaction ]);
-
-        foreach (var player in AllPlayers())
-        {
-            if (player.HasDied())
-                continue;
-
-            if (FactionsToKill.Any(player.Is) || toKill.Any(player.Is) || (player.Is(Faction.Neutral) && AlignmentsToKill.Any(player.Is) && !player.Is(subFaction)))
-                return false;
-        }
-
-        return true;
+        return AllPlayers().Where(player => !player.HasDied()).All(player => !FactionsToKill.Any(player.Is) && !toKill.Any(player.Is) && (!player.Is(Faction.Neutral) || !AlignmentsToKill.Any(player.Is) || player.Is(subFaction)));
     }
 
     private static bool CheckNkWin(LayerEnum nk)
@@ -317,7 +296,7 @@ public static class CheckEndGame
         if (ship?.Systems is null)
             return false;
 
-        foreach (var sab in ship.Systems.Values)
+        foreach (var sab in ship.Systems.values)
         {
             if (sab.TryCast<LifeSuppSystemType>(out var life) && life.Countdown <= 0f)
                 return true;

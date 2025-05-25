@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Modules;
 
 // Taken from Submerged going open source recently
-public struct KillAnimFrame
+public readonly struct KillAnimFrame
 {
     public int Animation { get; private init; }
     public float Time { get; private init; }

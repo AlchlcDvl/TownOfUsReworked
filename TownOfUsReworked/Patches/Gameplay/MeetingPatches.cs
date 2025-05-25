@@ -455,13 +455,8 @@ public static class MeetingPatches
 
         foreach (var role in PlayerLayer.GetLayers<Monarch>())
         {
-            foreach (var id in role.Knighted)
+            foreach (var area in from id in role.Knighted where knighted.Add(id) select VoteAreaById(id))
             {
-                if (!knighted.Add(id))
-                    continue;
-
-                var area = VoteAreaById(id);
-
                 if (dictionary.TryGetValue(area.VotedFor, out var num))
                     dictionary[area.VotedFor] = num + Monarch.KnightVoteCount;
                 else

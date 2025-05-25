@@ -3,9 +3,11 @@ namespace TownOfUsReworked.Statuses;
 /// <summary>
 /// Base class for status effects on a player. Based on the modifier system from MiraAPI
 /// </summary>
-public abstract class BaseStatus
+public abstract class BaseStatus : IDisposable
 {
     public static readonly List<BaseStatus> AllStatuses = [];
+
+    ~BaseStatus() => InternalDispose();
 
     /// <summary>
     /// Gets the value indicating whether or not multiple statuses of the same type can be applied on the same player.
@@ -21,6 +23,10 @@ public abstract class BaseStatus
     /// Gets or sets the handler for this status.
     /// </summary>
     protected StatusHandler Handler { get; private set; }
+
+    public bool Active { get; set; }
+
+    private bool Disposed { get; set; }
 
     /// <summary>
     /// Starts the status by attaching it to the player and invoking the OnAdd event.
@@ -63,6 +69,24 @@ public abstract class BaseStatus
     /// Performs an action when updating frames. Runs only if the local player has this status.
     /// </summary>
     public virtual void OnLocalUpdate() {}
+
+    /// <inheritdoc/>
+    public virtual void VirtualDispose() {}
+
+    private void InternalDispose()
+    {
+        if (Disposed)
+            return;
+
+        VirtualDispose();
+        Disposed = true;
+    }
+
+    public void Dispose()
+    {
+        InternalDispose();
+        GC.SuppressFinalize(this);
+    }
 
     /// <summary>
     /// Null check.

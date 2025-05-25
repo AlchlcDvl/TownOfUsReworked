@@ -653,12 +653,12 @@ public static class SettingsPatches
 
             for (var k = 0; k < __instance.AllMapIcons.Count; k++)
             {
-                var thisVal = __instance.AllMapIcons[k];
+                var thisVal = __instance.AllMapIcons._items[k];
                 var mapButton = UObject.Instantiate(__instance.MapButtonOrigin, Vector3.zero, Quaternion.identity, __instance.transform);
                 mapButton.SetImage(thisVal.MapIcon, maskLayer);
                 mapButton.MapIcon.Do(x => x.flipX = thisVal.Name == MapNames.Dleks);
                 mapButton.transform.localPosition = new(__instance.StartPosX + (k * __instance.SpacingX) - 0.7f, 0.74f, -2f);
-                mapButton.name = $"{__instance.AllMapIcons[k].Name}";
+                mapButton.name = $"{thisVal.Name}";
                 mapButton.MapID = (int)thisVal.Name;
                 mapButton.Button.ClickMask = __instance.ButtonClickMask;
                 mapButton.Button.OverrideOnClickListeners(() =>
@@ -668,14 +668,14 @@ public static class SettingsPatches
 
                     __instance?.selectedButton?.Button?.SelectButton(false);
                     __instance.selectedButton = mapButton;
-                    __instance.selectedButton.Button.SelectButton(true);
+                    __instance.selectedButton.Button?.SelectButton(true);
                     __instance.SelectMap(thisVal);
                     CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
                 });
 
                 if (k > 0)
                 {
-                    var button = __instance.mapButtons[k - 1].Button;
+                    var button = __instance.mapButtons._items[k - 1].Button;
                     mapButton.Button.ControllerNav.selectOnLeft = button;
                     button.ControllerNav.selectOnRight = mapButton.Button;
                 }

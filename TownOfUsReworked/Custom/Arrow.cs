@@ -15,6 +15,7 @@ public class CustomArrow : IDisposable
     private UColor ArrowColor { get; set; }
     private bool Disabled { get; set; }
     private float ArrowTime { get; set; }
+    private bool Disposed { get; set; }
 
     public static readonly List<CustomArrow> AllArrows = [];
 
@@ -29,6 +30,8 @@ public class CustomArrow : IDisposable
         Instantiate();
         AllArrows.Add(this);
     }
+
+    ~CustomArrow() => Dispose();
 
     private void Instantiate()
     {
@@ -120,7 +123,11 @@ public class CustomArrow : IDisposable
 
     public void Dispose()
     {
+        if (Disposed)
+            return;
+
         Destroy();
         GC.SuppressFinalize(this);
+        Disposed = true;
     }
 }

@@ -4,6 +4,9 @@ public sealed class CustomButton : IDisposable, INetSerializable
 {
     public static readonly List<CustomButton> AllButtons = [];
 
+    /// <inheritdoc/>
+    public CustomTypeCode TypeCode => CustomTypeCode.Button;
+
     // Params, required
     public PlayerLayer Owner { get; }
     public AbilityTypes Type { get; }
@@ -61,6 +64,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
     public float DelayTime { get; set; }
     private float OtherDelayTime { get; set; }
     public float CooldownTime { get; set; }
+    private bool Disposed { get; set; }
 
     // Read-onlys (onlies?)
     private bool HasEffect => Duration > 0f;
@@ -343,7 +347,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         AllButtons.Add(this);
     }
 
-    ~CustomButton() => Destroy();
+    ~CustomButton() => InternalDispose();
 
     private void CreateButton()
     {
@@ -818,9 +822,18 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Begin();
     }
 
+    private void InternalDispose()
+    {
+        if (Disposed)
+            return;
+
+        Destroy();
+        Disposed = true;
+    }
+
     public void Dispose()
     {
-        Destroy();
+        InternalDispose();
         GC.SuppressFinalize(this);
     }
 
