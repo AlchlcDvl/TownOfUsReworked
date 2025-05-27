@@ -297,6 +297,8 @@ public static class CollectionExtensions
         }
     }
 
+    public static void ForEach<T1, T2>(this IEnumerable<(T1, T2)> source, Action<T1, T2> action) => source.Do(x => action(x.Item1, x.Item2));
+
     /* These methods are unused at the moment, so they've been commented until needed
 
     public static void AddMany<T>(this List<T> list, T item, int count)

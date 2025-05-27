@@ -54,7 +54,7 @@ public sealed class TestingTab : BaseTab
 
         var outfit = new CustomOutfit()
         {
-            ColorId = -2, // CustomColorManager.AllColors.Keys.AddItem(-2).Random(), // TODO: Get the transition running, especially with the color name
+            ColorId = CustomColorManager.AllColors.Keys.AddItem(-2).Random(), // TODO: Transition works, name change remaining
             Color = new(r, g, b, 255), // TODO: Same as above
             HatId = HatManager.Instance.allHats.Random().ProductId, // TODO: Works, but alpha is still a problem
             // SkinId = HatManager.Instance.allSkins.Random().ProductId, // Works
@@ -66,6 +66,6 @@ public sealed class TestingTab : BaseTab
             Speed = URandom.RandomRange(GameSettings.PlayerSpeed.Value, GameSettings.GhostSpeed), // TODO: Implement speed and its transition
             Alpha = URandom.RandomRange(0f, 1f) // Works
         };
-        CustomPlayer.Local.GetComponent<AppearanceHandler>().OverrideOutfit(outfit, CustomPlayerOutfitType.Custom, 10f);
+        CustomPlayer.Local.GetComponent<AppearanceHandler>().OverrideOutfit(outfit, CustomPlayerOutfitType.Custom, 3f);
     }
 }

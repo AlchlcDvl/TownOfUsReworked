@@ -41,5 +41,9 @@ public sealed class CustomOutfit : PlayerOutfit
 
     public override string ToString() => $"name={PlayerName},colorId={ColorId},hat={HatId},pet={PetId},skin={SkinId},visor={VisorId},nameplate={NamePlateId},size={Size},speed={Speed},alpha={Alpha},color=({Color.r},{Color.g},{Color.b},{Color.a})";
 
-    public UColor GetColor() => ColorId is -1 or -2 ? Color : ColorId.GetColor(false);
+    [HideFromIl2Cpp]
+    public ColorPair GetPair() => ColorId is -1 or -2 ? new(Color, Color.Shadow()) : new(ColorId.GetColor(false), ColorId.GetColor(true));
+
+    [HideFromIl2Cpp]
+    public OutfitData GetData() => new(this);
 }

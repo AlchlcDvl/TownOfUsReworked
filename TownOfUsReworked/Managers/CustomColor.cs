@@ -12,18 +12,22 @@ public static class CustomColorManager
             SetColor(rend, color.GetMainColor(), color.GetShadowColor());
     }
 
+    public static void SetColor(Renderer rend, ColorPair pair) => SetColor(rend, pair.Color1, pair.Color2);
+
+    public static void SetColor(Renderer rend, UColor color) => SetColor(rend, color, Shadow(color));
+
     // public static void SetVisorColor(Renderer rend, int id)
     // {
     //     if (AllColors.TryGetValue(id, out var color))
     //         SetVisorColor(rend, color.GetMainColor());
     // }
 
-    public static void SetColor(Renderer rend, UColor color, UColor? shadow = null)
+    private static void SetColor(Renderer rend, UColor color, UColor shadow)
     {
         if (!rend)
             return;
 
-        rend.material.SetColor(PlayerMaterial.BackColor, shadow ?? Shadow(color));
+        rend.material.SetColor(PlayerMaterial.BackColor, shadow);
         rend.material.SetColor(PlayerMaterial.BodyColor, color);
         rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
     }
@@ -62,7 +66,7 @@ public static class CustomColorManager
 
     public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
 
-    private static bool IsDark(this UColor color) => (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f) < 0.5f / 255;
+    private static bool IsDark(this UColor color) => (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f) < 0.5f;
 
     // private static bool IsColorDark(this UColor color) => Average(color.r, color.g, color.b) < 0.5f;
 
@@ -76,7 +80,7 @@ public static class CustomColorManager
     //     return ((UColor)color).ShadeColor(val / 255f);
     // }
 
-    // public static Color32 Shadow(this Color32 color, byte val = 51) => ((UColor)color).Shadow(val / 255f);
+    public static Color32 Shadow(this Color32 color, byte val = 51) => ((UColor)color).Shadow(val / 255f);
 
     // public static Color32 Light(this Color32 color, byte val = 51) => ((UColor)color).Light(val / 255f);
 

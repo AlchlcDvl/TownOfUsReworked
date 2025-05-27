@@ -2,26 +2,30 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class ColorHandler : MonoBehaviour
 {
-    private readonly List<(int, Renderer)> IDToRends = [];
-    private readonly List<(UColor, Renderer)> ColorToRends = [];
+    private readonly RendHandler<int> IdToRendHandler = new(CustomColorManager.SetColor);
+    private readonly RendHandler<UColor> ColorToRendHandler = new(CustomColorManager.SetColor);
+    private readonly RendHandler<ColorPair> ColorPairToRendHandler = new(CustomColorManager.SetColor);
 
-    public void SetRend(Renderer rend, int id)
+    public void SetRend(Renderer rend, int id) => IdToRendHandler.SetRend(rend, id);
+
+    public void SetRend(Renderer rend, UColor color) => ColorToRendHandler.SetRend(rend, color);
+
+    public void SetRend(ColorPair pair, Renderer rend) => ColorPairToRendHandler.SetRend(rend, pair);
+
+    public void Update() => IdToRendHandler.SetColors();
+}
+
+public class RendHandler<T>(Action<Renderer, T> setColor)
+{
+    private readonly List<(Renderer Rend, T Color)> Rends = [];
+    private Action<Renderer, T> SetColor { get; } = setColor;
+
+    public void SetRend(Renderer rend, T color)
     {
-        IDToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
-        ColorToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
-        IDToRends.Add((id, rend));
+        Rends.RemoveAll(x => x.Rend == rend || !x.Rend);
+        Rends.Add((rend, color));
+        SetColor(rend, color);
     }
 
-    public void SetRend(Renderer rend, UColor color)
-    {
-        IDToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
-        ColorToRends.RemoveAll(x => x.Item2 == rend || !x.Item2);
-        ColorToRends.Add((color, rend));
-    }
-
-    public void Update()
-    {
-        IDToRends.ForEach(x => CustomColorManager.SetColor(x.Item2, x.Item1));
-        ColorToRends.ForEach(x => CustomColorManager.SetColor(x.Item2, x.Item1));
-    }
+    public void SetColors() => Rends.ForEach(SetColor);
 }

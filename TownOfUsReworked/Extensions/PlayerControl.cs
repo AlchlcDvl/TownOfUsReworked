@@ -6,9 +6,9 @@ public static class PlayerControlExtensions
 {
     public static bool HasDied(this PlayerControl player) => !player || !player.Data || player.Data.IsDead || player.Data.Disconnected;
 
-    public static void RawSetHat(this PlayerControl player, string hatId, UColor color) => player.cosmetics.SetHat(hatId, color);
+    public static void RawSetHat(this PlayerControl player, string hatId, ColorPair color) => player.cosmetics.SetHat(hatId, color);
 
-    private static void SetHat(this CosmeticsLayer layer, string hatId, UColor color)
+    private static void SetHat(this CosmeticsLayer layer, string hatId, ColorPair color)
     {
         if (layer.hat)
             layer.hat.SetHat(hatId, color);
@@ -16,13 +16,13 @@ public static class PlayerControlExtensions
         layer.OnCosmeticSet?.Invoke(hatId, -2, CosmeticsLayer.CosmeticKind.HAT);
     }
 
-    private static void SetHat(this HatParent parent, string hatId, UColor color)
+    private static void SetHat(this HatParent parent, string hatId, ColorPair color)
     {
         if (HatManager.InstanceExists)
             parent.SetHat(HatManager.Instance.GetHatById(hatId), color);
     }
 
-    private static void SetHat(this HatParent parent, HatData hat, UColor color)
+    private static void SetHat(this HatParent parent, HatData hat, ColorPair color)
     {
         if (!hat || hat != parent.Hat)
         {
@@ -34,7 +34,7 @@ public static class PlayerControlExtensions
         parent.SetHat(color);
     }
 
-    private static void SetHat(this HatParent parent, UColor color)
+    private static void SetHat(this HatParent parent, ColorPair color)
     {
         if (!parent.Hat)
             return;
@@ -78,25 +78,23 @@ public static class PlayerControlExtensions
         UpdateMaterial(viewData && __instance.IsLoaded && viewData.MatchPlayerColor, __instance.matProperties, __instance.BackLayer, colorVal);
     }
 
-    public static void RawSetVisor(this PlayerControl player, string visorId, UColor color) => player.cosmetics.SetVisor(visorId, color);
+    public static void RawSetVisor(this PlayerControl player, string visorId, ColorPair color) => player.cosmetics.SetVisor(visorId, color);
 
-    public static void SetVisor(this CosmeticsLayer layer, string visorId, UColor color)
+    public static void SetVisor(this CosmeticsLayer layer, string visorId, ColorPair color)
     {
-        var visorLayer = layer.visor;
-
-        if (visorLayer)
-            visorLayer.SetVisor(visorId, color);
+        if (layer.visor)
+            layer.visor.SetVisor(visorId, color);
 
         layer.OnCosmeticSet?.Invoke(visorId, -2, CosmeticsLayer.CosmeticKind.VISOR);
     }
 
-    public static void SetVisor(this VisorLayer visor, string visorId, UColor color)
+    public static void SetVisor(this VisorLayer visor, string visorId, ColorPair color)
     {
         if (HatManager.InstanceExists)
             visor.SetVisor(HatManager.Instance.GetVisorById(visorId), color);
     }
 
-    public static void SetVisor(this VisorLayer visor, VisorData data, UColor color)
+    public static void SetVisor(this VisorLayer visor, VisorData data, ColorPair color)
     {
         if (!data || data != visor.visorData)
             visor.Image.sprite = null;
@@ -105,6 +103,7 @@ public static class PlayerControlExtensions
         var props = visor.matProperties;
         props.ColorId = -2;
         visor.matProperties = props;
+        visor.visorData = data;
         visor.viewAsset = VisorLoader.CustomCosmeticRegistry.ContainsKey(data.ProductId) ? null : visor.visorData.CreateAddressableAsset();
 
         if (visor.viewAsset != null)
@@ -139,9 +138,9 @@ public static class PlayerControlExtensions
         UpdateMaterial(viewData && __instance.IsLoaded && viewData.MatchPlayerColor, __instance.matProperties, __instance.Image, colorVal);
     }
 
-    public static void RawSetSkin(this PlayerControl player, string skinId, UColor color) => player.MyPhysics.SetSkin(skinId, color);
+    public static void RawSetSkin(this PlayerControl player, string skinId, ColorPair color) => player.MyPhysics.SetSkin(skinId, color);
 
-    public static void SetSkin(this PlayerPhysics physics, string skinId, UColor color)
+    public static void SetSkin(this PlayerPhysics physics, string skinId, ColorPair color)
     {
         physics.myPlayer.cosmetics.SetSkin(skinId, color, () =>
         {
@@ -163,13 +162,13 @@ public static class PlayerControlExtensions
         });
     }
 
-    public static void SetSkin(this CosmeticsLayer layer, string skinId, UColor color, Action onLoaded)
+    public static void SetSkin(this CosmeticsLayer layer, string skinId, ColorPair color, Action onLoaded)
     {
         if (HatManager.InstanceExists)
             layer.SetSkin(HatManager.Instance.GetSkinById(skinId), color, onLoaded);
     }
 
-    public static void SetSkin(this CosmeticsLayer layer, SkinData skin, UColor color, Action onLoaded)
+    public static void SetSkin(this CosmeticsLayer layer, SkinData skin, ColorPair color, Action onLoaded)
     {
         if (!layer.skin)
             return;
@@ -181,7 +180,7 @@ public static class PlayerControlExtensions
         layer.skin.Flipped = layer.currentBodySprite.BodySprite.flipX;
     }
 
-    public static void SetSkin(this SkinLayer layer, SkinData skinData, UColor color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded )
+    public static void SetSkin(this SkinLayer layer, SkinData skinData, ColorPair color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded )
     {
         layer.LoadAssetAsync(skinData.Cast<IAddressableAssetProvider<SkinViewData>>(), (Action<SkinViewData>)(skinView =>
         {
@@ -195,7 +194,7 @@ public static class PlayerControlExtensions
         }));
     }
 
-    public static void SetSkin(this SkinLayer layer, SkinViewData skin, UColor color, bool isLeft)
+    public static void SetSkin(this SkinLayer layer, SkinViewData skin, ColorPair color, bool isLeft)
     {
         layer.skin = skin;
         var props = layer.matProperties;
@@ -228,7 +227,7 @@ public static class PlayerControlExtensions
             SetRendererColor(colorVal, rend);
     }
 
-    public static void RawSetPet(this PlayerControl player, string petId, UColor color)
+    public static void RawSetPet(this PlayerControl player, string petId, ColorPair color)
     {
         player.cosmetics.SetPetIdle(petId, color, () =>
         {
@@ -239,13 +238,13 @@ public static class PlayerControlExtensions
         });
     }
 
-    public static void SetPetIdle(this CosmeticsLayer layer, string petId, UColor color, Action onComplete)
+    public static void SetPetIdle(this CosmeticsLayer layer, string petId, ColorPair color, Action onComplete)
     {
         if (HatManager.InstanceExists)
             layer.SetPetIdle(HatManager.Instance.GetPetById(petId), color, onComplete);
     }
 
-    public static void SetPetIdle(this CosmeticsLayer layer, PetData petData, UColor color, Action onComplete)
+    public static void SetPetIdle(this CosmeticsLayer layer, PetData petData, ColorPair color, Action onComplete)
     {
         layer.StopAllCoroutines();
 
@@ -258,13 +257,13 @@ public static class PlayerControlExtensions
             layer.StartCoroutine(layer.CoLoadAndSetPetIdle(petData, color, onComplete));
     }
 
-    private static IEnumerator CoLoadAndSetPetIdle(this CosmeticsLayer layer, PetData petData, UColor color, Action onComplete)
+    private static IEnumerator CoLoadAndSetPetIdle(this CosmeticsLayer layer, PetData petData, ColorPair color, Action onComplete)
     {
         layer.UnloadAddressableAsset(layer.petAsset);
         yield return layer.CoLoadAssetAsync(petData.Cast<IAddressableAssetProvider<PetBehaviour>>(), (Action<PetBehaviour>)(pet => layer.SetPetIdle(pet, color, onComplete)));
     }
 
-    public static void SetPetIdle(this CosmeticsLayer layer, PetBehaviour petBehaviour, UColor color, Action onComplete)
+    public static void SetPetIdle(this CosmeticsLayer layer, PetBehaviour petBehaviour, ColorPair color, Action onComplete)
     {
         layer.StopAllCoroutines();
         layer.InstantiatePetCopy(petBehaviour, color);
@@ -274,7 +273,7 @@ public static class PlayerControlExtensions
         layer.OnCosmeticSet?.Invoke(petBehaviour.Data.ProdId, -2, CosmeticsLayer.CosmeticKind.PET);
     }
 
-    private static void InstantiatePetCopy(this CosmeticsLayer layer, PetBehaviour petBehaviour, UColor color)
+    private static void InstantiatePetCopy(this CosmeticsLayer layer, PetBehaviour petBehaviour, ColorPair color)
     {
         if (layer.currentPet)
         {
@@ -308,7 +307,7 @@ public static class PlayerControlExtensions
     {
         if (colorVal is int colorId and not (-2 or -1))
             PlayerMaterial.SetColors(colorId, rend);
-        else if (colorVal is UColor color)
-            PlayerMaterial.SetColors(color, rend);
+        else if (colorVal is ColorPair pair)
+            Colors.Instance.SetRend(pair, rend);
     }
 }

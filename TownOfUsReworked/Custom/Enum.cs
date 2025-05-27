@@ -23,6 +23,7 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
 
     private readonly object Lock;
     private readonly Type Type;
+    private readonly bool Il2Cpp;
 
     private dynamic Last;
     private dynamic First;
@@ -34,11 +35,15 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     public readonly T MaxPossibleValue;
     // public readonly T MinPossibleValue;
 
-    public EnumInjector()
+    public EnumInjector(bool il2Cpp = true)
     {
         Lock = new();
         Type = typeof(T);
-        EnumInjector.RegisterEnumInIl2Cpp<T>();
+        Il2Cpp = il2Cpp;
+
+        if (Il2Cpp)
+            EnumInjector.RegisterEnumInIl2Cpp<T>();
+
         var underlying = Enum.GetUnderlyingType(Type);
         AllValues = [.. Enum.GetValues<T>().OrderBy(x => x)];
         Last = Convert.ChangeType(AllValues[^1], underlying);
@@ -130,7 +135,9 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
             if (IndexedValues.ContainsKey(index))
                 throw new ArgumentException($"{index} has already been injected. {Diagnostic(decrement)}");
 
-            EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
+            if (Il2Cpp)
+                EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
+
             var result = (T)Enum.ToObject(Type, index);
             InsertValue(result, value, index);
             return result;

@@ -243,13 +243,10 @@ public static class MiscUtils
 
     public static void SetAlpha(this PlayerControl player, float alpha, bool setName = true)
     {
-        player.cosmetics.hat.BackLayer.SetAlpha(alpha);
-        player.cosmetics.hat.FrontLayer.SetAlpha(alpha);
-        player.cosmetics.visor.Image.SetAlpha(alpha);
+        player.SetHatAndVisorAlpha(alpha);
         player.cosmetics.skin.layer.SetAlpha(alpha);
-        player.cosmetics.currentPet.renderers.Do(x => x.SetAlpha(alpha));
-        player.cosmetics.currentPet.shadows.Do(x => x.SetAlpha(alpha));
-        player.cosmetics.PettingHand.HandSprite.SetAlpha(alpha);
+        player.cosmetics.currentPet.SetAlpha(alpha);
+        player.cosmetics.PettingHand.SetAlpha(alpha);
         player.cosmetics.currentBodySprite.BodySprite.SetAlpha(alpha);
 
         if (!setName)
