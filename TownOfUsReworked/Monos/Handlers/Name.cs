@@ -11,22 +11,22 @@ public abstract class NameHandler : MonoBehaviour
     [HideFromIl2Cpp]
     protected CustomPlayer Custom { get; set; }
 
-    protected static (string, UColor) UpdateColorblind(PlayerControl player)
+    protected (string, UColor) UpdateColorblind()
     {
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
             return ("", UColor.clear);
 
-        var color = player.CurrentOutfit().ColorId.GetColor(false);
+        var color = Player.CurrentOutfit().ColorId.GetColor(false);
 
         if (IsLobby())
-            return (ColorNames[player.PlayerId], color);
+            return (ColorNames[Player.PlayerId], color);
 
         var local = CustomPlayer.Local;
-        var amOwner = player.AmOwner;
+        var amOwner = Player.AmOwner;
 
         if (!Meeting())
         {
-            var vector = player.transform.position - local.transform.position;
+            var vector = Player.transform.position - local.transform.position;
 
             if (vector.magnitude > local.lightSource.viewDistance)
                 return ("", UColor.clear);
@@ -38,8 +38,8 @@ public abstract class NameHandler : MonoBehaviour
             }
         }
 
-        if (!TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked))
-            player = mimicked;
+        if (!TransitioningSize.ContainsKey(Player.PlayerId) && Player.IsMimicking(out var mimicked))
+            Player = mimicked;
 
         string name;
 
@@ -49,18 +49,18 @@ public abstract class NameHandler : MonoBehaviour
         {
             if (Hud.Instance.IsCamoed)
                 name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
-            else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
+            else if (CachedMorphs.TryGetValue(Player.PlayerId, out var cache))
                 name = ColorNames[cache];
-            else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
+            else if (Player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
                 return ("", UColor.clear);
             else
-                name = ColorNames[player.PlayerId];
+                name = ColorNames[Player.PlayerId];
         }
         else
-            name = ColorNames[player.PlayerId];
+            name = ColorNames[Player.PlayerId];
 
         if (ClientOptions.LighterDarker)
-            name += $" ({TranslationManager.Translate($"Shade.{(player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D")}")})";
+            name += $" ({TranslationManager.Translate($"Shade.{(Player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D")}")})";
 
         return (name, color);
     }

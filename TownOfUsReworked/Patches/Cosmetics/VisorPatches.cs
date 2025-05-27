@@ -34,7 +34,7 @@ public static class VisorPatches
 
         __instance.Image.flipX = flipX;
 
-        if (!__instance.IsLoaded || !cv.ViewData)
+        if (!cv.ViewData)
             return false;
 
         __instance.Image.sprite = flipX && cv.ViewData.LeftIdleFrame ? cv.ViewData.LeftIdleFrame : cv.ViewData.IdleFrame;
@@ -47,31 +47,13 @@ public static class VisorPatches
         if (!VisorLoader.CustomCosmeticRegistry.ContainsKey(data.ProductId))
             return true;
 
+        if (!data || data != __instance.visorData)
+            __instance.Image.sprite = null;
+
+        __instance.UnloadAsset();
         __instance.visorData = data;
-        __instance.viewAsset = null;
         __instance.SetMaterialColor(color);
         __instance.PopulateFromViewData();
-        return false;
-    }
-
-    [HarmonyPatch(nameof(VisorLayer.PopulateFromViewData)), HarmonyPrefix]
-    public static bool PopulateFromViewDataPrefix(VisorLayer __instance)
-    {
-        if (!__instance.visorData)
-            return true;
-
-        try
-        {
-            __instance.viewAsset.GetAsset();
-            return true;
-        } catch {}
-
-        if (!VisorLoader.CustomCosmeticRegistry.ContainsKey(__instance.visorData.ProductId))
-            return true;
-
-        __instance.UpdateMaterial();
-        __instance.transform.SetLocalZ(__instance.DesiredLocalZPosition);
-        __instance.SetFlipX(__instance.Image.flipX);
         return false;
     }
 

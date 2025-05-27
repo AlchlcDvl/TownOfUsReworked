@@ -569,6 +569,8 @@ public static class SettingsPatches
             if (!AmongUsClient.Instance || !CustomPlayer.Local || !__instance.myPlayer || IsFreePlay())
                 return;
 
+            __instance.myPlayer.GetComponent<AppearanceHandler>().UpdateCurrent();
+
             if (Holders.EntryCount < GameData.Instance.PlayerCount)
             {
                 Holders.RolesEntryList.AddEntryForPlayer();

@@ -4,6 +4,8 @@ public static class CustomColorManager
 {
     public static readonly Dictionary<int, CustomColor> AllColors = [];
 
+    public static bool IsColorEqual(this Color32 col32_1, Color32 col32_2) => col32_1.r == col32_2.r && col32_1.g == col32_2.g && col32_1.b == col32_2.b && col32_1.a == col32_2.a;
+
     public static void SetColor(Renderer rend, int id)
     {
         if (AllColors.TryGetValue(id, out var color))
@@ -80,7 +82,7 @@ public static class CustomColorManager
 
     public static Color32 Alternate(this Color32 color, byte val = 51) => ((UColor)color).Alternate(val / 255f);
 
-    // private static bool IsDark(this Color32 color) => ((UColor)color).IsDark();
+    public static bool IsDark(this Color32 color) => ((UColor)color).IsDark();
 
     // public static UColor GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false, bool morphCondition = true)
     // {

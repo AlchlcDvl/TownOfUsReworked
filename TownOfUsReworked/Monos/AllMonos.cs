@@ -31,15 +31,13 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<CameraEffectHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<AppearanceHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<DebuggerHandler>();
 
-        // Paging
+        // Behaviours
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<MenuPagingBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<MeetingPagingBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
-
-        // Behaviours
-        ClassInjector.RegisterTypeInIl2Cpp<DebuggerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<BlankBehaviour>();
 
         // Objects

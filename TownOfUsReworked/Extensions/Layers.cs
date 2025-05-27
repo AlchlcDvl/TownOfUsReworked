@@ -91,6 +91,9 @@ public static class LayerExtensions
         if (!player)
             return false;
 
+        if (GameModifiers.AllCanDoTasks)
+            return true;
+
         if (!player.Is<Role>(out var role))
             return !player.Data.IsImpostor();
 

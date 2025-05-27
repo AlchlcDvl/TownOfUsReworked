@@ -54,15 +54,15 @@ public sealed class TestingTab : BaseTab
 
         var outfit = new CustomOutfit()
         {
-            ColorId = CustomColorManager.AllColors.Keys.AddItem(-2).Random(), // TODO: Get the transition running, especially with the color name
+            ColorId = -2, // CustomColorManager.AllColors.Keys.AddItem(-2).Random(), // TODO: Get the transition running, especially with the color name
             Color = new(r, g, b, 255), // TODO: Same as above
             HatId = HatManager.Instance.allHats.Random().ProductId, // TODO: Works, but alpha is still a problem
-            SkinId = HatManager.Instance.allSkins.Random().ProductId, // Works
-            VisorId = HatManager.Instance.allVisors.Random().ProductId, // TODO: Works, but alpha is still a problem
-            NamePlateId = HatManager.Instance.allNamePlates.Random().ProductId, // No need to check lmao
+            // SkinId = HatManager.Instance.allSkins.Random().ProductId, // Works
+            VisorId = HatManager.Instance.allVisors.Random().ProductId, // TODO: Same as hats
+            // NamePlateId = HatManager.Instance.allNamePlates.Random().ProductId, // No need to check lmao
             PetId = HatManager.Instance.allPets.Random().ProductId, // Works
-            PlayerName = "", // TODO: Reimplement name handling and its transition
-            Size = URandom.RandomRange(Dwarf.DwarfScale.Value, Giant.GiantScale), // Works
+            PlayerName = "", // TODO: Reimplement name handling and its transition (make it letter by letter)
+            // Size = URandom.RandomRange(Dwarf.DwarfScale.Value, Giant.GiantScale), // Works
             Speed = URandom.RandomRange(GameSettings.PlayerSpeed.Value, GameSettings.GhostSpeed), // TODO: Implement speed and its transition
             Alpha = URandom.RandomRange(0f, 1f) // Works
         };

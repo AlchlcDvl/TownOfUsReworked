@@ -39,65 +39,43 @@ public static class PlayerControlExtensions
         if (!parent.Hat)
             return;
 
+        parent.UnloadAsset();
         var props = parent.matProperties;
         props.ColorId = -2;
         parent.matProperties = props;
-        parent.UpdateMaterial(color);
-        parent.UnloadAsset();
-        parent.viewAsset = parent.Hat.CreateAddressableAsset();
-        parent.viewAsset.LoadAsync((Action)parent.PopulateFromViewData);
+        parent.viewAsset = HatLoader.CustomCosmeticRegistry.ContainsKey(parent.Hat.ProductId) ? null : parent.Hat.CreateAddressableAsset();
+
+        if (parent.viewAsset != null)
+        {
+            parent.viewAsset.LoadAsync((Action)(() =>
+            {
+                parent.PopulateFromViewData();
+                parent.UpdateMaterial(color);
+            }));
+        }
+        else
+        {
+            parent.PopulateFromViewData();
+            parent.UpdateMaterial(color);
+        }
     }
 
-    public static void UpdateMaterial(this HatParent parent, object colorVal)
+    public static void UpdateMaterial(this HatParent __instance, object colorVal)
     {
         HatViewData viewData = null;
 
         try
         {
-            viewData = parent.viewAsset.GetAsset();
+            viewData = __instance.viewAsset.GetAsset();
         }
         catch
         {
-            if (!parent.Hat)
-                return;
-
-            if (HatLoader.CustomCosmeticRegistry.TryGetValue(parent.Hat.ProductId, out var ch))
+            if (__instance.Hat && HatLoader.CustomCosmeticRegistry.TryGetValue(__instance.Hat.ProductId, out var ch))
                 viewData = ch.ViewData;
         }
 
-        if (!viewData)
-            return;
-
-        var maskType = parent.matProperties.MaskType;
-        var loaded = parent.IsLoaded && viewData.MatchPlayerColor;
-
-        parent.BackLayer.sharedMaterial = parent.FrontLayer.sharedMaterial = maskType switch
-        {
-            PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI => loaded ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial,
-            _ => loaded ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader
-        };
-
-        parent.BackLayer.maskInteraction = parent.FrontLayer.maskInteraction = maskType switch
-        {
-            PlayerMaterial.MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
-            PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
-            _ => SpriteMaskInteraction.None
-        };
-
-        parent.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
-        parent.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, parent.matProperties.MaskLayer);
-
-        if (parent.matProperties.MaskLayer <= 0)
-        {
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.BackLayer, parent.matProperties.IsLocalPlayer);
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(parent.FrontLayer, parent.matProperties.IsLocalPlayer);
-        }
-
-        if (loaded)
-        {
-            SetRendererColor(colorVal, parent.BackLayer);
-            SetRendererColor(colorVal, parent.FrontLayer);
-        }
+        UpdateMaterial(viewData && __instance.IsLoaded && viewData.MatchPlayerColor, __instance.matProperties, __instance.FrontLayer, colorVal);
+        UpdateMaterial(viewData && __instance.IsLoaded && viewData.MatchPlayerColor, __instance.matProperties, __instance.BackLayer, colorVal);
     }
 
     public static void RawSetVisor(this PlayerControl player, string visorId, UColor color) => player.cosmetics.SetVisor(visorId, color);
@@ -123,13 +101,25 @@ public static class PlayerControlExtensions
         if (!data || data != visor.visorData)
             visor.Image.sprite = null;
 
+        visor.UnloadAsset();
         var props = visor.matProperties;
         props.ColorId = -2;
         visor.matProperties = props;
-        visor.UpdateMaterial(color);
-        visor.UnloadAsset();
-        visor.viewAsset = visor.visorData.CreateAddressableAsset();
-        visor.viewAsset.LoadAsync((Action)visor.PopulateFromViewData);
+        visor.viewAsset = VisorLoader.CustomCosmeticRegistry.ContainsKey(data.ProductId) ? null : visor.visorData.CreateAddressableAsset();
+
+        if (visor.viewAsset != null)
+        {
+            visor.viewAsset.LoadAsync((Action)(() =>
+            {
+                visor.PopulateFromViewData();
+                visor.UpdateMaterial(color);
+            }));
+        }
+        else
+        {
+            visor.PopulateFromViewData();
+            visor.UpdateMaterial(color);
+        }
     }
 
     public static void UpdateMaterial(this VisorLayer __instance, object colorVal)
@@ -142,34 +132,11 @@ public static class PlayerControlExtensions
         }
         catch
         {
-            if (!__instance.visorData)
-                return;
-
-            if (VisorLoader.CustomCosmeticRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
+            if (__instance.visorData && VisorLoader.CustomCosmeticRegistry.TryGetValue(__instance.visorData.ProductId, out var cv))
                 viewData = cv.ViewData;
         }
 
-        if (!viewData)
-            return;
-
-        var maskType = __instance.matProperties.MaskType;
-        var loaded = __instance.IsLoaded && viewData.MatchPlayerColor;
-        __instance.Image.sharedMaterial = maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
-            ? (loaded ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial)
-            : (loaded ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader);
-        __instance.Image.maskInteraction = maskType switch
-        {
-            PlayerMaterial.MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
-            PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
-            _ => SpriteMaskInteraction.None
-        };
-        __instance.Image.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
-
-        if (__instance.matProperties.MaskLayer <= 0)
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.Image, __instance.matProperties.IsLocalPlayer);
-
-        if (loaded)
-            SetRendererColor(colorVal, __instance.Image);
+        UpdateMaterial(viewData && __instance.IsLoaded && viewData.MatchPlayerColor, __instance.matProperties, __instance.Image, colorVal);
     }
 
     public static void RawSetSkin(this PlayerControl player, string skinId, UColor color) => player.MyPhysics.SetSkin(skinId, color);
@@ -238,26 +205,27 @@ public static class PlayerControlExtensions
         layer.SetIdle(isLeft);
     }
 
-    public static void UpdateMaterial(this SkinLayer __instance, object colorVal)
+    public static void UpdateMaterial(this SkinLayer __instance, object colorVal) => UpdateMaterial(__instance.skin && __instance.IsLoaded && __instance.skin.MatchPlayerColor,
+        __instance.matProperties, __instance.layer, colorVal);
+
+    private static void UpdateMaterial(bool loaded, PlayerMaterial.Properties matProperties, SpriteRenderer rend, object colorVal)
     {
-        var maskType = __instance.matProperties.MaskType;
-        var loaded = __instance.skin && __instance.IsLoaded && __instance.skin.MatchPlayerColor;
-        __instance.layer.sharedMaterial = maskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
+        rend.sharedMaterial = matProperties.MaskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
             ? (loaded ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial)
             : (loaded ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader);
-        __instance.layer.maskInteraction = maskType switch
+        rend.maskInteraction = matProperties.MaskType switch
         {
             PlayerMaterial.MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
             PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
             _ => SpriteMaskInteraction.None
         };
-        __instance.layer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
+        rend.material.SetInt(PlayerMaterial.MaskLayer, matProperties.MaskLayer);
 
-        if (__instance.matProperties.MaskLayer <= 0)
-            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(__instance.layer, __instance.matProperties.IsLocalPlayer);
+        if (matProperties.MaskLayer <= 0)
+            PlayerMaterial.SetMaskLayerBasedOnLocalPlayer(rend, matProperties.IsLocalPlayer);
 
         if (loaded)
-            SetRendererColor(colorVal, __instance.layer);
+            SetRendererColor(colorVal, rend);
     }
 
     public static void RawSetPet(this PlayerControl player, string petId, UColor color)

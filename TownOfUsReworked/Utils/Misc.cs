@@ -1312,6 +1312,7 @@ public static class MiscUtils
         deadBody.ParentId = target.PlayerId;
         deadBody.AddComponent<DeadBodyHandler>();
         target.SetPlayerMaterialColors(deadBody.bloodSplatter);
+        target.GetComponent<AppearanceHandler>().Body = deadBody;
         var vector = target.transform.position + animation.BodyOffset;
         vector.z = vector.y / 1000f;
         deadBody.transform.position = vector;

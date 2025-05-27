@@ -30,7 +30,7 @@ public sealed class CustomOutfit : PlayerOutfit
         Color = custom.Color;
     }
 
-    public CustomOutfit(PlayerControl player) : this(player.CurrentOutfit)
+    public CustomOutfit(PlayerControl player, bool useCurrent = false) : this(useCurrent ? player.CurrentOutfit : player.Data.DefaultOutfit)
     {
         var lobby = IsLobby();
         Size = lobby ? 1f : player.GetSize();
@@ -40,4 +40,6 @@ public sealed class CustomOutfit : PlayerOutfit
     }
 
     public override string ToString() => $"name={PlayerName},colorId={ColorId},hat={HatId},pet={PetId},skin={SkinId},visor={VisorId},nameplate={NamePlateId},size={Size},speed={Speed},alpha={Alpha},color=({Color.r},{Color.g},{Color.b},{Color.a})";
+
+    public UColor GetColor() => ColorId is -1 or -2 ? Color : ColorId.GetColor(false);
 }

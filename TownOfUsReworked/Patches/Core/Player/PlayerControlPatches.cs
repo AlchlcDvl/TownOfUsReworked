@@ -261,13 +261,6 @@ public static class PlayerInfoPatches
         return false;
     }
 
-    [HarmonyPatch(nameof(NetworkedPlayerInfo.Init))]
-    public static void Postfix(NetworkedPlayerInfo __instance)
-    {
-        var outfit = __instance.Outfits[PlayerOutfitType.Default];
-        __instance.Outfits[PlayerOutfitType.Default] = new CustomOutfit(outfit);
-    }
-
     [HarmonyPatch(nameof(NetworkedPlayerInfo.DefaultOutfit), MethodType.Getter)]
     public static bool Prefix(NetworkedPlayerInfo __instance, ref PlayerOutfit  __result)
     {

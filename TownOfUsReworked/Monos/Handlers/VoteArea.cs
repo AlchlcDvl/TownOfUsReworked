@@ -15,7 +15,7 @@ public sealed class VoteAreaHandler : NameHandler
         if (!Player || !Player.Data)
             return;
 
-        (VoteArea.ColorBlindName.text, VoteArea.ColorBlindName.color) = UpdateColorblind(Player);
+        (VoteArea.ColorBlindName.text, VoteArea.ColorBlindName.color) = UpdateColorblind();
 
         if (Player.Data.Role is not LayerHandler handler || CustomPlayer.Local.Data.Role is not LayerHandler localHandler)
             return;
