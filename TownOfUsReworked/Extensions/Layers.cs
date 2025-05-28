@@ -220,39 +220,26 @@ public static class LayerExtensions
             FactionChanger;
     }
 
-    public static bool IsPostmortal(this PlayerControl player) => player.Is<IGhosty>();
+    public static bool IsLinkedTo(this PlayerControl player, PlayerControl refPlayer) => (player.Is<Paired>(out var other) && other.Other == refPlayer) || (player.Is<Mafia>() &&
+        refPlayer.Is<Mafia>());
 
-    public static bool Caught(this PlayerControl player) => !player.Is<IGhosty>(out var iGhost) || iGhost.Caught;
+    public static float GetFinalSpeed(this PlayerControl player) => player.GetBaseSpeed() * AppearanceHandler.Handlers[player.PlayerId].GetTrueSpeed();
 
-    public static bool IsLinkedTo(this PlayerControl player, PlayerControl refPlayer) => player.IsOtherRival(refPlayer) || player.IsOtherLover(refPlayer) || player.IsOtherLink(refPlayer) ||
-        (player.Is<Mafia>() && refPlayer.Is<Mafia>());
+    public static float GetBaseSpeed(this PlayerControl player) => player.HasDied() && (!player.Is<IGhosty>(out var ghost) || ghost.Caught) ? GameSettings.GhostSpeed : GameSettings.PlayerSpeed;
 
-    public static float GetBaseSpeed(this PlayerControl player) => player.HasDied() && (!player.IsPostmortal() || player.Caught()) ? GameSettings.GhostSpeed : GameSettings.PlayerSpeed;
+    // public static float GetModifiedSpeed(this PlayerControl player)
+    // {
+    //     if (TransitioningSpeed.TryGetValue(player.PlayerId, out var speed))
+    //         return speed;
 
-    public static float GetModifiedSpeed(this PlayerControl player)
-    {
-        if (TransitioningSpeed.TryGetValue(player.PlayerId, out var speed))
-            return speed;
-
-        return player.IsMimicking(out var mimicked) ? mimicked.GetSpeed() : player.GetSpeed();
-    }
+    //     return player.IsMimicking(out var mimicked) ? mimicked.GetSpeed() : player.GetSpeed();
+    // }
 
     public static float GetSpeed(this PlayerControl player)
     {
-        var result = 1f;
-
-        if (player.HasDied() || Lobby() || (Hud.Instance.IsCamoed && BetterSabotages.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
-            return result;
-
-        if (HUD().IsIntroDisplayed)
-            return 0f;
-
-        if (player.Is<Hunter>(out var hunt))
-            return hunt.Starting ? 0f : Hunter.HunterSpeedModifier;
-
         if (player.Is<Modifier>(out var mod))
         {
-            result *= mod switch
+            return mod switch
             {
                 Dwarf => Dwarf.DwarfSpeed,
                 Giant => Giant.GiantSpeed,
@@ -261,55 +248,23 @@ public static class LayerExtensions
             };
         }
 
-        if (DeadBodyHandler.Dragging.Contains(player.PlayerId))
-            result *= Janitor.DragModifier;
-
-        if (PlayerLayer.GetLayers<Drunkard>().Any(x => x.ConfuseButton.EffectActive && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))))
-            result *= -1;
-
-        if (PlayerLayer.GetLayers<Timekeeper>().Any(x => x.TimeButton.EffectActive))
-        {
-            if (!player.Is(Faction.Syndicate) || !Timekeeper.TimeFreezeImmunity)
-                result = 0f;
-        }
-
-        if (player.Is<ITrapper>(out var trap))
-            result *= trap.Building ? 0f : 1f;
-
-        if (Ship()?.Systems.TryGetValue(SystemTypes.LifeSupp, out var life) != true)
-            return result;
-
-        var lifeSuppSystemType = life.TryCast<LifeSuppSystemType>();
-
-        if (lifeSuppSystemType!.IsActive && BetterSabotages.OxySlow && !player.Data.IsDead)
-            result *= Mathf.Lerp(1f, 0.25f, lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration);
-
-        return result;
+        return 1f;
     }
 
-    public static float GetModifiedSize(this PlayerControl player)
+    // public static float GetModifiedSize(this PlayerControl player)
+    // {
+    //     if (TransitioningSize.TryGetValue(player.PlayerId, out var size))
+    //         return size;
+
+    //     return player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
+    // }
+
+    public static float GetSize(this PlayerControl player) => player.GetModifier() switch
     {
-        if (TransitioningSize.TryGetValue(player.PlayerId, out var size))
-            return size;
-
-        return player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
-    }
-
-    public static float GetSize(this PlayerControl player)
-    {
-        if (Ship()?.Systems?.TryGetValue(SystemTypes.MushroomMixupSabotage, out var sab) == true && sab.TryCast<MushroomMixupSabotageSystem>(out var mixup) && mixup.IsActive)
-            return 1f;
-
-        if (Lobby() || (Hud.Instance.IsCamoed && BetterSabotages.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
-            return 1f;
-
-        return player.GetModifier() switch
-        {
-            Dwarf => Dwarf.DwarfSpeed,
-            Giant => Giant.GiantSpeed,
-            _ => 1f
-        };
-    }
+        Dwarf => Dwarf.DwarfSpeed,
+        Giant => Giant.GiantSpeed,
+        _ => 1f
+    };
 
     private static bool TryGetShaper(this PlayerControl player, out Shapeshifter shaper) => PlayerLayer.GetLayers<Shapeshifter>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
         out shaper);
@@ -358,7 +313,7 @@ public static class LayerExtensions
             return true;
 
         if (playerInfo.IsDead)
-            return player.IsPostmortal() && !player.Caught();
+            return player.Is<IGhosty>(out var ghost) && !ghost.Caught;
 
         if (!player.Is<Role>(out var playerRole))
             return playerInfo.IsImpostor();

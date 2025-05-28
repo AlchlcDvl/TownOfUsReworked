@@ -64,17 +64,4 @@ public static class BetterFungle
 
         return false;
     }
-
-    [HarmonyPatch(nameof(MushroomMixupSabotageSystem.GenerateRandomOutfit))]
-    public static void Postfix(MushroomMixupSabotageSystem __instance, ref MushroomMixupSabotageSystem.CondensedOutfit __result)
-    {
-        // Create a list of all IDs from the cached outfits
-        List<byte> list = [ .. __instance.cachedOutfitsByPlayerId.keys ];
-
-        // Select a random ID from the filtered list for color assignment
-        __result.ColorPlayerId = list.Random(x => !__instance.cachedOutfitsByPlayerId[x].ColorId.IsChanging());
-    }
-
-    [HarmonyPatch(nameof(MushroomMixupSabotageSystem.ConvertToPlayerOutfit))]
-    public static void Postfix(ref PlayerOutfit __result) => __result = new CustomOutfit(__result);
 }

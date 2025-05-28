@@ -45,7 +45,7 @@ public static class ButtonUtils
         if (IsHnS())
             hud.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor() && inGame);
         else
-            hud.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && inGame && CustomPlayer.Local.HasDied());
+            hud.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.Is<IGhosty>(out var ghost) || ghost.Caught) && inGame && CustomPlayer.Local.HasDied());
     }
 
     public static void DisableAllButtons()

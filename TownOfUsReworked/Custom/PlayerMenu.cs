@@ -33,7 +33,7 @@ public sealed class CustomPlayerMenu : CustomMenu
         MaxSelected = 1;
     }
 
-    private PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected) ];
+    private PlayerControl[] Targets() => [ .. AllPlayers().Where(x => !Exception(x) && !x.Is<IGhosty>() && !x.Data.Disconnected) ];
 
     private void Clicked(PlayerControl player)
     {

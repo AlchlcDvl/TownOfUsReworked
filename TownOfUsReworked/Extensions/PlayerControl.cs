@@ -4,6 +4,12 @@ namespace TownOfUsReworked.Extensions;
 
 public static class PlayerControlExtensions
 {
+    public static void SetOutfit(this PlayerControl player, CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null) =>
+        player.GetComponent<AppearanceHandler>().OverrideOutfit(outfit, type, duration, func);
+
+    public static void QueueOutfit(this PlayerControl player, CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null) =>
+        player.GetComponent<AppearanceHandler>().QueueOutfit(outfit, type, duration, func);
+
     public static bool HasDied(this PlayerControl player) => !player || !player.Data || player.Data.IsDead || player.Data.Disconnected;
 
     public static void RawSetHat(this PlayerControl player, string hatId, ColorPair color) => player.cosmetics.SetHat(hatId, color);
@@ -298,9 +304,9 @@ public static class PlayerControlExtensions
     public static void SetCrewmateColor(this PetBehaviour pet, object colorVal)
     {
         if (colorVal is int colorId and not (-2 or -1))
-            pet.ForEachRenderer(false, (Action<SpriteRenderer>)(x => PlayerMaterial.SetColors(colorId, x)));
-        else if (colorVal is UColor color)
-            pet.ForEachRenderer(false, (Action<SpriteRenderer>)(x => PlayerMaterial.SetColors(color, x)));
+            pet.ForEachRenderer(true, (Action<SpriteRenderer>)(x => PlayerMaterial.SetColors(colorId, x)));
+        else if (colorVal is ColorPair pair)
+            pet.ForEachRenderer(true, (Action<SpriteRenderer>)(x => Colors.Instance.SetRend(pair, x)));
     }
 
     private static void SetRendererColor(object colorVal, SpriteRenderer rend)

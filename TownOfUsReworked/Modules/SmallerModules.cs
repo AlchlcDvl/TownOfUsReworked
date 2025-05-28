@@ -6,7 +6,6 @@ public record SummaryInfo(string PlayerName, string History, string CachedHistor
 
 public record struct PointInTime(Vector3 Position);
 
-[JsonSerializable(typeof(GitHubApiObject))]
 public sealed class GitHubApiObject
 {
     [JsonPropertyName("tag_name")]
@@ -19,7 +18,6 @@ public sealed class GitHubApiObject
     public GitHubApiAsset[] Assets { get; set; }
 }
 
-[JsonSerializable(typeof(GitHubApiAsset))]
 public sealed class GitHubApiAsset
 {
     [JsonPropertyName("browser_download_url")]

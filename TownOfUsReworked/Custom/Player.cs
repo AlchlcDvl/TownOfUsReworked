@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Custom;
 public sealed class CustomPlayer
 {
     public PlayerControl Player { get; }
-    public float SpeedFactor => Player.GetBaseSpeed() * Player.GetModifiedSpeed();
-    public float Size => IsLobby() || Player.HasDied() || HasTask(TaskTypes.MushroomMixupSabotage) ? 1f : Player.GetModifiedSize();
+    // public float SpeedFactor => Player.GetBaseSpeed() * Player.GetModifiedSpeed();
+    // public float Size => IsLobby() || Player.HasDied() || HasTask(TaskTypes.MushroomMixupSabotage) ? 1f : Player.GetModifiedSize();
 
     public static PlayerControl Local => PlayerControl.LocalPlayer;
 

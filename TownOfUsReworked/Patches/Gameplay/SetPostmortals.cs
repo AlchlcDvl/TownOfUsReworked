@@ -104,7 +104,7 @@ public static class SetPostmortals
 
     private static void SetStartingVent(PlayerControl player)
     {
-        if (!player.Data.IsDead || !player.IsPostmortal() || player.Caught())
+        if (!player.Data.IsDead || !player.Is<IGhosty>(out var ghost) || ghost.Caught)
             return;
 
         var ventsArray = AllMapVents().ToArray();

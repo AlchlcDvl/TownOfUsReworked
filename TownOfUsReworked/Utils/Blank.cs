@@ -29,4 +29,6 @@ public static class BlankUtils
     public static string BlankButtonLabel() => "ABILITY";
 
     public static string BlankButtonSprite() => "Placeholder";
+
+    // public static float BlankFloat() => 1f;
 }

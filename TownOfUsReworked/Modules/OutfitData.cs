@@ -1,21 +1,6 @@
 namespace TownOfUsReworked.Modules;
 
 /// <summary>
-/// This struct solely exists because Il2Cpp doesn't like it when I try to have a custom outfit set up. This struct is a wrapper for accessing cosmetic data without triggering Il2Cpp's bs mechanics.
-/// </summary>
-/// <param name="outfit">The outfit to clone from.</param>
-public readonly struct OutfitData(PlayerOutfit outfit)
-{
-    public int ColorId { get; } = outfit.ColorId;
-    public string HatId { get; } = outfit.HatId;
-    public string SkinId { get; } = outfit.SkinId;
-    public string VisorId { get; } = outfit.VisorId;
-    public string NamePlateId { get; } = outfit.NamePlateId;
-    public string PlayerName { get; } = outfit.PlayerName;
-    public string PetId { get; } = outfit.PetId;
-}
-
-/// <summary>
 /// A struct that signifies a pair of colors. Used to simplify some code regarding player material colors.
 /// </summary>
 /// <param name="color1">The first color.</param>

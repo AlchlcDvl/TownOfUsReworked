@@ -3,6 +3,7 @@ namespace TownOfUsReworked.Debugger;
 public sealed class TestingTab : BaseTab
 {
     public override string Name => "Testing";
+    private static bool MoveToNext;
 
     public override void OnGUI()
     {
@@ -16,7 +17,7 @@ public sealed class TestingTab : BaseTab
         if (hiddenBlock != HiddenBlock)
             HiddenBlock = hiddenBlock;
 
-        BlockExposed = GUILayout.Toggle(BlockExposed, "Roleblocked Exposed");
+        BlockExposed = GUILayout.Toggle(BlockExposed, "Roleblock Exposed");
 
         if (CustomPlayer.Local)
             CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Player Collider");
@@ -45,27 +46,42 @@ public sealed class TestingTab : BaseTab
         if (GUILayout.Button("Test Achievement"))
             CustomAchievementManager.UnlockAchievement("Test");
 
-        if (!GUILayout.Button("Randomise Outfit"))
+        if (!CustomPlayer.Local)
             return;
 
-        var r = (byte)URandom.RandomRangeInt(0, 256);
-        var g = (byte)URandom.RandomRangeInt(0, 256);
-        var b = (byte)URandom.RandomRangeInt(0, 256);
+        if (GUILayout.Button("Randomise Outfit"))
+            CustomPlayer.Local.SetOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
 
-        var outfit = new CustomOutfit()
-        {
-            ColorId = CustomColorManager.AllColors.Keys.AddItem(-2).Random(), // TODO: Transition works, name change remaining
-            Color = new(r, g, b, 255), // TODO: Same as above
-            HatId = HatManager.Instance.allHats.Random().ProductId, // TODO: Works, but alpha is still a problem
-            // SkinId = HatManager.Instance.allSkins.Random().ProductId, // Works
-            VisorId = HatManager.Instance.allVisors.Random().ProductId, // TODO: Same as hats
-            // NamePlateId = HatManager.Instance.allNamePlates.Random().ProductId, // No need to check lmao
-            PetId = HatManager.Instance.allPets.Random().ProductId, // Works
-            PlayerName = "", // TODO: Reimplement name handling and its transition (make it letter by letter)
-            // Size = URandom.RandomRange(Dwarf.DwarfScale.Value, Giant.GiantScale), // Works
-            Speed = URandom.RandomRange(GameSettings.PlayerSpeed.Value, GameSettings.GhostSpeed), // TODO: Implement speed and its transition
-            Alpha = URandom.RandomRange(0f, 1f) // Works
-        };
-        CustomPlayer.Local.GetComponent<AppearanceHandler>().OverrideOutfit(outfit, CustomPlayerOutfitType.Custom, 3f);
+        if (GUILayout.Button("Queue Random Outfit"))
+            CustomPlayer.Local.QueueOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
+
+        if (GUILayout.Button("Next Outfit"))
+            MoveToNext = true;
     }
+
+    private static bool ShouldMove()
+    {
+        if (MoveToNext)
+        {
+            MoveToNext = false;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static CustomOutfit GenerateRandomOutfit() => new()
+    {
+        ColorId = CustomColorManager.AllColors.Keys.AddItem(-2).Random(), // TODO: Transition works, name change remaining (refer to PlayerName's TODO)
+        Color = new((byte)URandom.RandomRangeInt(0, 256), (byte)URandom.RandomRangeInt(0, 256), (byte)URandom.RandomRangeInt(0, 256), 255), // TODO: Same as above
+        HatId = HatManager.Instance.allHats.Random().ProductId, // Works
+        SkinId = HatManager.Instance.allSkins.Random().ProductId, // Works
+        VisorId = HatManager.Instance.allVisors.Random().ProductId, // Works
+        NamePlateId = HatManager.Instance.allNamePlates.Random().ProductId, // No need to check lmao
+        PetId = HatManager.Instance.allPets.Random().ProductId, // Works
+        PlayerName = GetRandomisedName(), // TODO: Reimplement name handling and its transition (make it letter by letter)
+        Size = URandom.RandomRange(0.3f, 3f), // Works
+        Speed = URandom.RandomRange(0.25f, 10f), // Works
+        Alpha = URandom.RandomRange(0f, 1f) // Works
+    };
 }

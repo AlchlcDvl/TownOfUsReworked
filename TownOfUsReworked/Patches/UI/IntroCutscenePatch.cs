@@ -89,6 +89,8 @@ public static class IntroCutscenePatches
     {
         if (!IsHnS())
             __result.SetNameColor(CustomPlayer.Local.GetRole().FactionColor);
+
+        __result.transform.localScale *= CustomPlayer.Local.GetSize();
     }
 
     [HarmonyPatch(nameof(IntroCutscene.SelectTeamToShow))]

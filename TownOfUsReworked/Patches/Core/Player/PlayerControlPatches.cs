@@ -214,7 +214,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.Visible), MethodType.Setter), HarmonyPrefix]
     public static void VisiblePrefix(PlayerControl __instance, ref bool value)
     {
-        if (__instance.IsPostmortal() && !__instance.Caught())
+        if (__instance.Is<IGhosty>(out var ghost) && !ghost.Caught)
             value = !__instance.inVent;
         else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && !__instance.AmOwner)
             value = !ClientOptions.HideOtherGhosts;
@@ -293,13 +293,16 @@ public static class PlayerInfoPatches
         __instance.ClientId = reader.ReadPackedInt32();
         var b = reader.ReadByte();
         __instance.Outfits.Clear();
+        var outfits = AppearanceHandler.Handlers[__instance.PlayerId].Outfits;
+        outfits.Clear();
 
         for (var i = 0; i < b; i++)
         {
             var playerOutfitType = (PlayerOutfitType)reader.ReadByte();
-            var playerOutfit = new CustomOutfit();
+            var playerOutfit = new PlayerOutfit();
             playerOutfit.Deserialize(reader);
             __instance.Outfits[playerOutfitType] = playerOutfit;
+            outfits[(CustomPlayerOutfitType)playerOutfitType] = new(playerOutfit);
         }
 
         __instance.PlayerLevel = reader.ReadPackedUInt32();

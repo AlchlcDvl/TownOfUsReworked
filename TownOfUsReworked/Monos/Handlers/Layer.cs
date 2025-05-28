@@ -201,7 +201,7 @@ public sealed class LayerHandler : RoleBehaviour
 
         CustomLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
 
-        Player.CustomSetOutfit(CustomPlayerOutfitType.GameDefault, new CustomOutfit(Player));
+        AppearanceHandler.Handlers[Player.PlayerId].UpdateCurrent();
     }
 
     public override float GetAbilityDistance() => GameSettings.InteractionDistance;

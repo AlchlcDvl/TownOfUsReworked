@@ -40,7 +40,7 @@ public class CustomArrow : IDisposable
 
         ArrowObj = new("CustomArrow") { layer = 5 };
         ArrowObj.transform.SetParent(Owner.transform);
-        ArrowObj.transform.localScale /= CustomPlayer.Custom(Owner).Size;
+        ArrowObj.transform.localScale /= AppearanceHandler.Handlers[Owner.PlayerId].Size;
         Arrow = ArrowObj.AddComponent<ArrowBehaviour>();
         Render = ArrowObj.AddComponent<SpriteRenderer>();
         Render.sprite = GetSprite("Arrow");

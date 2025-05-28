@@ -39,7 +39,6 @@ public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
     public string MainID => ID; // For reflection purposes
 }
 
-[JsonSerializable(typeof(CustomNameplate))]
 public sealed class CustomNameplate : CustomCosmetic<NamePlateViewData, NamePlateData>; // Simplifying the definition
 
 public abstract class AdaptiveCosmetic<TView, TData> : CustomCosmetic<TView, TData>
@@ -56,7 +55,6 @@ public abstract class AdaptiveCosmetic<TView, TData> : CustomCosmetic<TView, TDa
     public bool NoLongMode { get; set; }
 }
 
-// [JsonSerializable(typeof(CustomSkin))]
 // public sealed class CustomSkin : AdaptiveCosmetic<SkinViewData, SkinData>
 // {
 //     [JsonPropertyName("previewHash")]
@@ -95,7 +93,6 @@ public abstract class TopCosmetic<TView, TData> : AdaptiveCosmetic<TView, TData>
     public bool Behind { get; set; }
 }
 
-[JsonSerializable(typeof(CustomHat))]
 public sealed class CustomHat : TopCosmetic<HatViewData, HatData>
 {
     [JsonPropertyName("backId")]
@@ -129,10 +126,8 @@ public sealed class CustomHat : TopCosmetic<HatViewData, HatData>
     public bool BlocksVisors { get; set; }
 }
 
-[JsonSerializable(typeof(CustomVisor))]
 public sealed class CustomVisor : TopCosmetic<VisorViewData, VisorData>; // Simplifying the definition again
 
-[JsonSerializable(typeof(CustomColor))]
 public sealed class CustomColor : CustomCosmetic // There's no view or regular data for this, so we don't need to specify them
 {
     [JsonPropertyName("stringId")]

@@ -146,23 +146,25 @@ public static class HandleAnimation
     [HarmonyPatch(nameof(PlayerPhysics.HandleAnimation))]
     public static void Prefix(PlayerPhysics __instance, ref bool amDead)
     {
-        if (__instance.myPlayer.IsPostmortal())
-            amDead = __instance.myPlayer.Caught();
+        if (__instance.myPlayer.Is<IGhosty>(out var ghost))
+            amDead = ghost.Caught;
     }
 
-    [HarmonyPatch(nameof(PlayerPhysics.ResetMoveState)), HarmonyPostfix]
-    public static void ResetMoveStatePostfix(PlayerPhysics __instance)
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(PlayerPhysics.ResetMoveState))]
+    [HarmonyPatch(nameof(PlayerPhysics.ResetAnimState))]
+    public static void ResetStatePostfix(PlayerPhysics __instance)
     {
-        if (__instance.myPlayer.IsPostmortal())
-            __instance.myPlayer.Collider.enabled = !__instance.myPlayer.Caught();
+        if (__instance.myPlayer.Is<IGhosty>(out var ghost))
+            __instance.myPlayer.Collider.enabled = !ghost.Caught;
     }
 
-    [HarmonyPatch(nameof(PlayerPhysics.FixedUpdate)), HarmonyPostfix]
-    public static void FixedUpdatePostfix(PlayerPhysics __instance)
-    {
-        if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-            __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
-    }
+    // [HarmonyPatch(nameof(PlayerPhysics.FixedUpdate)), HarmonyPostfix]
+    // public static void FixedUpdatePostfix(PlayerPhysics __instance)
+    // {
+    //     if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+    //         __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
+    // }
 }
 
 [HarmonyPatch(typeof(Minigame), nameof(Minigame.Begin))]
@@ -331,16 +333,6 @@ public static class HudPatches
 
     [HarmonyPatch(nameof(HudManager.CoShowIntro))]
     public static void Prefix(HudManager __instance) => __instance.GameLoadAnimation.SetActive(false);
-}
-
-[HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
-public static class SpeedNetworkPatch
-{
-    public static void Postfix(CustomNetworkTransform __instance)
-    {
-        if (!__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-            __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
-    }
 }
 
 [HarmonyPatch(typeof(Constants), nameof(Constants.IsVersionModded))]
@@ -650,8 +642,9 @@ public static class MedScanMinigamePatch
     public static void Postfix(MedScanMinigame __instance)
     {
         var newHeightFeet = 0;
-        var newHeightInch = Mathf.RoundToInt(((3f * 12f) + 6f) * CustomPlayer.Local.GetModifiedSize());
-        var newWeight = Mathf.RoundToInt(92f * CustomPlayer.Local.GetModifiedSize());
+        var size = AppearanceHandler.Handlers[CustomPlayer.Local.PlayerId].Size;
+        var newHeightInch = Mathf.RoundToInt(((3f * 12f) + 6f) * size);
+        var newWeight = Mathf.RoundToInt(92f * size);
 
         while (newHeightInch >= 12)
         {

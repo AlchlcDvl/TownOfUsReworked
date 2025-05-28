@@ -3,23 +3,17 @@ namespace TownOfUsReworked.Monos;
 public sealed class PlayerControlHandler : NameHandler
 {
     private TextMeshPro Name { get; set; }
-    private TextMeshPro Color { get; set; }
-
-    [HideFromIl2Cpp]
-    public AppearanceHandler Appearance { get; private set; }
-
-    [HideFromIl2Cpp]
-    public StatusHandler Statuses { get; private set; }
+    // private TextMeshPro Color { get; set; }
 
     public void Awake()
     {
         Player = GetComponent<PlayerControl>();
         // Custom = CustomPlayer.Custom(Player);
         Name = Player.NameText();
-        Color = Player.ColorBlindText();
+        // Color = Player.ColorBlindText();
         // Size = Player.transform.localScale;
-        Appearance = gameObject.AddComponent<AppearanceHandler>();
-        Statuses = gameObject.AddComponent<StatusHandler>();
+        gameObject.AddComponent<AppearanceHandler>();
+        gameObject.AddComponent<StatusHandler>();
     }
 
     public void Update()
@@ -27,7 +21,7 @@ public sealed class PlayerControlHandler : NameHandler
         if (!Player || !Player.Data || NoLobby())
             return;
 
-        PlayerNames[Player.PlayerId] = Player.name;
+        // PlayerNames[Player.PlayerId] = Player.name;
         ColorNames[Player.PlayerId] = Player.Data.ColorName;
 
         if (Meeting())
@@ -36,7 +30,10 @@ public sealed class PlayerControlHandler : NameHandler
         // (Color.text, Color.color) = UpdateColorblind(Player);
 
         if (!IsInGame() || Player.Data.Role is not LayerHandler handler || CustomPlayer.Local.Data.Role is not LayerHandler localHandler)
+        {
+            (Name.text, Name.color) = (Player.name, UColor.white);
             return;
+        }
 
         handler.UpdatePlayer();
         localHandler.UpdatePlayer(Player);

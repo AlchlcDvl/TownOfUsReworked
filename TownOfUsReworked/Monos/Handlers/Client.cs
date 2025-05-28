@@ -442,8 +442,8 @@ public sealed class ClientHandler : MonoBehaviour
 
         if (ZoomButton)
         {
-            ZoomButton.gameObject.SetActive(hud.MapButton.isActiveAndEnabled && CustomPlayer.Local.HasDied() && IsInGame() && part2 && !RoleCardActive && (!CustomPlayer.Local.IsPostmortal() ||
-                CustomPlayer.Local.Caught()));
+            ZoomButton.gameObject.SetActive(hud.MapButton.isActiveAndEnabled && CustomPlayer.Local.HasDied() && IsInGame() && part2 && !RoleCardActive && (!CustomPlayer.Local.Is<IGhosty>(out var
+                ghost) || ghost.Caught));
         }
 
         if (PhoneText)

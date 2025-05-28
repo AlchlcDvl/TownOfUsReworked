@@ -284,8 +284,7 @@ public static class MiscUtils
         VisorId = "visor_EmptyVisor",
         NamePlateId = "nameplate_NoPlate",
         PlayerName = " ",
-        PetId = "pet_EmptyPet",
-        Alpha = 1f
+        PetId = "pet_EmptyPet"
     };
 
     public static CustomOutfit NightVisionOutfit() => new()
@@ -1187,7 +1186,7 @@ public static class MiscUtils
 
     public static void CustomDie(this PlayerControl player, DeathReasonEnum customReason, PlayerControl killer = null, DeathReason reason = DeathReason.Kill)
     {
-        if (player.Data.IsDead && !player.IsPostmortal())
+        if (player.Data.IsDead && !player.Is<IGhosty>())
             return;
 
         killer ??= player;
@@ -1289,12 +1288,12 @@ public static class MiscUtils
             CheckEndGame.CheckPlayerWins();
     }
 
-    public static IEnumerator CoPerformKill(KillAnimation animation, PlayerControl killer, PlayerControl target, DeathReasonEnum reason, bool lunge)
+    public static IEnumerator CoPerformKill(KillAnimation animation, PlayerControl killer, PlayerControl victim, DeathReasonEnum reason, bool lunge)
     {
         var cam = HUD().PlayerCam;
-        var isParticipant = killer.AmOwner || target.AmOwner;
+        var isParticipant = killer.AmOwner || victim.AmOwner;
         KillAnimation.SetMovement(killer, false);
-        KillAnimation.SetMovement(target, false);
+        KillAnimation.SetMovement(victim, false);
 
         if (isParticipant)
         {
@@ -1304,13 +1303,13 @@ public static class MiscUtils
         }
 
         var deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
-        deadBody.name = target.name + "Body";
+        deadBody.name = victim.name + "Body";
         deadBody.enabled = false;
-        deadBody.ParentId = target.PlayerId;
+        deadBody.ParentId = victim.PlayerId;
         deadBody.AddComponent<DeadBodyHandler>();
-        target.SetPlayerMaterialColors(deadBody.bloodSplatter);
-        target.GetComponent<AppearanceHandler>().Body = deadBody;
-        var vector = target.transform.position + animation.BodyOffset;
+        victim.SetPlayerMaterialColors(deadBody.bloodSplatter);
+        AppearanceHandler.Handlers[victim.PlayerId].Body = deadBody;
+        var vector = victim.transform.position + animation.BodyOffset;
         vector.z = vector.y / 1000f;
         deadBody.transform.position = vector;
 
@@ -1321,17 +1320,17 @@ public static class MiscUtils
             CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
         }
 
-        target.CustomDie(reason, killer);
+        victim.CustomDie(reason, killer);
 
-        if (lunge && killer != target)
+        if (lunge && killer != victim)
         {
             yield return killer.MyPhysics.Animations.CoPlayCustomAnimation(animation.BlurAnim);
-            killer.CustomSnapTo(target.transform.position);
+            killer.CustomSnapTo(victim.transform.position);
         }
 
         killer.MyPhysics.Animations.PlayIdleAnimation();
         KillAnimation.SetMovement(killer, true);
-        KillAnimation.SetMovement(target, true);
+        KillAnimation.SetMovement(victim, true);
         deadBody.enabled = true;
 
         if (killer.Is<PlayerLayers.Roles.Void>())
@@ -1386,7 +1385,7 @@ public static class MiscUtils
         anim.material = HatManager.Instance.PlayerMaterial;
         anim.transform.position = new(player.GetTruePosition().x, player.GetTruePosition().y + 0.35f, player.transform.position.z - 0.01f);
         anim.flipX = player.MyRend().flipX;
-        anim.transform.localScale *= 0.89f * player.GetModifiedSize();
+        anim.transform.localScale *= 0.89f * AppearanceHandler.Handlers[player.PlayerId].Size;
 
         if (IsSubmerged())
             go.AddSubmergedComponent("ElevatorMover");

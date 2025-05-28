@@ -177,7 +177,7 @@ public static class Blocked
 
         __instance.SabotageButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "SABOTAGE";
         __instance.SabotageButton.ToggleVisible(CustomPlayer.Local.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
-        __instance.AbilityButton.ToggleVisible((IsHnS() ? !CustomPlayer.Local.IsImpostor() : (!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught())) && CustomPlayer.Local.HasDied());
+        __instance.AbilityButton.ToggleVisible((IsHnS() ? !CustomPlayer.Local.IsImpostor() : (!CustomPlayer.Local.Is<IGhosty>(out var ghost) || ghost.Caught)) && CustomPlayer.Local.HasDied());
         __instance.FullScreen.enabled = true;
         __instance.FullScreen.gameObject.SetActive(true);
     }

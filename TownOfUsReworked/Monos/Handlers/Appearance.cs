@@ -2,41 +2,44 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class AppearanceHandler : MonoBehaviour
 {
+    public static readonly Dictionary<byte, AppearanceHandler> Handlers = [];
+
     private static readonly Vector3 BaseSize = new(0.7f, 0.7f, 0.7f);
     private static readonly float[] AlphaSequence = [1f, 0f, 1f];
 
     public DeadBody Body { get; set; }
     public float Speed { get; private set; } = 1f;
+    public float Size { get;  private set; } = 1f;
+    public CustomPlayerOutfitType CurrentOutfitType { get; private set; }
+    public PlayerControl Mimicked { get; private set; }
+
+    public readonly Dictionary<CustomPlayerOutfitType, CustomOutfit> Outfits = [];
 
     private PlayerControl Player { get; set; }
     private TextMeshPro Name { get; set; }
     private TextMeshPro Color { get; set; }
     private float OutfitTime { get; set; }
     private bool Transitioning { get; set; }
-    private float Size { get; set; } = 1f;
-
-    [HideFromIl2Cpp]
-    private CustomOutfit Current
-    {
-        get;
-        set
-        {
-            field = value;
-            CurrentData = value.GetData();
-        }
-    }
-
-    [HideFromIl2Cpp]
-    private OutfitData CurrentData { get; set; }
-
-    [HideFromIl2Cpp]
-    private CustomOutfit GameDefault { get; set; }
-
-    [HideFromIl2Cpp]
-    private CustomOutfit LobbyDefault { get; set; }
+    private float Alpha { get; set; } = 1f;
+    private int ColorId { get; set; } = -1;
+    private CustomOutfit Current { get; set; }
 
     [HideFromIl2Cpp]
     private Func<bool> ShouldChangeFunc { get; set; } = BlankFalse;
+
+    private CustomOutfit Default
+    {
+        get => IsLobby() ? lobbyDefault : gameDefault;
+        set
+        {
+            if (IsLobby())
+                lobbyDefault = value;
+            else
+                gameDefault = value;
+        }
+    }
+    private CustomOutfit gameDefault;
+    private CustomOutfit lobbyDefault;
 
     private readonly Queue<(CustomOutfit, CustomPlayerOutfitType, float, Func<bool>)> QueuedOutfits = [];
 
@@ -63,18 +66,27 @@ public sealed class AppearanceHandler : MonoBehaviour
         if (shouldUpdate || ShouldChangeFunc())
         {
             var former = GetCurrent();
-            (Current, var type, OutfitTime, ShouldChangeFunc) = QueuedOutfits.TryDequeue(out var queue) ? queue : (GetDefault(), IsLobby()
+            (Current, CurrentOutfitType, OutfitTime, ShouldChangeFunc) = QueuedOutfits.TryDequeue(out var queue) ? queue : (Default, IsLobby()
                 ? CustomPlayerOutfitType.Default
                 : CustomPlayerOutfitType.GameDefault,
                 -1, BlankFalse);
-            ChangeTo(former, Current, (PlayerOutfitType)type);
+            ChangeTo(former, Current, CurrentOutfitType);
         }
 
         BodyUpdate();
         PlayerUpdate();
     }
 
-    public void UpdateCurrent() => Current = LobbyDefault = new(Player.Data.Outfits[PlayerOutfitType.Default]);
+    public void UpdateCurrent()
+    {
+        Current = Default = new(Player.Data.Outfits[PlayerOutfitType.Default]);
+        Handlers[Player.PlayerId] = this;
+        Alpha = Current.Alpha;
+        Size = Current.Size;
+        Speed = Current.Speed;
+        CurrentOutfitType = IsLobby() ? CustomPlayerOutfitType.Default : CustomPlayerOutfitType.GameDefault;
+        Outfits[CurrentOutfitType] = Default;
+    }
 
     private void BodyUpdate()
     {
@@ -94,35 +106,40 @@ public sealed class AppearanceHandler : MonoBehaviour
         if (Transitioning)
             return;
 
-        var current = GetCurrent();
+        if (CustomColorManager.AllColors.TryGetValue(ColorId, out var color) && color.Changing)
+            Color.color = color.GetMainColor().SetAlpha(Alpha);
 
-        if (CurrentData.ColorId.IsChanging())
-            Color.color = current.ColorId.GetColor(false);
-
-        Player.SetHatAndVisorAlpha(current.Alpha);
+        Player.SetHatAndVisorAlpha(Alpha);
     }
 
     [HideFromIl2Cpp]
-    public CustomOutfit GetCurrent() => Current ?? GetDefault();
+    public CustomOutfit GetCurrent() => Current ?? Default;
 
     [HideFromIl2Cpp]
-    public CustomOutfit GetDefault() => IsLobby()
-        ? (LobbyDefault ??= (Player.Data.Outfits[PlayerOutfitType.Default].TryCast<CustomOutfit>(out var def) ? def : new(Player)))
-        : (GameDefault ??= (Player.Data.Outfits[(PlayerOutfitType)CustomPlayerOutfitType.GameDefault].TryCast(out def) ? def : new(Player)));
+    public void QueueOutfit(CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null)
+    {
+        if (QueuedOutfits.Count == 0 && !Transitioning)
+            OverrideOutfit(outfit, type, duration, func);
+        else
+            QueuedOutfits.Enqueue((outfit, type, duration, func ?? BlankFalse));
+    }
 
     [HideFromIl2Cpp]
-    public void QueueOutfit(CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null) => QueuedOutfits.Enqueue((outfit, type, duration, func ?? BlankFalse));
+    public void SetMimicked(PlayerControl mimicked, float duration, Func<bool> func)
+    {
+        Mimicked = mimicked;
+        QueueOutfit(new(mimicked), CustomPlayerOutfitType.Morph, duration, func);
+    }
 
     [HideFromIl2Cpp]
     public void OverrideOutfit(CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null, CustomOutfit former = null)
     {
         former ??= GetCurrent();
-        (Current, OutfitTime, ShouldChangeFunc) = (outfit, duration, func ?? BlankFalse);
-        ChangeTo(former, Current, (PlayerOutfitType)type);
+        (Current, OutfitTime, ShouldChangeFunc, CurrentOutfitType) = (outfit, duration, func ?? BlankFalse, type);
+        ChangeTo(former, Current, type);
     }
 
-    [HideFromIl2Cpp]
-    private void ChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, PlayerOutfitType type)
+    private void ChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, CustomPlayerOutfitType type)
     {
         if (formerOutfit == null)
             throw new ArgumentNullException(nameof(formerOutfit));
@@ -130,56 +147,59 @@ public sealed class AppearanceHandler : MonoBehaviour
         if (newOutfit == null)
             throw new ArgumentNullException(nameof(newOutfit));
 
-        this.StartCoroutine(CoChangeTo(formerOutfit.GetData(), newOutfit.GetData(), formerOutfit, newOutfit, type));
+        this.StartCoroutine(CoChangeTo(formerOutfit, newOutfit, type));
     }
 
-    [HideFromIl2Cpp]
-    private IEnumerator CoChangeTo(OutfitData formerData, OutfitData newData, CustomOutfit formerOutfit, CustomOutfit newOutfit, PlayerOutfitType type)
+    private IEnumerator CoChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, CustomPlayerOutfitType type)
     {
         Transitioning = true;
-        var playerName = formerData.PlayerName;
-        var colorName = formerData.ColorId is -1 or -2
-            ? "???"
-            : TranslationController.Instance.GetString(CustomColorManager.AllColors[formerData.ColorId].StringID)
-            + (ClientOptions.LighterDarker
-                ? ("(" + ((formerData.ColorId is -1 or -2 ? formerOutfit.Color.IsDark() : !formerData.ColorId.IsLighter()) ? "D" : "L") + ")")
-                : "");
+        // var colorName = formerData.ColorId is -1 or -2
+        //     ? "???"
+        //     : TranslationController.Instance.GetString(CustomColorManager.AllColors[formerData.ColorId].StringID)
+        //     + (ClientOptions.LighterDarker
+        //         ? ("(" + ((formerData.ColorId is -1 or -2 ? formerOutfit.Color.IsDark() : !formerData.ColorId.IsLighter()) ? "D" : "L") + ")")
+        //         : "");
         var change = ChangeCosmetics.None;
-        change |= formerData.ColorId != newData.ColorId || !formerOutfit.Color.IsColorEqual(newOutfit.Color) ? ChangeCosmetics.Color : ChangeCosmetics.None;
-        change |= formerData.HatId != newData.HatId ? ChangeCosmetics.Hat : ChangeCosmetics.None;
-        change |= formerData.PetId != newData.PetId ? ChangeCosmetics.Pet : ChangeCosmetics.None;
-        change |= formerData.VisorId != newData.VisorId ? ChangeCosmetics.Visor : ChangeCosmetics.None;
-        change |= formerData.SkinId != newData.SkinId ? ChangeCosmetics.Skin : ChangeCosmetics.None;
+        change |= formerOutfit.ColorId != newOutfit.ColorId || !formerOutfit.Color.IsColorEqual(newOutfit.Color) ? ChangeCosmetics.Color : ChangeCosmetics.None;
+        change |= formerOutfit.HatId != newOutfit.HatId ? ChangeCosmetics.Hat : ChangeCosmetics.None;
+        change |= formerOutfit.PetId != newOutfit.PetId ? ChangeCosmetics.Pet : ChangeCosmetics.None;
+        change |= formerOutfit.VisorId != newOutfit.VisorId ? ChangeCosmetics.Visor : ChangeCosmetics.None;
+        change |= formerOutfit.SkinId != newOutfit.SkinId ? ChangeCosmetics.Skin : ChangeCosmetics.None;
+        change |= formerOutfit.PlayerName != newOutfit.PlayerName ? ChangeCosmetics.Name : ChangeCosmetics.None;
 
         var color = formerOutfit.GetPair();
-        Player.RawSetHat(formerData.HatId, color);
-        Player.RawSetVisor(formerData.VisorId, color);
-        Player.RawSetSkin(formerData.SkinId, color);
-        Player.RawSetPet(formerData.PetId, color);
+        Player.RawSetHat(formerOutfit.HatId, color);
+        Player.RawSetVisor(formerOutfit.VisorId, color);
+        Player.RawSetSkin(formerOutfit.SkinId, color);
+        Player.RawSetPet(formerOutfit.PetId, color);
 
         yield return PerformTimedAction(0.5f, t => HandleAlpha(t, formerOutfit, newOutfit, 0f, change));
 
         color = ColorPair.Lerp(formerOutfit.GetPair(), newOutfit.GetPair(), 0.5f);
-        Player.RawSetHat(newData.HatId, color);
-        Player.RawSetVisor(newData.VisorId, color);
-        Player.RawSetSkin(newData.SkinId, color);
-        Player.RawSetPet(newData.PetId, color);
+        Player.RawSetHat(newOutfit.HatId, color);
+        Player.RawSetVisor(newOutfit.VisorId, color);
+        Player.RawSetSkin(newOutfit.SkinId, color);
+        Player.RawSetPet(newOutfit.PetId, color);
 
         yield return PerformTimedAction(0.5f, t => HandleAlpha(t, formerOutfit, newOutfit, 0.5f, change));
 
-        Player.Data.Outfits[type] = newOutfit;
-
-        if (newData.ColorId is -1 or -2) // The reason why I'm using -2 is because -1 is used to indicate if the outfit is incomplete
+        if (newOutfit.ColorId is not (-1 or -2)) // The reason why I'm using -2 is because -1 is used to indicate if the outfit is incomplete
         {
-            Transitioning = false;
-            yield break;
+            PlayerMaterial.SetColors(newOutfit.ColorId, Player.MyRend());
+            Player.RawSetHat(newOutfit.HatId, newOutfit.ColorId);
+            Player.RawSetVisor(newOutfit.VisorId, newOutfit.ColorId);
+            Player.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
+            Player.RawSetPet(newOutfit.PetId, newOutfit.ColorId);
+            Body?.bodyRenderers?.Do(x => PlayerMaterial.SetColors(newOutfit.ColorId, x));
         }
 
-        PlayerMaterial.SetColors(newData.ColorId, Player.MyRend());
-        Player.RawSetHat(newData.HatId, newData.ColorId);
-        Player.RawSetVisor(newData.VisorId, newData.ColorId);
-        Player.RawSetSkin(newData.SkinId, newData.ColorId);
-        Player.RawSetPet(newData.PetId, newData.ColorId);
+        Outfits[type] = newOutfit;
+        Player.Data.Outfits[(PlayerOutfitType)type] = newOutfit;
+        ColorId = newOutfit.ColorId;
+        Player.name = newOutfit.PlayerName;
+
+        if (Body)
+            Body.name = newOutfit.PlayerName + "Body";
 
         Transitioning = false;
     }
@@ -190,23 +210,21 @@ public sealed class AppearanceHandler : MonoBehaviour
         Size = Mathf.Lerp(formerOutfit.Size, newOutfit.Size, trueT);
         Speed = Mathf.Lerp(formerOutfit.Speed, newOutfit.Speed, trueT);
 
-        var alpha = Mathf.Lerp(formerOutfit.Alpha, newOutfit.Alpha, trueT);
-        Player.cosmetics.PettingHand.SetAlpha(alpha);
-        Player.cosmetics.currentBodySprite.BodySprite.SetAlpha(alpha);
+        Alpha = Mathf.Lerp(formerOutfit.Alpha, newOutfit.Alpha, trueT);
+        Player.cosmetics.PettingHand.SetAlpha(Alpha);
+        Player.cosmetics.currentBodySprite.BodySprite.SetAlpha(Alpha);
 
-        var clamped = alpha * MultiLerp(AlphaSequence, trueT);
+        var clamped = Alpha * MultiLerp(AlphaSequence, trueT);
+        Player.cosmetics.hat.SpriteColor = UColor.white.SetAlpha(change.HasFlag(ChangeCosmetics.Hat) ? clamped : Alpha);
+        Player.cosmetics.currentPet.SetAlpha(change.HasFlag(ChangeCosmetics.Pet) ? clamped : Alpha);
+        Player.cosmetics.visor.Alpha = change.HasFlag(ChangeCosmetics.Visor) ? clamped : Alpha;
+        Player.cosmetics.skin.layer.SetAlpha(change.HasFlag(ChangeCosmetics.Skin) ? clamped : Alpha);
 
-        if (change.HasFlag(ChangeCosmetics.Hat))
-            Player.cosmetics.hat.SpriteColor = UColor.white.SetAlpha(clamped);
-
-        if (change.HasFlag(ChangeCosmetics.Pet))
-            Player.cosmetics.currentPet.SetAlpha(clamped);
-
-        if (change.HasFlag(ChangeCosmetics.Visor))
-            Player.cosmetics.visor.Alpha = clamped;
-
-        if (change.HasFlag(ChangeCosmetics.Skin))
-            Player.cosmetics.skin.layer.SetAlpha(clamped);
+        if (change.HasFlag(ChangeCosmetics.Name))
+        {
+            // WIP
+            Name.color = Name.color.SetAlpha(Alpha);
+        }
 
         if (!change.HasFlag(ChangeCosmetics.Color))
             return;
@@ -218,11 +236,50 @@ public sealed class AppearanceHandler : MonoBehaviour
         Colors.Instance.SetRend(color, Player.cosmetics.hat.FrontLayer);
         Colors.Instance.SetRend(color, Player.cosmetics.visor.Image);
         Colors.Instance.SetRend(color, Player.cosmetics.skin.layer);
-        Player.cosmetics.currentPet.renderers.Do(x => Colors.Instance.SetRend(color, x));
-        Player.cosmetics.currentPet.shadows.Do(x => Colors.Instance.SetRend(color, x));
-        Color.color = color.Color1;
+        Player.cosmetics.currentPet.SetCrewmateColor(color);
+        Color.color = color.Color1.SetAlpha(Alpha);
+        Body?.bodyRenderers?.Do(x => Colors.Instance.SetRend(color, x));
+    }
 
-        if (Body)
-            Body.bodyRenderers.Do(x => Colors.Instance.SetRend(color, x));
+    public float GetTrueSpeed()
+    {
+        if (HUD().IsIntroDisplayed)
+            return 0f;
+
+        if (Player.Is<Hunter>(out var hunt))
+            return hunt.Starting ? 0f : Hunter.HunterSpeedModifier;
+
+        var result = 1f;
+
+        if (Player.Is<Drunk>(out var drunk))
+            result *= drunk.Modify;
+
+        if (DeadBodyHandler.Dragging.Contains(Player.PlayerId))
+            result *= Janitor.DragModifier;
+
+        if (PlayerLayer.GetLayers<Drunkard>().Any(x => x.ConfuseButton.EffectActive && (x.HoldsDrive || (x.ConfusedPlayer == Player && !x.HoldsDrive))))
+            result *= -1;
+
+        if (PlayerLayer.GetLayers<Timekeeper>().TryFinding(x => x.TimeButton.EffectActive, out var tk))
+        {
+            if ((tk.Faction is not (Faction.Crew or Faction.Neutral) && !Player.Is(tk.Faction)) || (!tk.HoldsDrive && !Timekeeper.TimeFreezeImmunity) || (tk.HoldsDrive &&
+                !Timekeeper.TimeRewindImmunity))
+            {
+                result = 0f;
+            }
+        }
+
+        if (Player.Is<ITrapper>(out var trap))
+            result *= trap.Building ? 0f : 1f;
+
+        if (Ship()?.Systems?.TryGetValue(SystemTypes.LifeSupp, out var life) == true)
+        {
+            var lifeSuppSystemType = life.TryCast<LifeSuppSystemType>();
+
+            if (lifeSuppSystemType!.IsActive && BetterSabotages.OxySlow && !Player.HasDied())
+                result *= Mathf.Lerp(1f, 0.25f, lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration);
+        }
+
+        return Speed * result;
     }
 }

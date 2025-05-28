@@ -17,14 +17,13 @@ public sealed class Footprint : MonoBehaviour
 
         Color = (Grey ? 39 : Player.CurrentOutfit().ColorId).GetColor(false);
 
-        gameObject.transform.localScale *= Player.GetModifiedSize();
-        gameObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Player.MyPhysics.body.velocity));
-        gameObject.transform.SetParent(Player.transform.parent);
-        gameObject.transform.position = Player.GetTruePosition() + new Vector2(0, 0.366667f);
+        transform.localScale *= AppearanceHandler.Handlers[Player.PlayerId].Size;
+        transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Player.MyPhysics.body.velocity));
+        transform.SetParent(Player.transform.parent);
+        transform.position = Player.GetTruePosition() + new Vector2(0, 0.366667f);
 
         Sprite = gameObject.AddComponent<SpriteRenderer>();
         Sprite.sprite = GetSprite("Footprint" + (IsEven ? "Left" : "Right"));
-        Sprite.color = Color;
 
         if (IsSubmerged())
             gameObject.AddSubmergedComponent("ElevatorMover");

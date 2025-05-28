@@ -9,4 +9,5 @@ public enum ChangeCosmetics
     Visor = 1 << 2,
     Skin = 1 << 3,
     Pet = 1 << 4,
+    Name = 1 << 5
 }

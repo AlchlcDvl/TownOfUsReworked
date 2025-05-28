@@ -202,7 +202,7 @@ public static class ModCompatibilityManager
 
         var player = __instance.myPlayer;
 
-        if (!player.IsPostmortal() || player.Caught())
+        if (!player.Is<IGhosty>(out var ghost) || ghost.Caught)
             return;
 
         if (player.AmOwner)
@@ -260,7 +260,7 @@ public static class ModCompatibilityManager
 
     public static bool SpawnPatch(dynamic __instance)
     {
-        if ((!CustomPlayer.Local.IsPostmortal() || CustomPlayer.Local.Caught()) && (!CustomPlayer.Local.Is<Astral>(out var astral) || astral.LastPosition == Vector3.zero || astral.Dead))
+        if ((!CustomPlayer.Local.Is<IGhosty>(out var ghost) || ghost.Caught) && (!CustomPlayer.Local.Is<Astral>(out var astral) || astral.LastPosition == Vector3.zero || astral.Dead))
             return true;
 
         HUD().FullScreen.color = HUD().FullScreen.color.SetAlpha(0f);

@@ -29,7 +29,7 @@ public sealed class DeadBodyHandler : NameHandler
         else
             CustomColorManager.SetColor(Rend, ColorId);
 
-        Body.transform.localScale = Size * Custom.Size;
+        // Body.transform.localScale = Size * Custom.Size;
 
         if (!Dragger)
             return;

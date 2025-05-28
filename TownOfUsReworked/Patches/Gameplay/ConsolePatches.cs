@@ -116,7 +116,7 @@ public static class CanUseCrew
 {
     public static bool Prefix(CrewmateGhostRole __instance, ref bool __result)
     {
-        if (!__instance.Player.IsPostmortal() || __instance.Player.Caught())
+        if (!__instance.Player.Is<IGhosty>(out var ghost) || ghost.Caught)
             return true;
 
         __result = true;
@@ -130,7 +130,7 @@ public static class CanUsePatch
     {
         __state = false;
 
-        if (!IsInGame() || !pc.Object.IsPostmortal() || pc.Object.Caught())
+        if (!IsInGame() || !pc.Object.Is<IGhosty>(out var ghost) || ghost.Caught)
             return;
 
         pc.IsDead = false;

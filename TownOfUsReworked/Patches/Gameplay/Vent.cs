@@ -112,7 +112,7 @@ public static class VentPatches
         if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
             return false;
 
-        if (!vent.IsBombed() || CustomPlayer.Local.IsPostmortal() || !CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
+        if (!vent.IsBombed() || CustomPlayer.Local.Is<IGhosty>() || !CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
             return true;
 
         CustomPlayer.Local.RpcSuicide();
