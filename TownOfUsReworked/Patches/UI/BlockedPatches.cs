@@ -147,9 +147,10 @@ public static class Blocked
 
         __instance.ImpostorVentButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.ToggleVisible((LocalPlayer.CanVent() || LocalPlayer.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
+        var cannotUse = LocalPlayer.CannotUse();
         var closestDead = handler.CustomModifier is Shy ? null : LocalPlayer.GetClosestBody(maxDistance: LocalPlayer.lightSource.viewDistance);
 
-        if (!closestDead || LocalPlayer.CannotUse() || BlockExposed)
+        if (!closestDead || cannotUse || BlockExposed)
             __instance.ReportButton.SetDisabled();
         else
             __instance.ReportButton.SetEnabled();
@@ -163,14 +164,14 @@ public static class Blocked
 
         __instance.UseButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "USE";
 
-        if (LocalPlayer.CannotUse() || BlockExposed)
+        if (cannotUse || BlockExposed)
             __instance.PetButton.SetDisabled();
         else
             __instance.PetButton.SetEnabled();
 
         __instance.PetButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "PET";
 
-        if (LocalPlayer.CannotUse() || !LocalPlayer.CanSabotage() || BlockExposed)
+        if (cannotUse || BlockExposed)
             __instance.SabotageButton.SetDisabled();
         else
             __instance.SabotageButton.SetEnabled();

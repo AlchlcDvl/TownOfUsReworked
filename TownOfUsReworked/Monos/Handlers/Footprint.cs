@@ -14,7 +14,7 @@ public sealed class FootprintHandler : MonoBehaviour
 
     public void Update()
     {
-        if (Player.HasDied() || Player.AmOwner || Meeting())
+        if (Player.HasDied() || Meeting())
             return;
 
         Time2 += Time.deltaTime;

@@ -267,6 +267,7 @@ public static class MiscUtils
     private static CustomOutfit CamoOutfit(PlayerControl player) => new(player)
     {
         PlayerName = GetRandomisedName(),
+        ColorName = GetRandomisedName(),
         Size = BetterSabotages.CamoHideSize ? 1f : player.GetSize(),
         Speed = BetterSabotages.CamoHideSpeed ? 1f : player.GetSpeed()
     };

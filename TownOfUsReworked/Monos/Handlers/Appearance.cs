@@ -9,9 +9,13 @@ public sealed class AppearanceHandler : MonoBehaviour
 
     public DeadBody Body { get; set; }
     public float Speed { get; private set; } = 1f;
-    public float Size { get;  private set; } = 1f;
+    public float Size { get; private set; } = 1f;
+    public float Alpha { get; private set; } = 1f;
     public CustomPlayerOutfitType CurrentOutfitType { get; private set; }
     public PlayerControl Mimicked { get; private set; }
+
+    [HideFromIl2Cpp]
+    public CustomOutfit Current { get; set; }
 
     public readonly Dictionary<CustomPlayerOutfitType, CustomOutfit> Outfits = [];
 
@@ -20,15 +24,10 @@ public sealed class AppearanceHandler : MonoBehaviour
     private TextMeshPro Color { get; set; }
     private float OutfitTime { get; set; }
     private bool Transitioning { get; set; }
-    private float Alpha { get; set; } = 1f;
     private int ColorId { get; set; } = -1;
 
     [HideFromIl2Cpp]
-    private CustomOutfit Current { get; set; }
-
-    [HideFromIl2Cpp]
     private Func<bool> ShouldChangeFunc { get; set; } = BlankFalse;
-
 
     [HideFromIl2Cpp]
     private CustomOutfit Default
@@ -55,6 +54,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Color = Player.ColorBlindText();
         Color.transform.localPosition = new(0f, -1.5f, -0.5f);
         Name.transform.localPosition = new(0f, -0.2f, -0.5f);
+        Color.name = Player.Data.ColorName;
     }
 
     public void Update()
@@ -75,6 +75,7 @@ public sealed class AppearanceHandler : MonoBehaviour
                 : CustomPlayerOutfitType.GameDefault,
                 -1, BlankFalse);
             ChangeTo(former, Current, CurrentOutfitType);
+            Mimicked = null;
         }
 
         BodyUpdate();
@@ -88,6 +89,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Alpha = Current.Alpha;
         Size = Current.Size;
         Speed = Current.Speed;
+        Color.name = Color.text = Current.ColorName + (ClientOptions.LighterDarker && IsInGame() ? $" ({Current.GetLightOrDark()})" : "");
         CurrentOutfitType = IsLobby() ? CustomPlayerOutfitType.Default : CustomPlayerOutfitType.GameDefault;
         Outfits[CurrentOutfitType] = Default;
     }
@@ -159,7 +161,7 @@ public sealed class AppearanceHandler : MonoBehaviour
     private IEnumerator CoChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, CustomPlayerOutfitType type)
     {
         Transitioning = true;
-        var colorName = formerOutfit.ColorName + (ClientOptions.LighterDarker ? $"({formerOutfit.GetLightOrDark()})" : "");
+
         var change = ChangeCosmetics.None;
         change |= formerOutfit.ColorId != newOutfit.ColorId || !formerOutfit.Color.IsColorEqual(newOutfit.Color) ? ChangeCosmetics.Color : ChangeCosmetics.None;
         change |= formerOutfit.HatId != newOutfit.HatId ? ChangeCosmetics.Hat : ChangeCosmetics.None;
@@ -173,31 +175,52 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.RawSetVisor(formerOutfit.VisorId, color);
         Player.RawSetSkin(formerOutfit.SkinId, color);
         Player.RawSetPet(formerOutfit.PetId, color);
+        Body?.bodyRenderers?.Do(x => CustomColorManager.SetColor(x, color));
 
-        yield return PerformTimedAction(0.5f, t => HandleAlpha(t, formerOutfit, newOutfit, 0f, change));
+        Color.name = formerOutfit.ColorName + (ClientOptions.LighterDarker ? $"({formerOutfit.GetLightOrDark()})" : "");
+        Player.name = formerOutfit.PlayerName;
+
+        var playerRend = Player.MyRend();
+
+        yield return PerformTimedAction(0.5f, t => HandleAlpha(t, formerOutfit, newOutfit, 0f, change, playerRend, false));
 
         color = ColorPair.Lerp(formerOutfit.GetPair(), newOutfit.GetPair(), 0.5f);
+        CustomColorManager.SetColor(playerRend, color);
         Player.RawSetHat(newOutfit.HatId, color);
         Player.RawSetVisor(newOutfit.VisorId, color);
         Player.RawSetSkin(newOutfit.SkinId, color);
         Player.RawSetPet(newOutfit.PetId, color);
+        Body?.bodyRenderers?.Do(x => CustomColorManager.SetColor(x, color));
 
-        yield return PerformTimedAction(0.5f, t => HandleAlpha(t, formerOutfit, newOutfit, 0.5f, change));
+        Color.name = newOutfit.ColorName + (ClientOptions.LighterDarker ? $"({newOutfit.GetLightOrDark()})" : "");
+        Player.name = newOutfit.PlayerName;
 
-        if (newOutfit.ColorId is not (-1 or -2)) // The reason why I'm using -2 is because -1 is used to indicate if the outfit is incomplete
+        yield return PerformTimedAction(0.5f, t => HandleAlpha(t, formerOutfit, newOutfit, 0.5f, change, playerRend, true));
+
+        // The reason why I'm using -2 is because -1 is used to indicate if the outfit is incomplete
+        if (newOutfit.ColorId is not (-1 or -2))
         {
-            PlayerMaterial.SetColors(newOutfit.ColorId, Player.MyRend());
+            PlayerMaterial.SetColors(newOutfit.ColorId, playerRend);
             Player.RawSetHat(newOutfit.HatId, newOutfit.ColorId);
             Player.RawSetVisor(newOutfit.VisorId, newOutfit.ColorId);
             Player.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
             Player.RawSetPet(newOutfit.PetId, newOutfit.ColorId);
             Body?.bodyRenderers?.Do(x => PlayerMaterial.SetColors(newOutfit.ColorId, x));
         }
+        else
+        {
+            color = newOutfit.GetPair();
+            CustomColorManager.SetColor(playerRend, color);
+            Player.RawSetHat(newOutfit.HatId, color);
+            Player.RawSetVisor(newOutfit.VisorId, color);
+            Player.RawSetSkin(newOutfit.SkinId, color);
+            Player.RawSetPet(newOutfit.PetId, color);
+            Body?.bodyRenderers?.Do(x => CustomColorManager.SetColor(x, color));
+        }
 
         Outfits[type] = newOutfit;
         Player.Data.Outfits[(PlayerOutfitType)type] = newOutfit;
         ColorId = newOutfit.ColorId;
-        Player.name = newOutfit.PlayerName;
 
         if (Body)
             Body.name = newOutfit.PlayerName + "Body";
@@ -206,7 +229,7 @@ public sealed class AppearanceHandler : MonoBehaviour
     }
 
     [HideFromIl2Cpp]
-    private void HandleAlpha(float t, CustomOutfit formerOutfit, CustomOutfit newOutfit, float offset, ChangeCosmetics change)
+    private void HandleAlpha(float t, CustomOutfit formerOutfit, CustomOutfit newOutfit, float offset, ChangeCosmetics change, SpriteRenderer playerRend, bool isSecondHalf)
     {
         var trueT = offset + (t / 2);
         Size = Mathf.Lerp(formerOutfit.Size, newOutfit.Size, trueT);
@@ -224,7 +247,8 @@ public sealed class AppearanceHandler : MonoBehaviour
 
         if (change.HasFlag(ChangeCosmetics.Name))
         {
-            // WIP
+            var realT = (int)(Player.name.Length * (isSecondHalf ? t : (1 - t)));
+            Name.text = Player.name[..(realT + 1)];
             Name.color = Name.color.SetAlpha(Alpha);
         }
 
@@ -232,7 +256,7 @@ public sealed class AppearanceHandler : MonoBehaviour
             return;
 
         var color = ColorPair.Lerp(formerOutfit.GetPair(), newOutfit.GetPair(), trueT);
-        Colors.Instance.SetRend(color, Player.MyRend());
+        Colors.Instance.SetRend(color, playerRend);
         Colors.Instance.SetRend(color, Player.cosmetics.PettingHand.HandSprite);
         Colors.Instance.SetRend(color, Player.cosmetics.hat.BackLayer);
         Colors.Instance.SetRend(color, Player.cosmetics.hat.FrontLayer);

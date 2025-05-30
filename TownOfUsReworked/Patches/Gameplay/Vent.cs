@@ -121,11 +121,6 @@ public static class VentPatches
         return false;
     }
 
-    // TODO: Remove this when updating to latest version as it's not longer needed
-    [HarmonyPatch(nameof(Vent.UpdateArrows))]
-    [HarmonyPatch(nameof(Vent.ToggleNeighborVentBeingCleaned))]
-    public static bool Prefix() => MapPatches.CurrentMap != 3;
-
     [HarmonyPatch(nameof(Vent.EnterVent)), HarmonyPrefix]
     public static bool EnterVentPrefix(Vent __instance, PlayerControl pc) => EnterExitVentPrefix(pc, __instance.EnterVentAnim);
 
@@ -139,8 +134,7 @@ public static class VentPatches
 
         var truePosition = LocalPlayer.GetTruePosition();
         var vector = pc.GetTruePosition() - truePosition;
-        return vector.magnitude < LocalPlayer.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
-            Constants.ShipAndObjectsMask);
+        return vector.magnitude < LocalPlayer.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask);
     }
 }
 

@@ -16,8 +16,7 @@ public sealed class HudHandler : MonoBehaviour
 
         CustomArrow.AllArrows.ForEach(x => x.Update());
         CustomButton.AllButtons.ForEach(x => x.Timers());
-        HUD().ReportButton?.ToggleVisible(!LocalPlayer.HasDied() && !LocalPlayer.Is<Coward>() && !LocalPlayer.Is(Faction.GameMode) && !Meeting() &&
-            !MapBehaviourPatches.MapActive);
+        HUD().ReportButton?.ToggleVisible(!LocalPlayer.HasDied() && !LocalPlayer.Is<Coward>() && !LocalPlayer.Is(Faction.GameMode) && !Meeting() && !MapBehaviourPatches.MapActive);
 
         foreach (var player in UninteractablePlayers.Keys.Select(id => PlayerById(id)).Where(player => !player.HasDied()))
         {

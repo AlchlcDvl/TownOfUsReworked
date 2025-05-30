@@ -75,9 +75,8 @@ public sealed class Medium : Crew, IShaman
     private void Mediate()
     {
         MediateButton.StartCooldown();
-        var playersDead = KilledPlayers.Clone();
 
-        if (!playersDead.Any())
+        if (!KilledPlayers.Any())
             return;
 
         var bodies = AllBodies();
@@ -86,20 +85,22 @@ public sealed class Medium : Crew, IShaman
         {
             case DeadRevealed.Random:
             {
-                MediatePlayer(playersDead.Random(), bodies);
+                MediatePlayer(KilledPlayers.Random(), bodies);
                 break;
             }
             case DeadRevealed.Everyone:
             {
-                playersDead.Do(x => MediatePlayer(x, bodies));
+                KilledPlayers.Do(x => MediatePlayer(x, bodies));
                 break;
             }
             default:
             {
-                if (DeadRevealed == DeadRevealed.Newest)
-                    playersDead = playersDead.Reverse();
+                var killed = KilledPlayers.Clone();
 
-                MediatePlayer(playersDead.First(), bodies);
+                if (DeadRevealed == DeadRevealed.Newest)
+                    killed = killed.Reverse();
+
+                MediatePlayer(killed.First(), bodies);
                 break;
             }
         }

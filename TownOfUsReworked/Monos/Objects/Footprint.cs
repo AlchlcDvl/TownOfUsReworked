@@ -15,9 +15,11 @@ public sealed class Footprint : MonoBehaviour
     {
         Time2 = 0f;
 
-        Color = (Grey ? 39 : Player.CurrentOutfit().ColorId).GetColor(false);
+        var handler = AppearanceHandler.Handlers[Player.PlayerId];
 
-        transform.localScale *= AppearanceHandler.Handlers[Player.PlayerId].Size;
+        Color = handler.Current.ColorId.GetColor(false);
+
+        transform.localScale *= handler.Size;
         transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Player.MyPhysics.body.velocity));
         transform.SetParent(Player.transform.parent);
         transform.position = Player.GetTruePosition() + new Vector2(0, 0.366667f);

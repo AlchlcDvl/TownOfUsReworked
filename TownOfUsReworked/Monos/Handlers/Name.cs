@@ -2,112 +2,21 @@ namespace TownOfUsReworked.Monos;
 
 public abstract class NameHandler : MonoBehaviour
 {
-    public static readonly Dictionary<byte, string> ColorNames = [];
-
     protected PlayerControl Player { get; set; }
 
-    protected (string, UColor) UpdateColorblind()
-    {
-        var notMeeting = !Meeting();
-
-        if (!DataManager.Settings.Accessibility.ColorBlindMode || (notMeeting && GameModifiers.PlayerNames == PlayerNames.NotVisible))
-            return ("", UColor.clear);
-
-        var color = Player.CurrentOutfit().ColorId.GetColor(false);
-        var local = LocalPlayer;
-        var amOwner = Player.AmOwner;
-
-        if (notMeeting)
-        {
-            var vector = Player.transform.position - local.transform.position;
-
-            if (vector.magnitude > local.lightSource.viewDistance)
-                return ("", UColor.clear);
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
-                GameModifiers.PlayerNames == PlayerNames.Obstructed)
-            {
-                return ("", UColor.clear);
-            }
-        }
-
-        if (!TransitioningSize.ContainsKey(Player.PlayerId) && Player.IsMimicking(out var mimicked))
-            Player = mimicked;
-
-        string name;
-
-        if (!amOwner && !local.HasDied())
-        {
-            if (Hud.Instance.IsCamoed)
-                name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
-            else if (CachedMorphs.TryGetValue(Player.PlayerId, out var cache))
-                name = ColorNames[cache];
-            else if (Player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
-                return ("", UColor.clear);
-            else
-                name = ColorNames[Player.PlayerId];
-        }
-        else
-            name = ColorNames[Player.PlayerId];
-
-        if (ClientOptions.LighterDarker)
-            name += $" ({TranslationManager.Translate($"Shade.{(Player.CurrentOutfit.ColorId.IsLighter() ? "L" : "D")}")})";
-
-        return (name, color);
-    }
-
-    protected static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, out bool revealed)
+    protected static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, bool amOwner, bool deadSeeEverything, out bool revealed)
     {
         revealed = false;
         var player = playerHandler.Player;
         var meeting = (bool)Meeting();
-
-        if (!meeting && GameModifiers.PlayerNames == PlayerNames.NotVisible)
-            return (player.name, UColor.white);
-
-        var deadSeeEverything = DeadSeeEverything();
         var local = localHandler.Player;
-        var amOwner = player.AmOwner;
-
-        if (!meeting)
-        {
-            var diff = player.transform.position - local.transform.position;
-
-            if (diff.magnitude > local.lightSource.viewDistance)
-                return ("", UColor.white);
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, diff.normalized, diff.magnitude, Constants.ShipAndObjectsMask) && !amOwner && !local.HasDied() &&
-                GameModifiers.PlayerNames == PlayerNames.Obstructed)
-            {
-                return ("", UColor.clear);
-            }
-        }
-
-        if (!amOwner && !deadSeeEverything && !TransitioningSize.ContainsKey(player.PlayerId) && player.IsMimicking(out var mimicked) && mimicked.Data.Role is LayerHandler handler)
-        {
-            player = mimicked;
-            playerHandler = handler;
-        }
-
-        var name = player.name;
+        var name = "";
         var color = UColor.white;
         var role = playerHandler.CustomRole;
         var disp = playerHandler.CustomDisposition;
         var localRole = localHandler.CustomRole;
         var localDisp = localHandler.CustomDisposition;
         var removeFromConsig = false;
-
-        if (GameModifiers.PlayerNames == PlayerNames.NotVisible)
-            name = "";
-        else if (!playerHandler.Local && !local.HasDied())
-        {
-            if (Hud.Instance.IsCamoed)
-                name = ClientOptions.OptimisationMode ? "" : GetRandomisedName();
-            else if (CachedMorphs.TryGetValue(player.PlayerId, out var cache))
-                name = PlayerById(cache).name;
-            else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind)
-                return ("", UColor.clear);
-        }
 
         if (player.CanDoTasks() && (deadSeeEverything || IsCustomHnS() || IsTaskRace()) && !amOwner)
             name += role.TasksDone ? "✔" : $" ({role.TasksCompleted}/{role.TotalTasks})";

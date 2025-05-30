@@ -51,16 +51,16 @@ public sealed class Revealer : Crew, IGhosty
         {
             if (Local)
                 Flash(Color);
-            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte ||
-                LocalPlayer.GetRole() is NKilling or Neophyte) && RevealerRevealsNeutrals))
+            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is
+                NKilling or Neophyte) && RevealerRevealsNeutrals))
             {
                 Revealed = true;
                 Flash(Color);
                 LocalPlayer.GetRole().DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
             }
         }
-        else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte ||
-            LocalPlayer.GetRole() is NKilling or Neophyte) && RevealerRevealsNeutrals))
+        else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is NKilling
+            or Neophyte) && RevealerRevealsNeutrals))
         {
             Flash(Color);
         }
