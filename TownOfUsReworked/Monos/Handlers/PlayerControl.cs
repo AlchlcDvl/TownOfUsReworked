@@ -3,12 +3,17 @@ namespace TownOfUsReworked.Monos;
 public sealed class PlayerControlHandler : NameHandler
 {
     private TextMeshPro Name { get; set; }
+    private TextMeshPro Color { get; set; }
+
+    [HideFromIl2Cpp]
+    private AppearanceHandler Appearance { get; set; }
 
     public void Awake()
     {
         Player = GetComponent<PlayerControl>();
         Name = Player.NameText();
-        gameObject.AddComponent<AppearanceHandler>();
+        Color = Player.ColorBlindText();
+        Appearance = gameObject.AddComponent<AppearanceHandler>();
         gameObject.AddComponent<StatusHandler>();
     }
 
@@ -17,21 +22,30 @@ public sealed class PlayerControlHandler : NameHandler
         if (!Player || !Player.Data || NoLobby() || Meeting())
             return;
 
+        Color.enabled = UpdateNameVisibility(true);
+
         if (!IsInGame() || Player.Data.Role is not LayerHandler handler || LocalPlayer.Data.Role is not LayerHandler localHandler)
         {
-            (Name.text, Name.color) = (Player.name, UColor.white);
+            Name.color = UColor.white.SetAlpha(Appearance.Alpha);
             return;
         }
 
+        var deadSeeEverything = DeadSeeEverything();
+        var amOwner = Player.AmOwner;
+
+        if (!amOwner && !deadSeeEverything && Appearance.Mimicked?.Data?.Role is LayerHandler handler1)
+            handler = handler1;
+
         handler.UpdatePlayer();
         localHandler.UpdatePlayer(Player);
-        (Name.text, Name.color) = UpdateGameName(handler, localHandler, out var revealed);
+        var (name, color) = UpdateGameName(handler, localHandler, amOwner, deadSeeEverything, out var revealed);
+        (Name.text, Name.color, Name.enabled) = (Player.name + name, color.SetAlpha(Appearance.Alpha), UpdateNameVisibility(true));
         Name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
     }
 
-    private bool UpdateColorblindVisibility()
+    private bool UpdateNameVisibility(bool colorBlind)
     {
-        if (!DataManager.Settings.Accessibility.ColorBlindMode || GameModifiers.PlayerNames == PlayerNames.NotVisible)
+        if ((colorBlind && !DataManager.Settings.Accessibility.ColorBlindMode) || GameModifiers.PlayerNames == PlayerNames.NotVisible)
             return false;
 
         var local = LocalPlayer;
