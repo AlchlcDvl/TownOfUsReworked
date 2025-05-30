@@ -43,9 +43,9 @@ public static class ButtonUtils
         hud.ImpostorVentButton.ToggleVisible(player.CanVent() && inGame);
 
         if (IsHnS())
-            hud.AbilityButton.ToggleVisible(!CustomPlayer.Local.IsImpostor() && inGame);
+            hud.AbilityButton.ToggleVisible(!LocalPlayer.IsImpostor() && inGame);
         else
-            hud.AbilityButton.ToggleVisible(!Meeting() && (!CustomPlayer.Local.Is<IGhosty>(out var ghost) || ghost.Caught) && inGame && CustomPlayer.Local.HasDied());
+            hud.AbilityButton.ToggleVisible(!Meeting() && (!LocalPlayer.Is<IGhosty>(out var ghost) || ghost.Caught) && inGame && LocalPlayer.HasDied());
     }
 
     public static void DisableAllButtons()
@@ -122,7 +122,7 @@ public static class ButtonUtils
         if (IsHnS())
             return;
 
-        player ??= CustomPlayer.Local;
+        player ??= LocalPlayer;
         player.GetButtons().Do(x => x.StartCooldown(cooldown));
 
         if (player.Is<Role>(out var role))

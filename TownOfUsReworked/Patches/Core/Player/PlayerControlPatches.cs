@@ -21,7 +21,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.StartMeeting))]
     public static void Prefix(PlayerControl __instance, NetworkedPlayerInfo target)
     {
-        if (CustomPlayer.Local?.Data?.Role is LayerHandler handler)
+        if (LocalPlayer?.Data?.Role is LayerHandler handler)
             handler.BeforeMeeting();
 
         MeetingPatches.Reported = target;
@@ -94,7 +94,7 @@ public static class PlayerControlPatches
         if (NoPlayers() || IsLobby())
             return true;
 
-        if (CustomPlayer.Local.Is<Coward>() || !PerformReport.ReportPressed)
+        if (LocalPlayer.Is<Coward>() || !PerformReport.ReportPressed)
             return false;
 
         var blocked = LocalBlocked();
@@ -216,9 +216,9 @@ public static class PlayerControlPatches
     {
         if (__instance.Is<IGhosty>(out var ghost) && !ghost.Caught)
             value = !__instance.inVent;
-        else if (__instance.HasDied() && CustomPlayer.Local.HasDied() && !__instance.AmOwner)
+        else if (__instance.HasDied() && LocalPlayer.HasDied() && !__instance.AmOwner)
             value = !ClientOptions.HideOtherGhosts;
-        else if (CustomPlayer.Local.Is<IShaman>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId) && !__instance.AmOwner)
+        else if (LocalPlayer.Is<IShaman>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId) && !__instance.AmOwner)
             value = true;
     }
 

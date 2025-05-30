@@ -22,7 +22,6 @@ public static class VotePatches
             Debugging.Instance.ControllingFigure = 0;
         }
 
-        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == pc || !x.Player);
         SetPostmortals.RemoveFromPostmortals(pc);
         MarkMeetingDead(pc);
         OnGameEndPatches.AddSummaryInfo(pc, true);
@@ -54,7 +53,7 @@ public static class VotePatches
         {
             playerVoteArea.SetVote(suspectPlayerId);
             playerVoteArea.Flag.enabled = true;
-            CustomPlayer.Local.RpcSendChatNote(srcPlayerId, ChatNoteTypes.DidVote);
+            LocalPlayer.RpcSendChatNote(srcPlayerId, ChatNoteTypes.DidVote);
         }
 
         __instance.SetDirtyBit(1u);
@@ -201,8 +200,8 @@ public static class VotePatches
     [HarmonyPatch(nameof(MeetingHud.BloopAVoteIcon))]
     public static bool Prefix(MeetingHud __instance, NetworkedPlayerInfo voterPlayer, int index, Transform parent)
     {
-        var insiderFlag = CustomPlayer.Local.Is<Insider>(out var ins) && ins.TasksDone;
-        var deadFlag = GameModifiers.DeadSeeEverything && CustomPlayer.Local.HasDied();
+        var insiderFlag = LocalPlayer.Is<Insider>(out var ins) && ins.TasksDone;
+        var deadFlag = GameModifiers.DeadSeeEverything && LocalPlayer.HasDied();
 
         if (GameModifiers.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))
             return false;

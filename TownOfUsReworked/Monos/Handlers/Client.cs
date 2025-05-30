@@ -425,7 +425,7 @@ public sealed class ClientHandler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && !ActiveTask() && !MapBehaviourPatches.MapActive)
             hud?.SettingsButton?.GetComponent<PassiveButton>()?.OnClick?.Invoke();
 
-        if (IsHnS() || !CustomPlayer.Local || !ButtonsParent)
+        if (IsHnS() || !LocalPlayer || !ButtonsParent)
             return;
 
         ResetButtonPos();
@@ -442,14 +442,14 @@ public sealed class ClientHandler : MonoBehaviour
 
         if (ZoomButton)
         {
-            ZoomButton.gameObject.SetActive(hud.MapButton.isActiveAndEnabled && CustomPlayer.Local.HasDied() && IsInGame() && part2 && !RoleCardActive && (!CustomPlayer.Local.Is<IGhosty>(out var
+            ZoomButton.gameObject.SetActive(hud.MapButton.isActiveAndEnabled && LocalPlayer.HasDied() && IsInGame() && part2 && !RoleCardActive && (!LocalPlayer.Is<IGhosty>(out var
                 ghost) || ghost.Caught));
         }
 
         if (PhoneText)
         {
             if (RoleCardActive)
-                PhoneText.text = CustomPlayer.Local.RoleCardInfo();
+                PhoneText.text = LocalPlayer.RoleCardInfo();
             else if ((LoreActive || SelectionActive) && Entry.Count > 1)
             {
                 if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
@@ -528,7 +528,7 @@ public sealed class ClientHandler : MonoBehaviour
         }
 
         RoleCardActive = !RoleCardActive;
-        PhoneText.text = CustomPlayer.Local.RoleCardInfo();
+        PhoneText.text = LocalPlayer.RoleCardInfo();
         PhoneText.gameObject.SetActive(RoleCardActive);
         Phone.gameObject.SetActive(RoleCardActive);
         ToTheWiki.gameObject.SetActive(RoleCardActive && IsNormal() && IsInGame());
@@ -561,7 +561,7 @@ public sealed class ClientHandler : MonoBehaviour
             return;
         }
 
-        CustomPlayer.Local.NetTransform.Halt();
+        LocalPlayer.NetTransform.Halt();
         var currentMenu = Instantiate(Prefab, Camera.main!.transform, false);
         currentMenu.transform.localPosition = Pos;
         currentMenu.name = "ReworkedOptionsMenu";

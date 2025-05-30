@@ -83,14 +83,14 @@ public static class ChatPatches
 
                 if (role)
                 {
-                    if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
-                        CustomPlayer.Local.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player.AmOwner)
+                    if ((((LocalPlayer.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
+                        LocalPlayer.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player.AmOwner)
                     {
                         chat.NameText.color = role.Color;
                     }
-                    else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) && !GameModifiers.FactionSeeRoles)
+                    else if (LocalPlayer.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) && !GameModifiers.FactionSeeRoles)
                         chat.NameText.color = role.FactionColor;
-                    else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !GameModifiers.FactionSeeRoles)
+                    else if (LocalPlayer.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !GameModifiers.FactionSeeRoles)
                         chat.NameText.color = role.SubFactionColor;
                     else
                         chat.NameText.color = UColor.white;
@@ -160,7 +160,7 @@ public static class ChatPatches
         if (__instance != Chat())
             return true;
 
-        var localPlayer = CustomPlayer.Local;
+        var localPlayer = LocalPlayer;
 
         if (!localPlayer)
             return true;
@@ -174,7 +174,7 @@ public static class ChatPatches
             return shouldSeeMessage;
 
         return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourceRole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting() &&
-            CustomPlayer.Local.IsSilenced());
+            LocalPlayer.IsSilenced());
     }
 
     private static readonly Dictionary<byte, SpriteRenderer> Notifs = [];
@@ -192,25 +192,25 @@ public static class ChatPatches
             var args = __instance.freeChatField.Text.TrueSplit(' ');
             Execute(args, __instance.freeChatField.Text);
         }
-        else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")
+        else if (LocalPlayer.IsBlackmailed() && text != "i am blackmailed.")
         {
             chatHandled = true;
             Run("<#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
         }
-        else if (CustomPlayer.Local.SilenceActive() && text != "i am silenced.")
+        else if (LocalPlayer.SilenceActive() && text != "i am silenced.")
         {
             chatHandled = true;
             Run("<#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         }
-        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.Local.HasDied())
+        else if (MeetingPatches.GivingAnnouncements && !LocalPlayer.HasDied())
         {
             chatHandled = true;
             Run("<#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
         }
-        else if (!CustomPlayer.Local.HasDied() && !IsNullEmptyOrWhiteSpace(text))
+        else if (!LocalPlayer.HasDied() && !IsNullEmptyOrWhiteSpace(text))
         {
-            Notify(CustomPlayer.Local.PlayerId);
-            CallRpc(CustomRPC.Misc, MiscRPC.Notify, CustomPlayer.Local.PlayerId);
+            Notify(LocalPlayer.PlayerId);
+            CallRpc(CustomRPC.Misc, MiscRPC.Notify, LocalPlayer.PlayerId);
         }
 
         if (!chatHandled)
@@ -316,8 +316,8 @@ public static class ChatPatches
         var theme = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
         var invert = ClientOptions.UseDarkTheme ? UColor.black : UColor.white;
 
-        bubble.TextArea.color = bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#{CustomPlayer.Local.name}", $"#({CustomPlayer.Local.name})") ? invert : theme;
-        bubble.Background.color = (bubble.TextArea.text.ContainsAny($"#{CustomPlayer.Local.PlayerId}", $"#{CustomPlayer.Local.name}", $"#({CustomPlayer.Local.name})") ? theme : invert)
+        bubble.TextArea.color = bubble.TextArea.text.ContainsAny($"#{LocalPlayer.PlayerId}", $"#{LocalPlayer.name}", $"#({LocalPlayer.name})") ? invert : theme;
+        bubble.Background.color = (bubble.TextArea.text.ContainsAny($"#{LocalPlayer.PlayerId}", $"#{LocalPlayer.name}", $"#({LocalPlayer.name})") ? theme : invert)
             .SetAlpha(bubble.Xmark.enabled ? 0.5f : 1f);
     }
 

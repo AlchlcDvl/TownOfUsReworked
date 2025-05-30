@@ -28,8 +28,9 @@ public abstract class CustomMenu : IDisposable
 
             Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
             Menu.name = $"{Owner.name}{Type}Menu";
-            CustomPlayer.Local.SetPlayerMaterialColors(Menu.transform.GetChild(0).GetChild(1).GetComponent<SpriteRenderer>());
-            CustomPlayer.Local.SetPlayerMaterialColors(Menu.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>());
+            var first = Menu.transform.GetChild(0);
+            LocalPlayer.SetPlayerMaterialColors(first.GetChild(1).GetComponent<SpriteRenderer>());
+            LocalPlayer.SetPlayerMaterialColors(first.GetChild(0).GetComponent<SpriteRenderer>());
         }
 
         IsActive = true;

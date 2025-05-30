@@ -300,7 +300,7 @@ public abstract class Role : PlayerLayer
         var targetPos = IsLeft ? platform.RightPosition : platform.LeftPosition;
 
         yield return Effects.Wait(0.1f);
-        yield return Effects.Slide3D(platform.transform, sourcePos, targetPos, CustomPlayer.Local.MyPhysics.Speed);
+        yield return Effects.Slide3D(platform.transform, sourcePos, targetPos, LocalPlayer.MyPhysics.Speed);
         yield return Effects.Wait(0.1f);
 
         PlatformIsUsed = false;
@@ -349,7 +349,7 @@ public abstract class Role : PlayerLayer
             Flash(Color);
         }
 
-        if (CustomPlayer.Local.Is<Seer>(out var seer))
+        if (LocalPlayer.Is<Seer>(out var seer))
             Flash(seer.Color);
 
         if (player.Data.Role is LayerHandler layerHandler)

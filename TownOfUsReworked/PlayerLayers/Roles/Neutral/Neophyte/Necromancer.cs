@@ -168,7 +168,7 @@ public sealed class Necromancer : Neophyte, IReviver
     {
         ParentId = reader.ReadByte();
 
-        if (CustomPlayer.Local.PlayerId == ParentId)
+        if (LocalPlayer.PlayerId == ParentId)
             Flash(CustomColorManager.Necromancer, ResurrectDur);
 
         if (NecromancerTargetBody)

@@ -31,7 +31,7 @@ public abstract class FactionChanger : Disposition
 
         PlayerRole.Faction = Side = faction;
         Turned = true;
-        var local = CustomPlayer.Local.GetRole();
+        var local = LocalPlayer.GetRole();
 
         if (SnitchReveals)
         {
@@ -53,10 +53,10 @@ public abstract class FactionChanger : Disposition
             }
         }
 
-        if (CustomPlayer.Local.Is<Mystic>() && !Local)
+        if (LocalPlayer.Is<Mystic>() && !Local)
             Flash(CustomColorManager.Mystic);
 
-        if (Local || CustomPlayer.Local.Is(faction))
+        if (Local || LocalPlayer.Is(faction))
             Flash(CustomColorManager.Fanatic);
     }
 

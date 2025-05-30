@@ -32,25 +32,25 @@ public static class OnGameEndPatches
 
             EndGameResult.CachedWinners.AddRange(Winners.Select(x => new CachedPlayerData(x.Value.First().Data)));
 
-            if (EndGameResult.CachedWinners.Any(x => x.PlayerName == CustomPlayer.Local.name))
+            if (EndGameResult.CachedWinners.Any(x => x.PlayerName == LocalPlayer.name))
             {
-                if (CustomPlayer.Local.CanKill())
+                if (LocalPlayer.CanKill())
                 {
-                    if (!KillCounts.TryGetValue(CustomPlayer.Local.PlayerId, out var count) || count == 0)
+                    if (!KillCounts.TryGetValue(LocalPlayer.PlayerId, out var count) || count == 0)
                         CustomAchievementManager.UnlockAchievement("Pacifist");
                     else if (count >= KillCounts.Values.Max())
                         CustomAchievementManager.UnlockAchievement("Bloodthirsty");
                 }
 
-                if (CustomPlayer.Local.Is<Corrupted>() && CustomPlayer.Local.Is<Mayor>())
+                if (LocalPlayer.Is<Corrupted>() && LocalPlayer.Is<Mayor>())
                     CustomAchievementManager.UnlockAchievement("JustPolitics");
             }
 
-            if (players.Count(x => !x.HasDied()) == 1 && !CustomPlayer.Local.HasDied())
+            if (players.Count(x => !x.HasDied()) == 1 && !LocalPlayer.HasDied())
                 CustomAchievementManager.UnlockAchievement("LastOneStanding");
 
-            if ((WinState is (> WinLose.BountyHunterWins and < WinLose.ArsonistWins) or WinLose.HuntedWin &&! players.Any(x => x.Is(CustomPlayer.Local.GetFaction()) && x.HasDied())) ||
-                (WinState is > WinLose.ReanimatedWins and < WinLose.LoveWins && !players.Any(x => x.Is(CustomPlayer.Local.GetRole().Type) && x.HasDied()) && NeutralKillingSettings.WinSolo) ||
+            if ((WinState is (> WinLose.BountyHunterWins and < WinLose.ArsonistWins) or WinLose.HuntedWin &&! players.Any(x => x.Is(LocalPlayer.GetFaction()) && x.HasDied())) ||
+                (WinState is > WinLose.ReanimatedWins and < WinLose.LoveWins && !players.Any(x => x.Is(LocalPlayer.GetRole().Type) && x.HasDied()) && NeutralKillingSettings.WinSolo) ||
                 (WinState == WinLose.HuntedWin && GameModeSettings.HnSMode == HnSMode.Classic && !players.Any(x => x.Is<Hunted>(out var hunted) && !hunted.Alive)))
             {
                 CustomAchievementManager.UnlockAchievement("BloodOfTheCovenant");

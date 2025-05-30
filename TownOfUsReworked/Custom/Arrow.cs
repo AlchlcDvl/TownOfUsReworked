@@ -62,7 +62,7 @@ public class CustomArrow : IDisposable
 
         if (!Owner.AmOwner)
         {
-            Arrow.target = CustomPlayer.Local.transform.position;
+            Arrow.target = LocalPlayer.transform.position;
             Disable();
             return;
         }

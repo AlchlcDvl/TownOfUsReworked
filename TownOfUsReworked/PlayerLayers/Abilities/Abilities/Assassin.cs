@@ -358,7 +358,7 @@ public abstract class Assassin : Ability, IGuesser
                 Flash(Color);
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
             }
-            else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
+            else if ((Player.GetFaction() == LocalPlayer.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
 
             return;
@@ -377,7 +377,7 @@ public abstract class Assassin : Ability, IGuesser
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"You guessed {guessTarget.name} as {guessString}!" : $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else if (Player != player && player.AmOwner)
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
-        else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
+        else if ((Player.GetFaction() == LocalPlayer.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"{Player.name} guessed {guessTarget.name} as {guessString}!" : $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");

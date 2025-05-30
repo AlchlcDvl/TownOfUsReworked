@@ -184,7 +184,7 @@ public static class ModCompatibilityManager
 
     public static IEnumerator WaitAction(Action next)
     {
-        while (!CustomPlayer.Local.moveable)
+        while (!LocalPlayer.moveable)
             yield return null;
 
         yield return Wait(0.5f);
@@ -231,7 +231,7 @@ public static class ModCompatibilityManager
         if (!IsSubmerged())
             return;
 
-        var floorHandler = GetFloorHandlerMethod.Invoke(null, [CustomPlayer.Local]);
+        var floorHandler = GetFloorHandlerMethod.Invoke(null, [LocalPlayer]);
         RpcRequestChangeFloorMethod.Invoke(floorHandler, [toUpper]);
         RegisterFloorOverrideMethod.Invoke(floorHandler, [toUpper]);
     }
@@ -242,7 +242,7 @@ public static class ModCompatibilityManager
     {
         try
         {
-            RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), [CustomPlayer.Local, 64]);
+            RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), [LocalPlayer, 64]);
         }
         catch { }
     }
@@ -260,7 +260,7 @@ public static class ModCompatibilityManager
 
     public static bool SpawnPatch(dynamic __instance)
     {
-        if ((!CustomPlayer.Local.Is<IGhosty>(out var ghost) || ghost.Caught) && (!CustomPlayer.Local.Is<Astral>(out var astral) || astral.LastPosition == Vector3.zero || astral.Dead))
+        if ((!LocalPlayer.Is<IGhosty>(out var ghost) || ghost.Caught) && (!LocalPlayer.Is<Astral>(out var astral) || astral.LastPosition == Vector3.zero || astral.Dead))
             return true;
 
         HUD().FullScreen.color = HUD().FullScreen.color.SetAlpha(0f);

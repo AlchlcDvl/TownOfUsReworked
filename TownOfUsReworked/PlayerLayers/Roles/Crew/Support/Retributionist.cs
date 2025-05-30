@@ -226,8 +226,8 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
                 var playerid2 = reader.ReadByte();
                 MediatedPlayers.Add(playerid2);
 
-                if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.Local.HasDied() && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
-                    CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color, skipBody: true));
+                if (LocalPlayer.PlayerId == playerid2 || (LocalPlayer.HasDied() && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
+                    LocalPlayer.GetRole().DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color, skipBody: true));
 
                 break;
             }
@@ -255,7 +255,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             {
                 ParentId = reader.ReadByte();
 
-                if (CustomPlayer.Local.PlayerId == ParentId)
+                if (LocalPlayer.PlayerId == ParentId)
                     Flash(CustomColorManager.Altruist, Altruist.ReviveDur);
 
                 if (Altruist.AltruistTargetBody)

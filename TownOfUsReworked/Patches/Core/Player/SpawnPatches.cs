@@ -17,7 +17,7 @@ public static class SpawnPatches
     {
         if (intro)
         {
-            if (CustomPlayer.Local?.Data?.Role is LayerHandler handler)
+            if (LocalPlayer?.Data?.Role is LayerHandler handler)
                 handler.OnIntroEnd();
 
             KillCounts.Clear();
@@ -25,7 +25,7 @@ public static class SpawnPatches
             Debugging.Instance.SelectedTab = Debugging.Instance.Tabs[1];
         }
 
-        Chat()?.SetVisible(CustomPlayer.Local.CanChat());
+        Chat()?.SetVisible(LocalPlayer.CanChat());
 
         foreach (var player in AllPlayers())
         {
@@ -36,9 +36,9 @@ public static class SpawnPatches
         AllBodies().Do(x => x.gameObject.Destroy());
         ButtonUtils.Reset(intro ? CooldownType.Start : CooldownType.Meeting);
         RandomSpawn(intro, meeting);
-        var role = CustomPlayer.Local.GetRole();
+        var role = LocalPlayer.GetRole();
         role.UpdateButtons();
-        CustomPlayer.Local.RegenTask();
+        LocalPlayer.RegenTask();
         var hud = HUD();
 
         if (MapPatches.CurrentMap is not (4 or 6))
@@ -52,7 +52,7 @@ public static class SpawnPatches
 
         string text;
 
-        if (CustomPlayer.Local.CanDoTasks())
+        if (LocalPlayer.CanDoTasks())
         {
             var color = "FF00";
 
@@ -104,7 +104,7 @@ public static class SpawnPatches
                 continue;
 
             ChangeFloor(player.GetTruePosition().y > -7);
-            CheckOutOfBoundsElevator(CustomPlayer.Local);
+            CheckOutOfBoundsElevator(LocalPlayer);
         }
     }
 }

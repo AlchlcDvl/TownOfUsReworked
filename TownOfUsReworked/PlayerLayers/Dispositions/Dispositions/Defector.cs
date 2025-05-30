@@ -169,7 +169,7 @@ public sealed class Defector : Disposition
         if (Local)
             Flash(Color);
 
-        if (CustomPlayer.Local.Is<Mystic>())
+        if (LocalPlayer.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
     }
 }

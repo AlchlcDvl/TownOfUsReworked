@@ -130,7 +130,7 @@ public static class CustomAchievementManager
         achievement.Unlocked = achievement.Name != "Test";
         ReworkedDataManager.Save();
 
-        if ((achievement.EndOfGame && IsInGame()) || !CustomPlayer.Local)
+        if ((achievement.EndOfGame && IsInGame()) || !LocalPlayer)
             QueuedAchievements.Add(achievement);
         else
             achievement.ShowAchievement();
@@ -140,7 +140,7 @@ public static class CustomAchievementManager
     {
         var popup = UObject.Instantiate(Prefab, HUD().transform.parent);
         popup.name = $"AchievementPopup({achievement.Name})";
-        popup.nameplate.SetMaskLayer(CustomPlayer.Local.PlayerId);
+        popup.nameplate.SetMaskLayer(LocalPlayer.PlayerId);
         popup.nameplate.nameText.text = TranslationManager.Translate($"Achievement.{achievement.Name}.Title");
         var rend = popup.nameplate.transform.FindChild("Icon").GetComponent<SpriteRenderer>();
         rend.enabled = achievement.Icon != "Placeholder" || achievement.Name == "Test";
@@ -155,7 +155,7 @@ public static class CustomAchievementManager
 
     private static IEnumerator ShowPopup(this HideAndSeekDeathPopup popup, Achievement achievement)
     {
-        var id = CustomPlayer.Local.Data.DefaultOutfit.NamePlateId;
+        var id = LocalPlayer.Data.DefaultOutfit.NamePlateId;
 
         if (NameplateLoader.CustomCosmeticRegistry.TryGetValue(id, out var cn))
             popup.nameplate.background.sprite = cn.ViewData.Image;

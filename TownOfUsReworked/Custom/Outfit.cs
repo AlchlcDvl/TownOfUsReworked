@@ -9,6 +9,7 @@ public sealed class CustomOutfit
     public string VisorId { get; set; } = "visor_EmptyVisor";
     public string NamePlateId { get; set; } = "nameplate_NoPlate";
     public string PlayerName { get; set; } = " ";
+    public string ColorName { get; set; } = "???";
     public float Size { get; set; } = 1f;
     public float Speed { get; set; } = 1f;
     public float Alpha { get; set; } = 1f;
@@ -25,6 +26,12 @@ public sealed class CustomOutfit
         NamePlateId = source.NamePlateId;
         PlayerName = source.PlayerName;
         PetId = source.PetId;
+
+        if (ColorId is not (-1 or 2))
+            return;
+
+        var translation = Palette.GetColorName(ColorId);
+        ColorName = CustomColorManager.AllColors.TryGetValue(ColorId, out var color) ? (color.Default ? (translation[0] + translation[1..].ToLower()) : translation) : "???";
     }
 
     public CustomOutfit(PlayerControl player, bool useCurrent = false) : this(useCurrent ? player.CurrentOutfit : player.Data.DefaultOutfit)
@@ -36,9 +43,11 @@ public sealed class CustomOutfit
         Color = ColorId is -1 or -2 ? player.MyRend().material.GetColor(PlayerMaterial.BodyColor) : ColorId.GetColor(false);
     }
 
-    public override string ToString() => $"name={PlayerName},colorId={ColorId},hat={HatId},pet={PetId},skin={SkinId},visor={VisorId},nameplate={NamePlateId},size={Size},speed={Speed},alpha={Alpha},color=({Color.r},{Color.g},{Color.b},{Color.a})";
+    public override string ToString() => $"name={PlayerName},colorId={ColorId},colorName={ColorName},hat={HatId},pet={PetId},skin={SkinId},visor={VisorId},nameplate={NamePlateId},size={Size},speed={Speed},alpha={Alpha},color=({Color.r},{Color.g},{Color.b},{Color.a})";
 
     public ColorPair GetPair() => ColorId is -1 or -2 ? new(Color, Color.Shadow()) : new(ColorId.GetColor(false), ColorId.GetColor(true));
+
+    public string GetLightOrDark() => (ColorId is -1 or -2 ? Color.IsDark() : !ColorId.IsLighter()) ? "D" : "L";
 
     public static implicit operator PlayerOutfit(CustomOutfit outfit) => new()
     {

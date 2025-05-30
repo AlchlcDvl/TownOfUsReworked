@@ -231,7 +231,7 @@ public static class BetterAirship
         public static bool Prefix(SpawnInMinigame __instance)
         {
             // Skip this if the local player has the Astral modifier or is a postmortal role
-            if ((CustomPlayer.Local.Is<IGhosty>(out var ghost) && !ghost.Caught) || (CustomPlayer.Local.Is<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
+            if ((LocalPlayer.Is<IGhosty>(out var ghost) && !ghost.Caught) || (LocalPlayer.Is<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
             {
                 __instance.Close();
                 return false;
@@ -245,7 +245,7 @@ public static class BetterAirship
             if (SpawnType == AirshipSpawnType.Meeting)
             {
                 __instance.Close();
-                CustomPlayer.Local.RpcCustomSnapTo(GetMeetingPosition(CustomPlayer.Local.PlayerId));
+                LocalPlayer.RpcCustomSnapTo(GetMeetingPosition(LocalPlayer.PlayerId));
                 return false;
             }
 

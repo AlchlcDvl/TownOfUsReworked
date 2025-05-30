@@ -263,7 +263,7 @@ public sealed class Thief : Neutral, IGuesser
         if (ThiefSteals)
             new Thief().RoleUpdate(role, target, true);
 
-        var local = CustomPlayer.Local.GetRole();
+        var local = LocalPlayer.GetRole();
         var faction = local.Faction;
 
         if (faction != Faction.Crew || (faction == Faction.Neutral && (Snitch.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))

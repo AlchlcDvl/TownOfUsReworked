@@ -29,9 +29,9 @@ public sealed class DebuggerHandler : MonoBehaviour
         {
             GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
 
-            if (CustomPlayer.Local)
+            if (LocalPlayer)
             {
-                var position = CustomPlayer.Local.transform.position;
+                var position = LocalPlayer.transform.position;
                 GUILayout.Label($"Player Position\nx: {position.x:00.00} y: {position.y:00.00} z: {position.z:00.00}");
             }
 

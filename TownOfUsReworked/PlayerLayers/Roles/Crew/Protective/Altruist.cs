@@ -113,7 +113,7 @@ public sealed class Altruist : Crew, IReviver
     {
         ParentId = reader.ReadByte();
 
-        if (CustomPlayer.Local.PlayerId == ParentId)
+        if (LocalPlayer.PlayerId == ParentId)
             Flash(CustomColorManager.Altruist, ReviveDur);
 
         if (AltruistTargetBody)

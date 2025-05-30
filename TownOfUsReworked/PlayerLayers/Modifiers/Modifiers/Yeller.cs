@@ -9,13 +9,13 @@ public sealed class Yeller : Modifier
     protected override void Init()
     {
         if (!Local)
-            CustomPlayer.Local.GetRole().YellerArrows.TryAdd(PlayerId, new(CustomPlayer.Local, Player, Color));
+            LocalPlayer.GetRole().YellerArrows.TryAdd(PlayerId, new(LocalPlayer, Player, Color));
     }
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
         if (!Local)
-            CustomPlayer.Local.GetRole().DestroyArrowY(PlayerId);
+            LocalPlayer.GetRole().DestroyArrowY(PlayerId);
     }
 
     public override void OnRevive() => Init();

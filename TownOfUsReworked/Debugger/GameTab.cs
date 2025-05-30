@@ -54,18 +54,18 @@ public sealed class GameTab : BaseTab
 
         if (GUILayout.Button("Reset Self"))
         {
-            CustomPlayer.Local.MyPhysics.ResetAnimState();
-            CustomPlayer.Local.MyPhysics.ResetMoveState();
+            LocalPlayer.MyPhysics.ResetAnimState();
+            LocalPlayer.MyPhysics.ResetMoveState();
         }
 
         if (GUILayout.Button("Kill Animation"))
-            HUD().KillOverlay.ShowKillAnimation(AllPlayers().Random().Data, CustomPlayer.Local.Data);
+            HUD().KillOverlay.ShowKillAnimation(AllPlayers().Random().Data, LocalPlayer.Data);
 
         if (GUILayout.Button("Complete Tasks"))
-            CustomPlayer.Local.myTasks.ForEach(x => CustomPlayer.Local.RpcCompleteTask(x.Id));
+            LocalPlayer.myTasks.ForEach(x => LocalPlayer.CompleteTask(x.Id));
 
         if (GUILayout.Button("Complete Everyone's Tasks"))
-            AllPlayers().Do(x => x.myTasks.ForEach(y => x.RpcCompleteTask(y.Id)));
+            AllPlayers().Do(x => x.myTasks.ForEach(y => x.CompleteTask(y.Id)));
 
         if (GUILayout.Button("Redo Intro Sequence"))
         {
@@ -80,10 +80,10 @@ public sealed class GameTab : BaseTab
                 Meeting().RpcClose();
         }
         else if (GUILayout.Button("Start Meeting"))
-            CallMeeting(CustomPlayer.Local);
+            CallMeeting(LocalPlayer);
 
         if (GUILayout.Button("Kill Self"))
-            CustomPlayer.Local.Suicide();
+            LocalPlayer.Suicide();
 
         if (GUILayout.Button("Kill All"))
             AllPlayers().Do(x => x.Suicide());
@@ -92,7 +92,7 @@ public sealed class GameTab : BaseTab
             AllPlayers().Where(x => !x.AmOwner).Do(x => x.Suicide());
 
         if (GUILayout.Button("Revive Self"))
-            CustomPlayer.Local.Revive();
+            LocalPlayer.Revive();
 
         if (GUILayout.Button("Revive All"))
             AllPlayers().Do(x => x.Revive());
@@ -102,10 +102,10 @@ public sealed class GameTab : BaseTab
 
         if (GUILayout.Button("Log Dump"))
         {
-            Critical(CustomPlayer.Local.name);
+            Critical(LocalPlayer.name);
             PlayerLayer.LocalLayers().Do(x => Critical(x));
-            Critical("Is Dead - " + CustomPlayer.Local.HasDied());
-            Critical("Location - " + CustomPlayer.Local.transform.position);
+            Critical("Is Dead - " + LocalPlayer.HasDied());
+            Critical("Location - " + LocalPlayer.transform.position);
         }
 
         if (!GUILayout.Button("Flash"))

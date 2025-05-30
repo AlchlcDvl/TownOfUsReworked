@@ -7,7 +7,7 @@ public static class VitalsPatch
     public static void UpdatePostfix(VitalsMinigame __instance)
     {
         __instance.BatteryText.gameObject.SetActive(false);
-        var role = CustomPlayer.Local.GetRole();
+        var role = LocalPlayer.GetRole();
         var isOp = role is Operative || DeadSeeEverything();
 
         if (!isOp)

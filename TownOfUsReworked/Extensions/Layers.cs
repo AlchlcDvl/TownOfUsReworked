@@ -751,7 +751,7 @@ public static class LayerExtensions
 
         if (converted.AmOwner)
             Flash(role1.SubFactionColor);
-        else if (CustomPlayer.Local.Is<Mystic>())
+        else if (LocalPlayer.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
 
         if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.Other.Is(SubFaction.None))

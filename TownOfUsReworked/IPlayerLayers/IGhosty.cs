@@ -15,7 +15,7 @@ public interface IGhosty : IPlayerLayer
         Faded = true;
 
         var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
-        var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
+        var distance = (LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
         var distPercent = distance / maxDistance;
         distPercent = Mathf.Max(0, distPercent - 1);

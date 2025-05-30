@@ -34,16 +34,16 @@ public sealed class Snitch : Ability
 
     public override void UponTaskComplete(uint taskId)
     {
-        var local = CustomPlayer.Local.GetRole();
+        var local = LocalPlayer.GetRole();
 
         if (TasksLeft == SnitchTasksRemaining)
         {
             if (Local)
                 Flash(Color);
-            else if (CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
+            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || (LocalPlayer.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
             {
                 Flash(Color);
-                local.AllArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color));
+                local.AllArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
             }
         }
         else if (TasksDone)
@@ -54,7 +54,7 @@ public sealed class Snitch : Ability
                 AllPlayers().Where(x => x.GetFaction() is not (Faction.Crew or Faction.Neutral) || (x.GetFaction() == Faction.Neutral && SnitchSeesNeutrals)).Do(x =>
                     local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
             }
-            else if (CustomPlayer.Local.GetFaction() is not (Faction.Crew or Faction.Neutral) || (CustomPlayer.Local.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
+            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || (LocalPlayer.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
                 Flash(UColor.red);
         }
     }

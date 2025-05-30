@@ -19,7 +19,7 @@ public static class MciUtils
     }
 
     private static bool IsAvailable(int i, bool mci) => !GameData.Instance.AllPlayers.Any(p => p.PlayerId == i) && !GameData.Instance.PlayerQueue.Any(p => p.PlayerId == i) &&
-        (!mci || (!AmongUsClient.Instance.allClients.Any(x => x.Id == i) && !Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i));
+        (!mci || (!AmongUsClient.Instance.allClients.Any(x => x.Id == i) && !Clients.ContainsKey(i) && LocalPlayer.OwnerId != i));
 
     public static void CleanUpLoad()
     {
@@ -116,20 +116,20 @@ public static class MciUtils
                 ButtonUtils.DisableAllButtons();
             }
             else
-                CustomPlayer.Local.DisableButtons();
+                LocalPlayer.DisableButtons();
 
             PlayerLayer.LocalLayers().Do(x => x.ExitingLayer());
         }
 
-        CustomPlayer.Local.CustomSnapTo(CustomPlayer.Local.transform.position);
-        CustomPlayer.Local.MyPhysics.ResetMoveState();
-        CustomPlayer.Local.MyPhysics.ResetAnimState();
-        CustomPlayer.Local.moveable = false;
+        LocalPlayer.CustomSnapTo(LocalPlayer.transform.position);
+        LocalPlayer.MyPhysics.ResetMoveState();
+        LocalPlayer.MyPhysics.ResetAnimState();
+        LocalPlayer.moveable = false;
 
-        var light = CustomPlayer.Local.lightSource;
-        var savedPlayer = CustomPlayer.Local;
+        var light = LocalPlayer.lightSource;
+        var savedPlayer = LocalPlayer;
 
-        var pos = CustomPlayer.Local.transform.position;
+        var pos = LocalPlayer.transform.position;
         var pos2 = newPlayer.transform.position;
 
         PlayerControl.LocalPlayer = newPlayer;
@@ -144,7 +144,7 @@ public static class MciUtils
         hud.SetHudActive(true);
         hud.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
-        light.transform.SetParent(CustomPlayer.Local.transform, false);
+        light.transform.SetParent(LocalPlayer.transform, false);
         light.transform.localPosition = newPlayer.Collider.offset;
 
         hud.PlayerCam.SetTarget(newPlayer);

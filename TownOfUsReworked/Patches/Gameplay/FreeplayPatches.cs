@@ -39,7 +39,7 @@ public static class FreeplayPatches
         button.Role = RoleManager.Instance.AllRoles[^1];
         button.FileImage.color = button.RolloverHandler.OutColor = entry.Color;
         button.RolloverHandler.OverColor = entry.Color.Alternate(0.4f);
-        button.Overlay.enabled = CustomPlayer.Local.Is(layer);
+        button.Overlay.enabled = LocalPlayer.Is(layer);
         button.Overlay.sprite = button.CheckImage;
         button.Button.OverrideOnClickListeners(() =>
         {
@@ -54,10 +54,10 @@ public static class FreeplayPatches
             if (!PreviouslySelected.TryFinding(x => x.Type == layer, out var selected))
                 selected = RoleGenManager.GetLayer(layer, type);
 
-            selected.Start(CustomPlayer.Local);
+            selected.Start(LocalPlayer);
             ButtonUtils.Reset();
 
-            if (CustomPlayer.Local.Data.Role is LayerHandler handler)
+            if (LocalPlayer.Data.Role is LayerHandler handler)
                 handler.SetUpLayers();
         });
         __instance.AddFileAsChild(folder, button, ref num, ref num2, ref num3);
@@ -226,7 +226,7 @@ public static class UpdateRoleButtons
         if (!FreeplayPatches.RoleButtons.TryGetValue(__instance.name, out var layer))
             return true;
 
-        __instance.Overlay.enabled = CustomPlayer.Local.Is(layer);
+        __instance.Overlay.enabled = LocalPlayer.Is(layer);
         return false;
     }
 }

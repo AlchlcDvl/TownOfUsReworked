@@ -7,7 +7,7 @@ public static class SavePlayer
     public static void Prefix(PlayerPhysics __instance) => Handle(__instance.myPlayer);
 
     [HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.Use))]
-    public static void Prefix() => Handle(CustomPlayer.Local);
+    public static void Prefix() => Handle(LocalPlayer);
 
     private static void Handle(PlayerControl player)
     {

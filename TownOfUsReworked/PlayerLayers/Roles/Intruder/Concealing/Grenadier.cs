@@ -74,8 +74,8 @@ public sealed class Grenadier : Intruder
     {
         FlashedPlayers = [ .. GetClosestPlayers(Player, FlashRadius, includeDead: true).Select(x => x.PlayerId), PlayerId];
 
-        if (FlashedPlayers.Contains(CustomPlayer.Local.PlayerId))
-            TransitionFlash(CustomColorManager.BlindVision, FlashDur, ShouldPlayerBeDimmed(CustomPlayer.Local) ? 0.4f : 1f);
+        if (FlashedPlayers.Contains(LocalPlayer.PlayerId))
+            TransitionFlash(CustomColorManager.BlindVision, FlashDur, ShouldPlayerBeDimmed(LocalPlayer) ? 0.4f : 1f);
     }
 
     public static bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;

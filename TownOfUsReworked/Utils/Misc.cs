@@ -200,7 +200,7 @@ public static class MiscUtils
 
     private static void CamoSingle(PlayerControl player)
     {
-        if (player.HasDied() || (int)player.GetCustomOutfitType() is 4 or 5 or 6 or 7 || CustomPlayer.Local.HasDied() || player.AmOwner)
+        if (player.HasDied() || (int)player.GetCustomOutfitType() is 4 or 5 or 6 or 7 || LocalPlayer.HasDied() || player.AmOwner)
             return;
 
         player.CustomSetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
@@ -234,7 +234,7 @@ public static class MiscUtils
         if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis || player.Data.IsDead)
             return;
 
-        var ca = condition || CustomPlayer.Local.HasDied() || player.AmOwner || CustomPlayer.Local.Is<Torch>() ? 0.1f : 0f;
+        var ca = condition || LocalPlayer.HasDied() || player.AmOwner || LocalPlayer.Is<Torch>() ? 0.1f : 0f;
         player.CustomSetOutfit(CustomPlayerOutfitType.Invis, CurrentOutfit(player));
         Coroutines.Start(PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(1, ca, p), !player.AmOwner)));
     }
@@ -262,41 +262,18 @@ public static class MiscUtils
 
     public static CustomOutfit CloneOutfit(this PlayerControl player) => new(player);
 
-    public static CustomOutfit BlankOutfit(PlayerControl player)
-    {
-        var result = NightVisionOutfit();
-        result.ColorId = player.Data.DefaultOutfit.ColorId;
-        return result;
-    }
+    public static CustomOutfit BlankOutfit(PlayerControl player) => new() { ColorId = player.Data.DefaultOutfit.ColorId };
 
     private static CustomOutfit CamoOutfit(PlayerControl player) => new(player)
     {
-        PlayerName = ClientOptions.OptimisationMode ? "" : GetRandomisedName(),
+        PlayerName = GetRandomisedName(),
         Size = BetterSabotages.CamoHideSize ? 1f : player.GetSize(),
         Speed = BetterSabotages.CamoHideSpeed ? 1f : player.GetSpeed()
     };
 
-    public static CustomOutfit ColorblindOutfit() => new()
-    {
-        ColorId = 39,
-        HatId = "hat_NoHat",
-        SkinId = "skin_None",
-        VisorId = "visor_EmptyVisor",
-        NamePlateId = "nameplate_NoPlate",
-        PlayerName = " ",
-        PetId = "pet_EmptyPet"
-    };
+    public static CustomOutfit ColorblindOutfit() => new() { ColorId = 39 };
 
-    public static CustomOutfit NightVisionOutfit() => new()
-    {
-        ColorId = 6,
-        HatId = "hat_NoHat",
-        SkinId = "skin_None",
-        VisorId = "visor_EmptyVisor",
-        PlayerName = " ",
-        NamePlateId = "nameplate_NoPlate",
-        PetId = "pet_EmptyPet"
-    };
+    public static CustomOutfit NightVisionOutfit() => new() { ColorId = 6 };
 
     public static void DefaultOutfitAll() => AllPlayers().Do(DefaultOutfit);
 
@@ -359,7 +336,7 @@ public static class MiscUtils
             target.PlayerId);
         lunge &= !killer.Is<Ninja>() && killer != target;
 
-        if (IsCustomHnS() || CustomPlayer.Local.HasDied())
+        if (IsCustomHnS() || LocalPlayer.HasDied())
             UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(target, 0);
 
         GameData.Instance.RecomputeTaskCounts();
@@ -400,14 +377,14 @@ public static class MiscUtils
                 assassin.GuessMenu.HideButtons();
             }
         }
-        else if (!CustomPlayer.Local.HasDied())
+        else if (!LocalPlayer.HasDied())
         {
-            if (CustomPlayer.Local.Is<IGuesser>(out var assassin))
+            if (LocalPlayer.Is<IGuesser>(out var assassin))
             {
                 assassin.GuessingMenu.Close();
                 assassin.GuessMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.Is<Swapper>(out var swapper))
+            else if (LocalPlayer.Is<Swapper>(out var swapper))
             {
                 if (swapper.SwapMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -422,7 +399,7 @@ public static class MiscUtils
 
                 swapper.SwapMenu.HideSingle(target.PlayerId);
             }
-            else if (CustomPlayer.Local.Is<Dictator>(out var dict))
+            else if (LocalPlayer.Is<Dictator>(out var dict))
             {
                 if (dict.DictMenu.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -633,8 +610,8 @@ public static class MiscUtils
         if (float.IsNaN(maxDistance))
             maxDistance = GameSettings.InteractionDistance;
 
-        if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
-            maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+        if (maxDistance > LocalPlayer.lightSource.ViewDistance)
+            maxDistance = LocalPlayer.lightSource.ViewDistance;
 
         if (predicate is not null)
             allPlayers = allPlayers.Where(predicate);
@@ -675,8 +652,8 @@ public static class MiscUtils
         if (float.IsNaN(maxDistance))
             maxDistance = AllMapVents().First().UsableDistance;
 
-        if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
-            maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+        if (maxDistance > LocalPlayer.lightSource.ViewDistance)
+            maxDistance = LocalPlayer.lightSource.ViewDistance;
 
         if (predicate is not null)
             allVents = allVents.Where(predicate);
@@ -711,8 +688,8 @@ public static class MiscUtils
         if (float.IsNaN(maxDistance))
             maxDistance = GameSettings.InteractionDistance;
 
-        if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
-            maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+        if (maxDistance > LocalPlayer.lightSource.ViewDistance)
+            maxDistance = LocalPlayer.lightSource.ViewDistance;
 
         if (predicate is not null)
             allBodies = allBodies.Where(predicate);
@@ -758,8 +735,8 @@ public static class MiscUtils
             if (float.IsNaN(tempMaxDistance))
                 tempMaxDistance = console.UsableDistance;
 
-            if (tempMaxDistance > CustomPlayer.Local.lightSource.ViewDistance)
-                tempMaxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+            if (tempMaxDistance > LocalPlayer.lightSource.ViewDistance)
+                tempMaxDistance = LocalPlayer.lightSource.ViewDistance;
 
             if (vector.magnitude > tempMaxDistance || vector.magnitude > closestDistance)
                 continue;
@@ -805,8 +782,8 @@ public static class MiscUtils
                 };
             }
 
-            if (maxDistance > CustomPlayer.Local.lightSource.ViewDistance)
-                maxDistance = CustomPlayer.Local.lightSource.ViewDistance;
+            if (maxDistance > LocalPlayer.lightSource.ViewDistance)
+                maxDistance = LocalPlayer.lightSource.ViewDistance;
 
             if (vector.magnitude > maxDistance || vector.magnitude > closestDistance)
                 continue;
@@ -1049,8 +1026,8 @@ public static class MiscUtils
 
             if (IsSubmerged())
             {
-                ChangeFloor(CustomPlayer.Local.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
+                ChangeFloor(LocalPlayer.GetTruePosition().y > -7);
+                CheckOutOfBoundsElevator(LocalPlayer);
             }
 
             if (player.Is<Janitor>(out var jani))
@@ -1096,7 +1073,7 @@ public static class MiscUtils
         passive.enabled = enabled;
     }
 
-    public static bool HasTask(params TaskTypes[] types) => CustomPlayer.Local.myTasks.Any(x => types.Contains(x.TaskType));
+    public static bool HasTask(params TaskTypes[] types) => LocalPlayer.myTasks.Any(x => types.Contains(x.TaskType));
 
     public static void WipeListeners(this PassiveButton passive)
     {
@@ -1298,7 +1275,7 @@ public static class MiscUtils
         if (isParticipant)
         {
             Play("Kill");
-            CustomPlayer.Local.isKilling = true;
+            LocalPlayer.isKilling = true;
             killer.isKilling = true;
         }
 
@@ -1317,7 +1294,7 @@ public static class MiscUtils
         {
             cam.Locked = true;
             ConsoleJoystick.SetMode_Task();
-            CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
+            LocalPlayer.MyPhysics.inputHandler.enabled = true;
         }
 
         victim.CustomDie(reason, killer);
@@ -1340,7 +1317,7 @@ public static class MiscUtils
             yield break;
 
         cam.Locked = false;
-        CustomPlayer.Local.isKilling = false;
+        LocalPlayer.isKilling = false;
         killer.isKilling = false;
     }
 

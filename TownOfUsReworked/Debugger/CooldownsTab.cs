@@ -13,27 +13,27 @@ public sealed class CooldownsTab : BaseTab
         }
 
         if (GUILayout.Button("Cancel Cooldowns"))
-            CustomPlayer.Local.GetButtons().Do(x => x.CooldownTime = 0f);
+            LocalPlayer.GetButtons().Do(x => x.CooldownTime = 0f);
 
         if (GUILayout.Button("Cancel Delays"))
-            CustomPlayer.Local.GetButtons().Do(x => x.DelayTime = 0f);
+            LocalPlayer.GetButtons().Do(x => x.DelayTime = 0f);
 
         if (GUILayout.Button("Click Buttons"))
-            CustomPlayer.Local.GetButtons().Do(x => x.Clicked());
+            LocalPlayer.GetButtons().Do(x => x.Clicked());
 
         if (GUILayout.Button("Cancel Effects"))
-            CustomPlayer.Local.GetButtons().Do(x => x.ClickedAgain = true);
+            LocalPlayer.GetButtons().Do(x => x.ClickedAgain = true);
 
         if (GUILayout.Button("Reset Full Cooldown"))
-            CustomPlayer.Local.GetButtons().Do(x => x.StartCooldown());
+            LocalPlayer.GetButtons().Do(x => x.StartCooldown());
 
         if (GUILayout.Button("Reset Fail Cooldown"))
-            CustomPlayer.Local.GetButtons().Do(x => x.StartCooldown(CooldownType.Fail));
+            LocalPlayer.GetButtons().Do(x => x.StartCooldown(CooldownType.Fail));
 
         if (GUILayout.Button("Reset Initial Cooldown"))
-            CustomPlayer.Local.GetButtons().Do(x => x.StartCooldown(CooldownType.Start));
+            LocalPlayer.GetButtons().Do(x => x.StartCooldown(CooldownType.Start));
 
         if (GUILayout.Button("Reset Meeting Cooldown"))
-            CustomPlayer.Local.GetButtons().Do(x => x.StartCooldown(CooldownType.Meeting));
+            LocalPlayer.GetButtons().Do(x => x.StartCooldown(CooldownType.Meeting));
     }
 }

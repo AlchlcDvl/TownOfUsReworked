@@ -120,7 +120,7 @@ public sealed class Medium : Crew, IShaman
         var playerid2 = reader.ReadByte();
         MediatedPlayers.Add(playerid2);
 
-        if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.Local.HasDied() && ShowMediumToDead == ShowMediumToDead.AllDead))
-            CustomPlayer.Local.GetRole().DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Player, Color, skipBody: true));
+        if (LocalPlayer.PlayerId == playerid2 || (LocalPlayer.HasDied() && ShowMediumToDead == ShowMediumToDead.AllDead))
+            LocalPlayer.GetRole().DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color, skipBody: true));
     }
 }

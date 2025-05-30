@@ -74,10 +74,10 @@ public sealed class NetData : IDisposable, INetSerializable
         if (IsReceived)
             throw new InvalidOperationException("Cannot send data that was received");
 
-        if (TownOfUsReworked.MciActive || !CustomPlayer.Local)
+        if (TownOfUsReworked.MciActive || !LocalPlayer)
             return;
 
-        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
+        var writer = AmongUsClient.Instance.StartRpcImmediately(LocalPlayer.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
         writer.Serialize(this);
         writer.CloseRpc();
     }

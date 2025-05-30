@@ -36,13 +36,13 @@ public static class GameStateUtils
 
     public static bool Last(Faction faction) => AllPlayers().Count(x => x.Is(faction) && !x.HasDied()) == 1;
 
-    public static bool NoPlayers() => !AllPlayers().Any() || !CustomPlayer.Local || !CustomPlayer.Local.Data || NoLobby();
+    public static bool NoPlayers() => !AllPlayers().Any() || !LocalPlayer || !LocalPlayer.Data || NoLobby();
 
-    public static bool LocalBlocked() => CustomPlayer.Local.IsBlocked();
+    public static bool LocalBlocked() => LocalPlayer.IsBlocked();
 
     public static bool DeadSeeEverything()
     {
-        if (!GameModifiers.DeadSeeEverything || !CustomPlayer.Local.HasDied() || !CustomPlayer.Local.Is<Role>(out var role) || !role.TrulyDead)
+        if (!GameModifiers.DeadSeeEverything || !LocalPlayer.HasDied() || !LocalPlayer.Is<Role>(out var role) || !role.TrulyDead)
             return false;
 
         return role switch

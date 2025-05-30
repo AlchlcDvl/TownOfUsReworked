@@ -14,7 +14,7 @@ public static class ShowTeamPatch
         if (IsHnS())
             return;
 
-        var role = CustomPlayer.Local.GetRole();
+        var role = LocalPlayer.GetRole();
         __instance.__4__this.TeamTitle.text = role.FactionName;
         __instance.__4__this.TeamTitle.color = role.FactionColor;
         __instance.__4__this.TeamTitle.outlineColor = UColor.black;
@@ -37,10 +37,10 @@ public static class ShowRolePatch
         if (IsHnS())
             return;
 
-        var role = CustomPlayer.Local.GetRole();
-        var modifier = CustomPlayer.Local.GetModifier();
-        var disposition = CustomPlayer.Local.GetDisposition();
-        var ability = CustomPlayer.Local.GetAbility();
+        var role = LocalPlayer.GetRole();
+        var modifier = LocalPlayer.GetModifier();
+        var disposition = LocalPlayer.GetDisposition();
+        var ability = LocalPlayer.GetAbility();
 
         var statusString = "";
         var status = "";
@@ -88,16 +88,16 @@ public static class IntroCutscenePatches
     public static void Postfix(ref PoolablePlayer __result)
     {
         if (!IsHnS())
-            __result.SetNameColor(CustomPlayer.Local.GetRole().FactionColor);
+            __result.SetNameColor(LocalPlayer.GetRole().FactionColor);
 
-        __result.transform.localScale *= CustomPlayer.Local.GetSize();
+        __result.transform.localScale *= LocalPlayer.GetSize();
     }
 
     [HarmonyPatch(nameof(IntroCutscene.SelectTeamToShow))]
     public static void Postfix(ref ISystem.List<PlayerControl> __result)
     {
         if (!IsHnS())
-            __result = CustomPlayer.Local.GetRole().Team().DistinctBy(x => x.PlayerId).ToIl2Cpp();
+            __result = LocalPlayer.GetRole().Team().DistinctBy(x => x.PlayerId).ToIl2Cpp();
     }
 
     [HarmonyPatch(nameof(IntroCutscene.CoBegin))]

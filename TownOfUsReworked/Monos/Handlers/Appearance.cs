@@ -22,11 +22,15 @@ public sealed class AppearanceHandler : MonoBehaviour
     private bool Transitioning { get; set; }
     private float Alpha { get; set; } = 1f;
     private int ColorId { get; set; } = -1;
+
+    [HideFromIl2Cpp]
     private CustomOutfit Current { get; set; }
 
     [HideFromIl2Cpp]
     private Func<bool> ShouldChangeFunc { get; set; } = BlankFalse;
 
+
+    [HideFromIl2Cpp]
     private CustomOutfit Default
     {
         get => IsLobby() ? lobbyDefault : gameDefault;
@@ -118,7 +122,7 @@ public sealed class AppearanceHandler : MonoBehaviour
     [HideFromIl2Cpp]
     public void QueueOutfit(CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null)
     {
-        if (QueuedOutfits.Count == 0 && !Transitioning)
+        if (QueuedOutfits.Count == 0 && !Transitioning && OutfitTime <= 0f)
             OverrideOutfit(outfit, type, duration, func);
         else
             QueuedOutfits.Enqueue((outfit, type, duration, func ?? BlankFalse));
@@ -139,6 +143,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         ChangeTo(former, Current, type);
     }
 
+    [HideFromIl2Cpp]
     private void ChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, CustomPlayerOutfitType type)
     {
         if (formerOutfit == null)
@@ -150,15 +155,11 @@ public sealed class AppearanceHandler : MonoBehaviour
         this.StartCoroutine(CoChangeTo(formerOutfit, newOutfit, type));
     }
 
+    [HideFromIl2Cpp]
     private IEnumerator CoChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, CustomPlayerOutfitType type)
     {
         Transitioning = true;
-        // var colorName = formerData.ColorId is -1 or -2
-        //     ? "???"
-        //     : TranslationController.Instance.GetString(CustomColorManager.AllColors[formerData.ColorId].StringID)
-        //     + (ClientOptions.LighterDarker
-        //         ? ("(" + ((formerData.ColorId is -1 or -2 ? formerOutfit.Color.IsDark() : !formerData.ColorId.IsLighter()) ? "D" : "L") + ")")
-        //         : "");
+        var colorName = formerOutfit.ColorName + (ClientOptions.LighterDarker ? $"({formerOutfit.GetLightOrDark()})" : "");
         var change = ChangeCosmetics.None;
         change |= formerOutfit.ColorId != newOutfit.ColorId || !formerOutfit.Color.IsColorEqual(newOutfit.Color) ? ChangeCosmetics.Color : ChangeCosmetics.None;
         change |= formerOutfit.HatId != newOutfit.HatId ? ChangeCosmetics.Hat : ChangeCosmetics.None;
@@ -204,6 +205,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Transitioning = false;
     }
 
+    [HideFromIl2Cpp]
     private void HandleAlpha(float t, CustomOutfit formerOutfit, CustomOutfit newOutfit, float offset, ChangeCosmetics change)
     {
         var trueT = offset + (t / 2);
@@ -257,10 +259,10 @@ public sealed class AppearanceHandler : MonoBehaviour
         if (DeadBodyHandler.Dragging.Contains(Player.PlayerId))
             result *= Janitor.DragModifier;
 
-        if (PlayerLayer.GetLayers<Drunkard>().Any(x => x.ConfuseButton.EffectActive && (x.HoldsDrive || (x.ConfusedPlayer == Player && !x.HoldsDrive))))
+        if (PlayerLayer.GetLayers<Drunkard>().Any([HideFromIl2Cpp] (x) => x.ConfuseButton.EffectActive && (x.HoldsDrive || (x.ConfusedPlayer == Player && !x.HoldsDrive))))
             result *= -1;
 
-        if (PlayerLayer.GetLayers<Timekeeper>().TryFinding(x => x.TimeButton.EffectActive, out var tk))
+        if (PlayerLayer.GetLayers<Timekeeper>().TryFinding([HideFromIl2Cpp] (x) => x.TimeButton.EffectActive, out var tk))
         {
             if ((tk.Faction is not (Faction.Crew or Faction.Neutral) && !Player.Is(tk.Faction)) || (!tk.HoldsDrive && !Timekeeper.TimeFreezeImmunity) || (tk.HoldsDrive &&
                 !Timekeeper.TimeRewindImmunity))

@@ -6,7 +6,7 @@ public sealed class DeadBodyHandler : NameHandler
 
     public DeadBody Body { get; set; }
 
-    private int ColorId { get; set; }
+    // private int ColorId { get; set; }
     private SpriteRenderer Rend { get; set; }
     private PlayerControl Dragger { get; set; }
 
@@ -14,22 +14,18 @@ public sealed class DeadBodyHandler : NameHandler
     {
         Body = GetComponent<DeadBody>();
         Player = PlayerByBody(Body);
-        Custom = CustomPlayer.Custom(Player);
-        Rend = Body.bodyRenderers[0];
-        Size = Body.transform.localScale;
-        ColorId = Player.Data.DefaultOutfit.ColorId;
+        // Rend = Body.bodyRenderers[0];
+        // ColorId = Player.Data.DefaultOutfit.ColorId;
     }
 
     public void Update()
     {
-        if (Hud.Instance.IsCamoed)
-            CustomColorManager.SetColor(Rend, 39);
-        else if (SurveillancePatches.NvActive)
-            CustomColorManager.SetColor(Rend, 6);
-        else
-            CustomColorManager.SetColor(Rend, ColorId);
-
-        // Body.transform.localScale = Size * Custom.Size;
+        // if (Hud.Instance.IsCamoed)
+        //     CustomColorManager.SetColor(Rend, 39);
+        // else if (SurveillancePatches.NvActive)
+        //     CustomColorManager.SetColor(Rend, 6);
+        // else
+        //     CustomColorManager.SetColor(Rend, ColorId);
 
         if (!Dragger)
             return;

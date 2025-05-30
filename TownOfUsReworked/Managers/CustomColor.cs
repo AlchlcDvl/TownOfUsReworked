@@ -74,7 +74,7 @@ public static class CustomColorManager
 
     // public static Color32 ShadeColor(this Color32 color, int val = 51)
     // {
-    //     if (val.IsInRange(-256, 256))
+    //     if (!val.IsInRange(-256, 256))
     //         throw new InvalidOperationException($"Shade value {val} was out of bounds -255 to 255");
 
     //     return ((UColor)color).ShadeColor(val / 255f);

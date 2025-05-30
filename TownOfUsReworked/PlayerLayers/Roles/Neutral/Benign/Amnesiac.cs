@@ -195,7 +195,7 @@ public sealed class Amnesiac : Neutral
             }
         }
 
-        var local = CustomPlayer.Local.GetRole();
+        var local = LocalPlayer.GetRole();
         var faction = local.Faction;
 
         if (faction != Faction.Crew || (faction == Faction.Neutral && (Snitch.SnitchSeesNeutrals || Revealer.RevealerRevealsNeutrals)))

@@ -9,8 +9,8 @@ public static class TalkingPatches
     [HarmonyPatch(nameof(MeetingHud.Start)), HarmonyPostfix]
     public static void StartPostfix()
     {
-        BeingBlackmailed = CustomPlayer.Local.IsBlackmailed() && !CustomPlayer.Local.HasDied();
-        BeingSilenced = CustomPlayer.Local.IsSilenced() && !CustomPlayer.Local.HasDied();
+        BeingBlackmailed = LocalPlayer.IsBlackmailed() && !LocalPlayer.HasDied();
+        BeingSilenced = LocalPlayer.IsSilenced() && !LocalPlayer.HasDied();
 
         if (BeingBlackmailed && BeingSilenced)
             Coroutines.Start(Shhh("RIP YOU ARE BLACKMAILED AND SILENCED"));

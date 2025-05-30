@@ -110,7 +110,7 @@ public static class RpcManager
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
     /// <returns>A writer instance of <see cref="NetData"/>.</returns>
-    public static NetData CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(rpc, false, data);
+    public static NetData CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
 
     /// <summary>
     /// Creates a writer instance of <see cref="NetData"/> to potentially write more data to.
@@ -118,7 +118,7 @@ public static class RpcManager
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
     /// <returns>A writer instance of <see cref="NetData"/>.</returns>
-    public static NetData CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !CustomPlayer.Local ? null : new(rpc, true, data);
+    public static NetData CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, true, data);
 
     /// <summary>
     /// Sends an RPC message to all players.
@@ -181,7 +181,7 @@ public static class RpcManager
         if (save)
             Option.SaveSettings("LastUsed");
 
-        if (TownOfUsReworked.MciActive || !CustomPlayer.Local || GameData.Instance.PlayerCount <= 1)
+        if (TownOfUsReworked.MciActive || !LocalPlayer || GameData.Instance.PlayerCount <= 1)
             return;
 
         var options = setting is not null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
@@ -313,7 +313,7 @@ public static class RpcManager
 
                         if (whispered.AmOwner)
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to you: {message}");
-                        else if ((CustomPlayer.Local.Is<Blackmailer>() && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (CustomPlayer.Local.Is<Silencer>() &&
+                        else if ((LocalPlayer.Is<Blackmailer>() && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (LocalPlayer.Is<Silencer>() &&
                             Silencer.WhispersNotPrivateS))
                         {
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to #({whispered.name}): {message}");
@@ -641,7 +641,7 @@ public static class RpcManager
                                     CustomPlayerOutfitType.Camouflage or CustomPlayerOutfitType.Colorblind => UColor.grey,
                                     _ => (playerFromId.IsMimicking(out var mimicked) ? mimicked : playerFromId).GetPlayerColor()
                                 }, hand.handRenderer);
-                                hand.handRenderer.color = hand.handRenderer.color.SetAlpha(playerFromId.GetAlpha());
+                                hand.handRenderer.SetAlpha(playerFromId.GetAlpha());
                             }
                         } catch {}
 

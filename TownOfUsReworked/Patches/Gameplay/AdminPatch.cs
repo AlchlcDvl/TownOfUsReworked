@@ -96,7 +96,7 @@ public static class AdminPatch
     [HarmonyPatch(nameof(MapCountOverlay.Update))]
     public static bool Prefix(MapCountOverlay __instance)
     {
-        var role = CustomPlayer.Local.GetRole();
+        var role = LocalPlayer.GetRole();
         var isOp = role is Operative || DeadSeeEverything();
 
         if (!isOp)
@@ -122,8 +122,8 @@ public static class AdminPatch
     [HarmonyPatch(nameof(MapCountOverlay.OnEnable))]
     public static void Postfix(MapCountOverlay __instance)
     {
-        __instance.BackgroundColor.SetColor(PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(CustomPlayer.Local)
+        __instance.BackgroundColor.SetColor(PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(LocalPlayer)
             ? Palette.DisabledGrey
-            : (CustomPlayer.Local.GetRole()?.Color ?? Palette.AcceptedGreen));
+            : (LocalPlayer.GetRole()?.Color ?? Palette.AcceptedGreen));
     }
 }

@@ -67,7 +67,7 @@ public sealed class Monarch : Sovereign
         var id = reader.ReadByte();
         ToBeKnighted.Add(id);
 
-        if (CustomPlayer.Local.PlayerId == id && CustomPlayer.Local.Is<Sovereign>(out var rev) && !rev.Revealed)
+        if (LocalPlayer.PlayerId == id && LocalPlayer.Is<Sovereign>(out var rev) && !rev.Revealed)
             CustomAchievementManager.UnlockAchievement("HiddenAlliance");
     }
 

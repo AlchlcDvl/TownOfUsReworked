@@ -566,7 +566,7 @@ public static class SettingsPatches
 
         public static void Postfix(PlayerPhysics __instance)
         {
-            if (!AmongUsClient.Instance || !CustomPlayer.Local || !__instance.myPlayer || IsFreePlay())
+            if (!AmongUsClient.Instance || !LocalPlayer || !__instance.myPlayer || IsFreePlay())
                 return;
 
             __instance.myPlayer.GetComponent<AppearanceHandler>().UpdateCurrent();
@@ -737,7 +737,7 @@ public static class SettingsPatches
 
     public static void SetMap(MapEnum map)
     {
-        if (IsInGame() || !CustomPlayer.Local || MapSettings.Map == map)
+        if (IsInGame() || !LocalPlayer || MapSettings.Map == map)
             return;
 
         MapSettings.Map = map;

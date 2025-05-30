@@ -8,11 +8,8 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.Select)), HarmonyPrefix]
     public static bool SelectPrefix(PlayerVoteArea __instance)
     {
-        if (!CustomPlayer.Local.Is<Politician>(out var pol) || CustomPlayer.Local.HasDied() || __instance.AmDead || !__instance.Parent ||
-            !__instance.Parent.Select(__instance.TargetPlayerId))
-        {
+        if (!LocalPlayer.Is<Politician>(out var pol) || LocalPlayer.HasDied() || __instance.AmDead || !__instance.Parent || !__instance.Parent.Select(__instance.TargetPlayerId))
             return true;
-        }
 
         if (!pol.CanVote)
             return false;
@@ -29,7 +26,7 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.VoteForMe)), HarmonyPrefix]
     public static bool VoteForMePrefix(PlayerVoteArea __instance)
     {
-        if (!CustomPlayer.Local.Is<Politician>(out var pol))
+        if (!LocalPlayer.Is<Politician>(out var pol))
             return true;
 
         if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results || !pol.CanVote)

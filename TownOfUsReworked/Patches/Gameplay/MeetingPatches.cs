@@ -25,7 +25,7 @@ public static class MeetingPatches
     {
         __instance.AddComponent<MeetingPagingBehaviour>().Menu = __instance;
         Client.Instance.CloseMenus();
-        CustomPlayer.Local.DisableButtons();
+        LocalPlayer.DisableButtons();
 
         Ash.AllPiles.ForEach(x => x?.gameObject?.Destroy());
         Ash.AllPiles.Clear();
@@ -211,9 +211,9 @@ public static class MeetingPatches
     [HarmonyPatch(nameof(MeetingHud.Close)), HarmonyPostfix]
     public static void ClosePostfix(MeetingHud __instance)
     {
-        CustomPlayer.Local.EnableButtons();
+        LocalPlayer.EnableButtons();
 
-        if (CustomPlayer.Local.Data.Role is LayerHandler handler)
+        if (LocalPlayer.Data.Role is LayerHandler handler)
             handler.OnMeetingEnd(__instance);
     }
 
@@ -225,9 +225,9 @@ public static class MeetingPatches
 
         // Deactivate skip Button if skipping an emergency meeting is disabled
         __instance.SkipVoteButton.gameObject.SetActive(!((Reported is null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
-            DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !CustomPlayer.Local.HasDied());
+            DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !LocalPlayer.HasDied());
 
-        if (CustomPlayer.Local.Data.Role is LayerHandler localHandler)
+        if (LocalPlayer.Data.Role is LayerHandler localHandler)
             localHandler.UpdateMeeting(__instance);
     }
 

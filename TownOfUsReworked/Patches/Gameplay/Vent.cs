@@ -43,7 +43,7 @@ public static class VentPatches
     public static bool Prefix(Vent __instance, bool enabled)
     {
         // Fix for dlekS and other things
-        if (!CustomPlayer.Local.IsMoving() && (!CustomPlayer.Local.Is<Role>(out var role) || (role.CanVent && role.CanSwitchVents)))
+        if (!LocalPlayer.IsMoving() && (!LocalPlayer.Is<Role>(out var role) || (role.CanVent && role.CanSwitchVents)))
         {
             Vector2 vector;
 
@@ -94,7 +94,7 @@ public static class VentPatches
     [HarmonyPatch(nameof(Vent.SetOutline))]
     public static void Postfix(Vent __instance, bool mainTarget)
     {
-        if (!CustomPlayer.Local.Is<Role>(out var role) || Meeting() || !CustomPlayer.Local.CanVent())
+        if (!LocalPlayer.Is<Role>(out var role) || Meeting() || !LocalPlayer.CanVent())
             return;
 
         __instance.myRend.material.SetColor(OutlineColor, role.Color);
@@ -109,13 +109,13 @@ public static class VentPatches
 
     private static bool CheckMoveVent(Vent vent)
     {
-        if (NoPlayers() || !CustomPlayer.Local.CanVent() || LocalBlocked())
+        if (NoPlayers() || !LocalPlayer.CanVent() || LocalBlocked())
             return false;
 
-        if (!vent.IsBombed() || CustomPlayer.Local.Is<IGhosty>() || !CanAttack(AttackEnum.Powerful, CustomPlayer.Local.GetDefenseValue()))
+        if (!vent.IsBombed() || LocalPlayer.Is<IGhosty>() || !CanAttack(AttackEnum.Powerful, LocalPlayer.GetDefenseValue()))
             return true;
 
-        CustomPlayer.Local.RpcSuicide();
+        LocalPlayer.RpcSuicide();
         Role.BastionBomb(vent, Bastion.BombRemovedOnKill);
         CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
         return false;
@@ -137,9 +137,9 @@ public static class VentPatches
         if (!clip || !GameModifiers.HideVentAnims)
             return true;
 
-        var truePosition = CustomPlayer.Local.GetTruePosition();
+        var truePosition = LocalPlayer.GetTruePosition();
         var vector = pc.GetTruePosition() - truePosition;
-        return vector.magnitude < CustomPlayer.Local.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
+        return vector.magnitude < LocalPlayer.lightSource.viewDistance && !PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, vector.magnitude,
             Constants.ShipAndObjectsMask);
     }
 }

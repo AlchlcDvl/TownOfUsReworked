@@ -479,5 +479,5 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// Gets all layers attached to the local player.
     /// </summary>
     /// <returns>A collection of the local player's layers.</returns>
-    public static IEnumerable<PlayerLayer> LocalLayers() => CustomPlayer.Local.GetLayers();
+    public static IEnumerable<PlayerLayer> LocalLayers() => LocalPlayer.GetLayers();
 }

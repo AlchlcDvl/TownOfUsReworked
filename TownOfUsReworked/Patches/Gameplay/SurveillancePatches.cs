@@ -5,7 +5,7 @@ public static class SurveillancePatches
 {
     public static bool NvActive;
     private static readonly List<GameObject> Overlays = [];
-    private static bool LightsOut => CustomPlayer.Local.myTasks.Any(x => x.name.Contains("FixLightsTask"));
+    private static bool LightsOut => LocalPlayer.myTasks.Any(x => x.name.Contains("FixLightsTask"));
 
     [HarmonyPatch(typeof(SurveillanceMinigame), nameof(SurveillanceMinigame.Begin))]
     public static void Postfix(SurveillanceMinigame __instance)
@@ -91,8 +91,8 @@ public static class SurveillancePatches
             }
         }
 
-        var role = CustomPlayer.Local.GetRole();
-        var ignoreNightVision = BetterSabotages.EvilsIgnoreNv && (!role.AffectedByLights || CustomPlayer.Local.Is<Torch>());
+        var role = LocalPlayer.GetRole();
+        var ignoreNightVision = BetterSabotages.EvilsIgnoreNv && (!role.AffectedByLights || LocalPlayer.Is<Torch>());
 
         switch (LightsOut)
         {

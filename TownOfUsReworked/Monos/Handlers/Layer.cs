@@ -208,11 +208,11 @@ public sealed class LayerHandler : RoleBehaviour
 
     public override void OnDeath(DeathReason reason)
     {
-        if (CustomPlayer.Local.HasDied())
+        if (LocalPlayer.HasDied())
             Flash(CustomColorManager.Stalemate);
-        else if (CustomPlayer.Local.Is<Coroner>())
+        else if (LocalPlayer.Is<Coroner>())
             Flash(CustomColorManager.Coroner);
-        else if (CustomPlayer.Local.Is<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
+        else if (LocalPlayer.Is<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
             Flash(mon.Color);
 
         TasksCountTowardProgress &= TaskSettings.GhostTasksCountToWin;

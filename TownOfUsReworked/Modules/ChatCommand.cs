@@ -130,7 +130,7 @@ public sealed class ChatCommand : IDisposable
             pooledBubble.transform.SetParent(chat.scroller.Inner);
             pooledBubble.transform.localScale = Vector3.one;
             pooledBubble.SetLeft();
-            pooledBubble.SetCosmetics(CustomPlayer.Local.Data);
+            pooledBubble.SetCosmetics(LocalPlayer.Data);
             pooledBubble.Player.gameObject.SetActive(false);
             pooledBubble.TextArea.richText = withColor;
             pooledBubble.NameText.richText = true;
@@ -144,11 +144,11 @@ public sealed class ChatCommand : IDisposable
 
             if (!chat.IsOpenOrOpening)
             {
-                chat.chatNotification.SetUp(CustomPlayer.Local, text);
+                chat.chatNotification.SetUp(LocalPlayer, text);
                 chat.notificationRoutine ??= chat.StartCoroutine(chat.BounceDot());
             }
 
-            Play("Chat", pitch: 0.5f + (CustomPlayer.Local.PlayerId / GameSettings.LobbySize.Value));
+            Play("Chat", pitch: 0.5f + (LocalPlayer.PlayerId / GameSettings.LobbySize.Value));
         }
         catch (Exception ex)
         {
@@ -176,11 +176,11 @@ public sealed class ChatCommand : IDisposable
         var message = "";
         PlayerControl whispered = null;
 
-        if (CustomPlayer.Local.HasDied())
+        if (LocalPlayer.HasDied())
             Run("<#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
-        else if (CustomPlayer.Local.IsBlackmailed())
+        else if (LocalPlayer.IsBlackmailed())
             Run("<#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
-        else if (CustomPlayer.Local.SilenceActive())
+        else if (LocalPlayer.SilenceActive())
             Run("<#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         else if (byte.TryParse(args[1], out var id))
         {
@@ -196,14 +196,14 @@ public sealed class ChatCommand : IDisposable
             Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", $"Who are you trying to whisper? {arg} is invalid.");
         else if (whispered.AmOwner)
             Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
-        else if (whispered.HasDied() && !CustomPlayer.Local.HasDied())
+        else if (whispered.HasDied() && !LocalPlayer.HasDied())
             Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", $"#({whispered.name}) is not in this world anymore.");
-        else if (!whispered.HasDied() && CustomPlayer.Local.HasDied())
+        else if (!whispered.HasDied() && LocalPlayer.HasDied())
             Run("<#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not a real Medium!");
         else
         {
             Run("<#4D4DFFFF>「 Whispers 」</color>", $"You whisper to #({whispered.name}): {message}");
-            CallRpc(CustomRPC.Misc, MiscRPC.Whisper, CustomPlayer.Local, whispered, message);
+            CallRpc(CustomRPC.Misc, MiscRPC.Whisper, LocalPlayer, whispered, message);
         }
     }
 
@@ -269,7 +269,7 @@ public sealed class ChatCommand : IDisposable
             Run("<#FF0000FF>⚠ Name Error ⚠</color>", "Name is too long.");
         else
         {
-            CustomPlayer.Local.RpcSetName(arg);
+            LocalPlayer.RpcSetName(arg);
             Run("<#B148E2FF>◈ Success ◈</color>", "Name changed!");
         }
     }

@@ -13,6 +13,7 @@ public static class References
     public static readonly Dictionary<byte, float> UninteractablePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
     public static readonly Dictionary<byte, int> KillCounts = [];
+    public static PlayerControl LocalPlayer => PlayerControl.LocalPlayer;
     public static IEnumerable<DeadBody> AllBodies() => UObject.FindObjectsOfType<DeadBody>();
     public static IEnumerable<Vent> AllVents() => UObject.FindObjectsOfType<Vent>();
     public static IEnumerable<Vent> AllMapVents() => Ship().AllVents;

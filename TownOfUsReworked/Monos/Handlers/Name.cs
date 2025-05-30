@@ -2,14 +2,9 @@ namespace TownOfUsReworked.Monos;
 
 public abstract class NameHandler : MonoBehaviour
 {
-    // public static readonly Dictionary<byte, string> PlayerNames = [];
     public static readonly Dictionary<byte, string> ColorNames = [];
 
     protected PlayerControl Player { get; set; }
-    protected Vector3 Size { get; set; }
-
-    [HideFromIl2Cpp]
-    protected CustomPlayer Custom { get; set; }
 
     protected (string, UColor) UpdateColorblind()
     {
@@ -19,7 +14,7 @@ public abstract class NameHandler : MonoBehaviour
             return ("", UColor.clear);
 
         var color = Player.CurrentOutfit().ColorId.GetColor(false);
-        var local = CustomPlayer.Local;
+        var local = LocalPlayer;
         var amOwner = Player.AmOwner;
 
         if (notMeeting)

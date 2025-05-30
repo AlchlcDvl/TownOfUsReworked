@@ -23,7 +23,7 @@ public sealed class VitalsPagingBehaviour : BasePagingBehaviour
 
     public override void OnPageChanged()
     {
-        if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(CustomPlayer.Local))
+        if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(LocalPlayer))
         {
             PageText.text = "ERROR";
             return;

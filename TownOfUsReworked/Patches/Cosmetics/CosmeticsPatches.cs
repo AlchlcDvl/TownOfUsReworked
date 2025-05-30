@@ -222,7 +222,7 @@ public static class CosmeticTabPatches
             if (setPreview != null)
                 setPreview(colorChip, cosmetic, __instance);
             else
-                cosmetic.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.Local.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+                cosmetic.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
 
             __instance.ColorChips.Add(colorChip);
 

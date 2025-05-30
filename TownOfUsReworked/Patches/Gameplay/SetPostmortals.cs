@@ -7,7 +7,7 @@ public static class SetPostmortals
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
     public static void Postfix(ExileController __instance)
     {
-        if (CustomPlayer.Local.Data.Disconnected)
+        if (LocalPlayer.Data.Disconnected)
             return;
 
         foreach (var ghoul in PlayerLayer.GetLayers<Ghoul>())
@@ -64,7 +64,7 @@ public static class SetPostmortals
             }
         }
 
-        if (CustomPlayer.Local.Is<Astral>(out var ast) && !ast.Dead)
+        if (LocalPlayer.Is<Astral>(out var ast) && !ast.Dead)
             ast.SetPosition();
 
         BeginPostmortals(exiled, true);

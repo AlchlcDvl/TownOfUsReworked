@@ -509,7 +509,6 @@ public static class RoleGenManager
 
         KilledPlayers.Clear();
 
-        // NameHandler.PlayerNames.Clear();
         NameHandler.ColorNames.Clear();
 
         DeadBodyHandler.Dragging.Clear();

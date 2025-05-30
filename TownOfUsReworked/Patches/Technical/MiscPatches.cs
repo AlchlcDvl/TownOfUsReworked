@@ -26,14 +26,14 @@ public static class MapBehaviourPatches
 
         Client.Instance.CloseMenus(SkipEnum.Map);
 
-        if (CustomPlayer.Local.IsBlocked())
+        if (LocalPlayer.IsBlocked())
             return false;
 
         var notModified = true;
 
         if (opts.Mode is MapOptions.Modes.Normal or MapOptions.Modes.Sabotage)
         {
-            if (CustomPlayer.Local.CanSabotage() && !AllPlayers().Any(x => x.IsFlashed()))
+            if (LocalPlayer.CanSabotage() && !AllPlayers().Any(x => x.IsFlashed()))
                 __instance.ShowSabotageMap();
             else
                 __instance.ShowNormalMap();
@@ -44,7 +44,7 @@ public static class MapBehaviourPatches
 
         PlayerLayer.LocalLayers().Do(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
-        CustomPlayer.Local.DisableButtons();
+        LocalPlayer.DisableButtons();
         return notModified;
     }
 
@@ -57,7 +57,7 @@ public static class MapBehaviourPatches
     public static void ClosePostfix()
     {
         MapActive = false;
-        CustomPlayer.Local.EnableButtons();
+        LocalPlayer.EnableButtons();
     }
 
     [HarmonyPatch(nameof(MapBehaviour.Awake)), HarmonyPostfix]
@@ -123,8 +123,6 @@ public static class DisconnectHandler
 {
     public static void Prefix(PlayerControl player)
     {
-        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player || !x.Player);
-
         if (player.AmOwner)
         {
             MciUtils.RemoveAllPlayers();
@@ -158,13 +156,6 @@ public static class HandleAnimation
         if (__instance.myPlayer.Is<IGhosty>(out var ghost))
             __instance.myPlayer.Collider.enabled = !ghost.Caught;
     }
-
-    // [HarmonyPatch(nameof(PlayerPhysics.FixedUpdate)), HarmonyPostfix]
-    // public static void FixedUpdatePostfix(PlayerPhysics __instance)
-    // {
-    //     if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-    //         __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
-    // }
 }
 
 [HarmonyPatch(typeof(Minigame), nameof(Minigame.Begin))]
@@ -172,7 +163,7 @@ public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        if (!CustomPlayer.Local.Is<Multitasker>() || __instance.TryCast<TaskAdderGame>() || __instance.TryCast<HauntMenuMinigame>() || __instance.TryCast<SpawnInMinigame>() ||
+        if (!LocalPlayer.Is<Multitasker>() || __instance.TryCast<TaskAdderGame>() || __instance.TryCast<HauntMenuMinigame>() || __instance.TryCast<SpawnInMinigame>() ||
             __instance.TryCast<ShapeshifterMinigame>())
         {
             return;
@@ -202,7 +193,7 @@ public static class AirshipSpawnInPatch
 {
     public static void Postfix(SpawnInMinigame __instance)
     {
-        if (CustomPlayer.Local.Is<Astral>(out var ast))
+        if (LocalPlayer.Is<Astral>(out var ast))
             ast.SetPosition();
 
         HUD().FullScreen.color = new(0.6f, 0.6f, 0.6f, 0f);
@@ -352,13 +343,13 @@ public static class EmergencyMinigameUpdatePatch
 {
     public static void Postfix(EmergencyMinigame __instance)
     {
-        if ((CustomPlayer.Local.CanButton(out var name) && CustomPlayer.Local.RemainingEmergencies != 0) || CustomPlayer.Local.myTasks.Any(PlayerTask.TaskIsEmergency))
+        if ((LocalPlayer.CanButton(out var name) && LocalPlayer.RemainingEmergencies != 0) || LocalPlayer.myTasks.Any(PlayerTask.TaskIsEmergency))
             return;
         __instance.StatusText.text = name switch
         {
             "Shy" => "You are too shy to call a meeting",
             "GameMode" => "Don't call meetings",
-            _ => $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
+            _ => $"{(LocalPlayer.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
         };
         __instance.NumberText.text = "";
         __instance.ClosedLid.gameObject.SetActive(true);
@@ -430,7 +421,7 @@ public static class MeetingCooldowns
     public static void Prefix(UObject obj)
     {
         if (ActiveTask() && obj == ActiveTask().gameObject)
-            CustomPlayer.Local.EnableButtons();
+            LocalPlayer.EnableButtons();
     }
 }
 
@@ -487,7 +478,7 @@ public static class ShowCustomAnim
         __instance.flameParent.transform.GetChild(0).GetComponent<SpriteRenderer>().color =
         (
             victim == killer || !GameModifiers.ShowKillerRoleColor
-                ? CustomPlayer.Local
+                ? LocalPlayer
                 : killer.Object
         ).GetRole().Color;
 
@@ -642,7 +633,7 @@ public static class MedScanMinigamePatch
     public static void Postfix(MedScanMinigame __instance)
     {
         var newHeightFeet = 0;
-        var size = AppearanceHandler.Handlers[CustomPlayer.Local.PlayerId].Size;
+        var size = AppearanceHandler.Handlers[LocalPlayer.PlayerId].Size;
         var newHeightInch = Mathf.RoundToInt(((3f * 12f) + 6f) * size);
         var newWeight = Mathf.RoundToInt(92f * size);
 
@@ -662,7 +653,7 @@ public static class MedScanMinigamePatch
             return;
 
         // Allows multiple medbay scans at once
-        __instance.medscan.CurrentUser = CustomPlayer.Local.PlayerId;
+        __instance.medscan.CurrentUser = LocalPlayer.PlayerId;
         __instance.medscan.UsersList.Clear();
     }
 }

@@ -49,7 +49,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
 
         Value = value;
 
-        if (!CustomPlayer.Local)
+        if (!LocalPlayer)
             return;
 
         if (rpc && AmongUsClient.Instance.AmHost && !(ClientOnly || !ID.Contains("CustomOption") || this is BaseHeaderOption))

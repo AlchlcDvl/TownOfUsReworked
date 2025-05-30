@@ -19,9 +19,6 @@ public sealed class TestingTab : BaseTab
 
         BlockExposed = GUILayout.Toggle(BlockExposed, "Roleblock Exposed");
 
-        if (CustomPlayer.Local)
-            CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Player Collider");
-
         if (Lobby() && IsLocalGame())
         {
             if (GUILayout.Button("Spawn Bot") && GameData.Instance.PlayerCount < GameSettings.LobbySize)
@@ -46,14 +43,16 @@ public sealed class TestingTab : BaseTab
         if (GUILayout.Button("Test Achievement"))
             CustomAchievementManager.UnlockAchievement("Test");
 
-        if (!CustomPlayer.Local)
+        if (!LocalPlayer)
             return;
 
+        LocalPlayer.Collider.enabled = GUILayout.Toggle(LocalPlayer.Collider.enabled, "Player Collider");
+
         if (GUILayout.Button("Randomise Outfit"))
-            CustomPlayer.Local.SetOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
+            LocalPlayer.SetOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
 
         if (GUILayout.Button("Queue Random Outfit"))
-            CustomPlayer.Local.QueueOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
+            LocalPlayer.QueueOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
 
         if (GUILayout.Button("Next Outfit"))
             MoveToNext = true;

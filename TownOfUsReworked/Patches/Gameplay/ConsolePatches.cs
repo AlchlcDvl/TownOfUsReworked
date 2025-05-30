@@ -26,7 +26,7 @@ public static class OpenDoorConsolePatches
 {
     public static bool Prefix(OpenDoorConsole __instance)
     {
-        __instance.CanUse(CustomPlayer.Local.Data, out var canUse, out _);
+        __instance.CanUse(LocalPlayer.Data, out var canUse, out _);
 
         if (!canUse)
             return false;
@@ -64,7 +64,7 @@ public static class ConsoleCanUsePatch
     [HarmonyPatch(nameof(Console.SetOutline))]
     public static void Postfix(Console __instance, bool mainTarget)
     {
-        if (!CustomPlayer.Local.Is<Role>(out var role) || Meeting())
+        if (!LocalPlayer.Is<Role>(out var role) || Meeting())
             return;
 
         __instance.Image.material.SetColor(OutlineColor, role.Color);
@@ -79,7 +79,7 @@ public static class ZiplineBehaviourUse
     {
         CanUsePatch.Prefix(player.Data, ref __state);
 
-        if (CustomPlayer.Local.Is<Astral>(out var ast))
+        if (LocalPlayer.Is<Astral>(out var ast))
             ast.SetPosition();
 
         try
@@ -94,7 +94,7 @@ public static class ZiplineBehaviourUse
                 CustomPlayerOutfitType.Camouflage or CustomPlayerOutfitType.Colorblind => UColor.grey,
                 _ => (player.IsMimicking(out var mimicked) ? mimicked : player).GetPlayerColor()
             }, hand.handRenderer);
-            hand.handRenderer.color = hand.handRenderer.color.SetAlpha(player.GetAlpha());
+            hand.handRenderer.SetAlpha(player.GetAlpha());
         }
         catch (Exception e)
         {
