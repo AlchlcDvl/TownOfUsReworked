@@ -14,7 +14,7 @@ public static class HandlerSingleton<T> where T : MonoBehaviour
         }
     }
 
-    private static void AddInstance() => SetInstance(TownOfUsReworked.ModInstance.AddComponent<T>());
+    public static void AddInstance() => SetInstance(TownOfUsReworked.ModInstance.AddComponent<T>());
 
     public static void SetInstance(T newInstance) => instance = newInstance;
 }

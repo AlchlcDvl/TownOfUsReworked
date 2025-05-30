@@ -19,7 +19,7 @@ public static class CustomColorManager
     // public static void SetVisorColor(Renderer rend, int id)
     // {
     //     if (AllColors.TryGetValue(id, out var color))
-    //         SetVisorColor(rend, color.GetMainColor());
+    //         SetVisorColor(rend, color.GetMainColor(), color.GetShadowColor());
     // }
 
     private static void SetColor(Renderer rend, UColor color, UColor shadow)
@@ -103,10 +103,7 @@ public static class CustomColorManager
         if ((Hud.Instance.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
 
-        if (player.IsMimicking(out var mimicked) && morphCondition)
-            return mimicked.Data.DefaultOutfit.ColorId.GetColor(false);
-
-        return player.Data.DefaultOutfit.ColorId.GetColor(false);
+        return (morphCondition ? player.CurrentOutfit : player.Data.DefaultOutfit).ColorId.GetColor(false);
     }
 
     // Layer Colors

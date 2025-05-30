@@ -47,10 +47,7 @@ public sealed class GameTab : BaseTab
             AssignChaosDrive();
 
         if (GUILayout.Button("Fix All Sabotages"))
-        {
             FixUtils.Fix();
-            DefaultOutfitAll();
-        }
 
         if (GUILayout.Button("Reset Self"))
         {

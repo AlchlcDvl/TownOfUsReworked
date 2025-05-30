@@ -4,11 +4,16 @@ namespace TownOfUsReworked.Extensions;
 
 public static class PlayerControlExtensions
 {
-    public static void SetOutfit(this PlayerControl player, CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null) =>
-        player.GetComponent<AppearanceHandler>().OverrideOutfit(outfit, type, duration, func);
+    public static void OverrideOutfit(this PlayerControl player, CustomOutfit outfit, PlayerOutfitType type, float duration = -1, Func<bool> func = null, Action concurrent = null) =>
+        player.GetComponent<AppearanceHandler>().OverrideOutfit(outfit, type, duration, func, concurrent);
 
-    public static void QueueOutfit(this PlayerControl player, CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null) =>
-        player.GetComponent<AppearanceHandler>().QueueOutfit(outfit, type, duration, func);
+    public static void QueueOutfit(this PlayerControl player, CustomOutfit outfit, PlayerOutfitType type, float duration = -1, Func<bool> func = null, Action concurrent = null) =>
+        player.GetComponent<AppearanceHandler>().QueueOutfit(outfit, type, duration, func, concurrent);
+
+    public static void SetMimicked(this PlayerControl player, PlayerControl mimicked, float duration, Func<bool> func) => player.GetComponent<AppearanceHandler>().SetMimicked(mimicked, duration,
+        func);
+
+    public static void UpdateColor(this PlayerControl player, SpriteRenderer rend) => player.GetComponent<AppearanceHandler>().UpdateColor(rend);
 
     public static bool HasDied(this PlayerControl player) => !player || !player.Data || player.Data.IsDead || player.Data.Disconnected;
 

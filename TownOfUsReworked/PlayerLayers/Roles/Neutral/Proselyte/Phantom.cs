@@ -34,12 +34,6 @@ public sealed class Phantom : Neutral, IGhosty
             Flash(Color);
     }
 
-    public override void UpdatePlayer()
-    {
-        base.UpdatePlayer();
-        (this as IGhosty).UpdateGhost();
-    }
-
     protected override void CheckWin(HashSet<byte> winnerIds)
     {
         if (!HasWon)

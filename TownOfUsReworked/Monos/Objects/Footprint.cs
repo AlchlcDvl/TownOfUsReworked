@@ -17,7 +17,7 @@ public sealed class Footprint : MonoBehaviour
 
         var handler = AppearanceHandler.Handlers[Player.PlayerId];
 
-        Color = handler.Current.ColorId.GetColor(false);
+        Color = (Grey ? 39 : handler.Current.ColorId).GetColor(false);
 
         transform.localScale *= handler.Size;
         transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Player.MyPhysics.body.velocity));

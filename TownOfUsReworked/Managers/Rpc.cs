@@ -340,7 +340,7 @@ public static class RpcManager
                     }
                     case MiscRPC.Catch:
                     {
-                        PlayerControlOnClick.CatchPostmortal(reader.ReadPlayer(), reader.ReadPlayer());
+                        reader.ReadPlayer().GetLayer<IGhosty>().Catch(reader.ReadPlayer());
                         return;
                     }
                     case MiscRPC.DoorSyncToilet:
@@ -633,15 +633,10 @@ public static class RpcManager
 
                             if (reader.ReadBool())
                             {
-                                var hand = UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerid];
+                                var hand = UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerid].handRenderer;
                                 var playerFromId = PlayerById(playerid);
-                                PlayerMaterial.SetColors(playerFromId.GetCustomOutfitType() switch
-                                {
-                                    CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly => playerFromId.GetPlayerColor(),
-                                    CustomPlayerOutfitType.Camouflage or CustomPlayerOutfitType.Colorblind => UColor.grey,
-                                    _ => (playerFromId.IsMimicking(out var mimicked) ? mimicked : playerFromId).GetPlayerColor()
-                                }, hand.handRenderer);
-                                hand.handRenderer.SetAlpha(playerFromId.GetAlpha());
+                                playerFromId.UpdateColor(hand);
+                                hand.SetAlpha(playerFromId.GetAlpha());
                             }
                         } catch {}
 
@@ -694,7 +689,9 @@ public static class RpcManager
                     }
                     case ActionsRPC.Cancel:
                     {
-                        reader.ReadButton().ClickedAgain = true;
+                        var button = reader.ReadButton();
+                        button.ClickedAgain = true;
+                        button.OnClickedAgain();
                         return;
                     }
                     case ActionsRPC.PublicReveal:

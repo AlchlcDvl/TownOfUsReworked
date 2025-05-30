@@ -5,7 +5,15 @@ public static class PlayerOutfitPatches
 {
     public static bool Prefix(PlayerPhysics __instance, ref float __result)
     {
-        __result = __instance.myPlayer.GetFinalSpeed();
+        try
+        {
+            __result = __instance.myPlayer.GetFinalSpeed();
+        }
+        catch
+        {
+            __result = 1f;
+        }
+
         return false;
     }
 }
@@ -15,7 +23,12 @@ public static class SpeedNetworkPatch
 {
     public static void Postfix(CustomNetworkTransform __instance)
     {
-        if (!__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+        if (__instance.AmOwner)
+            return;
+
+        try
+        {
             __instance.body.velocity *= __instance.myPlayer.GetFinalSpeed();
+        } catch {}
     }
 }

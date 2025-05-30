@@ -29,6 +29,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private OtherDelayStartVoid OnOtherDelayStart { get; } = BlankVoid;
     private OtherDelayEndVoid OnOtherDelayEnd { get; } = BlankVoid;
     private OtherDelayVoid ActionOtherDelay { get; } = BlankVoid;
+    public ClickedAgainVoid OnClickedAgain { get; } = BlankVoid;
     private EndFunc End { get; } = BlankFalse;
     private DifferenceFunc Difference { get; } = BlankZero;
     private MultiplierFunc Multiplier { get; } = BlankOne;
@@ -327,6 +328,11 @@ public sealed class CustomButton : IDisposable, INetSerializable
                     ManualUpdate = manualUpdate;
                     break;
                 }
+                case ClickedAgainVoid clickedAgainVoid:
+                {
+                    OnClickedAgain = clickedAgainVoid;
+                    break;
+                }
                 case null:
                 {
                     Warning("Entered a null prop value"); // Achievement Get: How did we get here?
@@ -451,6 +457,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             else if (EffectActive && CanClickAgain)
             {
                 ClickedAgain = true;
+                OnClickedAgain();
                 CallRpc(CustomRPC.Action, ActionsRPC.Cancel, this);
             }
         }

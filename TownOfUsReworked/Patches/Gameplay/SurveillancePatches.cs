@@ -116,15 +116,8 @@ public static class SurveillancePatches
         Overlays.ForEach(x => x.Destroy());
         Overlays.Clear();
 
-        if (!NvActive)
-            return;
-
-        NvActive = false;
-
-        if (Hud.Instance.IsCamoed)
-            Camouflage();
-        else
-            DefaultOutfitAll();
+        if (NvActive)
+            NvActive = false;
     }
 
     private static void EnforceNightVision()
@@ -135,7 +128,9 @@ public static class SurveillancePatches
                 continue;
 
             if (LightsOut && Overlays.Any() && NvActive && (int)player.GetCustomOutfitType() is not (9 or 6 or 7))
-                player.CustomSetOutfit(CustomPlayerOutfitType.NightVision, NightVisionOutfit());
+                player.OverrideOutfit(NightVisionOutfit(), CustomPlayerOutfitType.NightVision, -1, CheckActive);
         }
     }
+
+    private static bool CheckActive() => NvActive;
 }

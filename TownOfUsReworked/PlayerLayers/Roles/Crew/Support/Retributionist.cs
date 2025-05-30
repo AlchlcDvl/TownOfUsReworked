@@ -28,6 +28,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private PlayerControl Revived { get; set; }
     private Role RevivedRole => Revived ? (Revived.Is<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
     public CustomMeeting RetMenu { get; private set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => RevivedRole?.Color ?? CustomColorManager.Retributionist;
     public override LayerEnum Type => LayerEnum.Retributionist;
@@ -54,6 +55,8 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         }
     }
     public override bool RoleBlockImmune => RevivedRole?.RoleBlockImmune ?? false;
+
+    private void ClickAgain() => ClickedAgain = true;
 
     public override void Reset(bool meeting, bool start)
     {
@@ -192,11 +195,8 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
             arrow?.Update(__instance.GetPlayerColor(false, !Medium.ShowMediatePlayer));
 
-            if (Medium.ShowMediatePlayer)
-                return;
-
-            __instance.CustomSetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(__instance));
-            PlayerMaterial.SetColors(UColor.grey, __instance.MyRend());
+            if (!Medium.ShowMediatePlayer)
+                __instance.OverrideOutfit(CamoOutfit(__instance), CustomPlayerOutfitType.Camouflage);
         }
     }
 
@@ -234,6 +234,10 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
             case RetActionsRPC.Roleblock:
             {
                 BlockTarget = reader.ReadPlayer();
+
+                if (BlockTarget.AmOwner)
+                    CustomStatsManager.IncrementStat(CustomStatsManager.StatsRoleblocked);
+
                 break;
             }
             case RetActionsRPC.Bomb:
@@ -451,7 +455,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         else if (IsCham)
         {
             SwoopButton ??= new(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Swoop, (UsableFunc)ChamUsable,
-                (EffectEndVoid)UnInvis, new Cooldown(Chameleon.SwoopCd), new Duration(Chameleon.SwoopDur), (EffectVoid)Invis, (EndFunc)SwoopEnd, Chameleon.MaxSwoops);
+                (EffectEndVoid)UnInvis, new Cooldown(Chameleon.SwoopCd), new Duration(Chameleon.SwoopDur), (EffectVoid)Invis, (EndFunc)SwoopEnd, Chameleon.MaxSwoops, (ClickedAgainVoid)ClickAgain);
         }
         else if (IsEngi)
         {
@@ -751,11 +755,11 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     private CustomButton SwoopButton { get; set; }
     private bool IsCham => RevivedRole is Chameleon;
 
-    private void Invis() => MiscUtils.Invis(Player);
+    private void Invis() => MiscUtils.Invis(Player, Chameleon.SwoopDur, SwoopEnd);
 
-    private bool SwoopEnd() => Dead;
+    private void UnInvis() => ClickedAgain = false;
 
-    private void UnInvis() => DefaultOutfit(Player);
+    private bool SwoopEnd() => Dead || ClickedAgain;
 
     private void Swoop()
     {

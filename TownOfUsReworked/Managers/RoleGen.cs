@@ -555,12 +555,6 @@ public static class RoleGenManager
 
         BodyLocations.Clear();
 
-        CachedMorphs.Clear();
-
-        TransitioningSize.Clear();
-
-        TransitioningSpeed.Clear();
-
         UninteractablePlayers.Clear();
 
         BetterAirship.SpawnPoints.Clear();

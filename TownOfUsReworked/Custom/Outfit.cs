@@ -27,14 +27,14 @@ public sealed class CustomOutfit
         PlayerName = source.PlayerName;
         PetId = source.PetId;
 
-        if (ColorId is not (-1 or 2))
+        if (!CustomColorManager.AllColors.TryGetValue(ColorId, out var color))
             return;
 
         var translation = Palette.GetColorName(ColorId);
-        ColorName = CustomColorManager.AllColors.TryGetValue(ColorId, out var color) ? (color.Default ? (translation[0] + translation[1..].ToLower()) : translation) : "???";
+        ColorName = color.Default ? (translation[0] + translation[1..].ToLower()) : translation;
     }
 
-    public CustomOutfit(PlayerControl player, bool useCurrent = false) : this(useCurrent ? player.CurrentOutfit : player.Data.DefaultOutfit)
+    public CustomOutfit(PlayerControl player, bool useCurrent = false) : this(useCurrent ? player.CurrentOutfit : player.Data.Outfits[PlayerOutfitType.Default])
     {
         var lobby = IsLobby();
         Size = lobby ? 1f : player.GetSize();

@@ -87,14 +87,9 @@ public static class ZiplineBehaviourUse
             UninteractablePlayers.TryAdd(player.PlayerId, Time.time);
             UninteractablePlayers2.TryAdd(player.PlayerId, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
             CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, UninteractablePlayers2[player.PlayerId], true);
-            var hand = __instance.playerIdHands[player.PlayerId];
-            PlayerMaterial.SetColors(player.GetCustomOutfitType() switch
-            {
-                CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly => player.GetPlayerColor(),
-                CustomPlayerOutfitType.Camouflage or CustomPlayerOutfitType.Colorblind => UColor.grey,
-                _ => (player.IsMimicking(out var mimicked) ? mimicked : player).GetPlayerColor()
-            }, hand.handRenderer);
-            hand.handRenderer.SetAlpha(player.GetAlpha());
+            var hand = __instance.playerIdHands[player.PlayerId].handRenderer;
+            player.UpdateColor(hand);
+            hand.SetAlpha(player.GetAlpha());
         }
         catch (Exception e)
         {

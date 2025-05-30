@@ -14,6 +14,7 @@ public sealed class Chameleon : Crew
     public static Number SwoopDur = 10;
 
     private CustomButton SwoopButton { get; set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Chameleon;
     public override LayerEnum Type => LayerEnum.Chameleon;
@@ -24,13 +25,15 @@ public sealed class Chameleon : Crew
     {
         base.Init();
         Alignment = Alignment.Support;
-        SwoopButton ??= new(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Swoop, new Cooldown(SwoopCd), (EffectVoid)Invis,
-            MaxSwoops, new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
+        SwoopButton ??= new(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Swoop, new Cooldown(SwoopCd), (EffectStartVoid)Invis,
+            MaxSwoops, new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }
 
-    private void Invis() => MiscUtils.Invis(Player);
+    private void Invis() => MiscUtils.Invis(Player, SwoopDur, EndEffect);
 
-    private void UnInvis() => DefaultOutfit(Player);
+    private void UnInvis() => ClickedAgain = false;
+
+    private void ClickAgain() => ClickedAgain = true;
 
     private void Swoop()
     {
@@ -38,5 +41,5 @@ public sealed class Chameleon : Crew
         SwoopButton.Begin();
     }
 
-    private bool EndEffect() => Dead;
+    private bool EndEffect() => Dead || ClickedAgain;
 }

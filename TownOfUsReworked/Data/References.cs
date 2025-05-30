@@ -5,10 +5,7 @@ public static class References
     public static readonly HashSet<byte> RecentlyKilled = [];
     public static readonly HashSet<byte> Cleaned = [];
     public static readonly HashSet<byte> Moving = [];
-    public static readonly Dictionary<byte, byte> CachedMorphs = [];
     public static readonly List<DeadPlayer> KilledPlayers = [];
-    public static readonly Dictionary<byte, float> TransitioningSize = []; // Wheeze
-    public static readonly Dictionary<byte, float> TransitioningSpeed = []; // Double wheeze
     public static readonly Dictionary<byte, float> UninteractablePlayers = [];
     public static readonly Dictionary<byte, float> UninteractablePlayers2 = [];
     public static readonly Dictionary<byte, string> BodyLocations = [];
@@ -33,7 +30,6 @@ public static class References
     public static string FirstDead { get; set; }
     public static string CachedFirstDead { get; set; }
     public static string MostRecentKiller { get; set; }
-    public static bool Shapeshifted { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
     private static bool hiddenBlock;
     public static bool HiddenBlock

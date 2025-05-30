@@ -4,7 +4,7 @@ public abstract class NameHandler : MonoBehaviour
 {
     protected PlayerControl Player { get; set; }
 
-    protected static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, bool amOwner, bool deadSeeEverything, out bool revealed)
+    public static (string, UColor) UpdateGameName(LayerHandler playerHandler, LayerHandler localHandler, bool amOwner, bool deadSeeEverything, out bool revealed)
     {
         revealed = false;
         var player = playerHandler.Player;

@@ -15,6 +15,7 @@ public sealed class Wraith : Intruder
     public static bool WraithVent = false;
 
     private CustomButton InvisButton { get; set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Wraith;
     public override LayerEnum Type => LayerEnum.Wraith;
@@ -26,14 +27,16 @@ public sealed class Wraith : Intruder
     {
         base.Init();
         Alignment = Alignment.Deception;
-        InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitInvis, new Cooldown(InvisCd), (EffectVoid)Invis,
-            new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect);
+        InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitInvis, new Cooldown(InvisCd), (EffectStartVoid)Invis,
+            new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }
 
-    private void Invis() => MiscUtils.Invis(Player, LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || (LocalPlayer.Is(SubFaction) && SubFaction !=
+    private void Invis() => MiscUtils.Invis(Player, InvisDur, EndEffect, (LocalPlayer.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (LocalPlayer.Is(SubFaction) && SubFaction !=
         SubFaction.None));
 
-    private void UnInvis() => DefaultOutfit(Player);
+    private void UnInvis() => ClickedAgain = false;
+
+    private void ClickAgain() => ClickedAgain = true;
 
     private void HitInvis()
     {
@@ -41,5 +44,5 @@ public sealed class Wraith : Intruder
         InvisButton.Begin();
     }
 
-    private bool EndEffect() => Dead;
+    private bool EndEffect() => Dead || ClickedAgain;
 }

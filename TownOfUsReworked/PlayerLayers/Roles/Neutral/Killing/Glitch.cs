@@ -27,6 +27,7 @@ public sealed class Glitch : NKilling, IBlocker
     public PlayerControl HackTarget { get; private set; }
     private PlayerControl MimicTarget { get; set; }
     private CustomPlayerMenu MimicMenu { get; set; }
+    private bool ClickedAgain { get; set; }
     public PlayerControl BlockTarget => HackTarget;
 
     protected override UColor MainColor => CustomColorManager.Glitch;
@@ -49,10 +50,12 @@ public sealed class Glitch : NKilling, IBlocker
         HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EndFunc)EndHack, new Duration(HackDur),
             (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
         MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
-            new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic);
+            new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic, (ClickedAgainVoid)OnClickedAgain);
     }
 
     public override void Reset(bool meeting, bool start) => MimicTarget = HackTarget = null;
+
+    private void OnClickedAgain() => ClickedAgain = true;
 
     private void UnHack()
     {
@@ -65,12 +68,12 @@ public sealed class Glitch : NKilling, IBlocker
             Play("UnHack");
     }
 
-    private void Mimic() => Morph(Player, MimicTarget);
+    private void Mimic() => Player.SetMimicked(MimicTarget, MimicDur, EndHack);
 
     private void UnMimic()
     {
+        ClickedAgain = false;
         MimicTarget = null;
-        DefaultOutfit(Player);
     }
 
     private void Click(PlayerControl player) => MimicTarget = player;
@@ -123,7 +126,7 @@ public sealed class Glitch : NKilling, IBlocker
         Message("Removed a target");
     }
 
-    private bool EndHack() => (HackTarget && HackTarget.HasDied()) || Dead;
+    private bool EndHack() => (HackTarget && HackTarget.HasDied()) || Dead || ClickedAgain;
 
     private bool EndMimic() => Dead;
 

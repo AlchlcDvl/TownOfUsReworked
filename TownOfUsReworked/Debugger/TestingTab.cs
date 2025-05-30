@@ -49,7 +49,7 @@ public sealed class TestingTab : BaseTab
         LocalPlayer.Collider.enabled = GUILayout.Toggle(LocalPlayer.Collider.enabled, "Player Collider");
 
         if (GUILayout.Button("Randomise Outfit"))
-            LocalPlayer.SetOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
+            LocalPlayer.OverrideOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);
 
         if (GUILayout.Button("Queue Random Outfit"))
             LocalPlayer.QueueOutfit(GenerateRandomOutfit(), CustomPlayerOutfitType.Custom, 5f, ShouldMove);

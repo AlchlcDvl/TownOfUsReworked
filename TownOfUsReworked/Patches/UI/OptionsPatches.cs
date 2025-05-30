@@ -753,11 +753,7 @@ public static class SettingsPatches
         else
         {
             var hud = HUD();
-            MapChangeNotif = UObject.Instantiate(hud.Notifier.notificationMessageOrigin, Vector3.zero, Quaternion.identity, hud.Notifier.transform);
-            MapChangeNotif.transform.localPosition = new(0f, 0f, -2f);
-            MapChangeNotif.SetUp(changed, hud.Notifier.settingsChangeSprite, hud.Notifier.settingsChangeColor, (Action)(() => hud.Notifier.OnMessageDestroy(MapChangeNotif)));
-            hud.Notifier.ShiftMessages();
-            hud.Notifier.AddMessageToQueue(MapChangeNotif);
+            MapChangeNotif = PopNotif(changed, hud.Notifier.settingsChangeColor, hud.Notifier.settingsChangeSprite);
         }
     }
 

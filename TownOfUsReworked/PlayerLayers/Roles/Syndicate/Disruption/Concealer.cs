@@ -16,6 +16,7 @@ public sealed class Concealer : Syndicate
     private CustomButton ConcealButton { get; set; }
     private PlayerControl ConcealedPlayer { get; set; }
     private CustomPlayerMenu ConcealMenu { get; set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Concealer;
     public override LayerEnum Type => LayerEnum.Concealer;
@@ -28,8 +29,8 @@ public sealed class Concealer : Syndicate
         Alignment = Alignment.Disruption;
         ConcealMenu = new(Player, Click, Color, Exception1);
         ConcealedPlayer = null;
-        ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(ConcealCd), (EffectVoid)Conceal,
-            (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal, (EndFunc)EndEffect);
+        ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(ConcealCd), (EffectStartVoid)Conceal,
+            (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }
 
     public override void Reset(bool meeting, bool start) => ConcealedPlayer = null;
@@ -37,18 +38,14 @@ public sealed class Concealer : Syndicate
     private void Conceal()
     {
         if (HoldsDrive)
-            AllPlayers().Do(x => Invis(x, LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral)));
+            AllPlayers().Do(x => Invis(x, ConcealDur, EndEffect, LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral)));
         else
-            Invis(ConcealedPlayer, LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral));
+            Invis(ConcealedPlayer, ConcealDur, EndEffect, LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral));
     }
 
     private void UnConceal()
     {
-        if (HoldsDrive)
-            DefaultOutfitAll();
-        else
-            DefaultOutfit(ConcealedPlayer);
-
+        ClickedAgain = false;
         ConcealedPlayer = null;
     }
 
@@ -61,6 +58,8 @@ public sealed class Concealer : Syndicate
         else
             ConcealButton.StartCooldown(cooldown);
     }
+
+    private void ClickAgain() => ClickedAgain = true;
 
     private void HitConceal()
     {
@@ -100,7 +99,7 @@ public sealed class Concealer : Syndicate
         Message("Removed a target");
     }
 
-    private bool EndEffect() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead);
+    private bool EndEffect() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead) || ClickedAgain;
 
     public override void ReadRPC(NetData reader)
     {

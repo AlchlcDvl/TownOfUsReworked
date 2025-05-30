@@ -366,7 +366,6 @@ public static class LobbyBehaviourPatch
         SetFullScreenHUD();
         RoleGenManager.ResetEverything();
         StopAll();
-        DefaultOutfitAll();
         ClientHandler.OnLobbyStart();
         Client.Instance.Page = 0;
         Client.Instance.Buttons.Clear();

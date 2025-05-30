@@ -55,11 +55,5 @@ public sealed class Banshee : Syndicate, IGhosty
 
     private bool EndEffect() => Caught;
 
-    public override void UpdatePlayer()
-    {
-        base.UpdatePlayer();
-        (this as IGhosty).UpdateGhost();
-    }
-
     public bool CanBeClicked(PlayerControl clicker) => !clicker.Is(Faction);
 }

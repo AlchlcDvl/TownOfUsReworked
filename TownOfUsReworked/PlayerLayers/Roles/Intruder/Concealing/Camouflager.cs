@@ -10,6 +10,7 @@ public sealed class Camouflager : Intruder
     public static Number CamouflageDur = 10;
 
     private CustomButton CamouflageButton { get; set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Camouflager;
     public override LayerEnum Type => LayerEnum.Camouflager;
@@ -22,16 +23,16 @@ public sealed class Camouflager : Intruder
         base.Init();
         Alignment = Alignment.Concealing;
         CamouflageButton ??= new(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
-            new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectVoid)Camouflage, (EffectEndVoid)UnCamouflage);
+            new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectStartVoid)StartCamouflage, (EffectEndVoid)UnCamouflage, (ClickedAgainVoid)ClickAgain);
     }
 
-    public static void Camouflage()
+    private void StartCamouflage()
     {
         Hud.Instance.CamouflagerEnabled = true;
-        MiscUtils.Camouflage();
+        Camouflage(Condition);
     }
 
-    public static void UnCamouflage() => Hud.Instance.CamouflagerEnabled = false;
+    private static void UnCamouflage() => Hud.Instance.CamouflagerEnabled = false;
 
     private void HitCamouflage()
     {
@@ -39,5 +40,7 @@ public sealed class Camouflager : Intruder
         CamouflageButton.Begin();
     }
 
-    public static bool Condition() => !Hud.Instance.IsCamoed;
+    private void ClickAgain() => ClickedAgain = true;
+
+    public bool Condition() => !Hud.Instance.IsCamoed || ClickedAgain;
 }

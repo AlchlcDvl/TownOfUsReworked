@@ -35,15 +35,10 @@ public sealed class Ghoul : Intruder, IGhosty
 
     private bool Usable() => !Caught && !MarkedPlayer;
 
-    private bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+    private bool Exception1(PlayerControl player) => player == MarkedPlayer || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction !=
+        SubFaction.None);
 
     public override void ReadRPC(NetData reader) => MarkedPlayer = reader.ReadPlayer();
-
-    public override void UpdatePlayer()
-    {
-        base.UpdatePlayer();
-        (this as IGhosty).UpdateGhost();
-    }
 
     public bool CanBeClicked(PlayerControl clicker) => !clicker.Is(Faction);
 }

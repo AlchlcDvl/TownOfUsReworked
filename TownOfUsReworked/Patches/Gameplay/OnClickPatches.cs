@@ -23,18 +23,14 @@ public static class PlayerControlOnClick
             return false;
         }
 
-        CallRpc(CustomRPC.Misc, MiscRPC.Catch, __instance, LocalPlayer);
         CatchPostmortal(__instance, LocalPlayer);
         return false;
     }
 
     public static void CatchPostmortal(PlayerControl ghosty, PlayerControl clicker)
     {
-        if (!ghosty.Is<IGhosty>(out var role) || !role.CanBeClicked(clicker))
-            return;
-
-        role.Caught = true;
-        ghosty.CustomDie(DeathReasonEnum.Caught, clicker);
+        if (ghosty.Is<IGhosty>(out var role) && role.CanBeClicked(clicker))
+            role.Catch(clicker);
     }
 }
 

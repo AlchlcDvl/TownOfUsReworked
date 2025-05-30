@@ -51,192 +51,22 @@ public static class MiscUtils
 
     // public static bool IsImpostor(this PlayerVoteArea playerinfo) => PlayerByVoteArea(playerinfo).IsImpostor();
 
-    public static void CustomSetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfitType, PlayerOutfit outfit)
-    {
-        playerControl.Data.SetOutfit((PlayerOutfitType)customOutfitType, outfit);
-        playerControl.CustomSetOutfit(customOutfitType);
-    }
+    public static PlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl) => playerControl.CurrentOutfitType;
 
-    private static void CustomSetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfit)
+    public static void Camouflage(Func<bool> func, float duration = -1) => AllPlayers().Do(x => CamoSingle(x, func, duration));
+
+    private static void CamoSingle(PlayerControl player, Func<bool> func, float duration = -1)
     {
-        if (!playerControl)
+        if (player.HasDied() || (int)player.GetCustomOutfitType() is 4 or 5 or 6 or 7 || (LocalPlayer.HasDied() && DeadSeeEverything()) || player.AmOwner)
             return;
 
-        var outfitType = (PlayerOutfitType)customOutfit;
-
-        if (playerControl.Data.Outfits.TryGetValue(outfitType, out var newOutfit))
-            playerControl.RawSetOutfit(newOutfit, outfitType);
+        player.QueueOutfit(CamoOutfit(player), CustomPlayerOutfitType.Camouflage, duration, func);
     }
 
-    public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl) => (CustomPlayerOutfitType)playerControl.CurrentOutfitType;
-
-    public static void Morph(PlayerControl player, PlayerControl morphTarget) => Coroutines.Start(CoMorph(player, morphTarget));
-
-    private static IEnumerator CoMorph(PlayerControl player, PlayerControl morphTarget)
+    public static void Invis(PlayerControl player, float duration, Func<bool> func, bool condition = false)
     {
-        if ((int)player.GetCustomOutfitType() is 3 or 4 or 5 or 6 or 7)
-            yield break;
-
-        if (CachedMorphs.TryGetValue(player.PlayerId, out var morphId))
-            morphTarget = PlayerById(morphId);
-
-        CachedMorphs.TryAdd(player.PlayerId, morphTarget.PlayerId);
-        var playerSpeed = player.GetSize();
-        var morphSpeed = morphTarget.GetSpeed();
-        var playerSize = player.GetSize();
-        var morphSize = morphTarget.GetSize();
-
-        Coroutines.Start(PerformTimedAction(1, p =>
-        {
-            PlayerMaterial.SetColors(UColor.Lerp(player.Data.DefaultOutfit.ColorId.GetColor(false), morphTarget.Data.DefaultOutfit.ColorId.GetColor(false), p), player.MyRend());
-            TransitioningSize[player.PlayerId] = Mathf.Lerp(playerSize, morphSize, p);
-            TransitioningSpeed[player.PlayerId] = Mathf.Lerp(playerSpeed, morphSpeed, p);
-
-            if (p < 1)
-                return;
-
-            TransitioningSize.Remove(player.PlayerId);
-            TransitioningSpeed.Remove(player.PlayerId);
-        }));
-
-        yield return PerformTimedAction(0.5f, p =>
-        {
-            player.SetHatAndVisorAlpha(1 - p);
-            player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(1 - p);
-        });
-
-        yield return PerformTimedAction(0.5f, p =>
-        {
-            player.SetHatAndVisorAlpha(p);
-            player.cosmetics.skin.layer.color = player.cosmetics.skin.layer.color.SetAlpha(p);
-        });
-
-        player.CustomSetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
-    }
-
-    public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(CoDefaultOutfit(player));
-
-    private static IEnumerator CoDefaultOutfit(PlayerControl player)
-    {
-        switch (player.GetCustomOutfitType())
-        {
-            case CustomPlayerOutfitType.Invis:
-            {
-                var a = player.cosmetics.GetPhantomRoleAlpha();
-                yield return PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(a, 1, p), !player.AmOwner));
-                break;
-            }
-            case CustomPlayerOutfitType.Camouflage:
-            {
-                yield return PerformTimedAction(1, p =>
-                {
-                    var color = UColor.Lerp(UColor.grey, player.Data.DefaultOutfit.ColorId.GetColor(false), p);
-                    PlayerMaterial.SetColors(color, player.MyRend());
-                    player.SetHatAndVisorAlpha(p);
-                    var color2 = player.cosmetics.skin.layer.color;
-                    player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
-
-                    if (BetterSabotages.CamoHideSize)
-                        TransitioningSize[player.PlayerId] = Mathf.Lerp(1f, player.GetSize(), p);
-
-                    if (BetterSabotages.CamoHideSpeed)
-                        TransitioningSpeed[player.PlayerId] = Mathf.Lerp(1f, player.GetSpeed(), p);
-
-                    if (p < 1)
-                        return;
-
-                    TransitioningSize.Remove(player.PlayerId);
-                    TransitioningSpeed.Remove(player.PlayerId);
-                });
-                break;
-            }
-            case CustomPlayerOutfitType.Morph:
-            {
-                var morphTarget = CachedMorphs.TryGetValue(player.PlayerId, out var otherId) ? PlayerById(otherId) : player;
-
-                Coroutines.Start(PerformTimedAction(1, p =>
-                {
-                    var color = UColor.Lerp(morphTarget.Data.DefaultOutfit.ColorId.GetColor(false), player.Data.DefaultOutfit.ColorId.GetColor(false), p);
-                    PlayerMaterial.SetColors(color, player.MyRend());
-                    TransitioningSize[player.PlayerId] = Mathf.Lerp(morphTarget.GetSize(), player.GetSize(), p);
-                    TransitioningSpeed[player.PlayerId] = Mathf.Lerp(morphTarget.GetSpeed(), player.GetSpeed(), p);
-
-                    if (p < 1)
-                        return;
-
-                    TransitioningSize.Remove(player.PlayerId);
-                    TransitioningSpeed.Remove(player.PlayerId);
-                }));
-
-                yield return PerformTimedAction(0.5f, p =>
-                {
-                    player.SetHatAndVisorAlpha(1 - p);
-                    var color2 = player.cosmetics.skin.layer.color;
-                    player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
-                });
-
-                player.CustomSetOutfit(CustomPlayerOutfitType.Default);
-
-                yield return PerformTimedAction(0.5f, p =>
-                {
-                    player.SetHatAndVisorAlpha(p);
-                    var color2 = player.cosmetics.skin.layer.color;
-                    player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
-                });
-
-                CachedMorphs.Remove(player.PlayerId);
-                player.CustomSetOutfit(CustomPlayerOutfitType.Default);
-                break;
-            }
-        }
-
-        if (!Hud.Instance.IsCamoed && player.GetCustomOutfitType() != CustomPlayerOutfitType.Default)
-            player.CustomSetOutfit(CustomPlayerOutfitType.Default);
-
-        Shapeshifted = false;
-    }
-
-    public static void Camouflage() => AllPlayers().Do(CamoSingle);
-
-    private static void CamoSingle(PlayerControl player)
-    {
-        if (player.HasDied() || (int)player.GetCustomOutfitType() is 4 or 5 or 6 or 7 || LocalPlayer.HasDied() || player.AmOwner)
-            return;
-
-        player.CustomSetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
-        var speed = player.GetSpeed();
-        var size = player.GetSize();
-        var rend = player.MyRend();
-        Coroutines.Start(PerformTimedAction(1, p =>
-        {
-            var color = UColor.Lerp(player.Data.DefaultOutfit.ColorId.GetColor(false), UColor.grey, p);
-            PlayerMaterial.SetColors(color, rend);
-            player.SetHatAndVisorAlpha(1 - p);
-            var color2 = player.cosmetics.skin.layer.color;
-            player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
-
-            if (BetterSabotages.CamoHideSize)
-                TransitioningSize[player.PlayerId] = Mathf.Lerp(size, 1f, p);
-
-            if (BetterSabotages.CamoHideSpeed)
-                TransitioningSpeed[player.PlayerId] = Mathf.Lerp(speed, 1f, p);
-
-            if (p < 1)
-                return;
-
-            TransitioningSize.Remove(player.PlayerId);
-            TransitioningSpeed.Remove(player.PlayerId);
-        }));
-    }
-
-    public static void Invis(PlayerControl player, bool condition = false)
-    {
-        if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis || player.Data.IsDead)
-            return;
-
         var ca = condition || LocalPlayer.HasDied() || player.AmOwner || LocalPlayer.Is<Torch>() ? 0.1f : 0f;
-        player.CustomSetOutfit(CustomPlayerOutfitType.Invis, CurrentOutfit(player));
-        Coroutines.Start(PerformTimedAction(1, p => player.SetAlpha(Mathf.Lerp(1, ca, p), !player.AmOwner)));
+        player.QueueOutfit(InvisOutfit(player, ca), CustomPlayerOutfitType.Invis, duration, func);
     }
 
     public static void SetAlpha(this SpriteRenderer rend, float alpha) => rend.color = rend.color.SetAlpha(alpha);
@@ -262,9 +92,11 @@ public static class MiscUtils
 
     public static CustomOutfit CloneOutfit(this PlayerControl player) => new(player);
 
+    public static CustomOutfit InvisOutfit(this PlayerControl player, float alpha) => new(player) { Alpha = alpha };
+
     public static CustomOutfit BlankOutfit(PlayerControl player) => new() { ColorId = player.Data.DefaultOutfit.ColorId };
 
-    private static CustomOutfit CamoOutfit(PlayerControl player) => new(player)
+    public static CustomOutfit CamoOutfit(PlayerControl player) => new(player)
     {
         PlayerName = GetRandomisedName(),
         ColorName = GetRandomisedName(),
@@ -275,8 +107,6 @@ public static class MiscUtils
     public static CustomOutfit ColorblindOutfit() => new() { ColorId = 39 };
 
     public static CustomOutfit NightVisionOutfit() => new() { ColorId = 6 };
-
-    public static void DefaultOutfitAll() => AllPlayers().Do(DefaultOutfit);
 
     public static PlayerControl PlayerById(byte? id) => GameData.Instance?.GetPlayerById(id ?? 255)?.Object;
 
@@ -333,8 +163,8 @@ public static class MiscUtils
         if (!killer || !target || !target.Data || target.Data.IsDead || !killer.Data)
             return;
 
-        AchievementManager.Instance.OnMurder(killer.AmOwner, target.AmOwner, CachedMorphs.ContainsKey(killer.PlayerId), CachedMorphs.TryGetValue(killer.PlayerId, out var id) ? id : 255,
-            target.PlayerId);
+        var handler = AppearanceHandler.Handlers[killer.PlayerId];
+        AchievementManager.Instance.OnMurder(killer.AmOwner, target.AmOwner, handler.Mimicked, handler.Mimicked?.PlayerId ?? 255, target.PlayerId);
         lunge &= !killer.Is<Ninja>() && killer != target;
 
         if (IsCustomHnS() || LocalPlayer.HasDied())
@@ -1110,7 +940,7 @@ public static class MiscUtils
                 break;
             }
             default:
-                throw new ArgumentException($"Either the member doesn't have a defined SetValue method, or the value can't be fetched for this member: {member.GetType().Name}");
+                throw new ArgumentException($"Either the member doesn't have a defined SetValue method, or the value can't be set for this member: {member.GetType().Name}");
         }
     }
 
@@ -1199,7 +1029,6 @@ public static class MiscUtils
         player.gameObject.layer = LayerMask.NameToLayer("Ghost");
         player.cosmetics.SetNameMask(false);
         player.cosmetics.PettingHand.StopPetting();
-        DefaultOutfit(player);
 
         player.Data.Role.OnDeath(reason);
         GameManager.Instance.OnPlayerDeath(player, false);
@@ -1415,7 +1244,7 @@ public static class MiscUtils
     public static T CreateInstance<T>(params object[] args) => (T)Activator.CreateInstance(typeof(T), args);
 
     // Graciously yoinked these two methods from MiraAPI
-    public static LobbyNotificationMessage PopNotif(string text, UColor color, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f) => PopNotif(text, color, new(0f, 0f, -2f),
+    public static LobbyNotificationMessage PopNotif(string text, UColor color, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f) => PopNotif(text, color, new(0f, 0.75f, -2f),
         sprite, clip, thickness);
 
     private static LobbyNotificationMessage PopNotif(string text, UColor color, Vector3 localPos, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f)

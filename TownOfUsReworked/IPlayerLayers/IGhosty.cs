@@ -3,18 +3,22 @@ namespace TownOfUsReworked.IPlayerLayers;
 public interface IGhosty : IPlayerLayer
 {
     bool Caught { get; set; }
-    bool Faded { get; set; }
 
     public bool CanBeClicked(PlayerControl clicker);
+
+    public void OnStart()
+    {
+        Player.OverrideOutfit(BlankOutfit(Player), CustomPlayerOutfitType.Ghostly, -1, CheckFaded, Fade);
+        Player.MyPhysics.ResetMoveState();
+        Player.MyPhysics.ResetAnimState();
+    }
 
     private void Fade()
     {
         if (Disconnected)
             return;
 
-        Faded = true;
-
-        var maxDistance = Ship().MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
+        var maxDistance = LocalPlayer.lightSource.viewDistance;
         var distance = (LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
         var distPercent = distance / maxDistance;
@@ -22,33 +26,20 @@ public interface IGhosty : IPlayerLayer
 
         var velocity = Player.GetComponent<Rigidbody2D>().velocity.magnitude;
 
-        if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-            Player.CustomSetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
-
-        Player.SetAlpha(Mathf.Lerp(0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f), 0, distPercent));
-        Player.NameText().color = Player.cosmetics.colorBlindText.color = UColor.clear;
-
-        if (Local)
-            Camouflage();
+        Player.MyRend().SetAlpha(Mathf.Lerp(0.07f + (velocity / Player.MyPhysics.TrueSpeed * 0.13f), 0, distPercent));
     }
 
-    private void UnFade()
+    private bool CheckFaded() => Caught;
+
+    public void Catch(PlayerControl clicker)
     {
-        Player.MyRend().color = UColor.white;
+        if (clicker.AmOwner)
+            CallRpc(CustomRPC.Misc, MiscRPC.Catch, Player, clicker);
+
+        Player.CustomDie(DeathReasonEnum.Caught, clicker);
         Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
-        Faded = false;
         Player.MyPhysics.ResetMoveState();
         Player.MyPhysics.ResetAnimState();
-
-        if (Local)
-            DefaultOutfitAll();
-    }
-
-    public void UpdateGhost()
-    {
-        if (!Caught)
-            Fade();
-        else if (Faded)
-            UnFade();
+        Caught = true;
     }
 }

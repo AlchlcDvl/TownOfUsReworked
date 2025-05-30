@@ -146,16 +146,19 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!rev.Is<Revealer>())
+            if (!rev.Is<Revealer>(out var revealer))
             {
                 var former = rev.GetRole();
-                new Revealer() { FormerRole = former }.RoleUpdate(former);
+                (revealer = new() { FormerRole = former }).RoleUpdate(former);
             }
 
             rev.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
 
-            if (rev.AmOwner && !rev.GetLayer<Revealer>().Caught)
-                SetStartingVent(rev);
+            if (!rev.AmOwner || revealer.Caught)
+                continue;
+
+            SetStartingVent(rev);
+            ((IGhosty)revealer).OnStart();
         }
 
         WillBeRevealers.RemoveAll(remove.Contains);
@@ -191,13 +194,16 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!phan.Is<Phantom>())
-                new Phantom().RoleUpdate(phan.GetRole());
+            if (!phan.Is<Phantom>(out var phantom))
+                (phantom = new()).RoleUpdate(phan.GetRole());
 
             phan.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
 
-            if (phan.AmOwner && !phan.GetLayer<Phantom>().Caught)
-                SetStartingVent(phan);
+            if (!phan.AmOwner || phantom.Caught)
+                continue;
+
+            SetStartingVent(phan);
+            ((IGhosty)phantom).OnStart();
         }
 
         WillBePhantoms.RemoveAll(remove.Contains);
@@ -233,13 +239,16 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!ban.Is<Banshee>())
-                new Banshee().RoleUpdate(ban.GetRole());
+            if (!ban.Is<Banshee>(out var banshee))
+                (banshee = new()).RoleUpdate(ban.GetRole());
 
             ban.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
 
-            if (ban.AmOwner && !ban.GetLayer<Banshee>().Caught)
-                SetStartingVent(ban);
+            if (!ban.AmOwner || banshee.Caught)
+                continue;
+
+            SetStartingVent(ban);
+            ((IGhosty)banshee).OnStart();
         }
 
         WillBeBanshees.RemoveAll(remove.Contains);
@@ -275,13 +284,16 @@ public static class SetPostmortals
             if (!ejection)
                 continue;
 
-            if (!ghoul.Is<Ghoul>())
-                new Ghoul().RoleUpdate(ghoul.GetRole());
+            if (!ghoul.Is<Ghoul>(out var gho))
+                (gho = new()).RoleUpdate(ghoul.GetRole());
 
             ghoul.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
 
-            if (ghoul.AmOwner && !ghoul.GetLayer<Ghoul>().Caught)
-                SetStartingVent(ghoul);
+            if (!ghoul.AmOwner || gho.Caught)
+                continue;
+
+            SetStartingVent(ghoul);
+            ((IGhosty)gho).OnStart();
         }
 
         WillBeGhouls.RemoveAll(remove.Contains);

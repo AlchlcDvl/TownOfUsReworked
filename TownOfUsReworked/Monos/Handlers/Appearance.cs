@@ -7,17 +7,27 @@ public sealed class AppearanceHandler : MonoBehaviour
     private static readonly Vector3 BaseSize = new(0.7f, 0.7f, 0.7f);
     private static readonly float[] AlphaSequence = [1f, 0f, 1f];
 
-    public DeadBody Body { get; set; }
     public float Speed { get; private set; } = 1f;
     public float Size { get; private set; } = 1f;
     public float Alpha { get; private set; } = 1f;
-    public CustomPlayerOutfitType CurrentOutfitType { get; private set; }
+    public PlayerOutfitType CurrentOutfitType { get; private set; }
     public PlayerControl Mimicked { get; private set; }
+
+    public DeadBody Body
+    {
+        get;
+        set
+        {
+            field = value;
+            var color = Current.GetPair();
+            value?.bodyRenderers?.Do(x => CustomColorManager.SetColor(x, color));
+        }
+    }
 
     [HideFromIl2Cpp]
     public CustomOutfit Current { get; set; }
 
-    public readonly Dictionary<CustomPlayerOutfitType, CustomOutfit> Outfits = [];
+    public readonly Dictionary<PlayerOutfitType, CustomOutfit> Outfits = [];
 
     private PlayerControl Player { get; set; }
     private TextMeshPro Name { get; set; }
@@ -28,6 +38,9 @@ public sealed class AppearanceHandler : MonoBehaviour
 
     [HideFromIl2Cpp]
     private Func<bool> ShouldChangeFunc { get; set; } = BlankFalse;
+
+    [HideFromIl2Cpp]
+    private Action ConcurrentAction { get; set; } = BlankVoid;
 
     [HideFromIl2Cpp]
     private CustomOutfit Default
@@ -44,17 +57,14 @@ public sealed class AppearanceHandler : MonoBehaviour
     private CustomOutfit gameDefault;
     private CustomOutfit lobbyDefault;
 
-    private readonly Queue<(CustomOutfit, CustomPlayerOutfitType, float, Func<bool>)> QueuedOutfits = [];
+    private readonly Queue<(CustomOutfit, PlayerOutfitType, float, Func<bool>, Action)> QueuedOutfits = [];
 
     public void Awake()
     {
         Player = GetComponent<PlayerControl>();
         OutfitTime = -1f;
         Name = Player.NameText();
-        Color = Player.ColorBlindText();
-        Color.transform.localPosition = new(0f, -1.5f, -0.5f);
         Name.transform.localPosition = new(0f, -0.2f, -0.5f);
-        Color.name = Player.Data.ColorName;
     }
 
     public void Update()
@@ -70,21 +80,24 @@ public sealed class AppearanceHandler : MonoBehaviour
         if (shouldUpdate || ShouldChangeFunc())
         {
             var former = GetCurrent();
-            (Current, CurrentOutfitType, OutfitTime, ShouldChangeFunc) = QueuedOutfits.TryDequeue(out var queue) ? queue : (Default, IsLobby()
+            (Current, CurrentOutfitType, OutfitTime, ShouldChangeFunc, ConcurrentAction) = QueuedOutfits.TryDequeue(out var queue) ? queue : (Default, IsLobby()
                 ? CustomPlayerOutfitType.Default
                 : CustomPlayerOutfitType.GameDefault,
-                -1, BlankFalse);
+                -1, BlankFalse, BlankVoid);
             ChangeTo(former, Current, CurrentOutfitType);
             Mimicked = null;
         }
 
         BodyUpdate();
         PlayerUpdate();
+        ConcurrentAction();
     }
 
     public void UpdateCurrent()
     {
-        Current = Default = new(Player.Data.Outfits[PlayerOutfitType.Default]);
+        Color = Player.ColorBlindText();
+        Color.transform.localPosition = new(0f, -1.5f, -0.5f);
+        Current = Default = new(Player);
         Handlers[Player.PlayerId] = this;
         Alpha = Current.Alpha;
         Size = Current.Size;
@@ -118,16 +131,18 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.SetHatAndVisorAlpha(Alpha);
     }
 
+    public void UpdateColor(SpriteRenderer rend) => CustomColorManager.SetColor(rend, Current.GetPair());
+
     [HideFromIl2Cpp]
     public CustomOutfit GetCurrent() => Current ?? Default;
 
     [HideFromIl2Cpp]
-    public void QueueOutfit(CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null)
+    public void QueueOutfit(CustomOutfit outfit, PlayerOutfitType type, float duration = -1, Func<bool> func = null, Action concurrent = null)
     {
         if (QueuedOutfits.Count == 0 && !Transitioning && OutfitTime <= 0f)
             OverrideOutfit(outfit, type, duration, func);
         else
-            QueuedOutfits.Enqueue((outfit, type, duration, func ?? BlankFalse));
+            QueuedOutfits.Enqueue((outfit, type, duration, func ?? BlankFalse, concurrent ?? BlankVoid));
     }
 
     [HideFromIl2Cpp]
@@ -138,15 +153,15 @@ public sealed class AppearanceHandler : MonoBehaviour
     }
 
     [HideFromIl2Cpp]
-    public void OverrideOutfit(CustomOutfit outfit, CustomPlayerOutfitType type, float duration = -1, Func<bool> func = null, CustomOutfit former = null)
+    public void OverrideOutfit(CustomOutfit outfit, PlayerOutfitType type, float duration = -1, Func<bool> func = null, Action concurrent = null)
     {
-        former ??= GetCurrent();
-        (Current, OutfitTime, ShouldChangeFunc, CurrentOutfitType) = (outfit, duration, func ?? BlankFalse, type);
+        var former = Current ?? GetCurrent();
+        (Current, OutfitTime, ShouldChangeFunc, CurrentOutfitType, ConcurrentAction) = (outfit, duration, func ?? BlankFalse, type, concurrent ?? BlankVoid);
         ChangeTo(former, Current, type);
     }
 
     [HideFromIl2Cpp]
-    private void ChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, CustomPlayerOutfitType type)
+    private void ChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, PlayerOutfitType type)
     {
         if (formerOutfit == null)
             throw new ArgumentNullException(nameof(formerOutfit));
@@ -158,7 +173,7 @@ public sealed class AppearanceHandler : MonoBehaviour
     }
 
     [HideFromIl2Cpp]
-    private IEnumerator CoChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, CustomPlayerOutfitType type)
+    private IEnumerator CoChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, PlayerOutfitType type)
     {
         Transitioning = true;
 
@@ -177,7 +192,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.RawSetPet(formerOutfit.PetId, color);
         Body?.bodyRenderers?.Do(x => CustomColorManager.SetColor(x, color));
 
-        Color.name = formerOutfit.ColorName + (ClientOptions.LighterDarker ? $"({formerOutfit.GetLightOrDark()})" : "");
+        Color.name = formerOutfit.ColorName + (ClientOptions.LighterDarker ? $" ({formerOutfit.GetLightOrDark()})" : "");
         Player.name = formerOutfit.PlayerName;
 
         var playerRend = Player.MyRend();
@@ -192,7 +207,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.RawSetPet(newOutfit.PetId, color);
         Body?.bodyRenderers?.Do(x => CustomColorManager.SetColor(x, color));
 
-        Color.name = newOutfit.ColorName + (ClientOptions.LighterDarker ? $"({newOutfit.GetLightOrDark()})" : "");
+        Color.name = newOutfit.ColorName + (ClientOptions.LighterDarker ? $" ({newOutfit.GetLightOrDark()})" : "");
         Player.name = newOutfit.PlayerName;
 
         yield return PerformTimedAction(0.5f, t => HandleAlpha(t, formerOutfit, newOutfit, 0.5f, change, playerRend, true));
@@ -219,7 +234,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         }
 
         Outfits[type] = newOutfit;
-        Player.Data.Outfits[(PlayerOutfitType)type] = newOutfit;
+        Player.Data.Outfits[type] = newOutfit;
         ColorId = newOutfit.ColorId;
 
         if (Body)
@@ -247,9 +262,21 @@ public sealed class AppearanceHandler : MonoBehaviour
 
         if (change.HasFlag(ChangeCosmetics.Name))
         {
-            var realT = (int)(Player.name.Length * (isSecondHalf ? t : (1 - t)));
-            Name.text = Player.name[..(realT + 1)];
-            Name.color = Name.color.SetAlpha(Alpha);
+            var realT = (int)((Player.name.Length - 1) * (isSecondHalf ? t : (1 - t)));
+            var (name, colorInt) = ("", UColor.white);
+
+            if (Player.Data.Role is LayerHandler playerHandler && LocalPlayer.Data.Role is LayerHandler localHandler)
+            {
+                var deadSeeEverything = DeadSeeEverything();
+                var amOwner = Player.AmOwner;
+
+                if (!amOwner && !deadSeeEverything && Mimicked?.Data?.Role is LayerHandler handler1)
+                    playerHandler = handler1;
+
+                (name, colorInt) = NameHandler.UpdateGameName(playerHandler, localHandler, amOwner, deadSeeEverything, out _);
+            }
+
+            (Name.text, Name.color) = (Player.name[..(realT + 1)] + name, colorInt.SetAlpha(Alpha));
         }
 
         if (!change.HasFlag(ChangeCosmetics.Color))
@@ -265,6 +292,8 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.cosmetics.currentPet.SetCrewmateColor(color);
         Color.color = color.Color1.SetAlpha(Alpha);
         Body?.bodyRenderers?.Do(x => Colors.Instance.SetRend(color, x));
+        var realT2 = (int)((Color.name.Length - 1) * (isSecondHalf ? t : (1 - t)));
+        Color.text = Color.name[..(realT2 + 1)];
     }
 
     public float GetTrueSpeed()

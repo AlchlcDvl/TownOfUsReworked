@@ -81,6 +81,11 @@ public static class AllMonos
 
         RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.AddItem(prefab).ToArray();
 
+        Hud.AddInstance();
+        Colors.AddInstance();
+        Client.AddInstance();
+        Debugging.AddInstance();
+
         ComponentsAdded = true;
     }
 }

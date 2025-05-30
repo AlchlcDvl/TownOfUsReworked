@@ -20,6 +20,7 @@ public sealed class Shapeshifter : Syndicate
     public PlayerControl ShapeshiftPlayer2 { get; private set; }
     private CustomPlayerMenu ShapeshiftMenu1 { get; set; }
     private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Shapeshifter;
     public override LayerEnum Type => LayerEnum.Shapeshifter;
@@ -34,55 +35,33 @@ public sealed class Shapeshifter : Syndicate
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Color, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Color, Exception2);
-        ShapeshiftButton ??= new(this, new SpriteName("Shapeshift"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd),
-            (EffectEndVoid)UnShapeshift, new Duration(ShapeshiftDur), (EffectVoid)Shift, (LabelFunc)Label);
+        ShapeshiftButton ??= new(this, new SpriteName("Shapeshift"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd), (LabelFunc)Label,
+            (EffectEndVoid)UnShapeshift, new Duration(ShapeshiftDur), (EffectStartVoid)Shift, (EndFunc)EndEffect, (ClickedAgainVoid)OnClickedAgain);
     }
 
     public override void Reset(bool meeting, bool start) => ShapeshiftPlayer1 = ShapeshiftPlayer2 = null;
 
-    private void Shift() => Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
-
-    public static void Shapeshift(PlayerControl player1, PlayerControl player2, bool drived)
+    private void Shift()
     {
-        if (!drived)
+        if (HoldsDrive)
         {
-            Morph(player1, player2);
-            Morph(player2, player1);
-        }
-        else if (!Shapeshifted)
-        {
-            Shapeshifted = true;
             var allPlayers = AllPlayers().ToList();
             var shuffledPlayers = AllPlayers().ToList();
             shuffledPlayers.Shuffle();
 
             for (var i = 0; i < allPlayers.Count; i++)
-            {
-                var morphed = allPlayers[i];
-                var morphTarget = shuffledPlayers[i];
-                CachedMorphs.TryAdd(morphed.PlayerId, morphTarget.PlayerId);
-            }
+                shuffledPlayers[i].SetMimicked(allPlayers[i], ShapeshiftDur, EndEffect);
         }
         else
         {
-            AllPlayers().Do(x =>
-            {
-                if (CachedMorphs.TryGetValue(x.PlayerId, out var target))
-                    Morph(x, PlayerById(target));
-            });
+            ShapeshiftPlayer1.SetMimicked(ShapeshiftPlayer2, ShapeshiftDur, EndEffect);
+            ShapeshiftPlayer2.SetMimicked(ShapeshiftPlayer1, ShapeshiftDur, EndEffect);
         }
     }
 
     private void UnShapeshift()
     {
-        if (HoldsDrive)
-            DefaultOutfitAll();
-        else
-        {
-            DefaultOutfit(ShapeshiftPlayer1);
-            DefaultOutfit(ShapeshiftPlayer2);
-        }
-
+        ClickedAgain = false;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
     }
@@ -109,20 +88,27 @@ public sealed class Shapeshifter : Syndicate
 
     private void HitShapeshift()
     {
-        if (HoldsDrive)
+        if (HoldsDrive || (ShapeshiftPlayer1 && ShapeshiftPlayer2))
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton);
+            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton);
+
+            if (writer is not null)
+            {
+                if (ShapeshiftPlayer1)
+                    writer.Write(ShapeshiftPlayer1.PlayerId);
+
+                if (ShapeshiftPlayer2)
+                    writer.Write(ShapeshiftPlayer2.PlayerId);
+
+                writer.Send();
+            }
+
             ShapeshiftButton.Begin();
         }
         else if (!ShapeshiftPlayer1)
             ShapeshiftMenu1.Open();
         else if (!ShapeshiftPlayer2)
             ShapeshiftMenu2.Open();
-        else
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton, ShapeshiftPlayer1, ShapeshiftPlayer2);
-            ShapeshiftButton.Begin();
-        }
     }
 
     private bool Exception1(PlayerControl player) => player == ShapeshiftPlayer2 || CommonException(player);
@@ -161,6 +147,8 @@ public sealed class Shapeshifter : Syndicate
         return !ShapeshiftPlayer2 ? "SECOND TARGET" : "SHAPESHIFT";
     }
 
+    private void OnClickedAgain() => ClickedAgain = true;
+
     public override void ReadRPC(NetData reader)
     {
         if (HoldsDrive)
@@ -169,4 +157,6 @@ public sealed class Shapeshifter : Syndicate
         ShapeshiftPlayer1 = reader.ReadPlayer();
         ShapeshiftPlayer2 = reader.ReadPlayer();
     }
+
+    private bool EndEffect() => ClickedAgain;
 }

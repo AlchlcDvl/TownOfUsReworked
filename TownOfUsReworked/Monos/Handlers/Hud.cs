@@ -30,15 +30,9 @@ public sealed class HudHandler : MonoBehaviour
         if (!BetterSabotages.CamouflagedComms)
             return;
 
-        if (Ship().Systems.TryGetValue(SystemTypes.Comms, out var sab) && sab.TryCast<IActivatable>(out var comms) && comms.IsActive && !CommsEnabled)
-        {
+        if (!CommsEnabled && Ship().Systems.TryGetValue(SystemTypes.Comms, out var sab) && sab.TryCast<IActivatable>(out var comms) && comms.IsActive)
             CommsEnabled = true;
-            Camouflage();
-        }
-        else if (CommsEnabled && !CamouflagerEnabled)
-        {
+        else if (CommsEnabled)
             CommsEnabled = false;
-            DefaultOutfitAll();
-        }
     }
 }

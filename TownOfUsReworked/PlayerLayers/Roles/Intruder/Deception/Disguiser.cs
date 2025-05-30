@@ -24,8 +24,8 @@ public sealed class Disguiser : Intruder
     private CustomButton DisguiseButton { get; set; }
     private CustomButton MeasureButton { get; set; }
     private PlayerControl MeasuredPlayer { get; set; }
-    private PlayerControl CopiedPlayer { get; set; }
     private PlayerControl DisguisedPlayer { get; set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Disguiser;
     public override LayerEnum Type => LayerEnum.Disguiser;
@@ -39,25 +39,27 @@ public sealed class Disguiser : Intruder
         MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);
         DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
-            new Duration(DisguiseDur), (EffectVoid)Disguise, new Delay(DisguiseDelay), (PlayerBodyExclusion)Exception1, (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE");
+            new Duration(DisguiseDur), (EffectStartVoid)Disguise, new Delay(DisguiseDelay), (PlayerBodyExclusion)Exception1, (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE",
+            (ClickedAgainVoid)OnClickedAgain);
         DisguisedPlayer = null;
         MeasuredPlayer = null;
-        CopiedPlayer = null;
     }
 
-    public override void Reset(bool meeting, bool start) => MeasuredPlayer = DisguisedPlayer = CopiedPlayer = null;
+    public override void Reset(bool meeting, bool start) => MeasuredPlayer = DisguisedPlayer = null;
 
     private void Disguise()
     {
         if (!DisguisedPlayer.AmOwner)
-            Morph(DisguisedPlayer, CopiedPlayer);
+            DisguisedPlayer.SetMimicked(MeasuredPlayer, DisguiseDur, EndEffect);
     }
 
     private void UnDisguise()
     {
-        DefaultOutfit(DisguisedPlayer);
         DisguisedPlayer = null;
-        CopiedPlayer = null;
+        ClickedAgain = false;
+
+        if (DisgCooldownsLinked)
+            MeasureButton.StartCooldown();
     }
 
     private void HitDisguise(PlayerControl target)
@@ -66,16 +68,18 @@ public sealed class Disguiser : Intruder
 
         if (cooldown != CooldownType.Fail)
         {
-            CopiedPlayer = MeasuredPlayer;
             DisguisedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, DisguiseButton, CopiedPlayer, DisguisedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, DisguiseButton, MeasuredPlayer, DisguisedPlayer);
             DisguiseButton.Begin();
+            PopNotif("<b>You have disguised " + target.name + " into " + MeasuredPlayer.name + "!</b>", Color);
         }
         else
+        {
             DisguiseButton.StartCooldown(cooldown);
 
-        if (DisgCooldownsLinked)
-            MeasureButton.StartCooldown(cooldown);
+            if (DisgCooldownsLinked)
+                MeasureButton.StartCooldown(cooldown);
+        }
     }
 
     private void Measure(PlayerControl target)
@@ -91,18 +95,19 @@ public sealed class Disguiser : Intruder
             DisguiseButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Exception2(player) || (((player.Is(Faction) && DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) && DisguiseTarget
-        == DisguiserTargets.Intruders)) && Faction is not (Faction.Crew or Faction.Neutral));
+    private bool Exception1(PlayerControl player) => Exception2(player) || ((player.Is(Faction) ? DisguiseTarget == DisguiserTargets.NonIntruders : DisguiseTarget == DisguiserTargets.Intruders) && Faction is not (Faction.Crew or Faction.Neutral));
 
     private bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 
     private bool Usable() => MeasuredPlayer;
 
-    private bool EndEffect() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead;
+    private bool EndEffect() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead || ClickedAgain;
 
     public override void ReadRPC(NetData reader)
     {
-        CopiedPlayer = reader.ReadPlayer();
+        MeasuredPlayer = reader.ReadPlayer();
         DisguisedPlayer = reader.ReadPlayer();
     }
+
+    private void OnClickedAgain() => ClickedAgain = true;
 }

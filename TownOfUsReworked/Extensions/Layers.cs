@@ -26,15 +26,22 @@ public static class LayerExtensions
     public static bool Is(this PlayerControl player, Faction faction)
     {
         var playerFaction = player.GetFaction();
-        var part = faction switch
+        var part = BadGuysSettings.IlluminatiUnleashed switch
         {
-            Faction.Intruder => (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders) || (!BadGuysSettings.IlluminatiUnleashed &&
-                BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Intruders),
-            Faction.Syndicate => (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate) || (!BadGuysSettings.IlluminatiUnleashed &&
-                BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate),
-            Faction.Apocalypse => (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse) || (!BadGuysSettings.IlluminatiUnleashed &&
-                BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse),
-            _ => false
+            true => faction switch
+            {
+                Faction.Intruder => BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders,
+                Faction.Syndicate => BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate,
+                Faction.Apocalypse => BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse,
+                _ => false
+            },
+            false => faction switch
+            {
+                Faction.Intruder => BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Intruders,
+                Faction.Syndicate => BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate,
+                Faction.Apocalypse => BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse,
+                _ => false
+            }
         };
         return playerFaction == faction || part;
     }
@@ -99,7 +106,7 @@ public static class LayerExtensions
 
         var crewFlag = role.Faction == Faction.Crew;
         var neutralFlag = role.Faction == Faction.Neutral;
-        var factionFlag = role.Faction.IsAny(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse);
+        var factionFlag = role.Faction.IsAny(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse, Faction.Compliance);
 
         var phantomFlag = role is Phantom;
 
@@ -227,68 +234,19 @@ public static class LayerExtensions
 
     public static float GetBaseSpeed(this PlayerControl player) => player.HasDied() && (!player.Is<IGhosty>(out var ghost) || ghost.Caught) ? GameSettings.GhostSpeed : GameSettings.PlayerSpeed;
 
-    // public static float GetModifiedSpeed(this PlayerControl player)
-    // {
-    //     if (TransitioningSpeed.TryGetValue(player.PlayerId, out var speed))
-    //         return speed;
-
-    //     return player.IsMimicking(out var mimicked) ? mimicked.GetSpeed() : player.GetSpeed();
-    // }
-
-    public static float GetSpeed(this PlayerControl player)
-    {
-        if (player.Is<Modifier>(out var mod))
-        {
-            return mod switch
-            {
-                Dwarf => Dwarf.DwarfSpeed,
-                Giant => Giant.GiantSpeed,
-                Drunk drunk => drunk.Modify,
-                _ => 1f
-            };
-        }
-
-        return 1f;
-    }
-
-    // public static float GetModifiedSize(this PlayerControl player)
-    // {
-    //     if (TransitioningSize.TryGetValue(player.PlayerId, out var size))
-    //         return size;
-
-    //     return player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
-    // }
-
-    public static float GetSize(this PlayerControl player) => player.GetModifier() switch
+    public static float GetSpeed(this PlayerControl player) => player.GetModifier() switch
     {
         Dwarf => Dwarf.DwarfSpeed,
         Giant => Giant.GiantSpeed,
         _ => 1f
     };
 
-    private static bool TryGetShaper(this PlayerControl player, out Shapeshifter shaper) => PlayerLayer.GetLayers<Shapeshifter>().TryFinding(x => player.IsAny(x.ShapeshiftPlayer1, x.ShapeshiftPlayer2),
-        out shaper);
-
-    public static bool IsMimicking(this PlayerControl player, out PlayerControl mimicked)
+    public static float GetSize(this PlayerControl player) => player.GetModifier() switch
     {
-        mimicked = player;
-
-        if (player.HasDied())
-            return false;
-
-        if (CachedMorphs.TryGetValue(player.PlayerId, out var mimickedId))
-            return mimicked = PlayerById(mimickedId);
-
-        if (mimicked != player)
-            return false;
-
-        if (player.Is<Morphling>(out var morph) && morph.MorphedPlayer)
-            mimicked = morph.MorphedPlayer;
-        else if (player.TryGetShaper(out var ss))
-            mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer2 : ss.ShapeshiftPlayer1;
-
-        return mimicked && mimicked != player;
-    }
+        Dwarf => Dwarf.DwarfScale,
+        Giant => Giant.GiantScale,
+        _ => 1f
+    };
 
     public static bool CanVent(this PlayerControl player)
     {

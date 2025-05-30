@@ -10,12 +10,13 @@ public delegate bool ConditionFunc();
 
 public delegate void DelayVoid();
 public delegate void EffectVoid();
-public delegate void ManualUpdateVoid();
 public delegate void DelayEndVoid();
 public delegate void EffectEndVoid();
 public delegate void OtherDelayVoid();
 public delegate void DelayStartVoid();
 public delegate void EffectStartVoid();
+public delegate void ClickedAgainVoid();
+public delegate void ManualUpdateVoid();
 public delegate void OtherDelayEndVoid();
 public delegate void OtherDelayStartVoid();
 

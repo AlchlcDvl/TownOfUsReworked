@@ -45,20 +45,32 @@ public sealed class PlayerControlHandler : NameHandler
 
     private bool UpdateNameVisibility(bool colorBlind)
     {
-        if ((colorBlind && !DataManager.Settings.Accessibility.ColorBlindMode) || GameModifiers.PlayerNames == PlayerNames.NotVisible)
-            return false;
-
-        var local = LocalPlayer;
-        var vector = Player.transform.position - local.transform.position;
-
-        if (vector.magnitude > local.lightSource.viewDistance)
-            return false;
-
-        if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !Player.AmOwner && !local.HasDied() &&
-            GameModifiers.PlayerNames == PlayerNames.Obstructed)
+        if (colorBlind)
         {
-            return false;
+            if (IsLobby())
+                return DataManager.Settings.Accessibility.ColorBlindMode;
+
+            if (!DataManager.Settings.Accessibility.ColorBlindMode)
+                return false;
         }
+
+        if (GameModifiers.PlayerNames == PlayerNames.NotVisible)
+            return false;
+
+        try
+        {
+            var local = LocalPlayer;
+            var vector = Player.transform.position - local.transform.position;
+
+            if (vector.magnitude > local.lightSource.viewDistance)
+                return false;
+
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !Player.AmOwner && !local.HasDied() &&
+                GameModifiers.PlayerNames == PlayerNames.Obstructed)
+            {
+                return false;
+            }
+        } catch {}
 
         return true;
     }

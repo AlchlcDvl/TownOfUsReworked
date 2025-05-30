@@ -264,7 +264,7 @@ public static class PlayerInfoPatches
     [HarmonyPatch(nameof(NetworkedPlayerInfo.DefaultOutfit), MethodType.Getter)]
     public static bool Prefix(NetworkedPlayerInfo __instance, ref PlayerOutfit  __result)
     {
-        if (IsInGame() && __instance.Outfits.TryGetValue((PlayerOutfitType)CustomPlayerOutfitType.GameDefault, out var outfit))
+        if (IsInGame() && __instance.Outfits.TryGetValue(CustomPlayerOutfitType.GameDefault, out var outfit))
             __result = outfit;
         else
             __result = __instance.Outfits[PlayerOutfitType.Default];
@@ -302,7 +302,7 @@ public static class PlayerInfoPatches
             var playerOutfit = new PlayerOutfit();
             playerOutfit.Deserialize(reader);
             __instance.Outfits[playerOutfitType] = playerOutfit;
-            outfits[(CustomPlayerOutfitType)playerOutfitType] = new(playerOutfit);
+            outfits[playerOutfitType] = new(playerOutfit);
         }
 
         __instance.PlayerLevel = reader.ReadPackedUInt32();

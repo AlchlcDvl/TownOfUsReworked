@@ -20,8 +20,8 @@ public sealed class Morphling : Intruder
 
     private CustomButton MorphButton { get; set; }
     private CustomButton SampleButton { get; set; }
-    public PlayerControl MorphedPlayer { get; private set; }
     private PlayerControl SampledPlayer { get; set; }
+    private bool ClickedAgain { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Morphling;
     public override LayerEnum Type => LayerEnum.Morphling;
@@ -34,20 +34,18 @@ public sealed class Morphling : Intruder
         base.Init();
         Alignment = Alignment.Deception;
         SampledPlayer = null;
-        MorphedPlayer = null;
         SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);
         MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
-            new Duration(MorphDur), (EffectVoid)Morph, (EndFunc)EndEffect, (UsableFunc)Usable);
+            new Duration(MorphDur), (EndFunc)EndEffect, (UsableFunc)Usable, (ClickedAgainVoid)OnClickedAgain, (EffectStartVoid)Morph);
     }
 
-    public override void Reset(bool meeting, bool start) => SampledPlayer = MorphedPlayer = null;
+    public override void Reset(bool meeting, bool start) => SampledPlayer = null;
 
-    private void Morph() => MiscUtils.Morph(Player, MorphedPlayer);
+    private void Morph() => Player.SetMimicked(SampledPlayer, MorphDur, EndEffect);
 
     private void UnMorph()
     {
-        MorphedPlayer = null;
-        DefaultOutfit(Player);
+        ClickedAgain = false;
 
         if (MorphCooldownsLinked)
             SampleButton.StartCooldown();
@@ -55,9 +53,9 @@ public sealed class Morphling : Intruder
 
     private void HitMorph()
     {
-        MorphedPlayer = SampledPlayer;
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MorphButton, MorphedPlayer);
+        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MorphButton, SampledPlayer);
         MorphButton.Begin();
+        PopNotif("<b>You have morphed into " + SampledPlayer.name + "!</b>", Color);
     }
 
     private void Sample(PlayerControl target)
@@ -77,7 +75,9 @@ public sealed class Morphling : Intruder
 
     private bool Usable() => SampledPlayer;
 
-    private bool EndEffect() => Dead;
+    private bool EndEffect() => Dead || ClickedAgain;
 
-    public override void ReadRPC(NetData reader) => MorphedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(NetData reader) => SampledPlayer = reader.ReadPlayer();
+
+    private void OnClickedAgain() => ClickedAgain = true;
 }
