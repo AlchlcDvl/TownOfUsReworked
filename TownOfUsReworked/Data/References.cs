@@ -31,22 +31,20 @@ public static class References
     public static string CachedFirstDead { get; set; }
     public static string MostRecentKiller { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
-    private static bool hiddenBlock;
     public static bool HiddenBlock
     {
-        get => hiddenBlock;
+        get;
         set
         {
-            hiddenBlock = value;
+            field = value;
 
             if (!value)
                 BlockExposed = false;
         }
     }
-    private static bool blockExposed;
     public static bool BlockExposed
     {
-        get => blockExposed;
+        get;
         set
         {
             if (value)
@@ -54,7 +52,7 @@ public static class References
             else
                 CameraEffectHandler.RemoveEffect("GlitchedMaterial");
 
-            blockExposed = value;
+            field = value;
         }
     }
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +

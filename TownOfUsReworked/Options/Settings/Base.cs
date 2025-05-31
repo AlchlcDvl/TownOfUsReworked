@@ -64,7 +64,9 @@ public abstract class Option(CustomOptionType type)
         (["FinalTwoDisableVenting"], ["not+WhoCanVent+NoOne"]),
         (["ComplianceMembers", "ComplianceSettings"], ["OrderOfCompliance"]),
         (["PandoricaMembers", "PandoricaSettings"], ["PandoricaOpens"]),
-        (["IlluminatiMembers", "IlluminatiSettings"], ["IlluminatiUnleashed"])
+        (["IlluminatiMembers", "IlluminatiSettings"], ["IlluminatiUnleashed"]),
+        (["GameTimer", "DuringMeetings", "TimeLeft", "PlayersLeft", "KillsExtendTimer", "TasksExtendTimer"], ["EnableGameTimer"]),
+        (["TimerExtension"], ["EnableGameTimer"]),
     ];
     // I need a second one because for some dumb reason the game likes crashing
     // This is for everything else
@@ -95,7 +97,9 @@ public abstract class Option(CustomOptionType type)
         (["Dispositions", "Modifiers", "Abilities"], [Mode.Classic, Mode.List, Mode.AllAny]),
         (["Runner", "Runner1"], [Mode.TaskRace]),
         (["Hunted1", "Hunted", "Hunter", "Hunter1"], [Mode.HideAndSeek]),
-        (["Location1", "Location2", "Location3"], [AirshipSpawnType.Fixed])
+        (["Location1", "Location2", "Location3"], [AirshipSpawnType.Fixed]),
+        (["TimeLeft"], [DuringMeeting.TimeRemaining]),
+        (["PlayersLeft"], [DuringMeeting.PeopleRemaining]),
     ];
     private static readonly Dictionary<string, bool> MapToLoaded = [];
 
@@ -140,6 +144,7 @@ public abstract class Option(CustomOptionType type)
         string id => GetBoolValue(id),
         AirshipSpawnType spawnType => BetterAirship.SpawnType == spawnType,
         LayerEnum layer => RoleGenManager.GetSpawnItem(layer).IsActive(),
+        DuringMeeting meetingTime => GameModifiers.DuringMeetings == meetingTime,
         _ => true
     };
 

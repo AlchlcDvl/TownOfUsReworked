@@ -7,7 +7,7 @@ public abstract class Neophyte : Neutral
     {
         get
         {
-            var part = faction switch
+            var part = Faction switch
             {
                 Faction.Compliance => ComplianceSettings.ComplianceVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,

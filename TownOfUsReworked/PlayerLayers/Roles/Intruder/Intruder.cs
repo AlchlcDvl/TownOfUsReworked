@@ -21,7 +21,7 @@ public abstract class Intruder : Role, IPromoter
     {
         get
         {
-            var part = faction switch
+            var part = Faction switch
             {
                 Faction.Pandorica => PandoricaSettings.PandoricaVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,

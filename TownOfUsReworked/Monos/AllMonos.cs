@@ -32,6 +32,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<AppearanceHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DebuggerHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<GameTimerHandler>();
 
         // Behaviours
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();

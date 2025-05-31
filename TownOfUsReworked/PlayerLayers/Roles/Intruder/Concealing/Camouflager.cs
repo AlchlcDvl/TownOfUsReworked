@@ -29,7 +29,7 @@ public sealed class Camouflager : Intruder
     private void StartCamouflage()
     {
         Hud.Instance.CamouflagerEnabled = true;
-        Camouflage(Condition);
+        Camouflage(Condition, CamouflageDur);
     }
 
     private static void UnCamouflage() => Hud.Instance.CamouflagerEnabled = false;

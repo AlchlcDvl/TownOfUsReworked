@@ -561,7 +561,7 @@ TextureImporter:
       213: -3120082364893468822
     second: Portal_185
   externalObjects: {}
-  serializedVersion: 12
+  serializedVersion: 13
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -578,10 +578,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -620,6 +622,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
   cookieLightType: 0
   platformSettings:
   - serializedVersion: 3
@@ -632,6 +635,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -644,6 +648,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -656,6 +661,20 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -4577,9 +4596,195 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-  spritePackingTag: 
+    nameFileIdTable:
+      Portal_0: 2189510010676529607
+      Portal_1: -2655743518466041805
+      Portal_10: -6243829485269475877
+      Portal_100: -7346072272148648293
+      Portal_101: 6298736419351602679
+      Portal_102: 5286972340313381681
+      Portal_103: 7774616987751558742
+      Portal_104: 222464601713206033
+      Portal_105: 1992244518505704880
+      Portal_106: -3222423149788928426
+      Portal_107: -8356814743606909882
+      Portal_108: -7350316623137535125
+      Portal_109: 2363285454379254361
+      Portal_11: -4040977761308534313
+      Portal_110: 324589413819998550
+      Portal_111: -1960583745161886831
+      Portal_112: -383180909240593192
+      Portal_113: -2400338210878595307
+      Portal_114: -4147590885105243406
+      Portal_115: -2009737414241702016
+      Portal_116: 7674691345134096421
+      Portal_117: 7276409160927491925
+      Portal_118: -6744515908710674437
+      Portal_119: 5798682582466297367
+      Portal_12: 9187669588170011834
+      Portal_120: -1248669988109712985
+      Portal_121: 9115617393570345930
+      Portal_122: -5075376520350651732
+      Portal_123: 4732144690388092350
+      Portal_124: -1615853854617168396
+      Portal_125: 7907173626215401821
+      Portal_126: -1392204288182356323
+      Portal_127: -7716280692223156260
+      Portal_128: -9049982254101015997
+      Portal_129: -7778651896198217404
+      Portal_13: -5770780211250784973
+      Portal_130: 666995953083451091
+      Portal_131: 3257773748438658861
+      Portal_132: -3908607153244324037
+      Portal_133: -3159483375596752961
+      Portal_134: 8918235887878414884
+      Portal_135: 6654745968174798771
+      Portal_136: 7090812952368042311
+      Portal_137: -977874528256569497
+      Portal_138: -4323579955907530747
+      Portal_139: 5405550868145297721
+      Portal_14: 6929692584990154426
+      Portal_140: 9047502272117631599
+      Portal_141: -1389282299369846366
+      Portal_142: 3756807512843771491
+      Portal_143: -5457579637664645749
+      Portal_144: -4614075489545922346
+      Portal_145: -2512306098572371967
+      Portal_146: 8195430245684240537
+      Portal_147: -1116731830453624776
+      Portal_148: 3032828828080310928
+      Portal_149: -6734249386622928121
+      Portal_15: -7193387756126948556
+      Portal_150: -8499149634417070915
+      Portal_151: 657777379448793046
+      Portal_152: 1265247625377906752
+      Portal_153: 7446635116666277724
+      Portal_154: -2641120050274064347
+      Portal_155: 1297321032957278688
+      Portal_156: 8968440344416567350
+      Portal_157: -570736094269776314
+      Portal_158: -6838840638945983838
+      Portal_159: -4066183847399815256
+      Portal_16: 8532301567556799393
+      Portal_160: 1830326761983324858
+      Portal_161: 2101264312011984064
+      Portal_162: -5303159366725994137
+      Portal_163: 3822962424988090262
+      Portal_164: -8495820973932036686
+      Portal_165: 4638155808258669586
+      Portal_166: -140793897448550417
+      Portal_167: 7457216937526916498
+      Portal_168: -397521880609018844
+      Portal_169: 1769623975166601893
+      Portal_17: -7057878137808709057
+      Portal_170: 2677540927997055692
+      Portal_171: -6282242587813425593
+      Portal_172: 3436081566823976338
+      Portal_173: 2217392561131052669
+      Portal_174: 1632309636269348237
+      Portal_175: 4630719727463731023
+      Portal_176: 8581060036991327017
+      Portal_177: -3448846850952684383
+      Portal_178: 4015737048777226582
+      Portal_179: 110271125747923449
+      Portal_18: -4947229090106881374
+      Portal_180: -5669707804354176471
+      Portal_181: 8492193609264731971
+      Portal_182: 3902118259114563060
+      Portal_183: 2469429538664513019
+      Portal_184: 1914662495954821005
+      Portal_185: -3120082364893468822
+      Portal_19: 2053025966658111632
+      Portal_2: 5763079367947051459
+      Portal_20: 2816034117096381973
+      Portal_21: 2189769627333426262
+      Portal_22: 2663875443410626922
+      Portal_23: 2625762517618189750
+      Portal_24: 8612712508727573826
+      Portal_25: 607922854509782009
+      Portal_26: -6090918485428668661
+      Portal_27: 4135214052433953341
+      Portal_28: -6621315691767321411
+      Portal_29: -4600768085193967230
+      Portal_3: 4595544271858990753
+      Portal_30: -876294054077054992
+      Portal_31: -6381207485140836041
+      Portal_32: -6560329954740840191
+      Portal_33: -1178867369846751304
+      Portal_34: 2707204496937585733
+      Portal_35: -5231483127745973881
+      Portal_36: 2857398864012777653
+      Portal_37: 3987510784934950046
+      Portal_38: 7699619786559066638
+      Portal_39: -7005708302960124498
+      Portal_4: -4595522883015475761
+      Portal_40: 63836876780915157
+      Portal_41: -5301024108859990069
+      Portal_42: -6512107123380687770
+      Portal_43: 921794088197399193
+      Portal_44: -7385693685545367086
+      Portal_45: -1586371135117947027
+      Portal_46: 4309274235711956147
+      Portal_47: -5266869693694346365
+      Portal_48: -1774203153578404721
+      Portal_49: 2565462176388613245
+      Portal_5: 7871413547306426770
+      Portal_50: -7779914412870607637
+      Portal_51: 299658562407487939
+      Portal_52: 330768301771640654
+      Portal_53: 6772035018961262058
+      Portal_54: 4716917407283147433
+      Portal_55: -5217284037924955753
+      Portal_56: -2671956753876031506
+      Portal_57: 9163716509619497451
+      Portal_58: 3461016312490050837
+      Portal_59: -2299347702002105742
+      Portal_6: 4576928675844355861
+      Portal_60: 4443479177678662752
+      Portal_61: 6658311741946836474
+      Portal_62: -6138113981891731912
+      Portal_63: 5895881597019008575
+      Portal_64: -1161739024764795441
+      Portal_65: -6989640617036799827
+      Portal_66: 7011279379544372387
+      Portal_67: -5052962731069572266
+      Portal_68: -3929902494532720334
+      Portal_69: -6721665145199007892
+      Portal_7: -8225264815004563020
+      Portal_70: 1005595646415339470
+      Portal_71: -5181191938320462879
+      Portal_72: 9121309092550416627
+      Portal_73: -7449762451118796776
+      Portal_74: -143476499714596736
+      Portal_75: -66367955602687758
+      Portal_76: 1646175645346165947
+      Portal_77: 4605236800474824524
+      Portal_78: -8845323279134572647
+      Portal_79: -2526978816312572045
+      Portal_8: -3456897263846328435
+      Portal_80: -4784305924852919237
+      Portal_81: -62923168593269536
+      Portal_82: -5723421126517522867
+      Portal_83: 20274415524148938
+      Portal_84: -7523724201524326005
+      Portal_85: 6717133912423728034
+      Portal_86: -1493705647158500059
+      Portal_87: -2251539483533307646
+      Portal_88: 8840405572068167891
+      Portal_89: -7722278021452049792
+      Portal_9: 4799579431202298925
+      Portal_90: -6037397910502876486
+      Portal_91: 194788524309611302
+      Portal_92: 8017081847100246110
+      Portal_93: 3773157765103810335
+      Portal_94: -717384622935225688
+      Portal_95: 6340644356394941297
+      Portal_96: 4756909270959549107
+      Portal_97: -5947705693559685056
+      Portal_98: -6836766401437327627
+      Portal_99: -5853889223142944805
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: reworked
   assetBundleVariant: 

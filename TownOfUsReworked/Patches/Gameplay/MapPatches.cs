@@ -95,7 +95,14 @@ public static class MapPatches
         RoleGenManager.BeginRoleGen();
         Ship().Begin();
         __instance.SendClientReady();
-        __instance.StartCoroutine(HUD().CoShowIntro());
+        var hud = HUD();
+        __instance.StartCoroutine(hud.CoShowIntro());
+
+        if (!GameModifiers.EnableGameTimer)
+            yield break;
+
+        GameTimerHandler.Instance = UObject.Instantiate(GameTimerHandler.Prefab, hud.transform.parent);
+        GameTimerHandler.Instance.gameObject.SetActive(true);
     }
 
     private static byte GetSelectedMap()

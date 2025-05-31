@@ -115,9 +115,7 @@ public static class SurveillancePatches
     {
         Overlays.ForEach(x => x.Destroy());
         Overlays.Clear();
-
-        if (NvActive)
-            NvActive = false;
+        NvActive = false;
     }
 
     private static void EnforceNightVision()

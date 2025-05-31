@@ -1093,6 +1093,12 @@ public static class MiscUtils
 
         if (AmongUsClient.Instance.AmHost)
             CheckEndGame.CheckPlayerWins();
+
+        if (!GameModifiers.EnableGameTimer)
+            return;
+
+        if (GameModifiers.KillsExtendTimer)
+            GameTimerHandler.Instance.ExtendTimer();
     }
 
     public static IEnumerator CoPerformKill(KillAnimation animation, PlayerControl killer, PlayerControl victim, DeathReasonEnum reason, bool lunge)
@@ -1114,7 +1120,6 @@ public static class MiscUtils
         deadBody.enabled = false;
         deadBody.ParentId = victim.PlayerId;
         deadBody.AddComponent<DeadBodyHandler>();
-        victim.SetPlayerMaterialColors(deadBody.bloodSplatter);
         AppearanceHandler.Handlers[victim.PlayerId].Body = deadBody;
         var vector = victim.transform.position + animation.BodyOffset;
         vector.z = vector.y / 1000f;

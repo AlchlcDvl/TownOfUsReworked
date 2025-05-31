@@ -68,11 +68,11 @@ public static class CheckEndGame
         if (WinState == WinLose.None)
             PlayerLayer.GetLayers<Disposition>().Do(x => x.GameEnd(winnerIds));
 
-        if (WinState != WinLose.None)
-        {
-            winnerIds.Select(x => PlayerById(x)).Do(x => x.GetLayers().Do(y => y.Winner = true));
-            CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds ]);
-        }
+        if (WinState == WinLose.None)
+            return;
+
+        winnerIds.Select(x => PlayerById(x)).Do(x => x.GetLayers().Do(y => y.Winner = true));
+        CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds ]);
     }
 
     public static void CheckSpellWin(Spellslinger hexer)

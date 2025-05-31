@@ -38,9 +38,9 @@ public sealed class Concealer : Syndicate
     private void Conceal()
     {
         if (HoldsDrive)
-            AllPlayers().Do(x => Invis(x, ConcealDur, EndEffect, LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral)));
+            AllPlayers().Do(x => Invis(x, ConcealDur, EndEffect, LocalPlayer.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)));
         else
-            Invis(ConcealedPlayer, ConcealDur, EndEffect, LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral));
+            Invis(ConcealedPlayer, ConcealDur, EndEffect, LocalPlayer.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral));
     }
 
     private void UnConceal()

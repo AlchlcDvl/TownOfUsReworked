@@ -29,10 +29,9 @@ public abstract class Role : PlayerLayer
 
     public List<LayerEnum> RoleHistory { get; } = [];
 
-    protected Faction faction;
     public Faction Faction
     {
-        get => faction;
+        get;
         set
         {
             FactionColor = value switch
@@ -68,20 +67,18 @@ public abstract class Role : PlayerLayer
             if (Local)
                 UpdateButtons();
 
-            faction = value;
+            field = value;
         }
     }
     public UColor FactionColor { get; private set; }
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
     public virtual string FactionName => $"{Faction}";
 
-    private SubFaction subFaction;
     public SubFaction SubFaction
     {
-        get => subFaction;
+        get;
         set
         {
-            subFaction = value;
             (SubFactionColor, SubFactionSymbol) = value switch
             {
                 SubFaction.Undead => (CustomColorManager.Undead, "γ"),
@@ -91,6 +88,7 @@ public abstract class Role : PlayerLayer
                 SubFaction.Followers => (CustomColorManager.Followers, "王"),
                 _ => (CustomColorManager.SubFaction, "φ")
             };
+            field = value;
         }
     }
     public string SubFactionSymbol { get; private set; }
@@ -113,13 +111,12 @@ public abstract class Role : PlayerLayer
     private CustomButton PlaceHitButton { get; set; }
     private int BountyTimer { get; set; }
 
-    private bool trulyDead;
     public bool TrulyDead
     {
-        get=> trulyDead;
+        get=> field;
         set
         {
-            trulyDead = value;
+            field = value;
             OnTrueDeath();
         }
     }

@@ -23,6 +23,7 @@ public static class OnGameEndPatches
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
             MapPatches.AdjustSettings(false);
+            GameTimerHandler.Instance.gameObject.Destroy();
 
             foreach (var role in PlayerLayer.GetLayers<Role>())
             {

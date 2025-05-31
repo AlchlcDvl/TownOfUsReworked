@@ -15,7 +15,7 @@ public abstract class Apocalypse : Role
     {
         get
         {
-            var part = faction switch
+            var part = Faction switch
             {
                 Faction.Pandorica => PandoricaSettings.PandoricaVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,

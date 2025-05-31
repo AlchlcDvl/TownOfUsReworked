@@ -20,7 +20,7 @@ public abstract class Syndicate : Role, IPromoter
     {
         get
         {
-            var part = faction switch
+            var part = Faction switch
             {
                 Faction.Pandorica => PandoricaSettings.PandoricaVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
@@ -33,21 +33,20 @@ public abstract class Syndicate : Role, IPromoter
 
     public static bool SyndicateHasChaosDrive { get; set; }
 
-    private static PlayerControl driveHolder;
     public static PlayerControl DriveHolder
     {
-        get => driveHolder;
+        get;
         set
         {
-            if (driveHolder && driveHolder.Is<Syndicate>(out var syndicate1))
+            if (field && field.Is<Syndicate>(out var syndicate1))
             {
                 syndicate1.OnDriveLost();
 
-                if (driveHolder.AmOwner || TownOfUsReworked.MciActive)
+                if (field.AmOwner || TownOfUsReworked.MciActive)
                     syndicate1.OnDriveLostLocal();
             }
 
-            driveHolder = value;
+            field = value;
 
             if (!value || !value.Is<Syndicate>(out var syndicateRole))
                 return;

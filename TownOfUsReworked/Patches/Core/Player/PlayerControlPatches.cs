@@ -169,6 +169,9 @@ public static class PlayerControlPatches
         if (__instance.Data.Role is LayerHandler handler)
             handler.UponTaskComplete(idx);
 
+        if (GameModifiers.EnableDispositions && GameModifiers.TasksExtendTimer)
+            GameTimerHandler.Instance.ExtendTimer();
+
         if (!__instance.AmOwner)
             return;
 

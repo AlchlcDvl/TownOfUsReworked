@@ -350,6 +350,52 @@ public static class GameModifiers
 
     [ToggleOption, Sorted(0)]
     public static bool AllCanDoTasks = false;
+
+    [ToggleOption, Sorted(0)]
+    public static bool EnableGameTimer
+    {
+        get;
+        set
+        {
+            field = value;
+
+            if (!value || GameTimerHandler.Prefab)
+                return;
+
+            Coroutines.Start(TryCreatePrefab());
+        }
+    } = false;
+
+    [NumberOption(60, 3600, 60, Format.Time), Sorted(0)]
+    public static Number GameTimer = 1200;
+
+    [StringOption<DuringMeeting>, Sorted(0)]
+    public static DuringMeeting DuringMeetings = DuringMeeting.Never;
+
+    [NumberOption(300, 3000, 60, Format.Time, All = true), Sorted(0)]
+    public static Number TimeLeft = 4;
+
+    [NumberOption(4, 125, 1, All = true), Sorted(0)]
+    public static Number PlayersLeft = 4;
+
+    [ToggleOption, Sorted(0)]
+    public static bool KillsExtendTimer = false;
+
+    [ToggleOption, Sorted(0)]
+    public static bool TasksExtendTimer = false;
+
+    [NumberOption(4, 125, 1), Sorted(0)]
+    public static Number TimerExtension = 4;
+
+    private static IEnumerator TryCreatePrefab()
+    {
+        while (!GameManagerCreator.Instance)
+            yield return null;
+
+        GameTimerHandler.Prefab = UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.TimerBarPrefab, null).DontDestroy().AddComponent<GameTimerHandler>();
+        GameTimerHandler.Prefab.name = "GameTimer";
+        GameTimerHandler.Prefab.gameObject.SetActive(false);
+    }
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -1323,6 +1369,9 @@ public static class IntruderKillingSettings
         get;
         set => HandleMaxMinLimits.Set(value, ref field);
     } = 1;
+
+    [ToggleOption]
+    public static bool KillCdLinked = false;
 }
 
 [AlignmentHeaderOption(ListSlot.IntruderSupport)]

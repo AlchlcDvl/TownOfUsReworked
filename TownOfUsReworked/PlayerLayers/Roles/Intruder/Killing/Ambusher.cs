@@ -51,6 +51,9 @@ public sealed class Ambusher : Intruder
         }
         else
             AmbushButton.StartCooldown(cooldown);
+
+        if (IntruderKillingSettings.KillCdLinked)
+            KillButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !AmbushMates && Faction is not (Faction.Crew or Faction.Neutral)) || (!AmbushMates &&

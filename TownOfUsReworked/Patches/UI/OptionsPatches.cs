@@ -752,8 +752,8 @@ public static class SettingsPatches
             MapChangeNotif.UpdateMessage(changed);
         else
         {
-            var hud = HUD();
-            MapChangeNotif = PopNotif(changed, hud.Notifier.settingsChangeColor, hud.Notifier.settingsChangeSprite);
+            var hud = HUD().Notifier;
+            MapChangeNotif = PopNotif(changed, hud.settingsChangeColor, hud.settingsChangeSprite);
         }
     }
 
