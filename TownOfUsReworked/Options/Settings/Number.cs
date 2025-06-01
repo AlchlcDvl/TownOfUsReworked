@@ -1,16 +1,17 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 // May I know who the fuck thought it was a good idea not to let int be cast to float explicitly??? Implicit casting bloodily works, but explicit doesn't seem to
 // AD from a couple of weeks later: Yeah, fuck this, imma just brute force it instead
-public sealed class NumberOption(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false)
-    : Option<Number>(CustomOptionType.Number)
+public sealed class NumberOption(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false, string customFormat = null, float defaultValue =
+    0f) : Option<Number>(CustomOptionType.Number, defaultValue)
 {
     private float Min { get; } = min;
     private float Max { get; } = max;
     private float Increment { get; } = increment;
-    private Format FormatEnum { get; } = format;
+    private Format Format { get; } = format;
     private bool AllowHalf { get; set; } = allowHalf;
     private bool ZeroIsInfinity { get; } = zeroIsInf;
+    private string CustomFormat { get; } = customFormat;
 
     private void Change(bool incrementing) => Set(CycleFloat(Max, Min, Value, incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f)));
 
@@ -42,16 +43,17 @@ public sealed class NumberOption(float min, float max, float increment, Format f
         }
     }
 
-    protected override string Format()
+    protected override string FormatValue()
     {
         var value = Value;
         var val = value == 0 && ZeroIsInfinity ? "<b>∞</b>" : $"{value:0.##}";
-        return FormatEnum switch
+        return Format switch
         {
-            Data.Enums.Format.Time => $"{val}s",
-            Data.Enums.Format.Distance => $"{val}m",
-            Data.Enums.Format.Percent => $"{val:0}%",
-            Data.Enums.Format.Multiplier => $"x{val}",
+            Format.Time => $"{val}s",
+            Format.Distance => $"{val}m",
+            Format.Percent => $"{val:0}%",
+            Format.Multiplier => $"x{val}",
+            Format.Custom when CustomFormat is not null => string.Format(CustomFormat, val),
             _ => $"{val}"
         };
     }
@@ -62,12 +64,12 @@ public sealed class NumberOption(float min, float max, float increment, Format f
         AllowHalf &= Increment != 1;
     }
 
-    public override void Update() => Setting.Cast<global::NumberOption>().ValueText.text = Format();
+    public override void Update() => Setting.Cast<global::NumberOption>().ValueText.text = FormatValue();
 
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.settingText.text = FormatValue();
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 

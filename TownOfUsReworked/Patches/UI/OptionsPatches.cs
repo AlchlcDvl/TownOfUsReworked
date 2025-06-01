@@ -843,7 +843,7 @@ public static class SettingsPatches
             {
                 var menu = (MultiMenu)SettingsPage3;
 
-                foreach (var option in Option.GetOptions<HeaderOption>())
+                foreach (var option in Option.GetHeaderOptions<HeaderOption>())
                 {
                     if (!option.ViewSetting)
                         continue;
@@ -897,7 +897,7 @@ public static class SettingsPatches
                 CreateViewOptions(__instance.settingsContainer, 4);
                 CreateViewOptions(__instance.settingsContainer, 3);
 
-                foreach (var option in Option.GetOptions<AlignmentOption>())
+                foreach (var option in Option.GetHeaderOptions<AlignmentOption>())
                 {
                     if (!option.ViewSetting)
                         continue;

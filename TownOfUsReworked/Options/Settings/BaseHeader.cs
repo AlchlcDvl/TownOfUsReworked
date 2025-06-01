@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : Option<bool>(type)
 {

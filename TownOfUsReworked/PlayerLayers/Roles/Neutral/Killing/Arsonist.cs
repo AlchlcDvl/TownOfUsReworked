@@ -24,6 +24,9 @@ public sealed class Arsonist : NKilling, IDouser
     [ToggleOption]
     private static bool ArsoVent = false;
 
+    [NumberOption(0f, 10f, 0.5f, Format.Time, zeroIsInf: true)]
+    private static Number IgniteRadius = 25;
+
     private CustomButton IgniteButton { get; set; }
     private CustomButton DouseButton { get; set; }
     private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Neutral) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
@@ -60,19 +63,22 @@ public sealed class Arsonist : NKilling, IDouser
     {
         Play("Ignite");
         var disappear = new List<byte>();
+        var arsos = ArsoIgniteAll ? GetLayers<Arsonist>() : [this];
+        var toIgnite = arsos.SelectMany(x => x.Doused);
 
-        foreach (var arso in GetLayers<Arsonist>())
+        if (IgniteRadius != 0)
+            toIgnite = GetClosestPlayers(Player, IgniteRadius, x => toIgnite.Contains(x.PlayerId)).Select(x => x.PlayerId);
+
+        foreach (var id in toIgnite)
         {
-            if (arso.Player != Player && !ArsoIgniteAll)
+            var player = PlayerById(id);
+
+            if (player.HasDied() || player.TryReversingDouses<Cryomaniac>() || !CanAttack(AttackVal, player.GetDefenseValue()))
                 continue;
 
-            foreach (var player2 in from player in arso.Doused select PlayerById(player) into player2 where !player2.HasDied() && !player2.TryReversingDouses<Cryomaniac>() && CanAttack(AttackVal, player2.GetDefenseValue()) select player2)
-            {
-                Player.RpcMurderPlayer(player2, DeathReasonEnum.Ignited, false);
-                disappear.Add(player2.PlayerId);
-            }
-
-            arso.Doused.Clear();
+            Player.RpcMurderPlayer(player, DeathReasonEnum.Ignited, false);
+            disappear.Add(id);
+            arsos.Do(x => x.Doused.Remove(id));
         }
 
         if (IgnitionCremates)

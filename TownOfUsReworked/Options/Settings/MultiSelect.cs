@@ -1,6 +1,7 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
-public sealed class MultiSelectOption<T>(T? none, T? all, params T[] ignore) : BaseMultiSelectOption<T>(CustomOptionType.MultiSelect, all, none) where T : struct, Enum
+public sealed class MultiSelectOption<T>(T? none, T? all, T[] ignore, MultiSelectValue<T> defaultValue = null) : BaseMultiSelectOption<T>(CustomOptionType.MultiSelect, all, none, defaultValue)
+    where T : struct, Enum
 {
     private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
     private Type InnerType { get; } = typeof(T);
@@ -13,7 +14,7 @@ public sealed class MultiSelectOption<T>(T? none, T? all, params T[] ignore) : B
 
     public override bool IsId(string id) => base.IsId(id) || Values.Any(x => id == $"CustomOption.{InnerType.Name}.{x}".ToLower());
 
-    protected override string Format()
+    protected override string FormatValue()
     {
         if (Value.Count == 0)
             return TranslationManager.Translate("ValueText.None");

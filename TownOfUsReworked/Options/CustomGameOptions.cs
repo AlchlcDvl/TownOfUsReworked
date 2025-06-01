@@ -270,12 +270,6 @@ public static class BadGuysSettings
 [HeaderOption(MultiMenu.Main)]
 public static class GameModifiers
 {
-    [StringOption<WhoCanVentOptions>, Sorted(0)]
-    public static WhoCanVentOptions WhoCanVent = WhoCanVentOptions.Default;
-
-    [ToggleOption, Sorted(0)]
-    public static bool FinalTwoDisableVenting = false;
-
     [StringOption<AnonVotes>, Sorted(0)]
     public static AnonVotes AnonymousVoting = AnonVotes.Enabled;
 
@@ -316,19 +310,10 @@ public static class GameModifiers
     public static bool EnableDispositions = true;
 
     [ToggleOption, Sorted(0)]
-    public static bool VentTargeting = true;
-
-    [ToggleOption, Sorted(0)]
-    public static bool CooldownInVent = false;
-
-    [ToggleOption, Sorted(0)]
     public static bool DeadSeeEverything = true;
 
     [ToggleOption, Sorted(0)]
     public static bool ParallelMedScans = false;
-
-    [ToggleOption, Sorted(0)]
-    public static bool HideVentAnims = true;
 
     [ToggleOption, Sorted(0)]
     public static bool JaniCanMutuallyExclusive = false;
@@ -344,9 +329,6 @@ public static class GameModifiers
 
     [ToggleOption, Sorted(0)]
     public static bool PurePlayers = false;
-
-    [ToggleOption, Sorted(0)]
-    public static bool NoVentingUncleanedVents = false;
 
     [ToggleOption, Sorted(0)]
     public static bool AllCanDoTasks = false;
@@ -396,6 +378,28 @@ public static class GameModifiers
         GameTimerHandler.Prefab.name = "GameTimer";
         GameTimerHandler.Prefab.gameObject.SetActive(false);
     }
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class VentSettings
+{
+    [StringOption<WhoCanVentOptions>]
+    public static WhoCanVentOptions WhoCanVent = WhoCanVentOptions.Default;
+
+    [ToggleOption]
+    public static bool FinalTwoDisableVenting = false;
+
+    [ToggleOption]
+    public static bool VentTargeting = true;
+
+    [ToggleOption]
+    public static bool CooldownInVent = false;
+
+    [ToggleOption]
+    public static bool NoVentingUncleanedVents = false;
+
+    [ToggleOption]
+    public static bool HideVentAnims = true;
 }
 
 [HeaderOption(MultiMenu.Main)]

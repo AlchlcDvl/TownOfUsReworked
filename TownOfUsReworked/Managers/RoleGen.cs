@@ -307,17 +307,17 @@ public static class RoleGenManager
 
     public static bool IsValid(this LayerEnum layer, int? relatedCount = null) => layer switch
     {
-        LayerEnum.Bastion => GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne,
+        LayerEnum.Bastion => VentSettings.WhoCanVent != WhoCanVentOptions.NoOne,
         LayerEnum.Mystic => new[] { LayerEnum.Necromancer, LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Whisperer }.Any(x => GetSpawnItem(x).IsActive()),
         LayerEnum.Seer => new[] { LayerEnum.BountyHunter, LayerEnum.Godfather, LayerEnum.Rebel, LayerEnum.Plaguebearer, LayerEnum.Mystic, LayerEnum.Traitor, LayerEnum.Amnesiac, LayerEnum.Thief,
             LayerEnum.Executioner, LayerEnum.GuardianAngel, LayerEnum.Guesser, LayerEnum.Shifter, LayerEnum.Fanatic }.Any(x => GetSpawnItem(x).IsActive()),
         LayerEnum.Amnesiac or LayerEnum.GuardianAngel or LayerEnum.Survivor or LayerEnum.Thief => !NeutralSettings.AvoidNeutralKingmakers,
         LayerEnum.Jackal => GameData.Instance.PlayerCount > 6,
         LayerEnum.Actor => new[] { LayerEnum.Bullseye, LayerEnum.Slayer, LayerEnum.Sniper, LayerEnum.Hitman }.Any(x => GetSpawnItem(x).IsActive()),
-        LayerEnum.Miner => GameModifiers.WhoCanVent != WhoCanVentOptions.NoOne && (Miner.MinerSpawnOnMira || MapPatches.CurrentMap != 2),
+        LayerEnum.Miner => VentSettings.WhoCanVent != WhoCanVentOptions.NoOne && (Miner.MinerSpawnOnMira || MapPatches.CurrentMap != 2),
         LayerEnum.Godfather or LayerEnum.Rebel => relatedCount >= 3 || TownOfUsReworked.MciActive,
         LayerEnum.Insider => GameModifiers.AnonymousVoting != AnonVotes.Disabled,
-        LayerEnum.Tunneler => GameModifiers.WhoCanVent == WhoCanVentOptions.Default && CrewSettings.CrewVent == CrewVenting.Never,
+        LayerEnum.Tunneler => VentSettings.WhoCanVent == WhoCanVentOptions.Default && CrewSettings.CrewVent == CrewVenting.Never,
         LayerEnum.Lovers => GameData.Instance.PlayerCount > 4,
         LayerEnum.Rivals => GameData.Instance.PlayerCount > 3,
         LayerEnum.Linked => Role.GetRoles(Faction.Neutral).Count() > 1 && GameData.Instance.PlayerCount > 4,

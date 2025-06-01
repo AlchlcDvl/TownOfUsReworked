@@ -566,7 +566,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         if (!Owner?.Player || !Local || Owner.Player.inMovingPlat || Owner.Player.onLadder)
             return;
 
-        if (!Owner.Player.inVent || GameModifiers.CooldownInVent)
+        if (!Owner.Player.inVent || VentSettings.CooldownInVent)
             CooldownTime = Mathf.Clamp(CooldownTime - Time.deltaTime, 0f, MaxCooldown());
     }
 

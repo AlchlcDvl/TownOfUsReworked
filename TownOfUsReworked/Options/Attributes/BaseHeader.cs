@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Attributes;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public abstract class BaseHeaderOptionAttribute(MultiMenu menu) : OptionAttribute<BaseHeaderOption>

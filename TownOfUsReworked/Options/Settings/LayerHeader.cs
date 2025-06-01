@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 public sealed class LayerHeaderOption(LayerEnum layer) : BaseHeaderOption(MultiMenu.LayerSubOptions, CustomOptionType.LayerHeader)
 {

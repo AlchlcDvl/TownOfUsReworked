@@ -449,7 +449,7 @@ public static class MiscUtils
 
         foreach (var player in allPlayers)
         {
-            if ((player.Data.IsDead && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !GameModifiers.VentTargeting) ||
+            if ((player.Data.IsDead && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !VentSettings.VentTargeting) ||
                 player.walkingToVent || player.isKilling)
             {
                 continue;

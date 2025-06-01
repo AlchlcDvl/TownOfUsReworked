@@ -1,10 +1,10 @@
 namespace TownOfUsReworked.Options;
 
-public sealed class ToggleOption() : Option<bool>(CustomOptionType.Toggle)
+public sealed class ToggleOption(bool defaultValue = false) : Option<bool>(CustomOptionType.Toggle, defaultValue)
 {
     private void Toggle() => Set(!Value);
 
-    protected override string Format() => Value ? "On" : "Off";
+    protected override string FormatValue() => Value ? "On" : "Off";
 
     public override void OptionCreated()
     {

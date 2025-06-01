@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Attributes;
 
 public sealed class StringOptionAttribute<T>(params T[] ignore) : OptionAttribute<StringOption<T>> where T : struct, Enum
 {

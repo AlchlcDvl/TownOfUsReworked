@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 public sealed class ListHolderOption(PlayerLayerEnum entryType, bool isBan) : HeaderOption(MultiMenu.Main, CustomOptionType.ListHolder)
 {

@@ -16,7 +16,7 @@ public static class VentPatches
         var usable = __instance.TryCast<IUsable>();
         couldUse = GameManager.Instance.LogicUsables.CanUse(usable, playerControl) && pc.Role.CanUse(usable) && playerControl.CanVent();
 
-        if (couldUse && GameModifiers.NoVentingUncleanedVents && Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>(out var ventilationSystem) &&
+        if (couldUse && VentSettings.NoVentingUncleanedVents && Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>(out var ventilationSystem) &&
             ventilationSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
         {
             couldUse = false;
@@ -129,7 +129,7 @@ public static class VentPatches
 
     private static bool EnterExitVentPrefix(PlayerControl pc, AnimationClip clip)
     {
-        if (!clip || !GameModifiers.HideVentAnims)
+        if (!clip || !VentSettings.HideVentAnims)
             return true;
 
         var truePosition = LocalPlayer.GetTruePosition();

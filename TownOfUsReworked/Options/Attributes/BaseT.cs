@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Attributes;
 
 public abstract class OptionAttribute<T> : OptionAttribute where T : Option
 {

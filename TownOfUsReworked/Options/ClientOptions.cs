@@ -5,168 +5,59 @@ namespace TownOfUsReworked.Options;
 [HeaderOption(MultiMenu.Client, ClientOnly = true)]
 public static class ClientOptions
 {
-    [ToggleOption]
-    public static bool LighterDarker
+    public static ToggleOption LighterDarker = new(true);
+
+    public static ToggleOption WhiteNameplates = new(false) { OnChanged = ToggleNameplates };
+
+    public static ToggleOption NoLevels = new() { OnChanged = ToggleLevelVisibility };
+
+    public static ToggleOption CustomCrewColors = new(true);
+
+    public static ToggleOption CustomNeutColors = new(true);
+
+    public static ToggleOption CustomIntColors = new(true);
+
+    public static ToggleOption CustomSynColors = new(true);
+
+    public static ToggleOption CustomApocColors = new(true);
+
+    public static ToggleOption CustomGmColors = new(true);
+
+    public static ToggleOption CustomModColors = new(true);
+
+    public static ToggleOption CustomDispColors = new(true);
+
+    public static ToggleOption CustomAbColors = new(true);
+
+    public static ToggleOption CustomEjects = new(true);
+
+    public static ToggleOption HideOtherGhosts = new(true);
+
+    public static ToggleOption OptimisationMode = new();
+
+    public static ToggleOption LockCameraSway = new();
+
+    public static ToggleOption ForceUseLocal = new();
+
+    public static ToggleOption UseDarkTheme = new() { OnChanged = SetChatTheme };
+
+    public static ToggleOption NoWelcome = new();
+
+    public static ToggleOption AutoPlayAgain = new();
+
+    public static ToggleOption DebugModeOn = new();
+
+    private static void SetChatTheme(bool value) => ChatPatches.SetTheme(Chat(), value);
+
+    private static void ToggleLevelVisibility(bool value)
     {
-        get => TownOfUsReworked.LighterDarker.Value;
-        set => TownOfUsReworked.LighterDarker.Value = value;
+        if (Meeting())
+            AllVoteAreas().Do(x => x.transform.GetChild(9).gameObject.SetActive(value));
     }
 
-    [ToggleOption]
-    public static bool WhiteNameplates
+    private static void ToggleNameplates(bool value)
     {
-        get => TownOfUsReworked.WhiteNameplates.Value;
-        set
-        {
-            if (value != TownOfUsReworked.WhiteNameplates.Value && Meeting())
-                AllVoteAreas().Do(x => x.Background.sprite = Ship().CosmeticsCache.GetNameplate(value ? "nameplate_NoPlate" : PlayerByVoteArea(x).CurrentOutfit.NamePlateId).Image);
-
-            TownOfUsReworked.WhiteNameplates.Value = value;
-        }
-    }
-
-    [ToggleOption]
-    public static bool NoLevels
-    {
-        get => TownOfUsReworked.NoLevels.Value;
-        set
-        {
-            if (value != TownOfUsReworked.NoLevels.Value && Meeting())
-                AllVoteAreas().Do(x => x.transform.GetChild(9).gameObject.SetActive(value));
-
-            TownOfUsReworked.NoLevels.Value = value;
-        }
-    }
-
-    [ToggleOption]
-    public static bool CustomCrewColors
-    {
-        get => TownOfUsReworked.CustomCrewColors.Value;
-        set => TownOfUsReworked.CustomCrewColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomNeutColors
-    {
-        get => TownOfUsReworked.CustomNeutColors.Value;
-        set => TownOfUsReworked.CustomNeutColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomIntColors
-    {
-        get => TownOfUsReworked.CustomIntColors.Value;
-        set => TownOfUsReworked.CustomIntColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomSynColors
-    {
-        get => TownOfUsReworked.CustomSynColors.Value;
-        set => TownOfUsReworked.CustomSynColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomApocColors
-    {
-        get => TownOfUsReworked.CustomApocColors.Value;
-        set => TownOfUsReworked.CustomApocColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomGmColors
-    {
-        get => TownOfUsReworked.CustomGmColors.Value;
-        set => TownOfUsReworked.CustomGmColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomModColors
-    {
-        get => TownOfUsReworked.CustomModColors.Value;
-        set => TownOfUsReworked.CustomModColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomDispColors
-    {
-        get => TownOfUsReworked.CustomDispColors.Value;
-        set => TownOfUsReworked.CustomDispColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomAbColors
-    {
-        get => TownOfUsReworked.CustomAbColors.Value;
-        set => TownOfUsReworked.CustomAbColors.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool CustomEjects
-    {
-        get => TownOfUsReworked.CustomEjects.Value;
-        set => TownOfUsReworked.CustomEjects.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool OptimisationMode
-    {
-        get => TownOfUsReworked.OptimisationMode.Value;
-        set => TownOfUsReworked.OptimisationMode.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool HideOtherGhosts
-    {
-        get => TownOfUsReworked.HideOtherGhosts.Value;
-        set => TownOfUsReworked.HideOtherGhosts.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool LockCameraSway
-    {
-        get => TownOfUsReworked.LockCameraSway.Value;
-        set => TownOfUsReworked.LockCameraSway.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool ForceUseLocal
-    {
-        get => TownOfUsReworked.ForceUseLocal.Value;
-        set => TownOfUsReworked.ForceUseLocal.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool UseDarkTheme
-    {
-        get => TownOfUsReworked.UseDarkTheme.Value;
-        set
-        {
-            if (value != TownOfUsReworked.UseDarkTheme.Value)
-                ChatPatches.SetTheme(Chat());
-
-            TownOfUsReworked.UseDarkTheme.Value = value;
-        }
-    }
-
-    [ToggleOption]
-    public static bool NoWelcome
-    {
-        get => TownOfUsReworked.NoWelcome.Value;
-        set => TownOfUsReworked.NoWelcome.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool AutoPlayAgain
-    {
-        get => TownOfUsReworked.AutoPlayAgain.Value;
-        set => TownOfUsReworked.AutoPlayAgain.Value = value;
-    }
-
-    [ToggleOption]
-    public static bool DebugModeOn
-    {
-        get => TownOfUsReworked.DebugModeOn.Value;
-        set => TownOfUsReworked.DebugModeOn.Value = value;
+        if (Meeting())
+            AllVoteAreas().Do(x => x.Background.sprite = Ship().CosmeticsCache.GetNameplate(value ? "nameplate_NoPlate" : PlayerByVoteArea(x).CurrentOutfit.NamePlateId).Image);
     }
 }

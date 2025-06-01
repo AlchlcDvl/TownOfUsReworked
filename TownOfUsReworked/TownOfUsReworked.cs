@@ -26,7 +26,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 53;
+    private const int DevBuild = 55;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -63,33 +63,11 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static IGameOptions CurrentOptions => GameOptionsManager.Instance.CurrentGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
-    public static bool DebugMode => IsDev || DebugModeOn.Value;
+    public static bool DebugMode => IsDev || ClientOptions.DebugModeOn.Value;
 
     // A bunch of config stuff to ensure value persistence
     public static ConfigEntry<string> Ip { get; private set; }
     public static ConfigEntry<ushort> Port { get; private set; }
-
-    public static ConfigEntry<bool> LighterDarker { get; private set; }
-    public static ConfigEntry<bool> WhiteNameplates { get; private set; }
-    public static ConfigEntry<bool> NoLevels { get; private set; }
-    public static ConfigEntry<bool> CustomCrewColors { get; private set; }
-    public static ConfigEntry<bool> CustomNeutColors { get; private set; }
-    public static ConfigEntry<bool> CustomApocColors { get; private set; }
-    public static ConfigEntry<bool> CustomIntColors { get; private set; }
-    public static ConfigEntry<bool> CustomSynColors { get; private set; }
-    public static ConfigEntry<bool> CustomGmColors { get; private set; }
-    public static ConfigEntry<bool> CustomModColors { get; private set; }
-    public static ConfigEntry<bool> CustomDispColors { get; private set; }
-    public static ConfigEntry<bool> CustomAbColors { get; private set; }
-    public static ConfigEntry<bool> CustomEjects { get; private set; }
-    public static ConfigEntry<bool> OptimisationMode { get; private set; }
-    public static ConfigEntry<bool> HideOtherGhosts { get; private set; }
-    public static ConfigEntry<bool> LockCameraSway { get; private set; }
-    public static ConfigEntry<bool> ForceUseLocal { get; private set; }
-    public static ConfigEntry<bool> UseDarkTheme { get; private set; }
-    public static ConfigEntry<bool> NoWelcome { get; private set; }
-    public static ConfigEntry<bool> AutoPlayAgain { get; private set; }
-    public static ConfigEntry<bool> DebugModeOn { get; private set; }
 
     public static ConfigEntry<bool> BlockBaseGameLogger { get; private set; }
     public static ConfigEntry<bool> RedirectLogger { get; private set; }
@@ -139,27 +117,27 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     private void SetUpConfigs()
     {
-        LighterDarker = Config.Bind("Client", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body report purposes");
-        WhiteNameplates = Config.Bind("Client", "White Nameplates", false, "Enables custom nameplates");
-        NoLevels = Config.Bind("Client", "No Levels", false, "Enables the little level icon during meetings");
-        CustomCrewColors = Config.Bind("Client", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
-        CustomNeutColors = Config.Bind("Client", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
-        CustomIntColors = Config.Bind("Client", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
-        CustomSynColors = Config.Bind("Client", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
-        CustomApocColors = Config.Bind("Client", "Custom Apocalypse Colors", true, "Enables custom colors for Apocalypse roles");
-        CustomGmColors = Config.Bind("Client", "Custom Game Mode Colors", true, "Enables custom colors for Game Mode roles");
-        CustomModColors = Config.Bind("Client", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
-        CustomDispColors = Config.Bind("Client", "Custom Disposition Colors", true, "Enables custom colors for Dispositions");
-        CustomAbColors = Config.Bind("Client", "Custom Ability Colors", true, "Enables custom colors for Abilities");
-        CustomEjects = Config.Bind("Client", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
-        HideOtherGhosts = Config.Bind("Client", "Hide Other Ghosts", true, "Hides other ghosts when you are dead");
-        OptimisationMode = Config.Bind("Client", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
-        LockCameraSway = Config.Bind("Client", "Lock Camera Sway", false, "Disables the camera bobbing around your character");
-        ForceUseLocal = Config.Bind("Client", "Force Use Local Files", false, "Forces the loaders to pull from local json files rather than ones available online");
-        UseDarkTheme = Config.Bind("Client", "Use Dark Theme Chat", false, "Enables dark mode for chat");
-        NoWelcome = Config.Bind("Client", "No Welcome Message", false, "Disables the welcome message when joining a lobby for the first time in a session");
-        AutoPlayAgain = Config.Bind("Client", "Auto Play Again", false, "Automatically calls Play Again after game ends");
-        DebugModeOn = Config.Bind("Client", "Debug Mode", false, "Enabled Debug Mode to replicate dev mode status and provide info in the logs");
+        ClientOptions.LighterDarker.Config = Config.Bind("Client", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body report purposes");
+        ClientOptions.WhiteNameplates.Config = Config.Bind("Client", "White Nameplates", false, "Enables custom nameplates");
+        ClientOptions.NoLevels.Config = Config.Bind("Client", "No Levels", false, "Enables the little level icon during meetings");
+        ClientOptions.CustomCrewColors.Config = Config.Bind("Client", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
+        ClientOptions.CustomNeutColors.Config = Config.Bind("Client", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
+        ClientOptions.CustomIntColors.Config = Config.Bind("Client", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
+        ClientOptions.CustomSynColors.Config = Config.Bind("Client", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
+        ClientOptions.CustomApocColors.Config = Config.Bind("Client", "Custom Apocalypse Colors", true, "Enables custom colors for Apocalypse roles");
+        ClientOptions.CustomGmColors.Config = Config.Bind("Client", "Custom Game Mode Colors", true, "Enables custom colors for Game Mode roles");
+        ClientOptions.CustomModColors.Config = Config.Bind("Client", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
+        ClientOptions.CustomDispColors.Config = Config.Bind("Client", "Custom Disposition Colors", true, "Enables custom colors for Dispositions");
+        ClientOptions.CustomAbColors.Config = Config.Bind("Client", "Custom Ability Colors", true, "Enables custom colors for Abilities");
+        ClientOptions.CustomEjects.Config = Config.Bind("Client", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
+        ClientOptions.HideOtherGhosts.Config = Config.Bind("Client", "Hide Other Ghosts", true, "Hides other ghosts when you are dead");
+        ClientOptions.OptimisationMode.Config = Config.Bind("Client", "Optimisation Mode", false, "Disables things that would be considered resource heavy");
+        ClientOptions.LockCameraSway.Config = Config.Bind("Client", "Lock Camera Sway", false, "Disables the camera bobbing around your character");
+        ClientOptions.ForceUseLocal.Config = Config.Bind("Client", "Force Use Local Files", false, "Forces the loaders to pull from local json files rather than ones available online");
+        ClientOptions.UseDarkTheme.Config = Config.Bind("Client", "Use Dark Theme Chat", false, "Enables dark mode for chat");
+        ClientOptions.NoWelcome.Config = Config.Bind("Client", "No Welcome Message", false, "Disables the welcome message when joining a lobby for the first time in a session");
+        ClientOptions.AutoPlayAgain.Config = Config.Bind("Client", "Auto Play Again", false, "Automatically calls Play Again after game ends");
+        ClientOptions.DebugModeOn.Config = Config.Bind("Client", "Debug Mode", false, "Enabled Debug Mode to replicate dev mode status and provide info in the logs");
 
         Ip = Config.Bind("Config", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
         Port = Config.Bind("Config", "Custom Server Port", (ushort)22023, "Port for the Custom Server");

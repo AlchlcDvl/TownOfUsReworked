@@ -258,16 +258,16 @@ public static class LayerExtensions
         if (IsHnS())
             return !playerInfo.IsImpostor();
 
-        if ((int)GameModifiers.WhoCanVent is 3)
+        if ((int)VentSettings.WhoCanVent is 3)
             return false;
 
         if (player.inVent)
             return true;
 
-        if (AllPlayers().Count() == 2 && GameModifiers.FinalTwoDisableVenting)
+        if (AllPlayers().Count() == 2 && VentSettings.FinalTwoDisableVenting)
             return false;
 
-        if (GameModifiers.WhoCanVent == WhoCanVentOptions.Everyone)
+        if (VentSettings.WhoCanVent == WhoCanVentOptions.Everyone)
             return true;
 
         if (playerInfo.IsDead)

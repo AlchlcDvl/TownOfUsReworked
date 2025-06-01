@@ -1,19 +1,42 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
-public abstract class Option<T>(CustomOptionType type) : Option(type)
+public abstract class Option<T>(CustomOptionType type, T defaultValue = default) : Option(type)
 {
-    private T innerValue;
+    private T innerValue = defaultValue;
     public T Value
     {
         get => innerValue;
         protected set
         {
-            innerValue = value;
+            if (SelfMember)
+            {
+                if (Config is not null)
+                    Config.Value = value;
 
-            if (Member is not null && !SelfMember)
+                if (OnChanged is not null)
+                    OnChanged(value);
+            }
+            else if (Member is not null)
+            {
                 Member.SetValue(null, value);
+                value = Member.GetValue<T>(null);
+            }
+
+            innerValue = value;
         }
     }
+
+    public ConfigEntry<T> Config
+    {
+        get;
+        set
+        {
+            field = value;
+            innerValue = value.Value;
+        }
+    }
+
+    public Action<T> OnChanged { get; init; }
 
     protected Type TargetType { get; } = typeof(T);
 
@@ -61,7 +84,7 @@ public abstract class Option<T>(CustomOptionType type) : Option(type)
         if (ViewSetting)
             SettingsPatches.OnValueChangedView();
 
-        var stringValue = Format();
+        var stringValue = FormatValue();
 
         if (!HudManager.InstanceExists || !notify || IsNullEmptyOrWhiteSpace(stringValue))
             return;

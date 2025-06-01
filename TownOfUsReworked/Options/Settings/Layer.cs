@@ -1,6 +1,6 @@
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15, byte change = 1) : Option<RoleOptionData>(CustomOptionType.Layer)
 {
@@ -277,7 +277,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
         Set(val);
     }
 
-    protected override string Format()
+    protected override string FormatValue()
     {
         var val = Value;
         return GameModeSettings.GameMode switch
@@ -292,7 +292,7 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        Value = new RoleOptionData(0, 0, false, false, Layer);
+        Value = new(0, 0, false, false, Layer);
         GroupHeader = GetOptions<LayerHeaderOption>().Find(x => x.Layer == Layer);
     }
 

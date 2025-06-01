@@ -6,5 +6,6 @@ public enum Format : byte
     Time,
     Distance,
     Percent,
-    Multiplier
+    Multiplier,
+    Custom
 }

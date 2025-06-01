@@ -1,6 +1,6 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
-public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionType.String), IStringOption where T : struct, Enum
+public sealed class StringOption<T>(T[] ignore, T defaultValue = default) : Option<T>(CustomOptionType.String, defaultValue), IStringOption where T : struct, Enum
 {
     private int Index { get; set; }
     private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
@@ -36,7 +36,7 @@ public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionT
         }
     }
 
-    protected override string Format() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{ValueString()}");
+    protected override string FormatValue() => TranslationManager.Translate($"CustomOption.{TargetType.Name}.{ValueString()}");
 
     public override void PostLoadSetup()
     {
@@ -48,14 +48,14 @@ public sealed class StringOption<T>(params T[] ignore) : Option<T>(CustomOptionT
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = Format();
+        viewSettingsInfoPanel.settingText.text = FormatValue();
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
     public override void Update()
     {
         Index = Mathf.Clamp(Values.IndexOf(Value), 0, Count);
-        Setting.Cast<StringOption>().ValueText.text = Format();
+        Setting.Cast<StringOption>().ValueText.text = FormatValue();
     }
 
     public override void Debug()

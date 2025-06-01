@@ -297,24 +297,26 @@ public static class ChatPatches
         SetTheme(__instance);
     }
 
-    public static void SetTheme(ChatController __instance)
+    public static void SetTheme(ChatController __instance, bool? value = null)
     {
-        __instance.freeChatField.background.color = __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : UColor.white;
+        value ??= ClientOptions.UseDarkTheme;
+        __instance.freeChatField.background.color = __instance.quickChatField.background.color = value.Value ? new Color32(40, 40, 40, 255) : UColor.white;
 
-        __instance.freeChatField.textArea.compoText.Color(ClientOptions.UseDarkTheme ? UColor.white : UColor.black);
-        __instance.freeChatField.textArea.outputText.color = __instance.quickChatField.text.color = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
+        __instance.freeChatField.textArea.compoText.Color(value.Value ? UColor.white : UColor.black);
+        __instance.freeChatField.textArea.outputText.color = __instance.quickChatField.text.color = value.Value ? UColor.white : UColor.black;
 
         __instance.quickChatButton.transform.Find("QuickChatIcon").GetComponent<SpriteRenderer>().color = __instance.openKeyboardButton.transform.Find("OpenKeyboardIcon")
             .GetComponent<SpriteRenderer>().color = __instance.openKeyboardButton.transform.parent.FindRecursive("OpenBanMenuIcon").GetComponent<SpriteRenderer>().color =
-                ClientOptions.UseDarkTheme ? new(0.5f, 0.5f, 0.5f, 1f) : UColor.white;
+                value.Value ? new(0.5f, 0.5f, 0.5f, 1f) : UColor.white;
 
-        __instance.GetComponentsInChildren<ChatBubble>().Do(SetChatBubble);
+        __instance.GetComponentsInChildren<ChatBubble>().Do(x => SetChatBubble(x, value.Value));
     }
 
-    public static void SetChatBubble(ChatBubble bubble)
+    public static void SetChatBubble(ChatBubble bubble, bool? value = null)
     {
-        var theme = ClientOptions.UseDarkTheme ? UColor.white : UColor.black;
-        var invert = ClientOptions.UseDarkTheme ? UColor.black : UColor.white;
+        value ??= ClientOptions.UseDarkTheme;
+        var theme = value.Value ? UColor.white : UColor.black;
+        var invert = value.Value ? UColor.black : UColor.white;
 
         bubble.TextArea.color = bubble.TextArea.text.ContainsAny($"#{LocalPlayer.PlayerId}", $"#{LocalPlayer.name}", $"#({LocalPlayer.name})") ? invert : theme;
         bubble.Background.color = (bubble.TextArea.text.ContainsAny($"#{LocalPlayer.PlayerId}", $"#{LocalPlayer.name}", $"#({LocalPlayer.name})") ? theme : invert)

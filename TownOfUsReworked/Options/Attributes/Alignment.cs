@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Attributes;
 
 public sealed class AlignmentOptionAttribute(ListSlot alignment, bool noParts = false) : BaseHeaderOptionAttribute<AlignmentOption>(MultiMenu.Layer)
 {

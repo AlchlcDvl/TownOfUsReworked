@@ -113,7 +113,7 @@ public abstract class Role : PlayerLayer
 
     public bool TrulyDead
     {
-        get=> field;
+        get;
         set
         {
             field = value;

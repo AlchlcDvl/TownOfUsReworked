@@ -25,6 +25,8 @@ public static class Generate
             .Where(x => !assassin.IsAssignableFrom(x) || x == assassin)
             .Do(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
 
+        Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers
+
         foreach (var opts in Option.AllOptions.SplitBy(x => x.ID))
         {
             foreach (var (index, opt) in opts.Indexed())
@@ -56,8 +58,6 @@ public static class Generate
             Enum.GetValues<ListSlot>().Except([ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity, ListSlot.GameMode, ListSlot.Abilities, ListSlot.Dispositions, ListSlot.Modifiers])
                 .Do(x => TranslationManager.DebugId($"List.{x}"));
         }
-
-        Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers
 
         Option.SaveSettings("Default"); // Save the current values as the default preset
 

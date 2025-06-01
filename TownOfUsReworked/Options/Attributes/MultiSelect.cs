@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Attributes;
 
 public sealed class MultiSelectOptionAttribute<T>(params T[] ignore) : OptionAttribute<MultiSelectOption<T>> where T : struct, Enum
 {
@@ -9,7 +9,8 @@ public sealed class MultiSelectOptionAttribute<T>(params T[] ignore) : OptionAtt
     public int LeastSelected { get; init; }
     private T[] Ignore { get; } = ignore;
 
-    protected override MultiSelectOption<T> SetUpOption() => new(NoneValue.Equals(Injector.MaxPossibleValue) ? null : NoneValue, AllValue.Equals(Injector.MaxPossibleValue) ? null : NoneValue, Ignore)
+    protected override MultiSelectOption<T> SetUpOption() => new(NoneValue.Equals(Injector.MaxPossibleValue) ? null : NoneValue, AllValue.Equals(Injector.MaxPossibleValue) ? null : NoneValue,
+        Ignore)
     {
         LeastSelected = LeastSelected
     };

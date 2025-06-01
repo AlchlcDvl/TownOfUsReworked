@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 public class HeaderOption(MultiMenu menu, CustomOptionType type = CustomOptionType.Header) : BaseHeaderOption(menu, type)
 {

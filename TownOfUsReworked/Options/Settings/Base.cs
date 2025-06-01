@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 public abstract class Option(CustomOptionType type)
 {
@@ -115,7 +115,7 @@ public abstract class Option(CustomOptionType type)
         AllOptions.Add(this);
     }
 
-    protected virtual string Format() => "";
+    protected virtual string FormatValue() => "";
 
     public virtual void Update() {}
 
@@ -344,6 +344,8 @@ public abstract class Option(CustomOptionType type)
     }
 
     public static IEnumerable<T> GetOptions<T>() where T : Option => AllOptions.OfType<T>();
+
+    public static IEnumerable<T> GetHeaderOptions<T>() where T : BaseHeaderOption => SortedOptions.OfType<T>();
 
     private static Option GetOption(string id)
     {

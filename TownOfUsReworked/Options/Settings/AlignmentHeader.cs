@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
 public sealed class AlignmentHeaderOption(ListSlot alignment = ListSlot.None) : HeaderOption(MultiMenu.AlignmentSubOptions, CustomOptionType.AlignmentHeader)
 {
@@ -8,7 +8,7 @@ public sealed class AlignmentHeaderOption(ListSlot alignment = ListSlot.None) : 
     public override void PostLoadSetup()
     {
         base.PostLoadSetup();
-        LinkedOption = GetOptions<AlignmentOption>().FirstOrDefault(x => x.Alignment == Alignment);
+        LinkedOption = GetHeaderOptions<AlignmentOption>().FirstOrDefault(x => x.Alignment == Alignment);
     }
 
     protected override bool Visible() => LinkedOption?.PartiallyActive() == true;

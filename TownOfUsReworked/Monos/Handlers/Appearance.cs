@@ -282,13 +282,13 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.cosmetics.visor.Alpha = change.HasFlag(ChangeCosmetics.Visor) ? clamped : Alpha;
         Player.cosmetics.skin.layer.SetAlpha(change.HasFlag(ChangeCosmetics.Skin) ? clamped : Alpha);
 
-        var otherT = (int)Mathf.Clamp01(isSecondHalf ? t : (1 - t));
+        var otherT = Mathf.Clamp01(isSecondHalf ? t : (1 - t));
 
         if (change.HasFlag(ChangeCosmetics.Name))
         {
             var (name, colorInt) = ("", UColor.white);
 
-            if (Player.Data.Role is LayerHandler playerHandler && LocalPlayer.Data.Role is LayerHandler localHandler)
+            if (Player.Data?.Role is LayerHandler playerHandler && LocalPlayer.Data?.Role is LayerHandler localHandler)
             {
                 var deadSeeEverything = DeadSeeEverything();
                 var amOwner = Player.AmOwner;
@@ -299,7 +299,7 @@ public sealed class AppearanceHandler : MonoBehaviour
                 (name, colorInt) = NameHandler.UpdateGameName(playerHandler, localHandler, amOwner, deadSeeEverything, out _);
             }
 
-            (Name.text, Name.color) = (Player.name[..(Player.name.Length * otherT)] + name, colorInt.SetAlpha(Alpha));
+            (Name.text, Name.color) = (Player.name[..(int)(Player.name.Length * otherT)] + name, colorInt.SetAlpha(Alpha));
         }
 
         if (!change.HasFlag(ChangeCosmetics.Color))
@@ -315,7 +315,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.cosmetics.currentPet.SetCrewmateColor(color);
         Color.color = color.Color1.SetAlpha(Alpha);
         Body?.bodyRenderers?.Do(x => Colors.Instance.SetRend(color, x));
-        Color.text = Color.name[..(Color.name.Length * otherT)];
+        Color.text = Color.name[..(int)(Color.name.Length * otherT)];
     }
 
     public float GetTrueSpeed()

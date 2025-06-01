@@ -1,6 +1,6 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
-public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int num) : BaseMultiSelectOption<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None)
+public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int num) : BaseMultiSelectOption<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None, [ListSlot.None])
 {
     public PlayerLayerEnum EntryType { get; } = entryType;
     public bool IsBan { get; } = isBan;
@@ -26,7 +26,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
         Setting.Cast<StringOption>().ValueText.color = Value.First().TryCastToLayer(out var layer) && LayerDictionary.TryGetValue(layer, out var entry) ? entry.Color : UColor.white;
     }
 
-    protected override string Format()
+    protected override string FormatValue()
     {
         var result = TranslationManager.Translate($"List.{Value.First()}");
 
