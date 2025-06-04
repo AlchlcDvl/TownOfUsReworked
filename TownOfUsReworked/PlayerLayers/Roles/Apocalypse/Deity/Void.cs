@@ -22,6 +22,7 @@ public sealed class Void : Deity
     public override Func<string> Description => () => "- Anyone who either you interact with or interacts with you will lose their role\n- Your victim's bodies cannot be reported" +
         CommonAbilities;
     public override bool CanVent => base.CanVent && VoidVent;
+    public override AttackEnum AttackVal => AttackEnum.Powerful;
 
     protected override void Init()
     {
@@ -47,8 +48,7 @@ public sealed class Void : Deity
         ExtractButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) ||
-        Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     public override void ReadRPC(NetData reader) => ToBeExtracted.Add(reader.ReadByte());
 }

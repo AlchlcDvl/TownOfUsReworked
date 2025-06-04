@@ -6,7 +6,7 @@ public sealed class DispositionGen : BaseGen
 {
     private static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
     private static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
-    private static readonly LayerEnum[] NeutralDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
+    private static readonly LayerEnum[] OutcastDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
 
     public override void InitList()
     {
@@ -74,11 +74,11 @@ public sealed class DispositionGen : BaseGen
             var assigned = id switch
             {
                 LayerEnum.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),
-                LayerEnum.Defector => playerList.FirstOrDefault(x => x.GetFaction() is not (Faction.Crew or Faction.Neutral)),
-                LayerEnum.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Neutral)),
+                LayerEnum.Defector => playerList.FirstOrDefault(x => x.GetFaction() is not (Faction.Crew or Faction.Outcast)),
+                LayerEnum.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Outcast)),
                 _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester or Shifter)),
                 _ when CrewDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),
-                _ when NeutralDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Neutral)),
+                _ when OutcastDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Outcast)),
                 _ => null
             };
 

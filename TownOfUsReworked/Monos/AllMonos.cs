@@ -27,7 +27,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<DeadBodyHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<FootprintHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<StatsHandler>();
-        ClassInjector.RegisterTypeInIl2Cpp<StatusHandler>();
+        // ClassInjector.RegisterTypeInIl2Cpp<StatusHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<CameraEffectHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<AppearanceHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();

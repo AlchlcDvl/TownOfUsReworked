@@ -148,7 +148,7 @@ public static class Blocked
         __instance.ImpostorVentButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.ToggleVisible((LocalPlayer.CanVent() || LocalPlayer.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
         var cannotUse = LocalPlayer.CannotUse();
-        var closestDead = handler.CustomModifier is Shy ? null : LocalPlayer.GetClosestBody(maxDistance: LocalPlayer.lightSource.viewDistance);
+        var closestDead = handler.CurrentModifier is Shy ? null : LocalPlayer.GetClosestBody(maxDistance: LocalPlayer.lightSource.viewDistance);
 
         if (!closestDead || cannotUse || BlockExposed)
             __instance.ReportButton.SetDisabled();

@@ -95,7 +95,7 @@ public abstract class Syndicate : Role, IPromoter
             Promoter = null;
             Name = TranslationManager.Translate("Layer.Rebel");
             Alignment = Alignment.Power;
-            RoleHistory.Add(LayerEnum.Sidekick);
+            Handler.History.Add((LayerEnum.Sidekick, Faction));
         }
     }
 
@@ -109,8 +109,7 @@ public abstract class Syndicate : Role, IPromoter
 
     private void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
-        Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     private bool KillUsable() => ((HoldsDrive && Alignment != Alignment.Killing) || Type is LayerEnum.Anarchist || IsPromoted) && !IsUnderling;
 }

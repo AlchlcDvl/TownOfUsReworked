@@ -16,7 +16,7 @@ public static class VentPatches
         var usable = __instance.TryCast<IUsable>();
         couldUse = GameManager.Instance.LogicUsables.CanUse(usable, playerControl) && pc.Role.CanUse(usable) && playerControl.CanVent();
 
-        if (couldUse && VentSettings.NoVentingUncleanedVents && Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>(out var ventilationSystem) &&
+        if (couldUse && VentingOptions.NoVentingUncleanedVents && Ship().Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>(out var ventilationSystem) &&
             ventilationSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
         {
             couldUse = false;
@@ -43,47 +43,47 @@ public static class VentPatches
     public static bool Prefix(Vent __instance, bool enabled)
     {
         // Fix for dlekS and other things
-        if (!LocalPlayer.IsMoving() && (!LocalPlayer.Is<Role>(out var role) || (role.CanVent && role.CanSwitchVents)))
+        if (LocalPlayer.IsMoving() || (LocalPlayer.Is<Role>(out var role) && (!role.CanVent || !role.CanSwitchVents)))
+            return false;
+
+        Vector2 vector;
+
+        if (__instance.Right && __instance.Left)
+            vector = ((__instance.Right.transform.position + __instance.Left.transform.position) / 2f) - __instance.transform.position;
+        else
+            vector = Vector2.zero;
+
+        for (var i = 0; i < __instance.Buttons.Length; i++)
         {
-            Vector2 vector;
+            var buttonBehavior = __instance.Buttons[i];
 
-            if (__instance.Right && __instance.Left)
-                vector = ((__instance.Right.transform.position + __instance.Left.transform.position) / 2f) - __instance.transform.position;
-            else
-                vector = Vector2.zero;
-
-            for (var i = 0; i < __instance.Buttons.Length; i++)
+            if (enabled)
             {
-                var buttonBehavior = __instance.Buttons[i];
+                var vent = __instance.NearbyVents[i];
 
-                if (enabled)
+                if (vent)
                 {
-                    var vent = __instance.NearbyVents[i];
-
-                    if (vent)
-                    {
-                        var ship = Ship();
-                        var ventilationSystem = ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
-                        var gameObject = __instance.CleaningIndicators.Any() ? __instance.CleaningIndicators[i] : null;
-                        __instance.ToggleNeighborVentBeingCleaned(ventilationSystem?.IsVentCurrentlyBeingCleaned(vent.Id) == true || LocalBlocked(), buttonBehavior, gameObject);
-                        var vector2 = vent.transform.position - __instance.transform.position;
-                        var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
-                        vector3.x *= Mathf.Sign(ship.transform.localScale.x);
-                        vector3.y -= 0.08f;
-                        vector3.z = -10f;
-                        buttonBehavior.transform.localPosition = vector3;
-                        buttonBehavior.transform.LookAt2d(vent.transform);
-                        var deg = __instance.spreadAmount * (vector.AngleSigned(vector2) > 0f ? 1 : -1);
-                        vector3 = vector3.RotateZ(deg);
-                        buttonBehavior.transform.localPosition = vector3;
-                        buttonBehavior.transform.Rotate(0f, 0f, deg);
-                    }
-
-                    buttonBehavior.gameObject.SetActive(vent);
+                    var ship = Ship();
+                    var ventilationSystem = ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
+                    var gameObject = __instance.CleaningIndicators.Any() ? __instance.CleaningIndicators[i] : null;
+                    __instance.ToggleNeighborVentBeingCleaned(ventilationSystem?.IsVentCurrentlyBeingCleaned(vent.Id) == true || LocalBlocked(), buttonBehavior, gameObject);
+                    var vector2 = vent.transform.position - __instance.transform.position;
+                    var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
+                    vector3.x *= Mathf.Sign(ship.transform.localScale.x);
+                    vector3.y -= 0.08f;
+                    vector3.z = -10f;
+                    buttonBehavior.transform.localPosition = vector3;
+                    buttonBehavior.transform.LookAt2d(vent.transform);
+                    var deg = __instance.spreadAmount * (vector.AngleSigned(vector2) > 0f ? 1 : -1);
+                    vector3 = vector3.RotateZ(deg);
+                    buttonBehavior.transform.localPosition = vector3;
+                    buttonBehavior.transform.Rotate(0f, 0f, deg);
                 }
-                else
-                    buttonBehavior.gameObject.SetActive(false);
+
+                buttonBehavior.gameObject.SetActive(vent);
             }
+            else
+                buttonBehavior.gameObject.SetActive(false);
         }
 
         return false;
@@ -129,7 +129,7 @@ public static class VentPatches
 
     private static bool EnterExitVentPrefix(PlayerControl pc, AnimationClip clip)
     {
-        if (!clip || !VentSettings.HideVentAnims)
+        if (!clip || !VentingOptions.HideVentAnims)
             return true;
 
         var truePosition = LocalPlayer.GetTruePosition();
@@ -145,5 +145,59 @@ public static class GetCorrectResult
     {
         __result = __instance.PlayersCleaningVents.Any((x, y) => y == id && PlayerById(x).CanDoTasks());
         return false;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.CoEnterVent))]
+public static class VanillaVentWalkToFix
+{
+    public static bool Prefix(PlayerPhysics __instance, int id, ref IIEnumerator __result)
+    {
+        __result = CoEnterVent(__instance, id).WrapToIl2Cpp();
+        return false;
+    }
+
+    private static IEnumerator CoEnterVent(PlayerPhysics __instance, int id)
+    {
+        if (Meeting())
+            yield break;
+
+        var vent = VentById(id);
+        __instance.myPlayer.NetTransform.SetPaused(true);
+
+        if (__instance.myPlayer.AmOwner)
+            __instance.inputHandler.enabled = true;
+
+        __instance.myPlayer.walkingToVent = true;
+        __instance.myPlayer.moveable = false;
+        var iEnum = __instance.WalkPlayerTo(vent.transform.position + vent.Offset);
+        var time = 0f;
+
+        while (iEnum.MoveNext())
+        {
+            time += Time.deltaTime;
+
+            if (time >= 2f)
+                yield break;
+        }
+
+        __instance.myPlayer.inVent = true;
+        DebugAnalytics.Instance.Analytics.VentUsed(__instance.myPlayer.Data);
+        vent.EnterVent(__instance.myPlayer);
+        __instance.myPlayer.cosmetics.AnimateSkinEnterVent();
+        yield return __instance.Animations.CoPlayEnterVentAnimation(vent.NumFramesUntilPlayerDisappears);
+        __instance.myPlayer.cosmetics.AnimateSkinIdle();
+        __instance.Animations.PlayIdleAnimation();
+        __instance.myPlayer.Visible = false;
+        __instance.myPlayer.walkingToVent = false;
+        __instance.myPlayer.currentRoleAnimations.ForEach(an => an.ToggleRenderer(false));
+
+        if (__instance.myPlayer.AmOwner)
+        {
+            VentilationSystem.Update(VentilationSystem.Operation.Enter, id);
+            __instance.inputHandler.enabled = false;
+        }
+
+        __instance.logger.Debug($"Player {__instance.myPlayer.PlayerId} entered vent {id}");
     }
 }

@@ -23,12 +23,12 @@ public static class OnGameEndPatches
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
             MapPatches.AdjustSettings(false);
-            GameTimerHandler.Instance.gameObject.Destroy();
+            GameTimerHandler.Instance?.gameObject?.Destroy();
 
-            foreach (var role in PlayerLayer.GetLayers<Role>())
+            foreach (var handler in AllPlayers().Select(x => x.Data.Role.TryCast<LayerHandler>()))
             {
-                if (role is { Disconnected: false, Winner: true })
-                    Winners[role.PlayerName] = role.Player.GetLayers();
+                if (handler is { Disconnected: false, Winner: true })
+                    Winners[handler.Player.Data.PlayerName] = handler.CurrentLayers;
             }
 
             EndGameResult.CachedWinners.AddRange(Winners.Select(x => new CachedPlayerData(x.Value.First().Data)));
@@ -50,8 +50,8 @@ public static class OnGameEndPatches
             if (players.Count(x => !x.HasDied()) == 1 && !LocalPlayer.HasDied())
                 CustomAchievementManager.UnlockAchievement("LastOneStanding");
 
-            if ((WinState is (> WinLose.BountyHunterWins and < WinLose.ArsonistWins) or WinLose.HuntedWin &&! players.Any(x => x.Is(LocalPlayer.GetFaction()) && x.HasDied())) ||
-                (WinState is > WinLose.ReanimatedWins and < WinLose.LoveWins && !players.Any(x => x.Is(LocalPlayer.GetRole().Type) && x.HasDied()) && NeutralKillingSettings.WinSolo) ||
+            if ((WinState is (> WinLose.BountyHunterWins and < WinLose.ArsonistWins) or WinLose.HuntedWin && !players.Any(x => x.Is(LocalPlayer.GetFaction()) && x.HasDied())) ||
+                (WinState is > WinLose.ReanimatedWins and < WinLose.LoveWins && !players.Any(x => x.Is(LocalPlayer.GetRole().Type) && x.HasDied()) && OutcastKillingSettings.WinSolo) ||
                 (WinState == WinLose.HuntedWin && GameModeSettings.HnSMode == HnSMode.Classic && !players.Any(x => x.Is<Hunted>(out var hunted) && !hunted.Alive)))
             {
                 CustomAchievementManager.UnlockAchievement("BloodOfTheCovenant");
@@ -177,7 +177,8 @@ public static class OnGameEndPatches
                     WinLose.PandoricaWins => ("The Pandorica Wins", "IntruderWin", CustomColorManager.Pandorica),
                     WinLose.IlluminatiWins => ("The Illuminati Wins", "IntruderWin", CustomColorManager.Illuminati),
                     WinLose.ComplianceWins => ("The Compliance Wins", "IntruderWin", CustomColorManager.Compliance),
-                    WinLose.NeutralsWin => ("Neutrals Wins", "IntruderWin", CustomColorManager.Neutral),
+                    WinLose.ShifterWins => ("Shifter Wins", "IntruderWin", CustomColorManager.Shifter),
+                    WinLose.OutcastsWin => ("Outcasts Wins", "IntruderWin", CustomColorManager.Outcast),
                     WinLose.EveryoneWins => ("Everyone Wins", "IntruderWin", CustomColorManager.Stalemate),
                     _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
                 };
@@ -302,36 +303,31 @@ public static class OnGameEndPatches
         var summary = "";
         var cache = "";
 
-        var info = player.GetLayers().ToList();
-
-        if (info.Count != 4)
-            return;
-
-        var role = info[0] as Role;
-        var modifier = info[1] as Modifier;
-        var ability = info[2] as Ability;
-        var disposition = info[3] as Disposition;
+        var handler = player.Data.Role.TryCast<LayerHandler>();
+        var role = handler.CurrentRole;
+        var modifier = handler.CurrentModifier;
+        var ability = handler.CurrentAbility;
+        var disposition = handler.CurrentDisposition;
 
         if (role!.Type != LayerEnum.NoneRole)
         {
-            foreach (var (i, role2) in role.RoleHistory.Indexed())
+            foreach (var (i, (role2, faction)) in handler.History.Indexed())
             {
                 var part = TranslationManager.Translate($"Layer.{role2}");
+                var part2 = TranslationManager.Translate($"Faction.{faction}");
+                cache += $"{part} ({part2}) → ";
 
-                if (i == role.RoleHistory.Count - 1 && LayerDictionary.TryGetValue(role2, out var entry))
-                    summary += $"<color=#{entry.Color.ToHtmlStringRGBA()}>{part}</color> → ";
+                if (i != handler.History.Count - 1 || !LayerDictionary.TryGetValue(role2, out var entry))
+                    continue;
 
-                cache += $"{part} → ";
+                if (FactionDictionary.TryGetValue(faction, out var entry2))
+                    part2 = $"<#{entry2.Color.ToHtmlStringRGBA()}>{part2}</color>";
+
+                summary += $"<#{entry.Color.ToHtmlStringRGBA()}>{part}</color> ({part2}) → ";
             }
 
-            summary += $"{role.ColorString}{role.Name}</color>";
-            cache += role.Name;
-
-            if (role.SubFaction != SubFaction.None && !player.Is(Alignment.Neophyte))
-            {
-                summary += $" {role.SubFactionColorString}{role.SubFactionSymbol}</color>";
-                cache += $" {role.SubFactionSymbol}";
-            }
+            summary += $"{role.ColorString}{role.Name}</color> ({role.FactionColorString}{role.FactionName}</color>)";
+            cache += $"{role.Name} ({role.FactionName})";
         }
 
         if (disposition!.Type != LayerEnum.NoneDisposition)

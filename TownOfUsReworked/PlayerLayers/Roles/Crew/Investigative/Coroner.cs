@@ -51,7 +51,7 @@ public sealed class Coroner : Crew, IExaminer
         if (!Reported.Contains(player.PlayerId) || revealed || !meeting)
             return;
 
-        var role = handler.CustomRole;
+        var role = handler.CurrentRole;
         color = role.Color;
         name += $"\n{(CoronerReportRole ? role : role.Faction)}";
         revealed = true;

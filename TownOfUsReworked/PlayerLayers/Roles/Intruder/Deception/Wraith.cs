@@ -31,8 +31,7 @@ public sealed class Wraith : Intruder
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }
 
-    private void Invis() => MiscUtils.Invis(Player, InvisDur, EndEffect, (LocalPlayer.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (LocalPlayer.Is(SubFaction) && SubFaction !=
-        SubFaction.None));
+    private void Invis() => MiscUtils.Invis(Player, InvisDur, EndEffect, LocalPlayer.Is(Faction) && Faction.IsFactionedEvil());
 
     private void UnInvis() => ClickedAgain = false;
 

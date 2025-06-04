@@ -6,7 +6,7 @@ namespace TownOfUsReworked.Options;
 public static class Generate
 {
     /// <summary>
-    /// Called to generate the necessary setting for the game option attributes. This takes place only once and during game initialisation.
+    /// Called to generate the necessary data for game options. This takes place only once and during game initialisation.
     /// </summary>
     public static void GenerateOptions()
     {
@@ -36,8 +36,7 @@ public static class Generate
                 opt.ID += toAdd;
                 opt.Name += toAdd;
 
-                // Simple enough, I'm too cautious to let something fuck me up while I set the properties
-                opt.PostLoadSetup();
+                opt.PostLoadSetup(); // Simple enough, I'm too cautious to let something fuck me up while I set the properties
 
                 // Debugging and dropping ids in case I've forgotten to add translations for some settings and their values
                 if (TownOfUsReworked.IsDev)
@@ -55,7 +54,7 @@ public static class Generate
             }
 
             // Not gonna make it dump debug statements for *every* role list entry
-            Enum.GetValues<ListSlot>().Except([ListSlot.NeutralPros, ListSlot.ApocHarb, ListSlot.ApocDeity, ListSlot.GameMode, ListSlot.Abilities, ListSlot.Dispositions, ListSlot.Modifiers])
+            Enum.GetValues<ListSlot>().Except([ListSlot.OutcastPros, ListSlot.ApocHarb, ListSlot.ApocDeity, ListSlot.GameMode, ListSlot.Abilities, ListSlot.Dispositions, ListSlot.Modifiers])
                 .Do(x => TranslationManager.DebugId($"List.{x}"));
         }
 

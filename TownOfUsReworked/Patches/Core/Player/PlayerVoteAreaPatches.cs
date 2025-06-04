@@ -65,27 +65,26 @@ public static class PlayerVoteAreaPatches
     [HarmonyPatch(nameof(PlayerVoteArea.SetCosmetics)), HarmonyPostfix]
     public static void SetCosmeticsPostfix(PlayerVoteArea __instance)
     {
+        var level = __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>();
+
         if (BetterSabotages.CamouflagedMeetings && Hud.Instance.IsCamoed)
         {
             __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-            var level = __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>();
             level.enabled = false;
             level.gameObject.SetActive(false);
             __instance.PlayerIcon.SetBodyCosmeticsVisible(false);
             __instance.PlayerIcon.SetBodyColor(16);
+            return;
         }
-        else
-        {
-            if (ClientOptions.WhiteNameplates)
-                __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
-            if (!ClientOptions.NoLevels)
-                return;
+        if (ClientOptions.WhiteNameplates)
+            __instance.Background.sprite = Ship().CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
-            var level = __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>();
-            level.enabled = false;
-            level.gameObject.SetActive(false);
-        }
+        if (!ClientOptions.NoLevels)
+            return;
+
+        level.enabled = false;
+        level.gameObject.SetActive(false);
     }
 
     [HarmonyPatch(nameof(PlayerVoteArea.Start)), HarmonyPostfix]

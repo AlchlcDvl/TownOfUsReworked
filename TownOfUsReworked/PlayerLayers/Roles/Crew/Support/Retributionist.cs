@@ -90,7 +90,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
         if (Reported.Contains(player.PlayerId) && !revealed && meeting)
         {
-            var role = handler.CustomRole;
+            var role = handler.CurrentRole;
             color = role.Color;
             name += $"\n{role}";
             revealed = true;
@@ -99,8 +99,6 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     protected override void Deinit()
     {
-        base.Deinit();
-
         if (!Bugs.Any())
             return;
 
@@ -609,9 +607,8 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool SherException(PlayerControl player) => (((Faction is not (Faction.Crew or Faction.Neutral) && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None))
-        && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() &&
-        Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
+    private bool SherException(PlayerControl player) => (Faction.IsFactionedEvil() && player.Is(Faction) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) ||
+        (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 
     private bool SherUsable() => IsSher;
 
@@ -640,8 +637,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     private void Shoot(PlayerControl target) => ShootButton.StartCooldown(Interact(Player, target, true));
 
-    private bool VigiException(PlayerControl player) => (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
-        Player.IsLinkedTo(player);
+    private bool VigiException(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     private bool VigUsable() => IsVig;
 
@@ -790,12 +786,12 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash((!target.Is(SubFaction) && SubFaction != SubFaction.None && !target.Is(Alignment.Neophyte)) || target.IsFramed() ? UColor.red : UColor.green);
+            Flash((!target.Is(Faction) && !target.Is(Faction.Crew)) || target.IsFramed() ? UColor.red : UColor.green);
 
         RevealButton.StartCooldown(cooldown);
     }
 
-    private bool MysticException(PlayerControl player) => player.Is(SubFaction) && SubFaction != SubFaction.None;
+    private bool MysticException(PlayerControl player) => player.Is(Faction) && Faction.IsFactionedEvil();
 
     private bool MysUsable() => IsMys;
 
@@ -808,7 +804,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash(target.GetRole().RoleHistory.Any() || target.IsFramed() ? UColor.red : UColor.green);
+            Flash(target.Data.Role.TryCast<LayerHandler>().History.Any() || target.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }

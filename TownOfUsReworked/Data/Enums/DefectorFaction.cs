@@ -4,9 +4,9 @@ public enum DefectorFaction : byte
 {
     Random,
     NonFaction,
-    NonNeutral,
+    NonOutcast,
     NonCrew,
     OpposingEvil,
-    Neutral,
+    Outcast,
     Crew
 }

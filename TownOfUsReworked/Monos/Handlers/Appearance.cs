@@ -7,10 +7,8 @@ public sealed class AppearanceHandler : MonoBehaviour
     private static readonly Vector3 BaseSize = new(0.7f, 0.7f, 0.7f);
     private static readonly float[] AlphaSequence = [1f, 0f, 1f];
 
-    public float Speed { get; private set; } = 1f;
     public float Size { get; private set; } = 1f;
     public float Alpha { get; private set; } = 1f;
-    public PlayerOutfitType CurrentOutfitType { get; private set; }
     public PlayerControl Mimicked { get; private set; }
 
     public DeadBody Body
@@ -48,6 +46,8 @@ public sealed class AppearanceHandler : MonoBehaviour
     private float OutfitTime { get; set; }
     private bool Transitioning { get; set; }
     private int ColorId { get; set; } = -1;
+    private float Speed { get; set; } = 1f;
+    private PlayerOutfitType CurrentOutfitType { get; set; }
 
     [HideFromIl2Cpp]
     private Func<bool> ShouldChangeFunc { get; set; } = BlankFalse;
@@ -56,19 +56,7 @@ public sealed class AppearanceHandler : MonoBehaviour
     private Action ConcurrentAction { get; set; } = BlankVoid;
 
     [HideFromIl2Cpp]
-    private CustomOutfit Default
-    {
-        get => IsLobby() ? lobbyDefault : gameDefault;
-        set
-        {
-            if (IsLobby())
-                lobbyDefault = value;
-            else
-                gameDefault = value;
-        }
-    }
-    private CustomOutfit gameDefault;
-    private CustomOutfit lobbyDefault;
+    private CustomOutfit Default { get; set; }
 
     private readonly Queue<(CustomOutfit, PlayerOutfitType, float, Func<bool>, Action)> QueuedOutfits = [];
 
@@ -95,7 +83,7 @@ public sealed class AppearanceHandler : MonoBehaviour
             var former = GetCurrent();
             (Current, CurrentOutfitType, OutfitTime, ShouldChangeFunc, ConcurrentAction) = QueuedOutfits.TryDequeue(out var queue) ? queue : (Default, IsLobby()
                 ? CustomPlayerOutfitType.Default
-                : CustomPlayerOutfitType.GameDefault,
+                : CustomPlayerOutfitType.Default,
                 -1, BlankFalse, BlankVoid);
             ChangeTo(former, Current, CurrentOutfitType);
             Mimicked = null;
@@ -116,7 +104,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Size = Current.Size;
         Speed = Current.Speed;
         Color.name = Color.text = Current.ColorName + (ClientOptions.LighterDarker && IsInGame() ? $" ({Current.GetLightOrDark()})" : "");
-        CurrentOutfitType = IsLobby() ? CustomPlayerOutfitType.Default : CustomPlayerOutfitType.GameDefault;
+        CurrentOutfitType = IsLobby() ? CustomPlayerOutfitType.Default : CustomPlayerOutfitType.Default;
         Outfits[CurrentOutfitType] = Default;
     }
 
@@ -147,7 +135,7 @@ public sealed class AppearanceHandler : MonoBehaviour
     public void UpdateColor(SpriteRenderer rend) => Colors.Instance.SetRend(Current.GetPair(), rend);
 
     [HideFromIl2Cpp]
-    public CustomOutfit GetCurrent() => Current ?? Default;
+    private CustomOutfit GetCurrent() => Current ?? Default;
 
     [HideFromIl2Cpp]
     public void QueueOutfit(CustomOutfit outfit, PlayerOutfitType type, float duration = -1, Func<bool> func = null, Action concurrent = null)
@@ -286,7 +274,7 @@ public sealed class AppearanceHandler : MonoBehaviour
 
         if (change.HasFlag(ChangeCosmetics.Name))
         {
-            var (name, colorInt) = ("", UColor.white);
+            var (playerName, colorInt) = ("", UColor.white);
 
             if (Player.Data?.Role is LayerHandler playerHandler && LocalPlayer.Data?.Role is LayerHandler localHandler)
             {
@@ -296,10 +284,10 @@ public sealed class AppearanceHandler : MonoBehaviour
                 if (!amOwner && !deadSeeEverything && Mimicked?.Data?.Role is LayerHandler handler1)
                     playerHandler = handler1;
 
-                (name, colorInt) = NameHandler.UpdateGameName(playerHandler, localHandler, amOwner, deadSeeEverything, out _);
+                (playerName, colorInt) = NameHandler.UpdateGameName(playerHandler, localHandler, amOwner, deadSeeEverything, out _);
             }
 
-            (Name.text, Name.color) = (Player.name[..(int)(Player.name.Length * otherT)] + name, colorInt.SetAlpha(Alpha));
+            (Name.text, Name.color) = (Player.name[..(int)(Player.name.Length * otherT)] + playerName, colorInt.SetAlpha(Alpha));
         }
 
         if (!change.HasFlag(ChangeCosmetics.Color))
@@ -339,7 +327,7 @@ public sealed class AppearanceHandler : MonoBehaviour
 
         if (PlayerLayer.GetLayers<Timekeeper>().TryFinding([HideFromIl2Cpp] (x) => x.TimeButton.EffectActive, out var tk))
         {
-            if ((tk.Faction is not (Faction.Crew or Faction.Neutral) && !Player.Is(tk.Faction)) || (!tk.HoldsDrive && !Timekeeper.TimeFreezeImmunity) || (tk.HoldsDrive &&
+            if ((tk.Faction is not (Faction.Crew or Faction.Outcast) && !Player.Is(tk.Faction)) || (!tk.HoldsDrive && !Timekeeper.TimeFreezeImmunity) || (tk.HoldsDrive &&
                 !Timekeeper.TimeRewindImmunity))
             {
                 result = 0f;

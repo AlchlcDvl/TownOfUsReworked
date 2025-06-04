@@ -2,18 +2,32 @@ namespace TownOfUsReworked.Custom;
 
 public sealed class CustomOutfit
 {
-    public int ColorId { get; set; } = -1;
-    public string HatId { get; set; } = "hat_NoHat";
-    public string PetId { get; set; } = "pet_EmptyPet";
-    public string SkinId { get; set; } = "skin_None";
-    public string VisorId { get; set; } = "visor_EmptyVisor";
-    public string NamePlateId { get; set; } = "nameplate_NoPlate";
-    public string PlayerName { get; set; } = " ";
-    public string ColorName { get; set; } = "???";
-    public float Size { get; set; } = 1f;
-    public float Speed { get; set; } = 1f;
-    public float Alpha { get; set; } = 1f;
-    public Color32 Color { get; set; } = UColor.white;
+    public string HatId { get; init; } = "hat_NoHat";
+    public string PetId { get; init; } = "pet_EmptyPet";
+    public string SkinId { get; init; } = "skin_None";
+    public string VisorId { get; init; } = "visor_EmptyVisor";
+    public string NamePlateId { get; init; } = "nameplate_NoPlate";
+    public string PlayerName { get; init; } = " ";
+    public string ColorName { get; init; } = "???";
+    public float Size { get; init; } = 1f;
+    public float Speed { get; init; } = 1f;
+    public float Alpha { get; init; } = 1f;
+    public Color32 Color { get; init; } = UColor.white;
+
+    public int ColorId
+    {
+        get;
+        init
+        {
+            field = value;
+
+            if (!CustomColorManager.AllColors.TryGetValue(value, out var color))
+                return;
+
+            var translation = Palette.GetColorName(value);
+            ColorName = color.Default ? (translation[0] + translation[1..].ToLower()) : translation;
+        }
+    } = -1;
 
     public CustomOutfit() {}
 
@@ -26,12 +40,6 @@ public sealed class CustomOutfit
         NamePlateId = source.NamePlateId;
         PlayerName = source.PlayerName;
         PetId = source.PetId;
-
-        if (!CustomColorManager.AllColors.TryGetValue(ColorId, out var color))
-            return;
-
-        var translation = Palette.GetColorName(ColorId);
-        ColorName = color.Default ? (translation[0] + translation[1..].ToLower()) : translation;
     }
 
     public CustomOutfit(PlayerControl player, bool useCurrent = false) : this(useCurrent ? player.CurrentOutfit : player.Data.Outfits[PlayerOutfitType.Default])

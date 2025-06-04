@@ -41,10 +41,10 @@ public abstract class Assassin : Ability, IGuesser
     private static bool AssassinMultiKill = false;
 
     [ToggleOption]
-    private static bool AssassinGuessNeutralBenign = false;
+    private static bool AssassinGuessOutcastBenign = false;
 
     [ToggleOption]
-    private static bool AssassinGuessNeutralEvil = false;
+    private static bool AssassinGuessOutcastEvil = false;
 
     [ToggleOption]
     private static bool AssassinGuessInvestigative = false;
@@ -99,10 +99,9 @@ public abstract class Assassin : Ability, IGuesser
         GuessingMenu.Mapping.Clear();
 
         // Adds all the roles that have a non-zero chance of being in the game
-        if (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None))
+        if (!Player.Is(Faction.Crew))
         {
-            if (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None))
-                GuessingMenu.Mapping.Add(LayerEnum.Crewmate);
+            GuessingMenu.Mapping.Add(LayerEnum.Crewmate);
 
             if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
             {
@@ -124,10 +123,9 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (IntruderSettings.IntruderCount > 0 && (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)))
+        if (IntruderSettings.IntruderCount > 0 && !Player.Is(Faction.Intruder))
         {
-            if (!Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None))
-                GuessingMenu.Mapping.Add(LayerEnum.Impostor);
+            GuessingMenu.Mapping.Add(LayerEnum.Impostor);
 
             if (IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
             {
@@ -139,10 +137,9 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (SyndicateSettings.SyndicateCount > 0 && (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None)))
+        if (SyndicateSettings.SyndicateCount > 0 && !Player.Is(Faction.Syndicate))
         {
-            if (!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None))
-                GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
+            GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
 
             if (SyndicateSettings.SyndicateMax > 0 && SyndicateSettings.SyndicateMin > 0)
             {
@@ -154,10 +151,9 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (ApocalypseSettings.ApocalypseCount > 0 && (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None)))
+        if (ApocalypseSettings.ApocalypseCount > 0 && !Player.Is(Faction.Apocalypse))
         {
-            if (!Player.Is(Faction.Apocalypse) || !Player.Is(SubFaction.None))
-                GuessingMenu.Mapping.Add(LayerEnum.Cultist);
+            GuessingMenu.Mapping.Add(LayerEnum.Cultist);
 
             if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0)
             {
@@ -169,50 +165,21 @@ public abstract class Assassin : Ability, IGuesser
                 GuessingMenu.Mapping.AddRange(GuessingMenu.Mapping.WhereSelect<LayerEnum, LayerEnum>(Apocalypse.HarbingerToDeityMap.TryGetValue));
         }
 
-        if (NeutralSettings.NeutralMax > 0 && NeutralSettings.NeutralMin > 0 && !Player.Is(Faction.Neutral))
+        if (OutcastSettings.OutcastMax > 0 && OutcastSettings.OutcastMin > 0 && !Player.Is(Faction.Outcast))
         {
-            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Werewolf }
-                .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() && !Player.Is(layer)));
+            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Werewolf,
+                LayerEnum.Dracula, LayerEnum.Jackal, LayerEnum.Necromancer, LayerEnum.Whisperer, LayerEnum.Zealot } .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() &&
+                    !Player.Is(layer)));
 
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Dracula).IsActive() && !Player.Is(SubFaction.Undead))
-            {
-                GuessingMenu.Mapping.Add(LayerEnum.Dracula);
-                GuessingMenu.Mapping.Add(LayerEnum.Undead);
-            }
-
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Jackal).IsActive() && !Player.Is(SubFaction.Cabal))
-            {
-                GuessingMenu.Mapping.Add(LayerEnum.Jackal);
-                GuessingMenu.Mapping.Add(LayerEnum.Cabal);
-            }
-
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Necromancer).IsActive() && !Player.Is(SubFaction.Reanimated))
-            {
-                GuessingMenu.Mapping.Add(LayerEnum.Necromancer);
-                GuessingMenu.Mapping.Add(LayerEnum.Reanimated);
-            }
-
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Whisperer).IsActive() && !Player.Is(SubFaction.Cult))
-            {
-                GuessingMenu.Mapping.Add(LayerEnum.Whisperer);
-                GuessingMenu.Mapping.Add(LayerEnum.Cult);
-            }
-
-            if (RoleGenManager.GetSpawnItem(LayerEnum.Zealot).IsActive() && !Player.Is(SubFaction.Followers))
-            {
-                GuessingMenu.Mapping.Add(LayerEnum.Zealot);
-                GuessingMenu.Mapping.Add(LayerEnum.Followers);
-            }
-
-            // Add certain Neutral roles if enabled
-            if (AssassinGuessNeutralBenign)
+            // Add certain Outcast roles if enabled
+            if (AssassinGuessOutcastBenign)
             {
                 GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief }.Where(layer =>
                     RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel)) || (layer  == LayerEnum.Thief &&
                     GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac))));
             }
 
-            if (AssassinGuessNeutralEvil)
+            if (AssassinGuessOutcastEvil)
             {
                 GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Executioner, LayerEnum.Guesser, LayerEnum.BountyHunter, LayerEnum.Troll, LayerEnum.Actor, LayerEnum.Jester }.Where(layer =>
                     RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter)) || (layer == LayerEnum.Actor &&
@@ -274,7 +241,6 @@ public abstract class Assassin : Ability, IGuesser
         else
         {
             var layerFlag = player.GetLayers().Any(x => x.Type == guess);
-            var subfactionFlag = $"{player.GetSubFaction()}" == $"{guess}";
             var framedFlag = player.IsFramed();
             var promoterFlag = player.Is<IPromoter>(out var promoter) && ((promoter.UnderlingType == guess && promoter.IsUnderling) || (promoter.PromoterType == guess && promoter.IsPromoted));
             var actorGuessed = false;
@@ -285,11 +251,11 @@ public abstract class Assassin : Ability, IGuesser
                 actorGuessed = true;
             }
 
-            var flag = layerFlag || subfactionFlag || framedFlag || promoterFlag || actorGuessed;
+            var flag = layerFlag || framedFlag || promoterFlag || actorGuessed;
             var toDie = flag ? player : Player;
             RpcMurderPlayer(toDie, guess, player);
 
-            if (!NeutralSettings.AvoidNeutralKingmakers && player != Player && actorGuessed)
+            if (!OutcastSettings.AvoidOutcastKingmakers && player != Player && actorGuessed)
                 RpcMurderPlayer(Player, guess, player);
 
             if (RemainingKills <= 0 || !AssassinMultiKill)
@@ -304,9 +270,8 @@ public abstract class Assassin : Ability, IGuesser
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && ((Player.GetFaction() != player.GetFaction()) || (Player.GetSubFaction() != player.GetSubFaction()))) || Dead ||
-            (player == Player && Local) || (Player.GetFaction() == player.GetFaction() && Player.GetFaction() != Faction.Crew) || RemainingKills <= 0 || (Player.GetSubFaction() ==
-            player.GetSubFaction() && Player.GetSubFaction() != SubFaction.None) || Player.IsLinkedTo(player);
+        return player.HasDied() || Dead || Player.IsLinkedTo(player) || voteArea.NameText.text.Contains('\n') || (player == Player && Local) || (Player.GetFaction() == player.GetFaction() &&
+            Player.GetFaction().IsFactionedEvil()) || RemainingKills <= 0;
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -358,7 +323,7 @@ public abstract class Assassin : Ability, IGuesser
                 Flash(Color);
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
             }
-            else if ((Player.GetFaction() == LocalPlayer.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
+            else if ((Player.GetFaction() == LocalPlayer.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Outcast))) || DeadSeeEverything())
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
 
             return;
@@ -377,7 +342,7 @@ public abstract class Assassin : Ability, IGuesser
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"You guessed {guessTarget.name} as {guessString}!" : $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else if (Player != player && player.AmOwner)
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
-        else if ((Player.GetFaction() == LocalPlayer.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Neutral))) || DeadSeeEverything())
+        else if ((Player.GetFaction() == LocalPlayer.GetFaction() && Player.GetFaction().IsFactionedEvil()) || DeadSeeEverything())
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"{Player.name} guessed {guessTarget.name} as {guessString}!" : $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");

@@ -49,6 +49,7 @@ global using static TownOfUsReworked.Utils.MiscUtils;
 global using static TownOfUsReworked.Data.References;
 global using TownOfUsReworked.PlayerLayers.Abilities;
 global using TownOfUsReworked.PlayerLayers.Modifiers;
+global using static TownOfUsReworked.Data.ShaderProps;
 global using static TownOfUsReworked.Utils.BlankUtils;
 global using TownOfUsReworked.PlayerLayers.Dispositions;
 global using static TownOfUsReworked.Managers.RpcManager;
@@ -91,3 +92,5 @@ global using HarmonyLib;
 
 global using IObject = Il2CppSystem.Object;
 global using ISystem = Il2CppSystem.Collections.Generic;
+global using IIEnumerator = Il2CppSystem.Collections.IEnumerator;
+global using IStringBuilder = Il2CppSystem.Text.StringBuilder;

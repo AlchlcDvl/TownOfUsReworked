@@ -16,5 +16,4 @@ public static class CustomPlayerOutfitType
     public static readonly PlayerOutfitType Colorblind = Injector.InjectAndReturn("Colorblind"); // 8
     public static readonly PlayerOutfitType NightVision = Injector.InjectAndReturn("NightVision"); // 9
     public static readonly PlayerOutfitType Custom = Injector.InjectAndReturn("Custom"); // 10
-    public static readonly PlayerOutfitType GameDefault = Injector.InjectAndReturn("GameDefault"); // 11
 }

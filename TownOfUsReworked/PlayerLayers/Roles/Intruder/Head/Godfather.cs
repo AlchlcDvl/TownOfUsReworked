@@ -44,7 +44,7 @@ public sealed class Godfather : Intruder
         role.IsPromoted = false;
         role.Promoter = this;
         role.Name = TranslationManager.Translate("Layer.Mafioso");
-        role.RoleHistory.Add(role.Type);
+        role.Handler.History.Add((role.Type, role.Faction));
     }
 
     private bool Exception1(PlayerControl player) => !player.Is<Intruder>(out var intruder) || intruder.IsUnderling || intruder.IsPromoted || !player.Is(Faction);

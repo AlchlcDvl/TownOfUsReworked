@@ -6,7 +6,7 @@ public sealed class Mystic : Crew
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number RevealCd = 25;
 
-    private bool ConvertedDead => !AllPlayers().Any(x => !x.HasDied() && !x.Is(SubFaction.None) && !x.Is(SubFaction));
+    private bool ConvertedDead => !AllPlayers().Any(x => !x.HasDied() && !x.Is(Faction.Crew) && !x.Is(Faction));
     private CustomButton RevealButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Mystic;
@@ -38,10 +38,10 @@ public sealed class Mystic : Crew
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash((!target.Is(SubFaction) && SubFaction != SubFaction.None && !target.Is(Alignment.Neophyte)) || target.IsFramed() ? UColor.red : UColor.green);
+            Flash((!target.Is(Faction) && !target.Is(Faction.Crew)) || target.IsFramed() ? UColor.red : UColor.green);
 
         RevealButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => player.Is(SubFaction) && SubFaction != SubFaction.None;
+    private bool Exception(PlayerControl player) => player.Is(Faction) && Faction.IsFactionedEvil();
 }

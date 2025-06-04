@@ -53,7 +53,6 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
     public override void Debug() => TranslationManager.DebugId(IsBan ? "CustomOption.Ban" : "CustomOption.Entry");
 
-    // TODO: Redo this to handle value filtering
     protected override void TrySetValue(ListSlot value)
     {
         if (IsBan)
@@ -63,92 +62,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
         }
 
         // Use a switch expression to handle role alignment buckets
-        var toRemove = value switch
-        {
-            // Crew Categories
-            ListSlot.CrewKill => RoleGenManager.CK,
-            ListSlot.CrewSupport => RoleGenManager.CS,
-            ListSlot.CrewInvest => RoleGenManager.CI,
-            ListSlot.CrewProt => RoleGenManager.CrP,
-            ListSlot.CrewSov => RoleGenManager.CSv,
-            ListSlot.CrewUtil => RoleGenManager.CU,
-            ListSlot.RegularCrew => RoleGenManager.RegCrew,
-            ListSlot.PowerCrew => RoleGenManager.PowerCrew,
-            ListSlot.RandomCrew => RoleGenManager.Crew,
-
-            // Neutral Categories
-            ListSlot.NeutralBen => RoleGenManager.NB,
-            ListSlot.NeutralEvil => RoleGenManager.NE,
-            ListSlot.RegularNeutral or ListSlot.NonCompNeutral => RoleGenManager.RegNeutral,
-            ListSlot.RandomNeutral => RoleGenManager.Neutral,
-
-            // Neutral + Compliance Categories
-            ListSlot.NeutralKill or ListSlot.ComplianceKill => RoleGenManager.NK,
-            ListSlot.NeutralNeo or ListSlot.ComplianceNeo => RoleGenManager.NN,
-            ListSlot.HarmfulNeutral or ListSlot.RandomCompliance => RoleGenManager.HarmNeutral,
-
-            // Intruder Categories
-            ListSlot.IntruderSupport => RoleGenManager.IS,
-            ListSlot.IntruderConceal => RoleGenManager.IC,
-            ListSlot.IntruderDecep => RoleGenManager.ID,
-            ListSlot.IntruderKill => RoleGenManager.IK,
-            ListSlot.IntruderUtil => RoleGenManager.IU,
-            ListSlot.IntruderHead => RoleGenManager.IH,
-            ListSlot.RegularIntruder => RoleGenManager.RegIntruders,
-            ListSlot.PowerIntruder => RoleGenManager.PowerIntruders,
-            ListSlot.RandomIntruder => RoleGenManager.Intruders,
-
-            // Syndicate Categories
-            ListSlot.SyndicateKill => RoleGenManager.SyK,
-            ListSlot.SyndicateSupport => RoleGenManager.SSu,
-            ListSlot.SyndicateDisrup => RoleGenManager.SD,
-            ListSlot.SyndicatePower => RoleGenManager.SP,
-            ListSlot.SyndicateUtil => RoleGenManager.SU,
-            ListSlot.RegularSyndicate => RoleGenManager.RegSyndicate,
-            ListSlot.PowerSyndicate => RoleGenManager.PowerSyndicate,
-            ListSlot.RandomSyndicate => RoleGenManager.Syndicate,
-
-            // Apocalypse Categories
-            ListSlot.RandomApocalypse => RoleGenManager.AH,
-
-            // Pandora Categories
-            ListSlot.PandoraKill => RoleGenManager.PK(),
-            ListSlot.PandoraConceal => RoleGenManager.PC(),
-            ListSlot.PandoraDecep => RoleGenManager.PDe(),
-            ListSlot.PandoraDisrup => RoleGenManager.PDi(),
-            ListSlot.PandoraPower => RoleGenManager.PP(),
-            ListSlot.PandoraSupport => RoleGenManager.PS(),
-            ListSlot.PandoraUtil => RoleGenManager.PU(),
-            ListSlot.PandoraHarb => RoleGenManager.PHa(),
-            ListSlot.RegularPandora => RoleGenManager.RegPandorica(),
-            ListSlot.PowerPandora => RoleGenManager.PowerPandorica(),
-            ListSlot.RandomPandora => RoleGenManager.Pandorica(),
-
-            // Illuminati Categories
-            ListSlot.IlluminatiKill => RoleGenManager.IlK(),
-            ListSlot.IlluminatiConceal => RoleGenManager.IlC(),
-            ListSlot.IlluminatiDecep => RoleGenManager.IlDe(),
-            ListSlot.IlluminatiDisrup => RoleGenManager.IlDi(),
-            ListSlot.IlluminatiPower => RoleGenManager.IP(),
-            ListSlot.IlluminatiSupport => RoleGenManager.IlS(),
-            ListSlot.IlluminatiUtil => RoleGenManager.IlU(),
-            ListSlot.IlluminatiHead => RoleGenManager.IlHe(),
-            ListSlot.RegularIlluminati => RoleGenManager.RegIlluminati(),
-            ListSlot.PowerIlluminati => RoleGenManager.PowerIlluminati(),
-            ListSlot.RandomIlluminati => RoleGenManager.Illuminati(),
-
-            // Alignment Categories
-            ListSlot.NonCrew => RoleGenManager.NonCrew,
-            ListSlot.NonNeutral => RoleGenManager.NonNeutral,
-            ListSlot.NonIntruder => RoleGenManager.NonIntruders,
-            ListSlot.NonSyndicate => RoleGenManager.NonSyndicate,
-            ListSlot.NonPandora => RoleGenManager.NonPandorica(),
-            ListSlot.NonIlluminati => RoleGenManager.NonIlluminati(),
-            ListSlot.NonCompliance => RoleGenManager.NonCompliance(),
-            ListSlot.NonApocalypse => RoleGenManager.NonApocalypse,
-
-            _ => null
-        };
+        var toRemove = ListGen.GetBucket(value);
 
         if (toRemove is null)
         {
@@ -170,7 +84,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
     // TODO: Account for the member options properly here
     private static IEnumerable<ListSlot> GetPossibleValues(ListEntryOption self)
     {
-        var bans = GetOptions<ListEntryOption>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
+        var opposite = GetOptions<ListEntryOption>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
         yield return ListSlot.None;
 
         if (!self.IsBan)
@@ -182,7 +96,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var role in GetValuesFromTo(ListSlot.Altruist, ListSlot.Warper))
                 {
-                    if (bans.All(x => x.Value != role))
+                    if (opposite.All(x => x.Value != role))
                         yield return role;
                 }
 
@@ -194,26 +108,146 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
                 if (BadGuysSettings.IlluminatiUnleashed)
                 {
-                    foreach (var bucket in GetValuesFromTo(ListSlot.IlluminatiKill, ListSlot.NonIlluminati))
-                        yield return bucket;
+                    if (BadGuysSettings.IlluminatiMembers == [ IlluminatiType.Intruders, IlluminatiType.Syndicate, IlluminatiType.Killers ])
+                        yield return ListSlot.IlluminatiKill;
 
-                    yield return ListSlot.NeutralBen;
-                    yield return ListSlot.NeutralEvil;
-                    yield return ListSlot.NonIllNeutral;
+                    if (BadGuysSettings.IlluminatiMembers == [ IlluminatiType.Intruders, IlluminatiType.Syndicate ])
+                    {
+                        yield return ListSlot.IlluminatiSupport;
+                        yield return ListSlot.IlluminatiUtil;
+                    }
+
+                    if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders)
+                    {
+                        yield return ListSlot.IlluminatiDecep;
+                        yield return ListSlot.IlluminatiHead;
+                        yield return ListSlot.IlluminatiConceal;
+                    }
+                    else
+                    {
+                        yield return ListSlot.IntruderDecep;
+                        yield return ListSlot.IntruderKill;
+                        yield return ListSlot.IntruderSupport;
+                        yield return ListSlot.IntruderUtil;
+                        yield return ListSlot.IntruderHead;
+                        yield return ListSlot.IntruderConceal;
+                        yield return ListSlot.PowerIntruder;
+                        yield return ListSlot.RegularIntruder;
+                        yield return ListSlot.RandomIntruder;
+                        yield return ListSlot.NonIntruder;
+                    }
+
+                    if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate)
+                    {
+                        yield return ListSlot.IlluminatiDisrup;
+                        yield return ListSlot.IlluminatiPower;
+                    }
+                    else
+                    {
+                        yield return ListSlot.SyndicateDisrup;
+                        yield return ListSlot.SyndicatePower;
+                        yield return ListSlot.SyndicateKill;
+                        yield return ListSlot.SyndicateUtil;
+                        yield return ListSlot.SyndicateSupport;
+                        yield return ListSlot.PowerSyndicate;
+                        yield return ListSlot.RegularSyndicate;
+                        yield return ListSlot.RandomSyndicate;
+                        yield return ListSlot.NonSyndicate;
+                    }
+
+                    if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse)
+                        yield return ListSlot.PandoraHarb;
+                    else
+                    {
+                        yield return ListSlot.ApocHarb;
+                        yield return ListSlot.NonApocalypse;
+                    }
+
+                    if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Neophytes)
+                        yield return ListSlot.IlluminatiNeo;
+
+                    yield return ListSlot.PowerIlluminati;
+                    yield return ListSlot.RegularIlluminati;
+                    yield return ListSlot.RandomIlluminati;
+                    yield return ListSlot.NonIlluminati;
+                    yield return ListSlot.OutcastBen;
+                    yield return ListSlot.OutcastEvil;
+                    yield return ListSlot.RegularOutcast;
+
+                    if (BadGuysSettings.IlluminatiMembers != [ IlluminatiType.Killers, IlluminatiType.Neophytes ])
+                        yield return ListSlot.HarmfulOutcast;
+
+                    yield return ListSlot.NonIllOutcast;
                 }
                 else
                 {
                     if (BadGuysSettings.PandoricaOpens)
                     {
-                        foreach (var bucket in GetValuesFromTo(ListSlot.PandoraKill, ListSlot.NonPandora))
-                            yield return bucket;
+                        if (BadGuysSettings.PandoricaMembers == [ PandoricaType.Intruders, PandoricaType.Syndicate ])
+                        {
+                            yield return ListSlot.PandoraKill;
+                            yield return ListSlot.PandoraSupport;
+                            yield return ListSlot.PandoraUtil;
+                        }
+
+                        if (BadGuysSettings.PandoricaMembers == PandoricaType.Intruders)
+                        {
+                            yield return ListSlot.PandoraDecep;
+                            yield return ListSlot.PandoraHead;
+                            yield return ListSlot.PandoraConceal;
+                        }
+                        else
+                        {
+                            yield return ListSlot.IntruderDecep;
+                            yield return ListSlot.IntruderKill;
+                            yield return ListSlot.IntruderSupport;
+                            yield return ListSlot.IntruderUtil;
+                            yield return ListSlot.IntruderHead;
+                            yield return ListSlot.IntruderConceal;
+                            yield return ListSlot.PowerIntruder;
+                            yield return ListSlot.RegularIntruder;
+                            yield return ListSlot.RandomIntruder;
+                            yield return ListSlot.NonIntruder;
+                        }
+
+                        if (BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate)
+                        {
+                            yield return ListSlot.PandoraDisrup;
+                            yield return ListSlot.PandoraPower;
+                        }
+                        else
+                        {
+                            yield return ListSlot.SyndicateDisrup;
+                            yield return ListSlot.SyndicatePower;
+                            yield return ListSlot.SyndicateKill;
+                            yield return ListSlot.SyndicateUtil;
+                            yield return ListSlot.SyndicateSupport;
+                            yield return ListSlot.PowerSyndicate;
+                            yield return ListSlot.RegularSyndicate;
+                            yield return ListSlot.RandomSyndicate;
+                            yield return ListSlot.NonSyndicate;
+                        }
+
+                        if (BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse)
+                            yield return ListSlot.PandoraHarb;
+                        else
+                        {
+                            yield return ListSlot.ApocHarb;
+                            yield return ListSlot.NonApocalypse;
+                        }
+
+                        yield return ListSlot.PowerPandora;
+                        yield return ListSlot.RegularPandora;
+                        yield return ListSlot.RandomPandora;
+                        yield return ListSlot.NonPandora;
                     }
                     else
                     {
                         foreach (var bucket in GetValuesFromTo(ListSlot.IntruderSupport, ListSlot.NonSyndicate))
                             yield return bucket;
 
-                        yield return ListSlot.RandomApocalypse;
+                        yield return ListSlot.ApocHarb;
+                        yield return ListSlot.NonApocalypse;
                     }
 
                     if (BadGuysSettings.OrderOfCompliance)
@@ -226,19 +260,21 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
                         if (BadGuysSettings.ComplianceMembers == [ ComplianceType.Killers, ComplianceType.Neophytes ])
                             yield return ListSlot.RandomCompliance;
+                        else
+                            yield return ListSlot.HarmfulOutcast;
 
-                        foreach (var bucket in GetValuesFromTo(ListSlot.NeutralBen, ListSlot.RegularNeutral))
+                        foreach (var bucket in GetValuesFromTo(ListSlot.OutcastBen, ListSlot.RegularOutcast))
                             yield return bucket;
 
-                        yield return ListSlot.NonCompNeutral;
+                        yield return ListSlot.NonCompOutcast;
                     }
                     else
                     {
-                        foreach (var bucket in GetValuesFromTo(ListSlot.NeutralKill, ListSlot.HarmfulNeutral))
+                        foreach (var bucket in GetValuesFromTo(ListSlot.OutcastKill, ListSlot.HarmfulOutcast))
                             yield return bucket;
-
-                        yield return ListSlot.NonNeutral;
                     }
+
+                    yield return ListSlot.NonOutcast;
                 }
 
                 break;
@@ -247,7 +283,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var disp in GetValuesFromTo(ListSlot.Allied, ListSlot.Traitor))
                 {
-                    if (bans.All(x => x.Value != disp))
+                    if (opposite.All(x => x.Value != disp))
                         yield return disp;
                 }
 
@@ -257,7 +293,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var mod in GetValuesFromTo(ListSlot.Astral, ListSlot.Yeller))
                 {
-                    if (bans.All(x => x.Value != mod))
+                    if (opposite.All(x => x.Value != mod))
                         yield return mod;
                 }
 
@@ -267,7 +303,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
             {
                 foreach (var ab in GetValuesFromTo(ListSlot.Bullseye, ListSlot.Underdog))
                 {
-                    if (bans.All(x => x.Value != ab))
+                    if (opposite.All(x => x.Value != ab))
                         yield return ab;
                 }
 

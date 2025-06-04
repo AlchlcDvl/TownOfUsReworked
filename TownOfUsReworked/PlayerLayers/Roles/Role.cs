@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Role : PlayerLayer
 {
-    protected override UColor MainColor => CustomColorManager.Role;
+    protected override UColor MainColor => FactionColor;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
     public override LayerEnum Type => LayerEnum.NoneRole;
     protected override UColor LayerColor => CustomColorManager.Role;
@@ -27,8 +27,6 @@ public abstract class Role : PlayerLayer
     private Dictionary<float, PointInTime> Positions { get; } = [];
     public Dictionary<byte, PlayerArrow> YellerArrows { get; } = [];
 
-    public List<LayerEnum> RoleHistory { get; } = [];
-
     public Faction Faction
     {
         get;
@@ -39,11 +37,16 @@ public abstract class Role : PlayerLayer
                 Faction.Intruder => CustomColorManager.Intruder,
                 Faction.Crew => CustomColorManager.Crew,
                 Faction.Syndicate => CustomColorManager.Syndicate,
-                Faction.Neutral => CustomColorManager.Neutral,
+                Faction.Outcast => CustomColorManager.Outcast,
                 Faction.Pandorica => CustomColorManager.Pandorica,
                 Faction.Compliance => CustomColorManager.Compliance,
                 Faction.Illuminati => CustomColorManager.Illuminati,
                 Faction.Apocalypse => CustomColorManager.Apocalypse,
+                Faction.Undead => CustomColorManager.Undead,
+                Faction.Cult => CustomColorManager.Cult,
+                Faction.Cabal => CustomColorManager.Cabal,
+                Faction.Reanimated => CustomColorManager.Reanimated,
+                Faction.Followers => CustomColorManager.Followers,
                 Faction.GameMode => Alignment switch
                 {
                     Alignment.HideAndSeek => CustomColorManager.HideAndSeek,
@@ -73,28 +76,6 @@ public abstract class Role : PlayerLayer
     public UColor FactionColor { get; private set; }
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
     public virtual string FactionName => $"{Faction}";
-
-    public SubFaction SubFaction
-    {
-        get;
-        set
-        {
-            (SubFactionColor, SubFactionSymbol) = value switch
-            {
-                SubFaction.Undead => (CustomColorManager.Undead, "γ"),
-                SubFaction.Cult => (CustomColorManager.Cult, "Λ"),
-                SubFaction.Cabal => (CustomColorManager.Cabal, "$"),
-                SubFaction.Reanimated => (CustomColorManager.Reanimated, "Σ"),
-                SubFaction.Followers => (CustomColorManager.Followers, "王"),
-                _ => (CustomColorManager.SubFaction, "φ")
-            };
-            field = value;
-        }
-    }
-    public string SubFactionSymbol { get; private set; }
-    public UColor SubFactionColor { get; private set; }
-    public string SubFactionColorString => $"<#{SubFactionColor.ToHtmlStringRGBA()}>";
-    public string SubFactionName => $"{SubFaction}";
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
@@ -126,10 +107,8 @@ public abstract class Role : PlayerLayer
     protected override void Init()
     {
         Faction = Faction.None;
-        SubFaction = SubFaction.None;
         CurrentChannel = ChatChannel.All;
 
-        RoleHistory.Clear();
         AllArrows.Clear();
         DeadArrows.Clear();
         Positions.Clear();
@@ -184,7 +163,7 @@ public abstract class Role : PlayerLayer
         else if (LinkedDisposition == LayerEnum.Mafia)
             team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
 
-        if (SubFaction == SubFaction.Cabal && Alignment != Alignment.Neophyte)
+        if (Faction == Faction.Cabal && Alignment != Alignment.Neophyte)
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
@@ -315,35 +294,27 @@ public abstract class Role : PlayerLayer
             arrow.Destroy();
     }
 
-    public bool IsConverted() => SubFaction != SubFaction.None && this is not Neophyte;
-
-    public void RoleUpdate(Role former, PlayerControl player = null, bool retainFaction = false)
+    public void RoleUpdate(Role former, PlayerControl player = null, Faction? newFaction = null)
     {
         player ??= former.Player;
+        newFaction ??= former.Faction;
         CustomButton.AllButtons.Where(x => x.Owner == former || !x.Owner.Player).Do(x => x.Destroy());
         CustomArrow.AllArrows.Where(x => x.Owner == player).Do(x => x.Disable());
         var allArrows = former.AllArrows.Clone();
-        var history = former.RoleHistory.Clone();
         former.End();
         Start(player);
-        SubFaction = former.SubFaction;
         DeathReason = former.DeathReason;
         KilledBy = former.KilledBy;
         Diseased = former.Diseased;
         AllArrows.AddRange(allArrows);
-        RoleHistory.AddRange(history);
-        RoleHistory.Add(former.Type);
-
-        if (!retainFaction)
-            Faction = former.Faction;
-        else if (Local)
-            UpdateButtons();
+        Faction = newFaction.Value;
 
         if (Local)
         {
             ButtonUtils.Reset();
             Player.RegenTask();
             Flash(Color);
+            UpdateButtons();
         }
 
         if (LocalPlayer.Is<Seer>(out var seer))
@@ -354,8 +325,6 @@ public abstract class Role : PlayerLayer
     }
 
     public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().Do(x => x.Rounds++);
-
-    protected override void Deinit() => RoleHistory.Clear();
 
     public override void UpdateMap(MapBehaviour __instance)
     {
@@ -484,23 +453,21 @@ public abstract class Role : PlayerLayer
 
     public static IEnumerable<Role> GetRoles(Alignment ra) => GetLayers<Role>().Where(x => x.Alignment == ra && !x.Deinitialised);
 
-    public static IEnumerable<Role> GetRoles(SubFaction subfaction) => GetLayers<Role>().Where(x => x.SubFaction == subfaction && !x.Deinitialised);
-
-    public static string IntrudersWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string IntrudersWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
         "- Kill anyone who opposes the <#FF0000FF>Intruders</color>";
 
-    public static string SyndicateWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string SyndicateWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
         "- Cause chaos and kill off anyone who opposes the <#008000FF>Syndicate</color>";
 
-    public static string ApocalypseWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string ApocalypseWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
         "- Summon your deities to bring on the <#99007FFF>Apocalypse</color>";
 
-    public static string ComplianceWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string ComplianceWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
         "- Eliminate any and all opposition to the <#5A27CCFF>Compliance</color>";
 
-    public static string PandoricaWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string PandoricaWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
         "- Kill off anyone who tries to oppose the <#ECFF45FF>Pandorica</color>";
 
-    public static string IlluminatiWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string IlluminatiWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
         "- Eliminate anyone who tries to oppose the <#A39389FF>Illuminati</color>";
 }

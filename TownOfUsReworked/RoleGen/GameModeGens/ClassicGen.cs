@@ -176,11 +176,11 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
     {
         base.InitNeutList();
 
-        if (Neutrals == 0)
+        if (Outcasts == 0)
             return;
 
-        var minNeut = Mathf.Clamp(NeutralSettings.NeutralMin, 0, Neutrals);
-        var maxNeut = Mathf.Clamp(NeutralSettings.NeutralMax, 0, Neutrals);
+        var minNeut = Mathf.Clamp(OutcastSettings.OutcastMin, 0, Outcasts);
+        var maxNeut = Mathf.Clamp(OutcastSettings.OutcastMax, 0, Outcasts);
 
         if (minNeut > maxNeut)
             (maxNeut, minNeut) = (minNeut, maxNeut);
@@ -189,10 +189,10 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            var maxNe = Mathf.Clamp(NeutralEvilSettings.MaxNe, 0, RoleGenManager.NeutralEvilRoles.Count);
-            var maxNb = Mathf.Clamp(NeutralBenignSettings.MaxNb, 0, RoleGenManager.NeutralBenignRoles.Count);
-            var maxNk = Mathf.Clamp(NeutralKillingSettings.MaxNk, 0, RoleGenManager.NeutralKillingRoles.Count);
-            var maxNn = Mathf.Clamp(NeutralNeophyteSettings.MaxNn, 0, RoleGenManager.NeutralNeophyteRoles.Count);
+            var maxNe = Mathf.Clamp(OutcastEvilSettings.MaxNe, 0, RoleGenManager.OutcastEvilRoles.Count);
+            var maxNb = Mathf.Clamp(OutcastBenignSettings.MaxNb, 0, RoleGenManager.OutcastBenignRoles.Count);
+            var maxNk = Mathf.Clamp(OutcastKillingSettings.MaxNk, 0, RoleGenManager.OutcastKillingRoles.Count);
+            var maxNn = Mathf.Clamp(OutcastNeophyteSettings.MaxNn, 0, RoleGenManager.OutcastNeophyteRoles.Count);
             var maxNeutSum = maxNe + maxNb + maxNk + maxNn;
 
             while (maxNeutSum > maxNeut && maxNeutSum > 0)
@@ -232,29 +232,29 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
                 maxNeutSum = maxNe + maxNb + maxNk + maxNn;
             }
 
-            filter.Filter(RoleGenManager.NeutralBenignRoles, maxNb);
-            filter.Filter(RoleGenManager.NeutralEvilRoles, maxNe);
-            filter.Filter(RoleGenManager.NeutralKillingRoles, maxNk);
-            filter.Filter(RoleGenManager.NeutralNeophyteRoles, maxNn);
+            filter.Filter(RoleGenManager.OutcastBenignRoles, maxNb);
+            filter.Filter(RoleGenManager.OutcastEvilRoles, maxNe);
+            filter.Filter(RoleGenManager.OutcastKillingRoles, maxNk);
+            filter.Filter(RoleGenManager.OutcastNeophyteRoles, maxNn);
         }
 
-        NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles);
+        OutcastRoles.AddRanges(RoleGenManager.OutcastBenignRoles, RoleGenManager.OutcastEvilRoles);
 
         if (BadGuysSettings.OrderOfCompliance)
         {
             var type = BadGuysSettings.ComplianceMembers;
 
             if (type != ComplianceType.Killers)
-                NeutralRoles.AddRange(RoleGenManager.NeutralKillingRoles);
+                OutcastRoles.AddRange(RoleGenManager.OutcastKillingRoles);
 
             if (type != ComplianceType.Neophytes)
-                NeutralRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
+                OutcastRoles.AddRange(RoleGenManager.OutcastNeophyteRoles);
         }
 
-        filter.Filter(NeutralRoles, GameModeSettings.IgnoreFactionCaps ? Neutrals : URandom.RandomRangeInt(minNeut, maxNeut + 1));
+        filter.Filter(OutcastRoles, GameModeSettings.IgnoreFactionCaps ? Outcasts : URandom.RandomRangeInt(minNeut, maxNeut + 1));
 
-        while (NeutralRoles.Count < Neutrals)
-            NeutralRoles.Add(GetSpawnItem(LayerEnum.Amnesiac));
+        while (OutcastRoles.Count < Outcasts)
+            OutcastRoles.Add(GetSpawnItem(LayerEnum.Amnesiac));
     }
 
     public override void InitApocList()
@@ -388,10 +388,10 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
                 IlluminatiRoles.AddRange(ApocalypseRoles);
 
             if (type == IlluminatiType.Killers)
-                IlluminatiRoles.AddRange(RoleGenManager.NeutralKillingRoles);
+                IlluminatiRoles.AddRange(RoleGenManager.OutcastKillingRoles);
 
             if (type == IlluminatiType.Neophytes)
-                IlluminatiRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
+                IlluminatiRoles.AddRange(RoleGenManager.OutcastNeophyteRoles);
 
             var minIll = Mathf.Clamp(IlluminatiSettings.IlluminatiMin, 0, IlluminatiSettings.IlluminatiCount);
             var maxIll = Mathf.Clamp(IlluminatiSettings.IlluminatiMax, 0, IlluminatiSettings.IlluminatiCount);
@@ -412,10 +412,10 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
             var type = BadGuysSettings.ComplianceMembers;
 
             if (type == ComplianceType.Killers)
-                ComplianceRoles.AddRange(RoleGenManager.NeutralKillingRoles);
+                ComplianceRoles.AddRange(RoleGenManager.OutcastKillingRoles);
 
             if (type == ComplianceType.Neophytes)
-                ComplianceRoles.AddRange(RoleGenManager.NeutralNeophyteRoles);
+                ComplianceRoles.AddRange(RoleGenManager.OutcastNeophyteRoles);
 
             var minComp = Mathf.Clamp(ComplianceSettings.ComplianceMin, 0, ComplianceSettings.ComplianceCount);
             var maxComp = Mathf.Clamp(ComplianceSettings.ComplianceMax, 0, ComplianceSettings.ComplianceCount);

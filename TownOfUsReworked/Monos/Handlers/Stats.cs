@@ -32,7 +32,7 @@ public sealed class StatsHandler : MonoBehaviour
 
     private void UpdateText()
     {
-        var sb = new Il2CppSystem.Text.StringBuilder(TranslationManager.Translate("Page.Scroll"));
+        var sb = new IStringBuilder(TranslationManager.Translate("Page.Scroll"));
         sb.AppendLine();
 
         if (ViewingAchievements)
@@ -43,7 +43,7 @@ public sealed class StatsHandler : MonoBehaviour
         Popup.StatsText.SetText(sb);
     }
 
-    private static void AppendAchievement(Il2CppSystem.Text.StringBuilder str, Achievement achievement)
+    private static void AppendAchievement(IStringBuilder str, Achievement achievement)
     {
         str.AppendLine($"{(char)(achievement.Unlocked ? 0x25A0 : 0x25A1)} {TranslationManager.Translate($"Achievement.{achievement.Name}.Title")}");
         str.AppendLine(achievement.Name.Contains("LayerWins")
@@ -53,7 +53,7 @@ public sealed class StatsHandler : MonoBehaviour
             : $"     {TranslationManager.Translate($"Achievement.{achievement.Name}.Description")}"));
     }
 
-    private static void AppendStat(Il2CppSystem.Text.StringBuilder str, StringNames stat, IObject value)
+    private static void AppendStat(IStringBuilder str, StringNames stat, IObject value)
     {
         var text = TranslationController.Instance.GetString(stat).Trim();
         str.Append("<align=left>" + text + (text.Contains(':') ? "" : ":") + "<line-height=0>");

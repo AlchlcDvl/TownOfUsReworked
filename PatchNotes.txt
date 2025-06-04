@@ -1,5 +1,5 @@
 ﻿New!
-- New Roles: Democrat [Crew (Sovereign)], Cultist [Apocalypse (Harbinger)], Void [Apocalypse (Deity)], Gluttony [Apocalypse (Deity)], Zealot [Neutral (Neophyte)]
+- New Roles: Democrat [Crew (Sovereign)], Cultist [Apocalypse (Harbinger)], Void [Apocalypse (Deity)], Gluttony [Apocalypse (Deity)], Zealot [Outcast (Neophyte)]
 - New Ability: Ritualist (Apocalypse Assassin)
 - New Factions: Pandorica, Compliance, Illuminati, Apocalypse
 - New Special Game Modifiers: Pandorica Opens, Order of Compliance, Illuminati Unleashed
@@ -19,16 +19,17 @@
 - Addition: When you are told that you are roleblocked, your screen will begin to glitch out
 
 Changes!
-- Update: Updated to Among Us v16.0.2 (or 2025.3.31)
+- Update: Updated to Among Us v16.0.5 (or 2025.5.20)*
 - Update: Updated to Reactor v2.4.0
-- Update: Updated to BepInEx v6.0.0-be.733
+- Update: Updated to BepInEx v6.0.0-be.735
 - Overhaul: Mayor is now a second stage role for the new Democrat role
-- Overhaul: Shifter is back to being a neutral role, finally with a win condition and an interesting mechanic*
-- Rework: Mafioso, Sidekick, Promoted Godfather and Promoted Rebel have been completely recoded, Mafiosos and Sidekicks can now use their original abilities, but lose the ability to kill unless they can promote
+- Overhaul: Shifter is back to being a outcast role, finally with a win condition and an interesting mechanic*
+- Rework: Mafioso, Sidekick, Promoted Godfather and Promoted Rebel have been completely recoded, Mafiosos and Sidekicks can now use their original abilities, but lose the ability to kill unless they can promote (for future patch notes, bug fixes will only refer to the base roles and not Godfather-x or Rebel-y)
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a single player to eject and have gained ability charges to compensate
 - Rework: Altruist and Necromancer now need to gain mana from bodies (thereby cleaning them) to be able to revive players
 - Rework: Plaguebearer (and Pestilence) is now in its own Apocalypse faction, expect this faction to be filled in the next few updates
 - Rework: Cannibal is now an Apocalypse (Harbinger) role, that transforms into Gluttony
+- Change: Factions and subfactions now work the same to account for Shifter shenanigans
 - Change: Actor role change now has a priority system; it will prioritise roles that are not currently in game, followed by those that are dead and lastly any other role
 - Change: Arsonists, when igniting, will remove the coolant from those doused by a Cryomaniac
 - Change: Cryomaniacs, when freezing, will remove the gasoline from those doused by an Arsonist
@@ -44,6 +45,7 @@ Changes!
 - Change: List slots can now have multiple entries to allow the creation of custom buckets
 - Change: Options now have a newer look
 - Change: Assets are now stored in "%APPDATA%\..\LocalLow\Innersloth\Among Us" instead of the game folder to ensure persistence between version updates
+- Change: The end game summary will now only show the initial and the final role of a player. To view the full role history of a player, use the /summary command
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Nerf: Engineer can no longer vent (you now need the Tunneler ability to do so as a crewmate)
 - Nerf: Button Barry will now only fix critical sabotages, leaving lights and comms unaffected
@@ -58,11 +60,12 @@ Changes!
 - Improvement: Some shapeshifter menus now support multi select
 - Improvement: Sped up download times for assets
 - Recode: Overhauled and refactored a lot of the codebase in favour of optimisation and avoiding issues
-- Rename: The Sect subfaction has been renamed to the Cult
+- Rename: The Neutrals and the Sect factions have been renamed to the Outcasts and the Cult respectively
 - Rename: Role List mode is now List mode
 - Removed: Removed the "Lobby Cap" toggle in the testing menu due to it not actually functioning and being too much of a hassle to actually get working
-- Removed: Removed Vampire Hunter as it's too hard of a counter to the Undead (and I couldn't really think of role names for the other subfaction counters)
+- Removed: Removed Vampire Hunter as it's too hard of a counter to the Undead (and I couldn't really think of role names for the other counters)
 - Removed: Custom and Killing Only as their functionalities have been merged into other modes
+- Removed: Removed being able to see settings in-game due to numerous issues with it
 
 Fixes!
 - Critical: Fixed Godfather-Miners being unable to spawn vents
@@ -70,6 +73,7 @@ Fixes!
 - Critical: Fixed Plaguebearer spawning twice
 - Critical: Greatly improved the stutter and FPS issues
 - Critical: Fixed a lot of options not being used as they should
+- Vanilla: Fixed the vanilla bug with being stuck in certain locations when trying to vent
 - Role: Fixed Retributionist-Altruist revives not being networked between players
 - Role: Fixed Spellslingers not ending the game when they successfully spell bind everyone
 - Role: Fixed Rebel-Framer frames not actually functioning the way they should

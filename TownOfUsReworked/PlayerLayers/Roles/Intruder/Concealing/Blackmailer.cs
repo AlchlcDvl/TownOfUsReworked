@@ -58,8 +58,7 @@ public sealed class Blackmailer : Intruder, IIntimidator
         BlackmailButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == Target || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral) && !BlackmailMates) || (player.Is(SubFaction) &&
-        SubFaction != SubFaction.None && !BlackmailMates);
+    private bool Exception1(PlayerControl player) => player == Target || (((player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player)) && !BlackmailMates);
 
     public override void ReadRPC(NetData reader) => Target = reader.ReadPlayer();
 }

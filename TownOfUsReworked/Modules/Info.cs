@@ -7,13 +7,13 @@ public abstract class Info(string id, UColor color, bool footer = false)
     public bool Footer { get; } = footer;
     protected string DescID { get; } = $"Wiki.{id}.Description";
 
-    public static readonly List<Info> AllInfo = [];
+    public static readonly List<Info> AllInfos = [];
     private static readonly List<LayerInfo> AllLayerInfo = [];
 
     public static void SetAllInfo()
     {
-        AllLayerInfo.AddRanges(Data.AllInfo.AllRoles, Data.AllInfo.AllModifiers, Data.AllInfo.AllAbilities, Data.AllInfo.AllDispositions);
-        AllInfo.AddRanges(AllLayerInfo, Data.AllInfo.AllFactions, Data.AllInfo.AllSubFactions, Data.AllInfo.AllModes, Data.AllInfo.AllOthers, Data.AllInfo.AllSymbols);
+        AllLayerInfo.AddRanges(AllInfo.AllRoles, AllInfo.AllModifiers, AllInfo.AllAbilities, AllInfo.AllDispositions);
+        AllInfos.AddRanges(AllLayerInfo, AllInfo.AllFactions, AllInfo.AllModes, AllInfo.AllOthers, AllInfo.AllSymbols);
     }
 
     public abstract string WikiEntry();
@@ -48,7 +48,7 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
     Faction.Syndicate => CustomColorManager.Syndicate,
     Faction.Crew => CustomColorManager.Crew,
     Faction.Intruder => CustomColorManager.Intruder,
-    Faction.Neutral => CustomColorManager.Neutral,
+    Faction.Outcast => CustomColorManager.Outcast,
     Faction.GameMode => CustomColorManager.GameMode,
     Faction.Illuminati => CustomColorManager.Illuminati,
     Faction.Pandorica => CustomColorManager.Pandorica,
@@ -64,37 +64,6 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
         var result = "";
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"{TranslationManager.Translate("Wiki.Objectives")}: {TranslationManager.Translate(WinCon)}";
-        result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
-        return result;
-    }
-}
-
-// This is cursed innit
-public sealed class SubFactionInfo(SubFaction sub, bool footer = false) : Info($"{sub}", sub switch
-{
-    SubFaction.Undead => CustomColorManager.Undead,
-    SubFaction.Reanimated => CustomColorManager.Reanimated,
-    SubFaction.Cabal => CustomColorManager.Cabal,
-    SubFaction.Cult => CustomColorManager.Cult,
-    SubFaction.Followers => CustomColorManager.Followers,
-    _ => CustomColorManager.SubFaction
-}, footer)
-{
-    private string Symbol { get; } = sub switch
-    {
-        SubFaction.Undead => "γ",
-        SubFaction.Reanimated => "Σ",
-        SubFaction.Cabal => "$",
-        SubFaction.Cult => "Λ",
-        SubFaction.Followers => "王",
-        _ => "φ"
-    };
-
-    public override string WikiEntry()
-    {
-        var result = "";
-        result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
-        result += $"\n{TranslationManager.Translate("Wiki.Symbol")}: {Symbol}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
         return result;
     }

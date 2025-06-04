@@ -61,7 +61,6 @@ public sealed class Bomber : Syndicate
 
     protected override void Deinit()
     {
-        base.Deinit();
         Bombs.ForEach(x => x?.gameObject?.Destroy());
         Bombs.Clear();
     }
@@ -110,7 +109,7 @@ public sealed class Bomber : Syndicate
         {
             case BomberActionsRPC.DropBomb:
             {
-                if ((LocalPlayer.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || LocalPlayer.IsOtherLover(Player) || LocalPlayer.IsOtherLink(Player))
+                if ((LocalPlayer.Is(Faction) && Faction.IsFactionedEvil()) || LocalPlayer.IsOtherLover(Player) || LocalPlayer.IsOtherLink(Player))
                     Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
 
                 break;

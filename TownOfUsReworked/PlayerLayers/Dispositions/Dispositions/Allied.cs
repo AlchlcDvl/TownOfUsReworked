@@ -20,7 +20,7 @@ public sealed class Allied : Disposition
             };
         }
     }
-    private static AlliedFaction alliedFaction;
+    public static AlliedFaction alliedFaction;
 
     public Faction Side { get; set; }
 
@@ -36,11 +36,11 @@ public sealed class Allied : Disposition
     };
     public override string Symbol => "ζ";
     public override LayerEnum Type => LayerEnum.Allied;
-    public override Func<string> Description => () => Side == Faction.Neutral ? "- You are conflicted" : "";
+    public override Func<string> Description => () => Side == Faction.Outcast ? "- You are conflicted" : "";
 
     protected override void Init()
     {
         base.Init();
-        Side = Faction.Neutral;
+        Side = Faction.Outcast;
     }
 }

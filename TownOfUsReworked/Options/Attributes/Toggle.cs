@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options.Attributes;
 
-public sealed class ToggleOptionAttribute : OptionAttribute<ToggleOption>
+public sealed class ToggleOptionAttribute : OptionAttribute<ReworkedToggleOption>
 {
-    protected override ToggleOption SetUpOption() => new();
+    protected override ReworkedToggleOption SetUpOption() => new();
 }

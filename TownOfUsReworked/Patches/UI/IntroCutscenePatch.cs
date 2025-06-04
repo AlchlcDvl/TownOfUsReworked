@@ -54,9 +54,6 @@ public static class ShowRolePatch
         if (!ability.Hidden)
             status += $" {ability.ColorString}{ability.Name}</color>";
 
-        if (role.SubFaction == SubFaction.Cabal && role.Alignment != Alignment.Neophyte)
-            status += " <#575657FF>Recruited</color>";
-
         if (status.Length != 0)
             statusString = $"\n<#{CustomColorManager.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
 

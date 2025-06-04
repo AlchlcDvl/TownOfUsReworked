@@ -18,7 +18,7 @@ public sealed class Taskmaster : Disposition
             var role = LocalPlayer.GetRole();
             Flash(Color);
 
-            if (role.Faction is not (Faction.Crew or Faction.Neutral) || role.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
+            if (role.Faction is not (Faction.Crew or Faction.Outcast) || role.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
                 role.AllArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
         }
         else if (TasksDone && Local)

@@ -8,7 +8,7 @@ namespace TownOfUsReworked.Options;
 // DO NOT OVERRIDE VALUES OF THE OPTION PROPERTIES ANYWHERE IN THE CODE, OR ELSE THE OPTIONS WILL START TO FUCK OFF
 
 [HeaderOption(MultiMenu.Main)]
-public static class GameSettings
+public static class GameOptions
 {
     [NumberOption(0.25f, 10, 0.25f, Format.Multiplier)]
     public static Number PlayerSpeed = 1.25f;
@@ -75,6 +75,9 @@ public static class GameSettings
 
     [NumberOption(2, 250, 1)]
     public static Number LobbySize = 15;
+
+    [StringOption<GhostSpawnType>]
+    public static GhostSpawnType GhostSpawn = GhostSpawnType.Random;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -167,7 +170,7 @@ public static class Holders
 }
 
 [HeaderOption(MultiMenu.Main)]
-public static class TaskSettings
+public static class TaskOptions
 {
     [NumberOption(0, 100, 1)]
     public static Number CommonTasks = 2;
@@ -180,12 +183,31 @@ public static class TaskSettings
 
     [ToggleOption]
     public static bool GhostTasksCountToWin = true;
+
+    [ToggleOption]
+    public static bool VisualTasks = false;
+
+    [ToggleOption]
+    public static bool ParallelMedScans = false;
+
+    [ToggleOption]
+    public static bool AllCanDoTasks = false;
+}
+
+[HeaderOption(MultiMenu.Main)]
+public static class VotingOptions
+{
+    [StringOption<AnonVotes>]
+    public static AnonVotes AnonymousVoting = AnonVotes.Enabled;
+
+    [StringOption<DisableSkipButtonMeetings>]
+    public static DisableSkipButtonMeetings NoSkipping = DisableSkipButtonMeetings.Never;
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class BadGuysSettings
 {
-    [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Neutral, Faction.None, Faction.Illuminati)]
+    [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Outcast, Faction.None, Faction.Illuminati), Sorted(0)]
     public static Faction MainBadGuys
     {
         get => IlluminatiUnleashed ? Faction.Illuminati : field;
@@ -204,47 +226,23 @@ public static class BadGuysSettings
         }
     } = Faction.Intruder;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool OnlyMainBadGuys = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool MainBadGuysCanSabotage = false;
 
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool GhostsCanSabotage = false;
 
-    // TODO: Finish implementing these
-
-    [ToggleOption]
+    [ToggleOption, Sorted(0)]
     public static bool IlluminatiUnleashed = false;
 
-    [MultiSelectOption<IlluminatiType>(LeastSelected = 2)]
+    [MultiSelectOption<IlluminatiType>(LeastSelected = 2), Sorted(0)]
     public static MultiSelectValue<IlluminatiType> IlluminatiMembers = new[] { IlluminatiType.Syndicate, IlluminatiType.Intruders, IlluminatiType.Apocalypse, IlluminatiType.Neophytes,
         IlluminatiType.Killers };
 
-    [ToggleOption]
-    public static bool PandoricaOpens
-    {
-        get;
-        set
-        {
-            switch (value)
-            {
-                case false when Allied.AlliedFaction == AlliedFaction.Pandorica:
-                {
-                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Random);
-                    break;
-                }
-                case true when Allied.AlliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse:
-                {
-                    Option.GetOption<StringOption<AlliedFaction>>("AlliedFaction").Set(AlliedFaction.Pandorica);
-                    break;
-                }
-            }
-
-            field = value;
-        }
-    } = false;
+    public static ReworkedToggleOption PandoricaOpens = new() { OnChanged = ValidateAlliedFaction };
 
     [MultiSelectOption<PandoricaType>(LeastSelected = 1)]
     public static MultiSelectValue<PandoricaType> PandoricaMembers = new[] { PandoricaType.Syndicate, PandoricaType.Intruders, PandoricaType.Apocalypse };
@@ -265,17 +263,28 @@ public static class BadGuysSettings
         Faction.Pandorica => PandoricaSettings.PandoricaCount,
         _ => 0,
     };
+
+    private static void ValidateAlliedFaction(bool value)
+    {
+        switch (value)
+        {
+            case false when Allied.alliedFaction == AlliedFaction.Pandorica:
+            {
+                Allied.alliedFaction = AlliedFaction.Random;
+                break;
+            }
+            case true when Allied.alliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse:
+            {
+                Allied.alliedFaction = AlliedFaction.Pandorica;
+                break;
+            }
+        }
+    }
 }
 
 [HeaderOption(MultiMenu.Main)]
 public static class GameModifiers
 {
-    [StringOption<AnonVotes>, Sorted(0)]
-    public static AnonVotes AnonymousVoting = AnonVotes.Enabled;
-
-    [StringOption<DisableSkipButtonMeetings>, Sorted(0)]
-    public static DisableSkipButtonMeetings NoSkipping = DisableSkipButtonMeetings.Never;
-
     [ToggleOption, Sorted(0)]
     public static bool FirstKillShield = false;
 
@@ -284,9 +293,6 @@ public static class GameModifiers
 
     [ToggleOption, Sorted(0)]
     public static bool FactionSeeRoles = true;
-
-    [ToggleOption, Sorted(0)]
-    public static bool VisualTasks = false;
 
     [StringOption<PlayerNames>, Sorted(0)]
     public static PlayerNames PlayerNames = PlayerNames.Obstructed;
@@ -313,13 +319,7 @@ public static class GameModifiers
     public static bool DeadSeeEverything = true;
 
     [ToggleOption, Sorted(0)]
-    public static bool ParallelMedScans = false;
-
-    [ToggleOption, Sorted(0)]
     public static bool JaniCanMutuallyExclusive = false;
-
-    [ToggleOption, Sorted(0)]
-    public static bool IndicateReportedBodies = false;
 
     [MultiSelectOption<RandomSpawning>, Sorted(0)]
     public static MultiSelectValue<RandomSpawning> RandomSpawns = "";
@@ -330,23 +330,8 @@ public static class GameModifiers
     [ToggleOption, Sorted(0)]
     public static bool PurePlayers = false;
 
-    [ToggleOption, Sorted(0)]
-    public static bool AllCanDoTasks = false;
-
-    [ToggleOption, Sorted(0)]
-    public static bool EnableGameTimer
-    {
-        get;
-        set
-        {
-            field = value;
-
-            if (!value || GameTimerHandler.Prefab)
-                return;
-
-            Coroutines.Start(TryCreatePrefab());
-        }
-    } = false;
+    [Sorted(0)]
+    public static ReworkedToggleOption EnableGameTimer = new() { OnChanged = TryCreatePrefab };
 
     [NumberOption(60, 3600, 60, Format.Time), Sorted(0)]
     public static Number GameTimer = 1200;
@@ -360,16 +345,19 @@ public static class GameModifiers
     [NumberOption(4, 125, 1, All = true), Sorted(0)]
     public static Number PlayersLeft = 4;
 
-    [ToggleOption, Sorted(0)]
-    public static bool KillsExtendTimer = false;
-
-    [ToggleOption, Sorted(0)]
-    public static bool TasksExtendTimer = false;
+    [MultiSelectOption<TimerExtension>]
+    public static MultiSelectValue<TimerExtension> ExtendTimer = [];
 
     [NumberOption(4, 125, 1), Sorted(0)]
     public static Number TimerExtension = 4;
 
-    private static IEnumerator TryCreatePrefab()
+    private static void TryCreatePrefab(bool value)
+    {
+        if (value && !GameTimerHandler.Prefab)
+            Coroutines.Start(CoTryCreatePrefab());
+    }
+
+    private static IEnumerator CoTryCreatePrefab()
     {
         while (!GameManagerCreator.Instance)
             yield return null;
@@ -381,7 +369,7 @@ public static class GameModifiers
 }
 
 [HeaderOption(MultiMenu.Main)]
-public static class VentSettings
+public static class VentingOptions
 {
     [StringOption<WhoCanVentOptions>]
     public static WhoCanVentOptions WhoCanVent = WhoCanVentOptions.Default;
@@ -416,6 +404,9 @@ public static class GameAnnouncementSettings
 
     [StringOption<RoleFactionReports>]
     public static RoleFactionReports KillerReports = RoleFactionReports.Neither;
+
+    [ToggleOption, Sorted(0)]
+    public static bool IndicateReportedBodies = false;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -517,28 +508,28 @@ public static class CrewSettings
 }
 
 [HeaderOption(MultiMenu.Main)]
-public static class NeutralSettings
+public static class OutcastSettings
 {
     [NumberOption(0.25f, 5f, 0.25f, Format.Multiplier)]
-    public static Number NeutralVision = 1.5f;
+    public static Number OutcastVision = 1.5f;
 
     [ToggleOption]
-    public static bool LightsAffectNeutrals = true;
+    public static bool LightsAffectOutcasts = true;
 
     [ToggleOption]
-    public static bool NeutralFlashlight = false;
+    public static bool OutcastFlashlight = false;
 
     [NumberOption(0, 14, 1)]
-    public static Number NeutralMin = 0;
+    public static Number OutcastMin = 0;
 
     [NumberOption(0, 14, 1)]
-    public static Number NeutralMax = 1;
+    public static Number OutcastMax = 1;
 
     [ToggleOption]
-    public static bool AvoidNeutralKingmakers = false;
+    public static bool AvoidOutcastKingmakers = false;
 
     [ToggleOption]
-    public static bool NeutralsVent = true;
+    public static bool OutcastsVent = true;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -779,9 +770,6 @@ public static class CrewSupportRoles
     [LayerOption("#8D0F8CFF", LayerEnum.Retributionist)]
     public static RoleOptionData Retributionist;
 
-    [LayerOption("#DF851FFF", LayerEnum.Shifter)]
-    public static RoleOptionData Shifter;
-
     [LayerOption("#00EEFFFF", LayerEnum.Transporter)]
     public static RoleOptionData Transporter;
 }
@@ -796,8 +784,8 @@ public static class CrewUtilityRoles
     public static RoleOptionData Revealer;
 }
 
-[AlignmentOption(ListSlot.NeutralBen)]
-public static class NeutralBenignRoles
+[AlignmentOption(ListSlot.OutcastBen)]
+public static class OutcastBenignRoles
 {
     [LayerOption("#22FFFFFF", LayerEnum.Amnesiac)]
     public static RoleOptionData Amnesiac;
@@ -812,8 +800,8 @@ public static class NeutralBenignRoles
     public static RoleOptionData Thief;
 }
 
-[AlignmentOption(ListSlot.NeutralEvil)]
-public static class NeutralEvilRoles
+[AlignmentOption(ListSlot.OutcastEvil)]
+public static class OutcastEvilRoles
 {
     [LayerOption("#00ACC2FF", LayerEnum.Actor)]
     public static RoleOptionData Actor;
@@ -830,12 +818,15 @@ public static class NeutralEvilRoles
     [LayerOption("#F7B3DAFF", LayerEnum.Jester)]
     public static RoleOptionData Jester;
 
+    [LayerOption("#DF851FFF", LayerEnum.Shifter)]
+    public static RoleOptionData Shifter;
+
     [LayerOption("#678D36FF", LayerEnum.Troll)]
     public static RoleOptionData Troll;
 }
 
-[AlignmentOption(ListSlot.NeutralKill)]
-public static class NeutralKillingRoles
+[AlignmentOption(ListSlot.OutcastKill)]
+public static class OutcastKillingRoles
 {
     [LayerOption("#EE7600FF", LayerEnum.Arsonist)]
     public static RoleOptionData Arsonist;
@@ -859,8 +850,8 @@ public static class NeutralKillingRoles
     public static RoleOptionData Werewolf;
 }
 
-[AlignmentOption(ListSlot.NeutralNeo)]
-public static class NeutralNeophyteRoles
+[AlignmentOption(ListSlot.OutcastNeo)]
+public static class OutcastNeophyteRoles
 {
     [LayerOption("#AC8A00FF", LayerEnum.Dracula)]
     public static RoleOptionData Dracula;
@@ -878,8 +869,8 @@ public static class NeutralNeophyteRoles
     public static RoleOptionData Zealot;
 }
 
-[AlignmentOption(ListSlot.NeutralPros)]
-public static class NeutralProselyteRoles
+[AlignmentOption(ListSlot.OutcastPros)]
+public static class OutcastProselyteRoles
 {
     [LayerOption("#11806AFF", LayerEnum.Betrayer, true)]
     public static RoleOptionData Betrayer;
@@ -1263,8 +1254,8 @@ public static class CrewSupportSettings
     } = 1;
 }
 
-[AlignmentHeaderOption(ListSlot.NeutralBen)]
-public static class NeutralBenignSettings
+[AlignmentHeaderOption(ListSlot.OutcastBen)]
+public static class OutcastBenignSettings
 {
     [NumberOption(0, 250, 1)]
     public static Number MaxNb
@@ -1277,8 +1268,8 @@ public static class NeutralBenignSettings
     public static bool VigilanteKillsBenigns = true;
 }
 
-[AlignmentHeaderOption(ListSlot.NeutralEvil)]
-public static class NeutralEvilSettings
+[AlignmentHeaderOption(ListSlot.OutcastEvil)]
+public static class OutcastEvilSettings
 {
     [NumberOption(0, 250, 1)]
     public static Number MaxNe
@@ -1288,7 +1279,7 @@ public static class NeutralEvilSettings
     } = 1;
 
     [ToggleOption]
-    public static bool NeutralEvilsEndGame = false;
+    public static bool OutcastEvilsEndGame = false;
 
     [ToggleOption]
     public static bool VigilanteKillsEvils = true;
@@ -1297,8 +1288,8 @@ public static class NeutralEvilSettings
     public static bool NeHaveImpVision = true;
 }
 
-[AlignmentHeaderOption(ListSlot.NeutralKill)]
-public static class NeutralKillingSettings
+[AlignmentHeaderOption(ListSlot.OutcastKill)]
+public static class OutcastKillingSettings
 {
     [NumberOption(0, 250, 1)]
     public static Number MaxNk
@@ -1317,8 +1308,8 @@ public static class NeutralKillingSettings
     public static bool WinSolo = false;
 }
 
-[AlignmentHeaderOption(ListSlot.NeutralNeo)]
-public static class NeutralNeophyteSettings
+[AlignmentHeaderOption(ListSlot.OutcastNeo)]
+public static class OutcastNeophyteSettings
 {
     [NumberOption(0, 250, 1)]
     public static Number MaxNn
@@ -1502,8 +1493,8 @@ public static class HandleMaxMinLimits
 {
     public static void Set(Number value, ref Number backing)
     {
-        if (value > GameSettings.LobbySize)
-            value = backing == 0 ? GameSettings.LobbySize : 0;
+        if (value > GameOptions.LobbySize)
+            value = backing == 0 ? GameOptions.LobbySize : 0;
 
         backing = value;
     }

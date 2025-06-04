@@ -38,9 +38,9 @@ public sealed class Concealer : Syndicate
     private void Conceal()
     {
         if (HoldsDrive)
-            AllPlayers().Do(x => Invis(x, ConcealDur, EndEffect, LocalPlayer.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)));
+            AllPlayers().Do(x => Invis(x, ConcealDur, EndEffect, LocalPlayer.Is(Faction) && Faction.IsFactionedEvil()));
         else
-            Invis(ConcealedPlayer, ConcealDur, EndEffect, LocalPlayer.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral));
+            Invis(ConcealedPlayer, ConcealDur, EndEffect, LocalPlayer.Is(Faction) && Faction.IsFactionedEvil());
     }
 
     private void UnConceal()
@@ -81,8 +81,7 @@ public sealed class Concealer : Syndicate
             ConcealMenu.Open();
     }
 
-    private bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !ConcealMates && Faction is not (Faction.Crew or Faction.Neutral))
-        || (player.Is(SubFaction) && SubFaction != SubFaction.None && !ConcealMates);
+    private bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !ConcealMates && Faction.IsFactionedEvil());
 
     private string Label() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
 

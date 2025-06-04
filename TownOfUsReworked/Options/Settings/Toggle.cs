@@ -1,6 +1,6 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked.Options.Settings;
 
-public sealed class ToggleOption(bool defaultValue = false) : Option<bool>(CustomOptionType.Toggle, defaultValue)
+public sealed class ReworkedToggleOption(bool defaultValue = false) : Option<bool>(CustomOptionType.Toggle, defaultValue)
 {
     private void Toggle() => Set(!Value);
 
@@ -9,7 +9,7 @@ public sealed class ToggleOption(bool defaultValue = false) : Option<bool>(Custo
     public override void OptionCreated()
     {
         base.OptionCreated();
-        var toggle = Setting.Cast<global::ToggleOption>();
+        var toggle = Setting.Cast<ToggleOption>();
         toggle.TitleText.text = TranslationManager.Translate(ID);
         var button = toggle.GetComponentInChildren<PassiveButton>();
 
@@ -27,7 +27,7 @@ public sealed class ToggleOption(bool defaultValue = false) : Option<bool>(Custo
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Value);
     }
 
-    public override void Update() => Setting.Cast<global::ToggleOption>().CheckMark.enabled = Value;
+    public override void Update() => Setting.Cast<ToggleOption>().CheckMark.enabled = Value;
 
     public override void ReadValueRpc(NetData reader) => Set(reader.ReadBool(), false);
 

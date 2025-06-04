@@ -7,7 +7,7 @@ public sealed class Snitch : Ability
     private static bool SnitchKnows = true;
 
     [ToggleOption]
-    public static bool SnitchSeesNeutrals = false;
+    public static bool SnitchSeesOutcasts = false;
 
     [ToggleOption]
     private static bool SnitchSeesCrew = false;
@@ -40,7 +40,7 @@ public sealed class Snitch : Ability
         {
             if (Local)
                 Flash(Color);
-            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || (LocalPlayer.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
+            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || (LocalPlayer.GetFaction() == Faction.Outcast && SnitchSeesOutcasts))
             {
                 Flash(Color);
                 local.AllArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
@@ -51,10 +51,10 @@ public sealed class Snitch : Ability
             if (Local)
             {
                 Flash(UColor.green);
-                AllPlayers().Where(x => x.GetFaction() is not (Faction.Crew or Faction.Neutral) || (x.GetFaction() == Faction.Neutral && SnitchSeesNeutrals)).Do(x =>
+                AllPlayers().Where(x => x.GetFaction() is not (Faction.Crew or Faction.Outcast) || (x.GetFaction() == Faction.Outcast && SnitchSeesOutcasts)).Do(x =>
                     local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
             }
-            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || (LocalPlayer.GetFaction() == Faction.Neutral && SnitchSeesNeutrals))
+            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || (LocalPlayer.GetFaction() == Faction.Outcast && SnitchSeesOutcasts))
                 Flash(UColor.red);
         }
     }
@@ -64,20 +64,20 @@ public sealed class Snitch : Ability
         if (!TasksDone || (meeting && !SnitchSeesTargetsInMeeting))
             return;
 
-        var role = handler.CustomRole;
+        var role = handler.CurrentRole;
 
         if (SnitchSeesRoles)
         {
-            if ((role.Faction != Faction.Neutral || !SnitchSeesNeutrals) && (role.Faction != Faction.Crew || !SnitchSeesCrew))
+            if ((role.Faction != Faction.Outcast || !SnitchSeesOutcasts) && (role.Faction != Faction.Crew || !SnitchSeesCrew))
                 return;
 
             color = role.Color;
             name += $"\n{role.Name}";
             revealed = true;
         }
-        else if (role.Faction is not (Faction.Crew or Faction.Neutral) || (role.Faction == Faction.Neutral && SnitchSeesNeutrals) || (role.Faction == Faction.Crew && SnitchSeesCrew))
+        else if (role.Faction is not (Faction.Crew or Faction.Outcast) || (role.Faction == Faction.Outcast && SnitchSeesOutcasts) || (role.Faction == Faction.Crew && SnitchSeesCrew))
         {
-            if (handler.CustomDisposition is FactionChanger { SnitchReveals: false })
+            if (handler.CurrentDisposition is FactionChanger { SnitchReveals: false })
             {
                 color = CustomColorManager.Crew;
                 name += "\nCrew";

@@ -2,50 +2,53 @@
 
 namespace TownOfUsReworked.Options;
 
+/// <summary>
+/// All of the options that are client sided and not networked in any way.
+/// </summary>
 [HeaderOption(MultiMenu.Client, ClientOnly = true)]
 public static class ClientOptions
 {
-    public static ToggleOption LighterDarker = new(true);
+    public static ReworkedToggleOption LighterDarker = new(true);
 
-    public static ToggleOption WhiteNameplates = new(false) { OnChanged = ToggleNameplates };
+    public static ReworkedToggleOption WhiteNameplates = new() { OnChanged = ToggleNameplates };
 
-    public static ToggleOption NoLevels = new() { OnChanged = ToggleLevelVisibility };
+    public static ReworkedToggleOption NoLevels = new() { OnChanged = ToggleLevelVisibility };
 
-    public static ToggleOption CustomCrewColors = new(true);
+    public static ReworkedToggleOption CustomCrewColors = new(true);
 
-    public static ToggleOption CustomNeutColors = new(true);
+    public static ReworkedToggleOption CustomNeutColors = new(true);
 
-    public static ToggleOption CustomIntColors = new(true);
+    public static ReworkedToggleOption CustomIntColors = new(true);
 
-    public static ToggleOption CustomSynColors = new(true);
+    public static ReworkedToggleOption CustomSynColors = new(true);
 
-    public static ToggleOption CustomApocColors = new(true);
+    public static ReworkedToggleOption CustomApocColors = new(true);
 
-    public static ToggleOption CustomGmColors = new(true);
+    public static ReworkedToggleOption CustomGmColors = new(true);
 
-    public static ToggleOption CustomModColors = new(true);
+    public static ReworkedToggleOption CustomModColors = new(true);
 
-    public static ToggleOption CustomDispColors = new(true);
+    public static ReworkedToggleOption CustomDispColors = new(true);
 
-    public static ToggleOption CustomAbColors = new(true);
+    public static ReworkedToggleOption CustomAbColors = new(true);
 
-    public static ToggleOption CustomEjects = new(true);
+    public static ReworkedToggleOption CustomEjects = new(true);
 
-    public static ToggleOption HideOtherGhosts = new(true);
+    public static ReworkedToggleOption HideOtherGhosts = new(true);
 
-    public static ToggleOption OptimisationMode = new();
+    public static ReworkedToggleOption OptimisationMode = new();
 
-    public static ToggleOption LockCameraSway = new();
+    public static ReworkedToggleOption LockCameraSway = new();
 
-    public static ToggleOption ForceUseLocal = new();
+    public static ReworkedToggleOption ForceUseLocal = new();
 
-    public static ToggleOption UseDarkTheme = new() { OnChanged = SetChatTheme };
+    public static ReworkedToggleOption UseDarkTheme = new() { OnChanged = SetChatTheme };
 
-    public static ToggleOption NoWelcome = new();
+    public static ReworkedToggleOption NoWelcome = new();
 
-    public static ToggleOption AutoPlayAgain = new();
+    public static ReworkedToggleOption AutoPlayAgain = new();
 
-    public static ToggleOption DebugModeOn = new();
+    public static ReworkedToggleOption DebugModeOn = new();
 
     private static void SetChatTheme(bool value) => ChatPatches.SetTheme(Chat(), value);
 

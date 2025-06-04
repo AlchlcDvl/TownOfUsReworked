@@ -58,8 +58,7 @@ public sealed class Silencer : Syndicate, IIntimidator
         SilenceButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == Target || (!SilenceMates && ((player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral) && !SilenceMates) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None)));
+    private bool Exception1(PlayerControl player) => player == Target || (!SilenceMates && player.Is(Faction) && Faction.IsFactionedEvil());
 
     public override void ReadRPC(NetData reader) => Target = reader.ReadPlayer();
 }

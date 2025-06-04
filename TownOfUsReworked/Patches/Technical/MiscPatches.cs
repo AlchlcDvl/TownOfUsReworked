@@ -21,9 +21,6 @@ public static class MapBehaviourPatches
     [HarmonyPatch(nameof(MapBehaviour.Show))]
     public static bool Prefix(MapBehaviour __instance, MapOptions opts)
     {
-        if (Client.Instance.SettingsActive)
-            return false;
-
         Client.Instance.CloseMenus(SkipEnum.Map);
 
         if (LocalPlayer.IsBlocked())
@@ -225,7 +222,7 @@ public static class AmongUsClientPatches
     }
 
     [HarmonyPatch(nameof(AmongUsClient.CreatePlayer))]
-    public static bool Prefix(AmongUsClient __instance, ClientData clientData, ref Il2CppSystem.Collections.IEnumerator __result)
+    public static bool Prefix(AmongUsClient __instance, ClientData clientData, ref IIEnumerator __result)
     {
         __result = BetterCreatePlayer(__instance, clientData).WrapToIl2Cpp();
         return false;
@@ -318,7 +315,7 @@ public static class HudPatches
 
         var players = AllPlayers();
 
-        while (players.Count() > GameSettings.LobbySize)
+        while (players.Count() > GameOptions.LobbySize)
             AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
     }
 
@@ -493,7 +490,7 @@ public static class ShowCustomAnim
 public static class OverlayKillAnimationPatches
 {
     [HarmonyPatch(nameof(OverlayKillAnimation.WaitForFinish))]
-    public static bool Prefix(OverlayKillAnimation __instance, ref Il2CppSystem.Collections.IEnumerator __result)
+    public static bool Prefix(OverlayKillAnimation __instance, ref IIEnumerator __result)
     {
         var flag = __instance.TryGetComponent<CustomKillAnimationPlayer>(out var customKillAnim);
 
@@ -598,7 +595,7 @@ public static class HostInfoPanelPatch
 [HarmonyPatch(typeof(KillAnimation), nameof(KillAnimation.CoPerformKill))]
 public static class OverrideKillAnim
 {
-    public static bool Prefix(KillAnimation __instance, PlayerControl source, PlayerControl target, ref Il2CppSystem.Collections.IEnumerator __result)
+    public static bool Prefix(KillAnimation __instance, PlayerControl source, PlayerControl target, ref IIEnumerator __result)
     {
         __result = CoPerformKill(__instance, source, target, DeathReasonEnum.Killed, true).WrapToIl2Cpp();
         return false;
@@ -648,7 +645,7 @@ public static class MedScanMinigamePatch
     [HarmonyPatch(nameof(MedScanMinigame.FixedUpdate))]
     public static void Prefix(MedScanMinigame __instance)
     {
-        if (!GameModifiers.ParallelMedScans)
+        if (!TaskOptions.ParallelMedScans)
             return;
 
         // Allows multiple medbay scans at once

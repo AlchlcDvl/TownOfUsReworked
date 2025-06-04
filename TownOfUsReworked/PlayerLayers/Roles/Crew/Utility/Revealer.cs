@@ -10,7 +10,7 @@ public sealed class Revealer : Crew, IGhosty
     private static Number RevealerTasksRemainingAlert = 1;
 
     [ToggleOption]
-    public static bool RevealerRevealsNeutrals = false;
+    public static bool RevealerRevealsOutcasts = false;
 
     [ToggleOption]
     public static bool RevealerRevealsCrew = false;
@@ -29,8 +29,8 @@ public sealed class Revealer : Crew, IGhosty
 
     public bool Caught { get; set; }
     public bool Revealed { get; private set; }
-    public bool Faded { get; set; }
     public Role FormerRole { get; init; }
+    public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Revealer;
     public override LayerEnum Type => LayerEnum.Revealer;
@@ -45,22 +45,28 @@ public sealed class Revealer : Crew, IGhosty
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
+    public override void BeforeMeeting()
+    {
+        if (!UninteractablePlayers.ContainsKey(PlayerId))
+            LastPosition = Player.transform.position;
+    }
+
     public override void UponTaskComplete(uint taskId)
     {
         if (TasksLeft == RevealerTasksRemainingAlert && !Caught)
         {
             if (Local)
                 Flash(Color);
-            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is
-                NKilling or Neophyte) && RevealerRevealsNeutrals))
+            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is
+                NKilling or Neophyte) && RevealerRevealsOutcasts))
             {
                 Revealed = true;
                 Flash(Color);
                 LocalPlayer.GetRole().DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
             }
         }
-        else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Neutral) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is NKilling
-            or Neophyte) && RevealerRevealsNeutrals))
+        else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is NKilling
+            or Neophyte) && RevealerRevealsOutcasts))
         {
             Flash(Color);
         }
@@ -68,7 +74,7 @@ public sealed class Revealer : Crew, IGhosty
 
     public bool CanBeClicked(PlayerControl clicker)
     {
-        if ((RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(clicker.GetFaction() is not (Faction.Crew or Faction.Neutral))) || (clicker.Is(Faction.Crew) && RevealerCanBeClickedBy ==
+        if ((RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(clicker.GetFaction() is not (Faction.Crew or Faction.Outcast))) || (clicker.Is(Faction.Crew) && RevealerCanBeClickedBy ==
             RevealerCanBeClickedBy.NonCrew))
         {
             return false;

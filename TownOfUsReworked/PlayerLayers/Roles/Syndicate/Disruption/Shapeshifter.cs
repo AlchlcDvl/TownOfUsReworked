@@ -115,8 +115,8 @@ public sealed class Shapeshifter : Syndicate
 
     private bool Exception2(PlayerControl player) => player == ShapeshiftPlayer1 || CommonException(player);
 
-    private bool CommonException(PlayerControl player) => (player == Player && !ShapeshiftSelf) || (player.Data.IsDead && !BodyByPlayer(player)) || (((player.Is(Faction) && Faction is not
-        (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) && !ShapeshiftMates);
+    private bool CommonException(PlayerControl player) => (player == Player && !ShapeshiftSelf) || (player.Data.IsDead && !BodyByPlayer(player)) || (player.Is(Faction) && Faction.IsFactionedEvil()
+        && !ShapeshiftMates);
 
     public override void UpdateHud(HudManager __instance)
     {

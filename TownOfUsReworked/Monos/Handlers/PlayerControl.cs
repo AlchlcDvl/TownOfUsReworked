@@ -8,13 +8,16 @@ public sealed class PlayerControlHandler : NameHandler
     [HideFromIl2Cpp]
     private AppearanceHandler Appearance { get; set; }
 
+    // [HideFromIl2Cpp]
+    // private StatusHandler Status { get; set; }
+
     public void Awake()
     {
         Player = GetComponent<PlayerControl>();
         Name = Player.NameText();
         Color = Player.ColorBlindText();
         Appearance = gameObject.AddComponent<AppearanceHandler>();
-        gameObject.AddComponent<StatusHandler>();
+        // Status = gameObject.AddComponent<StatusHandler>();
     }
 
     public void Update()
@@ -22,7 +25,8 @@ public sealed class PlayerControlHandler : NameHandler
         if (!Player || !Player.Data || NoLobby() || Meeting())
             return;
 
-        Color.enabled = UpdateNameVisibility(true);
+        var visible = UpdateNameVisibility();
+        Color.enabled = DataManager.Settings.Accessibility.ColorBlindMode && visible;
 
         if (!IsInGame() || Player.Data.Role is not LayerHandler handler || LocalPlayer.Data.Role is not LayerHandler localHandler)
         {
@@ -38,24 +42,27 @@ public sealed class PlayerControlHandler : NameHandler
 
         handler.UpdatePlayer();
         localHandler.UpdatePlayer(Player);
-        var (name, color) = UpdateGameName(handler, localHandler, amOwner, deadSeeEverything, out var revealed);
-        (Name.text, Name.color, Name.enabled) = (Player.name + name, color.SetAlpha(Appearance.Alpha), UpdateNameVisibility(true));
+        var (extraStuff, color) = UpdateGameName(handler, localHandler, amOwner, deadSeeEverything, out var revealed);
+        (Name.text, Name.color, Name.enabled) = (Player.name + extraStuff, color.SetAlpha(Appearance.Alpha), visible);
         Name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
     }
 
-    private bool UpdateNameVisibility(bool colorBlind)
+    public void UpdateCurrent()
     {
-        if (colorBlind)
-        {
-            if (IsLobby())
-                return DataManager.Settings.Accessibility.ColorBlindMode;
+        Appearance.UpdateCurrent();
+        // Status.UpdateCurrent();
+    }
 
-            if (!DataManager.Settings.Accessibility.ColorBlindMode)
-                return false;
-        }
+    private bool UpdateNameVisibility()
+    {
+        if (IsLobby())
+            return true;
 
         if (GameModifiers.PlayerNames == PlayerNames.NotVisible)
             return false;
+
+        if (GameModifiers.PlayerNames != PlayerNames.Obstructed)
+            return true;
 
         try
         {
@@ -65,11 +72,8 @@ public sealed class PlayerControlHandler : NameHandler
             if (vector.magnitude > local.lightSource.viewDistance)
                 return false;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !Player.AmOwner && !local.HasDied() &&
-                GameModifiers.PlayerNames == PlayerNames.Obstructed)
-            {
+            if (PhysicsHelpers.AnyNonTriggersBetween(local.transform.position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !Player.AmOwner && !local.HasDied())
                 return false;
-            }
         } catch {}
 
         return true;

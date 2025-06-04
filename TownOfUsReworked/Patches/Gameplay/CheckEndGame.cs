@@ -27,7 +27,7 @@ public static class CheckEndGame
                 _ => WinLose.IlluminatiWins,
             });
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
-            winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
+            winners.Do(x => x.Data.Role.TryCast<LayerHandler>().Winner = true);
             CallRpc(CustomRPC.Misc, [MiscRPC.WinLose, WinState, .. winners]);
         }
 
@@ -57,12 +57,6 @@ public static class CheckEndGame
             CheckFactionWin(winnerIds);
 
         if (WinState == WinLose.None)
-            CheckSubFactionWin(winnerIds);
-
-        if (WinState == WinLose.None)
-            CheckNeutralKillers(winnerIds);
-
-        if (WinState == WinLose.None)
             PlayerLayer.GetLayers<Role>().Do(x => x.GameEnd(winnerIds));
 
         if (WinState == WinLose.None)
@@ -71,7 +65,7 @@ public static class CheckEndGame
         if (WinState == WinLose.None)
             return;
 
-        winnerIds.Select(x => PlayerById(x)).Do(x => x.GetLayers().Do(y => y.Winner = true));
+        winnerIds.Select(x => PlayerById(x)).Do(x => x.Data.Role.TryCast<LayerHandler>().Winner = true);
         CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds ]);
     }
 
@@ -81,20 +75,15 @@ public static class CheckEndGame
             return;
 
         var faction = hexer.Faction;
-        var subFaction = hexer.SubFaction;
-        Func<PlayerControl, bool> factionCheck = subFaction switch
+        Func<PlayerControl, bool> factionCheck = faction switch
         {
-            SubFaction.None => faction switch
+            Faction.Outcast => hexer.LinkedDisposition switch
             {
-                Faction.Neutral => hexer.LinkedDisposition switch
-                {
-                    LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
-                    LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
-                    _ => x => x == hexer.Player
-                },
-                _ => x => x.Is(faction)
+                LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
+                LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
+                _ => x => x == hexer.Player
             },
-            _ => x => x.Is(subFaction)
+            _ => x => x.Is(faction)
         };
 
         var players = AllPlayers();
@@ -102,31 +91,27 @@ public static class CheckEndGame
         if (hexer.Spelled.Count != players.Count(plr => !plr.HasDied() && !factionCheck(plr)))
             return;
 
-        WinState = subFaction switch
+        WinState = faction switch
         {
-            SubFaction.None => faction switch
+            Faction.Crew => WinLose.CrewWins,
+            Faction.Intruder => WinLose.IntrudersWin,
+            Faction.Illuminati => WinLose.IlluminatiWins,
+            Faction.Pandorica => WinLose.PandoricaWins,
+            Faction.Compliance => WinLose.ComplianceWins,
+            Faction.Syndicate => WinLose.SyndicateWins,
+            Faction.Apocalypse => WinLose.ApocalypseWins,
+            Faction.Cabal => WinLose.CabalWins,
+            Faction.Undead => WinLose.UndeadWins,
+            Faction.Reanimated => WinLose.ReanimatedWins,
+            Faction.Cult => WinLose.CultWins,
+            Faction.Followers => WinLose.FollowersWin,
+            Faction.Outcast => hexer.Player.GetDisposition() switch
             {
-                Faction.Crew => WinLose.CrewWins,
-                Faction.Intruder => WinLose.IntrudersWin,
-                Faction.Illuminati => WinLose.IlluminatiWins,
-                Faction.Pandorica => WinLose.PandoricaWins,
-                Faction.Compliance => WinLose.ComplianceWins,
-                Faction.Syndicate => WinLose.SyndicateWins,
-                Faction.Apocalypse => WinLose.ApocalypseWins,
-                Faction.Neutral => hexer.Player.GetDisposition() switch
-                {
-                    Mafia => WinLose.MafiaWins,
-                    Lovers => WinLose.LoveWins,
-                    Defector => WinLose.DefectorWins,
-                    _ => WinLose.NobodyWins
-                },
+                Mafia => WinLose.MafiaWins,
+                Lovers => WinLose.LoveWins,
+                Defector => WinLose.DefectorWins,
                 _ => WinLose.NobodyWins
             },
-            SubFaction.Cabal => WinLose.CabalWins,
-            SubFaction.Undead => WinLose.UndeadWins,
-            SubFaction.Reanimated => WinLose.ReanimatedWins,
-            SubFaction.Cult => WinLose.CultWins,
-            SubFaction.Followers => WinLose.FollowersWin,
             _ => WinLose.NobodyWins
         };
         CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. players.Where(factionCheck) ]);
@@ -143,42 +128,8 @@ public static class CheckEndGame
         winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
     }
 
-    private static void CheckSubFactionWin(HashSet<byte> winnerIds)
-    {
-        if (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes)
-            return;
-
-        var winner = SubFactionsToKill.FirstOrDefault(CheckSubFactionWin);
-
-        if (winner == SubFaction.None)
-            return;
-
-        WinState = WinLoseGroupMappings[winner];
-        winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
-    }
-
-    private static void CheckNeutralKillers(HashSet<byte> winnerIds)
-    {
-        if (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
-            return;
-
-        var winner = NksToKill.FirstOrDefault(CheckNkWin);
-
-        if (winner == LayerEnum.None)
-            return;
-
-        WinState = WinLoseGroupMappings[winner];
-        winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
-    }
-
-    private static readonly Faction[] FactionsToKill = [ .. Enum.GetValues<Faction>().Except([ Faction.None, Faction.Neutral, Faction.GameMode ]) ];
-    private static readonly Alignment[] AlignmentsToKill = [ Alignment.Killing, Alignment.Neophyte, Alignment.Proselyte ];
-    private static readonly LayerEnum[] NksToKill = [ LayerEnum.Arsonist, LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Werewolf, LayerEnum.Betrayer,
-        LayerEnum.SerialKiller ];
-    private static readonly SubFaction[] SubFactionsToKill = [ .. Enum.GetValues<SubFaction>().Except([ SubFaction.None ]) ];
+    private static readonly Faction[] FactionsToKill = [ .. Enum.GetValues<Faction>().Except([ Faction.None, Faction.Outcast, Faction.GameMode ]) ];
     private static readonly Dictionary<Enum, WinLose> WinLoseGroupMappings = FactionsToKill.Cast<Enum>()
-        .Concat(SubFactionsToKill.Cast<Enum>())
-        .Concat(NksToKill.Cast<Enum>())
         .ToDictionary(
             x => x,
             x => Enum.GetValues<WinLose>().FirstOrDefault(y => y.ToString().StartsWith(x.ToString())));
@@ -195,34 +146,7 @@ public static class CheckEndGame
 
         var toKill = FactionsToKill.Except([ faction ]);
 
-        return AllPlayers().Where(player => !player.HasDied()).All(player => !toKill.Any(player.Is) && !SubFactionsToKill.Any(player.Is) && (!player.Is(Faction.Neutral) || !AlignmentsToKill.Any(player.Is)));
-    }
-
-    private static bool CheckSubFactionWin(SubFaction subFaction)
-    {
-        var toKill = SubFactionsToKill.Except([ subFaction ]);
-        return AllPlayers().Where(player => !player.HasDied()).All(player => !FactionsToKill.Any(player.Is) && !toKill.Any(player.Is) && (!player.Is(Faction.Neutral) || !AlignmentsToKill.Any(player.Is) || player.Is(subFaction)));
-    }
-
-    private static bool CheckNkWin(LayerEnum nk)
-    {
-        var toKill = NksToKill.Except([ nk ]);
-        var nonNk = AlignmentsToKill.Except([ Alignment.Killing ]);
-        var count = 0;
-
-        foreach (var player in AllPlayers())
-        {
-            if (player.HasDied())
-                continue;
-
-            if (FactionsToKill.Any(player.Is) || toKill.Any(player.Is) || (player.Is(Faction.Neutral) && nonNk.Any(player.Is)))
-                return false;
-
-            if (player.Is(nk))
-                count++;
-        }
-
-        return NeutralKillingSettings.WinSolo ? count == 1 : count > 1;
+        return AllPlayers().Where(player => !player.HasDied()).All(player => !toKill.Any(player.Is) && (!player.Is(Faction.Outcast)));
     }
 
     // Stalemate detector for unwinnable situations
@@ -247,7 +171,7 @@ public static class CheckEndGame
             var rival2 = player2.Is<Rivals>();
             var rivals = rival1 && rival2;
 
-            // NK vs. NK when neither can kill each other and Neutrals don't win together
+            // NK vs. NK when neither can kill each other and Outcasts don't win together
             if ((noButtons && neitherKnighted) || rivals || (cantKill && noButtons))
                 PerformStalemate();
         }
@@ -263,7 +187,7 @@ public static class CheckEndGame
 
     public static bool TasksDone()
     {
-        if (TaskSettings.LongTasks + TaskSettings.CommonTasks + TaskSettings.ShortTasks == 0)
+        if (TaskOptions.LongTasks + TaskOptions.CommonTasks + TaskOptions.ShortTasks == 0)
             return IsCustomHnS() || IsTaskRace();
 
         if (IsTaskRace())
@@ -274,7 +198,7 @@ public static class CheckEndGame
 
         foreach (var role in IsCustomHnS() ? PlayerLayer.GetLayers<Hunted>() : Role.GetRoles(Faction.Crew).Where(x => x.Player.CanDoTasks()))
         {
-            if (role.Dead && !TaskSettings.GhostTasksCountToWin)
+            if (role.Dead && !TaskOptions.GhostTasksCountToWin)
                 continue;
 
             allCrew.Add(role.Player);

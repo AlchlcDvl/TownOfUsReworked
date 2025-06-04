@@ -18,7 +18,7 @@ public sealed class Mafia : Disposition
     protected override void Init()
     {
         base.Init();
-        Player.GetRole().Faction = Faction.Neutral;
+        Player.GetRole().Faction = Faction.Outcast;
     }
 
     protected override void CheckWin(HashSet<byte> winnerIds)
@@ -32,7 +32,7 @@ public sealed class Mafia : Disposition
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
-        if (handler.CustomDisposition is not Mafia)
+        if (handler.CurrentDisposition is not Mafia)
             return;
 
         name += $" {ColoredSymbol}";
@@ -40,7 +40,7 @@ public sealed class Mafia : Disposition
         if (!MafiaRoles || revealed)
             return;
 
-        var role = handler.CustomRole;
+        var role = handler.CurrentRole;
         color = role.Color;
         name += $"\n{role}";
         revealed = true;

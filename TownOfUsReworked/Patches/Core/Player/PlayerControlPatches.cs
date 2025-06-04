@@ -129,7 +129,7 @@ public static class PlayerControlPatches
             Faction.Intruder => IntruderSettings.IntruderFlashlight,
             Faction.Syndicate => SyndicateSettings.SyndicateFlashlight,
             Faction.Apocalypse => ApocalypseSettings.ApocalypseFlashlight,
-            Faction.Neutral => NeutralSettings.NeutralFlashlight,
+            Faction.Outcast => OutcastSettings.OutcastFlashlight,
             _ => role switch
             {
                 Hunted => Hunted.HuntedFlashlight,
@@ -169,7 +169,20 @@ public static class PlayerControlPatches
         if (__instance.Data.Role is LayerHandler handler)
             handler.UponTaskComplete(idx);
 
-        if (GameModifiers.EnableDispositions && GameModifiers.TasksExtendTimer)
+        if (AmongUsClient.Instance.AmHost)
+        {
+            if (CheckEndGame.TasksDone())
+            {
+                WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
+                var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
+                winners.Do(x => x.Data.Role.TryCast<LayerHandler>().Winner = true);
+                CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners ]);
+            }
+            else
+                CheckEndGame.CheckPlayerWins();
+        }
+
+        if (GameModifiers.EnableDispositions && GameModifiers.ExtendTimer == TimerExtension.Tasks)
             GameTimerHandler.Instance.ExtendTimer();
 
         if (!__instance.AmOwner)
@@ -261,17 +274,6 @@ public static class PlayerInfoPatches
     public static bool Prefix(NetworkedPlayerInfo __instance, ref string __result)
     {
         __result = __instance.GetPlayerColorString();
-        return false;
-    }
-
-    [HarmonyPatch(nameof(NetworkedPlayerInfo.DefaultOutfit), MethodType.Getter)]
-    public static bool Prefix(NetworkedPlayerInfo __instance, ref PlayerOutfit  __result)
-    {
-        if (IsInGame() && __instance.Outfits.TryGetValue(CustomPlayerOutfitType.GameDefault, out var outfit))
-            __result = outfit;
-        else
-            __result = __instance.Outfits[PlayerOutfitType.Default];
-
         return false;
     }
 

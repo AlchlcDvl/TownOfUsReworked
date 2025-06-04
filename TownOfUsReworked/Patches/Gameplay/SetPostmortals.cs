@@ -43,7 +43,7 @@ public static class SetPostmortals
 
             dict.ToBeEjected.CustomDie(DeathReasonEnum.Dictated, dict.Player);
 
-            if (dict.ToBeEjected.Is(Faction.Crew) && dict.ToBeEjected.Is(SubFaction.None))
+            if (dict.ToBeEjected.Is(Faction.Crew))
                 dict.Player.CustomDie(DeathReasonEnum.Suicide);
 
             dict.ToBeEjected = null;
@@ -55,7 +55,7 @@ public static class SetPostmortals
                 vigi.Player.CustomDie(DeathReasonEnum.Suicide);
         }
 
-        if (NeutralSettings.AvoidNeutralKingmakers)
+        if (OutcastSettings.AvoidOutcastKingmakers)
         {
             foreach (var ne in PlayerLayer.GetLayers<Evil>())
             {
@@ -102,10 +102,16 @@ public static class SetPostmortals
         }
     }
 
-    private static void SetStartingVent(PlayerControl player)
+    private static void SetStartingPos(PlayerControl player)
     {
-        if (!player.Data.IsDead || !player.Is<IGhosty>(out var ghost) || ghost.Caught)
+        if (!player.Data.IsDead || GameOptions.GhostSpawn == GhostSpawnType.AtMeeting || !player.Is<IGhosty>(out var ghost) || ghost.Caught)
             return;
+
+        if (GameOptions.GhostSpawn == GhostSpawnType.PosBeforeMeeting)
+        {
+            player.RpcCustomSnapTo(ghost.LastPosition);
+            return;
+        }
 
         var ventsArray = AllMapVents().ToArray();
         var vents = ventsArray.ToList();
@@ -150,15 +156,13 @@ public static class SetPostmortals
             {
                 var former = rev.GetRole();
                 (revealer = new() { FormerRole = former }).RoleUpdate(former);
+                ((IGhosty)revealer).OnStart();
             }
 
             rev.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
 
-            if (!rev.AmOwner || revealer.Caught)
-                continue;
-
-            SetStartingVent(rev);
-            ((IGhosty)revealer).OnStart();
+            if (rev.AmOwner && !revealer.Caught)
+                SetStartingPos(rev);
         }
 
         WillBeRevealers.RemoveAll(remove.Contains);
@@ -195,15 +199,15 @@ public static class SetPostmortals
                 continue;
 
             if (!phan.Is<Phantom>(out var phantom))
+            {
                 (phantom = new()).RoleUpdate(phan.GetRole());
+                ((IGhosty)phantom).OnStart();
+            }
 
             phan.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
 
-            if (!phan.AmOwner || phantom.Caught)
-                continue;
-
-            SetStartingVent(phan);
-            ((IGhosty)phantom).OnStart();
+            if (phan.AmOwner && !phantom.Caught)
+                SetStartingPos(phan);
         }
 
         WillBePhantoms.RemoveAll(remove.Contains);
@@ -211,7 +215,7 @@ public static class SetPostmortals
 
     private static void TryAddPhantom(PlayerControl dead)
     {
-        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.Is<Neutral>() && !IsExcludedNeutral(dead))
+        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.Is<Outcast>() && !IsExcludedOutcast(dead))
             WillBePhantoms.Add(dead.PlayerId);
     }
 
@@ -240,15 +244,15 @@ public static class SetPostmortals
                 continue;
 
             if (!ban.Is<Banshee>(out var banshee))
+            {
                 (banshee = new()).RoleUpdate(ban.GetRole());
+                ((IGhosty)banshee).OnStart();
+            }
 
             ban.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
 
-            if (!ban.AmOwner || banshee.Caught)
-                continue;
-
-            SetStartingVent(ban);
-            ((IGhosty)banshee).OnStart();
+            if (ban.AmOwner && !banshee.Caught)
+                SetStartingPos(ban);
         }
 
         WillBeBanshees.RemoveAll(remove.Contains);
@@ -285,15 +289,15 @@ public static class SetPostmortals
                 continue;
 
             if (!ghoul.Is<Ghoul>(out var gho))
+            {
                 (gho = new()).RoleUpdate(ghoul.GetRole());
+                ((IGhosty)gho).OnStart();
+            }
 
             ghoul.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
 
-            if (!ghoul.AmOwner || gho.Caught)
-                continue;
-
-            SetStartingVent(ghoul);
-            ((IGhosty)gho).OnStart();
+            if (ghoul.AmOwner && !gho.Caught)
+                SetStartingPos(ghoul);
         }
 
         WillBeGhouls.RemoveAll(remove.Contains);

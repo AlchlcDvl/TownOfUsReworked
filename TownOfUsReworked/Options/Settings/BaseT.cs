@@ -13,8 +13,7 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
                 if (Config is not null)
                     Config.Value = value;
 
-                if (OnChanged is not null)
-                    OnChanged(value);
+                OnChanged?.Invoke(value);
             }
             else if (Member is not null)
             {

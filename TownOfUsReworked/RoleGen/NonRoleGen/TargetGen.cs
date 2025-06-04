@@ -218,20 +218,19 @@ public sealed class TargetGen : BaseGen
         {
             foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
             {
-                jackal.Recruit1 = AllPlayers().Random(x => !x.Is(Alignment.Neophyte) && x.Is(SubFaction.None) && !x.Is(Alignment.Evil) && !x.Is(Alignment.Benign));
+                jackal.Recruit1 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible());
 
                 if (jackal.Recruit1)
                 {
-                    jackal.Recruit2 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.Is(SubFaction.None) &&
-                        (jackal.Recruit1.GetFaction() != x.GetFaction() || (jackal.Recruit1.GetFaction() == Faction.Neutral && x.GetFaction() == Faction.Neutral && x.GetRole().Type !=
-                        jackal.Recruit1.GetRole().Type)));
+                    jackal.Recruit2 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible() &&
+                        (jackal.Recruit1.GetFaction() != x.GetFaction() || (jackal.Recruit1.GetFaction().IsOk() == x.GetFaction().IsOk() && x.GetRole().Type != jackal.Recruit1.GetRole().Type)));
                 }
 
                 if (jackal.Recruit1)
-                    RpcConvert(jackal.Recruit1.PlayerId, jackal.PlayerId, SubFaction.Cabal);
+                    RpcConvert(jackal.Recruit1.PlayerId, jackal.PlayerId);
 
                 if (jackal.Recruit2)
-                    RpcConvert(jackal.Recruit2.PlayerId, jackal.PlayerId, SubFaction.Cabal);
+                    RpcConvert(jackal.Recruit2.PlayerId, jackal.PlayerId);
 
                 if (TownOfUsReworked.MciActive && jackal.Recruit1 && jackal.Recruit2)
                     Message($"Recruits = {jackal.Recruit1.name} & {jackal.Recruit2.name}");
@@ -239,5 +238,7 @@ public sealed class TargetGen : BaseGen
 
             Success("Jackal Recruits Set");
         }
+
+        Info("Targets set");
     }
 }

@@ -52,7 +52,7 @@ public abstract class Option(CustomOptionType type)
         (["GuessSwitchVent"], ["GuessVent"]),
         (["TrollSwitchVent"], ["TrollVent"]),
         (["InteractCd"], ["CanInteract"]),
-        (["CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin", "ApocalypseMax", "ApocalypseMin", "ComplianceM", "ComplianceMin",
+        (["CrewMax", "CrewMin", "OutcastMax", "OutcastMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin", "ApocalypseMax", "ApocalypseMin", "ComplianceMax", "ComplianceMin",
             "PandoricaMax", "PandoricaMin", "IlluminatiMax", "IlluminatiMin"], ["not+IgnoreFactionCaps"]),
         (["MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers"], ["not+IgnoreLayerCaps"]),
         (["MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu"], [
@@ -89,7 +89,7 @@ public abstract class Option(CustomOptionType type)
         (["BetterAirship"], [MapEnum.Airship, MapEnum.Random]),
         (["BetterFungle"], [MapEnum.Fungle, MapEnum.Random]),
         (["CrewSettings"], [Mode.Classic, Mode.AllAny, Mode.Vanilla, Mode.List]),
-        (["CrewMax", "CrewMin", "NeutralMax", "NeutralMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin"], [Mode.Classic, Mode.AllAny]),
+        (["CrewMax", "CrewMin", "OutcastMax", "OutcastMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin"], [Mode.Classic, Mode.AllAny]),
         (["HowIsVigilanteNotified"], [VigiOptions.PostMeeting, VigiOptions.PreMeeting]),
         (["RevealerCount", "PhantomCount", "GhoulCount", "BansheeCount", "BanCrewmate", "BanMurderer", "BanImpostor", "BanAnarchist", "RoleEntryList", "ModifierEntryList", "ModifierBanList",
             "DispositionEntryList", "AbilityEntryList", "RoleBanList", "AbilityBanList", "DispositionBanList", "BanCultist", "BanZealot"], [Mode.List]),
@@ -141,10 +141,10 @@ public abstract class Option(CustomOptionType type)
         MapEnum map => MapSettings.Map == map,
         Mode mode => GameModeSettings.GameMode == mode,
         VigiOptions vigiOptions => Vigilante.HowDoesVigilanteDie == vigiOptions,
-        string id => GetBoolValue(id),
         AirshipSpawnType spawnType => BetterAirship.SpawnType == spawnType,
         LayerEnum layer => RoleGenManager.GetSpawnItem(layer).IsActive(),
         DuringMeeting meetingTime => GameModifiers.DuringMeetings == meetingTime,
+        string id => GetBoolValue(id),
         _ => true
     };
 
@@ -163,12 +163,14 @@ public abstract class Option(CustomOptionType type)
             result = optionatt.PartiallyActive() && optionatt switch
             {
                 Option<bool> boolOpt => invertVal ? !boolOpt.Value : boolOpt.Value,
-                NumberOption numOpt => invertVal ? !numOpt.IsValid(parts[2]) : numOpt.IsValid(parts[1]),
+                ReworkedNumberOption numOpt => invertVal ? !numOpt.IsValid(parts[2]) : numOpt.IsValid(parts[1]),
                 IMultiSelectOption multiOpt => invertVal ? !multiOpt.Contains(parts[2]) : multiOpt.Contains(parts[1]),
                 IStringOption stringOpt => invertVal ? !parts[2].Contains(stringOpt.ValueString()) : parts[1].Contains(stringOpt.ValueString()),
                 _ => true
             };
         }
+        else if (id == "Map")
+            result = invertVal ? !parts[2].Contains(MapSettings.Map.ToString()) : parts[1].Contains(MapSettings.Map.ToString());
         else if (!MapToLoaded.TryGetValue(id, out result))
             MapToLoaded[id] = result = AccessTools.GetDeclaredProperties(typeof(ModCompatibilityManager)).Find(x => x.Name == id).GetValue<bool>(null);
 

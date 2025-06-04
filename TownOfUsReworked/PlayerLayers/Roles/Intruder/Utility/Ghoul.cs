@@ -8,8 +8,8 @@ public sealed class Ghoul : Intruder, IGhosty
 
     private CustomButton MarkButton { get; set; }
     public bool Caught { get; set; }
-    public bool Faded { get; set; }
     public PlayerControl MarkedPlayer { get; set; }
+    public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Ghoul;
     public override LayerEnum Type => LayerEnum.Ghoul;
@@ -27,6 +27,12 @@ public sealed class Ghoul : Intruder, IGhosty
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
+    public override void BeforeMeeting()
+    {
+        if (!UninteractablePlayers.ContainsKey(PlayerId))
+            LastPosition = Player.transform.position;
+    }
+
     private void Mark(PlayerControl target)
     {
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MarkedPlayer);
@@ -35,8 +41,7 @@ public sealed class Ghoul : Intruder, IGhosty
 
     private bool Usable() => !Caught && !MarkedPlayer;
 
-    private bool Exception1(PlayerControl player) => player == MarkedPlayer || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction !=
-        SubFaction.None);
+    private bool Exception1(PlayerControl player) => player == MarkedPlayer || (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     public override void ReadRPC(NetData reader) => MarkedPlayer = reader.ReadPlayer();
 

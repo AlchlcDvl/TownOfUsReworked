@@ -2,6 +2,7 @@ namespace TownOfUsReworked.IPlayerLayers;
 
 public interface IGhosty : IPlayerLayer
 {
+    Vector3 LastPosition { get; set; }
     bool Caught { get; set; }
 
     public bool CanBeClicked(PlayerControl clicker);

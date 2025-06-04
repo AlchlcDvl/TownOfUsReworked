@@ -50,17 +50,17 @@ public static class ChatPatches
 
     private static void UpdateChatTimer(ChatController __instance)
     {
-        __instance.freeChatField.textArea.characterLimit = GameSettings.ChatCharacterLimit == 0 ? 1000000000 : GameSettings.ChatCharacterLimit;
+        __instance.freeChatField.textArea.characterLimit = GameOptions.ChatCharacterLimit == 0 ? 1000000000 : GameOptions.ChatCharacterLimit;
         __instance.timeSinceLastMessage += Time.deltaTime;
 
         if (!__instance.sendRateMessageText.isActiveAndEnabled)
             return;
 
-        if (__instance.timeSinceLastMessage >= GameSettings.ChatCooldown)
+        if (__instance.timeSinceLastMessage >= GameOptions.ChatCooldown)
             __instance.sendRateMessageText.gameObject.SetActive(false);
         else
         {
-            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
+            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameOptions.ChatCooldown -
                 __instance.timeSinceLastMessage));
         }
     }
@@ -83,15 +83,12 @@ public static class ChatPatches
 
                 if (role)
                 {
-                    if ((((LocalPlayer.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral)) || (!player.Is(SubFaction.None) &&
-                        LocalPlayer.GetSubFaction() == player.GetSubFaction())) && GameModifiers.FactionSeeRoles) || player.AmOwner)
-                    {
+                    var teammate = LocalPlayer.GetFaction() == player.GetFaction() && player.GetFaction().IsFactionedEvil();
+
+                    if (player.AmOwner)
                         chat.NameText.color = role.Color;
-                    }
-                    else if (LocalPlayer.GetFaction() == player.GetFaction() && player.GetFaction() is not (Faction.Crew or Faction.Neutral) && !GameModifiers.FactionSeeRoles)
-                        chat.NameText.color = role.FactionColor;
-                    else if (LocalPlayer.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !GameModifiers.FactionSeeRoles)
-                        chat.NameText.color = role.SubFactionColor;
+                    else if (teammate)
+                        chat.NameText.color = GameModifiers.FactionSeeRoles ? role.Color : role.FactionColor;
                     else
                         chat.NameText.color = UColor.white;
                 }
@@ -215,10 +212,10 @@ public static class ChatPatches
 
         if (!chatHandled)
         {
-            if (GameSettings.ChatCooldown > __instance.timeSinceLastMessage)
+            if (GameOptions.ChatCooldown > __instance.timeSinceLastMessage)
             {
                 __instance.sendRateMessageText.gameObject.SetActive(true);
-                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameSettings.ChatCooldown -
+                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(GameOptions.ChatCooldown -
                     __instance.timeSinceLastMessage));
             }
             else if (!IsNullEmptyOrWhiteSpace(text))
@@ -332,20 +329,20 @@ public static class OverrideCharCountPatch
 {
     public static bool Prefix(FreeChatInputField __instance)
     {
-        if (GameSettings.ChatCharacterLimit == 0)
+        if (GameOptions.ChatCharacterLimit == 0)
         {
             __instance.charCountText.text = "";
             return false;
         }
 
         var length = __instance.Text.Length;
-        __instance.charCountText.text = $"{length}/{GameSettings.ChatCharacterLimit}";
+        __instance.charCountText.text = $"{length}/{GameOptions.ChatCharacterLimit}";
 
-        if (length <= GameSettings.ChatCharacterLimit / 2)
+        if (length <= GameOptions.ChatCharacterLimit / 2)
             __instance.charCountText.color = UColor.black;
-        else if (length < GameSettings.ChatCharacterLimit)
+        else if (length < GameOptions.ChatCharacterLimit)
             __instance.charCountText.color = UColor.yellow;
-        else if (length >= GameSettings.ChatCharacterLimit)
+        else if (length >= GameOptions.ChatCharacterLimit)
             __instance.charCountText.color = UColor.red;
 
         return false;

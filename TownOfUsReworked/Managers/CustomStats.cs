@@ -12,7 +12,7 @@ public static class CustomStatsManager
     public static StringNames StatsGamesIntruder;
     public static StringNames StatsGamesSyndicate;
     public static StringNames StatsGamesApocalypse;
-    public static StringNames StatsGamesNeutral;
+    public static StringNames StatsGamesOutcast;
     public static StringNames StatsGamesIlluminati;
     public static StringNames StatsGamesCompliance;
     public static StringNames StatsGamesPandorica;
@@ -61,7 +61,7 @@ public static class CustomStatsManager
         StatsGamesIntruder = TranslationManager.GetOrAddName("Stats.IntruderGames");
         StatsGamesSyndicate = TranslationManager.GetOrAddName("Stats.SyndicateGames");
         StatsGamesApocalypse = TranslationManager.GetOrAddName("Stats.ApocalypseGames");
-        StatsGamesNeutral = TranslationManager.GetOrAddName("Stats.NeutralGames");
+        StatsGamesOutcast = TranslationManager.GetOrAddName("Stats.OutcastGames");
         StatsGamesIlluminati = TranslationManager.GetOrAddName("Stats.IlluminatiGames");
         StatsGamesCompliance = TranslationManager.GetOrAddName("Stats.ComplianceGames");
         StatsGamesPandorica = TranslationManager.GetOrAddName("Stats.PandoricaGames");
@@ -74,7 +74,7 @@ public static class CustomStatsManager
             StatsGamesIntruder,
             StatsGamesSyndicate,
             StatsGamesApocalypse,
-            StatsGamesNeutral,
+            StatsGamesOutcast,
             StatsGamesIlluminati,
             StatsGamesCompliance,
             StatsGamesPandorica,
@@ -132,19 +132,15 @@ public static class CustomStatsManager
                 StatsMap[pair.Value] = pair.Key;
         }
 
-        foreach (var stat in OrderedStats)
-        {
-            if (!StatsMap.ContainsKey(stat))
-                StatsMap.Add(stat, Injector.InjectAndReturn(stat.ToString()));
-        }
+        OrderedStats.Where(stat => !StatsMap.ContainsKey(stat)).Do(x => StatsMap.Add(x, Injector.InjectAndReturn(x.ToString())));
     }
 
-    public static void Reset()
-    {
-        MapWins.Clear();
-        LayerWins.Clear();
-        CustomStats.Clear();
-    }
+    // public static void Reset()
+    // {
+    //     MapWins.Clear();
+    //     LayerWins.Clear();
+    //     CustomStats.Clear();
+    // }
 
     private static void IncrementStat(LayerEnum layer)
     {
@@ -241,21 +237,7 @@ public static class CustomStatsManager
             if (layer is not Role role)
                 continue;
 
-            var type = role.SubFaction switch
-            {
-                SubFaction.Undead => LayerEnum.Undead,
-                SubFaction.Cabal => LayerEnum.Cabal,
-                SubFaction.Cult => LayerEnum.Cult,
-                SubFaction.Reanimated => LayerEnum.Reanimated,
-                SubFaction.Followers => LayerEnum.Followers,
-                _ => LayerEnum.None
-            };
-            IncrementStat(type);
-
-            if (GetLayerWins(type) == 5)
-                CustomAchievementManager.UnlockAchievement($"LayerWins.{type}");
-
-            foreach (var role2 in role.RoleHistory)
+            foreach (var (role2, _) in role.Handler.History)
             {
                 IncrementStat(role2);
 
@@ -327,18 +309,10 @@ public static class CustomStatsManager
         if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
             return (T)(object)reader.ReadByte();
 
-        return (T)(object)reader.ReadInt32();
+        return (T)(object)reader.ReadUInt32();
     }
 
-    private static void Write(this BinaryWriter writer, Enum enumVal)
-    {
-        var enumType = enumVal.GetType();
-
-        if (enumType.GetEnumUnderlyingType() == typeof(byte))
-            writer.Write(Convert.ToByte(enumVal));
-        else
-            writer.Write(Convert.ToInt32(enumVal));
-    }
+    private static void Write(this BinaryWriter writer, Enum enumVal) => writer.Write(NetData.ToBytes(enumVal));
 
     private static void Write<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
     {

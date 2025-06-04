@@ -42,9 +42,9 @@ public sealed class Consigliere : Intruder
         InvestigateButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is not (Faction.Crew or Faction.Neutral) && player.Is(Faction)) || (player.Is(SubFaction)
-        && SubFaction != SubFaction.None)) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) ||
-        (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
+    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (Faction.IsFactionedEvil() && player.Is(Faction)) || (Player.IsOtherLover(player) &&
+        Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) &&
+        Linked.LinkedRoles);
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
@@ -53,8 +53,8 @@ public sealed class Consigliere : Intruder
 
         revealed = true;
         var revealRole = ConsigInfo == ConsigInfo.Role;
-        var role = handler.CustomRole;
-        removeFromConsig = role.SubFaction == SubFaction && role.SubFaction != SubFaction.None && revealRole;
+        var role = handler.CurrentRole;
+        removeFromConsig = revealRole;
         color = revealRole ? role.Color : role.FactionColor;
         name += revealRole ? $"\n{role}" : $"\n{role.FactionName}";
     }

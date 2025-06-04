@@ -145,18 +145,18 @@ public enum ListSlot : byte
 
     NonCrew,
 
-    NeutralPros,
-    NeutralKill,
-    NeutralNeo,
-    NeutralBen,
-    NeutralEvil,
+    OutcastPros,
+    OutcastKill,
+    OutcastNeo,
+    OutcastBen,
+    OutcastEvil,
 
-    RandomNeutral,
-    RegularNeutral,
-    HarmfulNeutral,
+    RandomOutcast,
+    RegularOutcast,
+    HarmfulOutcast,
 
-    NonNeutral,
-    NonCompNeutral,
+    NonOutcast,
+    NonCompOutcast,
 
     IntruderSupport,
     IntruderConceal,
@@ -185,8 +185,6 @@ public enum ListSlot : byte
 
     ApocDeity,
     ApocHarb,
-
-    RandomApocalypse,
 
     NonApocalypse,
 
@@ -229,7 +227,7 @@ public enum ListSlot : byte
     PowerIlluminati,
 
     NonIlluminati,
-    NonIllNeutral,
+    NonIllOutcast,
 
     Any,
 

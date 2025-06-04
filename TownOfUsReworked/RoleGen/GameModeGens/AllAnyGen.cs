@@ -8,13 +8,13 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
     {
         CrewRoles.AddRanges(RoleGenManager.CrewInvestigativeRoles, RoleGenManager.CrewKillingRoles, RoleGenManager.CrewSupportRoles, RoleGenManager.CrewProtectiveRoles,
             RoleGenManager.CrewSovereignRoles);
-        NeutralRoles.AddRanges(RoleGenManager.NeutralBenignRoles, RoleGenManager.NeutralEvilRoles);
+        OutcastRoles.AddRanges(RoleGenManager.OutcastBenignRoles, RoleGenManager.OutcastEvilRoles);
 
         if (BadGuysSettings.IlluminatiUnleashed)
         {
             var type = BadGuysSettings.IlluminatiMembers;
-            (type == IlluminatiType.Killers ? IlluminatiRoles : NeutralRoles).AddRange(RoleGenManager.NeutralKillingRoles);
-            (type == IlluminatiType.Neophytes ? IlluminatiRoles : NeutralRoles).AddRange(RoleGenManager.NeutralNeophyteRoles);
+            (type == IlluminatiType.Killers ? IlluminatiRoles : OutcastRoles).AddRange(RoleGenManager.OutcastKillingRoles);
+            (type == IlluminatiType.Neophytes ? IlluminatiRoles : OutcastRoles).AddRange(RoleGenManager.OutcastNeophyteRoles);
             (type == IlluminatiType.Apocalypse ? IlluminatiRoles : ApocalypseRoles).AddRanges(RoleGenManager.ApocalypseHarbingerRoles);
             (type == IlluminatiType.Syndicate ? IlluminatiRoles : SyndicateRoles).AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles,
                 RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
@@ -26,11 +26,11 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
         if (BadGuysSettings.OrderOfCompliance)
         {
             var type = BadGuysSettings.ComplianceMembers;
-            (type == ComplianceType.Killers ? ComplianceRoles : NeutralRoles).AddRange(RoleGenManager.NeutralKillingRoles);
-            (type == ComplianceType.Neophytes ? ComplianceRoles : NeutralRoles).AddRange(RoleGenManager.NeutralNeophyteRoles);
+            (type == ComplianceType.Killers ? ComplianceRoles : OutcastRoles).AddRange(RoleGenManager.OutcastKillingRoles);
+            (type == ComplianceType.Neophytes ? ComplianceRoles : OutcastRoles).AddRange(RoleGenManager.OutcastNeophyteRoles);
         }
         else
-            NeutralRoles.AddRanges(RoleGenManager.NeutralKillingRoles, RoleGenManager.NeutralNeophyteRoles);
+            OutcastRoles.AddRanges(RoleGenManager.OutcastKillingRoles, RoleGenManager.OutcastNeophyteRoles);
 
         if (BadGuysSettings.PandoricaOpens)
         {
@@ -67,17 +67,17 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
             };
         }
 
-        Neutrals = URandom.RandomRangeInt(0, players - Intruders - Syndicate - Apocalypse + 1);
-        Crew = players - Intruders - Syndicate - Neutrals;
+        Outcasts = URandom.RandomRangeInt(0, players - Intruders - Syndicate - Apocalypse + 1);
+        Crew = players - Intruders - Syndicate - Outcasts;
 
-        while (Crew == 0 && (Intruders > 0 || Syndicate > 0 || Neutrals > 0 || Apocalypse > 0) && players > 1)
+        while (Crew == 0 && (Intruders > 0 || Syndicate > 0 || Outcasts > 0 || Apocalypse > 0) && players > 1)
         {
             _ = URandom.RandomRangeInt(0, 4) switch
             {
                 0 when Intruders > 0 => Intruders--,
                 1 when Apocalypse > 0 => Apocalypse--,
                 2 when Syndicate > 0 => Syndicate--,
-                3 when Neutrals > 0 => Neutrals--,
+                3 when Outcasts > 0 => Outcasts--,
                 _ => 0
             };
 
@@ -85,7 +85,7 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
         }
 
         if (TownOfUsReworked.MciActive)
-            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}, Apoc = {Apocalypse}");
+            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Outcasts}, Apoc = {Apocalypse}");
     }
 
     private static int GetRandomCount()

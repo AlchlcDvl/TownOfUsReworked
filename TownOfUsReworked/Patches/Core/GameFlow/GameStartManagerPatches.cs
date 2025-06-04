@@ -83,14 +83,14 @@ public static class GameStartManagerPatches
         {
             __instance.LastPlayerCount = GameData.Instance.PlayerCount;
 
-            var text = "<color=#FF0000FF>";
+            var text = "<#FF0000FF>";
 
             if (__instance.LastPlayerCount > __instance.MinPlayers)
-                text = "<color=#00FF00FF>";
+                text = "<#00FF00FF>";
             else if (__instance.LastPlayerCount == __instance.MinPlayers)
-                text = "<color=#FFFF00FF>";
+                text = "<#FFFF00FF>";
 
-            __instance.PlayerCounter.text = $"{text}{__instance.LastPlayerCount}/{GameSettings.LobbySize}";
+            __instance.PlayerCounter.text = $"{text}{__instance.LastPlayerCount}/{GameOptions.LobbySize}";
             __instance.StartButton.SetButtonEnableState(__instance.LastPlayerCount >= __instance.MinPlayers);
             __instance.StartButtonGlyph?.SetColor(__instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear);
 

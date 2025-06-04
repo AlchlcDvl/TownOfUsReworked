@@ -6,7 +6,7 @@ public static class MapPatches
 {
     public static byte CurrentMap;
 
-    public static bool Prefix(AmongUsClient __instance, ref Il2CppSystem.Collections.IEnumerator __result)
+    public static bool Prefix(AmongUsClient __instance, ref IIEnumerator __result)
     {
         if (IsHnS())
             return true;
@@ -178,21 +178,21 @@ public static class MapPatches
         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
         TownOfUsReworked.NormalOptions.CrewLightMod = CrewSettings.CrewVision;
         TownOfUsReworked.NormalOptions.ImpostorLightMod = IntruderSettings.IntruderVision;
-        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting != AnonVotes.Disabled;
-        TownOfUsReworked.NormalOptions.VisualTasks = GameModifiers.VisualTasks;
-        TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameSettings.PlayerSpeed;
+        TownOfUsReworked.NormalOptions.AnonymousVotes = VotingOptions.AnonymousVoting != AnonVotes.Disabled;
+        TownOfUsReworked.NormalOptions.VisualTasks = TaskOptions.VisualTasks;
+        TownOfUsReworked.NormalOptions.PlayerSpeedMod = GameOptions.PlayerSpeed;
         TownOfUsReworked.NormalOptions.NumImpostors = IntruderSettings.IntruderCount;
-        TownOfUsReworked.NormalOptions.TaskBarMode = GameSettings.TaskBarMode;
-        TownOfUsReworked.NormalOptions.ConfirmImpostor = GameSettings.ConfirmEjects;
-        TownOfUsReworked.NormalOptions.VotingTime = GameSettings.VotingTime;
-        TownOfUsReworked.NormalOptions.DiscussionTime = GameSettings.DiscussionTime;
-        TownOfUsReworked.NormalOptions.EmergencyCooldown = GameSettings.EmergencyButtonCooldown;
-        TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameSettings.EmergencyButtonCount;
+        TownOfUsReworked.NormalOptions.TaskBarMode = GameOptions.TaskBarMode;
+        TownOfUsReworked.NormalOptions.ConfirmImpostor = GameOptions.ConfirmEjects;
+        TownOfUsReworked.NormalOptions.VotingTime = GameOptions.VotingTime;
+        TownOfUsReworked.NormalOptions.DiscussionTime = GameOptions.DiscussionTime;
+        TownOfUsReworked.NormalOptions.EmergencyCooldown = GameOptions.EmergencyButtonCooldown;
+        TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameOptions.EmergencyButtonCount;
         TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
-        TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskSettings.GhostTasksCountToWin;
-        TownOfUsReworked.NormalOptions.MaxPlayers = GameSettings.LobbySize;
-        TownOfUsReworked.NormalOptions.NumShortTasks = TaskSettings.ShortTasks;
-        TownOfUsReworked.NormalOptions.NumLongTasks = TaskSettings.LongTasks;
-        TownOfUsReworked.NormalOptions.NumCommonTasks = TaskSettings.CommonTasks;
+        TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskOptions.GhostTasksCountToWin;
+        TownOfUsReworked.NormalOptions.MaxPlayers = GameOptions.LobbySize;
+        TownOfUsReworked.NormalOptions.NumShortTasks = TaskOptions.ShortTasks;
+        TownOfUsReworked.NormalOptions.NumLongTasks = TaskOptions.LongTasks;
+        TownOfUsReworked.NormalOptions.NumCommonTasks = TaskOptions.CommonTasks;
     }
 }

@@ -95,7 +95,7 @@ public sealed class Disguiser : Intruder
             DisguiseButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Exception2(player) || ((player.Is(Faction) ? DisguiseTarget == DisguiserTargets.NonIntruders : DisguiseTarget == DisguiserTargets.Intruders) && Faction is not (Faction.Crew or Faction.Neutral));
+    private bool Exception1(PlayerControl player) => Exception2(player) || ((player.Is(Faction) ? DisguiseTarget == DisguiserTargets.NonIntruders : DisguiseTarget == DisguiserTargets.Intruders) && Faction is not (Faction.Crew or Faction.Outcast));
 
     private bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 

@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches.Gameplay;
 [HarmonyPatch]
 public static class SurveillancePatches
 {
-    public static bool NvActive;
+    private static bool NvActive;
     private static readonly List<GameObject> Overlays = [];
     private static bool LightsOut => LocalPlayer.myTasks.Any(x => x.name.Contains("FixLightsTask"));
 

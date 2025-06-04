@@ -1,49 +1,56 @@
-using TownOfUsReworked.Statuses;
+// using TownOfUsReworked.Statuses;
 
-namespace TownOfUsReworked.Monos;
+// namespace TownOfUsReworked.Monos;
 
-public sealed class StatusHandler : MonoBehaviour
-{
-    private PlayerControl Player { get; set; }
+// public sealed class StatusHandler : MonoBehaviour
+// {
+//     public static readonly Dictionary<byte, StatusHandler> Handlers = [];
 
-    [HideFromIl2Cpp]
-    private List<BaseStatus> Statuses { get; } = [];
+//     private PlayerControl Player { get; set; }
 
-    public void Awake() => Player = GetComponent<PlayerControl>();
+//     [HideFromIl2Cpp]
+//     private List<BaseStatus> Statuses { get; } = [];
 
-    public void Update()
-    {
-        foreach (var status in Statuses)
-        {
-            if (!status.Active)
-                continue;
+//     public void Awake() => Player = GetComponent<PlayerControl>();
 
-            if (status is BaseTimedStatus { TimerActive: true } timed)
-            {
-                timed.Timer -= Time.deltaTime;
+//     public void Update()
+//     {
+//         foreach (var status in Statuses)
+//         {
+//             if (!status.Active)
+//                 continue;
 
-                if (timed.Timer <= 0f)
-                    timed.OnTimerEnd();
-            }
+//             if (status is BaseTimedStatus { TimerActive: true } timed)
+//             {
+//                 timed.Timer -= Time.deltaTime;
 
-            status.OnPlayerUpdate();
+//                 if (timed.Timer <= 0f)
+//                     timed.TimerEnded();
+//             }
 
-            if (Player.AmOwner)
-                status.OnLocalUpdate();
-        }
-    }
+//             status.OnPlayerUpdate();
 
-    [HideFromIl2Cpp]
-    public void AddStatus(BaseStatus status)
-    {
-        Statuses.Add(status);
-        status.OnAdd();
-    }
+//             if (Player.AmOwner)
+//                 status.OnLocalUpdate();
+//         }
+//     }
 
-    [HideFromIl2Cpp]
-    public void RemoveStatus(BaseStatus status)
-    {
-        Statuses.Remove(status);
-        status.OnRemove();
-    }
-}
+//     public void UpdateCurrent() => Handlers[Player.PlayerId] = this;
+
+//     [HideFromIl2Cpp]
+//     public void AddStatus(BaseStatus status)
+//     {
+//         Statuses.Add(status);
+//         status.OnAdd();
+
+//         if (status is BaseTimedStatus { AutoStart: true } timed)
+//             timed.Timer = timed.Duration;
+//     }
+
+//     [HideFromIl2Cpp]
+//     public void RemoveStatus(BaseStatus status)
+//     {
+//         Statuses.Remove(status);
+//         status.OnRemove();
+//     }
+// }

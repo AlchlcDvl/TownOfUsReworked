@@ -8,7 +8,7 @@ public abstract class BaseRoleGen : BaseGen
     protected int Crew { get; set; }
     protected int Syndicate { get; set; }
     protected int Apocalypse { get; set; }
-    protected int Neutrals { get; set; }
+    protected int Outcasts { get; set; }
 
     public virtual bool AllowNonRoles => true;
     public virtual bool HasTargets => true;
@@ -19,7 +19,7 @@ public abstract class BaseRoleGen : BaseGen
         Crew = 0;
         Syndicate = 0;
         Apocalypse = 0;
-        Neutrals = 0;
+        Outcasts = 0;
     }
 
     public override void Assign()
@@ -55,16 +55,16 @@ public abstract class BaseRoleGen : BaseGen
         Intruders = IntruderSettings.IntruderCount;
         Syndicate = SyndicateSettings.SyndicateCount;
         Apocalypse = ApocalypseSettings.ApocalypseCount;
-        Neutrals = URandom.RandomRangeInt(NeutralSettings.NeutralMin, NeutralSettings.NeutralMax + 1);
+        Outcasts = URandom.RandomRangeInt(OutcastSettings.OutcastMin, OutcastSettings.OutcastMax + 1);
 
-        if (Intruders == 0 && Syndicate == 0 && Neutrals == 0 && Apocalypse == 0)
+        if (Intruders == 0 && Syndicate == 0 && Outcasts == 0 && Apocalypse == 0)
         {
             _ = URandom.RandomRangeInt(0, 4) switch
             {
                 0 => Intruders++,
                 1 => Syndicate++,
                 2 => Apocalypse++,
-                _ => Neutrals++,
+                _ => Outcasts++,
             };
         }
 
@@ -80,18 +80,18 @@ public abstract class BaseRoleGen : BaseGen
                 Apocalypse--;
         }
 
-        while (Neutrals > players - Intruders - Syndicate - Apocalypse)
-            Neutrals--;
+        while (Outcasts > players - Intruders - Syndicate - Apocalypse)
+            Outcasts--;
 
-        Crew = players - Intruders - Syndicate - Neutrals - Apocalypse;
+        Crew = players - Intruders - Syndicate - Outcasts - Apocalypse;
 
         if (TownOfUsReworked.MciActive)
-            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Neutrals}, Apoc = {Apocalypse}");
+            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Outcasts}, Apoc = {Apocalypse}");
     }
 
     protected static LayerEnum GetRandomBaseEvil(Faction faction)
     {
-        if (faction is < Faction.Neutral and > Faction.Crew)
+        if (faction is < Faction.Outcast and > Faction.Crew)
         {
             return faction switch
             {

@@ -64,16 +64,10 @@ public sealed class Collider : Syndicate
 
     private void Charge() => ChargeButton.Begin();
 
-    private void ResetCharges()
+    protected override void Deinit()
     {
         Positive = null;
         Negative = null;
-    }
-
-    protected override void Deinit()
-    {
-        base.Deinit();
-        ResetCharges();
     }
 
     private void SetPositive(PlayerControl target)
@@ -106,8 +100,7 @@ public sealed class Collider : Syndicate
 
     private bool Exception2(PlayerControl player) => player == Positive || CommonException(player);
 
-    private bool CommonException(PlayerControl player) => (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
-        Player.IsLinkedTo(player);
+    private bool CommonException(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     private bool Usable() => HoldsDrive;
 
@@ -158,5 +151,5 @@ public sealed class Collider : Syndicate
 
     private bool EndEffect() => Dead;
 
-    public override void BeforeMeeting() => ResetCharges();
+    public override void BeforeMeeting() => Deinit();
 }

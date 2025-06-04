@@ -3,7 +3,6 @@ namespace TownOfUsReworked.Monos;
 public sealed class GameTimerHandler : MonoBehaviour
 {
     public static GameTimerHandler Prefab;
-
     public static GameTimerHandler Instance;
 
     private TextMeshPro TimeText;
@@ -28,7 +27,7 @@ public sealed class GameTimerHandler : MonoBehaviour
         FreezeChunk = hnsTimer.freezeChunk;
         TimeText = hnsTimer.timeText;
         hnsTimer.enabled = false;
-        Original = TimerBarRenderer.material.GetColor("_Color");
+        Original = TimerBarRenderer.material.GetColor(Color1);
         TimerBarRenderer.material = new(TimerBarRenderer.material);
 
         transform.localPosition -= new Vector3(0f, 0.4f, 0f);
@@ -67,7 +66,7 @@ public sealed class GameTimerHandler : MonoBehaviour
 
     public void StartFinalMoments()
     {
-        TimerBarRenderer.material.SetColor("_Color", Palette.ImpostorRed);
+        TimerBarRenderer.material.SetColor(Color1, Palette.ImpostorRed);
         StopChunkCoroutine();
         ChunkBar.gameObject.SetActive(false);
         IsFinalStage = true;
@@ -75,7 +74,7 @@ public sealed class GameTimerHandler : MonoBehaviour
 
     public void ResetFinalMoments()
     {
-        TimerBarRenderer.material.SetColor("_Color", Original);
+        TimerBarRenderer.material.SetColor(Color1, Original);
         StartChunkCoroutine();
         ChunkBar.gameObject.SetActive(true);
         IsFinalStage = false;

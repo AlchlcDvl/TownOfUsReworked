@@ -63,14 +63,13 @@ public abstract class Intruder : Role, IPromoter
             Promoter = null;
             Name = TranslationManager.Translate("Layer.Godfather");
             Alignment = Alignment.Head;
-            RoleHistory.Add(LayerEnum.Mafioso);
+            Handler.History.Add((LayerEnum.Mafioso, Faction));
         }
     }
 
     protected virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
-        Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => (!player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     private bool KillUsable() => !IsUnderling;
 }

@@ -49,7 +49,7 @@ public sealed class Politician : Ability
     {
         if (__instance.state == MeetingHud.VoteStates.Discussion)
         {
-            if (__instance.discussionTimer < GameSettings.DiscussionTime || CanKill)
+            if (__instance.discussionTimer < GameOptions.DiscussionTime || CanKill)
                 Abstain?.SetDisabled();
             else
                 Abstain?.SetEnabled();

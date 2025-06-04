@@ -29,26 +29,17 @@ public static class BetterSabotages
 
     public static void Postfix(HudManager __instance)
     {
-        if (!IsInGame() || !Ship())
+        if (!IsInGame() || MapPatches.CurrentMap is 4 or 6)
             return;
 
-        if (Ship().Systems.TryGetValue(SystemTypes.Laboratory, out var lab) && MapPatches.CurrentMap == 2)
-        {
-            var system = lab.Cast<ReactorSystemType>();
+        var ship = Ship();
 
-            if (system.IsActive && ReactorShake != 0f)
-                __instance.PlayerCam.ShakeScreen(500, ReactorShake * (system.ReactorDuration - system.Countdown) / (100f * system.ReactorDuration));
-            else
-                __instance.PlayerCam.ShakeScreen(0, 0);
-        }
-        else if (Ship().Systems.TryGetValue(SystemTypes.Reactor, out var reactor) && MapPatches.CurrentMap is 0 or 1 or 3 or 5 or 7)
-        {
-            var system = reactor.Cast<ReactorSystemType>();
+        if (!ship || !ship.Systems.TryGetValue(MapPatches.CurrentMap == 2 ? SystemTypes.Laboratory : SystemTypes.Reactor, out var sab) || !sab.TryCast<ReactorSystemType>(out var system))
+            return;
 
-            if (system.IsActive && ReactorShake != 0f)
-                __instance.PlayerCam.ShakeScreen(500, ReactorShake * (system.ReactorDuration - system.Countdown) / (100f * system.ReactorDuration));
-            else
-                __instance.PlayerCam.ShakeScreen(0, 0);
-        }
+        if (system.IsActive && ReactorShake != 0f)
+            __instance.PlayerCam.ShakeScreen(500, ReactorShake * (system.ReactorDuration - system.Countdown) / (100f * system.ReactorDuration));
+        else
+            __instance.PlayerCam.ShakeScreen(0, 0);
     }
 }

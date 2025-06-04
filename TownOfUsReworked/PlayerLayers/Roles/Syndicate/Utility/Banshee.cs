@@ -12,7 +12,7 @@ public sealed class Banshee : Syndicate, IGhosty
     private CustomButton ScreamButton { get; set; }
     public HashSet<byte> Blocked { get; } = [];
     public bool Caught { get; set; }
-    public bool Faded { get; set; }
+    public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Banshee;
     public override LayerEnum Type => LayerEnum.Banshee;
@@ -30,11 +30,17 @@ public sealed class Banshee : Syndicate, IGhosty
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
+    public override void BeforeMeeting()
+    {
+        if (!UninteractablePlayers.ContainsKey(PlayerId))
+            LastPosition = Player.transform.position;
+    }
+
     private void StartScream()
     {
         foreach (var player in AllPlayers())
         {
-            if (!player.HasDied() && !player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral))
+            if (!player.HasDied() && !player.Is(Faction) && Faction.IsFactionedEvil())
                 Blocked.Add(player.PlayerId);
         }
     }

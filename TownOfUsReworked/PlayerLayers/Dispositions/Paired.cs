@@ -19,7 +19,7 @@ public abstract class Paired : Disposition
         if (!RevealRole || revealed)
             return;
 
-        var role = handler.CustomRole;
+        var role = handler.CurrentRole;
         color = role.Color;
         name += $"\n{role}";
         revealed = true;

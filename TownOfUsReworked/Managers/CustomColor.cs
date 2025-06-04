@@ -64,7 +64,7 @@ public static class CustomColorManager
 
     public static UColor Alternate(this UColor color, float val = 0.2f) => color.IsDark() ? color.Light(val) : color.Shadow(val);
 
-    public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
+    // public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
 
     private static bool IsDark(this UColor color) => (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f) < 0.5f;
 
@@ -115,13 +115,18 @@ public static class CustomColorManager
 
     // Faction Colors
     public static readonly UColor Crew = FromHex("#8CFFFFFF");
-    public static readonly UColor Neutral = FromHex("#B3B3B3FF");
+    public static readonly UColor Outcast = FromHex("#B3B3B3FF");
     public static readonly UColor Intruder = FromHex("#FF1919FF");
     public static readonly UColor Syndicate = FromHex("#008000FF");
     public static readonly UColor Pandorica = FromHex("#ECFF45FF");
     public static readonly UColor Compliance = FromHex("#5A27CCFF");
     public static readonly UColor Illuminati = FromHex("#A39389FF");
     public static readonly UColor Apocalypse = FromHex("#99007FFF");
+    public static readonly UColor Undead = FromHex("#7B8968FF");
+    public static readonly UColor Cabal = FromHex("#575757FF");
+    public static readonly UColor Reanimated = FromHex("#E6108AFF");
+    public static readonly UColor Cult = FromHex("#F995FCFF");
+    public static readonly UColor Followers = FromHex("#917AC0FF");
     public static readonly UColor Faction = FromHex("#00E66DFF");
 
     // Game Mode Colors
@@ -138,14 +143,6 @@ public static class CustomColorManager
     // Hide And Seek Colors
     public static readonly UColor Hunter = FromHex("#FF004EFF");
     public static readonly UColor Hunted = FromHex("#1F51FFFF");
-
-    // Subfaction Colors
-    public static readonly UColor Undead = FromHex("#7B8968FF");
-    public static readonly UColor Cabal = FromHex("#575757FF");
-    public static readonly UColor Reanimated = FromHex("#E6108AFF");
-    public static readonly UColor Cult = FromHex("#F995FCFF");
-    public static readonly UColor Followers = FromHex("#917AC0FF");
-    public static readonly UColor SubFaction = FromHex("#204D42FF");
 
     // Crew Colors
     public static readonly UColor Mayor = FromHex("#704FA8FF");
@@ -174,7 +171,7 @@ public static class CustomColorManager
     public static readonly UColor Trapper = FromHex("#BE1C8CFF");
     public static readonly UColor Democrat = FromHex("#1A3270FF");
 
-    // Neutral Colors
+    // Outcast Colors
     public static readonly UColor Jester = FromHex("#F7B3DAFF");
     public static readonly UColor Executioner = FromHex("#CCCCCCFF");
     public static readonly UColor Glitch = FromHex("#00FF00FF");
@@ -302,13 +299,13 @@ public static class CustomColorManager
     public static readonly UColor Defense = FromHex("#2B0538FF");
 
     // Color Storage
-    // #b1c548 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce
-    // #40b4ff #8ff731 #942b3b #80B3FF #4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888
+    // #b1c548 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #204D42
+    // #40b4ff #8ff731 #942b3b #80B3FF #4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #A9A9A9
     // #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038 #EDC240 #6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a
-    // #FCBA03 #F8CD46 #FF4D00 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C #1E300B #F3A6D3 #F9BFA7
-    // #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14
-    // #20a1b7 #606168 #603FEF #610F69 #67A836 #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #C0C0C0 #E6956A
-    // #B34D99 #FFC34F #A9A9A9 #8BFDFD #06E00C #860B7A #A82626
+    // #FCBA03 #F8CD46 #FF4D00 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C #1E300B #F3A6D3 #F9BFA7 #A82626
+    // #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14 #860B7A
+    // #20a1b7 #606168 #603FEF #610F69 #67A836 #DB7601 #1D4DFC #6699FF #9D7038 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #C0C0C0 #E6956A #8BFDFD #06E00C
+    // #B34D99 #FFC34F
 
     // Symbol Storage
     // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 ī l · ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +

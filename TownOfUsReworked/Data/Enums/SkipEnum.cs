@@ -7,6 +7,5 @@ public enum SkipEnum : byte
     Zooming,
     Wiki,
     Task,
-    Settings,
     None
 }

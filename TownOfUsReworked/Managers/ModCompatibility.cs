@@ -1,6 +1,7 @@
 ﻿namespace TownOfUsReworked.Managers;
 
 // FIXME: Submerged messes with the body reporting, causing the report button to be entirely unusable, might have to make a custom report button for that ngl
+// TODO: Modify Submerged lights behaviour
 
 /// <summary>
 /// Master class to help with mod compatibility with Submerged and LevelImpostor.
@@ -20,7 +21,7 @@ public static class ModCompatibilityManager
         // TryCastMethod = AccessTools.Method(typeof(Il2CppObjectBase), nameof(Il2CppObjectBase.TryCast));
     }
 
-    public const string SmGuid = "Submerged";
+    private const string SmGuid = "Submerged";
     private const ShipStatus.MapType SubmergedMapType = (ShipStatus.MapType)6;
 
     public static SemanticVersioning.Version SubVersion { get; private set; }

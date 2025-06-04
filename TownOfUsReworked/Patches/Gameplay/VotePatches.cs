@@ -68,7 +68,7 @@ public static class VotePatches
         __instance.TitleText.text = TranslationController.Instance.GetString(StringNames.MeetingVotingResults);
         var amountOfSkippedVoters = 0;
         var ogValue = TownOfUsReworked.NormalOptions.AnonymousVotes;
-        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting is AnonVotes.Enabled or AnonVotes.NonPolitician;
+        TownOfUsReworked.NormalOptions.AnonymousVotes = VotingOptions.AnonymousVoting is AnonVotes.Enabled or AnonVotes.NonPolitician;
 
         for (var i = 0; i < __instance.playerStates.Length; i++)
         {
@@ -95,13 +95,14 @@ public static class VotePatches
             }
         }
 
-        TownOfUsReworked.NormalOptions.AnonymousVotes = GameModifiers.AnonymousVoting is AnonVotes.PoliticianOnly or AnonVotes.Enabled;
+        TownOfUsReworked.NormalOptions.AnonymousVotes = VotingOptions.AnonymousVoting is AnonVotes.PoliticianOnly or AnonVotes.Enabled;
 
         foreach (var politician in PlayerLayer.GetLayers<Politician>())
         {
             var playerInfo = politician.Data;
 
-            foreach (var extraVote in politician.ExtraVotes.Where(extraVote => extraVote != PlayerVoteArea.HasNotVoted && extraVote != PlayerVoteArea.MissedVote && extraVote != PlayerVoteArea.DeadVote))
+            foreach (var extraVote in politician.ExtraVotes.Where(extraVote => extraVote != PlayerVoteArea.HasNotVoted && extraVote != PlayerVoteArea.MissedVote && extraVote !=
+                PlayerVoteArea.DeadVote))
             {
                 if (extraVote == PlayerVoteArea.SkippedVote)
                 {
@@ -203,7 +204,7 @@ public static class VotePatches
         var insiderFlag = LocalPlayer.Is<Insider>(out var ins) && ins.TasksDone;
         var deadFlag = GameModifiers.DeadSeeEverything && LocalPlayer.HasDied();
 
-        if (GameModifiers.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))
+        if (VotingOptions.AnonymousVoting == AnonVotes.NotVisible && !(deadFlag || insiderFlag))
             return false;
 
         var spriteRenderer = UObject.Instantiate(__instance.PlayerVotePrefab, parent);

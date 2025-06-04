@@ -34,11 +34,7 @@ public sealed class Timekeeper : Syndicate
         TkExists = true;
     }
 
-    protected override void Deinit()
-    {
-        base.Deinit();
-        TkExists = false;
-    }
+    protected override void Deinit() => TkExists = false;
 
     private void ControlStart() => Flash(Color, TimeDur);
 

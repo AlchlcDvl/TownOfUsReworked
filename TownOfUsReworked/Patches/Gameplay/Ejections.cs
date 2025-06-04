@@ -22,9 +22,9 @@ public static class ConfirmEjects
 
         string ejectString;
 
-        if (GameSettings.ConfirmEjects)
+        if (GameOptions.ConfirmEjects)
         {
-            if (GameSettings.EjectionRevealsRoles)
+            if (GameOptions.EjectionRevealsRoles)
             {
                 if (role is Jester && Jester.JestEjectScreen)
                     ejectString = "The <#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
@@ -33,8 +33,6 @@ public static class ConfirmEjects
                 else
                     ejectString = $"{player.name} was the {role.ColorString}{role.Name}</color>.";
             }
-            else if (!player.Is(SubFaction.None))
-                ejectString = $"{player.name} was {role.SubFactionColorString}{role.SubFactionName}</color>.";
             else
                 ejectString = $"{player.name} was {role.FactionColorString}{role.FactionName}</color>.";
 

@@ -93,7 +93,7 @@ public static class FreeplayPatches
     public static bool Prefix(TaskAdderGame __instance, TaskFolder taskFolder)
     {
         RoleButtons.Clear();
-        var stringBuilder = new Il2CppSystem.Text.StringBuilder();
+        var stringBuilder = new IStringBuilder();
         __instance.Hierarchy.Add(taskFolder);
 
         foreach (var folder in __instance.Hierarchy)
@@ -154,7 +154,7 @@ public static class FreeplayPatches
                 range = faction switch
                 {
                     Faction.Crew => GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante),
-                    Faction.Neutral => GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer),
+                    Faction.Outcast => GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer),
                     Faction.Intruder => GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith),
                     Faction.GameMode => GetValuesFromTo(LayerEnum.Hunter, LayerEnum.Runner),
                     Faction.Apocalypse => GetValuesFromTo(LayerEnum.Cultist, LayerEnum.Void),

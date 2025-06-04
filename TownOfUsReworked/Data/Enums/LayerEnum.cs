@@ -24,7 +24,6 @@ public enum LayerEnum : byte
     Revealer,
     Seer,
     Sheriff,
-    Shifter,
     Tracker,
     Transporter,
     Trapper,
@@ -49,6 +48,7 @@ public enum LayerEnum : byte
     Necromancer,
     Phantom,
     SerialKiller,
+    Shifter,
     Survivor,
     Thief,
     Troll,
@@ -153,11 +153,5 @@ public enum LayerEnum : byte
     Torch,
     Tunneler,
     Underdog,
-    NoneAbility,
-
-    Undead,
-    Cult,
-    Cabal,
-    Reanimated,
-    Followers
+    NoneAbility
 }

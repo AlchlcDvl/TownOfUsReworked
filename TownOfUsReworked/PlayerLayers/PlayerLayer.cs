@@ -82,11 +82,6 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public PlayerControl Player { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether or not the layer is a winner.
-    /// </summary>
-    public bool Winner { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether or not the layer has been deinitialised.
     /// </summary>
     protected bool Deinitialised { get; private set; } = true; // Start uninitialised

@@ -112,13 +112,13 @@ public static class RpcManager
     /// <returns>A writer instance of <see cref="NetData"/>.</returns>
     public static NetData CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
 
-    /// <summary>
-    /// Creates a writer instance of <see cref="NetData"/> to potentially write more data to.
-    /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    /// <returns>A writer instance of <see cref="NetData"/>.</returns>
-    public static NetData CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, true, data);
+    // /// <summary>
+    // /// Creates a writer instance of <see cref="NetData"/> to potentially write more data to.
+    // /// </summary>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // /// <returns>A writer instance of <see cref="NetData"/>.</returns>
+    // private static NetData CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, true, data);
 
     /// <summary>
     /// Sends an RPC message to all players.
@@ -127,12 +127,12 @@ public static class RpcManager
     /// <param name="data">The data associated to the rpc.</param>
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
 
-    /// <summary>
-    /// Sends an RPC message to all players.
-    /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallTargetedRpcUsingTypeCodes(-1, rpc, data);
+    // /// <summary>
+    // /// Sends an RPC message to all players.
+    // /// </summary>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // public static void CallRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallTargetedRpcUsingTypeCodes(-1, rpc, data);
 
     /// <summary>
     /// Sends an RPC message to a specific player.
@@ -146,17 +146,17 @@ public static class RpcManager
         writer?.Send(targetClientId);
     }
 
-    /// <summary>
-    /// Sends an RPC message to a specific player.
-    /// </summary>
-    /// <param name="targetClientId">The player to send the data to.</param>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
-    {
-        using var writer = CreateWriterUsingTypeCodes(rpc, data);
-        writer?.Send(targetClientId);
-    }
+    // /// <summary>
+    // /// Sends an RPC message to a specific player.
+    // /// </summary>
+    // /// <param name="targetClientId">The player to send the data to.</param>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // private static void CallTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
+    // {
+    //     using var writer = CreateWriterUsingTypeCodes(rpc, data);
+    //     writer?.Send(targetClientId);
+    // }
 
     /// <summary>
     /// Closes and sends the rpc.
@@ -546,17 +546,17 @@ public static class RpcManager
                         CustomStatsManager.IncrementStat(reader.Read<StringNames>());
                         return;
                     }
-                    case MiscRPC.SetStatus:
-                    {
-                        StatusUtils.AddStatusFromRpc(reader);
-                        return;
-                    }
+                    // case MiscRPC.SetStatus:
+                    // {
+                    //     StatusUtils.AddStatusFromRpc(reader);
+                    //     return;
+                    // }
                     case MiscRPC.WinLose:
                     {
                         WinState = reader.Read<WinLose>();
 
                         while (reader.BytesRemaining > 0)
-                            reader.ReadPlayer().GetLayers().Do(x => x.Winner = true);
+                            reader.ReadPlayer().Data.Role.TryCast<LayerHandler>().Winner = true;
 
                         return;
                     }
@@ -603,7 +603,7 @@ public static class RpcManager
                     }
                     case ActionsRPC.Convert:
                     {
-                        ConvertPlayer(reader.ReadByte(), reader.ReadByte(), reader.Read<SubFaction>(), reader.ReadBool());
+                        ConvertPlayer(reader.ReadByte(), reader.ReadByte(), reader.ReadBool());
                         return;
                     }
                     case ActionsRPC.BypassKill:

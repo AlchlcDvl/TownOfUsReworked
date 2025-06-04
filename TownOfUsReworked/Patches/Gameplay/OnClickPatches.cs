@@ -27,7 +27,7 @@ public static class PlayerControlOnClick
         return false;
     }
 
-    public static void CatchPostmortal(PlayerControl ghosty, PlayerControl clicker)
+    private static void CatchPostmortal(PlayerControl ghosty, PlayerControl clicker)
     {
         if (ghosty.Is<IGhosty>(out var role) && role.CanBeClicked(clicker))
             role.Catch(clicker);

@@ -148,7 +148,7 @@ public sealed class ChatCommand : IDisposable
                 chat.notificationRoutine ??= chat.StartCoroutine(chat.BounceDot());
             }
 
-            Play("Chat", pitch: 0.5f + (LocalPlayer.PlayerId / GameSettings.LobbySize.Value));
+            Play("Chat", pitch: 0.5f + (LocalPlayer.PlayerId / GameOptions.LobbySize.Value));
         }
         catch (Exception ex)
         {

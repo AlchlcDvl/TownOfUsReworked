@@ -45,7 +45,7 @@ public sealed class Rebel : Syndicate
         role.IsPromoted = false;
         role.Promoter = this;
         role.Name = TranslationManager.Translate("Layer.Sidekick");
-        role.RoleHistory.Add(role.Type);
+        role.Handler.History.Add((role.Type, role.Faction));
     }
 
     private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsUnderling || !player.Is(Faction);

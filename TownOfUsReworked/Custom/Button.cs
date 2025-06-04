@@ -405,9 +405,9 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f) => CooldownTime = type switch
     {
-        CooldownType.Start => GameSettings.EnableInitialCds ? GameSettings.InitialCooldowns : MaxCooldown(),
-        CooldownType.Meeting => GameSettings.EnableMeetingCds ? GameSettings.MeetingCooldowns : MaxCooldown(),
-        CooldownType.Fail => GameSettings.EnableFailCds ? GameSettings.FailCooldowns : MaxCooldown(),
+        CooldownType.Start => GameOptions.EnableInitialCds ? GameOptions.InitialCooldowns : MaxCooldown(),
+        CooldownType.Meeting => GameOptions.EnableMeetingCds ? GameOptions.MeetingCooldowns : MaxCooldown(),
+        CooldownType.Fail => GameOptions.EnableFailCds ? GameOptions.FailCooldowns : MaxCooldown(),
         CooldownType.Custom => cooldown,
         _ => MaxCooldown()
     };
@@ -566,7 +566,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         if (!Owner?.Player || !Local || Owner.Player.inMovingPlat || Owner.Player.onLadder)
             return;
 
-        if (!Owner.Player.inVent || VentSettings.CooldownInVent)
+        if (!Owner.Player.inVent || VentingOptions.CooldownInVent)
             CooldownTime = Mathf.Clamp(CooldownTime - Time.deltaTime, 0f, MaxCooldown());
     }
 

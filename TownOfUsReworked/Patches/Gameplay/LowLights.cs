@@ -41,7 +41,7 @@ public static class CalculateLightRadiusPatch
                 Faction.Crew => CrewSettings.CrewVision,
                 Faction.Intruder => IntruderSettings.IntruderVision,
                 Faction.Syndicate => SyndicateSettings.SyndicateVision,
-                Faction.Neutral => NeutralSettings.NeutralVision,
+                Faction.Outcast => OutcastSettings.OutcastVision,
                 Faction.Apocalypse => ApocalypseSettings.ApocalypseVision,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVision,
                 Faction.Pandorica => PandoricaSettings.PandoricaVision,

@@ -2,14 +2,13 @@ namespace TownOfUsReworked.Options.Settings;
 
 public sealed class StringOption<T>(T[] ignore, T defaultValue = default) : Option<T>(CustomOptionType.String, defaultValue), IStringOption where T : struct, Enum
 {
+    private T[] Values { get; } = [.. Enum.GetValues<T>().Except(ignore)];
     private int Index { get; set; }
-    private IEnumerable<T> Values { get; } = Enum.GetValues<T>().Except(ignore);
-    private int Count { get; set; }
 
     private void Change(bool incrementing)
     {
-        Index = CycleInt(Count, 0, Index, incrementing);
-        Set(Values.ElementAt(Index));
+        Index = CycleInt(Values.Length, 0, Index, incrementing);
+        Set(Values[Index]);
     }
 
     private void Increase() => Change(true);
@@ -42,7 +41,6 @@ public sealed class StringOption<T>(T[] ignore, T defaultValue = default) : Opti
     {
         base.PostLoadSetup();
         Index = Values.IndexOf(Value);
-        Count = Values.Count() - 1;
     }
 
     public override void ViewUpdate()
@@ -52,11 +50,7 @@ public sealed class StringOption<T>(T[] ignore, T defaultValue = default) : Opti
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
-    public override void Update()
-    {
-        Index = Mathf.Clamp(Values.IndexOf(Value), 0, Count);
-        Setting.Cast<StringOption>().ValueText.text = FormatValue();
-    }
+    public override void Update() => Setting.Cast<StringOption>().ValueText.text = FormatValue();
 
     public override void Debug()
     {

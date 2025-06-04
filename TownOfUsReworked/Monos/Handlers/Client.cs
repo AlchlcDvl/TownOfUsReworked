@@ -29,9 +29,6 @@ public sealed class ClientHandler : MonoBehaviour
     private readonly List<string> Entry = [];
     // The max page line limit is 20
 
-    public PassiveButton ClientOptionsButton;
-    public bool SettingsActive;
-
     private Transform ButtonsParent;
 
     private ProgressTracker taskBar;
@@ -45,9 +42,6 @@ public sealed class ClientHandler : MonoBehaviour
             return taskBar;
         }
     }
-
-    private static GameObject Prefab;
-    private static Vector3 Pos;
 
     private static Vector3 MaxSize = Vector3.zero;
     private static Vector3 MinSize = Vector3.zero;
@@ -86,16 +80,6 @@ public sealed class ClientHandler : MonoBehaviour
             WikiRcButton.transform.Find("Background").localPosition = Vector3.zero;
         }
 
-        if (!ClientOptionsButton)
-        {
-            ClientOptionsButton = Instantiate(hud.MapButton, ButtonsParent);
-            ClientOptionsButton.OverrideOnClickListeners(CreateMenu);
-            ClientOptionsButton.name = "ClientOptionsButton";
-            ClientOptionsButton.transform.Find("Inactive").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsInactive");
-            ClientOptionsButton.transform.Find("Active").GetComponent<SpriteRenderer>().sprite = GetSprite("SettingsActive");
-            ClientOptionsButton.transform.Find("Background").localPosition = Vector3.zero;
-        }
-
         if (!ZoomButton)
         {
             ZoomButton = Instantiate(hud.MapButton, ButtonsParent);
@@ -111,13 +95,7 @@ public sealed class ClientHandler : MonoBehaviour
     {
         Instance.OnHudStart(HUD());
 
-        if (!Prefab)
-        {
-            Prefab = GameStartManager.Instance.PlayerOptionsMenu;
-            Pos = GameStartManager.Instance.GameOptionsPosition;
-        }
-
-        var menu = Prefab.GetComponent<GameSettingMenu>();
+        var menu =  GameStartManager.Instance.PlayerOptionsMenu.GetComponent<GameSettingMenu>();
         var settings = menu.GameSettingsTab;
         var prefabs = new List<MonoBehaviour>();
 
@@ -434,9 +412,6 @@ public sealed class ClientHandler : MonoBehaviour
         if (WikiRcButton)
             WikiRcButton.gameObject.SetActive(part2);
 
-        if (ClientOptionsButton)
-            ClientOptionsButton.gameObject.SetActive(part2 && !RoleCardActive);
-
         if (hud!.MapButton)
             hud.MapButton.gameObject.SetActive(IsInGame());
 
@@ -464,9 +439,9 @@ public sealed class ClientHandler : MonoBehaviour
         if (!IsInGame())
             return;
 
-        var part = !RoleCardActive && !SettingsActive && !Zooming && !MapBehaviourPatches.MapActive && !WikiActive && !IsCustomHnS() && !GameSettingMenu.Instance;
+        var part = !RoleCardActive && !Zooming && !MapBehaviourPatches.MapActive && !WikiActive && !IsCustomHnS() && !GameSettingMenu.Instance;
         hud?.TaskPanel?.gameObject?.SetActive(part && !Meeting() && !IsCustomHnS());
-        TaskBar?.gameObject?.SetActive(part && GameSettings.TaskBarMode != TBMode.Invisible);
+        TaskBar?.gameObject?.SetActive(part && GameOptions.TaskBarMode != TBMode.Invisible);
     }
 
     public void ClickZoom()
@@ -551,30 +526,6 @@ public sealed class ClientHandler : MonoBehaviour
             OpenWiki();
     }
 
-    private static void CreateMenu()
-    {
-        Instance.CloseMenus(SkipEnum.Settings);
-
-        if (GameSettingMenu.Instance)
-        {
-            GameSettingMenu.Instance.Close();
-            return;
-        }
-
-        LocalPlayer.NetTransform.Halt();
-        var currentMenu = Instantiate(Prefab, Camera.main!.transform, false);
-        currentMenu.transform.localPosition = Pos;
-        currentMenu.name = "ReworkedOptionsMenu";
-        TransitionFade.Instance.DoTransitionFade(null, currentMenu.gameObject, null);
-
-        if (IsLobby())
-        {
-            GameStartManager.Instance?.RulesViewPanel?.SetActive(false);
-            GameStartManager.Instance?.SelectViewButton(false);
-            GameStartManager.Instance?.LobbyInfoPane?.DeactivatePane();
-        }
-    }
-
     private static void OpenWiki()
     {
         Instance.CloseMenus(SkipEnum.Wiki);
@@ -584,7 +535,7 @@ public sealed class ClientHandler : MonoBehaviour
 
         if (!Instance.PagesSet)
         {
-            var clone = Modules.Info.AllInfo.Where(x => !x.ID.ContainsAny("Invalid", "None"));
+            var clone = Modules.Info.AllInfos.Where(x => !x.ID.ContainsAny("Invalid", "None"));
             var count = clone.Count() - 1;
             var i = 0;
             var j = 0;
@@ -802,9 +753,6 @@ public sealed class ClientHandler : MonoBehaviour
 
         if (ActiveTask() && skip != SkipEnum.Task)
             ActiveTask().Close();
-
-        if (GameSettingMenu.Instance && skip != SkipEnum.Settings)
-            GameSettingMenu.Instance.Close();
     }
 
     public void SetEntryText(string result)

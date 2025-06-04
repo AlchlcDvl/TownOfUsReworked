@@ -78,7 +78,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void InitNeutList()
     {
-        if (Neutrals == 0)
+        if (Outcasts == 0)
             return;
 
         foreach (var layer in GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer, x => x != LayerEnum.Betrayer))
@@ -96,13 +96,13 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
             else if (spawn.IsActive())
             {
                 if (NB.Contains(layer))
-                    RoleGenManager.NeutralBenignRoles.AddMany(spawn.Clone, spawn.Count);
+                    RoleGenManager.OutcastBenignRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (NE.Contains(layer))
-                    RoleGenManager.NeutralEvilRoles.AddMany(spawn.Clone, spawn.Count);
+                    RoleGenManager.OutcastEvilRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (NK.Contains(layer))
-                    RoleGenManager.NeutralKillingRoles.AddMany(spawn.Clone, spawn.Count);
+                    RoleGenManager.OutcastKillingRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (NN.Contains(layer))
-                    RoleGenManager.NeutralNeophyteRoles.AddMany(spawn.Clone, spawn.Count);
+                    RoleGenManager.OutcastNeophyteRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
     }
@@ -168,7 +168,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
 
     public override void Filter()
     {
-        AllRoles.AddRanges(NeutralRoles, CrewRoles);
+        AllRoles.AddRanges(OutcastRoles, CrewRoles);
 
         if (BadGuysSettings.OnlyMainBadGuys)
         {
@@ -191,7 +191,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (AllRoles.Any(x => x.ID == LayerEnum.Cannibal) && AllRoles.Any(x => x.ID == LayerEnum.Janitor) && GameModifiers.JaniCanMutuallyExclusive)
         {
             var chance = URandom.RandomRangeInt(0, 2);
-            var value = chance == 0 ? NeutralRoles.Random(x => x.ID != LayerEnum.Cannibal, GetSpawnItem(LayerEnum.Amnesiac)) : IntruderRoles.Random(x => x.ID != LayerEnum.Janitor,
+            var value = chance == 0 ? OutcastRoles.Random(x => x.ID != LayerEnum.Cannibal, GetSpawnItem(LayerEnum.Amnesiac)) : IntruderRoles.Random(x => x.ID != LayerEnum.Janitor,
                 GetSpawnItem(LayerEnum.Impostor));
             AllRoles.AddMany(value.Clone, AllRoles.RemoveAll(x => x.ID == (chance == 0 ? LayerEnum.Cannibal : LayerEnum.Janitor)));
         }
@@ -199,7 +199,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (GameData.Instance.PlayerCount <= 4 && AllRoles.Any(x => x.ID == LayerEnum.Amnesiac))
             AllRoles.AddMany(GetSpawnItem(LayerEnum.Thief).Clone, AllRoles.RemoveAll(x => x.ID == LayerEnum.Amnesiac));
 
-        NeutralRoles.Clear();
+        OutcastRoles.Clear();
         CrewRoles.Clear();
         SyndicateRoles.Clear();
         IntruderRoles.Clear();

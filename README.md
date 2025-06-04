@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-    <img src="https://badgen.net/static/AmongUs/2025.5.20/yellow">
+    <img src="https://badgen.net/static/AmongUs/16.0.5/yellow">
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a>
     <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/AlchlcDvl/TownOfUsReworked/total"></a>
     <a href="https://discord.gg/cd27aDQDY9"> <img src="https://img.shields.io/discord/1039196456667582555.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2"></a>
@@ -59,7 +59,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
   - [Crew Settings](#crew-settings)
   - [Intruder Settings](#intruder-settings)
   - [Syndicate Settings](#syndicate-settings)
-  - [Neutral Settings](#neutral-settings)
+  - [Outcast Settings](#outcast-settings)
   - [Game Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#game-settings)
   - [Game Modifiers](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#game-modifiers)
   - [Game Announcements](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#game-announcements)
@@ -73,7 +73,6 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
   - [Custom Client Side Options](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#custom-client-side-options)
 - [**Mod Info**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info)
   - [Factions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#factions)
-  - [Subfactions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#subfactions)
   - [Syndicate Chaos Drive Role Priority](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#syndicate-chaos-drive-role-priority)
   - [List Entries](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#role-list-entries)
   - [Custom Cosmetics](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#custom-cosmetics)
@@ -83,7 +82,7 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 - [**License**](#license)
 - [**Player Layers**](#player-layers)
 
-| [Intruders](#intruder-roles)       | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Apocalypse](#apocalypse-roles) | [Game Mode](#game-mode-roles) |
+| [Intruders](#intruder-roles)       | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Outcasts](#outcast-roles)        | [Apocalypse](#apocalypse-roles) | [Game Mode](#game-mode-roles) |
 |------------------------------------|-------------------------------|-----------------------------------|-----------------------------------|---------------------------------|-------------------------------|
 | [Ambusher](#ambusher)              | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Cannibal](#cannibal)           | [Hunted](#hunted)             |
 | [Blackmailer](#blackmailer)        | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Cultist](#cultist)             | [Hunter](#hunter)             |
@@ -137,14 +136,14 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
 
 | Among Us   | Mod Version | Download Link                                                                                   |
 |------------|-------------|-------------------------------------------------------------------------------------------------|
-| 2025.3.31  | 0.7.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.7.1/Reworked.zip) |
-| 2024.10.29 | 0.7.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.7.0/Reworked.zip) |
+| 16.0.5     | 0.8.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.8.0/Reworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
 
 | Among Us   | Mod Version  | Download Link                                                                                                         |
 |------------|--------------|-----------------------------------------------------------------------------------------------------------------------|
+| 2024.10.29 | 0.7.0        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.7.0/Reworked.zip)                       |
 | 2024.3.5   | 0.6.6        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.6/Reworked.zip)                       |
 | 2023.11.28 | 0.6.5        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.5/Reworked.zip)                       |
 | 2023.11.28 | 0.6.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.4/Reworked.zip)                       |
@@ -408,7 +407,7 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 
 **Alignment**: Crew (Investigative)
 
-The Mystic can only spawn when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target belongs to a subfaction, or that the target's subfaction is different from the Mystic's (in the case of a converted Mystic), the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might still be evil. Once all subfactions are dead, the Mystic becomes a Seer. Framed players will appear to have their subfactions changed.
+The Mystic can only spawn when there is at least one Outcast (Neophyte) role present in the game. Whenever someone's faction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their factions have been changed. If the target belongs to a faction, or that the target's faction is different from the Mystic's (in the case of a converted Mystic), the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Outcast (Neophyte) roles themselves so even people who flashed green might still be evil. Once all factions are dead, the Mystic becomes a Seer. Framed players will appear to have their factions changed.
 
 ## Operative <img height="17" src="./Images/Operative.png">
 
@@ -451,7 +450,7 @@ The Revealer is a dead Crew. Upon finishing all their tasks, the evils, and poss
 |------|-------------|------|---------|
 | When Can Revealer Be Clicked | The amount of tasks remaining when the Revealer can be clicked | Number | 5 |
 | Tasks Remaining When Revealed | The amount of tasks remaining when evils are alerted that the Revealer is nearly finished | Number | 1 |
-| Revealer Reveals Neutrals | Whether the Revealer also reveals neutral roles | Toggle | False |
+| Revealer Reveals Outcasts | Whether the Revealer also reveals outcast roles | Toggle | False |
 | Revealer Reveals Crew | Whether the Revealer also Reveals crew roles | Toggle | False |
 | Revealer Reveals Exact Roles | Whether the Revealer also Reveals all roles | Toggle | False |
 | Who Can Click Revealer | Which players can click the Revealer | String | All |
@@ -476,22 +475,8 @@ The Sheriff can reveal the alliance of other players. Based on settings, the She
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Neutral Evils Show Up As Evil | Neutral Evil roles show up as bad | Toggle | False |
-| Neutral Killing Show Up As Evil | Neutral Killing roles show up as bad | Toggle | False |
-
-## Shifter <img height="17" src="./Images/Shifter.png">
-
-**Alignment**: Crew (Support)
-
-**Origin**: Town Of Us
-
-The Shifter can swap roles with someone, as long as they are a valid Crew. If the shift is unsuccessful or the target is framed, the Shifter dies.
-
-**Game Options**
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Shifted Becomes | Dictates what the shift target becomes after getting shifted | String | Shifter |
+| Outcast Evils Show Up As Evil | Outcast Evil roles show up as bad | Toggle | False |
+| Outcast Killing Show Up As Evil | Outcast Killing roles show up as bad | Toggle | False |
 
 ## Tracker <img height="17" src="./Images/Tracker.png">
 
@@ -564,23 +549,23 @@ The Vigilante can kill. However, if they kill someone they shouldn't, they inste
 | How Is The Vigilante Notified Of Their Target's Innocence | Whether the Vigilante is notified of their target's innocent upon misfire | String | Never |
 | How Does Vigilante Die | Dictates how does the Vigilante die, should they kill or attempt to kill someone they shouldn't | String | Immediately |
 
-# Neutral Roles <img height="25" src="./Images/Neutral.png">
+# Outcast Roles <img height="25" src="./Images/Outcast.png">
 
 Each member of this faction has their own unique way to win, separate from the other roles in the same faction. The main theme of this faction is free for all. This faction is an uninformed minority in the game, meaning they make up a small part of the crew while not knowing who the other members are. Each role is unique in its own way; some can be helpful, some exist to destroy others and some just exist for the sake of existing.
 
-### Neutral Settings
+### Outcast Settings
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Lights Affect Neutral Vision | Whether the lights sabotage affects Neutrals | Toggle | True |
-| Neutrals Together, Strong | Whether Neutrals can win together | String | Never |
-| Vigilante Kills Neutral Benign Roles | Whether Neutral Benign roles are considered evil for the Vigilante | Toggle | True |
-| Neutral Killers Have Intruder Vision | Whether Neutral (Killing) roles have higher vision or not | Toggle | False |
-| Neutral Killers Know Each Other | If Neutrals can win together, this settings lets Neutral Killers know of each other | Toggle | False |
+| Lights Affect Outcast Vision | Whether the lights sabotage affects Outcasts | Toggle | True |
+| Outcasts Together, Strong | Whether Outcasts can win together | String | Never |
+| Vigilante Kills Outcast Benign Roles | Whether Outcast Benign roles are considered evil for the Vigilante | Toggle | True |
+| Outcast Killers Have Intruder Vision | Whether Outcast (Killing) roles have higher vision or not | Toggle | False |
+| Outcast Killers Know Each Other | If Outcasts can win together, this settings lets Outcast Killers know of each other | Toggle | False |
 
 ## Actor <img height="17" src="./Images/Actor.png">
 
-**Alignment**: Neutral (Evil)
+**Alignment**: Outcast (Evil)
 
 **Win Condition**: Get guessed as a role in their target role list
 
@@ -599,7 +584,7 @@ The Actor gets a list of roles at the start of the game. Alternatively, the Acto
 
 ## Amnesiac <img height="17" src="./Images/Amnesiac.png">
 
-**Alignment**: Neutral (Benign)
+**Alignment**: Outcast (Benign)
 
 **Win Condition**: Find a dead body, take their role and then win as that role
 
@@ -616,7 +601,7 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 
 ## Arsonist <img height="17" src="./Images/Arsonist.png">
 
-**Alignment**: Neutral (Killing)
+**Alignment**: Outcast (Killing)
 
 **Win Condition**: Ignite anyone who can oppose them
 
@@ -639,7 +624,7 @@ The Arsonist can douse players with gasoline. After dousing, the Arsonist can ch
 
 ## Betrayer <img height="17" src="./Images/Betrayer.png">
 
-**Alignment**: Neutral (Proselyte)
+**Alignment**: Outcast (Proselyte)
 
 **Win Condition**: Kill anyone who opposes the faction they defected to
 
@@ -649,7 +634,7 @@ The Betrayer is a simple killer, who appears after a turned [Traitor](#traitor)/
 
 ## Bounty Hunter <img height="17" src="./Images/BountyHunter.png">
 
-**Alignment**: Neutral (Evil)
+**Alignment**: Outcast (Evil)
 
 **Win Condition**: Find and kill their target
 
@@ -666,7 +651,7 @@ The Bounty Hunter is assigned a target as the start of the game. Alternatively, 
 
 ## Cannibal <img height="17" src="./Images/Cannibal.png">
 
-**Alignment**: Neutral (Evil)
+**Alignment**: Outcast (Evil)
 
 **Win Condition**: Eat a certain number of bodies
 
@@ -685,7 +670,7 @@ The Cannibal can eat the body which wipes it away, like the Janitor.
 
 ## Cryomaniac <img height="17" src="./Images/Cryomaniac.png">
 
-**Alignment**: Neutral (Killing)
+**Alignment**: Outcast (Killing)
 
 **Win Condition**: Freeze anyone who can oppose them
 
@@ -704,7 +689,7 @@ The Cryomaniac can douse players in coolant and freeze them similar to the Arson
 
 ## Dracula <img height="17" src="./Images/Dracula.png">
 
-**Alignment**: Neutral (Neophyte)
+**Alignment**: Outcast (Neophyte)
 
 **Win Condition**: Convert or kill anyone who can oppose them
 
@@ -721,7 +706,7 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 
 ## Executioner <img height="17" src="./Images/Executioner.png">
 
-**Alignment**: Neutral (Evil)
+**Alignment**: Outcast (Evil)
 
 **Win Condition**: Live (or die according to the settings) to see their target get ejected
 
@@ -745,9 +730,9 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 
 ## Glitch <img height="17" src="./Images/Glitch.png">
 
-**Alignment**: Neutral (Killing)
+**Alignment**: Outcast (Killing)
 
-**Win Condition**: Neutralise anyone who can oppose them
+**Win Condition**: Outcastise anyone who can oppose them
 
 **Origin**: Town Of Us
 
@@ -759,7 +744,7 @@ The Glitch can mimic someone, which results in them looking exactly like the oth
 
 ## Guardian Angel <img height="17" src="./Images/GuardianAngel.png">
 
-**Alignment**: Neutral (Benign)
+**Alignment**: Outcast (Benign)
 
 **Win Condition**: Have their target live to see the end of the game
 
@@ -779,7 +764,7 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 
 ## Guesser <img height="17" src="./Images/Guesser.png">
 
-**Alignment**: Neutral (Evil)
+**Alignment**: Outcast (Evil)
 
 **Win Condition**: Guess their target's role
 
@@ -800,7 +785,7 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 
 ## Jackal <img height="17" src="./Images/Jackal.png">
 
-**Alignment**: Neutral (Neophyte)
+**Alignment**: Outcast (Neophyte)
 
 **Win Condition**: Bribe the crew into joining their side and eliminate any threats
 
@@ -808,7 +793,7 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 
 **Attack**: Basic
 
-The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. The two recruits will always have opposing base win conditions. When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead. Members of the Cabal have a dark grey $ next to their names.
+The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. The two recruits will always have opposing base win conditions. When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival faction, they will be attacked instead.
 
 **Game Options**
 
@@ -818,7 +803,7 @@ The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the star
 
 ## Jester <img height="17" src="./Images/Jester.png">
 
-**Alignment**: Neutral (Evil)
+**Alignment**: Outcast (Evil)
 
 **Win Condition**: Get ejected
 
@@ -838,7 +823,7 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 
 ## Juggernaut <img height="17" src="./Images/Juggernaut.png">
 
-**Alignment**: Neutral (Killing)
+**Alignment**: Outcast (Killing)
 
 **Win Condition**: Assault anyone who can oppose them
 
@@ -858,7 +843,7 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 
 ## Murderer <img height="17" src="./Images/Murderer.png">
 
-**Alignment**: Neutral (Killing)
+**Alignment**: Outcast (Killing)
 
 **Win Condition**: Murder anyone who can oppose them
 
@@ -866,11 +851,11 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 
 **Defense**: Basic
 
-The Murderer is a simple Neutral Killer with no special abilities. The only role that has both passive defense and attack.
+The Murderer is a simple Outcast Killer with no special abilities. The only role that has both passive defense and attack.
 
 ## Necromancer <img height="17" src="./Images/Necromancer.png">
 
-**Alignment**: Neutral (Neophyte)
+**Alignment**: Outcast (Neophyte)
 
 **Win Condition**: Bring the dead to their side and gain a majority
 
@@ -898,13 +883,13 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 
 ## Phantom <img height="17" src="./Images/Phantom.png">
 
-**Alignment**: Neutral (Proselyte)
+**Alignment**: Outcast (Proselyte)
 
 **Win Condition**: Finish your tasks without getting clicked or having the game end
 
 **Origin**: Ottomated
 
-The Phantom spawns when a Neutral player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
+The Phantom spawns when a Outcast player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
 
 **Game Options**
 
@@ -915,7 +900,7 @@ The Phantom spawns when a Neutral player dies without accomplishing their object
 
 ## Serial Killer <img height="17" src="./Images/SerialKiller.png">
 
-**Alignment**: Neutral (Killing)
+**Alignment**: Outcast (Killing)
 
 **Win Condition**: Stab anyone who can oppose them
 
@@ -927,9 +912,19 @@ The Phantom spawns when a Neutral player dies without accomplishing their object
 
 Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust. The Serial Killer gets Basic defense when in bloodlust.
 
+## Shifter <img height="17" src="./Images/Shifter.png">
+
+**Alignment**: Outcast (Evil)
+
+**Win Condition**: Kill all non-original Shifters
+
+**Origin**: Town Of Us, Town Of Salem 2 Cursed Soul
+
+The Shifter can choose to swap roles with someone. The Shifter has a 50% chance to shift with their target, or someone else.
+
 ## Survivor <img height="17" src="./Images/Survivor.png">
 
-**Alignment**: Neutral (Benign)
+**Alignment**: Outcast (Benign)
 
 **Win Condition**: Live to see the end of the game
 
@@ -941,7 +936,7 @@ The Survivor wins by simply surviving. They can vest which makes them immortal f
 
 ## Thief <img height="17" src="./Images/Thief.png">
 
-**Alignment**: Neutral (Benign)
+**Alignment**: Outcast (Benign)
 
 **Win Condition**: Kill a killer and win as their role
 
@@ -961,7 +956,7 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 
 ## Troll <img height="17" src="./Images/Troll.png">
 
-**Alignment**: Neutral (Evil)
+**Alignment**: Outcast (Evil)
 
 **Win Condition**: Get killed
 
@@ -973,7 +968,7 @@ The Troll just wants to be killed, but not ejected. The Troll can "interact" wit
 
 ## Werewolf <img height="17" src="./Images/Werewolf.png">
 
-**Alignment**: Neutral (Killing)
+**Alignment**: Outcast (Killing)
 
 **Win Condition**: Maul anyone who can oppose them
 
@@ -991,7 +986,7 @@ The Werewolf can kill all players within a certain radius. The Werewolf cannot a
 
 ## Whisperer <img height="17" src="./Images/Whisperer.png">
 
-**Alignment**: Neutral (Neophyte)
+**Alignment**: Outcast (Neophyte)
 
 **Win Condition**: Persuade others into joining the cult
 
@@ -1483,7 +1478,7 @@ The Cultist is the basic Apocalypse role. They can only kill once per round and 
 
 **Defense**: Invincible
 
-When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targeting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Neutral (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
+When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targeting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Outcast (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
 
 ## Plaguebearer <img height="17" src="./Images/Plaguebearer.png">
 
@@ -1543,13 +1538,13 @@ Dispositions are basically a second objective for the player. They can either ch
 
 ## Allied
 
-**Applied To**: Neutral (Killing)
+**Applied To**: Outcast (Killing)
 
 **Win Condition**: Win with whichever faction they are aligned with
 
 **Symbol**: ζ
 
-An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndicate. In the case of the latter two, all faction members are shown who is their Ally, and can no longer kill them. A Crew-Allied will have tasks that they must complete.
+An Allied Outcast Killer now sides with either the Crew, Intruders or the Syndicate. In the case of the latter two, all faction members are shown who is their Ally, and can no longer kill them. A Crew-Allied will have tasks that they must complete.
 
 **Game Options**
 
@@ -1567,7 +1562,7 @@ An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndic
 
 **Symbol**: δ
 
-The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared. Corrupted adds a level of attack to the applied crewmate.
+The Corrupted is a member of the Crew with the alignment of a Outcast Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Outcast Benigns or Evils can be spared. Corrupted adds a level of attack to the applied crewmate.
 
 ## Defector
 
@@ -1607,7 +1602,7 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 
 ## Linked
 
-**Applied To**: Neutrals
+**Applied To**: Outcasts
 
 **Win Condition**: Help the other link win
 
@@ -1661,7 +1656,7 @@ The Mafia are a group of players with a linked win condition. They must kill any
 
 ## Overlord
 
-**Applied To**: Neutrals
+**Applied To**: Outcasts
 
 **Win Condition**: Survive a set amount of meetings
 
@@ -1695,7 +1690,7 @@ The Rivals cannot do anything to each other and must get the other one killed.
 
 ## Taskmaster
 
-**Applied To**: Neutrals
+**Applied To**: Outcasts
 
 **Win Condition**: Finish tasks before the game ends or dying
 
@@ -1896,13 +1891,13 @@ Abilities give you extra perks on top of your role's regular powers.
 
 ## Assassin
 
-**Applied To**: Intruders, Crew, Syndicate, Neutral (Killing), Neutral (Harbinger) and Neutral (Neophyte)
+**Applied To**: Intruders, Crew, Syndicate, Outcast (Killing), Outcast (Harbinger) and Outcast (Neophyte)
 
 **Origin**: Town Of Us
 
 **Attack**: Basic
 
-The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals, Ritualist is for Apocalypse and Sniper is for the Syndicate. Assassin adds a level of attack to the applied crewmate.
+The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name of the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Outcasts, Ritualist is for Apocalypse and Sniper is for the Syndicate. Assassin adds a level of attack to the applied crewmate.
 
 **Game Options**
 
@@ -1912,8 +1907,8 @@ The Assassin can guess the layers of others. If they guess right, the target is 
 | Assassin Multiple Kill | Whether the Assassin can kill more than once per meeting | Toggle | False |
 | Assassins Get Chances | Whether the Assassins have room for error for misguessing | Toggle | False |
 | Assassin Chances | How many chances does the Assassin get before they are penalised with being killed | Number | 1 |
-| Assassin Guess Neutral Evils | Whether the Assassin can Guess Neutral (Evil) roles | Toggle | False |
-| Assassin Guess Neutral Benigns | Whether the Assassin can Guess Neutral (Benign) roles | Toggle | False |
+| Assassin Guess Outcast Evils | Whether the Assassin can Guess Outcast (Evil) roles | Toggle | False |
+| Assassin Guess Outcast Benigns | Whether the Assassin can Guess Outcast (Benign) roles | Toggle | False |
 | Assassin Guess Crew Investigators | Whether the Assassin can Guess Crew (Investigative) roles | Toggle | False |
 | Assassin Guess Deities | Whether the Assassin can Guess Apocalypse Deity Roles | Toggle | False |
 | Assassin Guess Select Modifiers | Whether the Assassin can Guess some non-obvious Modifiers | Toggle | False |
@@ -1962,7 +1957,7 @@ Ninjas don't lunge when killing.
 
 ## Politician
 
-**Applied To**: Crew, Intruders, Syndicate, Neutral (Killing) and Neutral (Harbinger)
+**Applied To**: Crew, Intruders, Syndicate, Outcast (Killing) and Outcast (Harbinger)
 
 **Origin**: Fused Town Of Us Mayor and Project Lotus Pickpocket
 
@@ -2010,7 +2005,7 @@ The Snitch is an ability which allows any member of the Crew to get arrows point
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Snitch Knows Who They Are | Whether a player knows they are a Snitch at the start of a game | Toggle | True |
-| Snitch Sees Neutral Roles | Whether the Snitch also Reveals Neutral Roles | Toggle | False |
+| Snitch Sees Outcast Roles | Whether the Snitch also Reveals Outcast Roles | Toggle | False |
 | Snitch Sees Crew Roles | Whether the Snitch also Reveals Crew Roles | Toggle | False |
 | Snitch Sees Exact Roles | Whether the Snitch also Reveals all Roles | Toggle | False |
 | Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |

@@ -87,14 +87,7 @@ public static class PlayerTabPatches
     public static bool UpdateAvailableColorsPrefix(PlayerTab __instance)
     {
         __instance.AvailableColors.Clear();
-
-        foreach (var i in CustomColorManager.AllColors.Keys)
-        {
-            // if (i != (VisorsActive ? ReworkedDataManager.VisorColorId : DataManager.Player.Customization.Color))
-            if (i != DataManager.Player.Customization.Color)
-                __instance.AvailableColors.Add(i);
-        }
-
+        __instance.AvailableColors.AddRange(CustomColorManager.AllColors.Keys.Where(i => i != DataManager.Player.Customization.Color));
         return false;
     }
 

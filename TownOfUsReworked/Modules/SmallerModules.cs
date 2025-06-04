@@ -34,7 +34,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     public LayerEnum ID { get; set; } = layer;
 
     /// <inheritdoc/>
-    public CustomTypeCode TypeCode => CustomTypeCode.RoleOptionData;
+    public readonly CustomTypeCode TypeCode => CustomTypeCode.RoleOptionData;
 
     public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 
@@ -52,7 +52,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     }
 }
 
-public record struct LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
+public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
 {
     public string Name => TranslationManager.Translate($"Layer.{Layer}");
 }
@@ -66,6 +66,11 @@ public sealed class Achievement(string name, bool unlocked = false, bool hidden 
     public bool Unlocked { get; set; } = unlocked;
 }
 
+public readonly record struct FactionDictionaryEntry(Faction Faction, UColor Color)
+{
+    public string Name => TranslationManager.Translate($"Faction.{Faction}");
+}
+
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]
 public sealed class SortedAttribute(int order) : Attribute
 {
@@ -74,18 +79,18 @@ public sealed class SortedAttribute(int order) : Attribute
 
 public delegate bool WhereSelectFilter<in T1, T2>(T1 param, out T2 value);
 
-/// <summary>
-/// Wrapper to act as an out parameter for coroutines.
-/// </summary>
-/// <typeparam name="T">The type of the value being set.</typeparam>
-public sealed class Out<T>(T value = default)
-{
-    public T Value = value;
-
-    public static implicit operator T(Out<T> outVal) => outVal.Value;
-
-    public static implicit operator Out<T>(T val) => new(val);
-}
+// /// <summary>
+// /// Wrapper to act as an out parameter for coroutines.
+// /// </summary>
+// /// <typeparam name="T">The type of the value being set.</typeparam>
+// public sealed class Out<T>(T value = default)
+// {
+//     public T Value = value;
+//
+//     public static implicit operator T(Out<T> outVal) => outVal.Value;
+//
+//     public static implicit operator Out<T>(T val) => new(val);
+// }
 
 /// <summary>
 /// A struct that signifies a pair of colors. Used to simplify some code regarding player material colors.

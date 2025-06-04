@@ -60,14 +60,6 @@ public static class References
     // As much as I hate to do this, people will take advantage, so we're better off doing this early
     public static readonly string[] Profanities = [ "nigg", "whore", "negro", "yiff", "rape", "rapist" ];
     public const string Disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
-    public static readonly int Outline = Shader.PropertyToID("_Outline");
-    public static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
-    public static readonly int AddColor = Shader.PropertyToID("_AddColor");
-    public static readonly int Mask = Shader.PropertyToID("_Mask");
-    public static readonly int StencilComp = Shader.PropertyToID("_StencilComp");
-    public static readonly int Stencil = Shader.PropertyToID("_Stencil");
-    public static readonly int FaceDilate = Shader.PropertyToID("_FaceDilate");
-    public static readonly int OutlineWidth = Shader.PropertyToID("_OutlineWidth");
     // public static readonly char[] Lowercase = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
     // public static readonly char[] Uppercase = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
     public static readonly IEnumerable<Vector2> SkeldSpawns =
@@ -244,7 +236,6 @@ public static class References
         { LayerEnum.Revealer, new(typeof(Revealer), CustomColorManager.Revealer, LayerEnum.Revealer) },
         { LayerEnum.Seer, new(typeof(Seer), CustomColorManager.Seer, LayerEnum.Seer) },
         { LayerEnum.Sheriff, new(typeof(Sheriff), CustomColorManager.Sheriff, LayerEnum.Sheriff) },
-        { LayerEnum.Shifter, new(typeof(Shifter), CustomColorManager.Shifter, LayerEnum.Shifter) },
         { LayerEnum.Tracker, new(typeof(Tracker), CustomColorManager.Tracker, LayerEnum.Tracker) },
         { LayerEnum.Transporter, new(typeof(Transporter), CustomColorManager.Transporter, LayerEnum.Transporter) },
         { LayerEnum.Trapper, new(typeof(Trapper), CustomColorManager.Trapper, LayerEnum.Trapper) },
@@ -269,6 +260,7 @@ public static class References
         { LayerEnum.Necromancer, new(typeof(Necromancer), CustomColorManager.Necromancer, LayerEnum.Necromancer) },
         { LayerEnum.Phantom, new(typeof(Phantom), CustomColorManager.Phantom, LayerEnum.Phantom) },
         { LayerEnum.SerialKiller, new(typeof(SerialKiller), CustomColorManager.SerialKiller, LayerEnum.SerialKiller) },
+        { LayerEnum.Shifter, new(typeof(Shifter), CustomColorManager.Shifter, LayerEnum.Shifter) },
         { LayerEnum.Survivor, new(typeof(Survivor), CustomColorManager.Survivor, LayerEnum.Survivor) },
         { LayerEnum.Thief, new(typeof(Thief), CustomColorManager.Thief, LayerEnum.Thief) },
         { LayerEnum.Troll, new(typeof(Troll), CustomColorManager.Troll, LayerEnum.Troll) },
@@ -353,7 +345,7 @@ public static class References
         { LayerEnum.Radar, new(typeof(Radar), CustomColorManager.Radar, LayerEnum.Radar) },
         { LayerEnum.Ritualist, new(typeof(Ritualist), CustomColorManager.Apocalypse, LayerEnum.Ritualist) },
         { LayerEnum.Ruthless, new(typeof(Ruthless), CustomColorManager.Ruthless, LayerEnum.Ruthless) },
-        { LayerEnum.Slayer, new(typeof(Slayer), CustomColorManager.Neutral, LayerEnum.Slayer) },
+        { LayerEnum.Slayer, new(typeof(Slayer), CustomColorManager.Outcast, LayerEnum.Slayer) },
         { LayerEnum.Sniper, new(typeof(Sniper), CustomColorManager.Syndicate, LayerEnum.Sniper) },
         { LayerEnum.Snitch, new(typeof(Snitch), CustomColorManager.Snitch, LayerEnum.Snitch) },
         { LayerEnum.Swapper, new(typeof(Swapper), CustomColorManager.Swapper, LayerEnum.Swapper) },
@@ -361,11 +353,29 @@ public static class References
         { LayerEnum.Torch, new(typeof(Torch), CustomColorManager.Torch, LayerEnum.Torch) },
         { LayerEnum.Tunneler, new(typeof(Tunneler), CustomColorManager.Tunneler, LayerEnum.Tunneler) },
         { LayerEnum.Underdog, new(typeof(Underdog), CustomColorManager.Underdog, LayerEnum.Underdog) },
-        { LayerEnum.Cabal, new(null, CustomColorManager.Cabal, LayerEnum.Cabal) },
-        { LayerEnum.Cult, new(null, CustomColorManager.Cult, LayerEnum.Cult) },
-        { LayerEnum.Reanimated, new(null, CustomColorManager.Reanimated, LayerEnum.Reanimated) },
-        { LayerEnum.Followers, new(null, CustomColorManager.Followers, LayerEnum.Followers) },
-        { LayerEnum.Undead, new(null, CustomColorManager.Undead, LayerEnum.Undead) }
+    };
+    public static readonly Dictionary<Faction, FactionDictionaryEntry> FactionDictionary = new()
+    {
+        { Faction.Crew, new(Faction.Crew, CustomColorManager.Crew) },
+        { Faction.Intruder, new(Faction.Intruder, CustomColorManager.Intruder) },
+        { Faction.Syndicate, new(Faction.Syndicate, CustomColorManager.Syndicate) },
+        { Faction.Apocalypse, new(Faction.Apocalypse, CustomColorManager.Apocalypse) },
+        { Faction.Outcast, new(Faction.Outcast, CustomColorManager.Outcast) },
+        { Faction.Pandorica, new(Faction.Pandorica, CustomColorManager.Pandorica) },
+        { Faction.Compliance, new(Faction.Compliance, CustomColorManager.Compliance) },
+        { Faction.GameMode, new(Faction.GameMode, CustomColorManager.GameMode) },
+        { Faction.Arsonist, new(Faction.Arsonist, CustomColorManager.Arsonist) },
+        { Faction.Cryomaniac, new(Faction.Cryomaniac, CustomColorManager.Cryomaniac) },
+        { Faction.Glitch, new(Faction.Glitch, CustomColorManager.Glitch) },
+        { Faction.Juggernaut, new(Faction.Juggernaut, CustomColorManager.Juggernaut) },
+        { Faction.Murderer, new(Faction.Murderer, CustomColorManager.Murderer) },
+        { Faction.SerialKiller, new(Faction.SerialKiller, CustomColorManager.SerialKiller) },
+        { Faction.Werewolf, new(Faction.Werewolf, CustomColorManager.Werewolf) },
+        { Faction.Cabal, new(Faction.Cabal, CustomColorManager.Cabal) },
+        { Faction.Cult, new(Faction.Cult, CustomColorManager.Cult) },
+        { Faction.Followers, new(Faction.Followers, CustomColorManager.Followers) },
+        { Faction.Reanimated, new(Faction.Reanimated, CustomColorManager.Reanimated) },
+        { Faction.Undead, new(Faction.Undead, CustomColorManager.Undead) },
     };
     public static readonly string[] Splashes =
     [

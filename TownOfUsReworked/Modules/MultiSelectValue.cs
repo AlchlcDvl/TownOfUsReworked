@@ -75,6 +75,13 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     public bool ContainsAny(params T[] items) => values.ContainsAny(items);
 
     /// <summary>
+    /// Determines whether the collection contains all of the specified enum values.
+    /// </summary>
+    /// <param name="items">The enum values to locate.</param>
+    /// <returns>true if the items are found in the collection; otherwise, false.</returns>
+    public bool ContainsAll(params T[] items) => values.ContainsAll(items);
+
+    /// <summary>
     /// Removes all enum values that match the specified predicate condition.<br/>
     /// Iterates through the collection and removes each matching value.
     /// </summary>
@@ -181,14 +188,14 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// </summary>
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
-    public static bool operator ==(MultiSelectValue<T> left, MultiSelectValue<T> right) => left?.Equals(right) == true;
+    public static bool operator ==(MultiSelectValue<T> left, T[] right) => left?.ContainsAll(right) == true;
 
     /// <summary>
     /// Inequality comparison.
     /// </summary>
     /// <param name="left">Left.</param>
     /// <param name="right">Right.</param>
-    public static bool operator !=(MultiSelectValue<T> left, MultiSelectValue<T> right) => left?.Equals(right) == false;
+    public static bool operator !=(MultiSelectValue<T> left, T[] right) => left?.ContainsAll(right) == false;
 
     /// <summary>
     /// Equality comparison.

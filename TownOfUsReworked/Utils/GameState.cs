@@ -49,6 +49,7 @@ public static class GameStateUtils
         {
             Jester jest => !jest.CanHaunt,
             GuardianAngel ga => ga.Failed || !GuardianAngel.ProtectBeyondTheGrave || !ga.GraveProtectButton.Usable(),
+            IGhosty { Caught: false } => false,
             _ => true
         };
     }

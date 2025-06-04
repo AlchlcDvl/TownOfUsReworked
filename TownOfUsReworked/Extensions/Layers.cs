@@ -11,7 +11,6 @@ public static class LayerExtensions
     private static readonly string DispositionColorString = $"<#{CustomColorManager.Disposition.ToHtmlStringRGBA()}>";
     private static readonly string ModifierColorString = $"<#{CustomColorManager.Modifier.ToHtmlStringRGBA()}>";
     private static readonly string AbilityColorString = $"<#{CustomColorManager.Ability.ToHtmlStringRGBA()}>";
-    private static readonly string SubFactionColorString = $"<#{CustomColorManager.SubFaction.ToHtmlStringRGBA()}>";
     private static readonly string AttackColorString = $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
     private static readonly string DefenseColorString = $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
@@ -21,11 +20,9 @@ public static class LayerExtensions
 
     public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
 
-    public static bool Is(this PlayerControl player, SubFaction subFaction) => player.GetRole()?.SubFaction == subFaction;
-
     public static bool Is(this PlayerControl player, Faction faction)
     {
-        var playerFaction = player.GetFaction();
+        var handler = player.GetRole().Handler;
         var part = BadGuysSettings.IlluminatiUnleashed switch
         {
             true => faction switch
@@ -43,7 +40,7 @@ public static class LayerExtensions
                 _ => false
             }
         };
-        return playerFaction == faction || part;
+        return handler.CurrentFaction == faction || handler.FakeFactions.Contains(faction) || part;
     }
 
     private static bool Is(this PlayerControl player, params Faction[] factions) => factions.Contains(player.GetFaction());
@@ -65,15 +62,6 @@ public static class LayerExtensions
             return role.Faction;
 
         return player.IsImpostor() ? Faction.Intruder : Faction.Crew;
-    }
-
-    public static SubFaction GetSubFaction(this PlayerControl player)
-    {
-        if (!player)
-            return SubFaction.None;
-
-        var role = player.GetRole();
-        return role?.SubFaction ?? SubFaction.None;
     }
 
     public static Alignment GetAlignment(this PlayerControl player)
@@ -98,14 +86,14 @@ public static class LayerExtensions
         if (!player)
             return false;
 
-        if (GameModifiers.AllCanDoTasks)
+        if (TaskOptions.AllCanDoTasks)
             return true;
 
         if (!player.Is<Role>(out var role))
             return !player.Data.IsImpostor();
 
         var crewFlag = role.Faction == Faction.Crew;
-        var neutralFlag = role.Faction == Faction.Neutral;
+        var outcastFlag = role.Faction == Faction.Outcast;
         var factionFlag = role.Faction.IsAny(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse, Faction.Compliance);
 
         var phantomFlag = role is Phantom;
@@ -114,7 +102,7 @@ public static class LayerExtensions
 
         var gmFlag = role is Runner or Hunted;
 
-        var flag1 = neutralFlag && (taskmasterFlag || phantomFlag);
+        var flag1 = outcastFlag && (taskmasterFlag || phantomFlag);
         var flag2 = factionFlag && taskmasterFlag;
         return crewFlag || flag1 || flag2 || gmFlag;
     }
@@ -209,15 +197,6 @@ public static class LayerExtensions
 
     public static bool IsFlashed(this PlayerControl player) => !player.HasDied() && PlayerLayer.GetLayers<Grenadier>().Any(x => x.FlashedPlayers.Contains(player.PlayerId));
 
-    public static bool SyndicateSided(this PlayerControl player) => player.Is(Faction.Syndicate, Faction.Illuminati, Faction.Pandorica) && !player.Is<Syndicate>();
-
-    public static bool IntruderSided(this PlayerControl player) => player.Is(Faction.Intruder, Faction.Illuminati, Faction.Pandorica) && !player.Is<Intruder>();
-
-    public static bool ApocalypseSided(this PlayerControl player) => player.Is(Faction.Apocalypse, Faction.Illuminati, Faction.Pandorica) && !player.Is<Apocalypse>();
-
-    public static bool ComplianceSided(this PlayerControl player) => player.Is(Faction.Compliance) && ((!player.Is<NKilling>() && BadGuysSettings.ComplianceMembers == ComplianceType.Killers) ||
-        (!player.Is<Neophyte>() && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes));
-
     public static bool Last(PlayerControl player) => GameStateUtils.Last(player.GetFaction());
 
     public static bool CanKill(this PlayerControl player)
@@ -232,7 +211,7 @@ public static class LayerExtensions
 
     public static float GetFinalSpeed(this PlayerControl player) => player.GetBaseSpeed() * AppearanceHandler.Handlers[player.PlayerId].GetTrueSpeed();
 
-    public static float GetBaseSpeed(this PlayerControl player) => player.HasDied() && (!player.Is<IGhosty>(out var ghost) || ghost.Caught) ? GameSettings.GhostSpeed : GameSettings.PlayerSpeed;
+    private static float GetBaseSpeed(this PlayerControl player) => player.HasDied() && (!player.Is<IGhosty>(out var ghost) || ghost.Caught) ? GameOptions.GhostSpeed : GameOptions.PlayerSpeed;
 
     public static float GetSpeed(this PlayerControl player) => player.GetModifier() switch
     {
@@ -258,16 +237,16 @@ public static class LayerExtensions
         if (IsHnS())
             return !playerInfo.IsImpostor();
 
-        if ((int)VentSettings.WhoCanVent is 3)
+        if ((int)VentingOptions.WhoCanVent is 3)
             return false;
 
         if (player.inVent)
             return true;
 
-        if (AllPlayers().Count() == 2 && VentSettings.FinalTwoDisableVenting)
+        if (AllPlayers().Count() == 2 && VentingOptions.FinalTwoDisableVenting)
             return false;
 
-        if (VentSettings.WhoCanVent == WhoCanVentOptions.Everyone)
+        if (VentingOptions.WhoCanVent == WhoCanVentOptions.Everyone)
             return true;
 
         if (playerInfo.IsDead)
@@ -276,22 +255,22 @@ public static class LayerExtensions
         if (!player.Is<Role>(out var playerRole))
             return playerInfo.IsImpostor();
 
-        var subFactionFlag = false;
+        var miscFactionFlag = false;
 
-        if (playerRole.SubFaction != SubFaction.None && playerRole.Alignment != Alignment.Neophyte)
+        if (playerRole.Alignment != Alignment.Neophyte)
         {
-            subFactionFlag = playerRole.SubFaction switch
+            miscFactionFlag = playerRole.Faction switch
             {
-                SubFaction.Undead => Dracula.UndeadVent,
-                SubFaction.Cabal => Jackal.RecruitVent,
-                SubFaction.Reanimated => Necromancer.ResurrectVent,
-                SubFaction.Cult => Whisperer.PersuadedVent,
-                SubFaction.Followers => Zealot.FollowersVent,
+                Faction.Undead => Dracula.UndeadVent,
+                Faction.Cabal => Jackal.RecruitVent,
+                Faction.Reanimated => Necromancer.ResurrectVent,
+                Faction.Cult => Whisperer.PersuadedVent,
+                Faction.Followers => Zealot.FollowersVent,
                 _ => false
             };
         }
 
-        return player.GetLayers().Any(x => x.CanVent) || subFactionFlag;
+        return player.GetLayers().Any(x => x.CanVent) || miscFactionFlag;
     }
 
     public static bool CanChat(this PlayerControl player)
@@ -340,7 +319,7 @@ public static class LayerExtensions
 
     private static PlayerControl GetOtherLink(this PlayerControl player) => player.Is<Linked>(out var linked) ? linked.Other : null;
 
-    public static bool IsExcludedNeutral(PlayerControl player)
+    public static bool IsExcludedOutcast(PlayerControl player)
     {
         if (!player.Is<Role>(out var role))
             return false;
@@ -371,7 +350,6 @@ public static class LayerExtensions
         var abilityName = $"{AbilityColorString}Ability: <b>";
         var modifierName = $"{ModifierColorString}Modifier: <b>";
         var alignment = $"{AlignmentColorString}Alignment: <b>";
-        var subfaction = $"{SubFactionColorString}Sub-Faction: <b>";
         var attdef = $"{AttackColorString}Attack</color>/{DefenseColorString}Defense</color>: <b>";
 
         if (role)
@@ -379,20 +357,17 @@ public static class LayerExtensions
             roleName += $"{role.ColorString}{role}</color>";
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
             alignment += $"{role.FactionColorString}{role.Faction}({AlignmentColorString}{role.Alignment}</color>)</color>";
-            subfaction += $"{role.SubFactionColorString}{role.SubFactionName} {role.SubFactionSymbol}</color>";
             attdef += $"{info.Max(x => x.AttackVal)}</color>/{DefenseColorString}{info.Max(x => x.DefenseVal)}</color>";
         }
         else
         {
             roleName += "None";
             alignment += "None";
-            subfaction += "None";
             attdef += $"None</color>/{DefenseColorString}None</color>";
         }
 
         roleName += "</b></color>";
         alignment += "</b></color>";
-        subfaction += "</b></color>";
         attdef += "</b>";
 
         if (info[3] && !disposition.Hidden && disposition.Type != LayerEnum.NoneDisposition)
@@ -418,11 +393,6 @@ public static class LayerExtensions
             modifierName += "None";
 
         modifierName += "</b></color>";
-        objectives += role.SubFaction switch
-        {
-            SubFaction.None => "",
-            _ => $"\n{role.SubFactionColorString}- You are a member of the {role.SubFaction}. Help {player.GetNeophyte().PlayerName} in taking over the mission {role.SubFactionSymbol}</color>"
-        };
         objectives += "</color>";
         var desc1 = role.Description();
 
@@ -465,7 +435,7 @@ public static class LayerExtensions
             attributes += "\n<#FF1919FF>- You are dead</color>";
 
         attributes = attributes == $"{AttributesColorString}Attributes:" ? "" : $"\n{attributes}</color>";
-        return $"{roleName}\n{attdef}\n{alignment}\n{subfaction}\n{dispositionName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
+        return $"{roleName}\n{attdef}\n{alignment}\n{dispositionName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
     }
 
     public static void RegenTask(this PlayerControl player)
@@ -568,7 +538,7 @@ public static class LayerExtensions
     public static IEnumerable<PlayerLayer> GetLayers(this PlayerControl player)
     {
         if (player?.Data?.Role is LayerHandler handler)
-            return handler.CustomLayers;
+            return handler.CurrentLayers;
 
         return player.GetLayersFromList();
     }
@@ -588,7 +558,7 @@ public static class LayerExtensions
     public static Role GetRole(this PlayerControl player)
     {
         if (player?.Data?.Role is LayerHandler handler)
-            return handler.CustomRole;
+            return handler.CurrentRole;
 
         return player.GetRoleFromList();
     }
@@ -598,7 +568,7 @@ public static class LayerExtensions
     public static Disposition GetDisposition(this PlayerControl player)
     {
         if (player?.Data?.Role is LayerHandler handler)
-            return handler.CustomDisposition;
+            return handler.CurrentDisposition;
 
         return player.GetDispositionFromList();
     }
@@ -608,7 +578,7 @@ public static class LayerExtensions
     public static Modifier GetModifier(this PlayerControl player)
     {
         if (player.Data?.Role is LayerHandler handler)
-            return handler.CustomModifier;
+            return handler.CurrentModifier;
 
         return player.GetModifierFromList();
     }
@@ -618,7 +588,7 @@ public static class LayerExtensions
     public static Ability GetAbility(this PlayerControl player)
     {
         if (player?.Data?.Role is LayerHandler handler)
-            return handler.CustomAbility;
+            return handler.CurrentAbility;
 
         return player.GetAbilityFromList();
     }
@@ -658,14 +628,18 @@ public static class LayerExtensions
         CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen?.PlayerId ?? 255);
     }
 
-    public static void ConvertPlayer(byte target, byte convert, SubFaction sub, bool skip)
+    public static void ConvertPlayer(byte target, byte convert, bool skip)
     {
         var converted = PlayerById(target);
         var converter = PlayerById(convert);
-        var converts = converted.Is(SubFaction.None) || (converted.Is(sub) && !converted.Is(Alignment.Neophyte));
+        var role1 = converted.GetRole();
+        var role2 = converter.GetRole();
+        var sub = role2.Faction;
+        var convertible = role1.Faction.IsConvertible();
+        var converts = convertible || role1.Faction == sub;
         var comp = BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes;
 
-        if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts || (comp && converted.GetFaction() is not (Faction.Crew or Faction.Neutral)))
+        if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts || (comp && convertible))
         {
             if (AmongUsClient.Instance.AmHost)
                 Interact(converter, converted, true, true);
@@ -673,14 +647,11 @@ public static class LayerExtensions
             return;
         }
 
-        var role1 = converted.GetRole();
-        var role2 = converter.GetRole();
-
         if (role2 is Neophyte neophyte)
         {
             neophyte.Members.Add(target);
 
-            if (converted.Is(SubFaction.None) && neophyte is Jackal jackal)
+            if (convertible && neophyte is Jackal jackal)
             {
                 if (!jackal.Recruit1)
                     jackal.Recruit1 = converted;
@@ -703,22 +674,28 @@ public static class LayerExtensions
             }
         }
 
-        role1.SubFaction = sub;
-        role1.Faction = comp ? Faction.Compliance : Faction.Neutral;
+        role1.Faction = comp ? Faction.Compliance : sub;
         RoleGenManager.Convertible--;
 
         if (converted.AmOwner)
-            Flash(role1.SubFactionColor);
+            Flash(role1.FactionColor);
         else if (LocalPlayer.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
 
-        if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.Other.Is(SubFaction.None))
-            ConvertPlayer(lovers.Other.PlayerId, convert, sub, false);
+        if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.Other.GetFaction().IsConvertible())
+            ConvertPlayer(lovers.Other.PlayerId, convert, false);
     }
 
-    public static void RpcConvert(byte target, byte convert, SubFaction sub, bool condition = false)
+    public static void RpcConvert(byte target, byte convert, bool condition = false)
     {
-        ConvertPlayer(target, convert, sub, condition);
-        CallRpc(CustomRPC.Action, ActionsRPC.Convert, convert, target, sub, condition);
+        ConvertPlayer(target, convert, condition);
+        CallRpc(CustomRPC.Action, ActionsRPC.Convert, convert, target, condition);
     }
+
+    public static bool IsConvertible(this Faction originalFaction) => originalFaction is < Faction.Outcast or Faction.Pandorica or (> Faction.GameMode and < Faction.Cabal);
+
+    public static bool IsFactionedEvil(this Faction faction) => faction is (> Faction.Crew and < Faction.GameMode and not Faction.Outcast) or > Faction.Werewolf || (faction is > Faction.GameMode
+        and < Faction.Cabal && OutcastKillingSettings.KnowEachOther);
+
+    public static bool IsOk(this Faction faction) => faction is > Faction.GameMode and < Faction.Cabal;
 }

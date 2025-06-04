@@ -21,13 +21,6 @@ public static class CollectionExtensions
 
     public static T TakeFirst<T>(this List<T> list) => list.RemoveAndReturn(0);
 
-    public static T TakeFirst<T>(this HashSet<T> set)
-    {
-        var first = set.First();
-        set.Remove(first);
-        return first;
-    }
-
     public static T TakeLast<T>(this List<T> list) => list.RemoveAndReturn(list.Count - 1);
 
     public static void Add<T>(this List<T> main, params T[] items) => main.AddRange(items);
@@ -35,6 +28,8 @@ public static class CollectionExtensions
     public static int AddRange<T>(this HashSet<T> set, params T[] items) => items.Count(set.Add);
 
     public static int AddRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Add);
+
+    public static int AddRange<T>(this ISystem.HashSet<T> set, IEnumerable<T> items) => items.Count(set.Add);
 
     public static int RemoveRange<T>(this HashSet<T> set, IEnumerable<T> items) => items.Count(set.Remove);
 
@@ -247,6 +242,8 @@ public static class CollectionExtensions
 
     public static bool ContainsAny<T>(this IEnumerable<T> source, params T[] values) => values.Any(source.Contains);
 
+    public static bool ContainsAll<T>(this IEnumerable<T> source, params T[] values) => values.All(source.Contains);
+
     public static IEnumerable<T> GetAll<T>(this IEnumerable<IEnumerable<T>> source) => source.SelectMany(x => x);
 
     public static IEnumerable<IEnumerable<T1>> SplitBy<T1, T2>(this IEnumerable<T1> source, Func<T1, T2> predicate) => source.GroupBy(predicate).Select(x => x.ToList());
@@ -299,7 +296,16 @@ public static class CollectionExtensions
 
     public static void ForEach<T1, T2>(this IEnumerable<(T1, T2)> source, Action<T1, T2> action) => source.Do(x => action(x.Item1, x.Item2));
 
+    public static IEnumerable<T> Except<T>(this IEnumerable<T> source, Func<T, bool> func) => source.Where(x => !func(x));
+
     /* These methods are unused at the moment, so they've been commented until needed
+
+    public static T TakeFirst<T>(this HashSet<T> set)
+    {
+        var first = set.First();
+        set.Remove(first);
+        return first;
+    }
 
     public static void AddMany<T>(this List<T> list, T item, int count)
     {

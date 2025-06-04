@@ -333,7 +333,7 @@ public static class BetterPolus
     [HarmonyPatch(typeof(NormalPlayerTask), nameof(NormalPlayerTask.AppendTaskText))]
     public static class NormalPlayerTaskPatches
     {
-        public static bool Prefix(NormalPlayerTask __instance, Il2CppSystem.Text.StringBuilder sb)
+        public static bool Prefix(NormalPlayerTask __instance, IStringBuilder sb)
         {
             // Skip if BetterPolus is disabled, ship not loaded, wrong map, or not a modified task
             // IDs: Temperature (42), WiFi (41), Chart Course (3)

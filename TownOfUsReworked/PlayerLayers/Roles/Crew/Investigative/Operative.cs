@@ -60,7 +60,6 @@ public sealed class Operative : Crew, IBugger
 
     protected override void Deinit()
     {
-        base.Deinit();
         Bugs.ForEach(x => x?.gameObject?.Destroy());
         Bugs.Clear();
     }

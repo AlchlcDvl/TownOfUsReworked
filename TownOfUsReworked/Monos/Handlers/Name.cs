@@ -12,11 +12,14 @@ public abstract class NameHandler : MonoBehaviour
         var local = localHandler.Player;
         var name = "";
         var color = UColor.white;
-        var role = playerHandler.CustomRole;
-        var disp = playerHandler.CustomDisposition;
-        var localRole = localHandler.CustomRole;
-        var localDisp = localHandler.CustomDisposition;
+        var role = playerHandler.CurrentRole;
+        var disp = playerHandler.CurrentDisposition;
+        var localRole = localHandler.CurrentRole;
+        var localDisp = localHandler.CurrentDisposition;
         var removeFromConsig = false;
+        var isFactionedEvil = role.Faction.IsFactionedEvil();
+        var localIsFactionedEvil = localRole.Faction.IsFactionedEvil();
+        var same = role.Faction == localRole.Faction;
 
         if (player.CanDoTasks() && (deadSeeEverything || IsCustomHnS() || IsTaskRace()) && !amOwner)
             name += role.TasksDone ? "✔" : $" ({role.TasksCompleted}/{role.TotalTasks})";
@@ -37,38 +40,17 @@ public abstract class NameHandler : MonoBehaviour
         {
             role.UpdateSelfName(ref name, ref color, ref revealed, ref removeFromConsig);
             localRole.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
-
-            if (localRole.IsConverted())
-            {
-                var neophyte = local.GetNeophyte();
-
-                if (neophyte.Members.Contains(player.PlayerId))
-                {
-                    if (GameModifiers.FactionSeeRoles && !revealed)
-                    {
-                        color = role.Color;
-                        name += $" <#{neophyte.SubFactionColor.ToHtmlStringRGBA()}>{neophyte.SubFactionSymbol}</color>\n{role}";
-                        revealed = true;
-                        removeFromConsig = true;
-                    }
-                    else
-                        color = neophyte.SubFactionColor;
-                }
-                else if (neophyte is Whisperer whisperer && whisperer.PlayerConversion.TryGetValue(player.PlayerId, out var value))
-                    name += $" {value}%";
-            }
-
             localDisp.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
 
-            if (playerHandler.CustomAbility is Snitch snitch && (localRole.Faction is not (Faction.Crew or Faction.Neutral) || (localRole.Faction == Faction.Neutral && Snitch.SnitchSeesNeutrals))
-                && (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
+            if (playerHandler.CurrentAbility is Snitch snitch && (localRole.Faction.IsFactionedEvil() || (localRole.Faction == Faction.Outcast && Snitch.SnitchSeesOutcasts)) && (role.TasksDone ||
+                role.TasksLeft <= Snitch.SnitchTasksRemaining))
             {
                 color = snitch.Color;
                 name += (name.Contains('\n') ? " " : "\n") + snitch.Name;
                 revealed = true;
             }
 
-            if (localRole.Faction == role.Faction && role.Faction is not (Faction.Crew or Faction.Neutral))
+            if (same && (isFactionedEvil || local.GetNeophyte() == player.GetNeophyte()))
             {
                 if (GameModifiers.FactionSeeRoles && !revealed)
                 {
@@ -80,12 +62,10 @@ public abstract class NameHandler : MonoBehaviour
                 else
                     color = role.FactionColor;
 
-                name += player.SyndicateSided() || player.IntruderSided() || player.ApocalypseSided() || player.ComplianceSided()
-                    ? $" {disp.ColoredSymbol}"
-                    : $" {role.FactionColorString}ξ</color>";
+                name += $" {role.FactionColorString}ξ</color>";
             }
 
-            localHandler.CustomAbility.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
+            localHandler.CurrentAbility.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
         }
 
         if (amOwner && !deadSeeEverything)
@@ -107,16 +87,16 @@ public abstract class NameHandler : MonoBehaviour
 
             if (player.IsGuessTarget() && Guesser.GuessTargetKnows)
                 name += " <#EEE5BEFF>π</color>";
-
-            if (role.IsConverted())
-                name += $" <#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
         }
 
-        if ((amOwner || deadSeeEverything) && player.IsVesting())
-            name += " <#DDDD00FF>υ</color>";
+        if (amOwner || deadSeeEverything)
+        {
+            if (player.IsVesting())
+                name += " <#DDDD00FF>υ</color>";
 
-        if ((amOwner || deadSeeEverything) && player.IsOnAlert())
-            name += " <#998040FF>σ</color>";
+            if (player.IsOnAlert())
+                name += " <#998040FF>σ</color>";
+        }
 
         if (deadSeeEverything)
         {
@@ -164,9 +144,6 @@ public abstract class NameHandler : MonoBehaviour
 
             if (player.IsCampaigned())
                 name += " <#1A3270FF>°</color>";
-
-            if (role.IsConverted())
-                name += $" <#{role.SubFactionColor.ToHtmlStringRGBA()}>{role.SubFactionSymbol}</color>";
         }
 
         if (player.IsShielded() && Medic.ShowShielded == ShieldOptions.Everyone && !deadSeeEverything)
@@ -175,11 +152,8 @@ public abstract class NameHandler : MonoBehaviour
         if (player.IsProtected() && GuardianAngel.ShowProtect == ProtectOptions.Everyone && !deadSeeEverything)
             name += " <#FFFFFFFF>η</color>";
 
-        if ((local.Is(Faction.Syndicate) || deadSeeEverything) && (player == Syndicate.DriveHolder || (SyndicateSettings.GlobalDrive && Syndicate.SyndicateHasChaosDrive && role.Faction is
-            not (Faction.Crew or Faction.Neutral))))
-        {
+        if ((localIsFactionedEvil || deadSeeEverything) && (player == Syndicate.DriveHolder || (SyndicateSettings.GlobalDrive && Syndicate.SyndicateHasChaosDrive && isFactionedEvil)) && same)
             name += " <#008000FF>Δ</color>";
-        }
 
         if ((deadSeeEverything || local.Is<Pestilence>()) && Pestilence.Infected.TryGetValue(player.PlayerId, out var count))
         {
@@ -187,22 +161,17 @@ public abstract class NameHandler : MonoBehaviour
                 name += " <#424242FF>米</color>";
         }
 
-        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught) && local.Is(Faction.Crew))
+        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught && localRole.Faction == x.Faction))
         {
-            if (Revealer.RevealerRevealsRoles)
+            if (isFactionedEvil || (role.Faction == Faction.Outcast && Revealer.RevealerRevealsOutcasts) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
             {
-                if (role.Faction is not (Faction.Crew or Faction.Neutral) || (role.Faction == Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew &&
-                    Revealer.RevealerRevealsCrew))
+                if (Revealer.RevealerRevealsRoles)
                 {
                     color = role.Color;
                     name += $"\n{role}";
                     revealed = true;
                 }
-            }
-            else if (role.Faction is not (Faction.Crew or Faction.Neutral) || (role.Faction == Faction.Neutral && Revealer.RevealerRevealsNeutrals) || (role.Faction == Faction.Crew &&
-                Revealer.RevealerRevealsCrew))
-            {
-                if (disp is not FactionChanger { RevealerReveals: false })
+                else if (disp is not FactionChanger { RevealerReveals: false })
                 {
                     color = role.FactionColor;
                     name += $"\n{role.FactionName}";

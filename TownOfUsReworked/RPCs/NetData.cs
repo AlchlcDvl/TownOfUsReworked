@@ -21,6 +21,7 @@ public sealed class NetData : IDisposable, INetSerializable
     private bool IsReceived { get; }
 
     private bool Disposed { get; set; }
+    private bool Exceeded { get; set; }
 
     /// <summary>
     /// NetData destructor.
@@ -38,10 +39,10 @@ public sealed class NetData : IDisposable, INetSerializable
     private void ThrowIfIncorrectState(bool reading, int readLength)
     {
         if (Disposed)
-            throw new InvalidOperationException("This instance has already been disposed!");
+            throw new ObjectDisposedException(nameof(NetData));
 
-        if (!reading && DataSize > 1000)
-            throw new InvalidOperationException("Writing too much data!");
+        if (!reading && DataSize > 1000 && Exceeded)
+            throw new OverflowException("Writing too much data!");
 
         if (reading != IsReceived)
             throw new InvalidOperationException("Tried to send or receive bytes from a data array with the incorrect state");
@@ -102,11 +103,17 @@ public sealed class NetData : IDisposable, INetSerializable
         IsReceived = false;
     }
 
-    /// <summary>
-    /// Converts the current writer instance to a reader instance.
-    /// </summary>
-    /// <returns>A reader instance of the current instance with the same byte data.</returns>
-    public NetData ToReadState() => new(ToBytes());
+    // /// <summary>
+    // /// Converts the current writer instance to a reader instance.
+    // /// </summary>
+    // /// <returns>A reader instance of the current instance with the same byte data.</returns>
+    // public NetData ToReadState()
+    // {
+    //     if (Disposed)
+    //         throw new ObjectDisposedException(nameof(NetData));
+    //
+    //     return IsReceived ? throw new InvalidOperationException("The current instance is already in read state!") : new(ToBytes());
+    // }
 
     /// <summary>
     /// Writes the bytes of the value to the data being sent.
@@ -121,22 +128,27 @@ public sealed class NetData : IDisposable, INetSerializable
         if (withTypeCode)
             WriteBuffer.Add((byte)value.GetCustomTypeCode());
 
-        WriteBuffer.AddRange(ToBytes(value, withTypeCode));
+        if (value is byte @byte)
+            WriteBuffer.Add(@byte);
+        else
+            WriteBuffer.AddRange(ToBytes(value, withTypeCode));
+
+        Exceeded = DataSize > 1000;
     }
 
-    /// <summary>
-    /// Writes the bytes of a collection of values to the data being sent.
-    /// </summary>
-    /// <param name="values">The values to serialize.</param>
-    /// <exception cref="InvalidOperationException">Thrown if the instance is not in a writing state or too much data is being packed.</exception>
-    public void Write(params object[] values) => values.Do(x => Write(x));
+    // /// <summary>
+    // /// Writes the bytes of a collection of values to the data being sent.
+    // /// </summary>
+    // /// <param name="values">The values to serialize.</param>
+    // /// <exception cref="InvalidOperationException">Thrown if the instance is not in a writing state or too much data is being packed.</exception>
+    // public void Write(params object[] values) => values.Do(x => Write(x));
 
-    /// <summary>
-    /// Writes the bytes of a collection of values along with their relevant type codes to the data being sent.
-    /// </summary>
-    /// <param name="values">The values to serialize.</param>
-    /// <exception cref="InvalidOperationException">Thrown if the instance is not in a writing state or too much data is being packed.</exception>
-    public void WriteWithTypeCode(params object[] values) => values.Do(x => Write(x, true));
+    // /// <summary>
+    // /// Writes the bytes of a collection of values along with their relevant type codes to the data being sent.
+    // /// </summary>
+    // /// <param name="values">The values to serialize.</param>
+    // /// <exception cref="InvalidOperationException">Thrown if the instance is not in a writing state or too much data is being packed.</exception>
+    // public void WriteWithTypeCode(params object[] values) => values.Do(x => Write(x, true));
 
     // This part of the code deals with data being received from an rpc
 
@@ -166,11 +178,17 @@ public sealed class NetData : IDisposable, INetSerializable
         IsReceived = true;
     }
 
-    /// <summary>
-    /// Converts the current reader instance to a writer instance.
-    /// </summary>
-    /// <returns>A writer instance of the current instance with the same byte data.</returns>
-    public NetData ToWriteState() => new(Read<CustomRPC>(), false, [.. ReadBuffer[1..]]);
+    // /// <summary>
+    // /// Converts the current reader instance to a writer instance.
+    // /// </summary>
+    // /// <returns>A writer instance of the current instance with the same byte data.</returns>
+    // public NetData ToWriteState()
+    // {
+    //     if (Disposed)
+    //         throw new ObjectDisposedException(nameof(NetData));
+    //
+    //     return IsReceived ? new(Read<CustomRPC>(), false, [.. ReadBuffer[1..]]) : throw new InvalidOperationException("The current instance is already in write state!");
+    // }
 
     /// <summary>
     /// Reads a value of the specified type from the data.
@@ -235,7 +253,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// </summary>
     /// <returns>The deserialized value.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public object Read(CustomTypeCode? type = null) => (type ?? Read<CustomTypeCode>()) switch
+    private object Read(CustomTypeCode? type = null) => (type ??= Read<CustomTypeCode>()) switch
     {
         CustomTypeCode.PlayerControl => ReadPlayer(),
         CustomTypeCode.DeadBody => ReadBody(),
@@ -263,11 +281,10 @@ public sealed class NetData : IDisposable, INetSerializable
         CustomTypeCode.IEnumerable => ReadValues(),
         CustomTypeCode.NetData => ReadNetData(),
         CustomTypeCode.Button => ReadButton(),
-        CustomTypeCode.MultiSelectValue => ReadNumber(),
         CustomTypeCode.Number => ReadNumber(),
         CustomTypeCode.RoleOptionData => ReadRoleOptionData(),
         CustomTypeCode.PlayerLayer => ReadLayer(),
-        _ => throw new NotSupportedException($"Custom type code {Read<CustomTypeCode>()} cannot be read")
+        _ => throw new NotSupportedException($"Custom type code {type} cannot be read")
     };
 
     /// <summary>
@@ -305,13 +322,13 @@ public sealed class NetData : IDisposable, INetSerializable
             yield return Read(type);
     }
 
-    /// <summary>
-    /// Reads a casted collection of values from the data, prefixed by a count.
-    /// </summary>
-    /// <typeparam name="T">The type to cast the collection to.</typeparam>
-    /// <returns>A collection of values, casted to <typeparamref name="T"/>.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public T[] ReadArray<T>() => ReadArray(typeof(T)) as T[];
+    // /// <summary>
+    // /// Reads a casted collection of values from the data, prefixed by a count.
+    // /// </summary>
+    // /// <typeparam name="T">The type to cast the collection to.</typeparam>
+    // /// <returns>A collection of values, casted to <typeparamref name="T"/>.</returns>
+    // /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    // public T[] ReadArray<T>() => ReadArray(typeof(T)) as T[];
 
     /// <summary>
     /// Reads a collection of values from the data, prefixed by a count.
@@ -403,7 +420,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// </summary>
     /// <returns>The deserialized unsigned short value.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public ushort ReadUShort()
+    private ushort ReadUShort()
     {
         ThrowIfIncorrectState(true, 2);
         var result = BitConverter.ToUInt16(ReadBuffer, Position);
@@ -669,7 +686,7 @@ public sealed class NetData : IDisposable, INetSerializable
     /// </summary>
     /// <returns>The deserialized type value.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public Type ReadType() => Type.GetType(ReadString());
+    private Type ReadType() => Type.GetType(ReadString());
 
     // Some stuff to serialize Vector2 using the game's bounds
     private const float MinPos = -50f;

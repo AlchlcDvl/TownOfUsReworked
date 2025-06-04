@@ -121,12 +121,11 @@ public static class SettingsPatches
         [HarmonyPatch(nameof(GameSettingMenu.Update))]
         public static bool Prefix(GameSettingMenu __instance)
         {
-            if (Controller.currentTouchType != 0)
-            {
-                __instance.ToggleLeftSideDarkener(false);
-                __instance.ToggleRightSideDarkener(false);
-            }
+            if (Controller.currentTouchType == 0)
+                return false;
 
+            __instance.ToggleLeftSideDarkener(false);
+            __instance.ToggleRightSideDarkener(false);
             return false;
         }
     }
@@ -569,7 +568,7 @@ public static class SettingsPatches
             if (!AmongUsClient.Instance || !LocalPlayer || !__instance.myPlayer || IsFreePlay())
                 return;
 
-            __instance.myPlayer.GetComponent<AppearanceHandler>().UpdateCurrent();
+            __instance.myPlayer.GetComponent<PlayerControlHandler>().UpdateCurrent();
 
             if (Holders.EntryCount < GameData.Instance.PlayerCount)
             {
@@ -592,7 +591,7 @@ public static class SettingsPatches
                 OnValueChangedView();
             }
 
-            if (__instance.myPlayer.AmOwner)
+            if (__instance.AmOwner)
             {
                 if (SentOnce || ClientOptions.NoWelcome)
                     return;
@@ -1291,7 +1290,7 @@ public static class SettingsPatches
         [HarmonyPatch(nameof(LogicOptions.MaxPlayers), MethodType.Getter)]
         public static bool Prefix(ref int __result)
         {
-            __result = GameSettings.LobbySize;
+            __result = GameOptions.LobbySize;
             return false;
         }
     }

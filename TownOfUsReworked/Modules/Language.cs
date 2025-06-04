@@ -12,6 +12,7 @@ public sealed class Language : Asset
     public string[] IDs { get; set; } // For when I want multiple IDs to point to the same thing, but I'm too lazy to add their own entries to the JSON
 
     [JsonPropertyName("values")]
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<string, string> Values { get; set; }
 
     public string this[string lang]

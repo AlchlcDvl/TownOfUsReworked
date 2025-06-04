@@ -6,9 +6,8 @@ public sealed class Seer : Crew
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SeerCd = 25;
 
-    private static bool ChangedDead => !GetLayers<Role>().Any(x => !x.Player.HasDied() && (x.RoleHistory.Any() || x.Type is LayerEnum.Amnesiac or LayerEnum.Thief or LayerEnum.Actor or
-        LayerEnum.Godfather or LayerEnum.Shifter or LayerEnum.Guesser or LayerEnum.Rebel or LayerEnum.Mystic or LayerEnum.GuardianAngel or LayerEnum.Executioner or LayerEnum.BountyHunter ||
-        x.LinkedDisposition is LayerEnum.Traitor or LayerEnum.Fanatic));
+    private static bool ChangedDead => !GetLayers<Role>().Any(x => !x.Alive && (x.Handler.History.Any() || x is Amnesiac or Thief or Actor or Godfather or Guesser or Rebel or Mystic or Executioner
+        or GuardianAngel or BountyHunter || x.Handler.CurrentDisposition is Traitor or Fanatic));
     private CustomButton SeerButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Seer;
@@ -31,7 +30,7 @@ public sealed class Seer : Crew
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash(target.GetRole().RoleHistory.Any() || target.IsFramed() ? UColor.red : UColor.green);
+            Flash(target.Data.Role.TryCast<LayerHandler>().History.Any() || target.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }

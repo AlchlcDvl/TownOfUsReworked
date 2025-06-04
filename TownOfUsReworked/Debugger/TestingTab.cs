@@ -21,7 +21,7 @@ public sealed class TestingTab : BaseTab
 
         if (Lobby() && IsLocalGame())
         {
-            if (GUILayout.Button("Spawn Bot") && GameData.Instance.PlayerCount < GameSettings.LobbySize)
+            if (GUILayout.Button("Spawn Bot") && GameData.Instance.PlayerCount < GameOptions.LobbySize)
             {
                 MciUtils.CleanUpLoad();
                 MciUtils.CreatePlayerInstance();
@@ -60,27 +60,25 @@ public sealed class TestingTab : BaseTab
 
     private static bool ShouldMove()
     {
-        if (MoveToNext)
-        {
-            MoveToNext = false;
-            return true;
-        }
+        if (!MoveToNext)
+            return false;
 
-        return false;
+        MoveToNext = false;
+        return true;
     }
 
     private static CustomOutfit GenerateRandomOutfit() => new()
     {
-        ColorId = CustomColorManager.AllColors.Keys.AddItem(-2).Random(), // TODO: Transition works, name change remaining (refer to PlayerName's TODO)
-        Color = new((byte)URandom.RandomRangeInt(0, 256), (byte)URandom.RandomRangeInt(0, 256), (byte)URandom.RandomRangeInt(0, 256), 255), // TODO: Same as above
-        HatId = HatManager.Instance.allHats.Random().ProductId, // Works
-        SkinId = HatManager.Instance.allSkins.Random().ProductId, // Works
-        VisorId = HatManager.Instance.allVisors.Random().ProductId, // Works
-        NamePlateId = HatManager.Instance.allNamePlates.Random().ProductId, // No need to check lmao
-        PetId = HatManager.Instance.allPets.Random().ProductId, // Works
-        PlayerName = GetRandomisedName(), // TODO: Reimplement name handling and its transition (make it letter by letter)
-        Size = URandom.RandomRange(0.3f, 3f), // Works
-        Speed = URandom.RandomRange(0.25f, 10f), // Works
-        Alpha = URandom.RandomRange(0f, 1f) // Works
+        ColorId = CustomColorManager.AllColors.Keys.AddItem(-2).Random(),
+        Color = new((byte)URandom.RandomRangeInt(0, 256), (byte)URandom.RandomRangeInt(0, 256), (byte)URandom.RandomRangeInt(0, 256), 255),
+        HatId = HatManager.Instance.allHats.Random().ProductId,
+        SkinId = HatManager.Instance.allSkins.Random().ProductId,
+        VisorId = HatManager.Instance.allVisors.Random().ProductId,
+        NamePlateId = HatManager.Instance.allNamePlates.Random().ProductId,
+        PetId = HatManager.Instance.allPets.Random().ProductId,
+        PlayerName = GetRandomisedName(),
+        Size = URandom.RandomRange(0.3f, 3f),
+        Speed = URandom.RandomRange(0.25f, 10f),
+        Alpha = URandom.RandomRange(0f, 1f)
     };
 }

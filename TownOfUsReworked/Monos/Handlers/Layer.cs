@@ -5,22 +5,37 @@ public sealed class LayerHandler : RoleBehaviour
     public override bool IsDead => Player.HasDied();
     public override bool IsAffectedByComms => false;
 
-    public bool Local => Player.AmOwner;
+    public Faction CurrentFaction;
+
+    public readonly List<Faction> FakeFactions = [];
+    public readonly List<(LayerEnum, Faction)> History = [];
+
+    private bool Local => Player.AmOwner;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether or not the layer is a winner.
+    /// </summary>
+    public bool Winner { get; set; }
+
+    /// <summary>
+    /// Gets a value indicating whether or not the player has disconnected.
+    /// </summary>
+    public bool Disconnected => Player?.Data?.Disconnected ?? true;
 
     [HideFromIl2Cpp]
-    public Role CustomRole { get; set; }
+    public Role CurrentRole { get; set; }
 
     [HideFromIl2Cpp]
-    public Ability CustomAbility { get; set; }
+    public Ability CurrentAbility { get; set; }
 
     [HideFromIl2Cpp]
-    public Modifier CustomModifier { get; set; }
+    public Modifier CurrentModifier { get; set; }
 
     [HideFromIl2Cpp]
-    public Disposition CustomDisposition { get; set; }
+    public Disposition CurrentDisposition { get; set; }
 
     [HideFromIl2Cpp]
-    public IEnumerable<PlayerLayer> CustomLayers { get; set; }
+    public IEnumerable<PlayerLayer> CurrentLayers { get; set; }
 
     [HideFromIl2Cpp]
     public IEnumerable<CustomButton> Buttons { get; set; }
@@ -33,85 +48,73 @@ public sealed class LayerHandler : RoleBehaviour
     public static Minigame HauntMenu;
 
     [HideFromIl2Cpp]
-    public T GetLayer<T>() where T : IPlayerLayer => CustomLayers.OfType<T>().FirstOrDefault();
+    public T GetLayer<T>() where T : IPlayerLayer => CurrentLayers.OfType<T>().FirstOrDefault();
 
     public void UpdatePlayer()
     {
-        CustomRole.UpdatePlayer();
-        CustomAbility.UpdatePlayer();
-        CustomModifier.UpdatePlayer();
-        CustomDisposition.UpdatePlayer();
+        CurrentRole.UpdatePlayer();
+        CurrentAbility.UpdatePlayer();
+        CurrentModifier.UpdatePlayer();
+        CurrentDisposition.UpdatePlayer();
     }
 
     public void UpdatePlayer(PlayerControl __instance)
     {
-        CustomRole.UpdatePlayer(__instance);
-        CustomAbility.UpdatePlayer(__instance);
-        CustomModifier.UpdatePlayer(__instance);
-        CustomDisposition.UpdatePlayer(__instance);
+        CurrentRole.UpdatePlayer(__instance);
+        CurrentAbility.UpdatePlayer(__instance);
+        CurrentModifier.UpdatePlayer(__instance);
+        CurrentDisposition.UpdatePlayer(__instance);
     }
 
     public void UpdateVoteArea()
     {
-        CustomRole.UpdateVoteArea();
-        CustomAbility.UpdateVoteArea();
-        CustomModifier.UpdateVoteArea();
-        CustomDisposition.UpdateVoteArea();
+        CurrentRole.UpdateVoteArea();
+        CurrentAbility.UpdateVoteArea();
+        CurrentModifier.UpdateVoteArea();
+        CurrentDisposition.UpdateVoteArea();
     }
 
     public void UpdateVoteArea(PlayerVoteArea __instance)
     {
-        CustomRole.UpdateVoteArea(__instance);
-        CustomAbility.UpdateVoteArea(__instance);
-        CustomModifier.UpdateVoteArea(__instance);
-        CustomDisposition.UpdateVoteArea(__instance);
+        CurrentRole.UpdateVoteArea(__instance);
+        CurrentAbility.UpdateVoteArea(__instance);
+        CurrentModifier.UpdateVoteArea(__instance);
+        CurrentDisposition.UpdateVoteArea(__instance);
     }
 
     public void UpdateHud(HudManager __instance)
     {
-        CustomRole.UpdateHud(__instance);
-        CustomAbility.UpdateHud(__instance);
-        CustomModifier.UpdateHud(__instance);
-        CustomDisposition.UpdateHud(__instance);
+        CurrentRole.UpdateHud(__instance);
+        CurrentAbility.UpdateHud(__instance);
+        CurrentModifier.UpdateHud(__instance);
+        CurrentDisposition.UpdateHud(__instance);
         Buttons.Do(x => x.SetActive());
         CanVent = Player.CanVent();
     }
 
     public void UpdateMeeting(MeetingHud __instance)
     {
-        CustomRole.UpdateMeeting(__instance);
-        CustomAbility.UpdateMeeting(__instance);
-        CustomModifier.UpdateMeeting(__instance);
-        CustomDisposition.UpdateMeeting(__instance);
+        CurrentRole.UpdateMeeting(__instance);
+        CurrentAbility.UpdateMeeting(__instance);
+        CurrentModifier.UpdateMeeting(__instance);
+        CurrentDisposition.UpdateMeeting(__instance);
     }
 
     public void UponTaskComplete(uint idx)
     {
-        CustomRole.UponTaskComplete(idx);
-        CustomAbility.UponTaskComplete(idx);
-        CustomModifier.UponTaskComplete(idx);
-        CustomDisposition.UponTaskComplete(idx);
+        CurrentRole.UponTaskComplete(idx);
+        CurrentAbility.UponTaskComplete(idx);
+        CurrentModifier.UponTaskComplete(idx);
+        CurrentDisposition.UponTaskComplete(idx);
 
-        if (AmongUsClient.Instance.AmHost)
+        if (AmongUsClient.Instance.AmHost && CurrentRole is Runner { TasksDone: true })
         {
-            if (CheckEndGame.TasksDone())
-            {
-                WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
-                var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
-                winners.Do(x => x.GetLayers().Do(y => y.Winner = true));
-                CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners ]);
-            }
-            else if (CustomRole is Runner { TasksDone: true })
-            {
-                WinState = WinLose.TaskRunnerWins;
-                CustomLayers.Do(x => x.Winner = true);
-                CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState, Player);
-            }
-            else
-                CheckEndGame.CheckPlayerWins();
+            WinState = WinLose.TaskRunnerWins;
+            Winner = true;
+            CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState, Player);
         }
 
-        if (!CustomRole.TasksDone)
+        if (!CurrentRole.TasksDone)
             return;
 
         foreach (var button in Buttons.Where(x => x.HasUses))
@@ -123,34 +126,34 @@ public sealed class LayerHandler : RoleBehaviour
 
     public void OnRevive()
     {
-        CustomRole.OnRevive();
-        CustomAbility.OnRevive();
-        CustomModifier.OnRevive();
-        CustomDisposition.OnRevive();
+        CurrentRole.OnRevive();
+        CurrentAbility.OnRevive();
+        CurrentModifier.OnRevive();
+        CurrentDisposition.OnRevive();
     }
 
     public void BeforeMeeting()
     {
-        CustomRole.BeforeMeeting();
-        CustomAbility.BeforeMeeting();
-        CustomModifier.BeforeMeeting();
-        CustomDisposition.BeforeMeeting();
+        CurrentRole.BeforeMeeting();
+        CurrentAbility.BeforeMeeting();
+        CurrentModifier.BeforeMeeting();
+        CurrentDisposition.BeforeMeeting();
     }
 
     public void OnIntroEnd()
     {
-        CustomRole.OnIntroEnd();
-        CustomAbility.OnIntroEnd();
-        CustomModifier.OnIntroEnd();
-        CustomDisposition.OnIntroEnd();
+        CurrentRole.OnIntroEnd();
+        CurrentAbility.OnIntroEnd();
+        CurrentModifier.OnIntroEnd();
+        CurrentDisposition.OnIntroEnd();
     }
 
     public void OnMeetingEnd(MeetingHud __instance)
     {
-        CustomRole.OnMeetingEnd(__instance);
-        CustomAbility.OnMeetingEnd(__instance);
-        CustomModifier.OnMeetingEnd(__instance);
-        CustomDisposition.OnMeetingEnd(__instance);
+        CurrentRole.OnMeetingEnd(__instance);
+        CurrentAbility.OnMeetingEnd(__instance);
+        CurrentModifier.OnMeetingEnd(__instance);
+        CurrentDisposition.OnMeetingEnd(__instance);
     }
 
     public void ResetButtons() => Buttons = Player.GetButtonsFromList();
@@ -158,53 +161,55 @@ public sealed class LayerHandler : RoleBehaviour
     [HideFromIl2Cpp]
     public void SetUpLayers()
     {
-        CustomRole = Player.GetRoleFromList();
-        CustomAbility = Player.GetAbilityFromList();
-        CustomModifier = Player.GetModifierFromList();
-        CustomDisposition = Player.GetDispositionFromList();
+        CurrentRole = Player.GetRoleFromList();
+        CurrentAbility = Player.GetAbilityFromList();
+        CurrentModifier = Player.GetModifierFromList();
+        CurrentDisposition = Player.GetDispositionFromList();
 
-        if (!CustomRole)
+        if (!CurrentRole)
         {
-            CustomRole = new Roleless();
-            CustomRole.Start(Player);
+            CurrentRole = new Roleless();
+            CurrentRole.Start(Player);
         }
 
-        if (!CustomAbility)
+        if (!CurrentAbility)
         {
-            CustomAbility = new Abilityless();
-            CustomAbility.Start(Player);
+            CurrentAbility = new Abilityless();
+            CurrentAbility.Start(Player);
         }
 
-        if (!CustomModifier)
+        if (!CurrentModifier)
         {
-            CustomModifier = new Modifierless();
-            CustomModifier.Start(Player);
+            CurrentModifier = new Modifierless();
+            CurrentModifier.Start(Player);
         }
 
-        if (!CustomDisposition)
+        if (!CurrentDisposition)
         {
-            CustomDisposition = new Dispositionless();
-            CustomDisposition.Start(Player);
+            CurrentDisposition = new Dispositionless();
+            CurrentDisposition.Start(Player);
         }
 
-        CustomRole.PostAssignment();
-        CustomAbility.PostAssignment();
-        CustomModifier.PostAssignment();
-        CustomDisposition.PostAssignment();
+        CurrentRole.PostAssignment();
+        CurrentAbility.PostAssignment();
+        CurrentModifier.PostAssignment();
+        CurrentDisposition.PostAssignment();
 
-        CustomLayers = [ CustomRole, CustomModifier, CustomAbility, CustomDisposition ];
+        CurrentLayers = [ CurrentRole, CurrentModifier, CurrentAbility, CurrentDisposition ];
         ResetButtons();
 
-        TasksCountTowardProgress = Player.CanDoTasks() && ((CustomRole.Faction == Faction.Crew  && CustomRole.SubFaction == SubFaction.None)|| CustomRole is Runner or Hunted);
+        TasksCountTowardProgress = Player.CanDoTasks() && (CurrentRole is Runner or Hunted || CurrentFaction == Faction.Crew);
         CanVent = Player.CanVent();
-        AffectedByLightAffectors = !(CustomAbility is Torch || !CustomRole.AffectedByLights);
+        AffectedByLightAffectors = !(CurrentAbility is Torch || !CurrentRole.AffectedByLights);
 
-        CustomLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
+        CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
 
-        AppearanceHandler.Handlers[Player.PlayerId].UpdateCurrent();
+        Player.GetComponent<PlayerControlHandler>().UpdateCurrent();
+
+        History.Add((CurrentRole.Type, CurrentRole.Faction));
     }
 
-    public override float GetAbilityDistance() => GameSettings.InteractionDistance;
+    public override float GetAbilityDistance() => GameOptions.InteractionDistance;
 
     public override void OnDeath(DeathReason reason)
     {
@@ -215,10 +220,10 @@ public sealed class LayerHandler : RoleBehaviour
         else if (LocalPlayer.Is<Monarch>(out var mon) && mon.Knighted.Contains(Player.PlayerId))
             Flash(mon.Color);
 
-        TasksCountTowardProgress &= TaskSettings.GhostTasksCountToWin;
+        TasksCountTowardProgress &= TaskOptions.GhostTasksCountToWin;
     }
 
-    public override bool DidWin(GameOverReason gameOverReason) => CustomRole.Winner || CustomDisposition.Winner;
+    public override bool DidWin(GameOverReason gameOverReason) => Winner;
 
     public override void SpawnTaskHeader(PlayerControl playerControl)
     {
@@ -226,7 +231,7 @@ public sealed class LayerHandler : RoleBehaviour
             PlayerTask.GetOrCreateTask<ImportantTextTask>(playerControl).Text = "Achieve your win condition!\n";
     }
 
-    public override void AppendTaskHint(Il2CppSystem.Text.StringBuilder taskStringBuilder) {}
+    public override void AppendTaskHint(IStringBuilder taskStringBuilder) {}
 
     public override void Initialize(PlayerControl player)
     {
@@ -234,17 +239,17 @@ public sealed class LayerHandler : RoleBehaviour
 
         SetUpLayers();
 
-        IntroSound = GetAudio($"{CustomRole}Intro", false) ?? GetAudio($"{(CustomRole is Intruder or Syndicate ? "Impostor" : "Crewmate")}Intro");
+        IntroSound = GetAudio($"{CurrentRole}Intro", false) ?? GetAudio($"{(CurrentRole is Intruder or Syndicate ? "Impostor" : "Crewmate")}Intro");
 
         InitializeAbilityButton();
 
         if (player.AmOwner && !TutorialManager.InstanceExists && !TownOfUsReworked.MciActive)
         {
-            CustomStatsManager.IncrementStat(CustomRole.Faction switch
+            CustomStatsManager.IncrementStat(CurrentRole.Faction switch
             {
                 Faction.Crew => CustomStatsManager.StatsGamesCrew,
                 Faction.Intruder => CustomStatsManager.StatsGamesIntruder,
-                Faction.Neutral => CustomStatsManager.StatsGamesNeutral,
+                Faction.Outcast => CustomStatsManager.StatsGamesOutcast,
                 Faction.Syndicate => CustomStatsManager.StatsGamesSyndicate,
                 Faction.Apocalypse => CustomStatsManager.StatsGamesApocalypse,
                 Faction.Pandorica => CustomStatsManager.StatsGamesPandorica,
@@ -260,10 +265,10 @@ public sealed class LayerHandler : RoleBehaviour
         if (!Local)
             return;
 
-        CustomRole.OnMeetingStart(Meeting());
-        CustomAbility.OnMeetingStart(Meeting());
-        CustomModifier.OnMeetingStart(Meeting());
-        CustomDisposition.OnMeetingStart(Meeting());
+        CurrentRole.OnMeetingStart(Meeting());
+        CurrentAbility.OnMeetingStart(Meeting());
+        CurrentModifier.OnMeetingStart(Meeting());
+        CurrentDisposition.OnMeetingStart(Meeting());
     }
 
     public override void OnVotingComplete()
@@ -271,24 +276,24 @@ public sealed class LayerHandler : RoleBehaviour
         if (!Local)
             return;
 
-        CustomRole.VoteComplete(Meeting());
-        CustomAbility.VoteComplete(Meeting());
-        CustomModifier.VoteComplete(Meeting());
-        CustomDisposition.VoteComplete(Meeting());
+        CurrentRole.VoteComplete(Meeting());
+        CurrentAbility.VoteComplete(Meeting());
+        CurrentModifier.VoteComplete(Meeting());
+        CurrentDisposition.VoteComplete(Meeting());
     }
 
     public override void Deinitialize(PlayerControl targetPlayer)
     {
-        CustomRole.End();
-        CustomAbility.End();
-        CustomModifier.End();
-        CustomDisposition.End();
+        CurrentRole.End();
+        CurrentAbility.End();
+        CurrentModifier.End();
+        CurrentDisposition.End();
     }
 
     public override bool CanUse(IUsable console)
     {
         // This is such a cheesy way to handle this omg
-        var isCrew = CustomRole.Faction is Faction.Neutral or Faction.Crew || (CustomRole.Faction == Faction.GameMode && CustomRole.Type != LayerEnum.Hunter);
+        var isCrew = CurrentRole.Faction is Faction.Outcast or Faction.Crew || (CurrentRole.Faction == Faction.GameMode && CurrentRole.Type != LayerEnum.Hunter);
         var role = IsDead ? (isCrew ? CrewmateGhost : ImpostorGhost) : (isCrew ? Crewmate : Impostor);
         role.Player = Player;
         var result = role.CanUse(console);

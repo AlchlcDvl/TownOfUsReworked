@@ -34,11 +34,11 @@ public static class MiscUtils
 
         t = Mathf.Clamp01(t);
 
-        if (t == 0)
-            return values[0];
-
-        if (t == 1)
-            return values[^1];
+        switch (t)
+        {
+            case 0f: return values[0];
+            case 1f: return values[^1];
+        }
 
         var index = 0;
         var calcT = t * (values.Length - 1);
@@ -90,9 +90,7 @@ public static class MiscUtils
 
     public static PlayerOutfit CurrentOutfit(this PlayerControl player) => player.CurrentOutfit;
 
-    public static CustomOutfit CloneOutfit(this PlayerControl player) => new(player);
-
-    public static CustomOutfit InvisOutfit(this PlayerControl player, float alpha) => new(player) { Alpha = alpha };
+    private static CustomOutfit InvisOutfit(this PlayerControl player, float alpha) => new(player) { Alpha = alpha };
 
     public static CustomOutfit BlankOutfit(PlayerControl player) => new() { ColorId = player.Data.DefaultOutfit.ColorId };
 
@@ -439,7 +437,7 @@ public static class MiscUtils
         allPlayers ??= AllPlayers();
 
         if (float.IsNaN(maxDistance))
-            maxDistance = GameSettings.InteractionDistance;
+            maxDistance = GameOptions.InteractionDistance;
 
         if (maxDistance > LocalPlayer.lightSource.ViewDistance)
             maxDistance = LocalPlayer.lightSource.ViewDistance;
@@ -449,7 +447,7 @@ public static class MiscUtils
 
         foreach (var player in allPlayers)
         {
-            if ((player.Data.IsDead && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !VentSettings.VentTargeting) ||
+            if ((player.Data.IsDead && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !VentingOptions.VentTargeting) ||
                 player.walkingToVent || player.isKilling)
             {
                 continue;
@@ -517,7 +515,7 @@ public static class MiscUtils
         allBodies ??= AllBodies();
 
         if (float.IsNaN(maxDistance))
-            maxDistance = GameSettings.InteractionDistance;
+            maxDistance = GameOptions.InteractionDistance;
 
         if (maxDistance > LocalPlayer.lightSource.ViewDistance)
             maxDistance = LocalPlayer.lightSource.ViewDistance;
@@ -606,7 +604,7 @@ public static class MiscUtils
             {
                 maxDistance = mono switch
                 {
-                    PlayerControl or DeadBody => GameSettings.InteractionDistance,
+                    PlayerControl or DeadBody => GameOptions.InteractionDistance,
                     Console console => console.UsableDistance,
                     Vent vent => vent.UsableDistance,
                     _ => 1f,
@@ -1097,7 +1095,7 @@ public static class MiscUtils
         if (!GameModifiers.EnableGameTimer)
             return;
 
-        if (GameModifiers.KillsExtendTimer)
+        if (GameModifiers.ExtendTimer == TimerExtension.Kills)
             GameTimerHandler.Instance.ExtendTimer();
     }
 
@@ -1115,15 +1113,20 @@ public static class MiscUtils
             killer.isKilling = true;
         }
 
-        var deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
-        deadBody.name = victim.name + "Body";
-        deadBody.enabled = false;
-        deadBody.ParentId = victim.PlayerId;
-        deadBody.AddComponent<DeadBodyHandler>();
-        AppearanceHandler.Handlers[victim.PlayerId].Body = deadBody;
-        var vector = victim.transform.position + animation.BodyOffset;
-        vector.z = vector.y / 1000f;
-        deadBody.transform.position = vector;
+        DeadBody deadBody = null;
+
+        if (!killer.Is<Gluttony>())
+        {
+            deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
+            deadBody.name = victim.name + "Body";
+            deadBody.enabled = false;
+            deadBody.ParentId = victim.PlayerId;
+            deadBody.AddComponent<DeadBodyHandler>();
+            AppearanceHandler.Handlers[victim.PlayerId].Body = deadBody;
+            var vector = victim.transform.position + animation.BodyOffset;
+            vector.z = vector.y / 1000f;
+            deadBody.transform.position = vector;
+        }
 
         if (isParticipant)
         {
@@ -1143,10 +1146,14 @@ public static class MiscUtils
         killer.MyPhysics.Animations.PlayIdleAnimation();
         KillAnimation.SetMovement(killer, true);
         KillAnimation.SetMovement(victim, true);
-        deadBody.enabled = true;
 
-        if (killer.Is<PlayerLayers.Roles.Void>())
-            deadBody.Reported = true;
+        if (deadBody)
+        {
+            deadBody.enabled = true;
+
+            if (killer.Is<PlayerLayers.Roles.Void>())
+                deadBody.Reported = true;
+        }
 
         if (!isParticipant)
             yield break;
@@ -1172,7 +1179,7 @@ public static class MiscUtils
 
     public static bool EndsWithAny(this string item, params string[] items) => items.Any(item.EndsWith);
 
-    public static bool IsAll<T>(this T item, params T[] items) => items.All(x => Equals(x, item));
+    // public static bool IsAll<T>(this T item, params T[] items) => items.All(x => Equals(x, item));
 
     public static bool TryCast<T>(this Il2CppObjectBase obj, out T result) where T : Il2CppObjectBase => (result = obj.TryCast<T>()) is not null;
 
@@ -1246,7 +1253,7 @@ public static class MiscUtils
 
     public static IEnumerable<ListSlot> GetValues(this IEnumerable<LayerEnum> enums) => enums.WhereSelect((LayerEnum x, out ListSlot y) => Enum.TryParse(x.ToString(), out y));
 
-    public static T CreateInstance<T>(params object[] args) => (T)Activator.CreateInstance(typeof(T), args);
+    // public static T CreateInstance<T>(params object[] args) => (T)Activator.CreateInstance(typeof(T), args);
 
     // Graciously yoinked these two methods from MiraAPI
     public static LobbyNotificationMessage PopNotif(string text, UColor color, Sprite sprite = null, AudioClip clip = null, float thickness = 0.35f) => PopNotif(text, color, new(0f, 0.75f, -2f),

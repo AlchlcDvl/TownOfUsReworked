@@ -224,7 +224,7 @@ public static class MeetingPatches
             return;
 
         // Deactivate skip Button if skipping an emergency meeting is disabled
-        __instance.SkipVoteButton.gameObject.SetActive(!((Reported is null && GameModifiers.NoSkipping == DisableSkipButtonMeetings.Emergency) || (GameModifiers.NoSkipping ==
+        __instance.SkipVoteButton.gameObject.SetActive(!((Reported is null && VotingOptions.NoSkipping == DisableSkipButtonMeetings.Emergency) || (VotingOptions.NoSkipping ==
             DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !LocalPlayer.HasDied());
 
         if (LocalPlayer.Data.Role is LayerHandler localHandler)
@@ -304,7 +304,7 @@ public static class MeetingPatches
     [HarmonyPatch(nameof(MeetingHud.CoIntro))]
     public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
     {
-        if (!GameModifiers.IndicateReportedBodies)
+        if (!GameAnnouncementSettings.IndicateReportedBodies)
             return;
 
         foreach (var player in __instance.playerStates)

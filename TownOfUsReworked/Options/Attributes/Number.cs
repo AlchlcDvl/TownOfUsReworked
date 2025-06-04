@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Options.Attributes;
 
 public sealed class NumberOptionAttribute(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false, string customFormat = null) :
-    OptionAttribute<Settings.NumberOption>
+    OptionAttribute<ReworkedNumberOption>
 {
     private float Min { get; } = min;
     private float Max { get; } = max;
@@ -11,5 +11,5 @@ public sealed class NumberOptionAttribute(float min, float max, float increment,
     private bool ZeroIsInfinity { get; } = zeroIsInf;
     private string CustomFormat { get; } = customFormat;
 
-    protected override Settings.NumberOption SetUpOption() => new(Min, Max, Increment, Format, AllowHalf, ZeroIsInfinity, CustomFormat);
+    protected override ReworkedNumberOption SetUpOption() => new(Min, Max, Increment, Format, AllowHalf, ZeroIsInfinity, CustomFormat);
 }

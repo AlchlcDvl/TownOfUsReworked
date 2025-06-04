@@ -22,7 +22,7 @@ public sealed class Corrupted : Disposition
     {
         base.Init();
         CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)Corrupt, new Cooldown(CorruptCd));
-        Player.GetRole().Faction = Faction.Neutral;
+        Player.GetRole().Faction = Faction.Outcast;
     }
 
     private void Corrupt(PlayerControl target) => CorruptButton.StartCooldown(Interact(Player, target, true));

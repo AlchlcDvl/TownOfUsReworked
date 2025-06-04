@@ -83,8 +83,7 @@ public sealed class Enforcer : Intruder
             KillButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction is not (Faction.Crew or Faction.Neutral)) || (player.Is(SubFaction) && SubFaction
-        != SubFaction.None) || Player.IsLinkedTo(player);
+    private bool Exception1(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     private bool EndEffect() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
 

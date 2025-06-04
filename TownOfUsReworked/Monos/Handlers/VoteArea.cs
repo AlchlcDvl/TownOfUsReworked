@@ -24,8 +24,8 @@ public sealed class VoteAreaHandler : NameHandler
         localHandler.UpdateVoteArea(VoteArea);
         var deadSeeEverything = DeadSeeEverything();
         var amOwner = Player.AmOwner;
-        var (name, color) = UpdateGameName(handler, localHandler, amOwner, deadSeeEverything, out var revealed);
-        (VoteArea.NameText.text, VoteArea.NameText.color) = (Player.Data.PlayerName + name, color);
+        var (extraStuff, color) = UpdateGameName(handler, localHandler, amOwner, deadSeeEverything, out var revealed);
+        (VoteArea.NameText.text, VoteArea.NameText.color) = (Player.Data.PlayerName + extraStuff, color);
         VoteArea.NameText.fontSize = revealed ? 1.5f : 2f;
         VoteArea.NameText.transform.localPosition = new(0.3384f, revealed ? 0.0611f : 0.0311f, -0.1f);
     }

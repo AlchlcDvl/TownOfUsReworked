@@ -6,10 +6,9 @@ using BepInEx.Logging;
 namespace TownOfUsReworked;
 
 // FIXME: Can't call meetings (something I'm patching is rejecting it???)
-// TODO: Add commenting and documentation for the codebase
-// TODO: Refactor code for handling appearances, sizes and speed
+// TODO: Add commenting and documentation for the codebase - IPR
 // TODO: Re-add version handling
-// TODO: Finish adding missing translation keys before the next release
+// TODO: Finish adding missing translation keys before the next release - IPR
 [BepInAutoPlugin("me.alchlcdvl.reworked", "Reworked")]
 [BepInDependency(ReactorPlugin.Id)]
 [BepInIncompatibility("MalumMenu")]
@@ -26,7 +25,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 55;
+    private const int DevBuild = 56;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -121,7 +120,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         ClientOptions.WhiteNameplates.Config = Config.Bind("Client", "White Nameplates", false, "Enables custom nameplates");
         ClientOptions.NoLevels.Config = Config.Bind("Client", "No Levels", false, "Enables the little level icon during meetings");
         ClientOptions.CustomCrewColors.Config = Config.Bind("Client", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
-        ClientOptions.CustomNeutColors.Config = Config.Bind("Client", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
+        ClientOptions.CustomNeutColors.Config = Config.Bind("Client", "Custom Outcast Colors", true, "Enables custom colors for Outcast roles");
         ClientOptions.CustomIntColors.Config = Config.Bind("Client", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
         ClientOptions.CustomSynColors.Config = Config.Bind("Client", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
         ClientOptions.CustomApocColors.Config = Config.Bind("Client", "Custom Apocalypse Colors", true, "Enables custom colors for Apocalypse roles");

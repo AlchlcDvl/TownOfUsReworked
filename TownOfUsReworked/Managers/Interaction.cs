@@ -78,7 +78,7 @@ public static class InteractionManager
             {
                 if (bypass)
                     source.RpcMurderPlayer(target, reason, lunge);
-                else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction is not (Faction.Crew or Faction.Neutral or Faction.GameMode))
+                else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction is not (Faction.Crew or Faction.Outcast or Faction.GameMode))
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsConvertedFanatics);
@@ -187,22 +187,21 @@ public static class InteractionManager
     {
         var abilityUsed = true;
 
-        if (target.IsBombed())
+        if (!target.IsBombed())
+            return abilityUsed ? CooldownType.Reset : CooldownType.Fail;
+
+        abilityUsed = false;
+
+        if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
         {
-            abilityUsed = false;
-
-            if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
-            {
-                abilityUsed = true;
-                RpcBreakShield(player);
-            }
-            else if (PlayerLayer.GetLayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
-                bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
-
-            Role.BastionBomb(target, Bastion.BombRemovedOnKill);
-            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);
+            abilityUsed = true;
+            RpcBreakShield(player);
         }
+        else if (PlayerLayer.GetLayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
+            bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
 
+        Role.BastionBomb(target, Bastion.BombRemovedOnKill);
+        CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);
         return abilityUsed ? CooldownType.Reset : CooldownType.Fail;
     }
 
