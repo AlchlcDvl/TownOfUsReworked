@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Cryomaniac)]
-public sealed class Cryomaniac : NKilling, IDouser
+public sealed class Cryomaniac : OKilling, IDouser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number CryoDouseCd = 25;
@@ -34,6 +34,7 @@ public sealed class Cryomaniac : NKilling, IDouser
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool CanVent => base.CanVent && CryoVent;
+    protected override Faction ActualFaction => Faction.Cryomaniac;
 
     protected override void Init()
     {

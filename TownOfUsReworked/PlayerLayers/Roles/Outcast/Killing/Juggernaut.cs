@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Juggernaut)]
-public sealed class Juggernaut : NKilling
+public sealed class Juggernaut : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number AssaultCd = 25;
@@ -21,6 +21,7 @@ public sealed class Juggernaut : NKilling
     public override AttackEnum AttackVal => (AttackEnum)Mathf.Clamp(KillCounts.GetValueOrDefault(PlayerId), 1, 3);
     public override DefenseEnum DefenseVal => KillCounts.GetValueOrDefault(PlayerId) >= 3 ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool CanVent => base.CanVent && JuggVent;
+    protected override Faction ActualFaction => Faction.Juggernaut;
 
     protected override void Init()
     {

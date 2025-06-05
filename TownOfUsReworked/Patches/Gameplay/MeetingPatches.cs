@@ -213,7 +213,7 @@ public static class MeetingPatches
     {
         LocalPlayer.EnableButtons();
 
-        if (LocalPlayer.Data.Role is LayerHandler handler)
+        if (LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var handler))
             handler.OnMeetingEnd(__instance);
     }
 
@@ -227,8 +227,8 @@ public static class MeetingPatches
         __instance.SkipVoteButton.gameObject.SetActive(!((Reported is null && VotingOptions.NoSkipping == DisableSkipButtonMeetings.Emergency) || (VotingOptions.NoSkipping ==
             DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !LocalPlayer.HasDied());
 
-        if (LocalPlayer.Data.Role is LayerHandler localHandler)
-            localHandler.UpdateMeeting(__instance);
+        if (LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var handler))
+            handler.UpdateMeeting(__instance);
     }
 
     [HarmonyPatch(nameof(MeetingHud.VotingComplete))]

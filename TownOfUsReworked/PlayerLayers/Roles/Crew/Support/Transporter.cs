@@ -217,8 +217,6 @@ public sealed class Transporter : Crew, IMover
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!KeyboardJoystick.player.GetButtonDown("Delete"))
             return;
 

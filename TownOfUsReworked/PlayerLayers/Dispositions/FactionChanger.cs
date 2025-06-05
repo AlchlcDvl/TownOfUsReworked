@@ -5,18 +5,12 @@ public abstract class FactionChanger : Disposition
     public bool Turned { get; set; }
     public Faction Side { get; private set; }
     protected bool Betrayed { get; set; }
-    protected Role PlayerRole { get; private set; }
 
     public abstract bool SheriffSwap { get; }
     public abstract bool RevealerReveals { get; }
     public abstract bool SnitchReveals { get; }
 
-    protected override void Init()
-    {
-        base.Init();
-        PlayerRole = Player.GetRole();
-        Side = PlayerRole.Faction;
-    }
+    public override void LateInit() => Side = Handler.CurrentFaction;
 
     public override void UpdatePlayer()
     {
@@ -29,9 +23,9 @@ public abstract class FactionChanger : Disposition
         if (faction == Faction.Crew)
             return;
 
-        PlayerRole.Faction = Side = faction;
+        Side = faction;
         Turned = true;
-        var local = LocalPlayer.GetRole();
+        var local = LayerHandler.Handlers[LocalPlayer.PlayerId];
 
         if (SnitchReveals)
         {
@@ -40,7 +34,7 @@ public abstract class FactionChanger : Disposition
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
                     local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
-                    snitch.Player.GetRole().AllArrows.Add(PlayerId, new(snitch.Player, Player, snitch.Color));
+                    LayerHandler.Handlers[snitch.Player.PlayerId].AllArrows.Add(PlayerId, new(snitch.Player, Player, snitch.Color));
             }
         }
 

@@ -177,8 +177,16 @@ public static class VanillaVentWalkToFix
         {
             time += Time.deltaTime;
 
-            if (time >= 2f)
-                yield break;
+            if (time < 2f)
+                continue;
+
+            __instance.myPlayer.walkingToVent = false;
+            __instance.myPlayer.moveable = true;
+
+            if (__instance.myPlayer.AmOwner)
+                __instance.inputHandler.enabled = false;
+
+            __instance.myPlayer.NetTransform.SetPaused(false);
         }
 
         __instance.myPlayer.inVent = true;

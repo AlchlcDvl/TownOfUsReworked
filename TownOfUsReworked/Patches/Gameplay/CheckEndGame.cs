@@ -27,7 +27,7 @@ public static class CheckEndGame
                 _ => WinLose.IlluminatiWins,
             });
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
-            winners.Do(x => x.Data.Role.TryCast<LayerHandler>().Winner = true);
+            winners.Do(x => LayerHandler.Handlers[x.PlayerId].Winner = true);
             CallRpc(CustomRPC.Misc, [MiscRPC.WinLose, WinState, .. winners]);
         }
 
@@ -65,7 +65,7 @@ public static class CheckEndGame
         if (WinState == WinLose.None)
             return;
 
-        winnerIds.Select(x => PlayerById(x)).Do(x => x.Data.Role.TryCast<LayerHandler>().Winner = true);
+        winnerIds.Do(x => LayerHandler.Handlers[x].Winner = true);
         CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds ]);
     }
 
@@ -77,10 +77,11 @@ public static class CheckEndGame
         var faction = hexer.Faction;
         Func<PlayerControl, bool> factionCheck = faction switch
         {
-            Faction.Outcast => hexer.LinkedDisposition switch
+            Faction.Outcast => hexer.Handler.CurrentDisposition switch
             {
-                LayerEnum.Mafia => x => x.Is(LayerEnum.Mafia),
-                LayerEnum.Lovers => x => x.IsOtherLover(hexer.Player),
+                Mafia => x => x.Is(LayerEnum.Mafia),
+                Lovers => x => x.IsOtherLover(hexer.Player),
+                Linked => x => x.IsOtherLink(hexer.Player),
                 _ => x => x == hexer.Player
             },
             _ => x => x.Is(faction)

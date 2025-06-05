@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Glitch)]
-public sealed class Glitch : NKilling, IBlocker
+public sealed class Glitch : OKilling, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number MimicCd = 25;
@@ -39,6 +39,7 @@ public sealed class Glitch : NKilling, IBlocker
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
     public override bool RoleBlockImmune => true;
     public override bool CanVent => base.CanVent && GlitchVent;
+    protected override Faction ActualFaction => Faction.Glitch;
 
     protected override void Init()
     {
@@ -115,8 +116,6 @@ public sealed class Glitch : NKilling, IBlocker
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!KeyboardJoystick.player.GetButtonDown("Delete"))
             return;
 

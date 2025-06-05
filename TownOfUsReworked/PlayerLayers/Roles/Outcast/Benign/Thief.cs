@@ -174,7 +174,7 @@ public sealed class Thief : Outcast, IGuesser
 
             if (cooldown != CooldownType.Fail)
             {
-                if (target.GetRole() is NKilling or IPromoter or Neophyte or Harbinger or Betrayer or CKilling)
+                if (target.GetRole() is OKilling or IPromoter or Neophyte or Harbinger or Betrayer or CKilling)
                 {
                     Player.RpcMurderPlayer(target);
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
@@ -205,7 +205,6 @@ public sealed class Thief : Outcast, IGuesser
             // Outcast roles
             Arsonist => new Arsonist(),
             Betrayer => new Betrayer(),
-            Cannibal => new Cannibal(),
             Cryomaniac => new Cryomaniac(),
             Glitch => new Glitch(),
             Juggernaut => new Juggernaut(),
@@ -251,18 +250,19 @@ public sealed class Thief : Outcast, IGuesser
             // Apocalypse roles
             Cultist => new Cultist(),
             Plaguebearer => new Plaguebearer(),
+            Cannibal => new Cannibal(),
 
             // Whatever else
             Thief or _ => new Thief()
         };
 
-        newRole.RoleUpdate(this, player, role.Faction);
+        newRole.RoleUpdate(this, player, Faction == Faction.Outcast);
 
         if (ThiefSteals)
-            new Thief().RoleUpdate(role, target, role.Faction);
+            new Thief().RoleUpdate(role, target);
 
-        var local = LocalPlayer.GetRole();
-        var faction = local.Faction;
+        var local = LayerHandler.Handlers[LocalPlayer.PlayerId];
+        var faction = local.CurrentFaction;
 
         if (faction != Faction.Crew || (faction == Faction.Outcast && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
         {
@@ -275,7 +275,7 @@ public sealed class Thief : Outcast, IGuesser
                     if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
                         local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
                     else if (snitch.TasksDone && snitch.Local)
-                        snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
+                        LayerHandler.Handlers[snitch.PlayerId].AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
                 }
             }
 

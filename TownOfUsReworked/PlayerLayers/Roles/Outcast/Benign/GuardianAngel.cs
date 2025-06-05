@@ -15,7 +15,7 @@ public sealed class GuardianAngel : Outcast
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     private static Number MaxProtects = 5;
 
-    [MultiSelectOption<ProtectOptions>(NoneValue = ProtectOptions.Nobody, AllValue = ProtectOptions.Everyone )]
+    [MultiSelectOption<ProtectOptions>(NoneValue = ProtectOptions.Nobody, AllValue = ProtectOptions.Everyone)]
     public static MultiSelectValue<ProtectOptions> ShowProtect = ProtectOptions.Protected;
 
     [ToggleOption]
@@ -96,7 +96,7 @@ public sealed class GuardianAngel : Outcast
         revealed = true;
     }
 
-    public override void PostAssignment()
+    public override void LateInit()
     {
         if (GuardianAngelCanPickTargets || !TargetPlayer)
             TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
@@ -146,8 +146,6 @@ public sealed class GuardianAngel : Outcast
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!Failed || Dead || GaToSurv)
             return;
 

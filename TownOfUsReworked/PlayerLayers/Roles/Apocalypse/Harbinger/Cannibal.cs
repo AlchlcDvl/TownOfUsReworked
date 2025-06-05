@@ -46,15 +46,12 @@ public sealed class Cannibal : Harbinger<Gluttony>
 
     public override void ClearArrows()
     {
-        base.ClearArrows();
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
     }
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!EatArrows || Dead)
             return;
 

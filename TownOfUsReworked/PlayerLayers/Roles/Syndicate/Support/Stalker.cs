@@ -26,7 +26,6 @@ public sealed class Stalker : Syndicate
 
     public override void ClearArrows()
     {
-        base.ClearArrows();
         StalkerArrows.Values.DestroyAll();
         StalkerArrows.Clear();
     }

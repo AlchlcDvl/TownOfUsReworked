@@ -7,7 +7,7 @@ public abstract class Paired : Disposition
     protected abstract bool RevealRole { get; }
     protected abstract ChatChannel Channel { get; }
 
-    public override void OnMeetingEnd(MeetingHud __instance) => Player.GetRole().CurrentChannel = Channel;
+    public override void LateInit() => Handler.Channels |= Channel;
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {

@@ -60,12 +60,12 @@ public sealed class Necromancer : Neophyte, IReviver
         "up the process";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && NecroVent;
+    protected override Faction ActualFaction => Faction.Reanimated;
 
     protected override void Init()
     {
         base.Init();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <#E6108AFF>Reanimated</color>";
-        Faction = Faction.Reanimated;
         ManaButton ??= new(this, "GAIN MANA", new SpriteName("NecroManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(NecroManaCd), (UsableFunc)Usable);
         ResurrectButton ??= new(this, new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Resurrect, new Cooldown(ResurrectCd), MaxNecroMana, "RESURRECT",
             new Duration(ResurrectDur), (EffectEndVoid)UponEnd, (PlayerBodyExclusion)Exception, (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(NecroManaCost));
@@ -83,23 +83,26 @@ public sealed class Necromancer : Neophyte, IReviver
     {
         var player = PlayerById(ParentId);
 
-        if (!player.Data.IsDead)
+        if (!player.Data.IsDead || !LayerHandler.Handlers.TryGetValue(player.PlayerId, out var targetHandler))
             return;
 
-        var targetRole = player.GetRole();
-        targetRole.DeathReason = DeathReasonEnum.Revived;
-        targetRole.KilledBy = " By " + PlayerName;
+        targetHandler.DeathReason = DeathReasonEnum.Revived;
+        targetHandler.KilledBy = " By " + PlayerName;
         ConvertPlayer(player.PlayerId, Player.PlayerId, false);
         player.Revive();
 
-        if (!Lovers.BothLoversDie || !player.Is<Lovers>(out var lovers))
-            return;
+        if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers) && LayerHandler.Handlers.TryGetValue(lovers.Other.PlayerId, out var loverHandler))
+        {
+            loverHandler.DeathReason = DeathReasonEnum.Revived;
+            loverHandler.KilledBy = " By " + PlayerName;
+            lovers.Other.Revive();
 
-        var lover = lovers.Other;
-        var loverRole = lover.GetRole();
-        loverRole.DeathReason = DeathReasonEnum.Revived;
-        loverRole.KilledBy = " By " + PlayerName;
-        lover.Revive();
+            if (Local && lovers.Other.Is<Sovereign>(out var loverSov) && !loverSov.Revealed)
+                CustomAchievementManager.UnlockAchievement("RekindledPower");
+        }
+
+        if (Local && player.Is<Sovereign>(out var sov) && !sov.Revealed)
+            CustomAchievementManager.UnlockAchievement("RekindledPower");
     }
 
     private void Resurrect(DeadBody target)

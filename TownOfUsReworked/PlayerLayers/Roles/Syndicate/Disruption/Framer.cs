@@ -73,5 +73,5 @@ public sealed class Framer : Syndicate
 
     public override void ReadRPC(NetData reader) => Framed.Add(reader.ReadByte());
 
-    protected override void OnTrueDeath() => Framed.Clear();
+    protected override void OnTrueDeath(bool value) => Framed.Clear();
 }

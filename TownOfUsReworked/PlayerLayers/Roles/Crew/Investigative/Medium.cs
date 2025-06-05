@@ -52,7 +52,6 @@ public sealed class Medium : Crew, IShaman
 
     public override void ClearArrows()
     {
-        base.ClearArrows();
         MediateArrows.Values.DestroyAll();
         MediateArrows.Clear();
         MediatedPlayers.Clear();
@@ -119,6 +118,6 @@ public sealed class Medium : Crew, IShaman
         MediatedPlayers.Add(playerid2);
 
         if (LocalPlayer.PlayerId == playerid2 || (LocalPlayer.HasDied() && ShowMediumToDead == ShowMediumToDead.AllDead))
-            LocalPlayer.GetRole().DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color, skipBody: true));
+            LayerHandler.Handlers[LocalPlayer.PlayerId].DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color, skipBody: true));
     }
 }

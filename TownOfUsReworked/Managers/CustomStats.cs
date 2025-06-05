@@ -309,7 +309,7 @@ public static class CustomStatsManager
         if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
             return (T)(object)reader.ReadByte();
 
-        return (T)(object)reader.ReadUInt32();
+        return (T)(object)reader.ReadInt32();
     }
 
     private static void Write(this BinaryWriter writer, Enum enumVal) => writer.Write(NetData.ToBytes(enumVal));

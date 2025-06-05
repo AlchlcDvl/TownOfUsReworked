@@ -9,7 +9,7 @@ public sealed class Traitor : FactionChanger
     [ToggleOption]
     public static bool TraitorColourSwap = false;
 
-    protected override UColor MainColor => Turned ? PlayerRole.FactionColor : CustomColorManager.Traitor;
+    protected override UColor MainColor => CustomColorManager.Traitor;
     public override string Symbol => "♣";
     public override LayerEnum Type => LayerEnum.Traitor;
     public override Func<string> Description => () => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";

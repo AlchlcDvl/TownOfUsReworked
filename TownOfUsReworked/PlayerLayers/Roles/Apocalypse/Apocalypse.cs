@@ -25,17 +25,12 @@ public abstract class Apocalypse : Role
         }
     }
     protected override bool UseMainColor => ClientOptions.CustomApocColors;
+    public override Faction BaseFaction => BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse
+        ? Faction.Illuminati
+        : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse
+            ? Faction.Pandorica : Faction.Apocalypse);
 
     protected string CommonAbilities => Player.CanSabotage() ? "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "";
-
-    protected override void Init()
-    {
-        base.Init();
-        Faction = BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Apocalypse
-            ? Faction.Illuminati
-            : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse
-                ? Faction.Pandorica : Faction.Apocalypse);
-    }
 
     public override List<PlayerControl> Team()
     {

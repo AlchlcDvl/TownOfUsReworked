@@ -40,7 +40,7 @@ public sealed class DeadPlayer(byte killer, byte player)
                         Faction.Intruder => "\nThe killer is an Intruder!",
                         Faction.Syndicate => "\nThe killer is from the Syndicate!",
                         Faction.Apocalypse => "\nThe killer is a follower of the Apocalypse!",
-                        Faction.Outcast => "\nThe killer is a Outcast!",
+                        Faction.Outcast => "\nThe killer is an Outcast!",
                         Faction.Pandorica => "\nThe killer is from the Pandorica!",
                         Faction.Compliance => "\nThe killer is from the Compliance!",
                         Faction.Illuminati => "\nThe killer is from the Illuminati!",

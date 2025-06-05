@@ -2,87 +2,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Role : PlayerLayer
 {
-    protected override UColor MainColor => FactionColor;
+    protected override UColor MainColor => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
     public override LayerEnum Type => LayerEnum.NoneRole;
-    protected override UColor LayerColor => CustomColorManager.Role;
+    protected override UColor LayerColor => FactionColor;
     protected override bool UseMainColor => false;
 
-    public virtual Func<string> StartText { get; } = () => "Woah The Game Started";
+    public abstract Faction BaseFaction { get; }
+
+    public virtual Func<string> StartText => () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
     public virtual bool AffectedByLights => true;
     public virtual bool CanSwitchVents => true;
 
-    // private static bool PlatformIsUsed;
-    // public static bool IsLeft;
-    // private static bool PlayerIsLeft;
-    // public CustomButton CallButton { get; set; }
-
     public Alignment Alignment { get; protected set; }
-    public ChatChannel CurrentChannel { get; set; }
-    public LayerEnum LinkedDisposition { get; set; }
 
-    public Dictionary<byte, PlayerArrow> AllArrows { get; } = [];
-    public Dictionary<byte, PlayerArrow> DeadArrows { get; } = [];
-    private Dictionary<float, PointInTime> Positions { get; } = [];
-    public Dictionary<byte, PlayerArrow> YellerArrows { get; } = [];
-
-    public Faction Faction
-    {
-        get;
-        set
-        {
-            FactionColor = value switch
-            {
-                Faction.Intruder => CustomColorManager.Intruder,
-                Faction.Crew => CustomColorManager.Crew,
-                Faction.Syndicate => CustomColorManager.Syndicate,
-                Faction.Outcast => CustomColorManager.Outcast,
-                Faction.Pandorica => CustomColorManager.Pandorica,
-                Faction.Compliance => CustomColorManager.Compliance,
-                Faction.Illuminati => CustomColorManager.Illuminati,
-                Faction.Apocalypse => CustomColorManager.Apocalypse,
-                Faction.Undead => CustomColorManager.Undead,
-                Faction.Cult => CustomColorManager.Cult,
-                Faction.Cabal => CustomColorManager.Cabal,
-                Faction.Reanimated => CustomColorManager.Reanimated,
-                Faction.Followers => CustomColorManager.Followers,
-                Faction.GameMode => Alignment switch
-                {
-                    Alignment.HideAndSeek => CustomColorManager.HideAndSeek,
-                    Alignment.TaskRace => CustomColorManager.TaskRace,
-                    _ => CustomColorManager.Faction
-                },
-                _ => CustomColorManager.Faction
-            };
-            Objectives = value switch
-            {
-                Faction.Intruder => () => IntrudersWinCon(Player),
-                Faction.Syndicate => () => SyndicateWinCon(Player),
-                Faction.Apocalypse => () => ApocalypseWinCon(Player),
-                Faction.Compliance => () => ComplianceWinCon(Player),
-                Faction.Pandorica => () => PandoricaWinCon(Player),
-                Faction.Illuminati => () => IlluminatiWinCon(Player),
-                Faction.Crew => () => CrewWinCon,
-                _ => Objectives
-            };
-
-            if (Local)
-                UpdateButtons();
-
-            field = value;
-        }
-    }
-    public UColor FactionColor { get; private set; }
+    public Faction Faction => Handler.CurrentFaction;
+    public UColor FactionColor { get; set; }
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
     public virtual string FactionName => $"{Faction}";
 
     public Func<string> Objectives { get; set; } = () => "- None";
-
-    public string KilledBy { get; set; } = "";
-    public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
-
-    public bool Rewinding { get; set; }
 
     public bool Bombed { get; set; }
     private CustomButton BombKillButton { get; set; }
@@ -92,28 +32,8 @@ public abstract class Role : PlayerLayer
     private CustomButton PlaceHitButton { get; set; }
     private int BountyTimer { get; set; }
 
-    public bool TrulyDead
-    {
-        get;
-        set
-        {
-            field = value;
-            OnTrueDeath();
-        }
-    }
-
-    public bool Diseased { get; set; }
-
     protected override void Init()
     {
-        Faction = Faction.None;
-        CurrentChannel = ChatChannel.All;
-
-        AllArrows.Clear();
-        DeadArrows.Clear();
-        Positions.Clear();
-        YellerArrows.Clear();
-
         // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         // {
         //     CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
@@ -156,11 +76,11 @@ public abstract class Role : PlayerLayer
     {
         var team = new List<PlayerControl>() { Player };
 
-        if (LinkedDisposition == LayerEnum.Lovers)
+        if (Handler.CurrentDisposition is Lovers)
             team.Add(Player.GetOtherLover());
-        else if (LinkedDisposition == LayerEnum.Rivals)
+        else if (Handler.CurrentDisposition is Rivals)
             team.Add(Player.GetOtherRival());
-        else if (LinkedDisposition == LayerEnum.Mafia)
+        else if (Handler.CurrentDisposition is Mafia)
             team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
 
         if (Faction == Faction.Cabal && Alignment != Alignment.Neophyte)
@@ -175,42 +95,6 @@ public abstract class Role : PlayerLayer
 
     public override void OnIntroEnd() => UpdateButtons();
 
-    public override void UpdateHud(HudManager __instance) => DeadArrows.Keys.Where(id => !PlayerById(id)).Do(DestroyArrowD);
-
-    public override void UpdatePlayer()
-    {
-        if (!Timekeeper.TkExists || Dead || Faction == Faction.GameMode || (Faction is Faction.Syndicate && Timekeeper.TimeRewindImmunity))
-            return;
-
-        if (!Rewinding)
-        {
-            Positions.TryAdd(Time.time, new(Player.transform.position));
-            (from pair in Positions let seconds = Time.time - pair.Key where seconds > Timekeeper.TimeDur select pair.Key).Do(x => Positions.Remove(x));
-        }
-        else if (Positions.Any())
-        {
-            var point = Positions.Last();
-            Player.CustomSnapTo(point.Value.Position);
-            Positions.Remove(point.Key);
-        }
-        else
-            Positions.Clear();
-    }
-
-    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
-    {
-        if (killer != Player)
-        {
-            KilledBy = " By " + killer.name;
-            DeathReason = Meeting() ? DeathReasonEnum.Guessed : reason;
-        }
-        else
-            DeathReason = Meeting() ? DeathReasonEnum.Misfire : DeathReasonEnum.Suicide;
-
-        if (!GetLayers<IReviver>().Any())
-            TrulyDead |= Type != LayerEnum.GuardianAngel;
-    }
-
     private bool BombUsable() => Bombed;
 
     private bool RequestUsable() => Requesting;
@@ -221,93 +105,13 @@ public abstract class Role : PlayerLayer
             BountyTimer++;
     }
 
-    protected virtual void OnTrueDeath() {}
-
-    /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlatformIsUsed && MapPatches.CurrentMap != 4;
-
-    private bool CallUsable()
-    {
-        if (MapPatches.CurrentMap != 4)
-            return false;
-
-        var pos = Player.transform.position;
-
-        if (pos.y is >= 8.21f and < 9.62f)
-        {
-            if (pos.x is <= 10.8f and >= 9.7f)
-            {
-                PlayerIsLeft = false;
-                return true;
-            }
-            else if (pos.x is <= 5.8f and >= 4.7f)
-            {
-                PlayerIsLeft = true;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static void UsePlatform()
-    {
-        if (!PlatformIsUsed && LocalRole.CanCall() && LocalRole.CallUsable())
-            UsePlatForRpc();
-    }
-
-    private static void UsePlatForRpc()
-    {
-        SyncPlatform();
-        CallRpc(CustomRPC.Misc, MiscRPC.SyncPlatform);
-    }
-
-    public static void SyncPlatform() => Coroutines.Start(CoUsePlatform());
-
-    private static IEnumerator CoUsePlatform()
-    {
-        IsLeft = !IsLeft;
-        var platform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
-        PlatformIsUsed = true;
-        platform.IsLeft = IsLeft;
-        platform.transform.localPosition = IsLeft ? platform.LeftPosition : platform.RightPosition;
-        platform.IsDirty = true;
-
-        var sourcePos = IsLeft ? platform.LeftPosition : platform.RightPosition;
-        var targetPos = IsLeft ? platform.RightPosition : platform.LeftPosition;
-
-        yield return Effects.Wait(0.1f);
-        yield return Effects.Slide3D(platform.transform, sourcePos, targetPos, LocalPlayer.MyPhysics.Speed);
-        yield return Effects.Wait(0.1f);
-
-        PlatformIsUsed = false;
-    }*/
-
-    public void DestroyArrowY(byte targetPlayerId)
-    {
-        if (YellerArrows.Remove(targetPlayerId, out var arrow))
-            arrow.Destroy();
-    }
-
-    private void DestroyArrowD(byte targetPlayerId)
-    {
-        if (DeadArrows.Remove(targetPlayerId, out var arrow))
-            arrow.Destroy();
-    }
-
-    public void RoleUpdate(Role former, PlayerControl player = null, Faction? newFaction = null)
+    public void RoleUpdate(Role former, PlayerControl player = null, bool inherit = false)
     {
         player ??= former.Player;
-        newFaction ??= former.Faction;
         CustomButton.AllButtons.Where(x => x.Owner == former || !x.Owner.Player).Do(x => x.Destroy());
         CustomArrow.AllArrows.Where(x => x.Owner == player).Do(x => x.Disable());
-        var allArrows = former.AllArrows.Clone();
         former.End();
         Start(player);
-        DeathReason = former.DeathReason;
-        KilledBy = former.KilledBy;
-        Diseased = former.Diseased;
-        AllArrows.AddRange(allArrows);
-        Faction = newFaction.Value;
 
         if (Local)
         {
@@ -320,8 +124,8 @@ public abstract class Role : PlayerLayer
         if (LocalPlayer.Is<Seer>(out var seer))
             Flash(seer.Color);
 
-        if (player.Data.Role is LayerHandler layerHandler)
-            layerHandler.SetUpLayers();
+        if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+            handler.SetUpLayers(inherit);
     }
 
     public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().Do(x => x.Rounds++);
@@ -334,7 +138,6 @@ public abstract class Role : PlayerLayer
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        GetLayers<Role>().Do(x => x.CurrentChannel = ChatChannel.All);
         GetLayers<Arsonist>().Do(x => x.Doused.Clear());
 
         if (Requesting && BountyTimer > 2)
@@ -370,17 +173,6 @@ public abstract class Role : PlayerLayer
             cryo.Doused.Clear();
         }
     }
-
-    public override void ClearArrows()
-    {
-        AllArrows.Values.DestroyAll();
-        AllArrows.Clear();
-        YellerArrows.Values.DestroyAll();
-        YellerArrows.Clear();
-        DeadArrows.Values.DestroyAll();
-        DeadArrows.Clear();
-    }
-    public const string CrewWinCon = "- Finish all tasks\n- Eject all <#FF0000FF>evildoers</color>";
 
     private void PlaceHit(PlayerControl target)
     {
@@ -452,22 +244,4 @@ public abstract class Role : PlayerLayer
     public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Deinitialised);
 
     public static IEnumerable<Role> GetRoles(Alignment ra) => GetLayers<Role>().Where(x => x.Alignment == ra && !x.Deinitialised);
-
-    private static string IntrudersWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
-        "- Kill anyone who opposes the <#FF0000FF>Intruders</color>";
-
-    private static string SyndicateWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
-        "- Cause chaos and kill off anyone who opposes the <#008000FF>Syndicate</color>";
-
-    private static string ApocalypseWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
-        "- Summon your deities to bring on the <#99007FFF>Apocalypse</color>";
-
-    private static string ComplianceWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
-        "- Eliminate any and all opposition to the <#5A27CCFF>Compliance</color>";
-
-    private static string PandoricaWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
-        "- Kill off anyone who tries to oppose the <#ECFF45FF>Pandorica</color>";
-
-    private static string IlluminatiWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
-        "- Eliminate anyone who tries to oppose the <#A39389FF>Illuminati</color>";
 }

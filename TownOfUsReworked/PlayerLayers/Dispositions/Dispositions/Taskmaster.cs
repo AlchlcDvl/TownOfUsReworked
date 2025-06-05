@@ -15,10 +15,10 @@ public sealed class Taskmaster : Disposition
     {
         if (TasksLeft == TMTasksRemaining)
         {
-            var role = LocalPlayer.GetRole();
+            var role = LayerHandler.Handlers[LocalPlayer.PlayerId];
             Flash(Color);
 
-            if (role.Faction is not (Faction.Crew or Faction.Outcast) || role.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
+            if (role.CurrentFaction.IsFactionedEvil() || role.CurrentRole.Alignment is Alignment.Killing or Alignment.Neophyte or Alignment.Proselyte)
                 role.AllArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
         }
         else if (TasksDone && Local)

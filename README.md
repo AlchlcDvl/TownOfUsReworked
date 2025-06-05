@@ -889,7 +889,7 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 
 **Origin**: Ottomated
 
-The Phantom spawns when a Outcast player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
+The Phantom spawns when an Outcast player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
 
 **Game Options**
 
@@ -1562,7 +1562,7 @@ An Allied Outcast Killer now sides with either the Crew, Intruders or the Syndic
 
 **Symbol**: δ
 
-The Corrupted is a member of the Crew with the alignment of a Outcast Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Outcast Benigns or Evils can be spared. Corrupted adds a level of attack to the applied crewmate.
+The Corrupted is a member of the Crew with the alignment of an Outcast Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Outcast Benigns or Evils can be spared. Corrupted adds a level of attack to the applied crewmate.
 
 ## Defector
 

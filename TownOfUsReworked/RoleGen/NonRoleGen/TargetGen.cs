@@ -23,7 +23,7 @@ public sealed class TargetGen : BaseGen
                     factions.Add(Faction.Compliance);
 
                 var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());
-                ally.Side = alliedRole.Faction = faction;
+                ally.Side = faction;
                 CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
             }
 

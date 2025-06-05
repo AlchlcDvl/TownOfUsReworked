@@ -23,7 +23,7 @@ Changes!
 - Update: Updated to Reactor v2.4.0
 - Update: Updated to BepInEx v6.0.0-be.735
 - Overhaul: Mayor is now a second stage role for the new Democrat role
-- Overhaul: Shifter is back to being a outcast role, finally with a win condition and an interesting mechanic*
+- Overhaul: Shifter is back to being an outcast role, finally with a win condition and an interesting mechanic*
 - Rework: Mafioso, Sidekick, Promoted Godfather and Promoted Rebel have been completely recoded, Mafiosos and Sidekicks can now use their original abilities, but lose the ability to kill unless they can promote (for future patch notes, bug fixes will only refer to the base roles and not Godfather-x or Rebel-y)
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a single player to eject and have gained ability charges to compensate
 - Rework: Altruist and Necromancer now need to gain mana from bodies (thereby cleaning them) to be able to revive players

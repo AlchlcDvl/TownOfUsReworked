@@ -9,17 +9,16 @@ public sealed class Mafia : Disposition
     [ToggleOption]
     private static bool MafVent = false;
 
+    [ToggleOption]
+    public static bool MafiaChat = false;
+
     protected override UColor MainColor => CustomColorManager.Mafia;
     public override string Symbol => "ω";
     public override LayerEnum Type => LayerEnum.Mafia;
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
     public override bool CanVent => MafVent;
 
-    protected override void Init()
-    {
-        base.Init();
-        Player.GetRole().Faction = Faction.Outcast;
-    }
+    public override void LateInit() => Handler.CurrentFaction = Faction.Mafia;
 
     protected override void CheckWin(HashSet<byte> winnerIds)
     {

@@ -13,9 +13,12 @@ public sealed class Vip : Modifier
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        Flash(Player.GetRole().Color);
-        var local = LocalPlayer.GetRole();
-        local.AllArrows.TryAdd(Player.PlayerId, new(LocalPlayer, Player, Color));
-        local.AllArrows[Player.PlayerId].Update(Color);
+        Flash(Color);
+        var allArrows = LayerHandler.Handlers[LocalPlayer.PlayerId].AllArrows;
+
+        if (!allArrows.TryGetValue(Player.PlayerId, out var arrow))
+            allArrows[Player.PlayerId] = new(LocalPlayer, Player, Color);
+
+        arrow.Update(Color);
     }
 }

@@ -291,6 +291,7 @@ public static class LayerExtensions
             Lovers => Lovers.LoversChat,
             Rivals => Rivals.RivalsChat,
             Linked => Linked.LinkedChat,
+            Mafia => Mafia.MafiaChat,
             _ => player.Is<Hunted>() && Hunted.HuntedChat
         };
     }
@@ -535,63 +536,33 @@ public static class LayerExtensions
 
     private static IEnumerable<PlayerLayer> GetLayersFromList(this PlayerControl player) => PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType);
 
-    public static IEnumerable<PlayerLayer> GetLayers(this PlayerControl player)
-    {
-        if (player?.Data?.Role is LayerHandler handler)
-            return handler.CurrentLayers;
-
-        return player.GetLayersFromList();
-    }
+    public static IEnumerable<PlayerLayer> GetLayers(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler)
+        ? handler.CurrentLayers : player.GetLayersFromList();
 
     private static T GetLayerFromList<T>(this PlayerControl player) where T : IPlayerLayer => PlayerLayer.GetLayers<T>().Find(x => x.Player == player);
 
-    public static T GetLayer<T>(this PlayerControl player) where T : IPlayerLayer
-    {
-        if (player?.Data?.Role is LayerHandler handler)
-            return handler.GetLayer<T>();
-
-        return player.GetLayerFromList<T>();
-    }
+    public static T GetLayer<T>(this PlayerControl player) where T : IPlayerLayer => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler)
+        ? handler.GetLayer<T>() : player.GetLayerFromList<T>();
 
     public static Role GetRoleFromList(this PlayerControl player) => player.GetLayerFromList<Role>();
 
-    public static Role GetRole(this PlayerControl player)
-    {
-        if (player?.Data?.Role is LayerHandler handler)
-            return handler.CurrentRole;
-
-        return player.GetRoleFromList();
-    }
+    public static Role GetRole(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler)
+        ? handler.CurrentRole : player.GetRoleFromList();
 
     public static Disposition GetDispositionFromList(this PlayerControl player) => player.GetLayerFromList<Disposition>();
 
-    public static Disposition GetDisposition(this PlayerControl player)
-    {
-        if (player?.Data?.Role is LayerHandler handler)
-            return handler.CurrentDisposition;
-
-        return player.GetDispositionFromList();
-    }
+    public static Disposition GetDisposition(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler)
+        ? handler.CurrentDisposition : player.GetDispositionFromList();
 
     public static Modifier GetModifierFromList(this PlayerControl player) => player.GetLayerFromList<Modifier>();
 
-    public static Modifier GetModifier(this PlayerControl player)
-    {
-        if (player.Data?.Role is LayerHandler handler)
-            return handler.CurrentModifier;
-
-        return player.GetModifierFromList();
-    }
+    public static Modifier GetModifier(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler)
+        ? handler.CurrentModifier : player.GetModifierFromList();
 
     public static Ability GetAbilityFromList(this PlayerControl player) => player.GetLayerFromList<Ability>();
 
-    public static Ability GetAbility(this PlayerControl player)
-    {
-        if (player?.Data?.Role is LayerHandler handler)
-            return handler.CurrentAbility;
-
-        return player.GetAbilityFromList();
-    }
+    public static Ability GetAbility(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler)
+        ? handler.CurrentAbility : player.GetAbilityFromList();
 
     public static void AssignChaosDrive()
     {
@@ -674,7 +645,7 @@ public static class LayerExtensions
             }
         }
 
-        role1.Faction = comp ? Faction.Compliance : sub;
+        role1.Handler.CurrentFaction = comp ? Faction.Compliance : sub;
         RoleGenManager.Convertible--;
 
         if (converted.AmOwner)
@@ -694,8 +665,9 @@ public static class LayerExtensions
 
     public static bool IsConvertible(this Faction originalFaction) => originalFaction is < Faction.Outcast or Faction.Pandorica or (> Faction.GameMode and < Faction.Cabal);
 
-    public static bool IsFactionedEvil(this Faction faction) => faction is (> Faction.Crew and < Faction.GameMode and not Faction.Outcast) or > Faction.Werewolf || (faction is > Faction.GameMode
-        and < Faction.Cabal && OutcastKillingSettings.KnowEachOther);
+    // TODO: Implement the bool param for targeting
+    public static bool IsFactionedEvil(this Faction faction, bool isKnown = false) => faction is (> Faction.Crew and < Faction.GameMode and not Faction.Outcast) or > Faction.Mafia || (faction is
+        > Faction.GameMode and < Faction.Cabal && !OutcastKillingSettings.WinSolo && (!isKnown || OutcastKillingSettings.KnowEachOther));
 
     public static bool IsOk(this Faction faction) => faction is > Faction.GameMode and < Faction.Cabal;
 }

@@ -27,12 +27,12 @@ public sealed class Dracula : Neophyte
         $"exceeds {AliveVampCount}, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && DracVent;
+    protected override Faction ActualFaction => Faction.Undead;
 
     protected override void Init()
     {
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <#7B8968FF>Undead</color>";
-        Faction = Faction.Undead;
         BiteButton ??= new(this, new SpriteName("Bite"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Convert, new Cooldown(BiteCd), "BITE", (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
     }

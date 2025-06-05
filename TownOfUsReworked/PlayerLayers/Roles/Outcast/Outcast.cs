@@ -8,12 +8,7 @@ public abstract class Outcast : Role
     public override bool CanVent => OutcastSettings.OutcastsVent;
     protected override bool UseMainColor => ClientOptions.CustomNeutColors;
     public override string FactionName => "Outcast";
-
-    protected override void Init()
-    {
-        base.Init();
-        Faction = Faction.Outcast;
-    }
+    public override Faction BaseFaction => Faction.Outcast;
 
     public override List<PlayerControl> Team()
     {

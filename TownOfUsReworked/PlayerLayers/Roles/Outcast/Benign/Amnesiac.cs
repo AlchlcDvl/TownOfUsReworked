@@ -46,7 +46,6 @@ public sealed class Amnesiac : Outcast
 
     public override void ClearArrows()
     {
-        base.ClearArrows();
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
     }
@@ -99,7 +98,7 @@ public sealed class Amnesiac : Outcast
             // Outcast roles
             Actor => new Actor(),
             Arsonist => new Arsonist(),
-            Betrayer => new Betrayer() { Faction = role.Faction },
+            Betrayer => new Betrayer(),
             BountyHunter bh => new BountyHunter() { TargetPlayer = bh.TargetPlayer },
             Cannibal => new Cannibal(),
             Cryomaniac => new Cryomaniac(),
@@ -162,7 +161,7 @@ public sealed class Amnesiac : Outcast
             Amnesiac or _ => new Amnesiac(),
         };
 
-        newRole.RoleUpdate(this, player);
+        newRole.RoleUpdate(this, player, Faction == Faction.Outcast);
 
         switch (role)
         {
@@ -195,8 +194,8 @@ public sealed class Amnesiac : Outcast
             }
         }
 
-        var local = LocalPlayer.GetRole();
-        var faction = local.Faction;
+        var local = LayerHandler.Handlers[LocalPlayer.PlayerId];
+        var faction = local.CurrentFaction;
 
         if (faction != Faction.Crew || (faction == Faction.Outcast && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
         {
@@ -209,7 +208,7 @@ public sealed class Amnesiac : Outcast
                     if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && player.AmOwner)
                         local.AllArrows.Add(snitch.PlayerId, new(player, snitch.Player, snitch.Color));
                     else if (snitch.TasksDone && snitch.Local)
-                        snitch.Player.GetRole().AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
+                        LayerHandler.Handlers[snitch.PlayerId].AllArrows.Add(player.PlayerId, new(snitch.Player, player, snitch.Color));
                 }
             }
 
@@ -232,8 +231,6 @@ public sealed class Amnesiac : Outcast
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!RememberArrows || Dead)
             return;
 

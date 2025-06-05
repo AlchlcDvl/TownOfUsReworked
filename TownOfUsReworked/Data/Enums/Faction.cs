@@ -26,6 +26,9 @@ public enum Faction : byte
     SerialKiller,
     Werewolf,
 
+    // Disposition
+    Mafia,
+
     // Converters
     Cabal,
     Cult,

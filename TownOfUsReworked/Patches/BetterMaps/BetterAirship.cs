@@ -231,7 +231,8 @@ public static class BetterAirship
         public static bool Prefix(SpawnInMinigame __instance)
         {
             // Skip this if the local player has the Astral modifier or is a postmortal role
-            if ((LocalPlayer.Is<IGhosty>(out var ghost) && !ghost.Caught) || (LocalPlayer.Is<Astral>(out var astral) && astral.LastPosition != Vector3.zero))
+            if ((GameOptions.GhostSpawn != GhostSpawnType.AtMeeting && LocalPlayer.Is<IGhosty>(out var ghost) && !ghost.Caught) || (LocalPlayer.Is<Astral>(out var astral) && astral.LastPosition !=
+                Vector3.zero))
             {
                 __instance.Close();
                 return false;

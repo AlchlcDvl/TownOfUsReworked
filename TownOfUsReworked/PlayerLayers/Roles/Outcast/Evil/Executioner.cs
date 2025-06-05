@@ -86,7 +86,7 @@ public sealed class Executioner : Evil
         revealed = true;
     }
 
-    public override void PostAssignment()
+    public override void LateInit()
     {
         if (ExecutionerCanPickTargets || !TargetPlayer)
         {
@@ -144,8 +144,6 @@ public sealed class Executioner : Evil
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if ((!TargetFailed && (!TargetPlayer || !Failed)) || Dead)
             return;
 

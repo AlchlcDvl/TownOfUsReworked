@@ -25,7 +25,7 @@ public static class OnGameEndPatches
             MapPatches.AdjustSettings(false);
             GameTimerHandler.Instance?.gameObject?.Destroy();
 
-            foreach (var handler in AllPlayers().Select(x => x.Data.Role.TryCast<LayerHandler>()))
+            foreach (var handler in AllPlayers().Select(x => LayerHandler.Handlers[x.PlayerId]))
             {
                 if (handler is { Disconnected: false, Winner: true })
                     Winners[handler.Player.Data.PlayerName] = handler.CurrentLayers;
@@ -178,7 +178,7 @@ public static class OnGameEndPatches
                     WinLose.IlluminatiWins => ("The Illuminati Wins", "IntruderWin", CustomColorManager.Illuminati),
                     WinLose.ComplianceWins => ("The Compliance Wins", "IntruderWin", CustomColorManager.Compliance),
                     WinLose.ShifterWins => ("Shifter Wins", "IntruderWin", CustomColorManager.Shifter),
-                    WinLose.OutcastsWin => ("Outcasts Wins", "IntruderWin", CustomColorManager.Outcast),
+                    WinLose.OutcastsWin => ("Outcasts Win", "IntruderWin", CustomColorManager.Outcast),
                     WinLose.EveryoneWins => ("Everyone Wins", "IntruderWin", CustomColorManager.Stalemate),
                     _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
                 };
@@ -303,7 +303,7 @@ public static class OnGameEndPatches
         var summary = "";
         var cache = "";
 
-        var handler = player.Data.Role.TryCast<LayerHandler>();
+        var handler = LayerHandler.Handlers[player.PlayerId];
         var role = handler.CurrentRole;
         var modifier = handler.CurrentModifier;
         var ability = handler.CurrentAbility;
@@ -406,18 +406,13 @@ public static class OnGameEndPatches
 
     private static string DeathReason(this PlayerControl player)
     {
-        if (!player)
+        if (!player || !LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
             return "";
 
-        var role = player.GetRole();
+        var die = handler.DeathReason is not DeathReasonEnum.Alive ? $" | {handler.DeathReason}" : "";
 
-        if (!role)
-            return "";
-
-        var die = role.DeathReason is not DeathReasonEnum.Alive ? $" | {role.DeathReason}" : "";
-
-        if (role.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(role.KilledBy))
-            die += role.KilledBy;
+        if (handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(handler.KilledBy))
+            die += handler.KilledBy;
 
         return die;
     }

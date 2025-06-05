@@ -108,8 +108,6 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     public override void ClearArrows()
     {
-        base.ClearArrows();
-
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
 
@@ -121,11 +119,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         TrackerArrows.Clear();
     }
 
-    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
-    {
-        base.OnDeath(reason, killer);
-        ClearArrows();
-    }
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 
     private void DestroyArrow(byte targetPlayerId)
     {
@@ -156,8 +150,6 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (IsCor)
         {
             var validBodies = AllBodies().Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillAge <= Coroner.CoronerArrowDur));
@@ -225,7 +217,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
                 MediatedPlayers.Add(playerid2);
 
                 if (LocalPlayer.PlayerId == playerid2 || (LocalPlayer.HasDied() && Medium.ShowMediumToDead == ShowMediumToDead.AllDead))
-                    LocalPlayer.GetRole().DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color, skipBody: true));
+                    LayerHandler.Handlers[LocalPlayer.PlayerId].DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color, skipBody: true));
 
                 break;
             }
@@ -677,21 +669,21 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
     {
         var player = PlayerById(ParentId);
 
-        if (!player.Data.IsDead)
+        if (!player.Data.IsDead || !LayerHandler.Handlers.TryGetValue(player.PlayerId, out var targetHandler))
             return;
 
-        var targetRole = player.GetRole();
-        targetRole.DeathReason = DeathReasonEnum.Revived;
-        targetRole.KilledBy = " By " + PlayerName;
+        targetHandler.DeathReason = DeathReasonEnum.Revived;
+        targetHandler.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers))
+        if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers) && LayerHandler.Handlers.TryGetValue(lovers.Other.PlayerId, out var loverHandler))
         {
-            var lover = lovers.Other;
-            var loverRole = lover.GetRole();
-            loverRole.DeathReason = DeathReasonEnum.Revived;
-            loverRole.KilledBy = " By " + PlayerName;
-            lover.Revive();
+            loverHandler.DeathReason = DeathReasonEnum.Revived;
+            loverHandler.KilledBy = " By " + PlayerName;
+            lovers.Other.Revive();
+
+            if (Local && lovers.Other.Is<Sovereign>(out var loverSov) && !loverSov.Revealed)
+                CustomAchievementManager.UnlockAchievement("RekindledPower");
         }
 
         if (Local && player.Is<Sovereign>(out var sov) && !sov.Revealed)
@@ -804,7 +796,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash(target.Data.Role.TryCast<LayerHandler>().History.Any() || target.IsFramed() ? UColor.red : UColor.green);
+            Flash(LayerHandler.Handlers[target.PlayerId].History.Any() || target.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }

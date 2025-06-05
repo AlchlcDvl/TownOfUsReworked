@@ -16,6 +16,12 @@ public abstract class Neophyte : Outcast
             return base.CanVent && part;
         }
     }
+    public override Faction BaseFaction => BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Neophytes
+        ? Faction.Illuminati
+        : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes
+            ? Faction.Compliance : ActualFaction);
+
+    protected abstract Faction ActualFaction { get; }
 
     public HashSet<byte> Members { get; } = [];
 
@@ -23,10 +29,6 @@ public abstract class Neophyte : Outcast
     {
         base.Init();
         Alignment = Alignment.Neophyte;
-        Faction = BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Neophytes
-            ? Faction.Illuminati
-            : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes
-                ? Faction.Compliance : Faction.Outcast);
         Members.Clear();
         Members.Add(PlayerId);
     }

@@ -21,7 +21,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.StartMeeting))]
     public static void Prefix(PlayerControl __instance, NetworkedPlayerInfo target)
     {
-        if (LocalPlayer?.Data?.Role is LayerHandler handler)
+        if (LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var handler))
             handler.BeforeMeeting();
 
         MeetingPatches.Reported = target;
@@ -65,8 +65,8 @@ public static class PlayerControlPatches
         if (IsSubmerged() && __instance.AmOwner)
             ChangeFloor(__instance.transform.position.y > -7);
 
-        if (__instance.Data.Role is LayerHandler layerHandler)
-            layerHandler.OnRevive();
+        if (LayerHandler.Handlers.TryGetValue(__instance.PlayerId, out var handler))
+            handler.OnRevive();
 
         if (AmongUsClient.Instance.AmHost)
             CheckEndGame.CheckPlayerWins();
@@ -166,7 +166,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.CompleteTask))]
     public static void Postfix(PlayerControl __instance, uint idx)
     {
-        if (__instance.Data.Role is LayerHandler handler)
+        if (LayerHandler.Handlers.TryGetValue(__instance.PlayerId, out var handler))
             handler.UponTaskComplete(idx);
 
         if (AmongUsClient.Instance.AmHost)
@@ -175,7 +175,7 @@ public static class PlayerControlPatches
             {
                 WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
                 var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
-                winners.Do(x => x.Data.Role.TryCast<LayerHandler>().Winner = true);
+                winners.Do(x => LayerHandler.Handlers[x.PlayerId].Winner = true);
                 CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners ]);
             }
             else
@@ -230,9 +230,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.Visible), MethodType.Setter), HarmonyPrefix]
     public static void VisiblePrefix(PlayerControl __instance, ref bool value)
     {
-        if (__instance.Is<IGhosty>(out var ghost) && !ghost.Caught)
-            value = !__instance.inVent;
-        else if (__instance.HasDied() && LocalPlayer.HasDied() && !__instance.AmOwner)
+        if (__instance.HasDied() && LocalPlayer.HasDied() && !__instance.AmOwner)
             value = !ClientOptions.HideOtherGhosts;
         else if (LocalPlayer.Is<IShaman>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId) && !__instance.AmOwner)
             value = true;

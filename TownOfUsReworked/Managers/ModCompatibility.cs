@@ -261,8 +261,11 @@ public static class ModCompatibilityManager
 
     public static bool SpawnPatch(dynamic __instance)
     {
-        if ((!LocalPlayer.Is<IGhosty>(out var ghost) || ghost.Caught) && (!LocalPlayer.Is<Astral>(out var astral) || astral.LastPosition == Vector3.zero || astral.Dead))
+        if ((GameOptions.GhostSpawn != GhostSpawnType.AtMeeting || !LocalPlayer.Is<IGhosty>(out var ghost) || ghost.Caught) && (!LocalPlayer.Is<Astral>(out var astral) || astral.LastPosition ==
+            Vector3.zero || astral.Dead))
+        {
             return true;
+        }
 
         HUD().FullScreen.color = HUD().FullScreen.color.SetAlpha(0f);
         __instance.Close();

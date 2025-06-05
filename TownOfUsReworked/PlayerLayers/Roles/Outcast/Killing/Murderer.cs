@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Murderer)]
-public sealed class Murderer : NKilling
+public sealed class Murderer : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number MurderCd = 25;
@@ -18,6 +18,7 @@ public sealed class Murderer : NKilling
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => DefenseEnum.Basic;
     public override bool CanVent => base.CanVent && MurdVent;
+    protected override Faction ActualFaction => Faction.Murderer;
 
     protected override void Init()
     {
@@ -29,6 +30,5 @@ public sealed class Murderer : NKilling
 
     private void Murder(PlayerControl target) => MurderButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) ||
-        Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 }

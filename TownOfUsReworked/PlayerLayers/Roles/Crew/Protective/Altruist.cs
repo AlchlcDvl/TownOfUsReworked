@@ -59,21 +59,21 @@ public sealed class Altruist : Crew, IReviver
     {
         var player = PlayerById(ParentId);
 
-        if (!player.Data.IsDead)
+        if (!player.Data.IsDead || !LayerHandler.Handlers.TryGetValue(player.PlayerId, out var targetHandler))
             return;
 
-        var targetRole = player.GetRole();
-        targetRole.DeathReason = DeathReasonEnum.Revived;
-        targetRole.KilledBy = " By " + PlayerName;
+        targetHandler.DeathReason = DeathReasonEnum.Revived;
+        targetHandler.KilledBy = " By " + PlayerName;
         player.Revive();
 
-        if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers))
+        if (Lovers.BothLoversDie && player.Is<Lovers>(out var lovers) && LayerHandler.Handlers.TryGetValue(lovers.Other.PlayerId, out var loverHandler))
         {
-            var lover = lovers.Other;
-            var loverRole = lover.GetRole();
-            loverRole.DeathReason = DeathReasonEnum.Revived;
-            loverRole.KilledBy = " By " + PlayerName;
-            lover.Revive();
+            loverHandler.DeathReason = DeathReasonEnum.Revived;
+            loverHandler.KilledBy = " By " + PlayerName;
+            lovers.Other.Revive();
+
+            if (Local && lovers.Other.Is<Sovereign>(out var loverSov) && !loverSov.Revealed)
+                CustomAchievementManager.UnlockAchievement("RekindledPower");
         }
 
         if (Local && player.Is<Sovereign>(out var sov) && !sov.Revealed)

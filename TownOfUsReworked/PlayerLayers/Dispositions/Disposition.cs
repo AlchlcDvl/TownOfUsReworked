@@ -14,6 +14,4 @@ public abstract class Disposition : PlayerLayer
 
     public static bool DispositionWins => WinState is WinLose.LoveWins or WinLose.RivalWins or WinLose.OverlordWins or WinLose.CorruptedWins or WinLose.DefectorWins or WinLose.MafiaWins or
         WinLose.TaskmasterWins;
-
-    protected override void Init() => Player.GetRole().LinkedDisposition = Type;
 }

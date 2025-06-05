@@ -23,7 +23,7 @@ public sealed class Troll : Evil
     public override Func<string> Description => () => "- If you are killed, you will also kill your killer" + (CanInteract ? "\n- You can interact with players\n- Your interactions do nothing "
         + "except spread infection and possibly kill you via touch sensitive roles" : "");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
-    public override bool HasWon => DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
+    public override bool HasWon => Handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public override bool CanVent => base.CanVent && TrollVent;
     public override bool CanSwitchVents => TrollSwitchVent;
     public override WinLose EndState => WinLose.TrollWins;
@@ -38,8 +38,6 @@ public sealed class Troll : Evil
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        base.OnDeath(reason, killer);
-
         if (!OutcastSettings.AvoidOutcastKingmakers)
             Player.MurderPlayer(killer, DeathReasonEnum.Trolled, false);
     }

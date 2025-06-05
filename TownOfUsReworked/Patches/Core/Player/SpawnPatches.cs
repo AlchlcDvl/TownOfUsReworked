@@ -17,7 +17,7 @@ public static class SpawnPatches
     {
         if (intro)
         {
-            if (LocalPlayer?.Data?.Role is LayerHandler handler)
+            if (LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var handler))
                 handler.OnIntroEnd();
 
             KillCounts.Clear();

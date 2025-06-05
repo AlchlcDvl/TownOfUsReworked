@@ -11,20 +11,14 @@ public sealed class Defector : Disposition
 
     public bool Turned { get; private set; }
     public Faction Side { get; private set; }
-    private Role PlayerRole { get; set; }
 
-    protected override UColor MainColor => Turned ? PlayerRole.FactionColor : CustomColorManager.Defector;
+    protected override UColor MainColor => CustomColorManager.Defector;
     public override string Symbol => "ε";
     public override LayerEnum Type => LayerEnum.Defector;
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !DefectorKnows && !Turned;
 
-    protected override void Init()
-    {
-        base.Init();
-        PlayerRole = Player.GetRole();
-        Side = PlayerRole.Faction;
-    }
+    public override void LateInit() => Side = Handler.CurrentFaction;
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -161,10 +155,10 @@ public sealed class Defector : Disposition
             return;
 
         Turned = true;
-        PlayerRole.Faction = Side = faction;
+        Side = faction;
 
         if (faction == Faction.Outcast)
-            PlayerRole.Objectives = () => "- Be the last one standing";
+            Handler.CurrentRole.Objectives = () => "- Be the last one standing";
 
         if (Local)
             Flash(Color);

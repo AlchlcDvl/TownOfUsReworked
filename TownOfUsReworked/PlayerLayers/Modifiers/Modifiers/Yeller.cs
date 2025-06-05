@@ -6,16 +6,21 @@ public sealed class Yeller : Modifier
     public override LayerEnum Type => LayerEnum.Yeller;
     public override Func<string> Description => () => "- Everyone knows where you are";
 
+    private PlayerArrow Arrow { get; set; }
+
     protected override void Init()
     {
         if (!Local)
-            LocalPlayer.GetRole().YellerArrows.TryAdd(PlayerId, new(LocalPlayer, Player, Color));
+            Arrow = new(LocalPlayer, Player, Color);
     }
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        if (!Local)
-            LocalPlayer.GetRole().DestroyArrowY(PlayerId);
+        if (Local)
+            return;
+
+        Arrow.Destroy();
+        Arrow = null;
     }
 
     public override void OnRevive() => Init();

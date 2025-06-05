@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-public sealed class Astral : Modifier
+public sealed class Astral : Modifier, IPositioner
 {
     public Vector3 LastPosition { get; set; }
 

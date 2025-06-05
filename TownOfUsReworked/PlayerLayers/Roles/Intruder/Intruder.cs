@@ -31,14 +31,14 @@ public abstract class Intruder : Role, IPromoter
         }
     }
     protected override bool UseMainColor => ClientOptions.CustomIntColors;
+    public override Faction BaseFaction => BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders
+        ? Faction.Illuminati
+        : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Intruders
+            ? Faction.Pandorica : Faction.Intruder);
 
     protected override void Init()
     {
         base.Init();
-        Faction = BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders
-            ? Faction.Illuminati
-            : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Intruders
-                ? Faction.Pandorica : Faction.Intruder);
         KillButton ??= new(this, (SpriteFunc)GetKillSprite, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor, (UsableFunc)KillUsable);
     }

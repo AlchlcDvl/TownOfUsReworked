@@ -30,7 +30,7 @@ public sealed class Seer : Crew
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash(target.Data.Role.TryCast<LayerHandler>().History.Any() || target.IsFramed() ? UColor.red : UColor.green);
+            Flash(LayerHandler.Handlers[target.PlayerId].History.Any() || target.IsFramed() ? UColor.red : UColor.green);
 
         SeerButton.StartCooldown(cooldown);
     }

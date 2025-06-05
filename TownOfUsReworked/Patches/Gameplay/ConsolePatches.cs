@@ -78,15 +78,10 @@ public static class ZiplineBehaviourUse
     public static void Prefix(ZiplineBehaviour __instance, PlayerControl player, bool fromTop, ref bool __state)
     {
         CanUsePatch.Prefix(player.Data, ref __state);
-
-        if (LocalPlayer.Is<Astral>(out var ast))
-            ast.SetPosition();
+        InteractableTracker.Handle(player, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
 
         try
         {
-            UninteractablePlayers.TryAdd(player.PlayerId, Time.time);
-            UninteractablePlayers2.TryAdd(player.PlayerId, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, UninteractablePlayers2[player.PlayerId], true);
             var hand = __instance.playerIdHands[player.PlayerId].handRenderer;
             player.UpdateColor(hand);
             hand.SetAlpha(player.GetAlpha());

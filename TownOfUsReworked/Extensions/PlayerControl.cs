@@ -191,7 +191,7 @@ public static class PlayerControlExtensions
         layer.skin.Flipped = layer.currentBodySprite.BodySprite.flipX;
     }
 
-    private static void SetSkin(this SkinLayer layer, SkinData skinData, ColorPair color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded )
+    private static void SetSkin(this SkinLayer layer, SkinData skinData, ColorPair color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded)
     {
         layer.LoadAssetAsync(skinData.Cast<IAddressableAssetProvider<SkinViewData>>(), (Action<SkinViewData>)(skinView =>
         {

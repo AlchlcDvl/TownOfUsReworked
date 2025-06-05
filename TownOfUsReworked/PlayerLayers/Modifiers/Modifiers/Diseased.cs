@@ -16,7 +16,7 @@ public sealed class Diseased : Modifier
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        if (killer != Player)
-            killer.GetRole().Diseased = true;
+        if (killer != Player && LayerHandler.Handlers.TryGetValue(killer.PlayerId, out var handler))
+            handler.Diseased = true;
     }
 }

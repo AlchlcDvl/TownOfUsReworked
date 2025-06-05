@@ -30,6 +30,10 @@ public abstract class Syndicate : Role, IPromoter
         }
     }
     protected override bool UseMainColor => ClientOptions.CustomSynColors;
+    public override Faction BaseFaction => BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate
+        ? Faction.Illuminati
+        : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate
+            ? Faction.Pandorica : Faction.Syndicate);
 
     public static bool SyndicateHasChaosDrive { get; set; }
 
@@ -38,7 +42,7 @@ public abstract class Syndicate : Role, IPromoter
         get;
         set
         {
-            if (field && field.Is<Syndicate>(out var syndicate1))
+            if (field?.Is<Syndicate>(out var syndicate1) == true)
             {
                 syndicate1.OnDriveLost();
 
@@ -61,10 +65,6 @@ public abstract class Syndicate : Role, IPromoter
     protected override void Init()
     {
         base.Init();
-        Faction = BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate
-            ? Faction.Illuminati
-            : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate
-                ? Faction.Pandorica : Faction.Syndicate);
         KillButton ??= new(this, new SpriteName($"{Faction}Kill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL",
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
     }
@@ -78,8 +78,6 @@ public abstract class Syndicate : Role, IPromoter
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        base.OnDeath(reason, killer);
-
         if (Player == DriveHolder)
             AssignChaosDrive();
     }

@@ -34,7 +34,7 @@ public sealed class Snitch : Ability
 
     public override void UponTaskComplete(uint taskId)
     {
-        var local = LocalPlayer.GetRole();
+        var local = LayerHandler.Handlers[LocalPlayer.PlayerId];
 
         if (TasksLeft == SnitchTasksRemaining)
         {
@@ -51,7 +51,7 @@ public sealed class Snitch : Ability
             if (Local)
             {
                 Flash(UColor.green);
-                AllPlayers().Where(x => x.GetFaction() is not (Faction.Crew or Faction.Outcast) || (x.GetFaction() == Faction.Outcast && SnitchSeesOutcasts)).Do(x =>
+                AllPlayers().Where(x => x.GetFaction().IsFactionedEvil() || (x.GetFaction() == Faction.Outcast && SnitchSeesOutcasts)).Do(x =>
                     local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
             }
             else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || (LocalPlayer.GetFaction() == Faction.Outcast && SnitchSeesOutcasts))

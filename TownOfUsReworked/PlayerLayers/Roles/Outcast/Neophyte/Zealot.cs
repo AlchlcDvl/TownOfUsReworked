@@ -21,12 +21,12 @@ public sealed class Zealot : Neophyte
     public override Func<string> Description => () => "- You can preach your gospel to a player in an attempt to convert them\n- If the target cannot be converted, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && ZealVent;
+    protected override Faction ActualFaction => Faction.Followers;
 
     protected override void Init()
     {
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <#917AC0FF>Followers</color>";
-        Faction = Faction.Followers;
         PreachButton ??= new(this, new SpriteName("Preach"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Convert, new Cooldown(PreachCd), "PREACH", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);
     }

@@ -70,7 +70,7 @@ public sealed class BountyHunter : Evil
             Rounds++;
     }
 
-    public override void PostAssignment()
+    public override void LateInit()
     {
         if (BountyHunterCanPickTargets || !TargetPlayer)
         {
@@ -191,8 +191,6 @@ public sealed class BountyHunter : Evil
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (Failed && !Dead && !BhToTroll)
         {
             if (BountyHunterCanPickTargets)

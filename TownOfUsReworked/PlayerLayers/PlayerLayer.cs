@@ -151,6 +151,19 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// </summary>
     public string ColorString => $"<#{Color.ToHtmlStringRGBA()}>";
 
+    /// <summary>
+    /// Gets or sets the flag that indicates whether or not the player is confirmed to be dead.
+    /// </summary>
+    public bool TrulyDead
+    {
+        get;
+        set
+        {
+            field = value;
+            OnTrueDeath(value);
+        }
+    }
+
     /// <inheritdoc/>
     public CustomTypeCode TypeCode => CustomTypeCode.PlayerLayer;
 
@@ -352,7 +365,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Performs an action after the player has been assigned this layer and role assignment as taken place (called in <see cref="LayerHandler.Initialize"/>). Runs for everyone.
     /// </summary>
-    public virtual void PostAssignment() {}
+    public virtual void LateInit() {}
 
     /// <summary>
     /// Performs an action when killing someone (called in <see cref="MiscUtils.CustomDie"/>). Runs for everyone.
@@ -369,6 +382,12 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// Checks if this layer has achieved their win. Runs for the host.
     /// </summary>
     protected virtual void CheckWin(HashSet<byte> winnerIds) {}
+
+    /// <summary>
+    /// Performs an action when a player is confirmed to be dead.
+    /// </summary>
+    /// <param name="value">The new value of the truly dead property.</param>
+    protected virtual void OnTrueDeath(bool value) {}
 
     /// <summary>
     /// Updates the player's name (called in <see cref="NameHandler.UpdateGameName"/>). Runs for everyone.

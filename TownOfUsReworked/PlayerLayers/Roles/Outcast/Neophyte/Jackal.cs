@@ -28,12 +28,12 @@ public sealed class Jackal : Neophyte
         " member into the <#575657FF>Cabal</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && JackalVent;
+    protected override Faction ActualFaction => Faction.Cabal;
 
     protected override void Init()
     {
         base.Init();
         Objectives = () => "- Recruit or kill anyone who can oppose the <#575657FF>Cabal</color>";
-        Faction = Faction.Cabal;
         RecruitButton ??= new(this, new SpriteName("Recruit"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Recruit, (PlayerBodyExclusion)Exception, "RECRUIT",
             (UsableFunc)Usable1, new Cooldown(RecruitCd));
         KillButton ??= new(this, new SpriteName("JackalKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, (PlayerBodyExclusion)Exception, "KILL", (UsableFunc)Usable2,

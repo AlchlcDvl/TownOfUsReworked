@@ -148,30 +148,27 @@ public static class ChatPatches
     [HarmonyPatch(nameof(ChatController.AddChat)), HarmonyPrefix]
     public static bool AddChatPrefix(ChatController __instance, PlayerControl sourcePlayer, string chatText)
     {
-        if (Ignored.Contains(sourcePlayer.PlayerId))
+        if (Ignored.Contains(sourcePlayer.PlayerId) || LocalPlayer.IsSilenced())
             return false;
 
         if ((ChatHistory.Count == 0 || ChatHistory[^1].Contains(chatText)) && !chatText.StartsWith("/"))
             ChatHistory.Add($"{sourcePlayer.name}: {chatText}");
 
-        if (__instance != Chat())
+        if (__instance != Chat() || IsLobby() || !LocalPlayer || sourcePlayer.AmOwner || !LayerHandler.Handlers.ContainsKey(LocalPlayer.PlayerId) ||
+            !LayerHandler.Handlers.TryGetValue(sourcePlayer.PlayerId, out var sourceHandler))
+        {
             return true;
+        }
 
-        var localPlayer = LocalPlayer;
-
-        if (!localPlayer)
-            return true;
-
-        var sourceRole = sourcePlayer.GetRole();
-        var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && Lovers.LoversChat && sourceRole.CurrentChannel == ChatChannel.Lovers) || (sourcePlayer.IsOtherRival(localPlayer) &&
-            Rivals.RivalsChat && sourceRole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) && Linked.LinkedChat && sourceRole.CurrentChannel ==
-            ChatChannel.Linked);
+        var shouldSeeMessage = (Lovers.LoversChat && sourcePlayer.IsOtherLover(LocalPlayer) && sourceHandler.Channels.HasFlag(ChatChannel.Lovers)) || (Rivals.RivalsChat &&
+            sourcePlayer.IsOtherRival(LocalPlayer) && sourceHandler.Channels.HasFlag(ChatChannel.Rivals)) || (Linked.LinkedChat && sourcePlayer.IsOtherLink(LocalPlayer) &&
+            sourceHandler.Channels.HasFlag(ChatChannel.Linked)) || (Mafia.MafiaChat && sourcePlayer.Is<Mafia>() && LocalPlayer.Is<Mafia>() &&
+            sourceHandler.Channels.HasFlag(ChatChannel.Mafia)) || (sourcePlayer.HasDied() && LocalPlayer.HasDied() && sourceHandler.Channels.HasFlag(ChatChannel.Dead));
 
         if (Time.time - MeetingPatches.MeetingStartTime < 1f)
             return shouldSeeMessage;
 
-        return (Meeting() || Lobby() || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourceRole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting() &&
-            LocalPlayer.IsSilenced());
+        return Meeting() && sourceHandler.Channels.HasFlag(ChatChannel.Meeting);
     }
 
     private static readonly Dictionary<byte, SpriteRenderer> Notifs = [];

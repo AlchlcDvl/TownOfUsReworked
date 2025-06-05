@@ -57,8 +57,8 @@ public static class FreeplayPatches
             selected.Start(LocalPlayer);
             ButtonUtils.Reset();
 
-            if (LocalPlayer.Data.Role is LayerHandler handler)
-                handler.SetUpLayers();
+            if (LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var handler))
+                handler.SetUpLayers(false);
         });
         __instance.AddFileAsChild(folder, button, ref num, ref num2, ref num3);
         RoleButtons[button.name] = layer;

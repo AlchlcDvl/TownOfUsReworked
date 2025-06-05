@@ -28,7 +28,7 @@ public sealed class PlayerControlHandler : NameHandler
         var visible = UpdateNameVisibility();
         Color.enabled = DataManager.Settings.Accessibility.ColorBlindMode && visible;
 
-        if (!IsInGame() || Player.Data.Role is not LayerHandler handler || LocalPlayer.Data.Role is not LayerHandler localHandler)
+        if (!IsInGame() || !LayerHandler.Handlers.TryGetValue(Player.PlayerId, out var handler) || !LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var localHandler))
         {
             Name.color = UColor.white.SetAlpha(Appearance.Alpha);
             return;
@@ -37,7 +37,7 @@ public sealed class PlayerControlHandler : NameHandler
         var deadSeeEverything = DeadSeeEverything();
         var amOwner = Player.AmOwner;
 
-        if (!amOwner && !deadSeeEverything && Appearance.Mimicked?.Data?.Role is LayerHandler handler1)
+        if (!amOwner && !deadSeeEverything && Appearance.Mimicked && LayerHandler.Handlers.TryGetValue(Appearance.Mimicked.PlayerId, out var handler1))
             handler = handler1;
 
         handler.UpdatePlayer();

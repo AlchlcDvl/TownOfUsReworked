@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Arsonist)]
-public sealed class Arsonist : NKilling, IDouser
+public sealed class Arsonist : OKilling, IDouser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ArsoDouseCd = 25;
@@ -41,6 +41,7 @@ public sealed class Arsonist : NKilling, IDouser
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool CanVent => base.CanVent && ArsoVent;
+    protected override Faction ActualFaction => Faction.Arsonist;
 
     protected override void Init()
     {

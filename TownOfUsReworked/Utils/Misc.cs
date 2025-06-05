@@ -997,8 +997,9 @@ public static class MiscUtils
 
         killer ??= player;
         player.logger.Debug($"Player {player.PlayerId} dying to {killer.PlayerId} for reason {reason} and custom reason {customReason}");
+        var notSuicide = killer != player;
 
-        if (killer != player)
+        if (notSuicide)
         {
             var prevKiller = MostRecentKiller;
             MostRecentKiller = killer.name;
@@ -1070,6 +1071,17 @@ public static class MiscUtils
                 if (player.Is<Troll>())
                     CustomAchievementManager.UnlockAchievement("Martyrdom");
             }
+
+            if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+            {
+                if (notSuicide)
+                {
+                    handler.KilledBy = " By " + killer.name;
+                    handler.DeathReason = Meeting() ? DeathReasonEnum.Guessed : customReason;
+                }
+                else
+                    handler.DeathReason = Meeting() ? DeathReasonEnum.Misfire : DeathReasonEnum.Suicide;
+            }
         }
 
         if (player.walkingToVent)
@@ -1078,6 +1090,9 @@ public static class MiscUtils
             Vent.currentVent = null;
             player.moveable = true;
             player.MyPhysics.StopAllCoroutines();
+
+            if (player.AmOwner)
+                player.MyPhysics.inputHandler.enabled = false;
         }
 
         RecentlyKilled.Add(player.PlayerId);

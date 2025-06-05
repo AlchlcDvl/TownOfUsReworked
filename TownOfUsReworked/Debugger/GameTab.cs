@@ -31,7 +31,7 @@ public sealed class GameTab : BaseTab
         if (GUILayout.Button("End Game (Win)"))
         {
             WinState = WinLose.EveryoneWins;
-            AllPlayers().Do(x => x.Data.Role.TryCast<LayerHandler>().Winner = true);
+            AllPlayers().Do(x => LayerHandler.Handlers[x.PlayerId].Winner = true);
         }
 
         if (Syndicate.DriveHolder)

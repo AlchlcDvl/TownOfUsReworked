@@ -73,8 +73,6 @@ public sealed class Consort : Intruder, IBlocker
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!KeyboardJoystick.player.GetButtonDown("Delete"))
             return;
 

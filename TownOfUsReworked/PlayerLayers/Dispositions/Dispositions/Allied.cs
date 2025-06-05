@@ -22,7 +22,11 @@ public sealed class Allied : Disposition
     }
     public static AlliedFaction alliedFaction;
 
-    public Faction Side { get; set; }
+    public Faction Side
+    {
+        get;
+        set => Handler.CurrentFaction = field = value;
+    }
 
     protected override UColor MainColor => Side switch
     {
@@ -38,9 +42,5 @@ public sealed class Allied : Disposition
     public override LayerEnum Type => LayerEnum.Allied;
     public override Func<string> Description => () => Side == Faction.Outcast ? "- You are conflicted" : "";
 
-    protected override void Init()
-    {
-        base.Init();
-        Side = Faction.Outcast;
-    }
+    public override void LateInit() => Side = Faction.Outcast;
 }

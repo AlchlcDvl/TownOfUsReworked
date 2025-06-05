@@ -18,7 +18,7 @@ public static class ButtonUtils
 
     public static IEnumerable<CustomButton> GetButtons(this PlayerControl player)
     {
-        if (player.Data.Role is LayerHandler handler)
+        if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
             return handler.Buttons;
 
         return player.GetButtonsFromList();
@@ -26,7 +26,7 @@ public static class ButtonUtils
 
     public static void ResetButtons(this PlayerControl player)
     {
-        if (player.Data.Role is LayerHandler handler)
+        if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
             handler.ResetButtons();
     }
 
@@ -111,7 +111,7 @@ public static class ButtonUtils
         if (role is IPromoter { IsPromoted: true } promoter)
             num *= promoter.PromotionModifier;
 
-        if (role.Diseased)
+        if (role.Handler.Diseased)
             num *= Diseased.DiseasedMultiplier;
 
         return num;

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Werewolf)]
-public sealed class Werewolf : NKilling
+public sealed class Werewolf : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number MaulCd = 25;
@@ -23,6 +23,7 @@ public sealed class Werewolf : NKilling
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
     public override bool CanVent => base.CanVent && (WerewolfVent == 0 || (CanMaul && (int)WerewolfVent == 1) || (!CanMaul && (int)WerewolfVent == 2));
+    protected override Faction ActualFaction => Faction.Werewolf;
 
     protected override void Init()
     {
@@ -38,8 +39,7 @@ public sealed class Werewolf : NKilling
         MaulButton.StartCooldown();
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) ||
-        Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
     private bool Usable() => CanMaul;
 

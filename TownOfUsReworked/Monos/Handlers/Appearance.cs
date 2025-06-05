@@ -276,12 +276,12 @@ public sealed class AppearanceHandler : MonoBehaviour
         {
             var (playerName, colorInt) = ("", UColor.white);
 
-            if (Player.Data?.Role is LayerHandler playerHandler && LocalPlayer.Data?.Role is LayerHandler localHandler)
+            if (LayerHandler.Handlers.TryGetValue(Player.PlayerId, out var playerHandler) && LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var localHandler))
             {
                 var deadSeeEverything = DeadSeeEverything();
                 var amOwner = Player.AmOwner;
 
-                if (!amOwner && !deadSeeEverything && Mimicked?.Data?.Role is LayerHandler handler1)
+                if (!amOwner && !deadSeeEverything && Mimicked && LayerHandler.Handlers.TryGetValue(Mimicked.PlayerId, out var handler1))
                     playerHandler = handler1;
 
                 (playerName, colorInt) = NameHandler.UpdateGameName(playerHandler, localHandler, amOwner, deadSeeEverything, out _);

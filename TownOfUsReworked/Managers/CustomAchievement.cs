@@ -27,7 +27,7 @@ public static class CustomAchievementManager
         new("EerieSilence", eog: true), // Blackmail a silenced player OR Silence a blackmailed player
         new("WhoNeedsHorses"), // Win as a Harbinger without turning into a Deity role
         new("TooQuiet"), // Win as a member of a sabotaging faction without calling a sabotage
-        new("LastLaugh"), // Win as a outcast evil role with less than 5 players remaining
+        new("LastLaugh"), // Win as an outcast evil role with less than 5 players remaining
         new("TotalAnnihilation"), // Win as an Arsonist by only igniting once
         new("EternalWinter"), // Win as a Cryomaniac by only freezing once
         new("Martyrdom"), // Be the first to die as a Troll

@@ -2,13 +2,86 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class LayerHandler : RoleBehaviour
 {
+    public static readonly Dictionary<byte, LayerHandler> Handlers = [];
+
     public override bool IsDead => Player.HasDied();
     public override bool IsAffectedByComms => false;
 
-    public Faction CurrentFaction;
+    public Faction CurrentFaction
+    {
+        get;
+        set
+        {
+            if (field == value)
+                return;
+
+            CurrentRole.FactionColor = value switch
+            {
+                Faction.Intruder => CustomColorManager.Intruder,
+                Faction.Crew => CustomColorManager.Crew,
+                Faction.Syndicate => CustomColorManager.Syndicate,
+                Faction.Outcast => CustomColorManager.Outcast,
+                Faction.Pandorica => CustomColorManager.Pandorica,
+                Faction.Compliance => CustomColorManager.Compliance,
+                Faction.Illuminati => CustomColorManager.Illuminati,
+                Faction.Apocalypse => CustomColorManager.Apocalypse,
+                Faction.Undead => CustomColorManager.Undead,
+                Faction.Cult => CustomColorManager.Cult,
+                Faction.Cabal => CustomColorManager.Cabal,
+                Faction.Reanimated => CustomColorManager.Reanimated,
+                Faction.Followers => CustomColorManager.Followers,
+                Faction.GameMode => CurrentRole.Alignment switch
+                {
+                    Alignment.HideAndSeek => CustomColorManager.HideAndSeek,
+                    Alignment.TaskRace => CustomColorManager.TaskRace,
+                    _ => CustomColorManager.Faction
+                },
+                _ => CustomColorManager.Faction
+            };
+            CurrentRole.Objectives = value switch
+            {
+                Faction.Intruder => () => IntrudersWinCon(Player),
+                Faction.Syndicate => () => SyndicateWinCon(Player),
+                Faction.Apocalypse => () => ApocalypseWinCon(Player),
+                Faction.Compliance => () => ComplianceWinCon(Player),
+                Faction.Pandorica => () => PandoricaWinCon(Player),
+                Faction.Illuminati => () => IlluminatiWinCon(Player),
+                Faction.Crew => () => CrewWinCon,
+                Faction.Undead => UndeadWinCon,
+                Faction.Cabal => CabalWinCon,
+                Faction.Cult => CultWinCon,
+                Faction.Followers => FollowersWinCon,
+                Faction.Reanimated => ReanimatedWinCon,
+                _ => CurrentRole.Objectives
+            };
+
+            if (Local)
+                CurrentRole.UpdateButtons();
+
+            if (field != Faction.None)
+            {
+                History.Add((CurrentRole.Type, field));
+                FakeFactions.Add(field);
+            }
+
+            field = value;
+        }
+    }
+
+    public ChatChannel Channels { get; set; }
+
+    public string KilledBy { get; set; } = "";
+    public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
+
+    public bool Diseased { get; set; }
 
     public readonly List<Faction> FakeFactions = [];
     public readonly List<(LayerEnum, Faction)> History = [];
+    public readonly Dictionary<byte, PlayerArrow> AllArrows = [];
+    public readonly Dictionary<byte, PlayerArrow> DeadArrows = [];
+
+    public bool Rewinding { get; set; }
+    private readonly Dictionary<float, PointInTime> Positions = [];
 
     private bool Local => Player.AmOwner;
 
@@ -21,6 +94,11 @@ public sealed class LayerHandler : RoleBehaviour
     /// Gets a value indicating whether or not the player has disconnected.
     /// </summary>
     public bool Disconnected => Player?.Data?.Disconnected ?? true;
+
+    // private static bool PlatformIsUsed;
+    // public static bool IsLeft;
+    // private static bool PlayerIsLeft;
+    // public CustomButton CallButton { get; set; }
 
     [HideFromIl2Cpp]
     public Role CurrentRole { get; set; }
@@ -84,6 +162,7 @@ public sealed class LayerHandler : RoleBehaviour
 
     public void UpdateHud(HudManager __instance)
     {
+        DeadArrows.Keys.Where(id => !PlayerById(id)).Do(DestroyArrowD);
         CurrentRole.UpdateHud(__instance);
         CurrentAbility.UpdateHud(__instance);
         CurrentModifier.UpdateHud(__instance);
@@ -126,6 +205,7 @@ public sealed class LayerHandler : RoleBehaviour
 
     public void OnRevive()
     {
+        Channels &= ~ChatChannel.Dead;
         CurrentRole.OnRevive();
         CurrentAbility.OnRevive();
         CurrentModifier.OnRevive();
@@ -150,6 +230,7 @@ public sealed class LayerHandler : RoleBehaviour
 
     public void OnMeetingEnd(MeetingHud __instance)
     {
+        Channels &= ~ChatChannel.Meeting;
         CurrentRole.OnMeetingEnd(__instance);
         CurrentAbility.OnMeetingEnd(__instance);
         CurrentModifier.OnMeetingEnd(__instance);
@@ -159,7 +240,7 @@ public sealed class LayerHandler : RoleBehaviour
     public void ResetButtons() => Buttons = Player.GetButtonsFromList();
 
     [HideFromIl2Cpp]
-    public void SetUpLayers()
+    public void SetUpLayers(bool inherit)
     {
         CurrentRole = Player.GetRoleFromList();
         CurrentAbility = Player.GetAbilityFromList();
@@ -190,23 +271,53 @@ public sealed class LayerHandler : RoleBehaviour
             CurrentDisposition.Start(Player);
         }
 
-        CurrentRole.PostAssignment();
-        CurrentAbility.PostAssignment();
-        CurrentModifier.PostAssignment();
-        CurrentDisposition.PostAssignment();
-
         CurrentLayers = [ CurrentRole, CurrentModifier, CurrentAbility, CurrentDisposition ];
+        CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
         ResetButtons();
+
+        Channels = ChatChannel.None;
 
         TasksCountTowardProgress = Player.CanDoTasks() && (CurrentRole is Runner or Hunted || CurrentFaction == Faction.Crew);
         CanVent = Player.CanVent();
         AffectedByLightAffectors = !(CurrentAbility is Torch || !CurrentRole.AffectedByLights);
 
-        CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
-
         Player.GetComponent<PlayerControlHandler>().UpdateCurrent();
 
-        History.Add((CurrentRole.Type, CurrentRole.Faction));
+        CurrentRole.LateInit();
+        CurrentAbility.LateInit();
+        CurrentModifier.LateInit();
+        CurrentDisposition.LateInit();
+
+        if (CurrentFaction == Faction.None || inherit)
+            CurrentFaction = CurrentRole.BaseFaction;
+
+        Handlers[Player.PlayerId] = this;
+    }
+
+    public void Update()
+    {
+        if (!Timekeeper.TkExists || !CurrentRole.Alive || CurrentFaction == Faction.GameMode || (CurrentFaction == Timekeeper.TkFaction && Timekeeper.TimeRewindImmunity))
+            return;
+
+        if (!Rewinding)
+        {
+            Positions.TryAdd(Time.time, new(Player.transform.position));
+            (from pair in Positions let seconds = Time.time - pair.Key where seconds > Timekeeper.TimeDur select pair.Key).Do(x => Positions.Remove(x));
+        }
+        else if (Positions.Any())
+        {
+            var point = Positions.Last();
+            Player.CustomSnapTo(point.Value.Position);
+            Positions.Remove(point.Key);
+        }
+        else
+            Positions.Clear();
+    }
+
+    private void DestroyArrowD(byte targetPlayerId)
+    {
+        if (DeadArrows.Remove(targetPlayerId, out var arrow))
+            arrow.Destroy();
     }
 
     public override float GetAbilityDistance() => GameOptions.InteractionDistance;
@@ -221,6 +332,10 @@ public sealed class LayerHandler : RoleBehaviour
             Flash(mon.Color);
 
         TasksCountTowardProgress &= TaskOptions.GhostTasksCountToWin;
+        Channels |= ChatChannel.Dead;
+
+        if (!PlayerLayer.GetLayers<IReviver>().Any())
+            CurrentLayers.Do(x => x.TrulyDead |= x.Type != LayerEnum.GuardianAngel);
     }
 
     public override bool DidWin(GameOverReason gameOverReason) => Winner;
@@ -237,9 +352,9 @@ public sealed class LayerHandler : RoleBehaviour
     {
         Player = player;
 
-        SetUpLayers();
+        SetUpLayers(true);
 
-        IntroSound = GetAudio($"{CurrentRole}Intro", false) ?? GetAudio($"{(CurrentRole is Intruder or Syndicate ? "Impostor" : "Crewmate")}Intro");
+        IntroSound = GetAudio($"{CurrentRole}Intro", false) ?? GetAudio($"{(CurrentRole is Intruder or Syndicate or Apocalypse ? "Impostor" : "Crewmate")}Intro");
 
         InitializeAbilityButton();
 
@@ -262,6 +377,8 @@ public sealed class LayerHandler : RoleBehaviour
 
     public override void OnMeetingStart()
     {
+        Channels |= ChatChannel.Meeting;
+
         if (!Local)
             return;
 
@@ -288,6 +405,11 @@ public sealed class LayerHandler : RoleBehaviour
         CurrentAbility.End();
         CurrentModifier.End();
         CurrentDisposition.End();
+
+        AllArrows.Values.DestroyAll();
+        AllArrows.Clear();
+        DeadArrows.Values.DestroyAll();
+        DeadArrows.Clear();
     }
 
     public override bool CanUse(IUsable console)
@@ -317,4 +439,93 @@ public sealed class LayerHandler : RoleBehaviour
             hud.AbilityButton.SetDisabled();
         }
     }
+
+    private const string CrewWinCon = "- Finish all tasks\n- Eject all <#FF0000FF>evildoers</color>";
+
+    private static string IntrudersWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Kill anyone who opposes the <#FF0000FF>Intruders</color>";
+
+    private static string SyndicateWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Cause chaos and kill off anyone who opposes the <#008000FF>Syndicate</color>";
+
+    private static string ApocalypseWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Summon your deities to bring on the <#99007FFF>Apocalypse</color>";
+
+    private static string ComplianceWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Eliminate any and all opposition to the <#5A27CCFF>Compliance</color>";
+
+    private static string PandoricaWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Kill off anyone who tries to oppose the <#ECFF45FF>Pandorica</color>";
+
+    private static string IlluminatiWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+        "- Eliminate anyone who tries to oppose the <#A39389FF>Illuminati</color>";
+
+    private static string CabalWinCon() => "- Kill or recruit all opposition to the <#575757FF>Cabal</color>";
+
+    private static string CultWinCon() => "- Eliminate or persuade all opposition to the <#F995FCFF>Cult</color>";
+
+    private static string FollowersWinCon() => "- Kill or recruit all opposition to the <#575757FF>Followers</color>";
+
+    private static string ReanimatedWinCon() => "- Eliminate and/or reanimate all opposition to the <#917AC0FF>Reanimated</color>";
+
+    private static string UndeadWinCon() => "- Kill or drain all opposition to the <#7B8968FF>Undead</color>";
+
+    /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlatformIsUsed && MapPatches.CurrentMap != 4;
+
+    private bool CallUsable()
+    {
+        if (MapPatches.CurrentMap != 4)
+            return false;
+
+        var pos = Player.transform.position;
+
+        if (pos.y is >= 8.21f and < 9.62f)
+        {
+            if (pos.x is <= 10.8f and >= 9.7f)
+            {
+                PlayerIsLeft = false;
+                return true;
+            }
+            else if (pos.x is <= 5.8f and >= 4.7f)
+            {
+                PlayerIsLeft = true;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void UsePlatform()
+    {
+        if (!PlatformIsUsed && LocalRole.CanCall() && LocalRole.CallUsable())
+            UsePlatForRpc();
+    }
+
+    private static void UsePlatForRpc()
+    {
+        SyncPlatform();
+        CallRpc(CustomRPC.Misc, MiscRPC.SyncPlatform);
+    }
+
+    public static void SyncPlatform() => Coroutines.Start(CoUsePlatform());
+
+    private static IEnumerator CoUsePlatform()
+    {
+        IsLeft = !IsLeft;
+        var platform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
+        PlatformIsUsed = true;
+        platform.IsLeft = IsLeft;
+        platform.transform.localPosition = IsLeft ? platform.LeftPosition : platform.RightPosition;
+        platform.IsDirty = true;
+
+        var sourcePos = IsLeft ? platform.LeftPosition : platform.RightPosition;
+        var targetPos = IsLeft ? platform.RightPosition : platform.LeftPosition;
+
+        yield return Effects.Wait(0.1f);
+        yield return Effects.Slide3D(platform.transform, sourcePos, targetPos, LocalPlayer.MyPhysics.Speed);
+        yield return Effects.Wait(0.1f);
+
+        PlatformIsUsed = false;
+    }*/
 }

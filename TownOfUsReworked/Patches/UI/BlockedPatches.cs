@@ -129,7 +129,7 @@ public static class Blocked
         if (!LocalPlayer || IsLobby() || !Ship() || Meeting())
             return;
 
-        if (LocalPlayer.Data?.Role is LayerHandler handler)
+        if (LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var handler))
             handler.UpdateHud(__instance);
         else
             return;

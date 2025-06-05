@@ -62,8 +62,6 @@ public sealed class Poisoner : Syndicate
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!HoldsDrive || !KeyboardJoystick.player.GetButtonDown("Delete"))
             return;
 

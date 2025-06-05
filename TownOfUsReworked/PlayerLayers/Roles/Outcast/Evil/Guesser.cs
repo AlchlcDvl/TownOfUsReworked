@@ -77,7 +77,7 @@ public sealed class Guesser : Evil, IGuesser
             name += " <#EEE5BEFF>π</color>";
     }
 
-    public override void PostAssignment()
+    public override void LateInit()
     {
         if (GuesserCanPickTargets || !TargetPlayer)
         {
@@ -226,8 +226,6 @@ public sealed class Guesser : Evil, IGuesser
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!Failed || Dead || GuessToAct)
             return;
 

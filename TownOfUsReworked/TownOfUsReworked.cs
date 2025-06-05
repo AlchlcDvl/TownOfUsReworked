@@ -25,7 +25,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 56;
+    private const int DevBuild = 57;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 

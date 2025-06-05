@@ -9,7 +9,7 @@ public sealed class Fanatic : FactionChanger
     [ToggleOption]
     public static bool FanaticColourSwap = false;
 
-    protected override UColor MainColor => Turned ? PlayerRole.FactionColor : CustomColorManager.Fanatic;
+    protected override UColor MainColor => CustomColorManager.Fanatic;
     public override string Symbol => "♠";
     public override LayerEnum Type => LayerEnum.Fanatic;
     public override Func<string> Description => () => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";

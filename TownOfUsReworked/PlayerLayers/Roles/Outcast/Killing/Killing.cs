@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public abstract class NKilling : Outcast
+public abstract class OKilling : Outcast
 {
     public override bool AffectedByLights => base.AffectedByLights && !OutcastKillingSettings.NkHaveImpVision;
     public override bool CanVent
@@ -16,14 +16,18 @@ public abstract class NKilling : Outcast
             return base.CanVent && part;
         }
     }
+    public override Faction BaseFaction => BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Killers
+        ? Faction.Illuminati
+        : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Killers
+            ? Faction.Compliance
+            : (OutcastKillingSettings.WinSolo
+                ? Faction.Outcast : ActualFaction));
+
+    protected abstract Faction ActualFaction { get; }
 
     protected override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;
-        Faction = BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers == IlluminatiType.Killers
-            ? Faction.Illuminati
-            : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Killers
-                ? Faction.Compliance : Faction.Outcast);
     }
 }

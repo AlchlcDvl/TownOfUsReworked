@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.SerialKiller)]
-public sealed class SerialKiller : NKilling
+public sealed class SerialKiller : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number BloodlustCd = 25;
@@ -27,6 +27,7 @@ public sealed class SerialKiller : NKilling
     public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool RoleBlockImmune => true;
     public override bool CanVent => base.CanVent && (SkVentOptions == 0 || (BloodlustButton.EffectActive && (int)SkVentOptions == 1) || (!BloodlustButton.EffectActive && (int)SkVentOptions == 2));
+    protected override Faction ActualFaction => Faction.SerialKiller;
 
     protected override void Init()
     {

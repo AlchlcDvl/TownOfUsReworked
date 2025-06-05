@@ -43,8 +43,6 @@ public sealed class Hunter : HideAndSeek
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if (!Starting)
             return;
 
@@ -62,8 +60,8 @@ public sealed class Hunter : HideAndSeek
     {
         var newRole = new Hunter();
         newRole.RoleUpdate(player.GetRole());
-        newRole.KilledBy = " By " + PlayerName;
-        newRole.DeathReason = DeathReasonEnum.Converted;
+        newRole.Handler.KilledBy = " By " + PlayerName;
+        newRole.Handler.DeathReason = DeathReasonEnum.Converted;
         newRole.HuntButton.StartCooldown();
         UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD().transform.parent).Show(player, 0);
         GameData.Instance.RecomputeTaskCounts();

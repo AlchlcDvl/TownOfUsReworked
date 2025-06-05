@@ -16,6 +16,7 @@ public sealed class Timekeeper : Syndicate
     public static bool TimeRewindImmunity = true;
 
     public static bool TkExists { get; private set; }
+    public static Faction TkFaction { get; private set; }
 
     public CustomButton TimeButton { get; private set; }
 
@@ -30,21 +31,28 @@ public sealed class Timekeeper : Syndicate
         base.Init();
         Alignment = Alignment.Disruption;
         TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
-            (EffectEndVoid)UnControl, new Duration(TimeDur), (EffectVoid)Control, (EffectStartVoid)ControlStart);
+            (EffectEndVoid)UnControl, new Duration(TimeDur), (EffectStartVoid)ControlStart, (UsableFunc)Usable);
         TkExists = true;
     }
 
     protected override void Deinit() => TkExists = false;
 
-    private void ControlStart() => Flash(Color, TimeDur);
-
-    private void Control()
+    private void ControlStart()
     {
-        if (HoldsDrive)
-            AllPlayers().Do(x => x.GetRole().Rewinding = true);
+        Flash(Color, TimeDur);
+
+        if (!HoldsDrive)
+            return;
+
+        AllPlayers().Do(x => LayerHandler.Handlers[x.PlayerId].Rewinding = true);
+        TkFaction = Handler.CurrentFaction;
     }
 
-    public static void UnControl() => AllPlayers().Do(x => x.GetRole().Rewinding = false);
+    public static void UnControl()
+    {
+        AllPlayers().Do(x => LayerHandler.Handlers[x.PlayerId].Rewinding = false);
+        TkFaction = Faction.None;
+    }
 
     private void TimeControl()
     {
@@ -53,4 +61,6 @@ public sealed class Timekeeper : Syndicate
     }
 
     private string Label() => HoldsDrive ? "REWIND" : "FREEZE";
+
+    private bool Usable() => (!HoldsDrive || TkFaction == Faction.None) && !Handler.Rewinding;
 }

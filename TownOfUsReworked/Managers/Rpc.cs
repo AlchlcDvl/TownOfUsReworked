@@ -479,9 +479,7 @@ public static class RpcManager
                             }
                             case Allied ally:
                             {
-                                var alliedRole = ally.Player.GetRole();
-                                var faction = reader.Read<Faction>();
-                                alliedRole.Faction = ally.Side = faction;
+                                ally.Side = reader.Read<Faction>();
                                 break;
                             }
                             case Lovers lover1:
@@ -556,7 +554,7 @@ public static class RpcManager
                         WinState = reader.Read<WinLose>();
 
                         while (reader.BytesRemaining > 0)
-                            reader.ReadPlayer().Data.Role.TryCast<LayerHandler>().Winner = true;
+                            LayerHandler.Handlers[reader.ReadByte()].Winner = true;
 
                         return;
                     }

@@ -207,7 +207,7 @@ public static class VotingOptions
 [HeaderOption(MultiMenu.Main)]
 public static class BadGuysSettings
 {
-    [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Outcast, Faction.None, Faction.Illuminati), Sorted(0)]
+    [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Outcast, Faction.None, Faction.Illuminati)]
     public static Faction MainBadGuys
     {
         get => IlluminatiUnleashed ? Faction.Illuminati : field;
@@ -226,19 +226,19 @@ public static class BadGuysSettings
         }
     } = Faction.Intruder;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool OnlyMainBadGuys = false;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool MainBadGuysCanSabotage = false;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool GhostsCanSabotage = false;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool IlluminatiUnleashed = false;
 
-    [MultiSelectOption<IlluminatiType>(LeastSelected = 2), Sorted(0)]
+    [MultiSelectOption<IlluminatiType>(LeastSelected = 2)]
     public static MultiSelectValue<IlluminatiType> IlluminatiMembers = new[] { IlluminatiType.Syndicate, IlluminatiType.Intruders, IlluminatiType.Apocalypse, IlluminatiType.Neophytes,
         IlluminatiType.Killers };
 
@@ -285,70 +285,69 @@ public static class BadGuysSettings
 [HeaderOption(MultiMenu.Main)]
 public static class GameModifiers
 {
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool FirstKillShield = false;
 
-    [StringOption<WhoCanSeeFirstKillShield>, Sorted(0)]
+    [StringOption<WhoCanSeeFirstKillShield>]
     public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield = WhoCanSeeFirstKillShield.Everyone;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool FactionSeeRoles = true;
 
-    [StringOption<PlayerNames>, Sorted(0)]
+    [StringOption<PlayerNames>]
     public static PlayerNames PlayerNames = PlayerNames.Obstructed;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool Whispers = true;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool WhispersAnnouncement = true;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool AppearanceAnimation = true;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool EnableAbilities = true;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool EnableModifiers = true;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool EnableDispositions = true;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool DeadSeeEverything = true;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool JaniCanMutuallyExclusive = false;
 
-    [MultiSelectOption<RandomSpawning>, Sorted(0)]
+    [MultiSelectOption<RandomSpawning>]
     public static MultiSelectValue<RandomSpawning> RandomSpawns = "";
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool ShowKillerRoleColor = false;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool PurePlayers = false;
 
-    [Sorted(0)]
     public static ReworkedToggleOption EnableGameTimer = new() { OnChanged = TryCreatePrefab };
 
-    [NumberOption(60, 3600, 60, Format.Time), Sorted(0)]
+    [NumberOption(60, 3600, 60, Format.Time)]
     public static Number GameTimer = 1200;
 
-    [StringOption<DuringMeeting>, Sorted(0)]
+    [StringOption<DuringMeeting>]
     public static DuringMeeting DuringMeetings = DuringMeeting.Never;
 
-    [NumberOption(300, 3000, 60, Format.Time, All = true), Sorted(0)]
+    [NumberOption(300, 3000, 60, Format.Time, All = true)]
     public static Number TimeLeft = 4;
 
-    [NumberOption(4, 125, 1, All = true), Sorted(0)]
+    [NumberOption(4, 125, 1, All = true)]
     public static Number PlayersLeft = 4;
 
     [MultiSelectOption<TimerExtension>]
     public static MultiSelectValue<TimerExtension> ExtendTimer = [];
 
-    [NumberOption(4, 125, 1), Sorted(0)]
+    [NumberOption(4, 125, 1)]
     public static Number TimerExtension = 4;
 
     private static void TryCreatePrefab(bool value)
@@ -405,7 +404,7 @@ public static class GameAnnouncementSettings
     [StringOption<RoleFactionReports>]
     public static RoleFactionReports KillerReports = RoleFactionReports.Neither;
 
-    [ToggleOption, Sorted(0)]
+    [ToggleOption]
     public static bool IndicateReportedBodies = false;
 }
 

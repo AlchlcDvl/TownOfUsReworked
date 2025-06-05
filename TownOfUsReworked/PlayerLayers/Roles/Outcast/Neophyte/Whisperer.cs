@@ -42,12 +42,12 @@ public sealed class Whisperer : Neophyte
         "defect and join the <#F995FCFF>Cult</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && WhispVent;
+    protected override Faction ActualFaction => Faction.Cult;
 
     protected override void Init()
     {
         base.Init();
         Objectives = () => "- Persuade or kill anyone who can oppose the <#F995FCFF>Cult</color>";
-        Faction = Faction.Cult;
         WhisperConversion = WhisperRate;
         WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);

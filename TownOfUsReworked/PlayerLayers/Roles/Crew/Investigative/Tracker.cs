@@ -44,15 +44,10 @@ public sealed class Tracker : Crew
         TrackButton.StartCooldown(cooldown);
     }
 
-    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
-    {
-        base.OnDeath(reason, killer);
-        ClearArrows();
-    }
+    public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 
     public override void ClearArrows()
     {
-        base.ClearArrows();
         TrackerArrows.Values.DestroyAll();
         TrackerArrows.Clear();
     }

@@ -26,7 +26,7 @@ public sealed class Consigliere : Intruder
             (PlayerBodyExclusion)Exception1);
     }
 
-    protected override void OnTrueDeath()
+    protected override void OnTrueDeath(bool value)
     {
         if (DeadSeeEverything())
             Investigated.Clear();

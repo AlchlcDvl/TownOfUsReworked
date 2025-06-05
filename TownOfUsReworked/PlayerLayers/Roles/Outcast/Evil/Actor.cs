@@ -175,8 +175,6 @@ public sealed class Actor : Evil
 
     public override void UpdateHud(HudManager __instance)
     {
-        base.UpdateHud(__instance);
-
         if ((TargetFailed || (Targeted && Failed)) && !Dead)
         {
             var allRoles = GetLayers<Role>();
