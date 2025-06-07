@@ -714,28 +714,24 @@ public static class SettingsPatches
 
             return false;
         }
-    }
 
-    [HarmonyPatch(typeof(GameOptionsMapPicker.__c__DisplayClass18_0), nameof(GameOptionsMapPicker.__c__DisplayClass18_0._SetupMapButtons_b__0))]
-    private static class AnotherSelectMapPatchBecauseInlining
-    {
-        public static bool Prefix(GameOptionsMapPicker.__c__DisplayClass18_0 __instance, MapIconByName mapInfo)
+        [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
+        public static bool Prefix(GameOptionsMapPicker __instance, MapIconByName mapInfo)
         {
-            var instance = __instance.__4__this;
             SetMap((MapEnum)mapInfo.Name);
-            instance.selectedMapId = (int)mapInfo.Name;
+            __instance.selectedMapId = (int)mapInfo.Name;
 
-            if (instance.MapImage)
+            if (__instance.MapImage)
             {
-                instance.MapImage.sprite = mapInfo.MapImage;
-                instance.MapImage.flipX = instance.selectedMapId == 3;
+                __instance.MapImage.sprite = mapInfo.MapImage;
+                __instance.MapImage.flipX = __instance.selectedMapId == 3;
             }
 
-            if (instance.MapName)
-                instance.MapName.sprite = mapInfo.NameImage;
+            if (__instance.MapName)
+                __instance.MapName.sprite = mapInfo.NameImage;
 
-            instance.UpdateValue();
-            instance.OnValueChanged?.Invoke(instance);
+            __instance.UpdateValue();
+            __instance.OnValueChanged?.Invoke(__instance);
             return false;
         }
     }
