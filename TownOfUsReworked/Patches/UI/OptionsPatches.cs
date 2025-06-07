@@ -568,9 +568,9 @@ public static class SettingsPatches
             if (__result)
                 return;
 
-            var player = __instance.__4__this;
+            var player = __instance.__4__this.myPlayer;
 
-            if (!AmongUsClient.Instance || !LocalPlayer || !player.myPlayer || IsFreePlay())
+            if (!AmongUsClient.Instance || !LocalPlayer || !player || IsFreePlay())
                 return;
 
             player.GetComponent<PlayerControlHandler>().UpdateCurrent();

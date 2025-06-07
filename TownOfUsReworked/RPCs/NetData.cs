@@ -905,56 +905,56 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <param name="values">The values to serialize.</param>
     /// <param name="withTypeCode">Indicates whether or not the typ code of the value should be included or not.</param>
     /// <returns>An array of bytes representing the values.</returns>
-private static byte[] ToBytes(IEnumerable values, bool withTypeCode = false)
-{
-    var result = new List<byte>();
-
-    if (!withTypeCode)
+    private static byte[] ToBytes(IEnumerable values, bool withTypeCode = false)
     {
-        ushort count = 0;
+        var result = new List<byte>();
+
+        if (!withTypeCode)
+        {
+            ushort count = 0;
+
+            foreach (var obj in values)
+            {
+                result.AddRange(ToBytes(obj, false));
+                count++;
+            }
+
+            result.InsertRange(0, BitConverter.GetBytes(count));
+            return [.. result];
+        }
+
+        Type commonType = null;
+        var elements = new List<object>();
+        var allSameType = true;
 
         foreach (var obj in values)
         {
-            result.AddRange(ToBytes(obj, false));
-            count++;
+            elements.Add(obj);
+
+            if (!allSameType || obj == null)
+                continue;
+
+            var currentType = obj.GetType();
+
+            if (commonType == null)
+                commonType = currentType;
+            else if (commonType != currentType)
+                allSameType = false;
         }
 
-        result.InsertRange(0, BitConverter.GetBytes(count));
+        result.AddRange(BitConverter.GetBytes((ushort)elements.Count));
+        result.Add((byte)(allSameType ? 1 : 0));
+
+        if (allSameType && commonType != null)
+        {
+            result.Add((byte)commonType.GetCustomTypeCode());
+            elements.ForEach(x => result.AddRange(ToBytes(x, false)));
+        }
+        else
+            elements.ForEach(x => result.AddRange(ToBytes(x, true)));
+
         return [.. result];
     }
-
-    Type commonType = null;
-    var elements = new List<object>();
-    var allSameType = true;
-
-    foreach (var obj in values)
-    {
-        elements.Add(obj);
-
-        if (!allSameType || obj == null)
-            continue;
-
-        var currentType = obj.GetType();
-
-        if (commonType == null)
-            commonType = currentType;
-        else if (commonType != currentType)
-            allSameType = false;
-    }
-
-    result.AddRange(BitConverter.GetBytes((ushort)elements.Count));
-    result.Add((byte)(allSameType ? 1 : 0));
-
-    if (allSameType && commonType != null)
-    {
-        result.Add((byte)commonType.GetCustomTypeCode());
-        elements.ForEach(x => result.AddRange(ToBytes(x, false)));
-    }
-    else
-        elements.ForEach(x => result.AddRange(ToBytes(x, true)));
-
-    return [.. result];
-}
 
     // /// <summary>
     // /// Serializes an array of values to an array of bytes, prefixed by the collection's length.

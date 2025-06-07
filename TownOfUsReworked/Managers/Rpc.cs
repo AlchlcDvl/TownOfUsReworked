@@ -619,7 +619,7 @@ public static class RpcManager
                     }
                     case ActionsRPC.Infect:
                     {
-                        Pestilence.Infected[reader.ReadByte()] = reader.ReadUInt();
+                        Pestilence.Infected[reader.ReadByte()] = reader.ReadByte();
                         return;
                     }
                     case ActionsRPC.SetUninteractable:
@@ -631,13 +631,12 @@ public static class RpcManager
                             UninteractablePlayers2.TryAdd(playerid, reader.ReadFloat());
 
                             if (reader.ReadBool())
-                            {
-                                var hand = UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerid].handRenderer;
-                                var playerFromId = PlayerById(playerid);
-                                playerFromId.UpdateColor(hand);
-                                hand.SetAlpha(playerFromId.GetAlpha());
-                            }
-                        } catch {}
+                                PlayerById(playerid).UpdateColor(UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerid].handRenderer);
+                        }
+                        catch (Exception e)
+                        {
+                            Error(e);
+                        }
 
                         return;
                     }

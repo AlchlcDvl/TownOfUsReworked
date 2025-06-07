@@ -78,7 +78,10 @@ public static class ZiplineBehaviourUse
     public static void Prefix(ZiplineBehaviour __instance, PlayerControl player, bool fromTop, ref bool __state)
     {
         CanUsePatch.Prefix(player.Data, ref __state);
-        InteractableTracker.Handle(player, fromTop ? __instance.upTravelTime : __instance.downTravelTime);
+        InteractableTracker.Handle(player, fromTop ? __instance.upTravelTime : __instance.downTravelTime, true);
+
+        if (!player.AmOwner)
+            return;
 
         try
         {

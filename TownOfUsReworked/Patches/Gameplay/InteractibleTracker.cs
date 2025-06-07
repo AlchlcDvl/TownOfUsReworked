@@ -4,22 +4,21 @@ namespace TownOfUsReworked.Patches.Gameplay;
 public static class InteractableTracker
 {
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ClimbLadder))]
-    public static void Prefix(PlayerPhysics __instance)
-    {
-        if (__instance.AmOwner)
-            Handle(__instance.myPlayer);
-    }
+    public static void Prefix(PlayerPhysics __instance) => Handle(__instance.myPlayer);
 
     [HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.Use))]
     public static void Prefix() => Handle(LocalPlayer);
 
-    public static void Handle(PlayerControl player, float time = 6)
+    public static void Handle(PlayerControl player, float time = 6, bool setRend = false)
     {
+        if (!player.AmOwner)
+            return;
+
         try
         {
             UninteractablePlayers.TryAdd(player.PlayerId, Time.time);
             UninteractablePlayers2.TryAdd(player.PlayerId, time);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, time, false);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, time, setRend);
         }
         catch (Exception e)
         {

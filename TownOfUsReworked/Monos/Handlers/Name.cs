@@ -157,7 +157,7 @@ public abstract class NameHandler : MonoBehaviour
 
         if ((deadSeeEverything || local.Is<Pestilence>()) && Pestilence.Infected.TryGetValue(player.PlayerId, out var count))
         {
-            for (var i = 0; i < count; i++)
+            while (count-- > 0)
                 name += " <#424242FF>米</color>";
         }
 

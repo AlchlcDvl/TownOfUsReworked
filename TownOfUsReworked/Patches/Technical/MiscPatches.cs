@@ -311,10 +311,10 @@ public static class HudPatches
         if (!IsLobby() || !AmongUsClient.Instance.AmHost || !AmongUsClient.Instance.CanBan() || IsInGame())
             return;
 
-        var players = AllPlayers();
+        var players = AllPlayers().ToList();
 
-        while (players.Count() > GameOptions.LobbySize.Value)
-            AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
+        while (players.Count > GameOptions.LobbySize.Value)
+            AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.TakeLast().OwnerId).Id, DisconnectReasons.GameFull);
     }
 
     [HarmonyPatch(nameof(HudManager.CoShowIntro))]

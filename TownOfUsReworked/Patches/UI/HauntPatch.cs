@@ -6,19 +6,19 @@ public static class HauntPatches
     [HarmonyPatch(nameof(HauntMenuMinigame.SetHauntTarget))]
     public static bool Prefix(HauntMenuMinigame __instance, PlayerControl target)
     {
-		if (target)
-		{
+        if (target)
+        {
             __instance.HauntTarget = target;
             __instance.HauntingText.enabled = true;
             __instance.NameText.text = target.Data?.GetPlayerName(PlayerOutfitType.Default);
             __instance.SetFilterText();
-		}
+        }
         else
         {
-			__instance.HauntTarget = null;
-			__instance.NameText.text = "";
-			__instance.FilterText.text = "";
-			__instance.HauntingText.enabled = false;
+            __instance.HauntTarget = null;
+            __instance.NameText.text = "";
+            __instance.FilterText.text = "";
+            __instance.HauntingText.enabled = false;
         }
 
         return false;
