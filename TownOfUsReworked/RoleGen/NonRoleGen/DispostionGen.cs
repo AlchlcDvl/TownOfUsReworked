@@ -53,8 +53,8 @@ public sealed class DispositionGen : BaseGen
         }
 
         var playerCount = AllPlayers().Count(x => x != Pure);
-        var maxDisp = Mathf.Clamp(DispositionsSettings.MaxDispositions, 0, playerCount);
-        var minDisp = Mathf.Clamp(DispositionsSettings.MinDispositions, 0, playerCount);
+        var maxDisp = Mathf.Clamp(DispositionsSettings.MaxDispositions.Value, 0, playerCount);
+        var minDisp = Mathf.Clamp(DispositionsSettings.MinDispositions.Value, 0, playerCount);
         ModeFilters[GameModeSettings.GameMode].Filter(AllDispositions, GameModeSettings.IgnoreLayerCaps ? playerCount : URandom.RandomRangeInt(minDisp, maxDisp + 1), true);
     }
 

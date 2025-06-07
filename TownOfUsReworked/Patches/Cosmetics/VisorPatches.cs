@@ -95,4 +95,15 @@ public static class VisorPatches
 
         return !(__result = true);
     }
+
+    [HarmonyPatch(nameof(VisorLayer.PopulateFromViewData))]
+    public static bool Prefix(VisorLayer __instance)
+    {
+        if (!__instance.visorData || !VisorLoader.CustomCosmeticRegistry.ContainsKey(__instance.visorData.ProdId))
+            return true;
+
+        __instance.transform.SetLocalZ(__instance.DesiredLocalZPosition);
+        __instance.SetFlipX(__instance.Image.flipX);
+        return false;
+    }
 }

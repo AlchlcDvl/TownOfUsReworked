@@ -20,7 +20,7 @@
 
 Changes!
 - Update: Updated to Among Us v16.0.5 (or 2025.5.20)*
-- Update: Updated to Reactor v2.4.0
+- Update: Updated to Reactor v2.5.0
 - Update: Updated to BepInEx v6.0.0-be.735
 - Overhaul: Mayor is now a second stage role for the new Democrat role
 - Overhaul: Shifter is back to being an outcast role, finally with a win condition and an interesting mechanic*

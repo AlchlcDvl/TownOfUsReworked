@@ -302,7 +302,7 @@ public static class MeetingPatches
 
     // Thanks twix
     [HarmonyPatch(nameof(MeetingHud.CoIntro))]
-    public static void Postfix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
+    public static void Prefix(MeetingHud __instance, NetworkedPlayerInfo reportedBody, Il2CppReferenceArray<NetworkedPlayerInfo> deadBodies)
     {
         if (!GameAnnouncementSettings.IndicateReportedBodies)
             return;

@@ -37,29 +37,27 @@ public static class ShowRolePatch
         if (IsHnS())
             return;
 
-        var role = LocalPlayer.GetRole();
-        var modifier = LocalPlayer.GetModifier();
-        var disposition = LocalPlayer.GetDisposition();
-        var ability = LocalPlayer.GetAbility();
+        var handler = LayerHandler.Handlers[LocalPlayer.PlayerId];
 
         var statusString = "";
         var status = "";
 
-        if (!modifier.Hidden)
-            status += $" {modifier.ColorString}{modifier.Name}</color>";
+        if (!handler.CurrentModifier.Hidden)
+            status += $" {handler.CurrentModifier.ColorString}{handler.CurrentModifier.Name}</color>";
 
-        if (!disposition.Hidden)
-            status += $" {disposition.ColorString}{disposition.Name}</color>";
+        if (!handler.CurrentDisposition.Hidden)
+            status += $" {handler.CurrentDisposition.ColorString}{handler.CurrentDisposition.Name}</color>";
 
-        if (!ability.Hidden)
-            status += $" {ability.ColorString}{ability.Name}</color>";
+        if (!handler.CurrentAbility.Hidden)
+            status += $" {handler.CurrentAbility.ColorString}{handler.CurrentAbility.Name}</color>";
 
         if (status.Length != 0)
             statusString = $"\n<#{CustomColorManager.Status.ToHtmlStringRGBA()}>Status</color>:{status}";
 
-        __instance.__4__this.RoleText.text = role.Name;
-        __instance.__4__this.RoleText.color = __instance.__4__this.YouAreText.color = __instance.__4__this.RoleBlurbText.color = __instance.__4__this.BackgroundBar.material.color = role.Color;
-        __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
+        __instance.__4__this.RoleText.text = handler.CurrentRole.Name;
+        __instance.__4__this.RoleText.color = __instance.__4__this.YouAreText.color = __instance.__4__this.RoleBlurbText.color = __instance.__4__this.BackgroundBar.material.color =
+            handler.CurrentRole.Color;
+        __instance.__4__this.RoleBlurbText.text = handler.CurrentRole.StartText() + statusString;
 #if ANDROID
         var pos = __instance.__4__this.BackgroundBar.transform.localPosition;
         __instance.__4__this.BackgroundBar.transform.localPosition = new(pos.x, pos.y, -15f);

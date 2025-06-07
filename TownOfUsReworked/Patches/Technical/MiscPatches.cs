@@ -8,6 +8,8 @@ namespace TownOfUsReworked.Patches.Technical;
 [HarmonyPatch(typeof(MapBehaviour))]
 public static class MapBehaviourPatches
 {
+    public static bool MapActive;
+
     [HarmonyPatch(nameof(MapBehaviour.FixedUpdate)), HarmonyPostfix]
     public static void FixedUpdatePostfix(MapBehaviour __instance)
     {
@@ -42,13 +44,9 @@ public static class MapBehaviourPatches
         PlayerLayer.LocalLayers().Do(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
         LocalPlayer.DisableButtons();
+        MapActive = true;
         return notModified;
     }
-
-    [HarmonyPatch(nameof(MapBehaviour.Show)), HarmonyPostfix]
-    public static void ShowPostfix() => MapActive = true;
-
-    public static bool MapActive;
 
     [HarmonyPatch(nameof(MapBehaviour.Close)), HarmonyPostfix]
     public static void ClosePostfix()
@@ -315,7 +313,7 @@ public static class HudPatches
 
         var players = AllPlayers();
 
-        while (players.Count() > GameOptions.LobbySize)
+        while (players.Count() > GameOptions.LobbySize.Value)
             AmongUsClient.Instance.SendLateRejection(AmongUsClient.Instance.GetClient(players.Last().OwnerId).Id, DisconnectReasons.GameFull);
     }
 
@@ -395,7 +393,7 @@ public static class DeathPopUpPatch
 }
 
 [HarmonyPatch]
-public static class RefreshPatch
+public static class PreventTheseMethodsFromRunning
 {
     [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
     [HarmonyPatch(typeof(GameData), nameof(GameData.DirtyAllData))]
@@ -557,7 +555,7 @@ public static class FollowerCameraPatches
     }
 }
 
-[HarmonyPatch(typeof(HostInfoPanel), nameof(HostInfoPanel.SetUp))]
+[HarmonyPatch(typeof(HostInfoPanel), nameof(HostInfoPanel.Update))]
 public static class HostInfoPanelPatch
 {
     public static bool Prefix(HostInfoPanel __instance)

@@ -147,7 +147,7 @@ public static class SettingsPatches
         [HarmonyPatch(nameof(GameOptionsMenu.Awake))]
         public static void Postfix(GameOptionsMenu __instance) => __instance.Children = new();
 
-        [HarmonyPatch(nameof(GameOptionsMenu.Initialize))]
+        [HarmonyPatch(nameof(GameOptionsMenu.OnEnable))]
         public static bool Prefix(GameOptionsMenu __instance)
         {
             if (IsHnS())
@@ -558,17 +558,22 @@ public static class SettingsPatches
         OnValueChanged();
     }
 
-    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.CoSpawnPlayer))]
+    [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), nameof(PlayerPhysics._CoSpawnPlayer_d__42.MoveNext))]
     public static class PlayerJoinPatch
     {
         private static bool SentOnce;
 
-        public static void Postfix(PlayerPhysics __instance)
+        public static void Postfix(PlayerPhysics._CoSpawnPlayer_d__42 __instance, ref bool __result)
         {
-            if (!AmongUsClient.Instance || !LocalPlayer || !__instance.myPlayer || IsFreePlay())
+            if (__result)
                 return;
 
-            __instance.myPlayer.GetComponent<PlayerControlHandler>().UpdateCurrent();
+            var player = __instance.__4__this;
+
+            if (!AmongUsClient.Instance || !LocalPlayer || !player.myPlayer || IsFreePlay())
+                return;
+
+            player.GetComponent<PlayerControlHandler>().UpdateCurrent();
 
             if (Holders.EntryCount < GameData.Instance.PlayerCount)
             {
@@ -591,7 +596,7 @@ public static class SettingsPatches
                 OnValueChangedView();
             }
 
-            if (__instance.AmOwner)
+            if (player.AmOwner)
             {
                 if (SentOnce || ClientOptions.NoWelcome)
                     return;
@@ -604,12 +609,12 @@ public static class SettingsPatches
             if (GameData.Instance.PlayerCount < 2 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MciActive || IsHnS())
                 return;
 
-            SendOptionRPC(targetClientId: __instance.myPlayer.OwnerId);
-            CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
-            CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SyncSummary, ReadDiskText("Summary", TownOfUsReworked.Other));
+            SendOptionRPC(targetClientId: player.OwnerId);
+            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
+            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.SyncSummary, ReadDiskText("Summary", TownOfUsReworked.Other)); // TODO: Serialise this better
 
             if (CachedFirstDead is not null)
-                CallTargetedRpc(__instance.myPlayer.OwnerId, CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
+                CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
         }
     }
 
@@ -709,24 +714,28 @@ public static class SettingsPatches
 
             return false;
         }
+    }
 
-        [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
-        public static bool Prefix(GameOptionsMapPicker __instance, MapIconByName mapInfo)
+    [HarmonyPatch(typeof(GameOptionsMapPicker.__c__DisplayClass18_0), nameof(GameOptionsMapPicker.__c__DisplayClass18_0._SetupMapButtons_b__0))]
+    private static class AnotherSelectMapPatchBecauseInlining
+    {
+        public static bool Prefix(GameOptionsMapPicker.__c__DisplayClass18_0 __instance, MapIconByName mapInfo)
         {
+            var instance = __instance.__4__this;
             SetMap((MapEnum)mapInfo.Name);
-            __instance.selectedMapId = (int)mapInfo.Name;
+            instance.selectedMapId = (int)mapInfo.Name;
 
-            if (__instance.MapImage)
+            if (instance.MapImage)
             {
-                __instance.MapImage.sprite = mapInfo.MapImage;
-                __instance.MapImage.flipX = __instance.selectedMapId == 3;
+                instance.MapImage.sprite = mapInfo.MapImage;
+                instance.MapImage.flipX = instance.selectedMapId == 3;
             }
 
-            if (__instance.MapName)
-                __instance.MapName.sprite = mapInfo.NameImage;
+            if (instance.MapName)
+                instance.MapName.sprite = mapInfo.NameImage;
 
-            __instance.UpdateValue();
-            __instance.OnValueChanged?.Invoke(__instance);
+            instance.UpdateValue();
+            instance.OnValueChanged?.Invoke(instance);
             return false;
         }
     }
@@ -1290,7 +1299,7 @@ public static class SettingsPatches
         [HarmonyPatch(nameof(LogicOptions.MaxPlayers), MethodType.Getter)]
         public static bool Prefix(ref int __result)
         {
-            __result = GameOptions.LobbySize;
+            __result = GameOptions.LobbySize.Value;
             return false;
         }
     }

@@ -73,8 +73,7 @@ public static class GameOptions
     [NumberOption(0, 2000, 50, zeroIsInf: true)]
     public static Number ChatCharacterLimit = 200;
 
-    [NumberOption(2, 250, 1)]
-    public static Number LobbySize = 15;
+    public static ReworkedNumberOption LobbySize = new(2, 250, 1, defaultValue: 15);
 
     [StringOption<GhostSpawnType>]
     public static GhostSpawnType GhostSpawn = GhostSpawnType.Random;
@@ -83,7 +82,7 @@ public static class GameOptions
 [HeaderOption(MultiMenu.Main)]
 public static class GameModeSettings
 {
-    [StringOption<Mode>(Mode.None)]
+    [StringOption<Mode>([Mode.None])]
     public static Mode GameMode = Mode.Classic;
 
     [ToggleOption]
@@ -207,24 +206,9 @@ public static class VotingOptions
 [HeaderOption(MultiMenu.Main)]
 public static class BadGuysSettings
 {
-    [StringOption<Faction>(Faction.Crew, Faction.GameMode, Faction.Outcast, Faction.None, Faction.Illuminati)]
-    public static Faction MainBadGuys
-    {
-        get => IlluminatiUnleashed ? Faction.Illuminati : field;
-        set
-        {
-            if (value == Faction.Compliance && !OrderOfCompliance)
-                value = value < field ? Faction.Intruder : (PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
-
-            if (value is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse && PandoricaOpens)
-                value = Faction.Pandorica;
-
-            if (value == Faction.Pandorica && !PandoricaOpens)
-                value = value < field ? Faction.Apocalypse : (OrderOfCompliance ? Faction.Compliance : Faction.Intruder);
-
-            field = value;
-        }
-    } = Faction.Intruder;
+    public static Faction MainBadGuys => IlluminatiUnleashed ? Faction.Illuminati : MainBadFaction;
+    private static StringOption<Faction> MainBadFaction = new(include: [Faction.Compliance, Faction.Syndicate, Faction.Apocalypse, Faction.Intruder, Faction.Pandorica], defaultValue:
+        Faction.Intruder) { ModifyValue = ValidateMainBadFaction };
 
     [ToggleOption]
     public static bool OnlyMainBadGuys = false;
@@ -279,6 +263,20 @@ public static class BadGuysSettings
                 break;
             }
         }
+    }
+
+    private static Faction ValidateMainBadFaction(Faction value, Faction field)
+    {
+        if (value == Faction.Compliance && !OrderOfCompliance)
+            value = value < field ? Faction.Intruder : (PandoricaOpens ? Faction.Pandorica : Faction.Apocalypse);
+
+        if (value is Faction.Intruder or Faction.Syndicate or Faction.Apocalypse && PandoricaOpens)
+            value = Faction.Pandorica;
+
+        if (value == Faction.Pandorica && !PandoricaOpens)
+            value = value < field ? Faction.Apocalypse : (OrderOfCompliance ? Faction.Compliance : Faction.Intruder);
+
+        return value;
     }
 }
 
@@ -1201,67 +1199,37 @@ public static class Dispositions
 [AlignmentHeaderOption(ListSlot.CrewInvest)]
 public static class CrewInvestigativeSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxCi
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxCi = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.CrewKill)]
 public static class CrewKillingSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxCk
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxCk = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.CrewProt)]
 public static class CrewProtectiveSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxCrP
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxCrP = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.CrewSov)]
 public static class CrewSovereignSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxCSv
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxCSv = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.CrewSupport)]
 public static class CrewSupportSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxCs
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxCs = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.OutcastBen)]
 public static class OutcastBenignSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxNb
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxNb = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 
     [ToggleOption]
     public static bool VigilanteKillsBenigns = true;
@@ -1270,12 +1238,7 @@ public static class OutcastBenignSettings
 [AlignmentHeaderOption(ListSlot.OutcastEvil)]
 public static class OutcastEvilSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxNe
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxNe = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 
     [ToggleOption]
     public static bool OutcastEvilsEndGame = false;
@@ -1290,12 +1253,7 @@ public static class OutcastEvilSettings
 [AlignmentHeaderOption(ListSlot.OutcastKill)]
 public static class OutcastKillingSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxNk
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxNk = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 
     [ToggleOption]
     public static bool NkHaveImpVision = true;
@@ -1310,12 +1268,7 @@ public static class OutcastKillingSettings
 [AlignmentHeaderOption(ListSlot.OutcastNeo)]
 public static class OutcastNeophyteSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxNn
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxNn = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 
     [ToggleOption]
     public static bool NnHaveImpVision = true;
@@ -1324,45 +1277,25 @@ public static class OutcastNeophyteSettings
 [AlignmentHeaderOption(ListSlot.IntruderConceal)]
 public static class IntruderConcealingSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxIc
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxIc = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.IntruderDecep)]
 public static class IntruderDeceptionSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxID
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxID = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.IntruderHead)]
 public static class IntruderHeadSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxIh
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxIh = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.IntruderKill)]
 public static class IntruderKillingSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxIK
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxIK = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 
     [ToggleOption]
     public static bool KillCdLinked = false;
@@ -1371,130 +1304,67 @@ public static class IntruderKillingSettings
 [AlignmentHeaderOption(ListSlot.IntruderSupport)]
 public static class IntruderSupportSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxIs
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxIs = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.SyndicateDisrup)]
 public static class SyndicateDisruptionSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxSD
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxSD = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.SyndicateKill)]
 public static class SyndicateKillingSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxSyK
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxSyK = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.SyndicatePower)]
 public static class SyndicatePowerSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxSp
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxSp = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.SyndicateSupport)]
 public static class SyndicateSupportSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxSSu
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxSSu = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.ApocHarb)]
 public static class ApocalypseHarbingerSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MaxAh
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 1;
+    public static ReworkedNumberOption MaxAh = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.Modifiers)]
 public static class ModifiersSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MinModifiers
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 4;
-
-    [NumberOption(0, 250, 1)]
-    public static Number MaxModifiers
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 5;
+    public static ReworkedNumberOption MinModifiers = new(0, 250, 1, defaultValue: 4) { ModifyValue = HandleMaxMinLimits.Set };
+    public static ReworkedNumberOption MaxModifiers = new(0, 250, 1, defaultValue: 5) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.Abilities)]
 public static class AbilitiesSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MinAbilities
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 4;
-
-    [NumberOption(0, 250, 1)]
-    public static Number MaxAbilities
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 5;
+    public static ReworkedNumberOption MinAbilities = new(0, 250, 1, defaultValue: 4) { ModifyValue = HandleMaxMinLimits.Set };
+    public static ReworkedNumberOption MaxAbilities = new(0, 250, 1, defaultValue: 5) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.Dispositions)]
 public static class DispositionsSettings
 {
-    [NumberOption(0, 250, 1)]
-    public static Number MinDispositions
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 4;
-
-    [NumberOption(0, 250, 1)]
-    public static Number MaxDispositions
-    {
-        get;
-        set => HandleMaxMinLimits.Set(value, ref field);
-    } = 5;
+    public static ReworkedNumberOption MinDispositions = new(0, 250, 1, defaultValue: 4) { ModifyValue = HandleMaxMinLimits.Set };
+    public static ReworkedNumberOption MaxDispositions = new(0, 250, 1, defaultValue: 5) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 public static class HandleMaxMinLimits
 {
-    public static void Set(Number value, ref Number backing)
+    public static Number Set(Number value, Number backing)
     {
         if (value > GameOptions.LobbySize)
             value = backing == 0 ? GameOptions.LobbySize : 0;
 
-        backing = value;
+        return value;
     }
 }

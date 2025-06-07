@@ -654,8 +654,8 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base.graphic.SetCooldownNormalizedUvs();
     }
 
-    public bool Usable() => IsUsable() && (!HasUses || UsesCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() &&
-        !NoPlayers() && !HUD().IsIntroDisplayed && !MapBehaviourPatches.MapActive;
+    public bool Usable() => ToggleVisibility.Visible && (!HasUses || UsesCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() &&
+        !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && !MapBehaviourPatches.MapActive && IsUsable();
 
     public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses >=
         UseDecrement) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();

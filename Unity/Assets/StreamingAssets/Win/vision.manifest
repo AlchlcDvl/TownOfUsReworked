@@ -1,12 +1,15 @@
 ManifestFileVersion: 0
-CRC: 3702236452
+CRC: 3734332507
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: aa7bc46be5d9160031662ae022827067
+    Hash: f5b91d733ece6b7bf600e4ed1c4d5ea7
   TypeTreeHash:
     serializedVersion: 2
-    Hash: 5651999fa58938ac55fc849c3d2539bc
+    Hash: 5e762ccb57c4caaabbb5a4199ac82c23
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: f5b91d733ece6b7bf600e4ed1c4d5ea7
 HashAppended: 0
 ClassTypes:
 - Class: 21
@@ -16,6 +19,5 @@ ClassTypes:
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Materials/GreyVision.mat
-- Assets/Materials/GlitchedPlayer.mat
 - Assets/Shaders/GreyVision.shader
 Dependencies: []

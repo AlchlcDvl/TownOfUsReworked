@@ -38,5 +38,8 @@ public enum CustomTypeCode : byte
 
     // Collections
     IEnumerable,
-    Array
+    Array,
+
+    // For recursion
+    Object
 }

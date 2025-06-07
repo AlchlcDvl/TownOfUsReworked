@@ -92,6 +92,7 @@ public static class RpcManager
         CustomTypeCode.String => typeof(string),
         CustomTypeCode.Enum => typeof(Enum),
         CustomTypeCode.Type => typeof(Type),
+        CustomTypeCode.Object => typeof(object),
 
         // Custom classes
         CustomTypeCode.NetData => typeof(NetData),

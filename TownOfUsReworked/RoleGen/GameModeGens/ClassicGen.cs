@@ -21,11 +21,11 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            var maxCi = Mathf.Clamp(CrewInvestigativeSettings.MaxCi, 0, RoleGenManager.CrewInvestigativeRoles.Count);
-            var maxCs = Mathf.Clamp(CrewSupportSettings.MaxCs, 0, RoleGenManager.CrewSupportRoles.Count);
-            var maxCk = Mathf.Clamp(CrewKillingSettings.MaxCk, 0, RoleGenManager.CrewKillingRoles.Count);
-            var maxCrP = Mathf.Clamp(CrewProtectiveSettings.MaxCrP, 0, RoleGenManager.CrewProtectiveRoles.Count);
-            var maxCSv = Mathf.Clamp(CrewSovereignSettings.MaxCSv, 0, RoleGenManager.CrewSovereignRoles.Count);
+            var maxCi = Mathf.Clamp(CrewInvestigativeSettings.MaxCi.Value, 0, RoleGenManager.CrewInvestigativeRoles.Count);
+            var maxCs = Mathf.Clamp(CrewSupportSettings.MaxCs.Value, 0, RoleGenManager.CrewSupportRoles.Count);
+            var maxCk = Mathf.Clamp(CrewKillingSettings.MaxCk.Value, 0, RoleGenManager.CrewKillingRoles.Count);
+            var maxCrP = Mathf.Clamp(CrewProtectiveSettings.MaxCrP.Value, 0, RoleGenManager.CrewProtectiveRoles.Count);
+            var maxCSv = Mathf.Clamp(CrewSovereignSettings.MaxCSv.Value, 0, RoleGenManager.CrewSovereignRoles.Count);
             var maxCrewSum = maxCi + maxCk + maxCrP + maxCs + maxCSv;
 
             while (maxCrewSum > maxCrew && maxCrewSum > 0)
@@ -105,11 +105,11 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            var maxIc = Mathf.Clamp(IntruderConcealingSettings.MaxIc, 0, RoleGenManager.IntruderConcealingRoles.Count);
-            var maxID = Mathf.Clamp(IntruderDeceptionSettings.MaxID, 0, RoleGenManager.IntruderDeceptionRoles.Count);
-            var maxIK = Mathf.Clamp(IntruderKillingSettings.MaxIK, 0, RoleGenManager.IntruderKillingRoles.Count);
-            var maxIs = Mathf.Clamp(IntruderSupportSettings.MaxIs, 0, RoleGenManager.IntruderSupportRoles.Count);
-            var maxIh = Mathf.Clamp(IntruderHeadSettings.MaxIh, 0, RoleGenManager.IntruderHeadRoles.Count);
+            var maxIc = Mathf.Clamp(IntruderConcealingSettings.MaxIc.Value, 0, RoleGenManager.IntruderConcealingRoles.Count);
+            var maxID = Mathf.Clamp(IntruderDeceptionSettings.MaxID.Value, 0, RoleGenManager.IntruderDeceptionRoles.Count);
+            var maxIK = Mathf.Clamp(IntruderKillingSettings.MaxIK.Value, 0, RoleGenManager.IntruderKillingRoles.Count);
+            var maxIs = Mathf.Clamp(IntruderSupportSettings.MaxIs.Value, 0, RoleGenManager.IntruderSupportRoles.Count);
+            var maxIh = Mathf.Clamp(IntruderHeadSettings.MaxIh.Value, 0, RoleGenManager.IntruderHeadRoles.Count);
             var maxIntSum = maxIc + maxID + maxIK + maxIs + maxIh;
 
             while (maxIntSum > maxInt && maxIntSum > 0)
@@ -189,10 +189,10 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            var maxNe = Mathf.Clamp(OutcastEvilSettings.MaxNe, 0, RoleGenManager.OutcastEvilRoles.Count);
-            var maxNb = Mathf.Clamp(OutcastBenignSettings.MaxNb, 0, RoleGenManager.OutcastBenignRoles.Count);
-            var maxNk = Mathf.Clamp(OutcastKillingSettings.MaxNk, 0, RoleGenManager.OutcastKillingRoles.Count);
-            var maxNn = Mathf.Clamp(OutcastNeophyteSettings.MaxNn, 0, RoleGenManager.OutcastNeophyteRoles.Count);
+            var maxNe = Mathf.Clamp(OutcastEvilSettings.MaxNe.Value, 0, RoleGenManager.OutcastEvilRoles.Count);
+            var maxNb = Mathf.Clamp(OutcastBenignSettings.MaxNb.Value, 0, RoleGenManager.OutcastBenignRoles.Count);
+            var maxNk = Mathf.Clamp(OutcastKillingSettings.MaxNk.Value, 0, RoleGenManager.OutcastKillingRoles.Count);
+            var maxNn = Mathf.Clamp(OutcastNeophyteSettings.MaxNn.Value, 0, RoleGenManager.OutcastNeophyteRoles.Count);
             var maxNeutSum = maxNe + maxNb + maxNk + maxNn;
 
             while (maxNeutSum > maxNeut && maxNeutSum > 0)
@@ -274,7 +274,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            var maxAh = Mathf.Clamp(ApocalypseHarbingerSettings.MaxAh, 0, RoleGenManager.ApocalypseHarbingerRoles.Count);
+            var maxAh = Mathf.Clamp(ApocalypseHarbingerSettings.MaxAh.Value, 0, RoleGenManager.ApocalypseHarbingerRoles.Count);
             var maxApocSum = maxAh;
 
             while (maxApocSum > maxApoc && maxApocSum > 0)
@@ -313,10 +313,10 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
 
         if (!GameModeSettings.IgnoreAlignmentCaps)
         {
-            var maxSSu = Mathf.Clamp(SyndicateSupportSettings.MaxSSu, 0, RoleGenManager.SyndicateSupportRoles.Count);
-            var maxSD = Mathf.Clamp(SyndicateDisruptionSettings.MaxSD, 0, RoleGenManager.SyndicateDisruptionRoles.Count);
-            var maxSyK = Mathf.Clamp(SyndicateKillingSettings.MaxSyK, 0, RoleGenManager.SyndicateKillingRoles.Count);
-            var maxSp = Mathf.Clamp(SyndicatePowerSettings.MaxSp, 0, RoleGenManager.SyndicatePowerRoles.Count);
+            var maxSSu = Mathf.Clamp(SyndicateSupportSettings.MaxSSu.Value, 0, RoleGenManager.SyndicateSupportRoles.Count);
+            var maxSD = Mathf.Clamp(SyndicateDisruptionSettings.MaxSD.Value, 0, RoleGenManager.SyndicateDisruptionRoles.Count);
+            var maxSyK = Mathf.Clamp(SyndicateKillingSettings.MaxSyK.Value, 0, RoleGenManager.SyndicateKillingRoles.Count);
+            var maxSp = Mathf.Clamp(SyndicatePowerSettings.MaxSp.Value, 0, RoleGenManager.SyndicatePowerRoles.Count);
             var maxSynSum = maxSSu + maxSD + maxSyK + maxSp;
 
             while (maxSynSum > maxSyn && maxSynSum > 0)

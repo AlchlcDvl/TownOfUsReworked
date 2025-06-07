@@ -3,31 +3,6 @@ namespace TownOfUsReworked.Patches.Gameplay;
 [HarmonyPatch(typeof(MeetingHud))]
 public static class VotePatches
 {
-    [HarmonyPatch(nameof(MeetingHud.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
-    public static void Prefix(PlayerControl pc)
-    {
-        if (AmongUsClient.Instance.AmHost && Meeting())
-        {
-            foreach (var pol in PlayerLayer.GetLayers<Politician>())
-            {
-                var votesRegained = pol.ExtraVotes.RemoveAll(x => x == pc.PlayerId);
-                pol.VoteBank += votesRegained;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, pol, PoliticianActionsRPC.Add, votesRegained);
-            }
-        }
-
-        if (pc.AmOwner && TownOfUsReworked.MciActive)
-        {
-            MciUtils.RemoveAllPlayers();
-            Debugging.Instance.ControllingFigure = 0;
-        }
-
-        SetPostmortals.RemoveFromPostmortals(pc);
-        MarkMeetingDead(pc);
-        OnGameEndPatches.AddSummaryInfo(pc, true);
-        CheckEndGame.CheckPlayerWins();
-    }
-
     [HarmonyPatch(nameof(MeetingHud.Confirm))]
     public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers().Do(x => x?.ConfirmVotePrefix(__instance));
 

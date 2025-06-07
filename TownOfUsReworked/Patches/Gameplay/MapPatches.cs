@@ -190,7 +190,7 @@ public static class MapPatches
         TownOfUsReworked.NormalOptions.NumEmergencyMeetings = GameOptions.EmergencyButtonCount;
         TownOfUsReworked.NormalOptions.KillCooldown = IntruderSettings.IntKillCd;
         TownOfUsReworked.NormalOptions.GhostsDoTasks = TaskOptions.GhostTasksCountToWin;
-        TownOfUsReworked.NormalOptions.MaxPlayers = GameOptions.LobbySize;
+        TownOfUsReworked.NormalOptions.MaxPlayers = GameOptions.LobbySize.Value;
         TownOfUsReworked.NormalOptions.NumShortTasks = TaskOptions.ShortTasks;
         TownOfUsReworked.NormalOptions.NumLongTasks = TaskOptions.LongTasks;
         TownOfUsReworked.NormalOptions.NumCommonTasks = TaskOptions.CommonTasks;

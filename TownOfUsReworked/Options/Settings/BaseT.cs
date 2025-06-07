@@ -10,6 +10,9 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
         {
             if (SelfMember)
             {
+                if (ModifyValue is not null)
+                    value = ModifyValue.Invoke(value, innerValue);
+
                 if (Config is not null)
                     Config.Value = value;
 
@@ -36,6 +39,7 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
     }
 
     public Action<T> OnChanged { get; init; }
+    public Func<T, T, T> ModifyValue { get; init; }
 
     protected Type TargetType { get; } = typeof(T);
 

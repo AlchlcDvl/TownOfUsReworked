@@ -52,8 +52,8 @@ public sealed class ModifierGen : BaseGen
         }
 
         var players = GameData.Instance.PlayerCount;
-        var maxMod = Mathf.Clamp(ModifiersSettings.MaxModifiers, 0, players);
-        var minMod = Mathf.Clamp(ModifiersSettings.MinModifiers, 0, players);
+        var maxMod = Mathf.Clamp(ModifiersSettings.MaxModifiers.Value, 0, players);
+        var minMod = Mathf.Clamp(ModifiersSettings.MinModifiers.Value, 0, players);
         ModeFilters[GameModeSettings.GameMode].Filter(AllModifiers, GameModeSettings.IgnoreLayerCaps ? players : URandom.RandomRangeInt(minMod, maxMod + 1), true);
     }
 

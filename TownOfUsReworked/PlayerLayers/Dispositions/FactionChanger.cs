@@ -34,7 +34,7 @@ public abstract class FactionChanger : Disposition
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
                     local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
-                    LayerHandler.Handlers[snitch.Player.PlayerId].AllArrows.Add(PlayerId, new(snitch.Player, Player, snitch.Color));
+                    LayerHandler.Handlers[snitch.PlayerId].AllArrows.Add(PlayerId, new(snitch.Player, Player, snitch.Color));
             }
         }
 

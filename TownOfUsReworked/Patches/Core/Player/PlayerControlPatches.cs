@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Patches.Core.Player;
 [HarmonyPatch(typeof(PlayerControl))]
 public static class PlayerControlPatches
 {
-    [HarmonyPatch(nameof(PlayerControl.CmdCheckColor))]
-    public static bool Prefix(PlayerControl __instance, byte bodyColor)
+    [HarmonyPatch(nameof(PlayerControl.CmdCheckColor)), HarmonyPrefix]
+    public static bool CmdCheckColorPrefix(PlayerControl __instance, byte bodyColor)
     {
         CallRpc(CustomRPC.Vanilla, VanillaRPC.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
@@ -263,6 +263,17 @@ public static class PlayerControlPatches
         if (AllBodies().TryFinding(x => x.ParentId == __instance.PlayerId, out var body))
             body.name = name + "Body";
     }
+
+    // Inlining fix
+    [HarmonyPatch(nameof(PlayerControl.HandleRpc)), HarmonyPrefix]
+    public static bool HandleRpcPrefix(PlayerControl __instance, byte callId)
+    {
+        if (callId != 4)
+            return true;
+
+        __instance.Exiled();
+        return false;
+    }
 }
 
 [HarmonyPatch(typeof(NetworkedPlayerInfo))]
@@ -322,7 +333,7 @@ public static class PlayerInfoPatches
 
         for (var j = 0; j < b3; j++)
         {
-            var taskInfo = new NetworkedPlayerInfo.TaskInfo();
+            var taskInfo = new TaskInfo();
             taskInfo.Deserialize(reader);
             __instance.Tasks.Add(taskInfo);
         }

@@ -53,8 +53,8 @@ public sealed class AbilityGen : BaseGen
         }
 
         var players = GameData.Instance.PlayerCount;
-        var maxAb = Mathf.Clamp(AbilitiesSettings.MaxAbilities, 0, players);
-        var minAb = Mathf.Clamp(AbilitiesSettings.MinAbilities, 0, players);
+        var maxAb = Mathf.Clamp(AbilitiesSettings.MaxAbilities.Value, 0, players);
+        var minAb = Mathf.Clamp(AbilitiesSettings.MinAbilities.Value, 0, players);
         ModeFilters[GameModeSettings.GameMode].Filter(AllAbilities, GameModeSettings.IgnoreLayerCaps ? players : URandom.RandomRangeInt(minAb, maxAb + 1), true);
     }
 

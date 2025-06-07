@@ -15,7 +15,7 @@ public static class AbilityButtonPatch
     }
 
     [HarmonyPatch(nameof(AbilityButton.DoClick)), HarmonyPrefix]
-    public static bool DoClickPrefix(AbilityButton __instance) => CustomButton.AllButtons.All(x => x.Base != __instance);
+    public static bool DoClickPrefix(AbilityButton __instance) => CustomButton.AllButtons.All(x => x.Base != __instance); // This event is overridden, but for the sake of it, I've patched this too
 }
 
 [HarmonyPatch(typeof(ActionButton))]
@@ -58,4 +58,12 @@ public static class ActionButtonPatches
         __instance.cooldownTimerText.gameObject.SetActive(__instance.isCoolingDown);
         __instance.SetCooldownFill(percentCool);
     }
+}
+
+[HarmonyPatch(typeof(HudManager), nameof(HudManager.SetHudActive), typeof(PlayerControl), typeof(RoleBehaviour), typeof(bool))]
+public static class ToggleVisibility
+{
+    public static bool Visible;
+
+    public static void Postfix(bool isActive) => Visible = isActive;
 }

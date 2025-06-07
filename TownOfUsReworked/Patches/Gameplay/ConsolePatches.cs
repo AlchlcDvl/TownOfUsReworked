@@ -82,9 +82,7 @@ public static class ZiplineBehaviourUse
 
         try
         {
-            var hand = __instance.playerIdHands[player.PlayerId].handRenderer;
-            player.UpdateColor(hand);
-            hand.SetAlpha(player.GetAlpha());
+            player.UpdateColor(__instance.playerIdHands[player.PlayerId].handRenderer);
         }
         catch (Exception e)
         {

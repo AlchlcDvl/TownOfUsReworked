@@ -124,15 +124,7 @@ public sealed class NetData : IDisposable, INetSerializable
     public void Write(object value, bool withTypeCode = false)
     {
         ThrowIfIncorrectState(false, 0);
-
-        if (withTypeCode)
-            WriteBuffer.Add((byte)value.GetCustomTypeCode());
-
-        if (value is byte @byte)
-            WriteBuffer.Add(@byte);
-        else
-            WriteBuffer.AddRange(ToBytes(value, withTypeCode));
-
+        WriteBuffer.AddRange(ToBytes(value, withTypeCode));
         Exceeded = DataSize > 1000;
     }
 
@@ -284,6 +276,7 @@ public sealed class NetData : IDisposable, INetSerializable
         CustomTypeCode.Number => ReadNumber(),
         CustomTypeCode.RoleOptionData => ReadRoleOptionData(),
         CustomTypeCode.PlayerLayer => ReadLayer(),
+        CustomTypeCode.Object => Read(),
         _ => throw new NotSupportedException($"Custom type code {type} cannot be read")
     };
 
@@ -308,32 +301,37 @@ public sealed class NetData : IDisposable, INetSerializable
             yield return Read(type);
     }
 
-    /// <summary>
-    /// Reads a collection of values from the data, prefixed by a count.
-    /// </summary>
-    /// <returns>A collection of values.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    /// <inheritdoc cref="ReadValues(Type)"/>
     private IEnumerable ReadValues()
     {
         var count = ReadUShort();
-        var type = Read<CustomTypeCode>().ToType();
 
-        while (count-- > 0)
-            yield return Read(type);
+        if (ReadBool())
+        {
+            var code = Read<CustomTypeCode>();
+
+            while (count-- > 0)
+                yield return Read(code);
+        }
+        else
+        {
+            while (count-- > 0)
+                yield return Read();
+        }
     }
 
     // /// <summary>
-    // /// Reads a casted collection of values from the data, prefixed by a count.
+    // /// Reads a casted array of values from the data, prefixed by a count.
     // /// </summary>
     // /// <typeparam name="T">The type to cast the collection to.</typeparam>
-    // /// <returns>A collection of values, casted to <typeparamref name="T"/>.</returns>
+    // /// <returns>An array of values, casted to <typeparamref name="T"/>.</returns>
     // /// <inheritdoc cref="ThrowIfIncorrectState"/>
     // public T[] ReadArray<T>() => ReadArray(typeof(T)) as T[];
 
     /// <summary>
-    /// Reads a collection of values from the data, prefixed by a count.
+    /// Reads an array of values from the data, prefixed by a count.
     /// </summary>
-    /// <returns>A collection of values.</returns>
+    /// <returns>An array of values.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     private Array ReadArray(Type type)
     {
@@ -346,21 +344,23 @@ public sealed class NetData : IDisposable, INetSerializable
         return array;
     }
 
-    /// <summary>
-    /// Reads a collection of values from the data, prefixed by a count.
-    /// </summary>
-    /// <returns>A collection of values.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    /// <inheritdoc cref="ReadArray(Type)"/>
     private Array ReadArray()
     {
-        var count = ReadUShort();
-        var code = Read<CustomTypeCode>();
-        var array = Array.CreateInstance(code.ToType(), count);
+        var flag = ReadBool();
 
-        for (var i = 0; i < count; i++)
-            array.SetValue(Read(code), i);
+        if (flag)
+            return ReadArray(Read<CustomTypeCode>().ToType());
+        else
+        {
+            var count = ReadUShort();
+            var array = new object[count];
 
-        return array;
+            for (var i = 0; i < count; i++)
+                array[i] = Read();
+
+            return array;
+        }
     }
 
     /// <summary>
@@ -728,44 +728,44 @@ public sealed class NetData : IDisposable, INetSerializable
     /// Serializes the value to an array of bytes.
     /// </summary>
     /// <param name="value">The value to serialize.</param>
-    /// <param name="withTypeCode">Indicates whether or not the typ code of the value should be included or not.</param>
+    /// <param name="withTypeCode">Indicates whether or not the type code of the value should be included or not.</param>
     /// <returns>An array of bytes representing the value.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="value"/> was null.</exception>
     /// <exception cref="NotSupportedException">Thrown of the value can't be serialized.</exception>
     public static byte[] ToBytes(object value, bool withTypeCode = false) => value switch
     {
         // Types from the base game
-        PlayerControl i => [i.PlayerId],
-        DeadBody i => [i.ParentId],
-        PlayerVoteArea i => [i.TargetPlayerId],
-        Vent i => BitConverter.GetBytes(i.Id),
-        Vector2 i => ToBytes(i),
+        PlayerControl i => ToBytes(i, withTypeCode),
+        DeadBody i => ToBytes(i, withTypeCode),
+        PlayerVoteArea i => ToBytes(i, withTypeCode),
+        Vent i => ToBytes(i, withTypeCode),
+        Vector2 i => ToBytes(i, withTypeCode),
 
         // Custom types using the interface
-        INetSerializable i => i.ToBytes(),
+        INetSerializable i => ToBytes(i, withTypeCode),
 
         // Base C# types
-        char i => BitConverter.GetBytes(i),
-        bool i => [(byte)(i ? 1 : 0)],
-        byte i => [i],
-        sbyte i => [(byte)(i + 128)],
-        ushort i => BitConverter.GetBytes(i),
-        short i => BitConverter.GetBytes(i),
-        int i => BitConverter.GetBytes(i),
-        uint i => BitConverter.GetBytes(i),
-        ulong i => BitConverter.GetBytes(i),
-        long i => BitConverter.GetBytes(i),
-        float i => BitConverter.GetBytes(i),
-        double i => BitConverter.GetBytes(i),
-        Half i => BitConverter.GetBytes(i),
-        decimal i => [.. decimal.GetBits(i).SelectMany(BitConverter.GetBytes)], // BitConverter please have more conversion methods I beg you
-        string i => ToBytes(i), // String needs a custom method because BitConverter apparently can't support it
+        char i => ToBytes(i, withTypeCode),
+        bool i => ToBytes(i, withTypeCode),
+        byte i => ToBytes(i, withTypeCode),
+        sbyte i => ToBytes(i, withTypeCode),
+        ushort i => ToBytes(i, withTypeCode),
+        short i => ToBytes(i, withTypeCode),
+        int i => ToBytes(i, withTypeCode),
+        uint i => ToBytes(i, withTypeCode),
+        ulong i => ToBytes(i, withTypeCode),
+        long i => ToBytes(i, withTypeCode),
+        float i => ToBytes(i, withTypeCode),
+        double i => ToBytes(i, withTypeCode),
+        Half i => ToBytes(i, withTypeCode),
+        decimal i => ToBytes(i, withTypeCode), // BitConverter please have more conversion methods I beg you
+        string i => ToBytes(i, withTypeCode), // String needs a custom method because BitConverter apparently can't support it
         Enum i => ToBytes(i, withTypeCode),
-        Type i => ToBytes(i.AssemblyQualifiedName),
+        Type i => ToBytes(i, withTypeCode),
 
         // WIP
-        // IDictionary i => ToBytes(i),
-        // ICollection i => ToBytes(i),
+        // IDictionary i => ToBytes(i, withTypeCode),
+        // ICollection i => ToBytes(i, withTypeCode),
 
         // Special cases
         Array i => ToBytes(i, withTypeCode),
@@ -777,10 +777,126 @@ public sealed class NetData : IDisposable, INetSerializable
     };
 
     /// <inheritdoc cref="ToBytes(object, bool)"/>
-    public static byte[] ToBytes(string value)
+    public static byte[] ToBytes(byte value, bool withTypeCode = false) => withTypeCode ? [ (byte)CustomTypeCode.Byte, value] : [value];
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(bool value, bool withTypeCode = false) => withTypeCode ? [ (byte)CustomTypeCode.Boolean, (byte)(value ? 1 : 0)] : [(byte)(value ? 1 : 0)];
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(sbyte value, bool withTypeCode = false) => withTypeCode ? [ (byte)CustomTypeCode.SByte, (byte)(value + 128)] : [(byte)(value + 128)];
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(PlayerControl value, bool withTypeCode = false) => withTypeCode ? [ (byte)CustomTypeCode.PlayerControl, value.PlayerId] : [value.PlayerId];
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(DeadBody value, bool withTypeCode = false) => withTypeCode ? [ (byte)CustomTypeCode.DeadBody, value.ParentId] : [value.ParentId];
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(PlayerVoteArea value, bool withTypeCode = false) => withTypeCode ? [ (byte)CustomTypeCode.PlayerVoteArea, value.TargetPlayerId] : [value.TargetPlayerId];
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(Vent value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value.Id);
+        return withTypeCode ? [ (byte)CustomTypeCode.Vent, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(Type value, bool withTypeCode = false)
+    {
+        var bytes = ToBytes(value.AssemblyQualifiedName);
+        return withTypeCode ? [ (byte)CustomTypeCode.Type, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(string value, bool withTypeCode = false)
     {
         var bytes = Encoding.UTF8.GetBytes(value);
-        return [.. ToBytes((ushort)bytes.Length), .. bytes];
+        return withTypeCode ? [ (byte)CustomTypeCode.String, .. ToBytes((ushort)bytes.Length), .. bytes] : [.. ToBytes((ushort)bytes.Length), .. bytes];
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(decimal value, bool withTypeCode = false)
+    {
+        var bytes = decimal.GetBits(value).SelectMany(BitConverter.GetBytes);
+        return withTypeCode ? [ (byte)CustomTypeCode.Decimal, .. bytes] : [.. bytes];
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(ushort value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.UShort, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(short value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.Short, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(uint value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.UInt, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(int value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.Int, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(ulong value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.ULong, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(long value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.Long, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(Half value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.Half, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(float value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.Float, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(double value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.Double, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(char value, bool withTypeCode = false)
+    {
+        var bytes = BitConverter.GetBytes(value);
+        return withTypeCode ? [ (byte)CustomTypeCode.Char, .. bytes] : bytes;
+    }
+
+    /// <inheritdoc cref="ToBytes(object, bool)"/>
+    public static byte[] ToBytes(INetSerializable value, bool withTypeCode = false)
+    {
+        var bytes = value.ToBytes();
+        return withTypeCode ? [ (byte)value.TypeCode, .. bytes] : bytes;
     }
 
     /// <summary>
@@ -789,27 +905,56 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <param name="values">The values to serialize.</param>
     /// <param name="withTypeCode">Indicates whether or not the typ code of the value should be included or not.</param>
     /// <returns>An array of bytes representing the values.</returns>
-    private static byte[] ToBytes(IEnumerable values, bool withTypeCode = false)
+private static byte[] ToBytes(IEnumerable values, bool withTypeCode = false)
+{
+    var result = new List<byte>();
+
+    if (!withTypeCode)
     {
-        var result = new List<byte>();
-        var codeEntered = false;
-        ushort i = 0;
+        ushort count = 0;
 
         foreach (var obj in values)
         {
-            if (withTypeCode && !codeEntered)
-            {
-                result.Add((byte)obj.GetCustomTypeCode());
-                codeEntered = true;
-            }
-
-            result.AddRange(ToBytes(obj));
-            i++;
+            result.AddRange(ToBytes(obj, false));
+            count++;
         }
 
-        result.InsertRange(0, BitConverter.GetBytes(i));
+        result.InsertRange(0, BitConverter.GetBytes(count));
         return [.. result];
     }
+
+    Type commonType = null;
+    var elements = new List<object>();
+    var allSameType = true;
+
+    foreach (var obj in values)
+    {
+        elements.Add(obj);
+
+        if (!allSameType || obj == null)
+            continue;
+
+        var currentType = obj.GetType();
+
+        if (commonType == null)
+            commonType = currentType;
+        else if (commonType != currentType)
+            allSameType = false;
+    }
+
+    result.AddRange(BitConverter.GetBytes((ushort)elements.Count));
+    result.Add((byte)(allSameType ? 1 : 0));
+
+    if (allSameType && commonType != null)
+    {
+        result.Add((byte)commonType.GetCustomTypeCode());
+        elements.ForEach(x => result.AddRange(ToBytes(x, false)));
+    }
+    else
+        elements.ForEach(x => result.AddRange(ToBytes(x, true)));
+
+    return [.. result];
+}
 
     // /// <summary>
     // /// Serializes an array of values to an array of bytes, prefixed by the collection's length.
@@ -818,8 +963,7 @@ public sealed class NetData : IDisposable, INetSerializable
     // /// <returns>An array of bytes representing the values.</returns>
     // private static byte[] ToBytes(ICollection values)
     // {
-    //     var result = new List<byte>();
-    //     result.AddRange(BitConverter.GetBytes((ushort)values.Count));
+    //     var result = new List<byte>(BitConverter.GetBytes((ushort)values.Count));
 
     //     foreach (var obj in values)
     //         result.AddRange(ToBytes(obj));
@@ -835,18 +979,52 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <returns>An array of bytes representing the values.</returns>
     private static byte[] ToBytes(Array values, bool withTypeCode = false)
     {
-        var result = new List<byte>(BitConverter.GetBytes((ushort)values.Length));
-        var codeEntered = false;
+        var result = new List<byte>();
 
-        foreach (var obj in values)
+        if (!withTypeCode)
         {
-            if (withTypeCode && !codeEntered)
+            result.AddRange(BitConverter.GetBytes((ushort)values.Length));
+
+            foreach (var obj in values)
+                result.AddRange(ToBytes(obj, false));
+        }
+        else
+        {
+            Type commonType = null;
+            var elements = new List<object>();
+            var allSameType = true;
+
+            foreach (var obj in values)
             {
-                result.Add((byte)obj.GetCustomTypeCode());
-                codeEntered = true;
+                elements.Add(obj);
+
+                if (!allSameType)
+                    continue;
+
+                if (obj == null)
+                {
+                    allSameType = false;
+                    continue;
+                }
+
+                var currentType = obj.GetType();
+
+                if (commonType == null)
+                    commonType = currentType;
+                else if (commonType != currentType)
+                    allSameType = false;
             }
 
-            result.AddRange(ToBytes(obj));
+            result.Add((byte)(allSameType ? 1 : 0));
+            result.AddRange(BitConverter.GetBytes((ushort)values.Length));
+
+            if (allSameType && commonType != null)
+            {
+                result.Add((byte)commonType.GetCustomTypeCode());
+                elements.ForEach(x => result.AddRange(ToBytes(x, false)));
+            }
+            else
+                elements.ForEach(x => result.AddRange(ToBytes(x, true)));
         }
 
         return [.. result];
@@ -860,11 +1038,9 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <returns>An array of bytes representing the value.</returns>
     private static byte[] ToBytes(Vector2 value, bool withTypeCode = false)
     {
-        var x = (ushort)(ReverseLerp(value.x) * ushort.MaxValue);
-        var y = (ushort)(ReverseLerp(value.y) * ushort.MaxValue);
-        return withTypeCode
-            ? [(byte)CustomTypeCode.Vector2, .. BitConverter.GetBytes(x), .. BitConverter.GetBytes(y)]
-            : [.. BitConverter.GetBytes(x), .. BitConverter.GetBytes(y)];
+        var x = BitConverter.GetBytes((ushort)(ReverseLerp(value.x) * ushort.MaxValue));
+        var y = BitConverter.GetBytes((ushort)(ReverseLerp(value.y) * ushort.MaxValue));
+        return withTypeCode ? [(byte)CustomTypeCode.Vector2, .. x, .. y] : [.. x, .. y];
     }
 
     /// <summary>
@@ -875,7 +1051,8 @@ public sealed class NetData : IDisposable, INetSerializable
     /// <returns>An array of bytes representing the value.</returns>
     private static byte[] ToBytes(Enum value, bool withTypeCode = false)
     {
-        var bytes = ToBytes(Convert.ChangeType(value, Enum.GetUnderlyingType(value.GetType())));
-        return withTypeCode ? [(byte)CustomTypeCode.Enum, .. bytes] : bytes;
+        var type = value.GetType();
+        var bytes = ToBytes(Convert.ChangeType(value, Enum.GetUnderlyingType(type)));
+        return withTypeCode ? [(byte)CustomTypeCode.Enum, .. ToBytes(type), .. bytes] : bytes;
     }
 }

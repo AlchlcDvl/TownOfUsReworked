@@ -3,6 +3,27 @@ namespace TownOfUsReworked.Patches.UI;
 [HarmonyPatch(typeof(HauntMenuMinigame))]
 public static class HauntPatches
 {
+    [HarmonyPatch(nameof(HauntMenuMinigame.SetHauntTarget))]
+    public static bool Prefix(HauntMenuMinigame __instance, PlayerControl target)
+    {
+		if (target)
+		{
+            __instance.HauntTarget = target;
+            __instance.HauntingText.enabled = true;
+            __instance.NameText.text = target.Data?.GetPlayerName(PlayerOutfitType.Default);
+            __instance.SetFilterText();
+		}
+        else
+        {
+			__instance.HauntTarget = null;
+			__instance.NameText.text = "";
+			__instance.FilterText.text = "";
+			__instance.HauntingText.enabled = false;
+        }
+
+        return false;
+    }
+
     [HarmonyPatch(nameof(HauntMenuMinigame.SetFilterText)), HarmonyPrefix]
     public static bool SetFilterTextPrefix(HauntMenuMinigame __instance)
     {
@@ -15,24 +36,21 @@ public static class HauntPatches
             return false;
         }
 
-        var role = __instance.HauntTarget.GetRole();
-        var modifier = __instance.HauntTarget.GetModifier();
-        var ability = __instance.HauntTarget.GetAbility();
-        var disposition = __instance.HauntTarget.GetDisposition();
+        var handler = LayerHandler.Handlers[__instance.HauntTarget.PlayerId];
         var objectiveString = "";
         var otherString = "";
 
-        if (role)
-            objectiveString += role.Name;
+        if (handler.CurrentRole)
+            objectiveString += handler.CurrentRole.Name;
 
-        if (disposition && disposition.Type != LayerEnum.NoneDisposition)
-            objectiveString += $" {disposition.ColoredSymbol}";
+        if (handler.CurrentDisposition && handler.CurrentDisposition.Type != LayerEnum.NoneDisposition)
+            objectiveString += $" {handler.CurrentDisposition.ColoredSymbol}";
 
-        if (modifier && modifier.Type != LayerEnum.NoneModifier)
-            otherString += $" {modifier.Name}";
+        if (handler.CurrentModifier && handler.CurrentModifier.Type != LayerEnum.NoneModifier)
+            otherString += $" {handler.CurrentModifier.Name}";
 
-        if (ability && ability.Type != LayerEnum.NoneAbility)
-            otherString += $" {ability.Name}";
+        if (handler.CurrentAbility && handler.CurrentAbility.Type != LayerEnum.NoneAbility)
+            otherString += $" {handler.CurrentAbility.Name}";
 
         if (otherString.Length != 0)
             objectiveString += "\n" + otherString;
@@ -60,12 +78,15 @@ public static class HauntPatches
 
         return false;
     }
+}
 
-    [HarmonyPatch(nameof(HauntMenuMinigame.MatchesFilter))]
-    public static bool Prefix(HauntMenuMinigame __instance, PlayerControl pc, ref bool __result)
+[HarmonyPatch(typeof(HauntMenuMinigame.__c__DisplayClass21_0), nameof(HauntMenuMinigame.__c__DisplayClass21_0._ChangePick_b__1))]
+public static class FilterInlinePatch
+{
+    public static bool Prefix(HauntMenuMinigame.__c__DisplayClass21_0 __instance, PlayerControl pc, ref bool __result)
     {
         var role = pc.GetRole();
-        __result = __instance.filterMode switch
+        __result = __instance.__4__this.filterMode switch
         {
             HauntMenuMinigame.HauntFilters.Impostor => role.Faction is not (Faction.Crew or Faction.Outcast or Faction.GameMode) || role is Hunter or OKilling or Neophyte or Betrayer,
             HauntMenuMinigame.HauntFilters.Crewmate => role.Faction is Faction.Crew || role.Alignment is Alignment.Benign or Alignment.Evil or Alignment.Proselyte || role is Hunted,

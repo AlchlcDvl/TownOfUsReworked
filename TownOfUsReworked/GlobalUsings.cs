@@ -1,6 +1,8 @@
 global using AmongUs.Data;
 global using AmongUs.GameOptions;
+global using TaskInfo = NetworkedPlayerInfo.TaskInfo;
 global using TBMode = AmongUs.GameOptions.TaskBarMode;
+global using PlayerOutfit = NetworkedPlayerInfo.PlayerOutfit;
 
 global using BepInEx;
 global using BepInEx.Unity.IL2CPP;
@@ -43,7 +45,6 @@ global using TownOfUsReworked.Patches.Technical;
 global using TownOfUsReworked.Options.Attributes;
 global using TownOfUsReworked.PlayerLayers.Roles;
 global using TownOfUsReworked.Patches.BetterMaps;
-global using TownOfUsReworked.Patches.Core.Network;
 global using TownOfUsReworked.Patches.Core.GameFlow;
 global using static TownOfUsReworked.Utils.MiscUtils;
 global using static TownOfUsReworked.Data.References;
@@ -58,7 +59,6 @@ global using static TownOfUsReworked.Modules.ChatCommand;
 global using static TownOfUsReworked.Utils.CoroutineUtils;
 global using static TownOfUsReworked.Utils.GameStateUtils;
 global using static TownOfUsReworked.Managers.AssetManager;
-global using PlayerOutfit = NetworkedPlayerInfo.PlayerOutfit;
 global using static TownOfUsReworked.Utils.InteractionManager;
 global using static TownOfUsReworked.Extensions.LayerExtensions;
 global using static TownOfUsReworked.Managers.ModCompatibilityManager;

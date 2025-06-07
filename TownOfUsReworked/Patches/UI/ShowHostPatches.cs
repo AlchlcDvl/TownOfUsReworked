@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches.Core.Network;
+namespace TownOfUsReworked.Patches.UI;
 
 [HarmonyPatch(typeof(MeetingHud))]
 public static class ShowHostPatches

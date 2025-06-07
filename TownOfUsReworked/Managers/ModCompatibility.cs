@@ -147,7 +147,7 @@ public static class ModCompatibilityManager
             ChangeFloor(currentFloor);
     }
 
-    private static void MoveDeadPlayerElevator(PlayerControl player)
+    public static void MoveDeadPlayerElevator(PlayerControl player)
     {
         if (!IsSubmerged())
             return;
@@ -194,29 +194,6 @@ public static class ModCompatibilityManager
             yield return null;
 
         next();
-    }
-
-    public static void GhostRoleFix(PlayerPhysics __instance)
-    {
-        if (!IsSubmerged() || !__instance.myPlayer.Data.IsDead)
-            return;
-
-        var player = __instance.myPlayer;
-
-        if (!player.Is<IGhosty>(out var ghost) || ghost.Caught)
-            return;
-
-        if (player.AmOwner)
-            MoveDeadPlayerElevator(player);
-        else
-            player.Collider.enabled = false;
-
-        var transform = __instance.transform;
-        var position = transform.position;
-        position.z = position.y / 1000;
-
-        transform.position = position;
-        __instance.myPlayer.gameObject.layer = LayerMask.NameToLayer("Players");
     }
 
     public static void AddSubmergedComponent(this GameObject obj, string typeName)

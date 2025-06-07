@@ -195,7 +195,9 @@ public static class MainMenuPatches
     public static void LateUpdatePostfix(MainMenuManager __instance) => Logo.SetActive(!__instance.playLocalButton.isActiveAndEnabled && !__instance.creditsScreen.active &&
         !__instance.accountButtons.active);
 
-    [HarmonyPatch(nameof(MainMenuManager.ResetScreen)), HarmonyPostfix]
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(MainMenuManager.ResetScreen))]
+    [HarmonyPatch(nameof(MainMenuManager.OpenCredits))]
     public static void ResetScreenPostfix(MainMenuManager __instance)
     {
         foreach (var button in __instance.mainButtons)

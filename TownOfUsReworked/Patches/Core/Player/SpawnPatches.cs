@@ -13,6 +13,45 @@ public static class SpawnPatches
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
     public static void Postfix() => DoTheThing(meeting: true);
 
+    // Inlining fix
+    [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.Animate))]
+    public static bool Prefix(AirshipExileController __instance, ref IIEnumerator __result)
+    {
+        __result = Original(__instance).WrapToIl2Cpp();
+        return false;
+    }
+
+    private static IEnumerator Original(AirshipExileController __instance)
+    {
+        if (__instance.initData != null && __instance.initData.outfit != null)
+            PlayerMaterial.SetColors(__instance.initData.outfit.ColorId, __instance.HandSlot);
+
+        var num = __instance.Duration + 3.2f;
+        __instance.StartCoroutine(Effects.All(
+            __instance.SlowMoSlide2D(__instance.ForegroundCloud.transform, new(-1.4f, -2.41f), new(-0.4f, -2.41f), num),
+            __instance.SlowMoSlide2D(__instance.BackgroundCloud.transform, new(-0.97f, -1.043f), new(0.25f, -1.043f), num),
+            __instance.SlowMoSlide2D(__instance.Cloud1.transform, new(3f, 0.25f), new(6.5f, 0.25f), num),
+            __instance.SlowMoSlide2D(__instance.Cloud2.transform, new(-6f, 3f), new(5f, 3f), num),
+            __instance.SlowMoSlide2D(__instance.Cloud3.transform, new(-4f, -2.2f), new(4f, -2.2f), num)
+        ));
+
+        if (HudManager.InstanceExists)
+            yield return HUD().CoFadeFullScreen(UColor.black, UColor.clear, 0.2f, false);
+        else
+            yield return Effects.Wait(0.2f);
+
+        yield return Effects.Wait(0.5f);
+        yield return Effects.All(__instance.PlayerFall(), __instance.HandleText(1.75f, __instance.Duration * 0.5f));
+        yield return Effects.Wait(0.5f);
+
+        if (HudManager.InstanceExists)
+            yield return HUD().CoFadeFullScreen(UColor.clear, UColor.black, 0.2f, false);
+        else
+            yield return Effects.Wait(0.2f);
+
+        yield return __instance.WrapUpAndSpawn();
+    }
+
     private static void DoTheThing(bool intro = false, bool meeting = false)
     {
         if (intro)

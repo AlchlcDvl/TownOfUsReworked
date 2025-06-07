@@ -132,7 +132,11 @@ public sealed class AppearanceHandler : MonoBehaviour
         Player.SetHatAndVisorAlpha(Alpha);
     }
 
-    public void UpdateColor(SpriteRenderer rend) => Colors.Instance.SetRend(Current.GetPair(), rend);
+    public void UpdateColor(SpriteRenderer rend)
+    {
+        Colors.Instance.SetRend(Current.GetPair(), rend);
+        rend.SetAlpha(Alpha);
+    }
 
     [HideFromIl2Cpp]
     private CustomOutfit GetCurrent() => Current ?? Default;

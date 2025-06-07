@@ -21,7 +21,7 @@ public sealed class TestingTab : BaseTab
 
         if (Lobby() && IsLocalGame())
         {
-            if (GUILayout.Button("Spawn Bot") && GameData.Instance.PlayerCount < GameOptions.LobbySize)
+            if (GUILayout.Button("Spawn Bot") && GameData.Instance.PlayerCount < GameOptions.LobbySize.Value)
             {
                 MciUtils.CleanUpLoad();
                 MciUtils.CreatePlayerInstance();

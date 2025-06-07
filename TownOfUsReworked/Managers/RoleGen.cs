@@ -301,7 +301,7 @@ public static class RoleGenManager
         LayerEnum.Void => Options.ApocalypseHarbingerRoles.Cultist,
         LayerEnum.Gluttony => Options.ApocalypseHarbingerRoles.Cannibal,
         LayerEnum.Mayor => Options.CrewSovereignRoles.Democrat,
-        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, GameOptions.LobbySize, false, false, id),
+        LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => new(100, GameOptions.LobbySize.Value, false, false, id),
         _ => Option.GetOptions<LayerOption>().TryFinding(x => x.Layer == id, out var result) ? result.Value : new(0, 0, false, false, id)
     };
 

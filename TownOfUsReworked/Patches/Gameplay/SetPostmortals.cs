@@ -125,7 +125,6 @@ public static class SetPostmortals
         vents.Shuffle();
         var startingVent = vents.Random();
         player.RpcCustomSnapTo(startingVent.transform.position);
-        player.MyPhysics.RpcEnterVent(startingVent.Id);
     }
 
     public static readonly HashSet<byte> WillBeRevealers = [];

@@ -25,11 +25,9 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 57;
+    private const int DevBuild = 58;
 
     public const string Resources = "TownOfUsReworked.Resources.";
-
-    public static readonly Version ModVer = new(VersionS);
 
     private static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
     private static readonly string PersistentDataPath = Path.GetDirectoryName(Application.persistentDataPath);
@@ -50,19 +48,21 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static readonly Assembly Core = typeof(TownOfUsReworked).Assembly;
 
-    private static string VersionSignature => Version.Contains('+') ? Version[(Version.IndexOf('+') + 1)..] : "";
-    private static string VersionS => Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
-    private static string DevString => IsDev ? $"-dev{DevBuild}" : "";
-    private static string StreamString => IsStream ? "s" : "";
-    public static string VersionFinal => $"v{VersionS}{DevString}{StreamString}";
-    private static string VersionFull => $"v{VersionFinal}+{VersionSignature}";
+    private static readonly string VersionSignature = Version.Contains('+') ? Version[(Version.IndexOf('+') + 1)..] : "";
+    private static readonly string VersionS = Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
+    private static readonly string DevString = IsDev ? ("-dev" + DevBuild) : "";
+    private const string StreamString = IsStream ? "s" : "";
+    public static readonly string VersionFinal = $"v{VersionS}{DevString}{StreamString}";
+    private static string VersionFull => $"v{VersionFinal}+{VersionSignature}+{ModHash}";
+
+    public static readonly Version ModVer = new(VersionS);
 
     public static NormalGameOptionsV09 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV09 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
     public static IGameOptions CurrentOptions => GameOptionsManager.Instance.CurrentGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
-    public static bool DebugMode => IsDev || ClientOptions.DebugModeOn.Value;
+    public static bool DebugMode => IsDev || ClientOptions.DebugModeOn;
 
     // A bunch of config stuff to ensure value persistence
     public static ConfigEntry<string> Ip { get; private set; }
@@ -78,6 +78,8 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static TownOfUsReworked ModInstance { get; private set; }
 
     public readonly Harmony Harmony = new(Id);
+
+    public static string ModHash { get; private set; }
 
     public override void Load()
     {
@@ -155,6 +157,9 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
         if (!File.Exists(text))
             File.WriteAllText(text, "945360");
+
+        using var hasher = MD5.Create();
+        ModHash = BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(Path.Combine(ModsFolder, "Reworked.dll")))).Replace("-", "").ToLowerInvariant();
 
         SetUpConfigs();
         Harmony.PatchAll();

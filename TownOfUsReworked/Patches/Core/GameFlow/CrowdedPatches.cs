@@ -67,7 +67,7 @@ namespace TownOfUsReworked.Patches.Core.GameFlow;
 //     public static void Prefix(ref int mapId) => MapSettings.Map = (MapEnum)mapId;
 
 //     [HarmonyPatch(nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
-//     public static void Postfix(int maxPlayers) => Option.GetOption<Options.NumberOption>("LobbySize").Set(maxPlayers, false);
+//     public static void Postfix(int maxPlayers) => GameOptions.LobbySize.Set(maxPlayers, false);
 
 //     [HarmonyPatch(nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
 //     public static bool Prefix(CreateOptionsPicker __instance, IGameOptions opts)

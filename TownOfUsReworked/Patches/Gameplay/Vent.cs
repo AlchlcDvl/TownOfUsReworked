@@ -1,3 +1,5 @@
+using AmongUs.InnerNet.GameDataMessages;
+
 namespace TownOfUsReworked.Patches.Gameplay;
 
 [HarmonyPatch(typeof(Vent))]
@@ -148,12 +150,19 @@ public static class GetCorrectResult
     }
 }
 
-[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.CoEnterVent))]
+[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcEnterVent))]
 public static class VanillaVentWalkToFix
 {
-    public static bool Prefix(PlayerPhysics __instance, int id, ref IIEnumerator __result)
+    public static bool Prefix(PlayerPhysics __instance, int ventId)
     {
-        __result = CoEnterVent(__instance, id).WrapToIl2Cpp();
+        if (AmongUsClient.Instance.AmClient)
+        {
+            __instance.StopAllCoroutines();
+            __instance.StartCoroutine(CoEnterVent(__instance, ventId));
+        }
+
+        var rpcEnterVentMessage = new RpcEnterVentMessage(__instance.NetId, ventId);
+        AmongUsClient.Instance.LateBroadcastReliableMessage(rpcEnterVentMessage.Cast<IGameDataMessage>());
         return false;
     }
 

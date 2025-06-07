@@ -285,9 +285,11 @@ public static class OnGameEndPatches
         }
     }
 
-    [HarmonyPatch(typeof(EndGameNavigation), nameof(EndGameNavigation.ShowDefaultNavigation))]
+    [HarmonyPatch(typeof(EndGameNavigation))]
     public static class AutoPlayAgainPatch
     {
+        [HarmonyPatch(nameof(EndGameNavigation.ShowDefaultNavigation))]
+        [HarmonyPatch(nameof(EndGameNavigation.ShowProgression))]
         public static void Postfix(EndGameNavigation __instance)
         {
             if (ClientOptions.AutoPlayAgain)

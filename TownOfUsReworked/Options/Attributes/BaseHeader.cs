@@ -13,6 +13,7 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu) : OptionAttribut
     {
         var header = SetUpOption();
         header.ClientOnly = ClientOnly;
+        header.All = All;
         header.SetTypeAndOptions(type);
     }
 }

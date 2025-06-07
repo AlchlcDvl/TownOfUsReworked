@@ -1,13 +1,13 @@
 namespace TownOfUsReworked.Options.Settings;
 
-public sealed class StringOption<T>(T[] ignore, T defaultValue = default) : Option<T>(CustomOptionType.String, defaultValue), IStringOption where T : struct, Enum
+public sealed class StringOption<T>(T[] ignore = null, T[] include = null, T defaultValue = default) : Option<T>(CustomOptionType.String, defaultValue), IStringOption where T : struct, Enum
 {
-    private T[] Values { get; } = [.. Enum.GetValues<T>().Except(ignore)];
+    private T[] Values { get; } = [.. (include ?? Enum.GetValues<T>()).Except(ignore ?? [])];
     private int Index { get; set; }
 
     private void Change(bool incrementing)
     {
-        Index = CycleInt(Values.Length, 0, Index, incrementing);
+        Index = CycleInt(Values.Length - 1, 0, Index, incrementing);
         Set(Values[Index]);
     }
 

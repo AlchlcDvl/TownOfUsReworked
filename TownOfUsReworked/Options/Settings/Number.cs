@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Options.Settings;
 
 // May I know who the fuck thought it was a good idea not to let int be cast to float explicitly??? Implicit casting bloodily works, but explicit doesn't seem to
 // AD from a couple of weeks later: Yeah, fuck this, imma just brute force it instead
-public sealed class ReworkedNumberOption(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false, string customFormat = null, float defaultValue =
-    0f) : Option<Number>(CustomOptionType.Number, defaultValue)
+public sealed class ReworkedNumberOption(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false, string customFormat = null, float
+    defaultValue = 0f) : Option<Number>(CustomOptionType.Number, defaultValue)
 {
     private float Min { get; } = min;
     private float Max { get; } = max;

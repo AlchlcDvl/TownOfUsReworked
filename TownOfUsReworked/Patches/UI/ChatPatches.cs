@@ -173,7 +173,9 @@ public static class ChatPatches
 
     private static readonly Dictionary<byte, SpriteRenderer> Notifs = [];
 
-    [HarmonyPatch(nameof(ChatController.SendChat)), HarmonyPrefix]
+    [HarmonyPrefix]
+    [HarmonyPatch(nameof(ChatController.SendChat))]
+    [HarmonyPatch(nameof(ChatController.OnFreeChatSubmit))]
     public static bool SendChatPrefix(ChatController __instance)
     {
         var text = __instance.freeChatField.Text.ToLower();

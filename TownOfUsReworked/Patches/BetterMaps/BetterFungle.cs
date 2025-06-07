@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches.BetterMaps;
 /// <summary>
 /// Provides enhanced functionality and customization options for the Fungle map's sabotage systems.
 /// </summary>
-[HeaderOption(MultiMenu.Main), HarmonyPatch(typeof(MushroomMixupSabotageSystem)), Sorted(0)]
+[HeaderOption(MultiMenu.Main), HarmonyPatch(typeof(MushroomMixupSabotageSystem), nameof(MushroomMixupSabotageSystem.UpdateSystem)), Sorted(0)]
 public static class BetterFungle
 {
     /// <summary>
@@ -34,7 +34,6 @@ public static class BetterFungle
     [NumberOption(4f, 20f, 1f, Format.Time)]
     private static Number FungleMixupTimer = 8;
 
-    [HarmonyPatch(nameof(MushroomMixupSabotageSystem.UpdateSystem))]
     public static bool Prefix(MushroomMixupSabotageSystem __instance, MessageReader msgReader)
     {
         // Skip modifications if disabled or not on the Fungle map (map ID 5)

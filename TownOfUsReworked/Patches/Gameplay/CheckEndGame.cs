@@ -221,7 +221,7 @@ public static class CheckEndGame
         if (ship?.Systems is null)
             return false;
 
-        foreach (var sab in ship.Systems.values)
+        foreach (var sab in ship.Systems.Values)
         {
             if (sab.TryCast<LifeSuppSystemType>(out var life) && life.Countdown <= 0f)
                 return true;
