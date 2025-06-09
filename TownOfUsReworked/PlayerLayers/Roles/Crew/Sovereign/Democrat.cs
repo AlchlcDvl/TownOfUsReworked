@@ -66,7 +66,7 @@ public sealed class Democrat : Sovereign
 
     private bool Exception(PlayerControl player) => Campaigned.Contains(player.PlayerId);
 
-    public override void ReadRPC(NetData reader) => Campaigned.Add(reader.ReadByte());
+    public override void ReadRPC(RpcReader reader) => Campaigned.Add(reader.ReadByte());
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

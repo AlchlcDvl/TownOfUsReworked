@@ -98,7 +98,7 @@ public sealed class Concealer : Syndicate
 
     private bool EndEffect() => (ConcealedPlayer && ConcealedPlayer.HasDied()) || (!HoldsDrive && Dead) || ClickedAgain;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         if (!HoldsDrive)
             ConcealedPlayer = reader.ReadPlayer();

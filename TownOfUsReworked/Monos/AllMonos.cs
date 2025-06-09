@@ -50,6 +50,7 @@ public static class AllMonos
 
         // Misc
         ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
+        ClassInjector.RegisterTypeInIl2Cpp<ReworkedMessage>();
     }
 
     /// <summary>

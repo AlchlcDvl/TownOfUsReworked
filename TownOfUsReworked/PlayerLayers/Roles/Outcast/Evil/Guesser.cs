@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Guesser)]
-public sealed class Guesser : Evil, IGuesser
+public sealed class Guesser : Evil, IGuesser, ITargeter
 {
     [ToggleOption]
     public static bool GuesserCanPickTargets = false;
@@ -428,5 +428,5 @@ public sealed class Guesser : Evil, IGuesser
         GuessingMenu.Close();
     }
 
-    public override void ReadRPC(NetData reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
+    public override void ReadRPC(RpcReader reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
 }

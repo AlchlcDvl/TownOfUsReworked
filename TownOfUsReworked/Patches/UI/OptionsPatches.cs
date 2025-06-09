@@ -610,11 +610,14 @@ public static class SettingsPatches
                 return;
 
             SendOptionRPC(targetClientId: player.OwnerId);
-            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
-            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.SyncSummary, ReadDiskText("Summary", TownOfUsReworked.Other)); // TODO: Serialise this better
+            var writer = CreateWriter(CustomRPC.Misc, MiscRPC.PlayerJoinSync, MapSettings.Map, Summary);
+            var cache = CachedFirstDead is not null;
+            writer.Write(cache);
 
-            if (CachedFirstDead is not null)
-                CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
+            if (cache)
+                writer.Write(CachedFirstDead);
+
+            writer.Send(player.OwnerId);
         }
     }
 

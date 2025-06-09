@@ -60,7 +60,7 @@ public sealed class Amnesiac : Outcast
         Remember(player);
     }
 
-    public override void ReadRPC(NetData reader) => Remember(reader.ReadPlayer());
+    public override void ReadRPC(RpcReader reader) => Remember(reader.ReadPlayer());
 
     private void Remember(PlayerControl other)
     {

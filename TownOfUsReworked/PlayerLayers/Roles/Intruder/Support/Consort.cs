@@ -84,7 +84,7 @@ public sealed class Consort : Intruder, IBlocker
 
     public bool EndEffect() => (BlockTarget && BlockTarget.HasDied()) || Dead;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         BlockTarget = reader.ReadPlayer();
 

@@ -74,7 +74,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var id = reader.ReadByte();
         Spread(Player, PlayerById(id));

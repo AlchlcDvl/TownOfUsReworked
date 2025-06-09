@@ -1,14 +1,11 @@
-namespace TownOfUsReworked.Options;
+namespace TownOfUsReworked;
 
-/// <summary>
-/// The static class to generate data for various mod used objects.
-/// </summary>
-public static class Generate
+public static partial class Generate
 {
     /// <summary>
     /// Called to generate the necessary data for game options. This takes place only once and during game initialisation.
     /// </summary>
-    public static void GenerateOptions()
+    private static void GenerateOptions()
     {
         // Might lead to initial performance issues trying to look through like, 200+ types
         // Could it be improved? Probably

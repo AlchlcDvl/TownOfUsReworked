@@ -60,8 +60,6 @@ public sealed class StringOption<T>(T[] ignore = null, T[] include = null, T def
 
     public override bool IsId(string id) => base.IsId(id) || Values.Any(x => id == $"CustomOption.{TargetType.Name}.{x}".ToLower());
 
-    public override void ReadValueRpc(NetData reader) => Set(reader.Read<T>(), false);
-
     protected override void ReadValueString(string value) => Set(Enum.Parse<T>(value), false);
 
     string IStringOption.ValueString() => ValueString();

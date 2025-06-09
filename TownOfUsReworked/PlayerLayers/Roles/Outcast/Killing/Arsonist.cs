@@ -125,7 +125,7 @@ public sealed class Arsonist : OKilling, IDouser
     private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(Faction) && Faction is not
         (Faction.Crew or Faction.Outcast)) || Player.IsLinkedTo(player);
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var arsoAction = reader.Read<DouseActionsRPC>();
 

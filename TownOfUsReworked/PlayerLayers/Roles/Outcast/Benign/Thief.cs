@@ -137,7 +137,7 @@ public sealed class Thief : Outcast, IGuesser
         GuessMenu.GenButtons(__instance, ThiefCanGuess);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var thiefAction = reader.Read<ThiefActionsRPC>();
 

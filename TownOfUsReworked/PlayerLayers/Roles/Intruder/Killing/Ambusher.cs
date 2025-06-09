@@ -60,5 +60,5 @@ public sealed class Ambusher : Intruder
 
     private bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 
-    public override void ReadRPC(NetData reader) => AmbushedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(RpcReader reader) => AmbushedPlayer = reader.ReadPlayer();
 }

@@ -32,7 +32,7 @@ public sealed class Swapper : Ability
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Swap1, Swap2);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         Swap1 = reader.ReadVoteArea();
         Swap2 = reader.ReadVoteArea();

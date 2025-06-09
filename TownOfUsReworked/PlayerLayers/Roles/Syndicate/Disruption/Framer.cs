@@ -71,7 +71,7 @@ public sealed class Framer : Syndicate
 
     private bool Usable2() => HoldsDrive;
 
-    public override void ReadRPC(NetData reader) => Framed.Add(reader.ReadByte());
+    public override void ReadRPC(RpcReader reader) => Framed.Add(reader.ReadByte());
 
     protected override void OnTrueDeath(bool value) => Framed.Clear();
 }

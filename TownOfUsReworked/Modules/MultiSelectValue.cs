@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Modules;
 /// </summary>
 /// <typeparam name="T">The enum type that this collection will store.</typeparam>
 [Serializable]
-public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable
+public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable, INetDeserializable
     where T : struct, Enum
 {
     /// <summary>
@@ -19,7 +19,12 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// Initialises a new instance of <see cref="MultiSelectValue{T}"/> with the provided values.
     /// </summary>
     /// <param name="values">One or more enum values to initialize the collection with.</param>
-    public MultiSelectValue(params T[] values) => this.values.AddRange(values);
+    public MultiSelectValue(params T[] values) => this.values.AddRange(values ?? []);
+
+    /// <summary>
+    /// Initialises a new instance of <see cref="MultiSelectValue{T}"/>.
+    /// </summary>
+    public MultiSelectValue() {}
 
     /// <inheritdoc/>
     public int Count => values.Count;
@@ -28,9 +33,6 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     public bool IsReadOnly => false;
 
     private bool Disposed { get; set; }
-
-    /// <inheritdoc/>
-    public CustomTypeCode TypeCode => CustomTypeCode.MultiSelectValue;
 
     ~MultiSelectValue() => InternalDispose();
 
@@ -132,7 +134,16 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     }
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => [ (byte)Count, .. values.Select(x => (byte)Convert.ChangeType(x, typeof(byte))) ]; // All enums within the code base use byte
+    public byte[] GetBytes() => [ (byte)Count, .. values.Select(x => (byte)Convert.ChangeType(x, typeof(byte))) ]; // All enums within the code base use byte
+
+    /// <inheritdoc/>
+    public void FromBytes(RpcReader reader)
+    {
+        var count = reader.ReadByte();
+
+        while (count-- > 0)
+            values.Add((T)Enum.ToObject(typeof(T), reader.ReadByte()));
+    }
 
     /// <inheritdoc/>
     public void CopyTo(T[] array, int arrayIndex) => values.CopyTo(array, arrayIndex);

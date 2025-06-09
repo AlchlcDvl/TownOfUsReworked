@@ -166,7 +166,7 @@ public sealed class Necromancer : Neophyte, IReviver
 
     private bool EndEffect() => Dead;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         ParentId = reader.ReadByte();
 

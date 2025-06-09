@@ -87,5 +87,5 @@ public sealed class Enforcer : Intruder
 
     private bool EndEffect() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
 
-    public override void ReadRPC(NetData reader) => BombedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(RpcReader reader) => BombedPlayer = reader.ReadPlayer();
 }

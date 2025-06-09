@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.GuardianAngel)]
-public sealed class GuardianAngel : Outcast
+public sealed class GuardianAngel : Outcast, ITargeter
 {
     [ToggleOption]
     public static bool GuardianAngelCanPickTargets = false;

@@ -92,7 +92,7 @@ public abstract class Assassin : Ability, IGuesser
         GuessingMenu.Close();
     }
 
-    public override void ReadRPC(NetData reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
+    public override void ReadRPC(RpcReader reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
 
     private void SetLists()
     {

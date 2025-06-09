@@ -534,8 +534,6 @@ public static class RoleGenManager
 
         Assassin.RemainingKills = Assassin.AssassinKills == 0 ? 10000 : Assassin.AssassinKills;
 
-        OnGameEndPatches.Disconnected.Clear();
-
         CachedFirstDead = FirstDead;
         FirstDead = null;
 

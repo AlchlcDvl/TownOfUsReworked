@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.BountyHunter)]
-public sealed class BountyHunter : Evil
+public sealed class BountyHunter : Evil, ITargeter
 {
     [ToggleOption]
     public static bool BountyHunterCanPickTargets = false;
@@ -221,7 +221,7 @@ public sealed class BountyHunter : Evil
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RequestingPlayer);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var request = reader.ReadPlayer();
         RequestingPlayer = request;

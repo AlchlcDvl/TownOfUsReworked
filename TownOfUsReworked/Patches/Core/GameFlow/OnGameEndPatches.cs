@@ -5,8 +5,6 @@ namespace TownOfUsReworked.Patches.Core.GameFlow;
 [HarmonyPatch]
 public static class OnGameEndPatches
 {
-    private static readonly List<SummaryInfo> PlayerRoles = [];
-    public static readonly List<SummaryInfo> Disconnected = [];
     private static readonly Dictionary<string, IEnumerable<PlayerLayer>> Winners = [];
 
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
@@ -15,7 +13,6 @@ public static class OnGameEndPatches
         public static void Postfix()
         {
             var players = AllPlayers();
-            PlayerRoles.Clear();
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
             players.Do(x => AddSummaryInfo(x));
@@ -194,80 +191,53 @@ public static class OnGameEndPatches
             roleSummary.transform.localScale = new(1f, 1f, 1f);
 
             var roleSummaryText = new StringBuilder();
-            var roleSummaryCache = new StringBuilder();
             var winnersText = new StringBuilder();
-            var winnersCache = new StringBuilder();
             var losersText = new StringBuilder();
-            var losersCache = new StringBuilder();
             var discText = new StringBuilder();
-            var discCache = new StringBuilder();
 
             var winnerCount = 0;
             var loserCount = 0;
 
             roleSummaryText.AppendLine("<size=125%><u><b>Game Summary</b></u>:</size>");
             roleSummaryText.AppendLine();
-            roleSummaryCache.AppendLine("Game Summary:");
-            roleSummaryCache.AppendLine();
             winnersText.AppendLine("<size=105%><#00FF00FF><b>◈ - Winners - ◈</b></color></size>");
             losersText.AppendLine("<size=105%><#FF0000FF><b>◆ - Losers - ◆</b></color></size>");
             discText.AppendLine("<size=105%><#0000FFFF><b>◇ - Disconnected - ◇</b></color></size>");
-            winnersCache.AppendLine("◈ - Winners - ◈");
-            losersCache.AppendLine("◆ - Losers - ◆");
-            discCache.AppendLine("◇ - Disconnected - ◇");
+            var disconnected = Summary.Modules.Where(x => x.Disconnected);
 
-            foreach (var data in PlayerRoles)
+            foreach (var data in Summary.Modules.Except(disconnected))
             {
-                var dataString = $"<size=75%>{data.PlayerName} - {data.History}</size>";
-                var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
+                var dataString = $"<size=75%>{data.PlayerName} - {data.Summarise().Summary}</size>";
 
                 if (data.PlayerName.IsWinner())
                 {
                     winnersText.AppendLine(dataString);
-                    winnersCache.AppendLine(dataCache);
                     winnerCount++;
                 }
                 else
                 {
                     losersText.AppendLine(dataString);
-                    losersCache.AppendLine(dataCache);
                     loserCount++;
                 }
             }
 
-            foreach (var data in Disconnected)
-            {
-                var dataString = $"<size=75%>{data.PlayerName} - {data.History}</size>";
-                var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
-                discText.AppendLine(dataString);
-                discCache.AppendLine(dataCache);
-            }
+            foreach (var data in disconnected)
+                discText.AppendLine($"<size=75%>{data.PlayerName} - {data.Summarise().Summary}</size>");
 
             if (winnerCount == 0)
-            {
                 winnersText.AppendLine("<size=75%>No One Won</size>");
-                winnersCache.AppendLine("No One Won");
-            }
 
             if (loserCount == 0)
-            {
                 losersText.AppendLine("<size=75%>No One Lost</size>");
-                losersCache.AppendLine("No One Lost");
-            }
 
             roleSummaryText.Append(winnersText);
             roleSummaryText.AppendLine();
             roleSummaryText.Append(losersText);
-            roleSummaryCache.Append(winnersCache);
-            roleSummaryCache.AppendLine();
-            roleSummaryCache.Append(losersCache);
 
-            if (Disconnected.Any())
+            if (disconnected.Any())
             {
                 roleSummaryText.AppendLine();
                 roleSummaryText.Append(discText);
-                roleSummaryCache.AppendLine();
-                roleSummaryCache.Append(discCache);
             }
 
             var roleSummaryTextMesh = roleSummary.GetComponent<TMP_Text>();
@@ -278,9 +248,7 @@ public static class OnGameEndPatches
             roleSummaryTextMesh.fontSize = 1.5f;
             roleSummaryTextMesh.text = $"{roleSummaryText}";
             roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
-            SaveText("Summary", $"{roleSummaryCache}", TownOfUsReworked.Other);
-            PlayerRoles.Clear();
-            Disconnected.Clear();
+            File.WriteAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary"), Summary.GetBytes());
             return false;
         }
     }
@@ -299,123 +267,13 @@ public static class OnGameEndPatches
 
     public static void AddSummaryInfo(PlayerControl player, bool disconnected = false)
     {
-        if (!player || !player.Data || Disconnected.Any(x => x.PlayerName == player.name) || PlayerRoles.Any(x => x.PlayerName == player.name))
+        if (Summary.Modules.Any(x => x.PlayerName == player?.Data?.PlayerName))
             return;
 
-        var summary = "";
-        var cache = "";
-
-        var handler = LayerHandler.Handlers[player.PlayerId];
-        var role = handler.CurrentRole;
-        var modifier = handler.CurrentModifier;
-        var ability = handler.CurrentAbility;
-        var disposition = handler.CurrentDisposition;
-
-        if (role!.Type != LayerEnum.NoneRole)
-        {
-            foreach (var (i, (role2, faction)) in handler.History.Indexed())
-            {
-                var part = TranslationManager.Translate($"Layer.{role2}");
-                var part2 = TranslationManager.Translate($"Faction.{faction}");
-                cache += $"{part} ({part2}) → ";
-
-                if (i != handler.History.Count - 1 || !LayerDictionary.TryGetValue(role2, out var entry))
-                    continue;
-
-                if (FactionDictionary.TryGetValue(faction, out var entry2))
-                    part2 = $"<#{entry2.Color.ToHtmlStringRGBA()}>{part2}</color>";
-
-                summary += $"<#{entry.Color.ToHtmlStringRGBA()}>{part}</color> ({part2}) → ";
-            }
-
-            summary += $"{role.ColorString}{role.Name}</color> ({role.FactionColorString}{role.FactionName}</color>)";
-            cache += $"{role.Name} ({role.FactionName})";
-        }
-
-        if (disposition!.Type != LayerEnum.NoneDisposition)
-        {
-            summary += $" {disposition.ColoredSymbol}";
-            cache += $" {disposition.Symbol}";
-        }
-
-        if (modifier!.Type != LayerEnum.NoneModifier)
-        {
-            summary += $" ({modifier.ColorString}{modifier.Name}</color>)";
-            cache += $" ({modifier.Name})";
-        }
-
-        if (ability!.Type != LayerEnum.NoneAbility)
-        {
-            summary += $" [{ability.ColorString}{ability.Name}</color>]";
-            cache += $" [{ability.Name}]";
-        }
-
-        if (player.IsGaTarget())
-        {
-            summary += " <#FFFFFFFF>★</color>";
-            cache += " ★";
-        }
-
-        if (player.IsExeTarget())
-        {
-            summary += " <#CCCCCCFF>§</color>";
-            cache += " §";
-        }
-
-        if (player.IsBhTarget())
-        {
-            summary += " <#B51E39FF>Θ</color>";
-            cache += " Θ";
-        }
-
-        if (player.IsGuessTarget())
-        {
-            summary += " <#EEE5BEFF>π</color>";
-            cache += " π";
-        }
-
-        if (player == Syndicate.DriveHolder)
-        {
-            summary += " <#008000FF>Δ</color>";
-            cache += " Δ";
-        }
-
-        if (player.CanDoTasks() && role)
-        {
-            if (!role.TasksDone)
-            {
-                summary += $" <{role.TasksCompleted}/{role.TotalTasks}>";
-                cache += $" <{role.TasksCompleted}/{role.TotalTasks}>";
-            }
-            else
-            {
-                summary += $" {(char)0x25A0}";
-                cache += $" {(char)0x25A0}";
-            }
-        }
-
-        if (!disconnected)
-        {
-            summary += player.DeathReason();
-            cache += player.DeathReason();
-            PlayerRoles.Add(new(player.name, summary, cache));
-        }
-        else
-            Disconnected.Add(new(player.name, summary, cache));
+        var module = new SummaryInfoModule();
+        module.PopulateFromPlayer(player);
+        Summary.Modules.Add(module);
     }
 
     private static bool IsWinner(this string playerName) => EndGameResult.CachedWinners.Any(x => x.PlayerName == playerName);
-
-    private static string DeathReason(this PlayerControl player)
-    {
-        if (!player || !LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
-            return "";
-
-        var die = handler.DeathReason is not DeathReasonEnum.Alive ? $" | {handler.DeathReason}" : "";
-
-        if (handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(handler.KilledBy))
-            die += handler.KilledBy;
-
-        return die;
-    }
 }

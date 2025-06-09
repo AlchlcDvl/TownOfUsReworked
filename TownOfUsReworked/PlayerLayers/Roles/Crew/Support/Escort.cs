@@ -56,7 +56,7 @@ public sealed class Escort : Crew, IBlocker
             BlockButton.StartCooldown(cooldown);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         BlockTarget = reader.ReadPlayer();
 

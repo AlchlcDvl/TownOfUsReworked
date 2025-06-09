@@ -93,7 +93,7 @@ public sealed class Dictator : Sovereign
 
     private bool Usable() => !RoundOne && !Tribunal;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var dictAction = reader.Read<DictActionsRPC>();
 

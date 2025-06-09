@@ -107,7 +107,7 @@ public sealed class Cryomaniac : OKilling, IDouser
 
     private bool Usable() => LastKiller;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var cryoAction = reader.Read<DouseActionsRPC>();
 

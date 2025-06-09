@@ -31,6 +31,7 @@ public static class References
     public static string CachedFirstDead { get; set; }
     public static string MostRecentKiller { get; set; }
     public static WinLose WinState { get; set; } = WinLose.None;
+    public static SummaryInfo Summary;
     public static bool HiddenBlock
     {
         get;

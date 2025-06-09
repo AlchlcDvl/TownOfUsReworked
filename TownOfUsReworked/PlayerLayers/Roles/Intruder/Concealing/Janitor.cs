@@ -86,7 +86,7 @@ public sealed class Janitor : Intruder
 
     private float Difference() => Last(Faction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
-    public override void ReadRPC(NetData reader) => reader.ReadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
+    public override void ReadRPC(RpcReader reader) => reader.ReadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
 
     protected override void Kill(PlayerControl target)
     {

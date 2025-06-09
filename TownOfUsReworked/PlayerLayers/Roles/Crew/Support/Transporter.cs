@@ -213,7 +213,7 @@ public sealed class Transporter : Crew, IMover
         }
     }
 
-    public override void ReadRPC(NetData reader) => Coroutines.Start(TransportPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
+    public override void ReadRPC(RpcReader reader) => Coroutines.Start(TransportPlayers(reader.ReadPlayer(), reader.ReadPlayer(), this));
 
     public override void UpdateHud(HudManager __instance)
     {

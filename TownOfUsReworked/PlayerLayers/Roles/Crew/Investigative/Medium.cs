@@ -112,7 +112,7 @@ public sealed class Medium : Crew, IShaman
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var playerid2 = reader.ReadByte();
         MediatedPlayers.Add(playerid2);

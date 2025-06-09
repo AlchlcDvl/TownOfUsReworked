@@ -61,7 +61,7 @@ public sealed class Teleporter : Intruder, IMover
             MarkButton.StartCooldown();
     }
 
-    public override void ReadRPC(NetData reader) => Coroutines.Start(TeleportPlayer(reader.ReadVector2(), this));
+    public override void ReadRPC(RpcReader reader) => Coroutines.Start(TeleportPlayer(reader.ReadVector2(), this));
 
     private bool Condition1() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
         Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != (Vector2)Player.transform.position;

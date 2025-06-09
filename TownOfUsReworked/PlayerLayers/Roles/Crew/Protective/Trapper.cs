@@ -91,7 +91,7 @@ public sealed class Trapper : Crew, ITrapper
         Trapped.Remove(trapped.PlayerId);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var trapAction = reader.Read<TrapperActionsRPC>();
 

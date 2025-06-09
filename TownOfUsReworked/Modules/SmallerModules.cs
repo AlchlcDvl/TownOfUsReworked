@@ -2,8 +2,6 @@
 
 namespace TownOfUsReworked.Modules;
 
-public record SummaryInfo(string PlayerName, string History, string CachedHistory);
-
 public record struct PointInTime(Vector3 Position);
 
 public sealed class GitHubApiObject
@@ -25,16 +23,13 @@ public sealed class GitHubApiAsset
 }
 
 [Serializable]
-public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable
+public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable, INetDeserializable
 {
     public byte Chance { get; set; } = chance;
     public byte Count { get; set; } = count;
     public bool Unique { get; set; } = unique;
     public bool Active { get; set; } = active;
     public LayerEnum ID { get; set; } = layer;
-
-    /// <inheritdoc/>
-    public readonly CustomTypeCode TypeCode => CustomTypeCode.RoleOptionData;
 
     public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 
@@ -43,7 +38,16 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsList() && ListEntryOption.IsAdded(ID.CastToSlot()))) &&
         ID.IsValid(relatedCount);
 
-    public readonly byte[] ToBytes() => [ Chance, Count, (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
+    public readonly byte[] GetBytes() => [ Chance, Count, (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
+
+    public void FromBytes(RpcReader reader)
+    {
+        Chance = reader.ReadByte();
+        Count = reader.ReadByte();
+        Unique = reader.ReadBool();
+        Active = reader.ReadBool();
+        ID = (LayerEnum)reader.ReadByte();
+    }
 
     public static RoleOptionData Parse(string input)
     {
@@ -52,9 +56,14 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     }
 }
 
-public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer)
+public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer, string Symbol = null)
 {
     public string Name => TranslationManager.Translate($"Layer.{Layer}");
+}
+
+public readonly record struct FactionDictionaryEntry(Faction Faction, UColor Color)
+{
+    public string Name => TranslationManager.Translate($"Faction.{Faction}");
 }
 
 public sealed class Achievement(string name, bool unlocked = false, bool hidden = false, bool eog = false, string icon = "Placeholder")
@@ -64,11 +73,6 @@ public sealed class Achievement(string name, bool unlocked = false, bool hidden 
     public bool Hidden { get; } = hidden;
     public bool EndOfGame { get; } = eog;
     public bool Unlocked { get; set; } = unlocked;
-}
-
-public readonly record struct FactionDictionaryEntry(Faction Faction, UColor Color)
-{
-    public string Name => TranslationManager.Translate($"Faction.{Faction}");
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]

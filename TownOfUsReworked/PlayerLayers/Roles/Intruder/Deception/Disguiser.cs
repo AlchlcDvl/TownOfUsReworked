@@ -103,7 +103,7 @@ public sealed class Disguiser : Intruder
 
     private bool EndEffect() => (DisguisedPlayer && DisguisedPlayer.HasDied()) || Dead || ClickedAgain;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         MeasuredPlayer = reader.ReadPlayer();
         DisguisedPlayer = reader.ReadPlayer();

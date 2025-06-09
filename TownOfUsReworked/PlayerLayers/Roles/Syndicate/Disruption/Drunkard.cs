@@ -86,7 +86,7 @@ public sealed class Drunkard : Syndicate
         Message("Removed a target");
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         if (!HoldsDrive)
             ConfusedPlayer = reader.ReadPlayer();

@@ -46,7 +46,7 @@ public sealed class Miner : Intruder
 
     public static string Label() => MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT";
 
-    public override void ReadRPC(NetData reader) => Vents.Add(SpawnVent(Vents, reader.ReadVector2(), Player.transform.position.z));
+    public override void ReadRPC(RpcReader reader) => Vents.Add(SpawnVent(Vents, reader.ReadVector2(), Player.transform.position.z));
 
     private static Vent SpawnVent(List<Vent> vents, Vector2 position, float zAxis)
     {

@@ -29,7 +29,5 @@ public sealed class ReworkedToggleOption(bool defaultValue = false) : Option<boo
 
     public override void Update() => Setting.Cast<ToggleOption>().CheckMark.enabled = Value;
 
-    public override void ReadValueRpc(NetData reader) => Set(reader.ReadBool(), false);
-
     protected override void ReadValueString(string value) => Set(bool.Parse(value), false);
 }

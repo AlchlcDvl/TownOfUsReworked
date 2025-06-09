@@ -54,7 +54,7 @@ public sealed class Medic : Crew, IShielder
 
     private bool Usable() => !ShieldBroken;
 
-    public override void ReadRPC(NetData reader) => ShieldedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(RpcReader reader) => ShieldedPlayer = reader.ReadPlayer();
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {

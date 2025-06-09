@@ -62,6 +62,7 @@ public static class SpawnPatches
             KillCounts.Clear();
             MostRecentKiller = null;
             Debugging.Instance.SelectedTab = Debugging.Instance.Tabs[1];
+            Summary = new();
         }
 
         Chat()?.SetVisible(LocalPlayer.CanChat());

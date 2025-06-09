@@ -51,5 +51,5 @@ public sealed class Godfather : Intruder
 
     private bool Usable() => !HasDeclared;
 
-    public override void ReadRPC(NetData reader) => Declare(reader.ReadPlayer());
+    public override void ReadRPC(RpcReader reader) => Declare(reader.ReadPlayer());
 }

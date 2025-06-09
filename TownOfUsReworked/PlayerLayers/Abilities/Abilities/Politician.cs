@@ -88,7 +88,7 @@ public sealed class Politician : Ability
         UpdateButton(__instance);
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var polAction = reader.Read<PoliticianActionsRPC>();
 

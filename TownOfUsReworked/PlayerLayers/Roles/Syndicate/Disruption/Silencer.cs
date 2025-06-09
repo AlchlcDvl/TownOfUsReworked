@@ -60,5 +60,5 @@ public sealed class Silencer : Syndicate, IIntimidator
 
     private bool Exception1(PlayerControl player) => player == Target || (!SilenceMates && player.Is(Faction) && Faction.IsFactionedEvil());
 
-    public override void ReadRPC(NetData reader) => Target = reader.ReadPlayer();
+    public override void ReadRPC(RpcReader reader) => Target = reader.ReadPlayer();
 }

@@ -73,10 +73,6 @@ public sealed class ReworkedNumberOption(float min, float max, float increment, 
         viewSettingsInfoPanel.disabledBackground.gameObject.SetActive(false);
     }
 
-    public override void ReadValueRpc(NetData reader) => Set(reader.ReadFloat());
-
-    public override void WriteValueRpc(NetData writer) => writer.Write(Value.Value);
-
     protected override void ReadValueString(string value) => Set(float.Parse(value), false);
 
     public bool IsValid(string value)

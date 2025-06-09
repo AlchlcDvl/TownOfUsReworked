@@ -147,7 +147,7 @@ public sealed class Shapeshifter : Syndicate
 
     private void OnClickedAgain() => ClickedAgain = true;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         if (HoldsDrive)
             return;

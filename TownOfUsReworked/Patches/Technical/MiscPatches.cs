@@ -663,13 +663,19 @@ public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
 public static class RPCHandling
 {
-    public static void Postfix(byte callId, MessageReader reader)
+    public static bool Prefix(byte callId, MessageReader reader)
     {
         if (callId != CustomRPCCallID)
-            return;
+            return true;
 
-        using var data = new NetData(reader.ReadBytes(reader.ReadUInt16()));
-        HandleRpc(data);
+        var targetClientId = -1;
+
+        if (reader.ReadBoolean())
+            targetClientId = reader.ReadPackedInt32();
+
+        using var data = reader.Deserialize<RpcReader>();
+        HandleRpc(data, targetClientId);
+        return false;
     }
 }
 

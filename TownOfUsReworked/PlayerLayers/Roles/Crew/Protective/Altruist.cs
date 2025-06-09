@@ -109,7 +109,7 @@ public sealed class Altruist : Crew, IReviver
         ReviveButton.Uses += PassiveAltManaGain;
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         ParentId = reader.ReadByte();
 

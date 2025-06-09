@@ -312,7 +312,7 @@ public static class CustomStatsManager
         return (T)(object)reader.ReadInt32();
     }
 
-    private static void Write(this BinaryWriter writer, Enum enumVal) => writer.Write(NetData.ToBytes(enumVal));
+    private static void Write(this BinaryWriter writer, Enum enumVal) => writer.Write([.. RpcWriter.GetBytes(enumVal, false)]);
 
     private static void Write<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
     {

@@ -221,25 +221,25 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     //     }
     // }
 
-    // private T InjectAndReturn(string value, dynamic index)
-    // {
-    //     lock (Lock)
-    //     {
-    //         if (NamedValues.ContainsKey(value))
-    //             throw new ArgumentException($"{value} has already been injected. {Diagnostic(index)}");
-    //
-    //         if (IndexedValues.ContainsKey(index))
-    //             throw new ArgumentException($"{index} has already been injected. {Diagnostic(index)}");
-    //
-    //         if (index < Min || index > Max)
-    //             throw new OverflowException($"Overflow for Type {Type.Name} detected");
-    //
-    //         EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
-    //         var result = (T)Enum.ToObject(Type, index);
-    //         InsertValue(result, value, index);
-    //         return result;
-    //     }
-    // }
+    public T InjectAndReturn(string value, dynamic index)
+    {
+        lock (Lock)
+        {
+            if (NamedValues.ContainsKey(value))
+                throw new ArgumentException($"{value} has already been injected. {Diagnostic(index)}");
+
+            if (IndexedValues.ContainsKey(index))
+                throw new ArgumentException($"{index} has already been injected. {Diagnostic(index)}");
+
+            if (index < Min || index > Max)
+                throw new OverflowException($"Overflow for Type {Type.Name} detected");
+
+            EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
+            var result = (T)Enum.ToObject(Type, index);
+            InsertValue(result, value, index);
+            return result;
+        }
+    }
 
     // public bool TryInjectAndReturn(string[] values, dynamic[] indices, out IEnumerable<T> result)
     // {

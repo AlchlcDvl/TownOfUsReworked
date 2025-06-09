@@ -190,7 +190,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         }
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var retAction = reader.Read<RetActionsRPC>();
 

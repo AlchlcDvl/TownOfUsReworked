@@ -164,9 +164,6 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
         }
     }
 
-    /// <inheritdoc/>
-    public CustomTypeCode TypeCode => CustomTypeCode.PlayerLayer;
-
     /// <summary>
     /// A list that contains all layers for the current game, initialised or not.
     /// </summary>
@@ -348,7 +345,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// Performs an action based on the received network message (called in <see cref="PlayerControl.HandleRpc"/>). Runs for everyone.
     /// </summary>
     /// <param name="reader">The network message to read from.</param>
-    public virtual void ReadRPC(NetData reader) {}
+    public virtual void ReadRPC(RpcReader reader) {}
 
     /// <summary>
     /// Performs an action upon the death of the player (called in <see cref="MiscUtils.CustomDie"/>). Runs for everyone.
@@ -464,7 +461,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     }
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => [ PlayerId, (byte)Type ];
+    public byte[] GetBytes() => [ PlayerId, (byte)Type ];
 
     /// <summary>
     /// Inequality check.

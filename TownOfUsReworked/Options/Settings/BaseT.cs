@@ -64,7 +64,9 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
 
     public override string ToString() => $"{ID}:{ValueString()}";
 
-    public override void WriteValueRpc(NetData writer) => writer.Write(Value);
+    public override void ReadValueRpc(RpcReader reader) => Set(reader.Read<T>(), false);
+
+    public override void WriteValueRpc(RpcWriter writer) => writer.Write(Value);
 
     protected virtual string ValueString() => $"{Value}";
 

@@ -372,7 +372,5 @@ public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = 
 
     protected override string SettingNotif() => $"<{HexCode}>{base.SettingNotif()}</color>";
 
-    public override void ReadValueRpc(NetData reader) => Set(reader.ReadRoleOptionData(), false);
-
     protected override void ReadValueString(string value) => Set(RoleOptionData.Parse(value), false);
 }

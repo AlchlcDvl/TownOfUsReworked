@@ -103,7 +103,7 @@ public sealed class Whisperer : Neophyte
 
     private float Difference() => WhisperCdIncreases ? (WhisperCdIncrease * WhisperCount) : 0;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var count = reader.ReadByte();
 

@@ -45,7 +45,7 @@
 //         return player.AddStatus<T>(args);
 //     }
 
-//     public static BaseStatus AddStatusFromRpc(NetData data)
+//     public static BaseStatus AddStatusFromRpc(RpcReader data)
 //     {
 //         var type = data.ReadType();
 //         var player = data.ReadPlayer();
@@ -60,7 +60,7 @@
 //         return status;
 //     }
 
-//     public static T AddStatusFromRpcWithoutType<T>(NetData data) where T : BaseStatus
+//     public static T AddStatusFromRpcWithoutType<T>(RpcReader data) where T : BaseStatus
 //     {
 //         var player = data.ReadPlayer();
 //         var count = data.ReadUShort();

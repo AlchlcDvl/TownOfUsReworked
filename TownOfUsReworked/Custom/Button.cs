@@ -4,9 +4,6 @@ public sealed class CustomButton : IDisposable, INetSerializable
 {
     public static readonly List<CustomButton> AllButtons = [];
 
-    /// <inheritdoc/>
-    public CustomTypeCode TypeCode => CustomTypeCode.Button;
-
     // Params, required
     public PlayerLayer Owner { get; }
     public AbilityTypes Type { get; }
@@ -823,7 +820,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             Disable();
     }
 
-    public void StartEffectRPC(NetData reader)
+    public void StartEffectRPC(RpcReader reader)
     {
         Owner.ReadRPC(reader);
         Begin();
@@ -844,5 +841,5 @@ public sealed class CustomButton : IDisposable, INetSerializable
         GC.SuppressFinalize(this);
     }
 
-    public byte[] ToBytes() => NetData.ToBytes(ID);
+    public byte[] GetBytes() => [..RpcWriter.GetBytes(ID)];
 }

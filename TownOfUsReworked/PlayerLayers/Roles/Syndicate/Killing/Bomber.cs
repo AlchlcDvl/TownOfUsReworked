@@ -101,7 +101,7 @@ public sealed class Bomber : Syndicate
 
     private bool Condition() => !Bombs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var bombAction = reader.Read<BomberActionsRPC>();
 

@@ -207,9 +207,9 @@ public abstract class Option(CustomOptionType type)
 
     public virtual bool IsId(string id) => ID.ToLower() == id;
 
-    public virtual void ReadValueRpc(NetData reader) {}
+    public virtual void ReadValueRpc(RpcReader reader) {}
 
-    public virtual void WriteValueRpc(NetData writer) {}
+    public virtual void WriteValueRpc(RpcWriter writer) {}
 
     protected virtual void ReadValueString(string value) {}
 

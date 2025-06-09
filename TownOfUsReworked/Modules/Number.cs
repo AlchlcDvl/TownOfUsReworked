@@ -12,9 +12,6 @@ public readonly struct Number(float num) : IComparable, IFormattable, INetSerial
     /// </summary>
     public float Value { get; } = num;
 
-    /// <inheritdoc/>
-    public CustomTypeCode TypeCode => CustomTypeCode.Number;
-
     /// <summary>
     /// Implicitly converts to float.
     /// </summary>
@@ -96,7 +93,7 @@ public readonly struct Number(float num) : IComparable, IFormattable, INetSerial
     public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
 
     /// <inheritdoc/>
-    public byte[] ToBytes() => NetData.ToBytes(Value);
+    public byte[] GetBytes() => [.. RpcWriter.GetBytes(Value)];
 
     /// <inheritdoc/>
     public override int GetHashCode() => Value.GetHashCode();

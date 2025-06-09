@@ -82,5 +82,5 @@ public sealed class Crusader : Syndicate
 
     private bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 
-    public override void ReadRPC(NetData reader) => CrusadedPlayer = reader.ReadPlayer();
+    public override void ReadRPC(RpcReader reader) => CrusadedPlayer = reader.ReadPlayer();
 }

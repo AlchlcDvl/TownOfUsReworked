@@ -93,7 +93,7 @@ public sealed class Hunter : HideAndSeek
         HuntButton.StartCooldown();
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         TurnHunter(reader.ReadPlayer());
 

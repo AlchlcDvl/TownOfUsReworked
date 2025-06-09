@@ -51,7 +51,7 @@ public sealed class Spellslinger : Syndicate
 
     private bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || (player.Is(Faction) && Faction.IsFactionedEvil());
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         Spelled.Add(reader.ReadByte());
 

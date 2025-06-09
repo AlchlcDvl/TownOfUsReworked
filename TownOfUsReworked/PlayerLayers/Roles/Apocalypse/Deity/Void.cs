@@ -50,5 +50,5 @@ public sealed class Void : Deity
 
     private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
 
-    public override void ReadRPC(NetData reader) => ToBeExtracted.Add(reader.ReadByte());
+    public override void ReadRPC(RpcReader reader) => ToBeExtracted.Add(reader.ReadByte());
 }

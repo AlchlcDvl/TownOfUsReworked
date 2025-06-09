@@ -276,7 +276,8 @@ public sealed class ChatCommand : IDisposable
 
     private static void Summary()
     {
-        var summary = ReadDiskText("Summary", TownOfUsReworked.Other);
+        var data = new RpcReader(File.ReadAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary")));
+        var summary = data.Read<SummaryInfo>().Generate();
 
         if (IsNullEmptyOrWhiteSpace(summary))
             Run("<#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");

@@ -59,5 +59,5 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
 
     private bool Exception(PlayerControl player) => Infected.Contains(player.PlayerId);
 
-    public override void ReadRPC(NetData reader) => Infected.Add(reader.ReadByte());
+    public override void ReadRPC(RpcReader reader) => Infected.Add(reader.ReadByte());
 }

@@ -15,8 +15,6 @@ public enum MiscRPC : byte
     ChaosDrive,
     FixLights,
     FixMixup,
-    SetFirstKilled,
-    SyncSummary,
     BodyLocation,
     BastionBomb,
     MoveBody,
@@ -28,6 +26,7 @@ public enum MiscRPC : byte
     SyncUses,
     SyncMaxUses,
     SyncMap,
+    PlayerJoinSync,
     // SetStatus,
     Stat,
     WinLose

@@ -51,5 +51,5 @@ public sealed class Bastion : CKilling, IVentBomber
         BombButton.StartCooldown(cooldown);
     }
 
-    public override void ReadRPC(NetData reader) => BombedIDs.Add(reader.ReadInt());
+    public override void ReadRPC(RpcReader reader) => BombedIDs.Add(reader.ReadInt());
 }

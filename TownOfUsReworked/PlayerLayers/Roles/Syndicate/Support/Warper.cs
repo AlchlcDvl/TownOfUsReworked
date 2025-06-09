@@ -217,7 +217,7 @@ public sealed class Warper : Syndicate, IMover
         }
     }
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var warpAction = reader.Read<WarpActionsRPC>();
 

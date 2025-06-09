@@ -62,7 +62,7 @@ public sealed class Monarch : Sovereign
 
     private bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var id = reader.ReadByte();
         ToBeKnighted.Add(id);

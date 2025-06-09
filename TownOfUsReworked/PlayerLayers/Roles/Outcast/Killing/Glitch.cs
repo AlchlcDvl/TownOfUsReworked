@@ -129,7 +129,7 @@ public sealed class Glitch : OKilling, IBlocker
 
     private bool EndMimic() => Dead;
 
-    public override void ReadRPC(NetData reader)
+    public override void ReadRPC(RpcReader reader)
     {
         var glitchAction = reader.Read<GlitchActionsRPC>();
 

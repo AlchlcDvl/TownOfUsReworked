@@ -50,7 +50,7 @@ public sealed class Rebel : Syndicate
 
     private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsUnderling || !player.Is(Faction);
 
-    public override void ReadRPC(NetData reader) => Sidekick(reader.ReadPlayer());
+    public override void ReadRPC(RpcReader reader) => Sidekick(reader.ReadPlayer());
 
     private bool Usable() => !HasDeclared;
 }

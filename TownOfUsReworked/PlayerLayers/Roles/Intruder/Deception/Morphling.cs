@@ -77,7 +77,7 @@ public sealed class Morphling : Intruder
 
     private bool EndEffect() => Dead || ClickedAgain;
 
-    public override void ReadRPC(NetData reader) => SampledPlayer = reader.ReadPlayer();
+    public override void ReadRPC(RpcReader reader) => SampledPlayer = reader.ReadPlayer();
 
     private void OnClickedAgain() => ClickedAgain = true;
 }
