@@ -56,7 +56,7 @@ public sealed class Ambusher : Intruder
             KillButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (!AmbushMates && ((player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player)));
+    public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (!AmbushMates && Player.IsBuddyWith(player, Faction));
 
     private bool EndEffect() => Dead || (AmbushedPlayer && AmbushedPlayer.HasDied());
 

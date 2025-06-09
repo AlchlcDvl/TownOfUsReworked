@@ -100,7 +100,7 @@ public sealed class Collider : Syndicate
 
     private bool Exception2(PlayerControl player) => player == Positive || CommonException(player);
 
-    private bool CommonException(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
+    private bool CommonException(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     private bool Usable() => HoldsDrive;
 

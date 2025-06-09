@@ -18,13 +18,13 @@ public static class RpcManager
     /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
     public static RpcWriter CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
 
-    /// <summary>
-    /// Creates an instance of <see cref="RpcWriter"/> to potentially write more data to.
-    /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
-    private static RpcWriter CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, true, data);
+    // /// <summary>
+    // /// Creates an instance of <see cref="RpcWriter"/> to potentially write more data to.
+    // /// </summary>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
+    // private static RpcWriter CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, true, data);
 
     /// <summary>
     /// Sends an RPC message to all players.
@@ -33,26 +33,26 @@ public static class RpcManager
     /// <param name="data">The data associated to the rpc.</param>
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
 
-    /// <summary>
-    /// Sends a late RPC message to all players.
-    /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateRpc(CustomRPC rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
+    // /// <summary>
+    // /// Sends a late RPC message to all players.
+    // /// </summary>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // public static void CallLateRpc(CustomRPC rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
 
-    /// <summary>
-    /// Sends an RPC message with type codes to all players.
-    /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallTargetedRpcUsingTypeCodes(-1, rpc, data);
+    // /// <summary>
+    // /// Sends an RPC message with type codes to all players.
+    // /// </summary>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // public static void CallRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallTargetedRpcUsingTypeCodes(-1, rpc, data);
 
-    /// <summary>
-    /// Sends a late RPC message with type codes to all players.
-    /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallLateTargetedRpcUsingTypeCodes(-1, rpc, data);
+    // /// <summary>
+    // /// Sends a late RPC message with type codes to all players.
+    // /// </summary>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // public static void CallLateRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallLateTargetedRpcUsingTypeCodes(-1, rpc, data);
 
     /// <summary>
     /// Sends an RPC message to a specific player.
@@ -66,41 +66,41 @@ public static class RpcManager
         writer?.Send(targetClientId);
     }
 
-    /// <summary>
-    /// Sends a late RPC message to a specific player.
-    /// </summary>
-    /// <param name="targetClientId">The player to send the data to.</param>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
-    {
-        using var writer = CreateWriter(rpc, data);
-        writer?.SendLate(targetClientId);
-    }
+    // /// <summary>
+    // /// Sends a late RPC message to a specific player.
+    // /// </summary>
+    // /// <param name="targetClientId">The player to send the data to.</param>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // public static void CallLateTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
+    // {
+    //     using var writer = CreateWriter(rpc, data);
+    //     writer?.SendLate(targetClientId);
+    // }
 
-    /// <summary>
-    /// Sends an RPC message to a specific player.
-    /// </summary>
-    /// <param name="targetClientId">The player to send the data to.</param>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    private static void CallTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
-    {
-        using var writer = CreateWriterUsingTypeCodes(rpc, data);
-        writer?.Send(targetClientId);
-    }
+    // /// <summary>
+    // /// Sends an RPC message to a specific player.
+    // /// </summary>
+    // /// <param name="targetClientId">The player to send the data to.</param>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // private static void CallTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
+    // {
+    //     using var writer = CreateWriterUsingTypeCodes(rpc, data);
+    //     writer?.Send(targetClientId);
+    // }
 
-    /// <summary>
-    /// Sends a late RPC message with type codes to a specific player.
-    /// </summary>
-    /// <param name="targetClientId">The player to send the data to.</param>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    private static void CallLateTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
-    {
-        using var writer = CreateWriterUsingTypeCodes(rpc, data);
-        writer?.SendLate(targetClientId);
-    }
+    // /// <summary>
+    // /// Sends a late RPC message with type codes to a specific player.
+    // /// </summary>
+    // /// <param name="targetClientId">The player to send the data to.</param>
+    // /// <param name="rpc">The main rpc header.</param>
+    // /// <param name="data">The data associated to the rpc.</param>
+    // private static void CallLateTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
+    // {
+    //     using var writer = CreateWriterUsingTypeCodes(rpc, data);
+    //     writer?.SendLate(targetClientId);
+    // }
 
     /// <summary>
     /// Closes and sends the rpc.
@@ -217,9 +217,10 @@ public static class RpcManager
     /// Centralized handler for all things networking within the mod.
     /// </summary>
     /// <param name="reader">The instance of <see cref="RpcReader"/> containing byte data.</param>
+    /// <param name="targetClientId">The id of the client that's supposed to read from the rpc. If the value is <c>-1</c>, then everyone reads from the message.</param>
     public static void HandleRpc(RpcReader reader, int targetClientId)
     {
-        if (reader is null || reader.DataSize == 0)
+        if (reader?.DataSize is null or 0)
         {
             Warning("Received no data");
             return;

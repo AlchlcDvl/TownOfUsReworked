@@ -151,27 +151,24 @@ public static class PlayerControlExtensions
 
     public static void RawSetSkin(this PlayerControl player, string skinId, ColorPair color) => player.MyPhysics.SetSkin(skinId, color);
 
-    private static void SetSkin(this PlayerPhysics physics, string skinId, ColorPair color)
+    private static void SetSkin(this PlayerPhysics physics, string skinId, ColorPair color) => physics.myPlayer.cosmetics.SetSkin(skinId, color, () =>
     {
-        physics.myPlayer.cosmetics.SetSkin(skinId, color, () =>
+        if (physics.Animations.IsPlayingSpawnAnimation())
+            physics.myPlayer.cosmetics.AnimateSkinSpawn(physics.Animations.Time);
+
+        if (Ship()?.Type != ShipStatus.MapType.Fungle)
+            return;
+
+        if (physics.myPlayer.inMovingPlat)
+            physics.myPlayer.cosmetics.AnimateSkinJump();
+
+        if (physics.Animations.IsPlayingClimbAnimation())
         {
-            if (physics.Animations.IsPlayingSpawnAnimation())
-                physics.myPlayer.cosmetics.AnimateSkinSpawn(physics.Animations.Time);
-
-            if (Ship()?.Type != ShipStatus.MapType.Fungle)
-                return;
-
-            if (physics.myPlayer.inMovingPlat)
-                physics.myPlayer.cosmetics.AnimateSkinJump();
-
-            if (physics.Animations.IsPlayingClimbAnimation())
-            {
-                var flag = physics.Velocity.y <= 0f;
-                physics.Animations.PlayClimbAnimation(flag);
-                physics.myPlayer.cosmetics.AnimateClimb(flag);
-            }
-        });
-    }
+            var flag = physics.Velocity.y <= 0f;
+            physics.Animations.PlayClimbAnimation(flag);
+            physics.myPlayer.cosmetics.AnimateClimb(flag);
+        }
+    });
 
     private static void SetSkin(this CosmeticsLayer layer, string skinId, ColorPair color, Action onLoaded)
     {
@@ -191,8 +188,7 @@ public static class PlayerControlExtensions
         layer.skin.Flipped = layer.currentBodySprite.BodySprite.flipX;
     }
 
-    private static void SetSkin(this SkinLayer layer, SkinData skinData, ColorPair color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded)
-    {
+    private static void SetSkin(this SkinLayer layer, SkinData skinData, ColorPair color, bool isLeft, CosmeticsLayer cosmeticsLayer, Action onLoaded) =>
         layer.LoadAssetAsync(skinData.Cast<IAddressableAssetProvider<SkinViewData>>(), (Action<SkinViewData>)(skinView =>
         {
             if (layer.IsDestroyedOrNull() || layer.gameObject.IsDestroyedOrNull())
@@ -203,7 +199,6 @@ public static class PlayerControlExtensions
             cosmeticsLayer.OnCosmeticSet?.Invoke(skinData.ProdId, -2, CosmeticsLayer.CosmeticKind.SKIN);
             onLoaded?.Invoke();
         }));
-    }
 
     private static void SetSkin(this SkinLayer layer, SkinViewData skin, ColorPair color, bool isLeft)
     {
@@ -238,16 +233,13 @@ public static class PlayerControlExtensions
             SetRendererColor(colorVal, rend);
     }
 
-    public static void RawSetPet(this PlayerControl player, string petId, ColorPair color)
+    public static void RawSetPet(this PlayerControl player, string petId, ColorPair color) => player.cosmetics.SetPetIdle(petId, color, () =>
     {
-        player.cosmetics.SetPetIdle(petId, color, () =>
-        {
-            player.cosmetics.SetPetSource(player);
+        player.cosmetics.SetPetSource(player);
 
-            if (player.inMovingPlat)
-                player.cosmetics.SetPetVisible(false);
-        });
-    }
+        if (player.inMovingPlat)
+            player.cosmetics.SetPetVisible(false);
+    });
 
     private static void SetPetIdle(this CosmeticsLayer layer, string petId, ColorPair color, Action onComplete)
     {

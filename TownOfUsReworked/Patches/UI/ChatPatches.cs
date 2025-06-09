@@ -83,7 +83,7 @@ public static class ChatPatches
 
                 if (role)
                 {
-                    var teammate = LocalPlayer.GetFaction() == player.GetFaction() && player.GetFaction().IsFactionedEvil();
+                    var teammate = LocalPlayer.IsBuddyWith(player, LocalPlayer.GetFaction());
 
                     if (player.AmOwner)
                         chat.NameText.color = role.Color;

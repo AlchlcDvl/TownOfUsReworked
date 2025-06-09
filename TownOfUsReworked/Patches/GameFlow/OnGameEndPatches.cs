@@ -1,6 +1,6 @@
 using Assets.CoreScripts;
 
-namespace TownOfUsReworked.Patches.Core.GameFlow;
+namespace TownOfUsReworked.Patches.GameFlow;
 
 [HarmonyPatch]
 public static class OnGameEndPatches
@@ -15,7 +15,7 @@ public static class OnGameEndPatches
             var players = AllPlayers();
             // There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
             // AD says "Done".
-            players.Do(x => AddSummaryInfo(x));
+            players.Do(x => AddSummaryInfo(x, false));
             EndGameResult.CachedGameOverReason = (GameOverReason)9;
             EndGameResult.CachedWinners.Clear();
             Winners.Clear();
@@ -265,13 +265,13 @@ public static class OnGameEndPatches
         }
     }
 
-    public static void AddSummaryInfo(PlayerControl player, bool disconnected = false)
+    public static void AddSummaryInfo(PlayerControl player, bool disconnected)
     {
         if (Summary.Modules.Any(x => x.PlayerName == player?.Data?.PlayerName))
             return;
 
         var module = new SummaryInfoModule();
-        module.PopulateFromPlayer(player);
+        module.PopulateFromPlayer(player, disconnected);
         Summary.Modules.Add(module);
     }
 

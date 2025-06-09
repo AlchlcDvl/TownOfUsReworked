@@ -26,7 +26,7 @@ public static partial class Generate
         var objectType = typeof(object);
 
         var relevantTypes = AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core)
-            .Where(x => iNetSerializable.IsAssignableFrom(x) && (x.BaseType == typeof(object) || x.IsValueType) && !x.IsEnum)
+            .Where(x => iNetSerializable.IsAssignableFrom(x) && (x.BaseType == objectType || x.IsValueType) && !x.IsEnum)
             .OrderBy(x => x.Name);
 
         foreach (var type in relevantTypes)

@@ -50,7 +50,7 @@ public sealed class Shifter : Evil
         // TODO: Finish this
     }
 
-    private bool Exception(PlayerControl player) => player.HasDied() || (Faction.IsFactionedEvil() && player.Is(Faction)) || player == Player;
+    private bool Exception(PlayerControl player) => player.HasDied() || Player.IsBuddyWith(player, Faction) || player == Player;
 
     public override void ReadRPC(RpcReader reader) => Shift(reader.ReadPlayer());
 }

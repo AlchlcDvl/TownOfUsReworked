@@ -42,7 +42,7 @@ public sealed class Consigliere : Intruder
         InvestigateButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (Faction.IsFactionedEvil() && player.Is(Faction)) || (Player.IsOtherLover(player) &&
+    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (Faction.IsFactionedEvil(true) && player.Is(Faction)) || (Player.IsOtherLover(player) &&
         Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) &&
         Linked.LinkedRoles);
 

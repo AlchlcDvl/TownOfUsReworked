@@ -69,7 +69,7 @@ public sealed class Drunkard : Syndicate
             ConfuseMenu.Open();
     }
 
-    private bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (ConfuseImmunity && player.Is(Faction) && Faction.IsFactionedEvil());
+    private bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (ConfuseImmunity && Player.IsBuddyWith(player, Faction));
 
     private string Label() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
 

@@ -43,5 +43,5 @@ public sealed class Mystic : Crew
         RevealButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => player.Is(Faction) && Faction.IsFactionedEvil();
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 }

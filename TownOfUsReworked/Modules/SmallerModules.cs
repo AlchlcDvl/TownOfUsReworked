@@ -25,6 +25,8 @@ public sealed class GitHubApiAsset
 [Serializable]
 public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable, INetDeserializable
 {
+    public RoleOptionData() : this(0, 0, false, false, LayerEnum.None) { }
+
     public byte Chance { get; set; } = chance;
     public byte Count { get; set; } = count;
     public bool Unique { get; set; } = unique;
@@ -109,4 +111,13 @@ public readonly struct ColorPair(UColor color1, UColor color2)
     // public UColor Lerp(float t) => UColor.Lerp(Color1, Color2, t);
 
     public static ColorPair Lerp(ColorPair a, ColorPair b, float t) => new(UColor.Lerp(a.Color1, b.Color1, t), UColor.Lerp(a.Color2, b.Color2, t));
+}
+
+public sealed class VersionData
+{
+    [JsonPropertyName("gameVers")]
+    public Dictionary<int, string> GameVersions { get; set; }
+
+    [JsonPropertyName("modVers")]
+    public string[] ModVersions { get; set; }
 }

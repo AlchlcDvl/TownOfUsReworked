@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches.Core.GameFlow;
+namespace TownOfUsReworked.Patches.GameFlow;
 
 // GameStartManager is a BITCH
 [HarmonyPatch(typeof(GameStartManager))]

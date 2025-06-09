@@ -39,7 +39,7 @@ public sealed class Werewolf : OKilling
         MaulButton.StartCooldown();
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     private bool Usable() => CanMaul;
 

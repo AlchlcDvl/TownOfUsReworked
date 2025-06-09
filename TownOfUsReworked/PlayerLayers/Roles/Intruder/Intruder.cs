@@ -69,7 +69,7 @@ public abstract class Intruder : Role, IPromoter
 
     protected virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (!player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     private bool KillUsable() => !IsUnderling;
 }

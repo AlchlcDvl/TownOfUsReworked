@@ -3,11 +3,11 @@ using AmongUs.InnerNet.GameDataMessages;
 namespace TownOfUsReworked.RPCs;
 
 /// <summary>
-/// Base game message entry way for the mod's late rpcs.
+/// Base game message entry way for the mod's late RPCs.
 /// </summary>
 /// <param name="netId">The net id to trigger the rpc in.</param>
 /// <param name="targetClientId">The id of the client that the message targets.</param>
-/// <param name="payload">The writer instance that contains the byte data to be networked.</param>
+/// <param name="payload">The byte data to be networked.</param>
 public sealed class ReworkedMessage(uint netId, int targetClientId, byte[] payload) : BaseRpcMessage(netId)
 {
     /// <summary>
@@ -16,7 +16,7 @@ public sealed class ReworkedMessage(uint netId, int targetClientId, byte[] paylo
     private int TargetClientId { get; } = targetClientId;
 
     /// <summary>
-    /// The writer instance that contains the byte data to be networked.
+    /// The byte data to be networked.
     /// </summary>
     [HideFromIl2Cpp]
     private byte[] Payload { get; } = payload;
@@ -29,7 +29,7 @@ public sealed class ReworkedMessage(uint netId, int targetClientId, byte[] paylo
     /// <summary>
     /// The custom injected enum value that indicates it's a modded rpc.
     /// </summary>
-    private static readonly RpcCalls ReworkedType = Injector.InjectAndReturn("ReworkedRpc", 254); // 255 is used by Reactor, this mod's dependant api
+    private static readonly RpcCalls ReworkedType = Injector.InjectAndReturn("ReworkedRpc", 254); // 255 is used by Reactor
 
     /// <summary>
     /// The type of the rpc.

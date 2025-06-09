@@ -599,7 +599,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool SherException(PlayerControl player) => (Faction.IsFactionedEvil() && player.Is(Faction) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) ||
+    private bool SherException(PlayerControl player) => (Faction.IsFactionedEvil(true) && player.Is(Faction) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) ||
         (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
 
     private bool SherUsable() => IsSher;
@@ -629,7 +629,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
 
     private void Shoot(PlayerControl target) => ShootButton.StartCooldown(Interact(Player, target, true));
 
-    private bool VigiException(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
+    private bool VigiException(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     private bool VigUsable() => IsVig;
 
@@ -783,7 +783,7 @@ public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAl
         RevealButton.StartCooldown(cooldown);
     }
 
-    private bool MysticException(PlayerControl player) => player.Is(Faction) && Faction.IsFactionedEvil();
+    private bool MysticException(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     private bool MysUsable() => IsMys;
 

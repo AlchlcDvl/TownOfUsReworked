@@ -5,12 +5,14 @@ namespace TownOfUsReworked.Modules;
 /// </summary>
 /// <param name="num">The value to be set.</param>
 [Serializable]
-public readonly struct Number(float num) : IComparable, IFormattable, INetSerializable, IEquatable<Number>, IComparable<Number>
+public struct Number(float num) : IComparable, IFormattable, INetSerializable, INetDeserializable, IEquatable<Number>, IComparable<Number>
 {
+    public Number() : this(0) {}
+
     /// <summary>
     /// Gets the value.
     /// </summary>
-    public float Value { get; } = num;
+    public float Value { get; private set; } = num;
 
     /// <summary>
     /// Implicitly converts to float.
@@ -93,30 +95,33 @@ public readonly struct Number(float num) : IComparable, IFormattable, INetSerial
     public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
 
     /// <inheritdoc/>
-    public byte[] GetBytes() => [.. RpcWriter.GetBytes(Value)];
+    public readonly byte[] GetBytes() => [.. RpcWriter.GetBytes(Value)];
 
     /// <inheritdoc/>
-    public override int GetHashCode() => Value.GetHashCode();
+    public readonly override int GetHashCode() => Value.GetHashCode();
 
     /// <inheritdoc/>
-    public bool Equals(Number other) => Value == other.Value;
+    public readonly bool Equals(Number other) => Value == other.Value;
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is Number number && Value == number.Value;
+    public readonly override bool Equals(object obj) => obj is Number number && Value == number.Value;
 
     /// <inheritdoc/>
-    public override string ToString() => Value.ToString();
+    public readonly override string ToString() => Value.ToString();
 
     /// <inheritdoc/>
-    public string ToString(string format, IFormatProvider formatProvider) => Value.ToString(format, formatProvider);
+    public readonly string ToString(string format, IFormatProvider formatProvider) => Value.ToString(format, formatProvider);
 
     /// <inheritdoc/>
-    public int CompareTo(object obj) => obj switch
+    public readonly int CompareTo(object obj) => obj switch
     {
         Number i => CompareTo(i),
         _ => Value.CompareTo(obj)
     };
 
     /// <inheritdoc/>
-    public int CompareTo(Number other) => Value.CompareTo(other.Value);
+    public readonly int CompareTo(Number other) => Value.CompareTo(other.Value);
+
+    /// <inheritdoc/>
+    public void FromBytes(RpcReader reader) => Value = reader.ReadFloat();
 }

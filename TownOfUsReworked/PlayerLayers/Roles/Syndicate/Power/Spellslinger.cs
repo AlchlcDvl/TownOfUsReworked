@@ -49,7 +49,7 @@ public sealed class Spellslinger : Syndicate
         SpellButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || (player.Is(Faction) && Faction.IsFactionedEvil());
+    private bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || Player.IsBuddyWith(player, Faction);
 
     public override void ReadRPC(RpcReader reader)
     {

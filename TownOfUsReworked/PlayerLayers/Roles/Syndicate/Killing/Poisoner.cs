@@ -71,7 +71,7 @@ public sealed class Poisoner : Syndicate
         Message("Removed a target");
     }
 
-    private bool Exception1(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction.IsFactionedEvil());
+    private bool Exception1(PlayerControl player) => player == PoisonedPlayer || Player.IsBuddyWith(player, Faction);
 
     private void HitPoison(PlayerControl target)
     {

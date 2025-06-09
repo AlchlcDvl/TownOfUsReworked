@@ -6,21 +6,21 @@ public sealed class Allied : Disposition
     [StringOption<AlliedFaction>]
     public static AlliedFaction AlliedFaction
     {
-        get => alliedFaction;
+        get => AlliedFactionBacking;
         set
         {
             if (value == AlliedFaction.Compliance && (!BadGuysSettings.OrderOfCompliance || BadGuysSettings.ComplianceMembers == ComplianceType.Killers))
-                value = alliedFaction < value ? AlliedFaction.Random : (BadGuysSettings.PandoricaOpens ? AlliedFaction.Pandorica : AlliedFaction.Apocalypse);
+                value = AlliedFactionBacking < value ? AlliedFaction.Random : (BadGuysSettings.PandoricaOpens ? AlliedFaction.Pandorica : AlliedFaction.Apocalypse);
 
-            alliedFaction = value switch
+            AlliedFactionBacking = value switch
             {
                 AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse when BadGuysSettings.PandoricaOpens => AlliedFaction.Pandorica,
-                AlliedFaction.Pandorica when !BadGuysSettings.PandoricaOpens => alliedFaction < value ? AlliedFaction.Random : AlliedFaction.Apocalypse,
+                AlliedFaction.Pandorica when !BadGuysSettings.PandoricaOpens => AlliedFactionBacking < value ? AlliedFaction.Random : AlliedFaction.Apocalypse,
                 _ => value
             };
         }
     }
-    public static AlliedFaction alliedFaction;
+    public static AlliedFaction AlliedFactionBacking;
 
     public Faction Side
     {

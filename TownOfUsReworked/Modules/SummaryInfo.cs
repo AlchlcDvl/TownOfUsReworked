@@ -24,7 +24,7 @@ public readonly struct SummaryInfo() : INetSerializable, INetDeserializable
 }
 
 [Serializable]
-public struct SummaryInfoModule() : INetSerializable, INetDeserializable
+public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 {
     public string PlayerName { get; set; }
 
@@ -95,16 +95,15 @@ public struct SummaryInfoModule() : INetSerializable, INetDeserializable
             yield return 1;
             yield break;
         }
-        else
-            yield return 0;
 
+        yield return 0;
         yield return (byte)DeathReason;
 
-        if (DeathReason != DeathReasonEnum.Alive)
-        {
-            foreach (var val in RpcWriter.GetBytes(KilledBy))
-                yield return val;
-        }
+        if (DeathReason == DeathReasonEnum.Alive)
+            yield break;
+
+        foreach (var val in RpcWriter.GetBytes(KilledBy))
+            yield return val;
     }
 
     public void FromBytes(RpcReader netData)
@@ -151,7 +150,7 @@ public struct SummaryInfoModule() : INetSerializable, INetDeserializable
             KilledBy = netData.ReadString();
     }
 
-    public void PopulateFromPlayer(PlayerControl player)
+    public void PopulateFromPlayer(PlayerControl player, bool disconnected)
     {
         if (!player || !player.Data)
             return;
@@ -197,6 +196,8 @@ public struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
         if (handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(handler.KilledBy))
             KilledBy = handler.KilledBy;
+
+        Disconnected = disconnected;
     }
 
     public readonly (string FullSummary, string Summary) Summarise()

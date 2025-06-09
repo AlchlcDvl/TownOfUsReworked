@@ -69,7 +69,7 @@ public sealed class RpcWriter : IDisposable
             return;
 
         var writer = AmongUsClient.Instance.StartRpcImmediately(LocalPlayer.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
-        writer.Write(false); // False because Among Us immediate rpcs can be targeted, so the reader knows whether or not the client id should be read
+        writer.Write(false); // False because Among Us immediate RPCs can be targeted, so the reader knows whether or not the client id should be read
         writer.WriteBytesAndSize(Payload[..Position]);
         writer.CloseRpc();
     }
@@ -107,7 +107,7 @@ public sealed class RpcWriter : IDisposable
     /// <summary>
     /// Writes the bytes of multiple values to the internal buffer.
     /// </summary>
-    /// <param name="value">The values to serialize.</param>
+    /// <param name="values">The values to serialize.</param>
     /// <param name="withTypeCode">Indicates whether a value's type code should also be serialized for blind deserialization.</param>
     /// <inheritdoc cref="ThrowIfIncorrectState(object)"/>
     public void Write(bool withTypeCode, params object[] values) => values.Do(x => Write(x, withTypeCode));
@@ -166,7 +166,7 @@ public sealed class RpcWriter : IDisposable
     /// <param name="withTypeCode">If true, prepends the object's type code to the serialized bytes.</param>
     /// <returns>An IEnumerable of bytes representing the serialized value.</returns>
     /// <exception cref="NotSupportedException">Thrown if the value's type cannot be serialized.</exception>
-    public static IEnumerable<byte> GetBytes(object value, bool withTypeCode)
+    private static IEnumerable<byte> GetBytes(object value, bool withTypeCode)
     {
         if (withTypeCode)
             yield return value.GetType().GetIdFromType();
@@ -211,49 +211,42 @@ public sealed class RpcWriter : IDisposable
         _ => throw new NotSupportedException($"Type {value.GetType().Name} cannot be serialized to bytes. Ensure it's a known primitive or base game type, or that it implements INetSerializable.")
     };
 
-    public static IEnumerable<byte> GetBytes(byte value)
+    private static IEnumerable<byte> GetBytes(byte value)
     {
         yield return value;
     }
 
-    public static IEnumerable<byte> GetBytes(bool value)
+    private static IEnumerable<byte> GetBytes(bool value)
     {
         yield return (byte)(value ? 1 : 0);
     }
 
-    public static IEnumerable<byte> GetBytes(sbyte value)
+    private static IEnumerable<byte> GetBytes(sbyte value)
     {
         yield return (byte)(value + 128);
     }
 
-    public static IEnumerable<byte> GetBytes(char value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(char value) => BitConverter.GetBytes(value);
 
     public static IEnumerable<byte> GetBytes(ushort value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(short value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(short value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(uint value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(uint value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(int value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(int value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(ulong value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(ulong value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(long value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(long value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(Half value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(Half value) => BitConverter.GetBytes(value);
 
     public static IEnumerable<byte> GetBytes(float value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(double value) => BitConverter.GetBytes(value);
+    private static IEnumerable<byte> GetBytes(double value) => BitConverter.GetBytes(value);
 
-    public static IEnumerable<byte> GetBytes(decimal value)
-    {
-        foreach (var bits in decimal.GetBits(value))
-        {
-            foreach (var b in BitConverter.GetBytes(bits))
-                yield return b;
-        }
-    }
+    private static IEnumerable<byte> GetBytes(decimal value) => decimal.GetBits(value).SelectMany(BitConverter.GetBytes);
 
     public static IEnumerable<byte> GetBytes(string value)
     {
@@ -266,24 +259,15 @@ public sealed class RpcWriter : IDisposable
             yield return b;
     }
 
-    public static IEnumerable<byte> GetBytes(PlayerControl value)
-    {
-        yield return value.PlayerId;
-    }
+    private static IEnumerable<byte> GetBytes(PlayerControl value) => GetBytes(value.PlayerId);
 
-    public static IEnumerable<byte> GetBytes(DeadBody value)
-    {
-        yield return value.ParentId;
-    }
+    private static IEnumerable<byte> GetBytes(DeadBody value) => GetBytes(value.ParentId);
 
-    public static IEnumerable<byte> GetBytes(PlayerVoteArea value)
-    {
-        yield return value.TargetPlayerId;
-    }
+    private static IEnumerable<byte> GetBytes(PlayerVoteArea value) => GetBytes(value.TargetPlayerId);
 
-    public static IEnumerable<byte> GetBytes(Vent value) => BitConverter.GetBytes(value.Id);
+    private static IEnumerable<byte> GetBytes(Vent value) => BitConverter.GetBytes(value.Id);
 
-    public static IEnumerable<byte> GetBytes(Vector2 value)
+    private static IEnumerable<byte> GetBytes(Vector2 value)
     {
         foreach (var b in GetBytes((ushort)(Generate.ReverseLerp(value.x) * ushort.MaxValue)))
             yield return b;
@@ -292,7 +276,7 @@ public sealed class RpcWriter : IDisposable
             yield return b;
     }
 
-    public static IEnumerable<byte> GetBytes(Type value) => GetBytes(value.AssemblyQualifiedName);
+    private static IEnumerable<byte> GetBytes(Type value) => GetBytes(value.AssemblyQualifiedName);
 
     public static IEnumerable<byte> GetBytes(Enum value, bool withTypeCode)
     {
@@ -308,7 +292,7 @@ public sealed class RpcWriter : IDisposable
             yield return b;
     }
 
-    public static IEnumerable<byte> GetBytes(IEnumerable values, bool withTypeCode)
+    private static IEnumerable<byte> GetBytes(IEnumerable values, bool withTypeCode)
     {
         if (!withTypeCode)
         {
@@ -363,10 +347,7 @@ public sealed class RpcWriter : IDisposable
         if (allSameType && commonType != null)
             yield return commonType.GetIdFromType();
 
-        foreach (var obj in elements)
-        {
-            foreach (var b in GetBytes(obj, withTypeCode && !allSameType))
-                yield return b;
-        }
+        foreach (var b in elements.SelectMany(obj => GetBytes(obj, !allSameType)))
+            yield return b;
     }
 }

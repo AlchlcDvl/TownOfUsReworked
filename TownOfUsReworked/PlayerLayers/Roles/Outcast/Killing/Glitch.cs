@@ -107,8 +107,7 @@ public sealed class Glitch : OKilling, IBlocker
             MimicMenu.Open();
     }
 
-    private bool Exception1(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) ||
-        Player.IsLinkedTo(player);
+    private bool Exception1(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     private bool Exception2(PlayerControl player) => player == HackTarget || Exception1(player);
 

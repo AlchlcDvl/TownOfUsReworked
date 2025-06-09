@@ -17,8 +17,8 @@ public abstract class NameHandler : MonoBehaviour
         var localRole = localHandler.CurrentRole;
         var localDisp = localHandler.CurrentDisposition;
         var removeFromConsig = false;
-        var isFactionedEvil = role.Faction.IsFactionedEvil();
-        var localIsFactionedEvil = localRole.Faction.IsFactionedEvil();
+        var isFactionedEvil = role.Faction.IsFactionedEvil(true);
+        var localIsFactionedEvil = localRole.Faction.IsFactionedEvil(true);
         var same = role.Faction == localRole.Faction;
 
         if (player.CanDoTasks() && (deadSeeEverything || IsCustomHnS() || IsTaskRace()) && !amOwner)

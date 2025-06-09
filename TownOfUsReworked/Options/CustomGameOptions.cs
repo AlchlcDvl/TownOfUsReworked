@@ -252,14 +252,14 @@ public static class BadGuysSettings
     {
         switch (value)
         {
-            case false when Allied.alliedFaction == AlliedFaction.Pandorica:
+            case false when Allied.AlliedFactionBacking == AlliedFaction.Pandorica:
             {
-                Allied.alliedFaction = AlliedFaction.Random;
+                Allied.AlliedFactionBacking = AlliedFaction.Random;
                 break;
             }
-            case true when Allied.alliedFaction is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse:
+            case true when Allied.AlliedFactionBacking is AlliedFaction.Intruder or AlliedFaction.Syndicate or AlliedFaction.Apocalypse:
             {
-                Allied.alliedFaction = AlliedFaction.Pandorica;
+                Allied.AlliedFactionBacking = AlliedFaction.Pandorica;
                 break;
             }
         }

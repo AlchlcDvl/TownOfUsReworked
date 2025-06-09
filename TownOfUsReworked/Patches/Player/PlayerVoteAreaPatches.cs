@@ -1,6 +1,6 @@
 using Innersloth.Assets;
 
-namespace TownOfUsReworked.Patches.Core.Player;
+namespace TownOfUsReworked.Patches.Player;
 
 [HarmonyPatch(typeof(PlayerVoteArea))]
 public static class PlayerVoteAreaPatches

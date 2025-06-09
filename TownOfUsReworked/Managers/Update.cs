@@ -6,17 +6,97 @@ public static class UpdateManager
     public static bool SubmergedUpdate;
     public static bool CanDownloadSubmerged;
     public static bool CanDownloadLevelImpostor;
+    public static string WrongAuVersion;
+    public static string ReqVersion;
 
     private static readonly Dictionary<string, string> Urls = [];
-    private static GenericPopup Popup;
+    public static GenericPopup Popup;
 
     public static IEnumerator CheckForUpdates()
     {
+        yield return CheckVersioning();
+
+        if (!IsNullEmptyOrWhiteSpace(WrongAuVersion))
+            yield break;
+
         foreach (var type in new[] { "Reworked", "Submerged", "LevelImpostor" })
             yield return CheckForUpdate(type);
 
         CanDownloadSubmerged = !SubLoaded && Urls.ContainsKey("Submerged");
         CanDownloadLevelImpostor = !LiLoaded && Urls.ContainsKey("LevelImpostor");
+    }
+
+    private static IEnumerator CheckVersioning()
+    {
+        UpdateSplashPatch.SetText("Comparing Version Data");
+        Message("Checking versions");
+
+        WrongAuVersion = null;
+
+        byte[] json;
+        var path = Path.Combine(TownOfUsReworked.Other, "VersionData.json");
+
+        if (ClientOptions.ForceUseLocal)
+        {
+            using var task = File.ReadAllBytesAsync(path);
+            yield return WaitUntilTaskComplete(task);
+            json = task.Result;
+        }
+        else
+        {
+            var www = UnityWebRequest.Get($"{AssetLoader.RepositoryUrl}/VersionData.json");
+            yield return www.SendWebRequest();
+
+            var isError = www.result != UnityWebRequest.Result.Success;
+
+            if (isError)
+            {
+                Error(www.error);
+                using var task = File.ReadAllBytesAsync(path);
+                yield return WaitUntilTaskComplete(task);
+                json = task.Result;
+            }
+            else
+            {
+                json = www.downloadHandler.data;
+
+                if (json?.Length is null or 0)
+                {
+                    using var task = File.ReadAllBytesAsync(path);
+                    yield return WaitUntilTaskComplete(task);
+                    json = task.Result;
+                    Warning("Online versioning JSON for was missing");
+                }
+                else
+                {
+                    using var task = File.WriteAllBytesAsync(path, json);
+                    yield return WaitUntilTaskComplete(task);
+                }
+            }
+
+            www.downloadHandler.Dispose();
+            www.Dispose();
+        }
+
+        if (json?.Length is null or 0)
+        {
+            Failure("Unable to load online or local JSON data for versioning");
+            yield break;
+        }
+
+        var data = JsonSerializer.Deserialize<VersionData[]>(json);
+        var relevant = data.FirstOrDefault(x => x.ModVersions.Contains(TownOfUsReworked.VersionS));
+
+        if (relevant == null)
+            yield break;
+
+        var auVer = Constants.GetBroadcastVersion();
+
+        if (relevant.GameVersions.ContainsKey(auVer))
+            yield break;
+
+        WrongAuVersion = $"Update.{(auVer > relevant.GameVersions.Keys.Max() ? "Downgrade" : "Update")}";
+        ReqVersion = relevant.GameVersions.Values.Last();
     }
 
     private static string GetLink(string tag) => tag switch
@@ -37,7 +117,7 @@ public static class UpdateManager
 
         if (ClientOptions.ForceUseLocal)
         {
-            var task = File.ReadAllBytesAsync(path);
+            using var task = File.ReadAllBytesAsync(path);
             yield return WaitUntilTaskComplete(task);
             json = task.Result;
         }
@@ -52,7 +132,7 @@ public static class UpdateManager
             if (isError)
             {
                 Error(www.error);
-                var task = File.ReadAllBytesAsync(path);
+                using var task = File.ReadAllBytesAsync(path);
                 yield return WaitUntilTaskComplete(task);
                 json = task.Result;
             }
@@ -62,14 +142,14 @@ public static class UpdateManager
 
                 if (json?.Length is null or 0)
                 {
-                    var task = File.ReadAllBytesAsync(path);
+                    using var task = File.ReadAllBytesAsync(path);
                     yield return WaitUntilTaskComplete(task);
                     json = task.Result;
                     Warning($"Online JSON for {updateType} was missing");
                 }
                 else
                 {
-                    var task = File.WriteAllBytesAsync(path, json);
+                    using var task = File.WriteAllBytesAsync(path, json);
                     yield return WaitUntilTaskComplete(task);
                 }
             }
@@ -180,7 +260,7 @@ public static class UpdateManager
             if (File.Exists(filePath))
                 File.Move(filePath, filePath + ".old");
 
-            var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
+            using var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
             yield return WaitUntilTaskComplete(persistTask);
 
             if (persistTask.Exception is not null)

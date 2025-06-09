@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches.Core.Player;
+namespace TownOfUsReworked.Patches.Player;
 
 [HarmonyPatch(typeof(PlayerControl))]
 public static class PlayerControlPatches

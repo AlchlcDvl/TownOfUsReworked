@@ -41,7 +41,7 @@ public sealed class Ghoul : Intruder, IGhosty
 
     private bool Usable() => !Caught && !MarkedPlayer;
 
-    private bool Exception1(PlayerControl player) => player == MarkedPlayer || (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
+    private bool Exception1(PlayerControl player) => player == MarkedPlayer || Player.IsBuddyWith(player, Faction);
 
     public override void ReadRPC(RpcReader reader) => MarkedPlayer = reader.ReadPlayer();
 

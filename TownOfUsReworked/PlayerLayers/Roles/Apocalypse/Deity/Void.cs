@@ -48,7 +48,7 @@ public sealed class Void : Deity
         ExtractButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     public override void ReadRPC(RpcReader reader) => ToBeExtracted.Add(reader.ReadByte());
 }

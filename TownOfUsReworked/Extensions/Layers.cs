@@ -43,7 +43,7 @@ public static class LayerExtensions
         return handler.CurrentFaction == faction || handler.FakeFactions.Contains(faction) || part;
     }
 
-    private static bool Is(this PlayerControl player, params Faction[] factions) => factions.Contains(player.GetFaction());
+    // private static bool Is(this PlayerControl player, params Faction[] factions) => factions.ContainsAny(player.GetFactions());
 
     public static bool Is(this PlayerControl player, Alignment alignment) => player.GetRole()?.Alignment == alignment;
 
@@ -58,11 +58,22 @@ public static class LayerExtensions
         if (!player)
             return Faction.None;
 
-        if (player.Is<Role>(out var role))
-            return role.Faction;
+        if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+            return handler.CurrentFaction;
 
         return player.IsImpostor() ? Faction.Intruder : Faction.Crew;
     }
+
+    // public static Faction[] GetFactions(this PlayerControl player)
+    // {
+    //     if (!player)
+    //         return [Faction.None];
+
+    //     if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+    //         return [handler.CurrentFaction, .. handler.FakeFactions];
+
+    //     return [player.IsImpostor() ? Faction.Intruder : Faction.Crew];
+    // }
 
     public static Alignment GetAlignment(this PlayerControl player)
     {
@@ -663,11 +674,12 @@ public static class LayerExtensions
         CallRpc(CustomRPC.Action, ActionsRPC.Convert, convert, target, condition);
     }
 
-    public static bool IsConvertible(this Faction originalFaction) => originalFaction is < Faction.Outcast or Faction.Pandorica or (> Faction.GameMode and < Faction.Cabal);
+    public static bool IsConvertible(this Faction originalFaction) => originalFaction is < Faction.Outcast or Faction.Pandorica or (> Faction.GameMode and < Faction.Mafia);
 
-    // TODO: Implement the bool param for targeting
     public static bool IsFactionedEvil(this Faction faction, bool isKnown = false) => faction is (> Faction.Crew and < Faction.GameMode and not Faction.Outcast) or > Faction.Mafia || (faction is
         > Faction.GameMode and < Faction.Cabal && !OutcastKillingSettings.WinSolo && (!isKnown || OutcastKillingSettings.KnowEachOther));
 
     public static bool IsOk(this Faction faction) => faction is > Faction.GameMode and < Faction.Cabal;
+
+    public static bool IsBuddyWith(this PlayerControl player, PlayerControl refPlayer, Faction faction) => (refPlayer.Is(faction) && faction.IsFactionedEvil(true)) || player.IsLinkedTo(refPlayer);
 }

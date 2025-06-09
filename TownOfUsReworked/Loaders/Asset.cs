@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Loaders;
 
 public abstract class AssetLoader
 {
-    protected static readonly string RepositoryUrl = $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
+    public static readonly string RepositoryUrl = $"https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/{(TownOfUsReworked.IsDev ? "dev" : "main")}";
 
     protected abstract string Manifest { get; }
     protected abstract string DirectoryInfo { get; }

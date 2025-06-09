@@ -78,7 +78,7 @@ public sealed class Crusader : Syndicate
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (!CrusadeMates && player.Is(Faction) && Faction.IsFactionedEvil());
+    public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (!CrusadeMates && Player.IsBuddyWith(player, Faction));
 
     private bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 

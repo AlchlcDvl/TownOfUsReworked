@@ -25,7 +25,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 59;
+    private const int DevBuild = 60;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -49,7 +49,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static readonly Assembly Core = typeof(TownOfUsReworked).Assembly;
 
     private static readonly string VersionSignature = Version.Contains('+') ? Version[(Version.IndexOf('+') + 1)..] : "";
-    private static readonly string VersionS = Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
+    public static readonly string VersionS = Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
     private static readonly string DevString = IsDev ? ("-dev" + DevBuild) : "";
     private const string StreamString = IsStream ? "s" : "";
     public static readonly string VersionFinal = $"v{VersionS}{DevString}{StreamString}";

@@ -82,7 +82,7 @@ public static class CoroutineUtils
     {
         if (www.result == UnityWebRequest.Result.Success)
         {
-            var persistTask = File.WriteAllBytesAsync(location, www.downloadHandler.data);
+            using var persistTask = File.WriteAllBytesAsync(location, www.downloadHandler.data);
             yield return WaitUntilTaskComplete(persistTask);
 
             if (persistTask.Exception is not null)

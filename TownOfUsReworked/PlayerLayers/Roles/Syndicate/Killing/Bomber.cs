@@ -109,7 +109,7 @@ public sealed class Bomber : Syndicate
         {
             case BomberActionsRPC.DropBomb:
             {
-                if ((LocalPlayer.Is(Faction) && Faction.IsFactionedEvil()) || LocalPlayer.IsOtherLover(Player) || LocalPlayer.IsOtherLink(Player))
+                if (Player.IsBuddyWith(LocalPlayer, Faction) && !LocalPlayer.IsOtherRival(Player))
                     Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
 
                 break;

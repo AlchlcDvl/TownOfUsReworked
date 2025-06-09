@@ -11,7 +11,10 @@ public sealed class Medium : Crew, IShaman
     // public static Number SeanceCd = 25;
 
     // [NumberOption(5f, 30f, 1f, Format.Time)]
-    // public static Number SeanceDur = 10;
+    // public static Number SeanceDur = 5;
+
+    // [NumberOption(1, 5, 1, Format.Time)]
+    // public static Number MaxSeances = 1;
 
     [ToggleOption]
     public static bool ShowMediatePlayer = true;
@@ -41,7 +44,7 @@ public sealed class Medium : Crew, IShaman
         MediateArrows = [];
         Alignment = Alignment.Investigative;
         MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));
-        // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), 1,
+        // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), MaxSeances,
         //     new PostDeath(true));
     }
 

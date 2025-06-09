@@ -39,8 +39,9 @@ public sealed class RpcReader : IDisposable
     /// <param name="data">The networked byte stream containing rpc data.</param>
     public RpcReader(byte[] data)
     {
-        Payload = ArrayPool<byte>.Shared.Rent(data.Length);
-        Buffer.BlockCopy(data, 0, Payload, 0, data.Length);
+        DataSize = data.Length;
+        Payload = ArrayPool<byte>.Shared.Rent(DataSize);
+        Buffer.BlockCopy(data, 0, Payload, 0, DataSize);
         Position = 0;
     }
 
@@ -140,10 +141,8 @@ public sealed class RpcReader : IDisposable
         _ when type == typeof(PlayerVoteArea) => ReadVoteArea(),
         _ when type == typeof(DeadBody) => ReadBody(),
         _ when type == typeof(Vent) => ReadVent(),
-        _ when type == typeof(RoleOptionData) => ReadRoleOptionData(),
         _ when type == typeof(CustomButton) => ReadButton(),
         _ when type == typeof(Vector2) => ReadVector2(),
-        _ when type == typeof(Number) => ReadNumber(),
         _ when type == typeof(Type) => ReadType(),
         _ when type == typeof(Enum) => ReadEnum(ReadType()),
         _ when type == typeof(IEnumerable) => ReadValues(),
@@ -253,7 +252,7 @@ public sealed class RpcReader : IDisposable
     /// </summary>
     /// <returns>The deserialized unsigned short value.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public ushort ReadUShort()
+    private ushort ReadUShort()
     {
         ThrowIfIncorrectState(2);
         var result = BitConverter.ToUInt16(Payload, Position);
@@ -279,7 +278,7 @@ public sealed class RpcReader : IDisposable
     /// </summary>
     /// <returns>The deserialized unsigned int value.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public uint ReadUInt()
+    private uint ReadUInt()
     {
         ThrowIfIncorrectState(4);
         var result = BitConverter.ToUInt32(Payload, Position);
@@ -386,20 +385,6 @@ public sealed class RpcReader : IDisposable
         return result;
     }
 
-    /// <summary>
-    /// Reads a sequence of bytes from the data.
-    /// </summary>
-    /// <param name="length">The number of bytes to read.</param>
-    /// <returns>The deserialized byte array.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private byte[] ReadBytes(int length)
-    {
-        ThrowIfIncorrectState(length);
-        var result = Payload[Position..(Position + length)];
-        Position += length;
-        return result;
-    }
-
     // No need for the ThrowIfIncorrectState for the following methods because it's nested
 
     /// <summary>
@@ -450,13 +435,6 @@ public sealed class RpcReader : IDisposable
     public Vent ReadVent() => VentById(ReadInt());
 
     /// <summary>
-    /// Reads a <see cref="RoleOptionData"/> from the data.
-    /// </summary>
-    /// <returns>The option data with the deserialized properties.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public RoleOptionData ReadRoleOptionData() => new(ReadByte(), ReadByte(), ReadBool(), ReadBool(), Read<LayerEnum>());
-
-    /// <summary>
     /// Reads a <see cref="CustomButton"/> by its ID from the data.
     /// </summary>
     /// <returns>The button with the deserialized ID.</returns>
@@ -480,13 +458,6 @@ public sealed class RpcReader : IDisposable
     }
 
     /// <summary>
-    /// Reads a numbered value from the data.
-    /// </summary>
-    /// <returns>The deserialized number value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private Number ReadNumber() => ReadFloat();
-
-    /// <summary>
     /// Reads a type from the data.
     /// </summary>
     /// <returns>The deserialized type value.</returns>
@@ -498,10 +469,10 @@ public sealed class RpcReader : IDisposable
     /// </summary>
     /// <returns>The deserialized summary info.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public INetDeserializable ReadDeserializable(Type type)
+    private INetDeserializable ReadDeserializable(Type type)
     {
-        var obj = (INetDeserializable)Activator.CreateInstance(type);
-        obj.FromBytes(this);
+        var obj = Activator.CreateInstance(type) as INetDeserializable;
+        obj!.FromBytes(this);
         return obj;
     }
 }

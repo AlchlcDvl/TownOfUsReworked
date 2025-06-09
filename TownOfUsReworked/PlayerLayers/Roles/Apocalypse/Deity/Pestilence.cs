@@ -35,5 +35,5 @@ public sealed class Pestilence : Deity
         ObliterateButton.StartCooldown();
     }
 
-    private bool Exception(PlayerControl player) =>  (player.Is(Faction) && Faction.IsFactionedEvil()) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 }

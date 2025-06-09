@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches.Core.Player;
+namespace TownOfUsReworked.Patches.Player;
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.SpeedMod), MethodType.Getter)]
 public static class PlayerOutfitPatches

@@ -271,7 +271,7 @@ public abstract class Assassin : Ability, IGuesser
     {
         var player = PlayerByVoteArea(voteArea);
         return player.HasDied() || Dead || Player.IsLinkedTo(player) || voteArea.NameText.text.Contains('\n') || (player == Player && Local) || (Player.GetFaction() == player.GetFaction() &&
-            Player.GetFaction().IsFactionedEvil()) || RemainingKills <= 0;
+            Player.GetFaction().IsFactionedEvil(true)) || RemainingKills <= 0;
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -342,7 +342,7 @@ public abstract class Assassin : Ability, IGuesser
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"You guessed {guessTarget.name} as {guessString}!" : $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else if (Player != player && player.AmOwner)
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
-        else if ((Player.GetFaction() == LocalPlayer.GetFaction() && Player.GetFaction().IsFactionedEvil()) || DeadSeeEverything())
+        else if ((Player.GetFaction() == LocalPlayer.GetFaction() && Player.GetFaction().IsFactionedEvil(true)) || DeadSeeEverything())
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"{Player.name} guessed {guessTarget.name} as {guessString}!" : $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");

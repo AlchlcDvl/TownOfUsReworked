@@ -25,6 +25,18 @@ public static class MainMenuPatches
             Logo.transform.SetParent(rightPanel);
         }
 
+        if (!IsNullEmptyOrWhiteSpace(UpdateManager.WrongAuVersion))
+        {
+            if (!UpdateManager.Popup)
+            {
+                UpdateManager.Popup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+                UpdateManager.Popup.TextAreaTMP.fontSize *= 0.7f;
+                UpdateManager.Popup.TextAreaTMP.enableAutoSizing = false;
+            }
+
+            UpdateManager.Popup.Show(TranslationManager.Translate(UpdateManager.WrongAuVersion, ("%version%", UpdateManager.ReqVersion)));
+        }
+
         var template = GameObject.Find("ExitGameButton");
 
         if (!template)

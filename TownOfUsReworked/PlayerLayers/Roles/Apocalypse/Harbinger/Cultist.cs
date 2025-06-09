@@ -29,8 +29,7 @@ public sealed class Cultist : Harbinger<Void>
 
     public void Sacrifice(PlayerControl target) => SacrificeButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => (player.Is(Faction) && Faction.IsFactionedEvil()) ||
-        Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
     protected override bool CanTransform() => KillCounts.TryGetValue(PlayerId, out var count) && count >= 3;
 }

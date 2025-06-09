@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Patches.Core.Player;
+namespace TownOfUsReworked.Patches.Player;
 
 // The code is from The Other Roles: Community Edition with some modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
 [HarmonyPatch]
@@ -23,7 +23,7 @@ public static class SpawnPatches
 
     private static IEnumerator Original(AirshipExileController __instance)
     {
-        if (__instance.initData != null && __instance.initData.outfit != null)
+        if (__instance.initData is { outfit: not null })
             PlayerMaterial.SetColors(__instance.initData.outfit.ColorId, __instance.HandSlot);
 
         var num = __instance.Duration + 3.2f;
@@ -36,7 +36,7 @@ public static class SpawnPatches
         ));
 
         if (HudManager.InstanceExists)
-            yield return HUD().CoFadeFullScreen(UColor.black, UColor.clear, 0.2f, false);
+            yield return HUD().CoFadeFullScreen(UColor.black, UColor.clear);
         else
             yield return Effects.Wait(0.2f);
 
@@ -45,7 +45,7 @@ public static class SpawnPatches
         yield return Effects.Wait(0.5f);
 
         if (HudManager.InstanceExists)
-            yield return HUD().CoFadeFullScreen(UColor.clear, UColor.black, 0.2f, false);
+            yield return HUD().CoFadeFullScreen(UColor.clear, UColor.black);
         else
             yield return Effects.Wait(0.2f);
 

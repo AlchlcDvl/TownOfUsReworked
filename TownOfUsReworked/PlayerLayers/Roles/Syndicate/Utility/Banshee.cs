@@ -40,7 +40,7 @@ public sealed class Banshee : Syndicate, IGhosty
     {
         foreach (var player in AllPlayers())
         {
-            if (!player.HasDied() && !player.Is(Faction) && Faction.IsFactionedEvil())
+            if (!player.HasDied() && !Player.IsBuddyWith(player, Faction))
                 Blocked.Add(player.PlayerId);
         }
     }

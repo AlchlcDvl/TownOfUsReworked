@@ -134,10 +134,10 @@ public static class FixUtils
     {
         var ship = Ship();
 
-        if (ship.Systems is null)
+        if (ship?.Systems is null)
             return;
 
-        if (ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>(out var system) || !system.AnyActive)
+        if (!ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>(out var system) || !system.AnyActive)
             return;
 
         if (ship.Systems[SystemTypes.Comms].TryCast<IActivatable>(out var activatable) && activatable.IsActive)
