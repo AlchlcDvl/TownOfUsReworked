@@ -20,7 +20,7 @@ public sealed class Murderer : OKilling
     public override bool CanVent => base.CanVent && MurdVent;
     protected override Faction ActualFaction => Faction.Murderer;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Murder anyone who can oppose you";

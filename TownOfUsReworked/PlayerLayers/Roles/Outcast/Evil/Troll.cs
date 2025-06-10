@@ -28,7 +28,7 @@ public sealed class Troll : Evil
     public override bool CanSwitchVents => TrollSwitchVent;
     public override WinLose EndState => WinLose.TrollWins;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => HasWon ? "- You have successfully trolled someone" : "- Get killed";

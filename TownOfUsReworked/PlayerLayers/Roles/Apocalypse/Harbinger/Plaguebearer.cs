@@ -20,7 +20,7 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
     public override DefenseEnum DefenseVal => Infected.Count < GameData.Instance.PlayerCount / 2 ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool CanVent => base.CanVent && PbVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Infected.Clear();

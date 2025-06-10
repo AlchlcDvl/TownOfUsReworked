@@ -24,7 +24,7 @@ public sealed class Politician : Ability
     public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 
-    protected override void Init()
+    public override void Init()
     {
         VoteBank = PoliticianVoteBank;
         ExtraVotes.Clear();

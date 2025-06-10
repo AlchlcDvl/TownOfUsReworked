@@ -230,6 +230,9 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.Visible), MethodType.Setter), HarmonyPrefix]
     public static void VisiblePrefix(PlayerControl __instance, ref bool value)
     {
+        if (!IsInGame())
+            return;
+
         if (__instance.HasDied() && LocalPlayer.HasDied() && !__instance.AmOwner)
             value = !ClientOptions.HideOtherGhosts;
         else if (LocalPlayer.Is<IShaman>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId) && !__instance.AmOwner)
@@ -264,14 +267,25 @@ public static class PlayerControlPatches
             body.name = name + "Body";
     }
 
-    // Inlining fix
-    [HarmonyPatch(nameof(PlayerControl.HandleRpc)), HarmonyPrefix]
-    public static bool HandleRpcPrefix(PlayerControl __instance, byte callId)
+    // Inlining fix + modded rpcs
+    [HarmonyPatch(nameof(PlayerControl.HandleRpc))]
+    public static bool Prefix(PlayerControl __instance, byte callId, MessageReader reader)
     {
-        if (callId != 4)
+        if (callId == 4)
+            __instance.Exiled();
+        else if (callId == CustomRPCCallID)
+        {
+            var targetClientId = -1;
+
+            if (reader.ReadBoolean())
+                targetClientId = reader.ReadPackedInt32();
+
+            var data = new RpcReader(reader.ReadBytesAndSize());
+            HandleRpc(data, targetClientId);
+        }
+        else
             return true;
 
-        __instance.Exiled();
         return false;
     }
 }
@@ -301,61 +315,19 @@ public static class PlayerInfoPatches
     }
 
     [HarmonyPatch(nameof(NetworkedPlayerInfo.Deserialize))]
-    public static bool Prefix(NetworkedPlayerInfo __instance, MessageReader reader, bool initialState)
+    public static void Postfix(NetworkedPlayerInfo __instance) => __instance.StartCoroutine(CacheOutfits(__instance));
+
+    private static IEnumerator CacheOutfits(NetworkedPlayerInfo __instance)
     {
-        __instance.PlayerId = reader.ReadByte();
-        __instance.ClientId = reader.ReadPackedInt32();
-        var b = reader.ReadByte();
-        __instance.Outfits.Clear();
-        var outfits = AppearanceHandler.Handlers[__instance.PlayerId].Outfits;
-        outfits.Clear();
+        while (!__instance.Object || !PlayerById(__instance.PlayerId))
+            yield return null;
 
-        for (var i = 0; i < b; i++)
-        {
-            var playerOutfitType = (PlayerOutfitType)reader.ReadByte();
-            var playerOutfit = new PlayerOutfit();
-            playerOutfit.Deserialize(reader);
-            __instance.Outfits[playerOutfitType] = playerOutfit;
-            outfits[playerOutfitType] = new(playerOutfit);
-        }
+        if (!AppearanceHandler.Handlers.TryGetValue(__instance.PlayerId, out var handler))
+            handler = PlayerById(__instance.PlayerId).GetComponent<AppearanceHandler>();
 
-        __instance.PlayerLevel = reader.ReadPackedUInt32();
-        var b2 = reader.ReadByte();
-        __instance.Disconnected = (b2 & 1) > 0;
-        __instance.IsDead = (b2 & 4) > 0;
-        __instance.RoleType = (RoleTypes)reader.ReadUInt16();
+        handler.Outfits.Clear();
 
-        if (reader.ReadBoolean())
-            __instance.RoleWhenAlive = new((RoleTypes)reader.ReadUInt16());
-
-        var b3 = reader.ReadByte();
-        __instance.Tasks.Clear();
-
-        for (var j = 0; j < b3; j++)
-        {
-            var taskInfo = new TaskInfo();
-            taskInfo.Deserialize(reader);
-            __instance.Tasks.Add(taskInfo);
-        }
-
-        __instance.FriendCode = reader.ReadString();
-        __instance.Puid = reader.ReadString();
-
-        switch (initialState)
-        {
-            case true when !GameData.Instance.GetPlayerById(__instance.PlayerId) && !GameData.Instance.IsProcessingInfo(__instance):
-            {
-                GameData.Instance.AddPlayerInfo(__instance);
-                break;
-            }
-            case false when __instance.Object:
-            {
-                __instance.Object.MyPhysics.ResetAnimState();
-                break;
-            }
-        }
-
-        GameData.Instance.RecomputeTaskCounts();
-        return false;
+        foreach (var (playerOutfitType, playerOutfit) in __instance.Outfits)
+            handler.Outfits[playerOutfitType] = playerOutfit;
     }
 }

@@ -565,36 +565,20 @@ public static class SettingsPatches
 
         public static void Postfix(PlayerPhysics._CoSpawnPlayer_d__42 __instance, ref bool __result)
         {
-            if (__result)
+            if (__result || !AmongUsClient.Instance || !LocalPlayer || IsFreePlay() || IsHnS())
                 return;
 
             var player = __instance.__4__this.myPlayer;
 
-            if (!AmongUsClient.Instance || !LocalPlayer || !player || IsFreePlay())
+            if (!player)
                 return;
 
             player.GetComponent<PlayerControlHandler>().UpdateCurrent();
 
-            if (Holders.EntryCount < GameData.Instance.PlayerCount)
-            {
-                Holders.RolesEntryList.AddEntryForPlayer();
-                Holders.ModifiersEntryList.AddEntryForPlayer();
-                Holders.AbilitiesEntryList.AddEntryForPlayer();
-                Holders.DispositionsEntryList.AddEntryForPlayer();
+            Holders.EnsureCount();
 
-                if (GameData.Instance.PlayerCount % 3 == 0)
-                {
-                    Holders.RolesBanList.AddEntryForPlayer();
-                    Holders.ModifiersBanList.AddEntryForPlayer();
-                    Holders.AbilitiesBanList.AddEntryForPlayer();
-                    Holders.DispositionsBanList.AddEntryForPlayer();
-                }
-
-                Holders.EntryCount++;
-
-                OnValueChanged();
-                OnValueChangedView();
-            }
+            OnValueChanged();
+            OnValueChangedView();
 
             if (player.AmOwner)
             {
@@ -606,13 +590,19 @@ public static class SettingsPatches
                 return;
             }
 
-            if (GameData.Instance.PlayerCount < 2 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MciActive || IsHnS())
+            if (GameData.Instance.PlayerCount < 2 || !AmongUsClient.Instance.AmHost || TownOfUsReworked.MciActive)
                 return;
 
             SendOptionRPC(targetClientId: player.OwnerId);
-            var writer = CreateWriter(CustomRPC.Misc, MiscRPC.PlayerJoinSync, MapSettings.Map, Summary);
-            var cache = CachedFirstDead is not null;
-            writer.Write(cache);
+            var writer = CreateWriter(CustomRPC.Misc, MiscRPC.PlayerJoinSync, MapSettings.Map);
+            var cache = Summary is not null;
+            writer.Write(value: cache);
+
+            if (cache)
+                writer.Write(Summary);
+
+            cache = CachedFirstDead is not null;
+            writer.Write(value: cache);
 
             if (cache)
                 writer.Write(CachedFirstDead);

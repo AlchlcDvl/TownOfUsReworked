@@ -4,7 +4,7 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 {
     public PlayerLayerEnum EntryType { get; } = entryType;
     public bool IsBan { get; } = isBan;
-    private int Num { get; } = num + 1;
+    public int Num { get; } = num + 1;
 
     public override void PostLoadSetup()
     {
@@ -312,7 +312,9 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
         }
     }
 
-    public static bool IsAdded(ListSlot value, ListEntryOption entry = null) => GetOptions<ListEntryOption>().Any(x => x != entry && !x.IsBan && x.Visible() && x.Value == value);
+    public static bool IsAdded(ListSlot value, ListEntryOption entry = null) => GetOptions<ListEntryOption>().Any(x => x != entry && !x.IsBan && x.Visible() && x.Value == value && x.Num <=
+        GameData.Instance.PlayerCount);
 
-    public static bool IsBanned(ListSlot value, ListEntryOption entry = null) => GetOptions<ListEntryOption>().Any(x => x != entry && x.IsBan && x.Visible() && x.Value == value);
+    public static bool IsBanned(ListSlot value, ListEntryOption entry = null) => GetOptions<ListEntryOption>().Any(x => x != entry && x.IsBan && x.Visible() && x.Value == value && x.Num <=
+        GameData.Instance.PlayerCount / 3);
 }

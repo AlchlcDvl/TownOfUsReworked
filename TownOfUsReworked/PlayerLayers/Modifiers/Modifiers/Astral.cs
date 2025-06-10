@@ -8,7 +8,7 @@ public sealed class Astral : Modifier, IPositioner
     public override LayerEnum Type => LayerEnum.Astral;
     public override Func<string> Description => () => "- You will not teleport to the meeting button";
 
-    protected override void Init() => LastPosition = Vector3.zero;
+    public override void Init() => LastPosition = Vector3.zero;
 
     public override void BeforeMeeting()
     {

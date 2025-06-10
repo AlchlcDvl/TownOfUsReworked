@@ -23,7 +23,7 @@ public sealed class Zealot : Neophyte
     public override bool CanVent => base.CanVent && ZealVent;
     protected override Faction ActualFaction => Faction.Followers;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <#917AC0FF>Followers</color>";

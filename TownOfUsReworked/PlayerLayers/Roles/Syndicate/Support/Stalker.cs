@@ -15,7 +15,7 @@ public sealed class Stalker : Syndicate
     public override Func<string> Description => () => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         StalkerArrows.Clear();

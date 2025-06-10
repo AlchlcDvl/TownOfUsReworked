@@ -32,7 +32,7 @@ public sealed class Disguiser : Intruder
     public override Func<string> StartText { get; } = () => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Deception;

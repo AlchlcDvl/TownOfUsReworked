@@ -6,8 +6,8 @@ namespace TownOfUsReworked.RPCs;
 public interface INetSerializable
 {
     /// <summary>
-    /// Serializes the current instance to an array of bytes.
+    /// Serializes the current instance to a sequence of bytes.
     /// </summary>
-    /// <returns>An array of bytes representing the instance.</returns>
-    byte[] GetBytes();
+    /// <returns>A sequence of bytes representing the instance.</returns>
+    IEnumerable<byte> GetBytes();
 }

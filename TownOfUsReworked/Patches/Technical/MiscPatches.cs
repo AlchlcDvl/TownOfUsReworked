@@ -321,10 +321,11 @@ public static class HudPatches
     public static void Prefix(HudManager __instance) => __instance.GameLoadAnimation.SetActive(false);
 }
 
-[HarmonyPatch(typeof(Constants), nameof(Constants.IsVersionModded))]
-public static class IsModdedPatch
+[HarmonyPatch(typeof(Constants), nameof(Constants.GetBroadcastVersion))]
+public static class ConstantsPatch
 {
-    public static void Postfix(ref bool __result) => __result = true;
+    [HarmonyReversePatch]
+    public static int OriginalGetBroadcastVersion() => throw new();
 }
 
 [HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
@@ -605,6 +606,9 @@ public static class PatchColours
 {
     public static bool Prefix(StringNames id, ref string __result)
     {
+        if (id >= 0)
+            return true;
+
         var result = TranslationManager.Translate(id, out var customString);
 
         if (result)
@@ -658,25 +662,6 @@ public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
     [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with ModManager
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
     public static Exception Finalizer() => null; // My first use of a finalizer ong
-}
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
-public static class RPCHandling
-{
-    public static bool Prefix(byte callId, MessageReader reader)
-    {
-        if (callId != CustomRPCCallID)
-            return true;
-
-        var targetClientId = -1;
-
-        if (reader.ReadBoolean())
-            targetClientId = reader.ReadPackedInt32();
-
-        using var data = reader.Deserialize<RpcReader>();
-        HandleRpc(data, targetClientId);
-        return false;
-    }
 }
 
 [HarmonyPatch(typeof(Enum))]

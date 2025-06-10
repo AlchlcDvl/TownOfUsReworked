@@ -26,7 +26,7 @@ public sealed class Timekeeper : Syndicate
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
         CommonAbilities;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Disruption;

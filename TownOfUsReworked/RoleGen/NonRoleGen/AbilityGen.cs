@@ -20,7 +20,7 @@ public sealed class AbilityGen : BaseGen
     {
         var abilities = GetValuesFromTo(LayerEnum.Bullseye, LayerEnum.Underdog);
 
-        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Ability))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Ability && x.Num <= GameData.Instance.PlayerCount))
         {
             foreach (var id in entry.Value)
             {

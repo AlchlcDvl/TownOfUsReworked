@@ -25,7 +25,7 @@ public sealed class Enforcer : Intruder
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
         $"{EnforceDur}s, the bomb will detonate and kill everyone within a {EnforceRadius}m radius\n{CommonAbilities}";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;

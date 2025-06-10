@@ -19,7 +19,7 @@ public sealed class Shifter : Evil
     public override bool HasWon => Shifters.All(x => !Originals.Contains(x) && x.HasDied());
     public override WinLose EndState => WinLose.ShifterWins;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;

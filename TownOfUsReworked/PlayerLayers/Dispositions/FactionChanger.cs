@@ -10,7 +10,7 @@ public abstract class FactionChanger : Disposition
     public abstract bool RevealerReveals { get; }
     public abstract bool SnitchReveals { get; }
 
-    public override void LateInit() => Side = Handler.CurrentFaction;
+    public override void Init() => Side = Handler.CurrentFaction;
 
     public override void UpdatePlayer()
     {

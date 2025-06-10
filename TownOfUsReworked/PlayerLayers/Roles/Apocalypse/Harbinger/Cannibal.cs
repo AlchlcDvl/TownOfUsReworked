@@ -29,7 +29,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
     public override bool CanVent => base.CanVent && CannibalVent;
     public override DefenseEnum DefenseVal => EatNeed <= 2 ? DefenseEnum.None : DefenseEnum.Basic;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")} to bring forth <#A7C596FF>Gluttony</color>";

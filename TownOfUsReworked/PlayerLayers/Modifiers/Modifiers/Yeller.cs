@@ -8,7 +8,7 @@ public sealed class Yeller : Modifier
 
     private PlayerArrow Arrow { get; set; }
 
-    protected override void Init()
+    public override void Init()
     {
         if (!Local)
             Arrow = new(LocalPlayer, Player, Color);

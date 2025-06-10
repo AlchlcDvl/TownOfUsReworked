@@ -37,7 +37,7 @@ public sealed class Medium : Crew, IShaman
     public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
         "players will be able to see you"));
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         MediatedPlayers.Clear();

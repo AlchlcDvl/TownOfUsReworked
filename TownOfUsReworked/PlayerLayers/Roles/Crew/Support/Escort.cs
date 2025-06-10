@@ -19,7 +19,7 @@ public sealed class Escort : Crew, IBlocker
         "to blocks\n- If you attempt to block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you";
     public override bool RoleBlockImmune => true;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;

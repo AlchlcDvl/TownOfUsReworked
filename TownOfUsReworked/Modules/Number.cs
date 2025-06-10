@@ -95,7 +95,7 @@ public struct Number(float num) : IComparable, IFormattable, INetSerializable, I
     public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
 
     /// <inheritdoc/>
-    public readonly byte[] GetBytes() => [.. RpcWriter.GetBytes(Value)];
+    public readonly IEnumerable<byte> GetBytes() => RpcWriter.GetBytes(Value);
 
     /// <inheritdoc/>
     public readonly override int GetHashCode() => Value.GetHashCode();

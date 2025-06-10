@@ -36,7 +36,7 @@ public sealed class Cryomaniac : OKilling, IDouser
     public override bool CanVent => base.CanVent && CryoVent;
     protected override Faction ActualFaction => Faction.Cryomaniac;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Freeze anyone who can oppose you";

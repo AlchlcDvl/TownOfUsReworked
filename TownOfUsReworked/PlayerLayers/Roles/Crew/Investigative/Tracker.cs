@@ -23,7 +23,7 @@ public sealed class Tracker : Crew
     public override Func<string> StartText { get; } = () => "Track Everyone's Movements";
     public override Func<string> Description => () => "- You can track players which creates arrows that update every now and then with the target's position";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         TrackerArrows.Clear();

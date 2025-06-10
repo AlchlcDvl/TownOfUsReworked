@@ -19,7 +19,7 @@ public sealed class Phantom : Outcast, IGhosty
     public override bool HasWon => TasksDone;
     public override WinLose EndState => WinLose.PhantomWins;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Finish your tasks without getting clicked";

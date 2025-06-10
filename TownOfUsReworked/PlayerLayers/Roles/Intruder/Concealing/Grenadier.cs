@@ -27,7 +27,7 @@ public sealed class Grenadier : Intruder
     public override Func<string> Description => () => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
     public override bool CanVent => GrenadierVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Concealing;

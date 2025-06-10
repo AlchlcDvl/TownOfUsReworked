@@ -362,16 +362,16 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base.graphic.SetCooldownNormalizedUvs();
         Base.name = ID;
         Base.buttonLabelText.SetOutlineColor(TextColor);
-        var passive = Base.GetComponent<PassiveButton>();
-        passive.OverrideOnClickListeners(Clicked);
-        passive.HoverSound = GetAudio("Hover");
-        Block = UObject.Instantiate(Blocked.BlockPrefab, Base.transform);
-        Block.transform.SetLocalZ(-5f);
+        Base.usesRemainingSprite.color = TextColor;
+        Base.GetComponent<PassiveButton>().OverrideOnClickListeners(Clicked);
+        Block = Base.SetBlock();
 
         if (HasUses)
             Base.SetUsesRemaining(UsesCount);
         else
             Base.SetInfiniteUses();
+
+        Base.gameObject.SetActive(!Disabled);
     }
 
     private static ActionButton InstantiateButton()
@@ -841,5 +841,5 @@ public sealed class CustomButton : IDisposable, INetSerializable
         GC.SuppressFinalize(this);
     }
 
-    public byte[] GetBytes() => [..RpcWriter.GetBytes(ID)];
+    public IEnumerable<byte> GetBytes() => RpcWriter.GetBytes(ID);
 }

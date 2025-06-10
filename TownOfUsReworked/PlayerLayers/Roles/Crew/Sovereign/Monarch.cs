@@ -33,7 +33,7 @@ public sealed class Monarch : Sovereign
         + " you cannot be killed\n- You will know when a knight of yours dies";
     public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Knighted.Clear();

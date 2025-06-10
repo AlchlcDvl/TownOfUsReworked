@@ -27,7 +27,7 @@ public sealed class Shapeshifter : Syndicate
     public override Func<string> StartText { get; } = () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Disruption;

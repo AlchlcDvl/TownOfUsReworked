@@ -24,7 +24,7 @@ public sealed class Crusader : Syndicate
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
         $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {ChaosDriveCrusadeRadius}m radius" : "")}\n{CommonAbilities}";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;

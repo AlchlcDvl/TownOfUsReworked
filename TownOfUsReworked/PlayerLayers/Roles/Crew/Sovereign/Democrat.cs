@@ -23,7 +23,7 @@ public sealed class Democrat : Sovereign
     public override Func<string> Description => () => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
         "<#704FA8FF>Mayor</color>";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable2, "REVEAL");

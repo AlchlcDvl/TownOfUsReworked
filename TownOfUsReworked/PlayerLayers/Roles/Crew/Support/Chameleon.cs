@@ -21,7 +21,7 @@ public sealed class Chameleon : Crew
     public override Func<string> StartText { get; } = () => "Go Invisible To Stalk Players";
     public override Func<string> Description => () => "- You can turn invisible";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;

@@ -16,7 +16,7 @@ public sealed class Engineer : Crew
     public override Func<string> StartText { get; } = () => "Just Fix It";
     public override Func<string> Description => () => "- You can fix sabotages at any time from anywhere\n- You can vent";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;

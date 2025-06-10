@@ -18,7 +18,7 @@ public sealed class Defector : Disposition
     public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !DefectorKnows && !Turned;
 
-    public override void LateInit() => Side = Handler.CurrentFaction;
+    public override void Init() => Side = Handler.CurrentFaction;
 
     public override void UpdateHud(HudManager __instance)
     {

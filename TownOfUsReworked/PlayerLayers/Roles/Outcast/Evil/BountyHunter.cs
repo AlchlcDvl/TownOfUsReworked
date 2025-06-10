@@ -53,7 +53,7 @@ public sealed class BountyHunter : Evil, ITargeter
     public override bool CanVent => base.CanVent && BhVent;
     public override WinLose EndState => WinLose.BountyHunterWins;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
@@ -62,21 +62,18 @@ public sealed class BountyHunter : Evil, ITargeter
             BountyHunterGuesses);
         HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BhHuntCd), "HUNT", (UsableFunc)Usable2);
         Letters.Clear();
+
+        if (BountyHunterCanPickTargets || !TargetPlayer)
+        {
+            RequestButton ??= new(this, new SpriteName("Request"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
+                (UsableFunc)Usable3);
+        }
     }
 
     public override void Reset(bool meeting, bool start)
     {
         if (meeting && !TargetPlayer)
             Rounds++;
-    }
-
-    public override void LateInit()
-    {
-        if (BountyHunterCanPickTargets || !TargetPlayer)
-        {
-            RequestButton ??= new(this, new SpriteName("Request"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
-                (UsableFunc)Usable3);
-        }
     }
 
     private bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.GetRole().Requesting;

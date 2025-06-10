@@ -25,7 +25,7 @@ public abstract class OKilling : Outcast
 
     protected abstract Faction ActualFaction { get; }
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;

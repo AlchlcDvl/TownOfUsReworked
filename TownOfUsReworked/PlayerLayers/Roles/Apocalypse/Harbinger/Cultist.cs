@@ -18,7 +18,7 @@ public sealed class Cultist : Harbinger<Void>
     public override DefenseEnum DefenseVal => GetLayers<Apocalypse>().Count() > 1 ? DefenseEnum.None : DefenseEnum.Basic;
     public override bool CanVent => base.CanVent && CultVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         SacrificeButton ??= new(this, (SpriteFunc)GetSpriteName, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Sacrifice, (PlayerBodyExclusion)Exception, "SACRIFICE",

@@ -17,7 +17,7 @@ public sealed class Ghoul : Intruder, IGhosty
     public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +
         " meeting if you are not clicked";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Utility;

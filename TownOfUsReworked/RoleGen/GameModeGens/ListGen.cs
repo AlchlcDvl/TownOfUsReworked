@@ -11,7 +11,7 @@ public sealed class ListGen : BaseRoleGen
         SetPostmortals.Banshees = GameModeSettings.BansheeCount;
         SetPostmortals.Ghouls = GameModeSettings.GhoulCount;
 
-        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role && x.Num <= GameData.Instance.PlayerCount))
         {
             foreach (var id in entry.Value)
             {

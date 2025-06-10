@@ -29,7 +29,7 @@ public sealed class Dracula : Neophyte
     public override bool CanVent => base.CanVent && DracVent;
     protected override Faction ActualFaction => Faction.Undead;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <#7B8968FF>Undead</color>";

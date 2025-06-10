@@ -23,7 +23,7 @@ public sealed class Mayor : Sovereign
     public override Func<string> StartText { get; } = () => "Commit Voter Fraud!";
     public override Func<string> Description => () => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, "REVEAL");

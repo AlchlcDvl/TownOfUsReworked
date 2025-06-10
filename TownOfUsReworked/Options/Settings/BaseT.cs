@@ -64,13 +64,13 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
 
     public override string ToString() => $"{ID}:{ValueString()}";
 
-    public override void ReadValueRpc(RpcReader reader) => Set(reader.Read<T>(), false);
+    public override void ReadValueRpc(RpcReader reader) => Set(reader.Read<T>(), false, receivedFromRpc: true);
 
     public override void WriteValueRpc(RpcWriter writer) => writer.Write(Value);
 
     protected virtual string ValueString() => $"{Value}";
 
-    public void Set(T value, bool rpc = true, bool notify = true)
+    public void Set(T value, bool rpc = true, bool notify = true, bool receivedFromRpc = false)
     {
         if (IsInGame() && !(ClientOnly || TownOfUsReworked.MciActive))
             return;
@@ -83,24 +83,30 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
         if (rpc && AmongUsClient.Instance.AmHost && !(ClientOnly || !ID.Contains("CustomOption") || this is BaseHeaderOption))
             SendOptionRPC(this);
 
-        if (Setting)
-            SettingsPatches.OnValueChanged();
+        if (!receivedFromRpc)
+        {
+            if (Setting)
+                SettingsPatches.OnValueChanged();
 
-        if (ViewSetting)
-            SettingsPatches.OnValueChangedView();
+            if (ViewSetting)
+                SettingsPatches.OnValueChangedView();
+        }
+
+        if (!HudManager.InstanceExists || !notify)
+            return;
 
         var stringValue = FormatValue();
 
-        if (!HudManager.InstanceExists || !notify || IsNullEmptyOrWhiteSpace(stringValue))
+        if (IsNullEmptyOrWhiteSpace(stringValue))
             return;
 
         var changed = $"<font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{SettingNotif()}</font> set to <font=\"Barlow-Black SDF\" material=\"Barlow-Black Outline\">{stringValue}</font>";
-        var notifier = HUD().Notifier;
 
         if (LastChangedSetting == ID && LastSettingNotif)
             LastSettingNotif.UpdateMessage(changed);
         else
         {
+            var notifier = HUD().Notifier;
             LastChangedSetting = ID;
             LastSettingNotif = PopNotif(changed, notifier.settingsChangeColor, notifier.settingsChangeSprite);
         }

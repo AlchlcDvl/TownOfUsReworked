@@ -23,7 +23,7 @@ public sealed class Wraith : Intruder
     public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";
     public override bool CanVent => WraithVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Deception;

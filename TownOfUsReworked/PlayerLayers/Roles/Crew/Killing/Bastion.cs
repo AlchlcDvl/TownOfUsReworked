@@ -21,7 +21,7 @@ public sealed class Bastion : CKilling, IVentBomber
     public override Func<string> Description => () => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         BombedIDs.Clear();

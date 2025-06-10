@@ -29,7 +29,7 @@ public sealed class Teleporter : Intruder, IMover
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
     public override bool CanVent => TeleVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;

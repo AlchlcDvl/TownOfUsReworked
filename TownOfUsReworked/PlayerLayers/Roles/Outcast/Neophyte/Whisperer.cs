@@ -44,7 +44,7 @@ public sealed class Whisperer : Neophyte
     public override bool CanVent => base.CanVent && WhispVent;
     protected override Faction ActualFaction => Faction.Cult;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Persuade or kill anyone who can oppose the <#F995FCFF>Cult</color>";

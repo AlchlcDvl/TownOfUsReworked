@@ -24,7 +24,7 @@ public sealed class Transporter : Crew, IMover
     public override Func<string> StartText { get; } = () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Support;

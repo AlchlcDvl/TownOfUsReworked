@@ -134,7 +134,16 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     }
 
     /// <inheritdoc/>
-    public byte[] GetBytes() => [ (byte)Count, .. values.Select(x => (byte)Convert.ChangeType(x, typeof(byte))) ]; // All enums within the code base use byte
+    public IEnumerable<byte> GetBytes()
+    {
+        // All enums within the code base use byte
+        yield return (byte)values.Count;
+
+        var type = typeof(byte);
+
+        foreach (var value in values)
+            yield return (byte)Convert.ChangeType(value, type);
+    }
 
     /// <inheritdoc/>
     public void FromBytes(RpcReader reader)
@@ -170,7 +179,7 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// Converts the current instance to one singular value.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    /// <exception cref="Exception">There were either no values, or more than one value.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if there were either no values, or more than one value.</exception>
     public static implicit operator T(MultiSelectValue<T> value) =>
         value.Count == 1
             ? value.values.First()

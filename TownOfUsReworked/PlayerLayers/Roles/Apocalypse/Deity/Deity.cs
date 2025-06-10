@@ -5,7 +5,7 @@ public abstract class Deity : Apocalypse
     public override DefenseEnum DefenseVal => DefenseEnum.Invincible;
     public override bool AffectedByLights => false;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Deity;

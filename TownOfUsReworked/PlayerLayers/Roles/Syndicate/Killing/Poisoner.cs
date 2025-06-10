@@ -20,7 +20,7 @@ public sealed class Poisoner : Syndicate
     public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" +
         CommonAbilities;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         PoisonedPlayer = null;

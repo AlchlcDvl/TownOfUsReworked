@@ -8,7 +8,7 @@ public sealed class Radar : Ability
     public override LayerEnum Type => LayerEnum.Radar;
     public override Func<string> Description => () => "- You are aware of those close to you";
 
-    protected override void Init() => RadarArrow = new(Player, Color, Target);
+    public override void Init() => RadarArrow = new(Player, Color, Target);
 
     public override void ClearArrows() => RadarArrow?.Destroy();
 

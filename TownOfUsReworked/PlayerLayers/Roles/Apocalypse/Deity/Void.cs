@@ -24,7 +24,7 @@ public sealed class Void : Deity
     public override bool CanVent => base.CanVent && VoidVent;
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         ExtractButton ??= new(this, new SpriteName("Extract"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Extract, (PlayerBodyExclusion)Exception, "EXTRACT",

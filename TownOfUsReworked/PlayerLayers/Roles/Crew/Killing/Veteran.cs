@@ -21,7 +21,7 @@ public sealed class Veteran : CKilling, IAlerter
     public override DefenseEnum DefenseVal => AlertButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override AttackEnum AttackVal => AlertButton.EffectActive ? AttackEnum.Powerful : AttackEnum.None;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         AlertButton ??= new(this, "ALERT", new SpriteName("Alert"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Alert, new Cooldown(AlertCd), MaxAlerts,

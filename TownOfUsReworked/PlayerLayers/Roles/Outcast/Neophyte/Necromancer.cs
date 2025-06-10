@@ -62,7 +62,7 @@ public sealed class Necromancer : Neophyte, IReviver
     public override bool CanVent => base.CanVent && NecroVent;
     protected override Faction ActualFaction => Faction.Reanimated;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Resurrect or kill anyone who can oppose the <#E6108AFF>Reanimated</color>";

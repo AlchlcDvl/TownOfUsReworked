@@ -26,7 +26,7 @@ public sealed class Thief : Outcast, IGuesser
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override bool CanVent => base.CanVent && ThiefVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Benign;

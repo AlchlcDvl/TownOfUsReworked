@@ -21,7 +21,7 @@ public sealed class Drunk : Modifier
     public override Func<string> Description => () => DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
     public override bool Hidden => !DrunkKnows && !Exposed && !Dead;
 
-    protected override void Init()
+    public override void Init()
     {
         Modify = Hidden ? 1 : -1;
         Exposed = DrunkKnows;

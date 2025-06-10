@@ -19,7 +19,7 @@ public sealed class ModifierGen : BaseGen
     {
         var abilities = GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller);
 
-        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier && x.Num <= GameData.Instance.PlayerCount))
         {
             foreach (var id in entry.Value)
             {
@@ -74,10 +74,10 @@ public sealed class ModifierGen : BaseGen
             {
                 LayerEnum.Bait => playerList.FirstOrDefault(x => x.GetRole() is not (Vigilante or Shifter or Thief or Altruist or Troll)),
                 LayerEnum.Diseased => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll)),
-                LayerEnum.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && (!Mayor.MayorButton || !Democrat.DemocratButton)) || (x.Is<Jester>() && !Jester.JesterButton) ||
-                    (x.Is<Swapper>() && !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() &&
-                    !Executioner.ExecutionerButton) || (x.Is<Politician>() && !Politician.PoliticianButton) ||  x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) ||
-                    (!Monarch.MonarchButton && x.Is<Monarch>()) || (x.Is<Mayor>() && !Mayor.MayorButton))),
+                LayerEnum.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && !Democrat.DemocratButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() &&
+                    !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) ||
+                    (x.Is<Politician>() && !Politician.PoliticianButton) || x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) || (!Monarch.MonarchButton && x.Is<Monarch>()) ||
+                    (x.Is<Mayor>() && !Mayor.MayorButton))),
                 _ => GlobalMod.Contains(id) ? playerList.FirstOrDefault() : null
             };
 

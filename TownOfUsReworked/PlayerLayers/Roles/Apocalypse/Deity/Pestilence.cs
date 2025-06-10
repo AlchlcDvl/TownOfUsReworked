@@ -21,7 +21,7 @@ public sealed class Pestilence : Deity
 
     public static readonly Dictionary<byte, byte> Infected = [];
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         ObliterateButton ??= new(this, new SpriteName("Obliterate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",

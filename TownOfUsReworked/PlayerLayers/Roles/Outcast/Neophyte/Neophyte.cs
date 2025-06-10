@@ -25,7 +25,7 @@ public abstract class Neophyte : Outcast
 
     public HashSet<byte> Members { get; } = [];
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Neophyte;

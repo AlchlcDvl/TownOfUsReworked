@@ -66,6 +66,8 @@ public sealed class AppearanceHandler : MonoBehaviour
         OutfitTime = -1f;
         Name = Player.NameText();
         Name.transform.localPosition = new(0f, -0.2f, -0.5f);
+        Color = Player.ColorBlindText();
+        Color.transform.localPosition = new(0f, -1.5f, -0.5f);
     }
 
     public void Update()
@@ -96,8 +98,6 @@ public sealed class AppearanceHandler : MonoBehaviour
 
     public void UpdateCurrent()
     {
-        Color = Player.ColorBlindText();
-        Color.transform.localPosition = new(0f, -1.5f, -0.5f);
         Current = Default = new(Player);
         Handlers[Player.PlayerId] = this;
         Alpha = Current.Alpha;

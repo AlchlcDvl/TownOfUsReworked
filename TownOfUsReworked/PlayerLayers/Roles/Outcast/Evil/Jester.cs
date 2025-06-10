@@ -31,7 +31,7 @@ public sealed class Jester : Evil
     public override bool CanSwitchVents => JestSwitchVent;
     public override WinLose EndState => WinLose.JesterWins;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";

@@ -22,7 +22,7 @@ public sealed class Sheriff : Crew
     public override Func<string> StartText { get; } = () => "Reveal The Alignment Of Other Players";
     public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;

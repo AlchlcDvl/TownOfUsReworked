@@ -22,7 +22,7 @@ public sealed class Medic : Crew, IShielder
     public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?
         "\n- If your target is attacked, you will be notified of it" : "");
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         ShieldedPlayer = null;

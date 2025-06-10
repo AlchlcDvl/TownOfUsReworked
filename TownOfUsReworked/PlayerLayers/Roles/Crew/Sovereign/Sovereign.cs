@@ -4,7 +4,7 @@ public abstract class Sovereign : Crew
 {
     public bool Revealed { get; set; }
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Sovereign;

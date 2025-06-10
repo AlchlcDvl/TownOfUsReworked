@@ -23,7 +23,7 @@ public sealed class Dictator : Sovereign
     public override Func<string> StartText { get; } = () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, MaxTribunals);

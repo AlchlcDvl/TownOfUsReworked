@@ -28,7 +28,7 @@ public sealed class Survivor : Outcast
     public override bool CanVent => base.CanVent && SurvVent;
     public override bool CanSwitchVents => SurvSwitchVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Benign;

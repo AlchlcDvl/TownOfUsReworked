@@ -1,11 +1,13 @@
 namespace TownOfUsReworked.Modules;
 
 [Serializable]
-public readonly struct SummaryInfo() : INetSerializable, INetDeserializable
+public sealed class SummaryInfo() : INetSerializable, INetDeserializable, IDisposable
 {
+    ~SummaryInfo() => Modules.Clear();
+
     public readonly List<SummaryInfoModule> Modules = [];
 
-    public byte[] GetBytes() => [(byte)Modules.Count, .. Modules.SelectMany(x => x.GetBytes())];
+    public IEnumerable<byte> GetBytes() => [(byte)Modules.Count, .. Modules.SelectMany(x => x.GetBytes())];
 
     public void FromBytes(RpcReader netData)
     {
@@ -20,6 +22,12 @@ public readonly struct SummaryInfo() : INetSerializable, INetDeserializable
         var result = "";
         Modules.ForEach(x => result += $"{x.Summarise().FullSummary}\n");
         return result;
+    }
+
+    public void Dispose()
+    {
+        Modules.Clear();
+        GC.SuppressFinalize(this);
     }
 }
 
@@ -47,9 +55,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
     public bool Disconnected { get; set; }
 
-    public readonly byte[] GetBytes() => [.. YieldBytes()];
-
-    private readonly IEnumerable<byte> YieldBytes()
+    public readonly IEnumerable<byte> GetBytes()
     {
         foreach (var val in RpcWriter.GetBytes(PlayerName))
             yield return val;
@@ -74,29 +80,24 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
         yield return (byte)(IsGuessTarget ? 1 : 0);
         yield return (byte)(IsDriveHolder ? 1 : 0);
 
+        yield return (byte)(CanDoTasks ? 1 : 0);
+
         if (CanDoTasks)
         {
-            yield return 1;
+            yield return (byte)(TasksDone ? 1 : 0);
 
-            if (TasksDone)
-                yield return 1;
-            else
+            if (!TasksDone)
             {
-                yield return 0;
                 yield return CompletedTasks;
                 yield return TotalTasks;
             }
         }
-        else
-            yield return 0;
+
+        yield return (byte)(Disconnected ? 1 : 0);
 
         if (Disconnected)
-        {
-            yield return 1;
             yield break;
-        }
 
-        yield return 0;
         yield return (byte)DeathReason;
 
         if (DeathReason == DeathReasonEnum.Alive)
@@ -192,12 +193,15 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
             }
         }
 
+        Disconnected = disconnected;
+
+        if (Disconnected)
+            return;
+
         DeathReason = handler.DeathReason;
 
         if (handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(handler.KilledBy))
             KilledBy = handler.KilledBy;
-
-        Disconnected = disconnected;
     }
 
     public readonly (string FullSummary, string Summary) Summarise()

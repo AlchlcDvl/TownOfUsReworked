@@ -155,7 +155,8 @@ public static class DispositionBanList;
 // Need singleton access because the list holders for some god forsaken reason are not working the way I wanted them to
 public static class Holders
 {
-    public static int EntryCount;
+    private static int EntryCount;
+    private static int BanCount;
 
     public static ListHolderOption RolesEntryList;
     public static ListHolderOption ModifiersEntryList;
@@ -166,6 +167,29 @@ public static class Holders
     public static ListHolderOption ModifiersBanList;
     public static ListHolderOption AbilitiesBanList;
     public static ListHolderOption DispositionsBanList;
+
+    public static void EnsureCount()
+    {
+        while (EntryCount < GameData.Instance.PlayerCount)
+        {
+            RolesEntryList.AddEntryForPlayer();
+            ModifiersEntryList.AddEntryForPlayer();
+            AbilitiesEntryList.AddEntryForPlayer();
+            DispositionsEntryList.AddEntryForPlayer();
+
+            EntryCount++;
+        }
+
+        while (BanCount < GameData.Instance.PlayerCount / 3)
+        {
+            RolesBanList.AddEntryForPlayer();
+            ModifiersBanList.AddEntryForPlayer();
+            AbilitiesBanList.AddEntryForPlayer();
+            DispositionsBanList.AddEntryForPlayer();
+
+            BanCount++;
+        }
+    }
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -320,7 +344,7 @@ public static class GameModifiers
     public static bool JaniCanMutuallyExclusive = false;
 
     [MultiSelectOption<RandomSpawning>]
-    public static MultiSelectValue<RandomSpawning> RandomSpawns = "";
+    public static MultiSelectValue<RandomSpawning> RandomSpawns = [];
 
     [ToggleOption]
     public static bool ShowKillerRoleColor = false;

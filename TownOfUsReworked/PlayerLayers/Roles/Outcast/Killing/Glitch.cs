@@ -41,7 +41,7 @@ public sealed class Glitch : OKilling, IBlocker
     public override bool CanVent => base.CanVent && GlitchVent;
     protected override Faction ActualFaction => Faction.Glitch;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Outcastise anyone who can oppose you";

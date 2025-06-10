@@ -20,7 +20,7 @@ public sealed class Banshee : Syndicate, IGhosty
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
     public override bool RoleBlockImmune => true; // Not taking chances
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Utility;

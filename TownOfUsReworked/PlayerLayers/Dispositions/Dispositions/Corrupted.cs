@@ -18,10 +18,11 @@ public sealed class Corrupted : Disposition
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => CorruptedVent;
 
-    protected override void Init() => CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)Corrupt,
-        new Cooldown(CorruptCd));
-
-    public override void LateInit() => Handler.CurrentFaction = Faction.Outcast;
+    public override void Init()
+    {
+        CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)Corrupt, new Cooldown(CorruptCd));
+        Handler.CurrentFaction = Faction.Outcast;
+    }
 
     private void Corrupt(PlayerControl target) => CorruptButton.StartCooldown(Interact(Player, target, true));
 

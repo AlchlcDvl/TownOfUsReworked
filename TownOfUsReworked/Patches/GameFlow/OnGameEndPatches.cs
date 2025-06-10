@@ -248,7 +248,7 @@ public static class OnGameEndPatches
             roleSummaryTextMesh.fontSize = 1.5f;
             roleSummaryTextMesh.text = $"{roleSummaryText}";
             roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
-            File.WriteAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary"), Summary.GetBytes());
+            File.WriteAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary"), [.. Summary.GetBytes()]);
             return false;
         }
     }

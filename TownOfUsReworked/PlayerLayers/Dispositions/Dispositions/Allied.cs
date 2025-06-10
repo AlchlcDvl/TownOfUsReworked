@@ -42,5 +42,5 @@ public sealed class Allied : Disposition
     public override LayerEnum Type => LayerEnum.Allied;
     public override Func<string> Description => () => Side == Faction.Outcast ? "- You are conflicted" : "";
 
-    public override void LateInit() => Side = Faction.Outcast;
+    public override void Init() => Side = Faction.Outcast;
 }

@@ -34,7 +34,7 @@ public static class UpdateManager
         WrongAuVersion = null;
 
         byte[] json;
-        var path = Path.Combine(TownOfUsReworked.Other, "VersionData.json");
+        var path = Path.Combine(TownOfUsReworked.Other, "Versions.json");
 
         if (ClientOptions.ForceUseLocal)
         {
@@ -44,7 +44,7 @@ public static class UpdateManager
         }
         else
         {
-            var www = UnityWebRequest.Get($"{AssetLoader.RepositoryUrl}/VersionData.json");
+            var www = UnityWebRequest.Get($"{AssetLoader.RepositoryUrl}/Versions.json");
             yield return www.SendWebRequest();
 
             var isError = www.result != UnityWebRequest.Result.Success;
@@ -90,7 +90,7 @@ public static class UpdateManager
         if (relevant == null)
             yield break;
 
-        var auVer = Constants.GetBroadcastVersion();
+        var auVer = ConstantsPatch.OriginalGetBroadcastVersion();
 
         if (relevant.GameVersions.ContainsKey(auVer))
             yield break;

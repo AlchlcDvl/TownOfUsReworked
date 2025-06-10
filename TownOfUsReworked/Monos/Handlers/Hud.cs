@@ -8,7 +8,7 @@ public sealed class HudHandler : MonoBehaviour
 
     public void Update()
     {
-        if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HudManager.InstanceExists || !Ship() || HUD().IsIntroDisplayed)
+        if (IsLobby() || IsEnded() || NoPlayers() || IsHnS() || !HudManager.InstanceExists || !Ship() || HUD().IsIntroDisplayed || !LayerHandler.Handlers.ContainsKey(LocalPlayer.PlayerId))
             return;
 
         if (LocalBlocked() && ActiveTask())

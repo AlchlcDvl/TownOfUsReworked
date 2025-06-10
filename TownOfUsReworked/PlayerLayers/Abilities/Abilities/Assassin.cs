@@ -71,7 +71,7 @@ public abstract class Assassin : Ability, IGuesser
     public override Func<string> Description => () => "- You can guess players mid-meetings";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    protected override void Init()
+    public override void Init()
     {
         GuessMenu = new(Player, "Guess", Guess, IsExempt, SetLists);
         GuessingMenu = new(Player, GuessPlayer);

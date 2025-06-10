@@ -33,12 +33,12 @@ public static class RpcManager
     /// <param name="data">The data associated to the rpc.</param>
     public static void CallRpc(CustomRPC rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
 
-    // /// <summary>
-    // /// Sends a late RPC message to all players.
-    // /// </summary>
-    // /// <param name="rpc">The main rpc header.</param>
-    // /// <param name="data">The data associated to the rpc.</param>
-    // public static void CallLateRpc(CustomRPC rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
+    /// <summary>
+    /// Sends a late RPC message to all players.
+    /// </summary>
+    /// <param name="rpc">The main rpc header.</param>
+    /// <param name="data">The data associated to the rpc.</param>
+    public static void CallLateRpc(CustomRPC rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
 
     // /// <summary>
     // /// Sends an RPC message with type codes to all players.
@@ -66,17 +66,17 @@ public static class RpcManager
         writer?.Send(targetClientId);
     }
 
-    // /// <summary>
-    // /// Sends a late RPC message to a specific player.
-    // /// </summary>
-    // /// <param name="targetClientId">The player to send the data to.</param>
-    // /// <param name="rpc">The main rpc header.</param>
-    // /// <param name="data">The data associated to the rpc.</param>
-    // public static void CallLateTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
-    // {
-    //     using var writer = CreateWriter(rpc, data);
-    //     writer?.SendLate(targetClientId);
-    // }
+    /// <summary>
+    /// Sends a late RPC message to a specific player.
+    /// </summary>
+    /// <param name="targetClientId">The player to send the data to.</param>
+    /// <param name="rpc">The main rpc header.</param>
+    /// <param name="data">The data associated to the rpc.</param>
+    public static void CallLateTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
+    {
+        using var writer = CreateWriter(rpc, data);
+        writer?.SendLate(targetClientId);
+    }
 
     // /// <summary>
     // /// Sends an RPC message to a specific player.
@@ -114,6 +114,8 @@ public static class RpcManager
             AmongUsClient.Instance.FinishRpcImmediately(writer);
     }
 
+    public static MessageWriter CreateMessageWriter(int targetClientId = -1) => AmongUsClient.Instance.StartRpcImmediately(LocalPlayer.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
+
     /// <summary>
     /// Sends all non-client mod settings to other players.
     /// </summary>
@@ -129,13 +131,12 @@ public static class RpcManager
             return;
 
         var options = setting is not null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
-        var count = options.Count();
-        var split = count > 75 ? (IEnumerable<IEnumerable<Option>>)options.Chunk(75) : [ options ]; // No need to split if less than chunk size, saves from arbitrary computation time, but I'll be honest I like my shit fast
-        Info($"Sending {count} options split to {split.Count()} sets to {targetClientId}");
+        var split = options.Chunk(100);
+        Info($"Sending options split to {split.Count()} sets to {targetClientId}");
 
         foreach (var list in split)
         {
-            using var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Count());
+            using var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Length);
 
             foreach (var option in list)
             {
@@ -169,14 +170,16 @@ public static class RpcManager
 
             if (customOption is not null)
             {
-                // Info($"Received option: {customOption.Name}");
+                Info($"Received option: {customOption.Name}: {superId};{id}");
                 customOption.ReadValueRpc(reader);
             }
             else
-                Failure($"No option found for id pair: {superId:X2};{id:X2}");
+                Failure($"No option found for id pair: {superId};{id}");
         }
 
         Option.SaveSettings("LastUsed");
+        SettingsPatches.OnValueChanged();
+        SettingsPatches.OnValueChangedView();
     }
 
     /// <summary>
@@ -251,12 +254,7 @@ public static class RpcManager
             //         }
             //         case TestRPC.Args:
             //         {
-            //             var message = "";
-
-            //             while (reader.BytesRemaining > 0)
-            //                 message += $"{reader.ReadString()} ";
-
-            //             Run("<#FF00FFFF>⚠ TEST ⚠</color>", $"Received RPC!\nWith the following message: {message.Trim()}");
+            //             Run("<#FF00FFFF>⚠ TEST ⚠</color>", $"Received RPC!\nWith the following message: {reader.ReadString().Trim()}");
             //             return;
             //         }
             //         default:
@@ -295,11 +293,8 @@ public static class RpcManager
 
                         if (whispered.AmOwner)
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to you: {message}");
-                        else if ((LocalPlayer.Is<Blackmailer>() && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (LocalPlayer.Is<Silencer>() &&
-                            Silencer.WhispersNotPrivateS))
-                        {
+                        else if ((LocalPlayer.Is<Blackmailer>() && Blackmailer.WhispersNotPrivateB) || DeadSeeEverything() || (LocalPlayer.Is<Silencer>() && Silencer.WhispersNotPrivateS))
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) whispers to #({whispered.name}): {message}");
-                        }
                         else if (GameModifiers.WhispersAnnouncement)
                             Run("<#4D4DFFFF>「 Whispers 」</color>", $"#({whisperer.name}) is whispering to #({whispered.name}).");
 
@@ -334,7 +329,9 @@ public static class RpcManager
                     case MiscRPC.PlayerJoinSync:
                     {
                         SettingsPatches.SetMap(reader.Read<MapEnum>());
-                        Summary = reader.Read<SummaryInfo>();
+
+                        if (reader.ReadBool())
+                            Summary = reader.Read<SummaryInfo>();
 
                         if (reader.ReadBool())
                             CachedFirstDead = reader.ReadString();
@@ -366,6 +363,7 @@ public static class RpcManager
                     }
                     case MiscRPC.SyncCustomSettings:
                     {
+                        Holders.EnsureCount();
                         ReceiveOptionRPC(reader);
                         return;
                     }

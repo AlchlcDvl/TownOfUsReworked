@@ -18,7 +18,7 @@ public sealed class Betrayer : Outcast
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && BetrayerVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";

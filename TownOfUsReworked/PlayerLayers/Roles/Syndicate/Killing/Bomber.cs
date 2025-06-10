@@ -39,7 +39,7 @@ public sealed class Bomber : Syndicate
     public override Func<string> StartText { get; } = () => "Make People Go Boom";
     public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Killing;

@@ -33,7 +33,7 @@ public sealed class Janitor : Intruder
         CommonAbilities;
     public override bool CanVent => base.CanVent && ((int)JanitorVentOptions is 3 || (CurrentlyDragging && (int)JanitorVentOptions is 1) || (!CurrentlyDragging && (int)JanitorVentOptions is 2));
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Concealing;

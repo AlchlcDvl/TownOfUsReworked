@@ -5,7 +5,7 @@ public static class RecomputeTaskCounts
 {
     public static bool Prefix(GameData __instance)
     {
-        if (IsHnS())
+        if (IsHnS() || IsLobby() || !LayerHandler.Handlers.ContainsKey(LocalPlayer.PlayerId))
             return true;
 
         __instance.TotalTasks = 0;
@@ -58,11 +58,8 @@ public static class RecomputeTaskCounts
             {
                 var pc = playerInfo.Object;
 
-                if (playerInfo.Disconnected || playerInfo.Tasks is null || !pc.CanDoTasks() || !pc.Is(Faction.Crew) || pc.Is<Revealer>() || (playerInfo.IsDead &&
-                    !TaskOptions.GhostTasksCountToWin))
-                {
+                if (playerInfo.Disconnected || playerInfo.Tasks is null || !pc.CanDoTasks() || !pc.Is(Faction.Crew) || pc.Is<Revealer>() || (playerInfo.IsDead && !TaskOptions.GhostTasksCountToWin))
                     continue;
-                }
 
                 foreach (var task in playerInfo.Tasks)
                 {

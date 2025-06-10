@@ -37,7 +37,7 @@ public sealed class RpcReader : IDisposable
     /// Initializes a new instance of the <see cref="RpcReader"/> class for reading byte data from a network message.
     /// </summary>
     /// <param name="data">The networked byte stream containing rpc data.</param>
-    public RpcReader(byte[] data)
+    public RpcReader(Il2CppStructArray<byte> data)
     {
         DataSize = data.Length;
         Payload = ArrayPool<byte>.Shared.Rent(DataSize);
@@ -62,13 +62,13 @@ public sealed class RpcReader : IDisposable
             throw new ObjectDisposedException(nameof(RpcReader));
 
         if (readLength == 0)
-            throw new ArgumentException($"Must gather some byte data. Pos {Position} out of {DataSize}");
+            throw new ArgumentException($"Must gather some byte data. Pos {Position} out of {DataSize}; {(CustomRPC)Payload[0]} {Payload[1]}");
 
         if ((Position + readLength) > DataSize)
-            throw new EndOfStreamException($"Tried to read more data than what was available. Pos {Position} out of {DataSize} with read length {readLength}");
+            throw new EndOfStreamException($"Tried to read more data than what was available. Pos {Position} out of {DataSize} with read length {readLength}; {(CustomRPC)Payload[0]} {Payload[1]}");
 
         if (Position >= DataSize)
-            throw new EndOfStreamException($"No more data to read. Pos {Position} out of {DataSize}");
+            throw new EndOfStreamException($"No more data to read. Pos {Position} out of {DataSize}; {(CustomRPC)Payload[0]} {Payload[1]}");
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public sealed class RpcReader : IDisposable
     public T Read<T>() => (T)Read(typeof(T));
 
     /// <summary>
-    /// Reads a value of the specified type from the data.
+    /// Reads a value from the data.
     /// </summary>
     /// <typeparam name="T">The type of value to read.</typeparam>
     /// <returns>The deserialized value of type <typeparamref name="T"/>.</returns>

@@ -242,6 +242,8 @@ public sealed class LayerHandler : RoleBehaviour
     [HideFromIl2Cpp]
     public void SetUpLayers(bool inherit)
     {
+        Handlers[Player.PlayerId] = this;
+
         CurrentRole = Player.GetRoleFromList();
         CurrentAbility = Player.GetAbilityFromList();
         CurrentModifier = Player.GetModifierFromList();
@@ -283,15 +285,10 @@ public sealed class LayerHandler : RoleBehaviour
 
         Player.GetComponent<PlayerControlHandler>().UpdateCurrent();
 
-        CurrentRole.LateInit();
-        CurrentAbility.LateInit();
-        CurrentModifier.LateInit();
-        CurrentDisposition.LateInit();
-
         if (CurrentFaction == Faction.None || inherit)
             CurrentFaction = CurrentRole.BaseFaction;
 
-        Handlers[Player.PlayerId] = this;
+        CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Init());
     }
 
     public void Update()

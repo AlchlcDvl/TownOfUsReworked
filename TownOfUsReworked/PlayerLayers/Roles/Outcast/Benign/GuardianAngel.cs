@@ -53,7 +53,7 @@ public sealed class GuardianAngel : Outcast, ITargeter
     public override bool CanVent => base.CanVent && GaVent;
     public override bool CanSwitchVents => GaSwitchVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
@@ -69,6 +69,9 @@ public sealed class GuardianAngel : Outcast, ITargeter
         }
 
         Rounds = 0;
+
+        if (GuardianAngelCanPickTargets || !TargetPlayer)
+            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
     }
 
     public override void Reset(bool meeting, bool start)
@@ -94,12 +97,6 @@ public sealed class GuardianAngel : Outcast, ITargeter
         color = role.Color;
         name += $"\n{role}";
         revealed = true;
-    }
-
-    public override void LateInit()
-    {
-        if (GuardianAngelCanPickTargets || !TargetPlayer)
-            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
     }
 
     public override List<PlayerControl> Team()

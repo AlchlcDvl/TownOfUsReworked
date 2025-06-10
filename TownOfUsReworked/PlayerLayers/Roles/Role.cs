@@ -32,7 +32,7 @@ public abstract class Role : PlayerLayer
     private CustomButton PlaceHitButton { get; set; }
     private int BountyTimer { get; set; }
 
-    protected override void Init()
+    public override void Init()
     {
         // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
         // {

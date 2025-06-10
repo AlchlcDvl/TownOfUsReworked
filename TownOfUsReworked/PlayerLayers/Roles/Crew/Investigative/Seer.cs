@@ -16,7 +16,7 @@ public sealed class Seer : Crew
     public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
         "<#FFCC80FF>Sheriff</color>";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;

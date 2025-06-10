@@ -53,7 +53,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
     public override bool CanSwitchVents => GuessSwitchVent;
     public override WinLose EndState => WinLose.GuesserWins;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;
@@ -63,6 +63,12 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         Rounds = 0;
         Letters.Clear();
         GuessingMenu = new(Player, GuessPlayer);
+
+        if (GuesserCanPickTargets || !TargetPlayer)
+        {
+            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
+                (UsableFunc)Usable);
+        }
     }
 
     public override void Reset(bool meeting, bool start)
@@ -75,15 +81,6 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
     {
         if (player == TargetPlayer)
             name += " <#EEE5BEFF>π</color>";
-    }
-
-    public override void LateInit()
-    {
-        if (GuesserCanPickTargets || !TargetPlayer)
-        {
-            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
-                (UsableFunc)Usable);
-        }
     }
 
     public override List<PlayerControl> Team()

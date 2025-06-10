@@ -23,7 +23,7 @@ public sealed class Juggernaut : OKilling
     public override bool CanVent => base.CanVent && JuggVent;
     protected override Faction ActualFaction => Faction.Juggernaut;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Assault anyone who can oppose you";

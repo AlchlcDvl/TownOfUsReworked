@@ -37,7 +37,7 @@ public sealed class Revealer : Crew, IGhosty
     public override Func<string> StartText { get; } = () => "OOOOOOO";
     public override Func<string> Description => () => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Utility;

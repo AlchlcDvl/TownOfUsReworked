@@ -8,7 +8,7 @@ public sealed class Colorblind : Modifier
 
     private bool AllToNormal { get; set; }
 
-    protected override void Init()
+    public override void Init()
     {
         if (Local)
             ColorAll();

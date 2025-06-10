@@ -17,7 +17,7 @@ public sealed class Swapper : Ability
     public override LayerEnum Type => LayerEnum.Swapper;
     public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
 
-    protected override void Init()
+    public override void Init()
     {
         Swap1 = null;
         Swap2 = null;

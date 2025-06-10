@@ -24,7 +24,7 @@ public sealed class Gluttony : Deity
     public override bool CanVent => base.CanVent && GlutVent;
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         ConsumeButton ??= new(this, new SpriteName("Consume"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Consume, "CONSUME", new Cooldown(ConsumeCd));

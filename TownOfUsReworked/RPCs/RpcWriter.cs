@@ -68,7 +68,7 @@ public sealed class RpcWriter : IDisposable
         if (TownOfUsReworked.MciActive || !LocalPlayer)
             return;
 
-        var writer = AmongUsClient.Instance.StartRpcImmediately(LocalPlayer.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
+        var writer = CreateMessageWriter(targetClientId);
         writer.Write(false); // False because Among Us immediate RPCs can be targeted, so the reader knows whether or not the client id should be read
         writer.WriteBytesAndSize(Payload[..Position]);
         writer.CloseRpc();
@@ -84,7 +84,7 @@ public sealed class RpcWriter : IDisposable
         if (TownOfUsReworked.MciActive || !LocalPlayer)
             return;
 
-        var message = new ReworkedMessage(LocalPlayer.NetId, targetClientId, Payload[..Position]);
+        var message = new ReworkedMessage(targetClientId, Payload[..Position]);
         AmongUsClient.Instance.LateBroadcastReliableMessage(message.Cast<IGameDataMessage>());
     }
 
@@ -184,6 +184,9 @@ public sealed class RpcWriter : IDisposable
         Vent i => GetBytes(i),
         Vector2 i => GetBytes(i),
 
+        // Custom types
+        INetSerializable i => i.GetBytes(),
+
         // Primitives
         byte i => GetBytes(i),
         bool i => GetBytes(i),
@@ -203,9 +206,6 @@ public sealed class RpcWriter : IDisposable
         Type i => GetBytes(i),
         IEnumerable i => GetBytes(i, withTypeCode),
         Enum i => GetBytes(i, withTypeCode),
-
-        // Custom types
-        INetSerializable i => i.GetBytes(),
 
         // Other
         _ => throw new NotSupportedException($"Type {value.GetType().Name} cannot be serialized to bytes. Ensure it's a known primitive or base game type, or that it implements INetSerializable.")

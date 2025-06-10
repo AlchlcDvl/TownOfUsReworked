@@ -18,7 +18,7 @@ public sealed class Mafia : Disposition
     public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
     public override bool CanVent => MafVent;
 
-    public override void LateInit() => Handler.CurrentFaction = Faction.Mafia;
+    public override void Init() => Handler.CurrentFaction = Faction.Mafia;
 
     protected override void CheckWin(HashSet<byte> winnerIds)
     {

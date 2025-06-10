@@ -184,6 +184,7 @@ public static class VanillaVentWalkToFix
 
         while (iEnum.MoveNext())
         {
+            yield return null;
             time += Time.deltaTime;
 
             if (time < 2f)

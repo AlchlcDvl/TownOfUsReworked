@@ -26,7 +26,7 @@ public sealed class Detective : Crew
     public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Investigative;

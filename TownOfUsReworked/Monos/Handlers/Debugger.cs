@@ -19,13 +19,16 @@ public sealed class DebuggerHandler : MonoBehaviour
     [HideFromIl2Cpp]
     public BaseTab SelectedTab { get; set; }
 
+    // [HideFromIl2Cpp]
+    // public MiscTab MiscTab { get; } = new();
+
     public byte ControllingFigure { get; set; }
 
     public DebuggerHandler(IntPtr ptr) : base(ptr)
     {
         SelectedTab = Tabs[0];
 
-        TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", () =>
+        TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", _ =>
         {
             GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
 
@@ -37,6 +40,8 @@ public sealed class DebuggerHandler : MonoBehaviour
 
             var mouse = Input.mousePosition;
             GUILayout.Label($"Mouse Position\nx: {mouse.x:00.00} y: {mouse.y:00.00} z: {mouse.z:00.00}");
+
+            // MiscTab.OnGUI();
 
             if (!IsLocalGame())
                 return;

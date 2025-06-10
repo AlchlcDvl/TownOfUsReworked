@@ -21,7 +21,7 @@ public sealed class Volatile : Modifier
 
     private static readonly string[] Links = [ "https://www.youtube.com/watch?v=79-AwFZCKpA", "https://www.youtube.com/watch?v=xm3YgoEiEDc" ];
 
-    protected override void Init() => Exposed = VolatileKnows;
+    public override void Init() => Exposed = VolatileKnows;
 
     public override void UpdateHud(HudManager __instance)
     {

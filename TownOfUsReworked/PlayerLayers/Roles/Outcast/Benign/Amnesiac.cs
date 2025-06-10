@@ -29,7 +29,7 @@ public sealed class Amnesiac : Outcast
     public override bool CanVent => base.CanVent && AmneVent;
     public override bool CanSwitchVents => AmneSwitchVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Benign;

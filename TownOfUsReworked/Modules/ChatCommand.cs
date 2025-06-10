@@ -15,7 +15,7 @@ public sealed class ChatCommand : IDisposable
     private delegate void ExecuteArgsCommand(string[] args);
     private delegate void ExecuteArgsMessageCommand(string[] args, string message);
 
-    private static readonly IEnumerable<ChatCommand> AllCommands =
+    private static readonly ChatCommand[] AllCommands =
     [
         new([ "controls", "ctrl", "mci" ], Controls, "Shows key binds to use"),
         new([ "kick", "ban" ], KickBan, [ "player id | (player name)" ], "Kicks or bans the specified player using their player id or name"),
@@ -26,12 +26,6 @@ public sealed class ChatCommand : IDisposable
         new([ "unignore", "ui" ], ToggleIgnore, [ "player id | (player name)" ], "Unignores a player, making their messages start appearing again"),
         new([ "ignore" ], ToggleIgnore, [ "player id | (player name)" ], "Ignores a player, making their messages no longer appear to you"),
         new([ "help" ], Help, [ "command name (optional)" ], "Gets a help menu showing the usable commands, or provides a description of a command if the command name is specified"),
-        // new([ "testargs", "targ" ], TestArgs, "Test command with arguments"),
-        // new([ "testargless", "targless" ], TestArgless, "Test command without arguments"),
-        // new([ "testargsmessage", "targmess", "tam" ], TestArgsMessage, "Test command with arguments and a message"),
-        // new([ "translate" ], Translate, "Translation argument"),
-        // new([ "rpc" ], SendRPCArgless, "Test command to send an rpc without data"),
-        // new([ "rpca" ], SendRPCArgs, [ "text text" ], "Test command to send an rpc with data")
     ];
 
     private ChatCommand(string[] aliases, string description)
@@ -391,54 +385,4 @@ public sealed class ChatCommand : IDisposable
 
     private static void Controls() => Run("<#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Toggle the visibility of the MCI control panel (local only)\nUp/Left Arrow - " +
         "Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu");
-
-    // private static void TestArgs(string[] args)
-    // {
-    //     var message = "You entered the following params:\n";
-    //     args[1..].ForEach(arg => message += $"{arg}, ");
-    //     message = message[..^2];
-    //     Run("<#FF00FFFF>⚠ TEST ⚠</color>", message);
-    // }
-
-    // private static void TestArgsMessage(string[] args, string arg)
-    // {
-    //     var message = "You entered the following params:\n";
-    //     args[1..].ForEach(arg => message += $"{arg}, ");
-    //     message = message[..^2];
-    //     message += $"\nAnd this is the while thing you sent:\n{arg}";
-    //     Run("<#FF00FFFF>⚠ TEST ⚠</color>", message);
-    // }
-
-    // private static void TestArgless() => Run("<#FF00FFFF>⚠ TEST ⚠</color>", "Test.");
-
-    // private static void SendRPCArgless()
-    // {
-    //     CallRpc(CustomRPC.Test, TestRPC.Argless);
-    //     Success("RPC Sent!");
-    //     Run("<#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
-    // }
-
-    // private static void SendRPCArgs(string[] args)
-    // {
-    //     var message = "You entered the following params:\n";
-    //     var writer = GenerateNetData(CustomRPC.Test2);
-
-    //     foreach (var arg in args[1..])
-    //     {
-    //         message += $"{arg} ";
-    //     }
-
-    //     writer.AppendBytes(message);
-    //     writer.Send();
-    //     Success("RPC Sent!");
-    //     Run("<#FF00FFFF>⚠ RPC TEST ⚠</color>", $"RPC Sent!\nWith the following message: {message}");
-    // }
-
-    // private static void Translate(string[] args)
-    // {
-    //     if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
-    //         Run("<#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
-    //     else
-    //         Run("<#B148E2FF>◈ Success ◈</color>", TranslationManager.Test(args[1]));
-    // }
 }

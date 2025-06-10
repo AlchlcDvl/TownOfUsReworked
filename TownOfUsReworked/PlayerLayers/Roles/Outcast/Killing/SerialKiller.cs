@@ -29,7 +29,7 @@ public sealed class SerialKiller : OKilling
     public override bool CanVent => base.CanVent && (SkVentOptions == 0 || (BloodlustButton.EffectActive && (int)SkVentOptions == 1) || (!BloodlustButton.EffectActive && (int)SkVentOptions == 2));
     protected override Faction ActualFaction => Faction.SerialKiller;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Stab anyone who can oppose you";

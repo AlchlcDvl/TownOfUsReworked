@@ -49,7 +49,7 @@ public static class TranslationManager
 
     private static StringNames AddNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
-        var value = Injector.InjectAndReturn(id.Replace(".", "")); // Inject and find the translations
+        var value = Injector.InjectAndReturn(id.Replace(".", ""), true); // Inject and find the translations
         id = id.ToLower();
         CustomStringNames[value] = id; // Add the id to the dictionary
 

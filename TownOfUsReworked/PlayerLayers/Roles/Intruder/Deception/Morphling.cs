@@ -29,7 +29,7 @@ public sealed class Morphling : Intruder
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
     public override bool CanVent => MorphlingVent;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Deception;

@@ -183,7 +183,7 @@ public static class Blocked
         __instance.FullScreen.gameObject.SetActive(true);
     }
 
-    private static GameObject SetBlock(this ActionButton button)
+    public static GameObject SetBlock(this ActionButton button)
     {
         var passive = button.GetComponent<PassiveButton>();
         passive.HoverSound = GetAudio("Hover");

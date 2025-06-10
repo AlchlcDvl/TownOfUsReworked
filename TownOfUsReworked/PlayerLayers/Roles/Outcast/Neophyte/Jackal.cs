@@ -30,7 +30,7 @@ public sealed class Jackal : Neophyte
     public override bool CanVent => base.CanVent && JackalVent;
     protected override Faction ActualFaction => Faction.Cabal;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Recruit or kill anyone who can oppose the <#575657FF>Cabal</color>";

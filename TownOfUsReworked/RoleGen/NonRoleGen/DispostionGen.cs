@@ -20,7 +20,7 @@ public sealed class DispositionGen : BaseGen
     {
         var abilities = GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor);
 
-        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Disposition))
+        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Disposition && x.Num <= GameData.Instance.PlayerCount))
         {
             foreach (var id in entry.Value)
             {

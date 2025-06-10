@@ -43,7 +43,7 @@ public sealed class Arsonist : OKilling, IDouser
     public override bool CanVent => base.CanVent && ArsoVent;
     protected override Faction ActualFaction => Faction.Arsonist;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => "- Burn anyone who can oppose you";

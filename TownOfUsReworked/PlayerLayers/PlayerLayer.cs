@@ -192,7 +192,6 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
         Name = TranslationManager.Translate($"Layer.{Type}");
         Player = player;
         Deinitialised = false;
-        Init();
 
         if (Local)
             EnteringLayer();
@@ -219,7 +218,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Initialises the layer.
     /// </summary>
-    protected virtual void Init() {}
+    public virtual void Init() {}
 
     /// <summary>
     /// Deinitialises the layer.
@@ -360,11 +359,6 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public virtual void OnRevive() {}
 
     /// <summary>
-    /// Performs an action after the player has been assigned this layer and role assignment as taken place (called in <see cref="LayerHandler.Initialize"/>). Runs for everyone.
-    /// </summary>
-    public virtual void LateInit() {}
-
-    /// <summary>
     /// Performs an action when killing someone (called in <see cref="MiscUtils.CustomDie"/>). Runs for everyone.
     /// </summary>
     /// <param name="victim">The player's victim.</param>
@@ -461,7 +455,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     }
 
     /// <inheritdoc/>
-    public byte[] GetBytes() => [ PlayerId, (byte)Type ];
+    public IEnumerable<byte> GetBytes() => [ PlayerId, (byte)Type ];
 
     /// <summary>
     /// Inequality check.

@@ -52,7 +52,7 @@ public sealed class Executioner : Evil, ITargeter
     public override bool CanSwitchVents => ExeSwitchVent;
     public override WinLose EndState => WinLose.ExecutionerWins;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
@@ -62,6 +62,12 @@ public sealed class Executioner : Evil, ITargeter
             DoomButton ??= new(this, new SpriteName("Doom"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Doom, (PlayerBodyExclusion)Exception1, "DOOM", (UsableFunc)Usable1);
 
         Rounds = 0;
+
+        if (ExecutionerCanPickTargets || !TargetPlayer)
+        {
+            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+                (UsableFunc)Usable2);
+        }
     }
 
     public override void Reset(bool meeting, bool start)
@@ -84,15 +90,6 @@ public sealed class Executioner : Evil, ITargeter
         color = role.Color;
         name += $"\n{role}";
         revealed = true;
-    }
-
-    public override void LateInit()
-    {
-        if (ExecutionerCanPickTargets || !TargetPlayer)
-        {
-            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
-                (UsableFunc)Usable2);
-        }
     }
 
     public override List<PlayerControl> Team()

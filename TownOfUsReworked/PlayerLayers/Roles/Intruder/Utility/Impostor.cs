@@ -6,7 +6,7 @@ public sealed class Impostor : Intruder
     public override Func<string> StartText { get; } = () => "Sabotage And Kill Everyone";
     public override Func<string> Description => () => CommonAbilities;
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         Alignment = Alignment.Utility;

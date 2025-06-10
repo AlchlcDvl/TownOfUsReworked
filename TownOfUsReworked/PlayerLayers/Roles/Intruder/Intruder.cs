@@ -36,7 +36,7 @@ public abstract class Intruder : Role, IPromoter
         : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Intruders
             ? Faction.Pandorica : Faction.Intruder);
 
-    protected override void Init()
+    public override void Init()
     {
         base.Init();
         KillButton ??= new(this, (SpriteFunc)GetKillSprite, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
