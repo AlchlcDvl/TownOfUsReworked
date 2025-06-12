@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Thief)]
-public sealed class Thief : Outcast, IGuesser
+public sealed class Thief : Benign, IGuesser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number StealCd = 25;
@@ -29,7 +29,6 @@ public sealed class Thief : Outcast, IGuesser
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Benign;
         StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL", (PlayerBodyExclusion)Exception);
         GuessingMenu = new(Player, GuessPlayer);
 

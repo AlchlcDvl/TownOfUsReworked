@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Morphling)]
-public sealed class Morphling : Intruder
+public sealed class Morphling : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MorphCd = 25;
@@ -32,7 +32,6 @@ public sealed class Morphling : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Deception;
         SampledPlayer = null;
         SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);
         MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,

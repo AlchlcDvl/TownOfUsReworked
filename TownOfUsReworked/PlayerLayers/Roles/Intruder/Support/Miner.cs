@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Miner)]
-public sealed class Miner : Intruder
+public sealed class Miner : ISupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MineCd = 25;
@@ -22,7 +22,6 @@ public sealed class Miner : Intruder
     {
         base.Init();
         Name = TranslationManager.Translate($"Layer.{(MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner")}");
-        Alignment = Alignment.Support;
         MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);
         Vents.Clear();

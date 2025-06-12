@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Drunkard)]
-public sealed class Drunkard : Syndicate
+public sealed class Drunkard : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ConfuseCd = 25;
@@ -24,7 +24,6 @@ public sealed class Drunkard : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Disruption;
         ConfuseMenu = new(Player, Click, Color, Exception1);
         ConfusedPlayer = null;
         ConfuseButton ??= new(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,

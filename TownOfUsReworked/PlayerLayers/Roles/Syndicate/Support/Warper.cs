@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Warper)]
-public sealed class Warper : Syndicate, IMover
+public sealed class Warper : SSupport, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number WarpCd = 25;
@@ -25,7 +25,6 @@ public sealed class Warper : Syndicate, IMover
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         WarpMenu = new(Player, Click, Color, Exception1);
         WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
     }

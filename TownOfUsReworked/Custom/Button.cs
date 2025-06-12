@@ -46,7 +46,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private float Delay { get; }
     private float OtherDelay { get; }
     private int UseDecrement { get; } = 1;
-    public string ID { get; }
+    public ushort ID { get; }
     private ManualUpdateVoid ManualUpdate { get; }
 
     // Other things
@@ -344,7 +344,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         }
 
         CooldownTime = EffectTime = DelayTime = 0f;
-        ID = Sprite() + Owner.Name + Owner.PlayerName + AllButtons.Count;
+        ID = (ushort)AllButtons.Count;
         Disabled = !Owner.Local;
         CreateButton();
         AllButtons.Add(this);
@@ -360,7 +360,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base = InstantiateButton();
         Base.graphic.sprite = GetSprite(Sprite());
         Base.graphic.SetCooldownNormalizedUvs();
-        Base.name = ID;
+        Base.name = ID.ToString();
         Base.buttonLabelText.SetOutlineColor(TextColor);
         Base.usesRemainingSprite.color = TextColor;
         Base.GetComponent<PassiveButton>().OverrideOnClickListeners(Clicked);
@@ -389,7 +389,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         return button;
     }
 
-    public override string ToString() => ID;
+    public override string ToString() => ID.ToString();
 
     private bool Exception(MonoBehaviour obj) => obj switch
     {

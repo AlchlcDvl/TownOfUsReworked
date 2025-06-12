@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Disguiser)]
-public sealed class Disguiser : Intruder
+public sealed class Disguiser : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number DisguiseCd = 25;
@@ -35,7 +35,6 @@ public sealed class Disguiser : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Deception;
         MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);
         DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,

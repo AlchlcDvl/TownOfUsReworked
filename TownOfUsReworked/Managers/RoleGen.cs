@@ -24,7 +24,7 @@ public static class RoleGenManager
     public static readonly List<RoleOptionData> IntruderConcealingRoles = [];
     public static readonly List<RoleOptionData> IntruderRoles = [];
 
-    public static readonly List<RoleOptionData> SyndicatePowerRoles = [];
+    public static readonly List<RoleOptionData> SyndicateHeadRoles = [];
     public static readonly List<RoleOptionData> SyndicateSupportRoles = [];
     public static readonly List<RoleOptionData> SyndicateKillingRoles = [];
     public static readonly List<RoleOptionData> SyndicateDisruptionRoles = [];
@@ -79,12 +79,12 @@ public static class RoleGenManager
 
     public static readonly LayerEnum[] SSu = [ LayerEnum.Warper, LayerEnum.Stalker ];
     public static readonly LayerEnum[] SD = [ LayerEnum.Timekeeper, LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.Silencer] ;
-    public static readonly LayerEnum[] SP = [ LayerEnum.Rebel, LayerEnum.Spellslinger ];
+    public static readonly LayerEnum[] SH = [ LayerEnum.Rebel, LayerEnum.Spellslinger ];
     public static readonly LayerEnum[] SyK = [ LayerEnum.Bomber, LayerEnum.Collider, LayerEnum.Crusader, LayerEnum.Poisoner ];
     public static readonly LayerEnum[] SU = [ LayerEnum.Anarchist ];
-    public static readonly LayerEnum[] Syndicate = [ .. SSu, .. SyK, .. SD, .. SP, .. SU ];
+    public static readonly LayerEnum[] Syndicate = [ .. SSu, .. SyK, .. SD, .. SH, .. SU ];
     public static readonly LayerEnum[] RegSyndicate = [ .. SSu, .. SD, .. SU ];
-    public static readonly LayerEnum[] PowerSyndicate = [ .. SyK, .. SP ];
+    public static readonly LayerEnum[] PowerSyndicate = [ .. SyK, .. SH ];
 
     public static readonly LayerEnum[] NonCrew = [ .. Outcast, .. Intruders, .. Syndicate, .. Apocalypse ];
     public static readonly LayerEnum[] NonOutcast = [ .. Crew, .. Intruders, .. Syndicate, .. Apocalypse ];
@@ -92,7 +92,7 @@ public static class RoleGenManager
     public static readonly LayerEnum[] NonSyndicate = [ .. Outcast, .. Intruders, .. Crew, .. Apocalypse ];
     public static readonly LayerEnum[] NonApocalypse = [ .. Outcast, .. Intruders, .. Crew, .. Syndicate ];
 
-    public static readonly LayerEnum[] Alignments = [ .. CI, .. CSv, .. CrP, .. CU, .. CK, .. CS, .. NB, .. NE, .. NN, .. NK, .. IC, .. ID, .. IS, .. SSu, .. SD, .. SP, .. SyK, .. IK, .. IH, .. IU,
+    public static readonly LayerEnum[] Alignments = [ .. CI, .. CSv, .. CrP, .. CU, .. CK, .. CS, .. NB, .. NE, .. NN, .. NK, .. IC, .. ID, .. IS, .. SSu, .. SD, .. SH, .. SyK, .. IK, .. IH, .. IU,
         .. SU, .. AH ];
 
     private static readonly byte[] Spawns = [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ];
@@ -227,9 +227,11 @@ public static class RoleGenManager
 
     public static LayerEnum[] PDi() => BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate ? SD : [];
 
-    public static LayerEnum[] PP() => BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate ? SP : [];
-
-    public static LayerEnum[] PHe() => BadGuysSettings.PandoricaMembers == PandoricaType.Intruders ? IH : [];
+    public static LayerEnum[] PHe()
+    {
+        var type = BadGuysSettings.PandoricaMembers;
+        return [.. type == PandoricaType.Intruders ? IH : [], .. type == PandoricaType.Syndicate ? SH : []];
+    }
 
     public static LayerEnum[] PC() => BadGuysSettings.PandoricaMembers == PandoricaType.Intruders ? IC : [];
 
@@ -245,9 +247,9 @@ public static class RoleGenManager
 
     public static LayerEnum[] RegPandorica() => [ .. PC(), .. PDe(), .. PDi(), .. PS(), .. PU() ];
 
-    public static LayerEnum[] PowerPandorica() => [ .. PK(), .. PHa(), .. PP(), .. PHa() ];
+    public static LayerEnum[] PowerPandorica() => [ .. PK(), .. PHa(), .. PHe() ];
 
-    public static LayerEnum[] Pandorica() => [ .. PS(), .. PDi(), .. PP(), .. PHa(), .. PK(), .. PC(), .. PDe(), .. PU(), .. PHa() ];
+    public static LayerEnum[] Pandorica() => [ .. PS(), .. PDi(), .. PHa(), .. PK(), .. PC(), .. PDe(), .. PU(), .. PHe() ];
 
     public static LayerEnum[] IlS()
     {
@@ -271,9 +273,11 @@ public static class RoleGenManager
 
     public static LayerEnum[] IlDi() => BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate ? SD : [];
 
-    public static LayerEnum[] IP() => BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate ? SP : [];
-
-    public static LayerEnum[] IlHe() => BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders ? IH : [];
+    public static LayerEnum[] IlHe()
+    {
+        var type = BadGuysSettings.IlluminatiMembers;
+        return [.. type == IlluminatiType.Intruders ? IS : [], .. type == IlluminatiType.Syndicate ? SSu : []];
+    }
 
     public static LayerEnum[] IlC() => BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders ? IC : [];
 
@@ -291,9 +295,9 @@ public static class RoleGenManager
 
     public static LayerEnum[] RegIlluminati() => [ .. IlC(), .. IlDe(), .. IlDi(), .. IlS(), .. IlU() ];
 
-    public static LayerEnum[] PowerIlluminati() => [ .. IlK(), .. IlHe(), .. IP(), .. IlHa(), .. IN() ];
+    public static LayerEnum[] PowerIlluminati() => [ .. IlK(), .. IlHe(), .. IlHa(), .. IN() ];
 
-    public static LayerEnum[] Illuminati() => [ .. IlS(), .. IlDi(), .. IP(), .. IlHe(), .. IlK(), .. IlC(), .. IlDe(), .. IlU(), .. IN(), .. IlHa() ];
+    public static LayerEnum[] Illuminati() => [ .. IlS(), .. IlDi(), .. IlHe(), .. IlK(), .. IlC(), .. IlDe(), .. IlU(), .. IN(), .. IlHa() ];
 
     public static RoleOptionData GetSpawnItem(LayerEnum id) => id switch
     {
@@ -593,7 +597,7 @@ public static class RoleGenManager
 
         SyndicateSupportRoles.Clear();
         SyndicateKillingRoles.Clear();
-        SyndicatePowerRoles.Clear();
+        SyndicateHeadRoles.Clear();
         SyndicateDisruptionRoles.Clear();
 
         OutcastBenignRoles.Clear();

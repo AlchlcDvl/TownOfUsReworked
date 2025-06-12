@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Spellslinger)]
-public sealed class Spellslinger : Syndicate
+public sealed class Spellslinger : SHead
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SpellCd { get; set; } = 25f;
@@ -21,7 +21,6 @@ public sealed class Spellslinger : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Power;
         Spelled.Clear();
         SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception1);

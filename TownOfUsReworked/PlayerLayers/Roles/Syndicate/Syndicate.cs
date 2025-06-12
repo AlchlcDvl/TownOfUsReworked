@@ -34,6 +34,13 @@ public abstract class Syndicate : Role, IPromoter
         ? Faction.Illuminati
         : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate
             ? Faction.Pandorica : Faction.Syndicate);
+    public override Alignment Alignment => IsPromoted
+        ? Alignment.Head
+        : (IsUnderling
+            ? Alignment.Utility
+            : ActualAlignment);
+
+    protected abstract Alignment ActualAlignment { get; }
 
     public static bool SyndicateHasChaosDrive { get; set; }
 
@@ -94,7 +101,6 @@ public abstract class Syndicate : Role, IPromoter
             IsUnderling = false;
             Promoter = null;
             Name = TranslationManager.Translate("Layer.Rebel");
-            Alignment = Alignment.Power;
             Handler.History.Add((LayerEnum.Sidekick, Faction));
         }
     }

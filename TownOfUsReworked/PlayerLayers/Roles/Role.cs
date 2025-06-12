@@ -9,13 +9,12 @@ public abstract class Role : PlayerLayer
     protected override bool UseMainColor => false;
 
     public abstract Faction BaseFaction { get; }
+    public abstract Alignment Alignment { get; }
 
     public virtual Func<string> StartText => () => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
     public virtual bool AffectedByLights => true;
     public virtual bool CanSwitchVents => true;
-
-    public Alignment Alignment { get; protected set; }
 
     public Faction Faction => Handler.CurrentFaction;
     public UColor FactionColor { get; set; }

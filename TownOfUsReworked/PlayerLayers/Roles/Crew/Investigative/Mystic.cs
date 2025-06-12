@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Mystic)]
-public sealed class Mystic : Crew
+public sealed class Mystic : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number RevealCd = 25;
@@ -18,7 +18,6 @@ public sealed class Mystic : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Investigative;
         RevealButton ??= new(this, "REVEAL", new SpriteName("MysticReveal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Reveal, (PlayerBodyExclusion)Exception,
             new Cooldown(RevealCd));
     }

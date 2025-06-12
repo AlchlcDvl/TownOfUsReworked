@@ -20,6 +20,7 @@ public abstract class Neophyte : Outcast
         ? Faction.Illuminati
         : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes
             ? Faction.Compliance : ActualFaction);
+    public override Alignment Alignment => Alignment.Neophyte;
 
     protected abstract Faction ActualFaction { get; }
 
@@ -28,7 +29,6 @@ public abstract class Neophyte : Outcast
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Neophyte;
         Members.Clear();
         Members.Add(PlayerId);
     }

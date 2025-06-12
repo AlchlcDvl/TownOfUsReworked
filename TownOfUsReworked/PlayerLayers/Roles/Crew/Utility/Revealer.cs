@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Revealer)]
-public sealed class Revealer : Crew, IGhosty
+public sealed class Revealer : CUtility, IGhosty
 {
     [NumberOption(1, 10, 1)]
     public static Number RevealerTasksRemainingClicked = 5;
@@ -40,7 +40,6 @@ public sealed class Revealer : Crew, IGhosty
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Utility;
         RemoveTasks(Player);
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }

@@ -108,19 +108,19 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
                 if (BadGuysSettings.IlluminatiUnleashed)
                 {
-                    if (BadGuysSettings.IlluminatiMembers == [ IlluminatiType.Intruders, IlluminatiType.Syndicate, IlluminatiType.Killers ])
+                    if (BadGuysSettings.IlluminatiMembers.ContainsAny(IlluminatiType.Intruders, IlluminatiType.Syndicate, IlluminatiType.Killers))
                         yield return ListSlot.IlluminatiKill;
 
                     if (BadGuysSettings.IlluminatiMembers == [ IlluminatiType.Intruders, IlluminatiType.Syndicate ])
                     {
                         yield return ListSlot.IlluminatiSupport;
                         yield return ListSlot.IlluminatiUtil;
+                        yield return ListSlot.IlluminatiHead;
                     }
 
                     if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders)
                     {
                         yield return ListSlot.IlluminatiDecep;
-                        yield return ListSlot.IlluminatiHead;
                         yield return ListSlot.IlluminatiConceal;
                     }
                     else
@@ -138,14 +138,11 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
                     }
 
                     if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Syndicate)
-                    {
                         yield return ListSlot.IlluminatiDisrup;
-                        yield return ListSlot.IlluminatiPower;
-                    }
                     else
                     {
                         yield return ListSlot.SyndicateDisrup;
-                        yield return ListSlot.SyndicatePower;
+                        yield return ListSlot.SyndicateHead;
                         yield return ListSlot.SyndicateKill;
                         yield return ListSlot.SyndicateUtil;
                         yield return ListSlot.SyndicateSupport;
@@ -188,12 +185,12 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
                             yield return ListSlot.PandoraKill;
                             yield return ListSlot.PandoraSupport;
                             yield return ListSlot.PandoraUtil;
+                            yield return ListSlot.PandoraHead;
                         }
 
                         if (BadGuysSettings.PandoricaMembers == PandoricaType.Intruders)
                         {
                             yield return ListSlot.PandoraDecep;
-                            yield return ListSlot.PandoraHead;
                             yield return ListSlot.PandoraConceal;
                         }
                         else
@@ -211,14 +208,11 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
                         }
 
                         if (BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate)
-                        {
                             yield return ListSlot.PandoraDisrup;
-                            yield return ListSlot.PandoraPower;
-                        }
                         else
                         {
                             yield return ListSlot.SyndicateDisrup;
-                            yield return ListSlot.SyndicatePower;
+                            yield return ListSlot.SyndicateHead;
                             yield return ListSlot.SyndicateKill;
                             yield return ListSlot.SyndicateUtil;
                             yield return ListSlot.SyndicateSupport;

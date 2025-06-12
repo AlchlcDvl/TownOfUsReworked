@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Coroner)]
-public sealed class Coroner : Crew, IExaminer
+public sealed class Coroner : Investigative, IExaminer
 {
     [NumberOption(0f, 2f, 0.05f, Format.Time)]
     public static Number CoronerArrowDur = 0.1f;
@@ -37,7 +37,6 @@ public sealed class Coroner : Crew, IExaminer
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Investigative;
         BodyArrows.Clear();
         Reported.Clear();
         ReferenceBodies.Clear();

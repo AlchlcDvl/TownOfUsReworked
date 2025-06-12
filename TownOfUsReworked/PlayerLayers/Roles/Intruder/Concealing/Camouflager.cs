@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Camouflager)]
-public sealed class Camouflager : Intruder
+public sealed class Camouflager : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number CamouflageCd = 25;
@@ -21,7 +21,6 @@ public sealed class Camouflager : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Concealing;
         CamouflageButton ??= new(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
             new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectStartVoid)StartCamouflage, (EffectEndVoid)UnCamouflage, (ClickedAgainVoid)ClickAgain);
     }

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Sheriff)]
-public sealed class Sheriff : Crew
+public sealed class Sheriff : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number InterrogateCd = 25;
@@ -25,7 +25,6 @@ public sealed class Sheriff : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Investigative;
         InterrogateButton ??= new(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interrogate, new Cooldown(InterrogateCd),
             (PlayerBodyExclusion)Exception);
     }

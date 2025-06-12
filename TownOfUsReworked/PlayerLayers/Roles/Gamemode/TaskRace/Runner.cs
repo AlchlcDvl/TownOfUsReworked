@@ -13,12 +13,12 @@ public sealed class Runner : GameMode
     public override Func<string> StartText { get; } = () => "Speedrun Tasks To Be The Victor";
     protected override UColor MainColor => CustomColorManager.Runner;
     public override string FactionName => "Task Race";
+    public override Alignment Alignment => Alignment.TaskRace;
 
     public override void Init()
     {
         base.Init();
         Objectives = () => "- Finish your tasks before the others";
-        Alignment = Alignment.TaskRace;
     }
 
     public override void UponTaskComplete(uint taskId)

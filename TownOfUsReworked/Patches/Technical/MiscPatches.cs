@@ -693,6 +693,7 @@ public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
     [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with ModManager
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
     [HarmonyPatch(typeof(NameHandler), nameof(NameHandler.UpdateGameName))] // Patching my own code...that's a first
+    [HarmonyPatch(typeof(PlayerControlHandler), nameof(PlayerControlHandler.Update))] // Patching my own code...again...that's a second
     public static Exception Finalizer() => null; // My first use of a finalizer ong
 }
 

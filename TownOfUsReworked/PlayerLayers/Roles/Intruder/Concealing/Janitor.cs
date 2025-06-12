@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Janitor)]
-public sealed class Janitor : Intruder
+public sealed class Janitor : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number CleanCd = 25;
@@ -36,7 +36,6 @@ public sealed class Janitor : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Concealing;
         CurrentlyDragging = null;
         DragButton ??= new(this, new SpriteName("Drag"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)Drag, new Cooldown(DragCd), "DRAG BODY", (UsableFunc)Usable1);
         DropButton ??= new(this, new SpriteName("Drop"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Drop, "DROP BODY", (UsableFunc)Usable2);

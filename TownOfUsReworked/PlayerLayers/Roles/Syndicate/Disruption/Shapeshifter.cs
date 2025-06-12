@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Shapeshifter)]
-public sealed class Shapeshifter : Syndicate
+public sealed class Shapeshifter : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ShapeshiftCd = 25f;
@@ -30,7 +30,6 @@ public sealed class Shapeshifter : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Disruption;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Color, Exception1);

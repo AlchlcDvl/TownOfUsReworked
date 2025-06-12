@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Stalker)]
-public sealed class Stalker : Syndicate
+public sealed class Stalker : SSupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number StalkCd = 25;
@@ -19,7 +19,6 @@ public sealed class Stalker : Syndicate
     {
         base.Init();
         StalkerArrows.Clear();
-        Alignment = Alignment.Support;
         StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception1);
     }

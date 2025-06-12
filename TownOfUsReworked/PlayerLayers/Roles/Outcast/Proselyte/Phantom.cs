@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Phantom)]
-public sealed class Phantom : Outcast, IGhosty
+public sealed class Phantom : Proselyte, IGhosty
 {
     [NumberOption(1, 10, 1)]
     public static Number PhantomTasksRemaining = 5;
@@ -23,7 +23,6 @@ public sealed class Phantom : Outcast, IGhosty
     {
         base.Init();
         Objectives = () => "- Finish your tasks without getting clicked";
-        Alignment = Alignment.Proselyte;
         RemoveTasks(Player);
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }

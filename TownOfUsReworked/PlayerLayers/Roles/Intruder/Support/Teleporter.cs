@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Teleporter)]
-public sealed class Teleporter : Intruder, IMover
+public sealed class Teleporter : ISupport, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number TeleportCd = 25;
@@ -32,7 +32,6 @@ public sealed class Teleporter : Intruder, IMover
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         TeleportPoint = Vector2.zero;
         MarkButton ??= new(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mark, new Cooldown(TeleMarkCd), "MARK POSITION",
             (ConditionFunc)Condition1);

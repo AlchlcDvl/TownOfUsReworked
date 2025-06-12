@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Timekeeper)]
-public sealed class Timekeeper : Syndicate
+public sealed class Timekeeper : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number TimeCd = 25;
@@ -29,7 +29,6 @@ public sealed class Timekeeper : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Disruption;
         TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
             (EffectEndVoid)UnControl, new Duration(TimeDur), (EffectStartVoid)ControlStart, (UsableFunc)Usable);
         TkExists = true;

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.GuardianAngel)]
-public sealed class GuardianAngel : Outcast, ITargeter
+public sealed class GuardianAngel : Benign, ITargeter
 {
     [ToggleOption]
     public static bool GuardianAngelCanPickTargets = false;
@@ -57,7 +57,6 @@ public sealed class GuardianAngel : Outcast, ITargeter
     {
         base.Init();
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
-        Alignment = Alignment.Benign;
         TargetPlayer = null;
         ProtectButton ??= new(this, new SpriteName("Protect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",
             new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect, (EffectStartVoid)ProtectStart, (EffectEndVoid)ProtectEnd);

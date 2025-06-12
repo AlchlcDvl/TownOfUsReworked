@@ -441,14 +441,14 @@ public sealed class RpcReader : IDisposable
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     public CustomButton ReadButton()
     {
-        var id = ReadString();
+        var id = ReadUShort();
         return CustomButton.AllButtons.Find(x => x.ID == id);
     }
 
     /// <summary>
     /// Reads a <see cref="Vector2"/> from the data.
     /// </summary>
-    /// <returns>The deserialized vector 2.</returns>
+    /// <returns>The deserialized 2d vector.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     public Vector2 ReadVector2()
     {

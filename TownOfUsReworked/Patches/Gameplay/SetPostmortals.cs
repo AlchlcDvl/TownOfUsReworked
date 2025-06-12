@@ -51,7 +51,7 @@ public static class SetPostmortals
 
         foreach (var vigi in PlayerLayer.GetLayers<Vigilante>())
         {
-            if (vigi.PostMeetingDie)
+            if (vigi.KilledInno && Vigilante.HowDoesVigilanteDie == VigiOptions.PostMeeting)
                 vigi.Player.CustomDie(DeathReasonEnum.Suicide);
         }
 

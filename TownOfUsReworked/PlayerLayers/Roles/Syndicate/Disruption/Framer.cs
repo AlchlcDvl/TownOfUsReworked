@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Framer)]
-public sealed class Framer : Syndicate
+public sealed class Framer : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number FrameCd = 25f;
@@ -22,7 +22,6 @@ public sealed class Framer : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Disruption;
         Framed.Clear();
         FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
             (PlayerBodyExclusion)Exception1);

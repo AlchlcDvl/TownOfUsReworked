@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Crusader)]
-public sealed class Crusader : Syndicate
+public sealed class Crusader : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number CrusadeCd = 25;
@@ -27,7 +27,6 @@ public sealed class Crusader : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Killing;
         CrusadedPlayer = null;
         CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(CrusadeCd), "CRUSADE", new Duration(CrusadeDur),
             (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);

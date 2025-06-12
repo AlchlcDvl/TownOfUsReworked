@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Seer)]
-public sealed class Seer : Crew
+public sealed class Seer : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SeerCd = 25;
@@ -19,7 +19,6 @@ public sealed class Seer : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Investigative;
         SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(SeerCd));
     }
 

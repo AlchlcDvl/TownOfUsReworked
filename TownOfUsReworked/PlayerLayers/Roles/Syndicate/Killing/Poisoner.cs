@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Poisoner)]
-public sealed class Poisoner : Syndicate
+public sealed class Poisoner : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number PoisonCd = 25;
@@ -17,14 +17,12 @@ public sealed class Poisoner : Syndicate
     protected override UColor MainColor => CustomColorManager.Poisoner;
     public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText { get; } = () => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
-    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" +
-        CommonAbilities;
+    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" + CommonAbilities;
 
     public override void Init()
     {
         base.Init();
         PoisonedPlayer = null;
-        Alignment = Alignment.Killing;
         PoisonMenu = new(Player, Click, Color, Exception1);
         PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
             new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);

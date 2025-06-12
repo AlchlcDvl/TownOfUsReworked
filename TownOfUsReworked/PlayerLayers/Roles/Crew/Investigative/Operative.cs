@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Operative)]
-public sealed class Operative : Crew, IBugger
+public sealed class Operative : Investigative, IBugger
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number BugCd = 25;
@@ -40,7 +40,6 @@ public sealed class Operative : Crew, IBugger
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Investigative;
         BuggedPlayers.Clear();
         Bugs.Clear();
         BugButton ??= new(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)PlaceBug, new Cooldown(BugCd), MaxBugs,

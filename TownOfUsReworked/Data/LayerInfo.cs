@@ -91,11 +91,11 @@ public static class AllInfo
         new(LayerEnum.Drunkard, Alignment.Disruption, Faction.Syndicate),
         new(LayerEnum.Framer, Alignment.Disruption, Faction.Syndicate),
         new(LayerEnum.Poisoner, Alignment.Killing, Faction.Syndicate),
-        new(LayerEnum.Rebel, Alignment.Power, Faction.Syndicate),
+        new(LayerEnum.Rebel, Alignment.Head, Faction.Syndicate),
         new(LayerEnum.Shapeshifter, Alignment.Disruption, Faction.Syndicate),
         new(LayerEnum.Sidekick, Alignment.Utility, Faction.Syndicate),
         new(LayerEnum.Silencer, Alignment.Disruption, Faction.Syndicate),
-        new(LayerEnum.Spellslinger, Alignment.Power, Faction.Syndicate),
+        new(LayerEnum.Spellslinger, Alignment.Head, Faction.Syndicate),
         new(LayerEnum.Stalker, Alignment.Support, Faction.Syndicate),
         new(LayerEnum.Timekeeper, Alignment.Disruption, Faction.Syndicate),
         new(LayerEnum.Warper, Alignment.Support, Faction.Syndicate, true),
@@ -205,7 +205,6 @@ public static class AllInfo
         new(Alignment.Harbinger),
         new(Alignment.Deity),
         new(Alignment.Disruption),
-        new(Alignment.Power),
 
         new(Alignment.HideAndSeek),
         new(Alignment.TaskRace, true)

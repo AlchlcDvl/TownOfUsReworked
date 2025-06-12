@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Altruist)]
-public sealed class Altruist : Crew, IReviver
+public sealed class Altruist : Protective, IReviver
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number AltManaCd = 25;
@@ -40,7 +40,6 @@ public sealed class Altruist : Crew, IReviver
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Protective;
         ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(AltManaCd), (UsableFunc)Usable);
         ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
             MaxAltMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(AltManaCost));

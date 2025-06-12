@@ -1,12 +1,11 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // TODO: Change how this works by using its substituted roles rather than copy pasted code
-public sealed class Retributionist : Crew, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger
+public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger
 {
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         BodyArrows.Clear();
         MediatedPlayers.Clear();
         Bugs.Clear();

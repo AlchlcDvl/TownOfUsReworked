@@ -24,10 +24,8 @@ public sealed class Vigilante : CKilling
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ShootCd = 25;
 
-    private bool KilledInno { get; set; }
-    private bool PreMeetingDie { get; set; }
-    public bool PostMeetingDie { get; private set; }
-    private bool InnoMessage { get; set; }
+    public bool KilledInno { get; private set; }
+    private bool KeepKilling { get; set; }
     private CustomButton ShootButton { get; set; }
     private bool RoundOne { get; set; }
 
@@ -43,13 +41,14 @@ public sealed class Vigilante : CKilling
         ShootButton ??= new(this, "SHOOT", new SpriteName("Shoot"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Shoot, new Cooldown(ShootCd), (PlayerBodyExclusion)Exception,
             MaxBullets, (UsableFunc)Usable);
         RoundOne = RoundOneNoShot;
+        KeepKilling = true;
     }
 
     public override void BeforeMeeting()
     {
         RoundOne = false;
 
-        if (PreMeetingDie)
+        if (KilledInno && HowDoesVigilanteDie == VigiOptions.PreMeeting)
             Player.RpcSuicide();
     }
 
@@ -57,24 +56,25 @@ public sealed class Vigilante : CKilling
     {
         base.OnMeetingStart(__instance);
 
-        if (InnoMessage)
+        if (KilledInno && HowIsVigilanteNotified == VigiNotif.Message && HowDoesVigilanteDie != VigiOptions.Immediate)
             Run("<#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 
     private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
-    private bool Usable() => !KilledInno && !RoundOne;
+    private bool Usable() => KeepKilling && !RoundOne;
 
     private void Shoot(PlayerControl target)
     {
-        var flag4 = target.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || target.GetFaction() is not (Faction.Crew or Faction.Outcast) || target.Is<Troll>() || target.IsFramed() ||
-            Player.IsFramed() || (target.Is(Alignment.Evil) && OutcastEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || (target.Is(Alignment.Benign) &&
+        var targetRole = target.GetRole();
+        var toKill = targetRole.Alignment is Alignment.Neophyte or Alignment.Proselyte || targetRole.Faction.IsFactionedEvil() || targetRole is Troll || target.IsFramed() || Player.IsFramed() ||
+            (targetRole.Alignment == Alignment.Evil && OutcastEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.Is<Corrupted>() || (targetRole.Alignment == Alignment.Benign &&
             OutcastBenignSettings.VigilanteKillsBenigns);
-        var cooldown = Interact(Player, target, flag4);
+        var cooldown = Interact(Player, target, toKill);
 
         if (cooldown != CooldownType.Fail)
         {
-            if (flag4 && !Player.IsFramed())
+            if (toKill && !Player.IsFramed() && !target.IsFramed())
                 KilledInno = false;
             else
             {
@@ -84,14 +84,14 @@ public sealed class Vigilante : CKilling
                 if (Local && HowIsVigilanteNotified == VigiNotif.Flash && HowDoesVigilanteDie != VigiOptions.Immediate)
                     Flash(Color);
 
-                KilledInno = !VigiKillAgain;
-                InnoMessage = HowIsVigilanteNotified == VigiNotif.Message && HowDoesVigilanteDie != VigiOptions.Immediate;
-                PreMeetingDie = HowDoesVigilanteDie == VigiOptions.PreMeeting;
-                PostMeetingDie = HowDoesVigilanteDie == VigiOptions.PostMeeting;
+                KeepKilling = VigiKillAgain;
+                KilledInno = true;
 
                 if (HowDoesVigilanteDie == VigiOptions.Immediate)
                     Player.RpcSuicide();
             }
+
+            Play("Shoot");
         }
 
         ShootButton.StartCooldown(cooldown);

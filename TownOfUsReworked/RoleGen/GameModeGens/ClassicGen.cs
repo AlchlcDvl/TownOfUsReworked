@@ -316,7 +316,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
             var maxSSu = Mathf.Clamp(SyndicateSupportSettings.MaxSSu.Value, 0, RoleGenManager.SyndicateSupportRoles.Count);
             var maxSD = Mathf.Clamp(SyndicateDisruptionSettings.MaxSD.Value, 0, RoleGenManager.SyndicateDisruptionRoles.Count);
             var maxSyK = Mathf.Clamp(SyndicateKillingSettings.MaxSyK.Value, 0, RoleGenManager.SyndicateKillingRoles.Count);
-            var maxSp = Mathf.Clamp(SyndicatePowerSettings.MaxSp.Value, 0, RoleGenManager.SyndicatePowerRoles.Count);
+            var maxSp = Mathf.Clamp(SyndicateHeadSettings.MaxSp.Value, 0, RoleGenManager.SyndicateHeadRoles.Count);
             var maxSynSum = maxSSu + maxSD + maxSyK + maxSp;
 
             while (maxSynSum > maxSyn && maxSynSum > 0)
@@ -359,10 +359,10 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
             filter.Filter(RoleGenManager.SyndicateSupportRoles, maxSSu);
             filter.Filter(RoleGenManager.SyndicateDisruptionRoles, maxSD);
             filter.Filter(RoleGenManager.SyndicateKillingRoles, maxSyK);
-            filter.Filter(RoleGenManager.SyndicatePowerRoles, maxSp);
+            filter.Filter(RoleGenManager.SyndicateHeadRoles, maxSp);
         }
 
-        SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
+        SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicateHeadRoles, RoleGenManager.SyndicateDisruptionRoles);
 
         filter.Filter(SyndicateRoles, GameModeSettings.IgnoreFactionCaps ? Syndicate : URandom.RandomRangeInt(minSyn, maxSyn + 1));
 

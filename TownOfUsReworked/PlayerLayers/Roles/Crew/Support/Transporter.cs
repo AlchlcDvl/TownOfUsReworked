@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Transporter)]
-public sealed class Transporter : Crew, IMover
+public sealed class Transporter : CSupport, IMover
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTransports = 5;
@@ -27,7 +27,6 @@ public sealed class Transporter : Crew, IMover
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, MaxTransports, new Cooldown(TransportCd),
             (LabelFunc)Label);
         TransportMenu = new(Player, Click, Color, Exception);

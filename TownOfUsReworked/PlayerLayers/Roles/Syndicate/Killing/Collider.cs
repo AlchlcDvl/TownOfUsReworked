@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Collider)]
-public sealed class Collider : Syndicate
+public sealed class Collider : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number CollideCd = 25;
@@ -40,7 +40,6 @@ public sealed class Collider : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Killing;
         Positive = null;
         Negative = null;
         PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",

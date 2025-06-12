@@ -596,7 +596,7 @@ public static class LayerExtensions
                 chosen = all.Find(x => x is { Alignment: Alignment.Support, IsUnderling: false });
 
             if (!chosen)
-                chosen = all.Find(x => x is { Alignment: Alignment.Power, IsUnderling: false });
+                chosen = all.Find(x => x is { Alignment: Alignment.Head, IsUnderling: false });
 
             if (!chosen)
                 chosen = all.Find(x => x is { Alignment: Alignment.Killing, IsUnderling: false });

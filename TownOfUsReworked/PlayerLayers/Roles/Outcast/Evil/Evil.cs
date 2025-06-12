@@ -2,11 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Evil : Outcast
 {
-    public override void Init()
-    {
-        base.Init();
-        Alignment = Alignment.Evil;
-    }
+    public override Alignment Alignment => Alignment.Evil;
 
     protected override void CheckWin(HashSet<byte> winnerIds)
     {

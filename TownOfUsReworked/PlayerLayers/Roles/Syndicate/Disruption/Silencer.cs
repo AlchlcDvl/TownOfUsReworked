@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Silencer)]
-public sealed class Silencer : Syndicate, IIntimidator
+public sealed class Silencer : Disruption, IIntimidator
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SilenceCd = 25;
@@ -28,7 +28,6 @@ public sealed class Silencer : Syndicate, IIntimidator
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Disruption;
         Target = null;
         SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
             (PlayerBodyExclusion)Exception1);

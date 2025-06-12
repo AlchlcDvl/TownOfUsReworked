@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Betrayer)]
-public sealed class Betrayer : Outcast
+public sealed class Betrayer : Proselyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number BetrayCd = 25;
@@ -22,7 +22,6 @@ public sealed class Betrayer : Outcast
     {
         base.Init();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
-        Alignment = Alignment.Proselyte;
         KillButton ??= new(this, new SpriteName("BetrayerKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(BetrayCd), "BACKSTAB",
             (PlayerBodyExclusion)Exception);
     }

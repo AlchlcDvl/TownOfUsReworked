@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Survivor)]
-public sealed class Survivor : Outcast
+public sealed class Survivor : Benign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number VestCd = 25;
@@ -31,7 +31,6 @@ public sealed class Survivor : Outcast
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Benign;
         Objectives = () => "- Live to the end of the game";
         VestButton ??= new(this, new SpriteName("Vest"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitVest, new Cooldown(VestCd), "VEST", new Duration(VestDur),
             MaxVests);

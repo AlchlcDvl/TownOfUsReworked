@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // TODO: Implement seancing
 [LayerHeaderOption(LayerEnum.Medium)]
-public sealed class Medium : Crew, IShaman
+public sealed class Medium : Investigative, IShaman
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MediateCd = 25;
@@ -42,7 +42,6 @@ public sealed class Medium : Crew, IShaman
         base.Init();
         MediatedPlayers.Clear();
         MediateArrows = [];
-        Alignment = Alignment.Investigative;
         MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));
         // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), MaxSeances,
         //     new PostDeath(true));

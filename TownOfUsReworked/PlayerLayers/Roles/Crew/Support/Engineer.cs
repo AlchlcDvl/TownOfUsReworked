@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Engineer)]
-public sealed class Engineer : Crew
+public sealed class Engineer : CSupport
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxFixes = 5;
@@ -19,7 +19,6 @@ public sealed class Engineer : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         FixButton ??= new(this, "FIX SABOTAGE", new SpriteName("Fix"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Fix, new Cooldown(FixCd), MaxFixes,
             (ConditionFunc)Condition);
     }

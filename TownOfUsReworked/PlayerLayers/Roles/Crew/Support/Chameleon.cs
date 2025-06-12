@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // FIXME: Doesn't actually go invisible
 [LayerHeaderOption(LayerEnum.Chameleon)]
-public sealed class Chameleon : Crew
+public sealed class Chameleon : CSupport
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxSwoops = 5;
@@ -24,7 +24,6 @@ public sealed class Chameleon : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         SwoopButton ??= new(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Swoop, new Cooldown(SwoopCd), (EffectStartVoid)Invis,
             MaxSwoops, new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }

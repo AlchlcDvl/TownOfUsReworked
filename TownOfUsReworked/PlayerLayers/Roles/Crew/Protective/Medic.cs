@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Medic)]
-public sealed class Medic : Crew, IShielder
+public sealed class Medic : Protective, IShielder
 {
     [MultiSelectOption<ShieldOptions>(NoneValue = ShieldOptions.Nobody, AllValue = ShieldOptions.Everyone)]
     public static MultiSelectValue<ShieldOptions> ShowShielded = ShieldOptions.Medic;
@@ -26,7 +26,6 @@ public sealed class Medic : Crew, IShielder
     {
         base.Init();
         ShieldedPlayer = null;
-        Alignment = Alignment.Protective;
         ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
     }

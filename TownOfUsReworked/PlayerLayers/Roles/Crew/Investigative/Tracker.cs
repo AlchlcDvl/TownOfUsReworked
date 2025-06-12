@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Tracker)]
-public sealed class Tracker : Crew
+public sealed class Tracker : Investigative
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTracks = 5;
@@ -27,7 +27,6 @@ public sealed class Tracker : Crew
     {
         base.Init();
         TrackerArrows.Clear();
-        Alignment = Alignment.Investigative;
         TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Detective)]
-public sealed class Detective : Crew
+public sealed class Detective : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ExamineCd = 25;
@@ -29,7 +29,6 @@ public sealed class Detective : Crew
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Investigative;
         ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Examine, new Cooldown(ExamineCd));
     }
 

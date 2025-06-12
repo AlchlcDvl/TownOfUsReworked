@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Rebel)]
-public sealed class Rebel : Syndicate
+public sealed class Rebel : SHead
 {
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
     public static Number RebPromotionCdDecrease = 0.75f;
@@ -19,7 +19,6 @@ public sealed class Rebel : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Power;
         SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
             (UsableFunc)Usable);
     }

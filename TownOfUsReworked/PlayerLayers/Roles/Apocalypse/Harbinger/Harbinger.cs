@@ -2,11 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Harbinger : Apocalypse
 {
-    public override void Init()
-    {
-        base.Init();
-        Alignment = Alignment.Harbinger;
-    }
+    public override Alignment Alignment => Alignment.Harbinger;
 }
 
 public abstract class Harbinger<T> : Harbinger where T : Deity

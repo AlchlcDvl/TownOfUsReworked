@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Escort)]
-public sealed class Escort : Crew, IBlocker
+public sealed class Escort : CSupport, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number EscortCd = 25;
@@ -22,7 +22,6 @@ public sealed class Escort : Crew, IBlocker
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         BlockTarget = null;
         BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectEndVoid)UnBlock,
             new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect, (EffectStartVoid)BlockStart);

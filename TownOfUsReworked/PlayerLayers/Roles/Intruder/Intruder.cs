@@ -35,6 +35,13 @@ public abstract class Intruder : Role, IPromoter
         ? Faction.Illuminati
         : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Intruders
             ? Faction.Pandorica : Faction.Intruder);
+    public override Alignment Alignment => IsPromoted
+        ? Alignment.Head
+        : (IsUnderling
+            ? Alignment.Utility
+            : ActualAlignment);
+
+    protected abstract Alignment ActualAlignment { get; }
 
     public override void Init()
     {
@@ -62,7 +69,6 @@ public abstract class Intruder : Role, IPromoter
             IsUnderling = false;
             Promoter = null;
             Name = TranslationManager.Translate("Layer.Godfather");
-            Alignment = Alignment.Head;
             Handler.History.Add((LayerEnum.Mafioso, Faction));
         }
     }

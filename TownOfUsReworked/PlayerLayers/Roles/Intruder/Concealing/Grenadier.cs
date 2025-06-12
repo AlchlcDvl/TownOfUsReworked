@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Grenadier)]
-public sealed class Grenadier : Intruder
+public sealed class Grenadier : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number FlashCd = 25;
@@ -30,7 +30,6 @@ public sealed class Grenadier : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Concealing;
         FlashedPlayers = [];
         FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
             "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, new CanClickAgain(false));

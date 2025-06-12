@@ -311,6 +311,13 @@ public static class ModCompatibilityManager
     private static void SetMapPostfix() => MapSettings.Map = MapEnum.LevelImpostor;
 
     private static readonly string[] Unsupported = ["AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI"];
+    private static readonly string[] DevOnly = ["sinai-dev-UnityExplorer"];
 
-    public static bool CheckAbort(out string mod) => Unsupported.TryFinding(x => File.Exists(Path.Combine(TownOfUsReworked.ModsFolder, $"{x}.dll")), out mod);
+    public static bool CheckAbort(out string mod) => Unsupported.TryFinding(ModExists, out mod) || (TownOfUsReworked.IsDev && DevOnly.TryFinding(ModExists, out mod));
+
+    private static bool ModExists(string modName)
+    {
+        var path = Path.Combine(TownOfUsReworked.ModsFolder, modName);
+        return File.Exists(path + ".dll") || Directory.Exists(path);
+    }
 }

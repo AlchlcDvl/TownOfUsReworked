@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Banshee)]
-public sealed class Banshee : Syndicate, IGhosty
+public sealed class Banshee : SUtility, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ScreamCd = 25;
@@ -23,7 +23,6 @@ public sealed class Banshee : Syndicate, IGhosty
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Utility;
         Blocked.Clear();
         ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
             new Duration(ScreamDur), (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect, (EffectStartVoid)StartScream);

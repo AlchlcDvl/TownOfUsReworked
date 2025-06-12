@@ -17,6 +17,7 @@
 - Addition: Added new multi-select options and modified existing settings to match
 - Addition: Added a button in the lobby for hosts to cancel the start timer and not start the game
 - Addition: When you are told that you are roleblocked, your screen will begin to glitch out
+- Addition: Added a few anti cheat measures to prevent tampering
 
 Changes!
 - Update: Updated to Among Us v16.0.5 (or 2025.5.20)

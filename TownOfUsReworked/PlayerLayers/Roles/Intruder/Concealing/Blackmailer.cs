@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Blackmailer)]
-public sealed class Blackmailer : Intruder, IIntimidator
+public sealed class Blackmailer : Concealing, IIntimidator
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number BlackmailCd = 25;
@@ -28,7 +28,6 @@ public sealed class Blackmailer : Intruder, IIntimidator
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Concealing;
         Target = null;
         BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd),
             (PlayerBodyExclusion)Exception1);

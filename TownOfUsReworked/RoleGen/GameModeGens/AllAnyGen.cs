@@ -17,7 +17,7 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
             (type == IlluminatiType.Neophytes ? IlluminatiRoles : OutcastRoles).AddRange(RoleGenManager.OutcastNeophyteRoles);
             (type == IlluminatiType.Apocalypse ? IlluminatiRoles : ApocalypseRoles).AddRanges(RoleGenManager.ApocalypseHarbingerRoles);
             (type == IlluminatiType.Syndicate ? IlluminatiRoles : SyndicateRoles).AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles,
-                RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
+                RoleGenManager.SyndicateHeadRoles, RoleGenManager.SyndicateDisruptionRoles);
             (type == IlluminatiType.Intruders ? IlluminatiRoles : IntruderRoles).AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles,
                 RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles, RoleGenManager.IntruderHeadRoles);
             return;
@@ -37,7 +37,7 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
             var type = BadGuysSettings.PandoricaMembers;
             (type == PandoricaType.Apocalypse ? PandoricaRoles : ApocalypseRoles).AddRanges(RoleGenManager.ApocalypseHarbingerRoles);
             (type == PandoricaType.Syndicate ? PandoricaRoles : SyndicateRoles).AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles,
-                RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
+                RoleGenManager.SyndicateHeadRoles, RoleGenManager.SyndicateDisruptionRoles);
             (type == PandoricaType.Intruders ? PandoricaRoles : IntruderRoles).AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles,
                 RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles, RoleGenManager.IntruderHeadRoles);
         }
@@ -45,7 +45,7 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
         {
             IntruderRoles.AddRanges(RoleGenManager.IntruderConcealingRoles, RoleGenManager.IntruderDeceptionRoles, RoleGenManager.IntruderKillingRoles, RoleGenManager.IntruderSupportRoles,
                 RoleGenManager.IntruderHeadRoles);
-            SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicatePowerRoles, RoleGenManager.SyndicateDisruptionRoles);
+            SyndicateRoles.AddRanges(RoleGenManager.SyndicateSupportRoles, RoleGenManager.SyndicateKillingRoles, RoleGenManager.SyndicateHeadRoles, RoleGenManager.SyndicateDisruptionRoles);
             ApocalypseRoles.AddRange(RoleGenManager.ApocalypseHarbingerRoles);
         }
     }

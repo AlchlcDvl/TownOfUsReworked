@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Consort)]
-public sealed class Consort : Intruder, IBlocker
+public sealed class Consort : ISupport, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ConsortCd = 25;
@@ -23,7 +23,6 @@ public sealed class Consort : Intruder, IBlocker
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         BlockMenu = new(Player, Click, Color, Exception1);
         BlockTarget = null;
         BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,

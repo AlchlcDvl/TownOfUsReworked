@@ -22,12 +22,7 @@ public abstract class OKilling : Outcast
             ? Faction.Compliance
             : (OutcastKillingSettings.WinSolo
                 ? Faction.Outcast : ActualFaction));
+    public override Alignment Alignment => Alignment.Killing;
 
     protected abstract Faction ActualFaction { get; }
-
-    public override void Init()
-    {
-        base.Init();
-        Alignment = Alignment.Killing;
-    }
 }

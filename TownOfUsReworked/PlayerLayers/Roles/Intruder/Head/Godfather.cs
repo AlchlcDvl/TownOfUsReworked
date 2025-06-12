@@ -15,11 +15,11 @@ public sealed class Godfather : Intruder
     public override Func<string> Description => () => "- You can promote a fellow <#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <#FF1919FF>" +
         "Intruder</color> turns them into a <#6400FFFF>Mafioso</color>\n- If you die, the <#6400FFFF>Mafioso</color> will become the new <#404C08FF>Godfather</color>"
         + $"\nand inherits better abilities of their former role\n{CommonAbilities}";
+    protected override Alignment ActualAlignment => Alignment.Head;
 
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Head;
         DeclareButton ??= new(this, new SpriteName("Promote"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 

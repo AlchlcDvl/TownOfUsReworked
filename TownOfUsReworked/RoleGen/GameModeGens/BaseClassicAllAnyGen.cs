@@ -152,8 +152,8 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
             }
             else if (spawn.IsActive(Syndicate))
             {
-                if (SP.Contains(layer))
-                    RoleGenManager.SyndicatePowerRoles.AddMany(spawn.Clone, spawn.Count);
+                if (SH.Contains(layer))
+                    RoleGenManager.SyndicateHeadRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (SD.Contains(layer))
                     RoleGenManager.SyndicateDisruptionRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (SyK.Contains(layer))

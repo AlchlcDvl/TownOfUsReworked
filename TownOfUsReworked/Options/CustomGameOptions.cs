@@ -1010,8 +1010,8 @@ public static class SyndicateKillingRoles
     public static RoleOptionData Poisoner;
 }
 
-[AlignmentOption(ListSlot.SyndicatePower)]
-public static class SyndicatePowerRoles
+[AlignmentOption(ListSlot.SyndicateHead)]
+public static class SyndicateHeadRoles
 {
     [LayerOption("#FFFCCEFF", LayerEnum.Rebel)]
     public static RoleOptionData Rebel;
@@ -1343,8 +1343,8 @@ public static class SyndicateKillingSettings
     public static ReworkedNumberOption MaxSyK = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
-[AlignmentHeaderOption(ListSlot.SyndicatePower)]
-public static class SyndicatePowerSettings
+[AlignmentHeaderOption(ListSlot.SyndicateHead)]
+public static class SyndicateHeadSettings
 {
     public static ReworkedNumberOption MaxSp = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }

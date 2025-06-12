@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Bomber)]
-public sealed class Bomber : Syndicate
+public sealed class Bomber : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number BombCd = 25;
@@ -42,7 +42,6 @@ public sealed class Bomber : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Killing;
         Bombs.Clear();
         BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB",
             (ConditionFunc)Condition);

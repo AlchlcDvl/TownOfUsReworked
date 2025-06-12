@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Enforcer)]
-public sealed class Enforcer : Intruder
+public sealed class Enforcer : IKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number EnforceCd = 25;
@@ -28,7 +28,6 @@ public sealed class Enforcer : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Killing;
         BombedPlayer = null;
         BombButton ??= new(this, new SpriteName("Enforce"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),
             (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(EnforceDelay), (PlayerBodyExclusion)Exception1, new CanClickAgain(false), (EndFunc)EndEffect);

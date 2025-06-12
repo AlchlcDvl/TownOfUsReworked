@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Consigliere)]
-public sealed class Consigliere : Intruder
+public sealed class Consigliere : ISupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number InvestigateCd = 25;
@@ -20,7 +20,6 @@ public sealed class Consigliere : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         Investigated.Clear();
         InvestigateButton ??= new(this, new SpriteName("Investigate"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
             (PlayerBodyExclusion)Exception1);

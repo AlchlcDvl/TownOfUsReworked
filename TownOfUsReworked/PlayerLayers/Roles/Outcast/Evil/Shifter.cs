@@ -22,7 +22,6 @@ public sealed class Shifter : Evil
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         ShifterMenu = new(Player, ClickShift, Color, Exception);
         ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)ShifterMenu.Open, new Cooldown(ShiftCd));
         Originals.Add(Player);

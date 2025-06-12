@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 // FIXME: Doesn't actually go invisible
 // FIXME: Somehow Wraith and Poisoner can't kill each other with a dead poisoned Monarch
 [LayerHeaderOption(LayerEnum.Wraith)]
-public sealed class Wraith : Intruder
+public sealed class Wraith : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number InvisCd = 25;
@@ -26,7 +26,6 @@ public sealed class Wraith : Intruder
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Deception;
         InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitInvis, new Cooldown(InvisCd), (EffectStartVoid)Invis,
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }

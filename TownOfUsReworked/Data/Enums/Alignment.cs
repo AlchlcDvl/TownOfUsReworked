@@ -10,7 +10,6 @@ public enum Alignment : byte
     Sovereign,
     Deception,
     Concealing,
-    Power,
     Disruption,
     Head,
     Harbinger,

@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Amnesiac)]
-public sealed class Amnesiac : Outcast
+public sealed class Amnesiac : Benign
 {
     [ToggleOption]
     private static bool RememberArrows = false;
@@ -32,7 +32,6 @@ public sealed class Amnesiac : Outcast
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Benign;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows.Clear();
         RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");

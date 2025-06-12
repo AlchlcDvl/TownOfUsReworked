@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(LayerEnum.Trapper)]
-public sealed class Trapper : Crew, ITrapper
+public sealed class Trapper : Protective, ITrapper
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTraps = 5;
@@ -32,7 +32,6 @@ public sealed class Trapper : Crew, ITrapper
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Support;
         Trapped.Clear();
         TriggeredRoles.Clear();
         BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuilding, new Cooldown(BuildCd), MaxTraps,

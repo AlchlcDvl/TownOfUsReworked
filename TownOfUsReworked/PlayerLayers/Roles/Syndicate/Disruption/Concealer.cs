@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // FIXME: Doesn't actually make people invisible
 [LayerHeaderOption(LayerEnum.Concealer)]
-public sealed class Concealer : Syndicate
+public sealed class Concealer : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number ConcealCd = 25;
@@ -26,7 +26,6 @@ public sealed class Concealer : Syndicate
     public override void Init()
     {
         base.Init();
-        Alignment = Alignment.Disruption;
         ConcealMenu = new(Player, Click, Color, Exception1);
         ConcealedPlayer = null;
         ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(ConcealCd), (EffectStartVoid)Conceal,
