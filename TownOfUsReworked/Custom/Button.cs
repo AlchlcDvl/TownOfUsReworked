@@ -371,7 +371,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         else
             Base.SetInfiniteUses();
 
-        Base.gameObject.SetActive(!Disabled);
+        Base.gameObject.SetActive(Owner.Local);
     }
 
     private static ActionButton InstantiateButton()
@@ -654,7 +654,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
     public bool Usable() => ToggleVisibility.Visible && (!HasUses || UsesCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() &&
         !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && !MapBehaviourPatches.MapActive && IsUsable();
 
-    public bool Clickable() => Base && !EffectActive && Usable() && Condition() && !DelayActive && !Owner.Player.CannotUse() && Targeting && !CooldownActive && !Disabled && (!HasUses || Uses >=
+    public bool Clickable() => Base && !Disabled && !EffectActive && !DelayActive && Usable() && Condition() && !Owner.Player.CannotUse() && Targeting && !CooldownActive && (!HasUses || Uses >=
         UseDecrement) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();
 
     private void SetTarget()

@@ -192,7 +192,7 @@ public static class FreeplayPatches
                     TaskTypes.DivertPower => TranslationController.Instance.GetString(StringNames.DivertPowerTo,
                         TranslationController.Instance.GetString(taskAddButton.MyTask.Cast<DivertPowerTask>().TargetSystem)),
                     TaskTypes.FixWeatherNode => TranslationController.Instance.GetString(StringNames.FixWeatherNode) + " " +
-                            TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[taskAddButton.MyTask.Cast<WeatherNodeTask>().NodeId]),
+                        TranslationController.Instance.GetString(WeatherSwitchGame.ControlNames[taskAddButton.MyTask.Cast<WeatherNodeTask>().NodeId]),
                     _ => TranslationController.Instance.GetString(taskAddButton.MyTask.TaskType)
                 };
                 __instance.AddFileAsChild(taskFolder, taskAddButton, ref num, ref num2, ref num3);

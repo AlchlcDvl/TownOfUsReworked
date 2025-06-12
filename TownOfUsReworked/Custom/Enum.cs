@@ -136,7 +136,7 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
                 throw new ArgumentException($"{index} has already been injected. {Diagnostic(decrement)}");
 
             if (Il2Cpp)
-                EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
+                EnumInjector.InjectEnumValues<T>(new() { { value, (object)index } });
 
             var result = (T)Enum.ToObject(Type, index);
             InsertValue(result, value, index);
@@ -234,7 +234,9 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
             if (index < Min || index > Max)
                 throw new OverflowException($"Overflow for Type {Type.Name} detected");
 
-            EnumInjector.InjectEnumValues<T>(new(){ { value, (object)index } });
+            if (Il2Cpp)
+                EnumInjector.InjectEnumValues<T>(new() { { value, (object)index } });
+
             var result = (T)Enum.ToObject(Type, index);
             InsertValue(result, value, index);
             return result;

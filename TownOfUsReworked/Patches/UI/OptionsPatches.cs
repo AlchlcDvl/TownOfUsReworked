@@ -558,17 +558,17 @@ public static class SettingsPatches
         OnValueChanged();
     }
 
-    [HarmonyPatch(typeof(PlayerPhysics._CoSpawnPlayer_d__42), nameof(PlayerPhysics._CoSpawnPlayer_d__42.MoveNext))]
+    [HarmonyPatch(typeof(PlayerControl._Start_d__82), nameof(PlayerControl._Start_d__82.MoveNext))]
     public static class PlayerJoinPatch
     {
         private static bool SentOnce;
 
-        public static void Postfix(PlayerPhysics._CoSpawnPlayer_d__42 __instance, ref bool __result)
+        public static void Prefix(PlayerControl._Start_d__82 __instance, ref bool __result)
         {
             if (__result || !AmongUsClient.Instance || !LocalPlayer || IsFreePlay() || IsHnS())
                 return;
 
-            var player = __instance.__4__this.myPlayer;
+            var player = __instance.__4__this;
 
             if (!player)
                 return;

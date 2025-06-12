@@ -19,7 +19,7 @@
 - Addition: When you are told that you are roleblocked, your screen will begin to glitch out
 
 Changes!
-- Update: Updated to Among Us v16.0.5 (or 2025.5.20)*
+- Update: Updated to Among Us v16.0.5 (or 2025.5.20)
 - Update: Updated to Reactor v2.5.0
 - Update: Updated to BepInEx v6.0.0-be.735
 - Overhaul: Mayor is now a second stage role for the new Democrat role

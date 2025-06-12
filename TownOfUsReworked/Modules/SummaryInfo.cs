@@ -60,7 +60,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
         foreach (var val in RpcWriter.GetBytes(PlayerName))
             yield return val;
 
-        // In an ideal game, the count wouldn't exceed 6 or 7. But since I know some people who like to see me suffer, i've set the max limit to 2^16, good luck changing roles and factions this
+        // In an ideal game, the count wouldn't exceed 6 or 7. But since I know some people who like to see me suffer, so I've set the max limit to 2^16, good luck changing roles and factions this
             // many times
         foreach (var val in RpcWriter.GetBytes((ushort)History.Count))
             yield return val;
@@ -170,6 +170,8 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
                 History.Add((role2, faction));
         }
 
+        History.Add((role.Type, handler.CurrentFaction));
+
         OtherLayers.Add(disposition.Type);
         OtherLayers.Add(modifier.Type);
         OtherLayers.Add(ability.Type);
@@ -274,7 +276,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
         if (CanDoTasks)
             part += TasksDone ? $"{(char)0x25A0}" : $"<{CompletedTasks}/{TotalTasks}>";
 
-        if (DeathReason != DeathReasonEnum.Alive)
+        if (DeathReason != DeathReasonEnum.Alive && !Disconnected)
         {
             part += $" | {DeathReason}";
 

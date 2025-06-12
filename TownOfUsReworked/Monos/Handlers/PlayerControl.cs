@@ -43,7 +43,7 @@ public sealed class PlayerControlHandler : NameHandler
         handler.UpdatePlayer();
         localHandler.UpdatePlayer(Player);
         var (extraStuff, color) = UpdateGameName(handler, localHandler, amOwner, deadSeeEverything, out var revealed);
-        (Name.text, Name.color, Name.enabled) = (Player.name + extraStuff, color.SetAlpha(Appearance.Alpha), visible);
+        (Name.text, Name.color, Name.enabled) = (handler.Player.name + extraStuff, color.SetAlpha(Appearance.Alpha), visible);
         Name.transform.localPosition = new(0f, revealed ? -0.05f : -0.2f, -0.5f);
     }
 

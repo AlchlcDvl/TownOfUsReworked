@@ -60,7 +60,6 @@ public static class GameStartManagerPatches
 
         __instance.UpdateMapImage((MapNames)GameManager.Instance.LogicOptions.MapId);
         __instance.CheckSettingsDiffs();
-        __instance.RulesPresetText.text = TranslationController.Instance.GetString(GameOptionsManager.Instance.CurrentGameOptions.GetRulesPresetTitle());
         __instance.privatePublicPanelText.text = TranslationController.Instance.GetString(IsLocalGame()
             ? StringNames.LocalButton
             : (AmongUsClient.Instance.IsGamePublic
@@ -101,8 +100,9 @@ public static class GameStartManagerPatches
             }
             else
             {
-                __instance.StartButton.ChangeButtonText(TranslationController.Instance.GetString(StringNames.WaitingForPlayers));
-                __instance.GameStartTextClient.text = TranslationController.Instance.GetString(StringNames.WaitingForPlayers);
+                var waiting = TranslationController.Instance.GetString(StringNames.WaitingForPlayers);
+                __instance.StartButton.ChangeButtonText(waiting);
+                __instance.GameStartTextClient.text = waiting;
             }
 
             if (DiscordManager.InstanceExists)

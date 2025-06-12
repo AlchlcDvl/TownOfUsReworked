@@ -18,6 +18,8 @@ public static class Keybinds
         __instance.userData.RegisterBind("Delete", "Remove A Chosen Target (eg for Transporter or Consort)", KeyboardKeyCode.Backspace);
     }
 
+    public static Exception Finalizer() => null;
+
     private static void RegisterBind(this UserData self, string name, string description, KeyboardKeyCode keycode)
     {
         self.AddAction(0);

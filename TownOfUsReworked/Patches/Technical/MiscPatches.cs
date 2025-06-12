@@ -2,6 +2,7 @@ using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
 using AmongUs.Data.Settings;
 using Discord;
+using PowerTools;
 
 namespace TownOfUsReworked.Patches.Technical;
 
@@ -444,10 +445,12 @@ public static class ShowCustomAnim
 
             if (!selfDeath)
             {
+                var overlay = HUD().KillOverlay;
+
                 var parent = new GameObject("SelfKillObject").DontDestroy().transform;
                 parent.gameObject.SetActive(false);
 
-                selfDeath = UObject.Instantiate(HUD().KillOverlay.KillAnims[0], parent);
+                selfDeath = UObject.Instantiate(overlay.KillAnims[0], parent);
 
                 selfDeath.killerParts.gameObject.SetActive(false);
                 selfDeath.killerParts = null;
@@ -459,9 +462,7 @@ public static class ShowCustomAnim
 
                 selfDeath.AddComponent<CustomKillAnimationPlayer>();
 
-                var array = HUD().KillOverlay.KillAnims.ToList();
-                array.Add(selfDeath);
-                HUD().KillOverlay.KillAnims = array.ToArray();
+                overlay.KillAnims = overlay.KillAnims.AddItem(selfDeath).ToArray();
             }
 
             return selfDeath;
@@ -477,8 +478,11 @@ public static class ShowCustomAnim
                 : killer.Object
         ).GetRole().Color;
 
-        if (killer.PlayerId != victim.PlayerId || AprilFoolsMode.ShouldHorseAround() || AprilFoolsMode.ShouldLongAround() || IsSubmerged())
+        if (killer.PlayerId != victim.PlayerId || AprilFoolsMode.ShouldHorseAround() || AprilFoolsMode.ShouldLongAround())
             return true;
+
+        if (IsSubmerged())
+            return false;
 
         __instance.ShowKillAnimation(SelfDeath, killer, victim);
         return false;
@@ -488,15 +492,48 @@ public static class ShowCustomAnim
 [HarmonyPatch(typeof(OverlayKillAnimation))]
 public static class OverlayKillAnimationPatches
 {
-    [HarmonyPatch(nameof(OverlayKillAnimation.WaitForFinish))]
-    public static bool Prefix(OverlayKillAnimation __instance, ref IIEnumerator __result)
+    [HarmonyPatch(nameof(OverlayKillAnimation.CoShow))]
+    public static bool Prefix(OverlayKillAnimation __instance, KillOverlay parent, ref IIEnumerator __result)
     {
-        var flag = __instance.TryGetComponent<CustomKillAnimationPlayer>(out var customKillAnim);
+        __result = KillAnimInliningFix(__instance, parent).WrapToIl2Cpp();
+        return false;
+    }
 
-        if (flag && customKillAnim)
-            __result = customKillAnim.WaitForFinish().WrapToIl2Cpp();
+    private static IEnumerator KillAnimInliningFix(OverlayKillAnimation __instance, KillOverlay parent)
+    {
+        if (Constants.ShouldPlaySfx())
+            SoundManager.Instance.PlaySound(__instance.Stinger, false, 1f, null).volume = __instance.StingerVolume;
 
-        return !flag;
+        __instance.petObjects = new();
+
+        foreach (var spriteAnim in __instance.GetComponentsInChildren<SpriteAnim>())
+        {
+            if (spriteAnim.GetComponent<PetBehaviour>() != null)
+                __instance.petObjects.Add(spriteAnim.gameObject);
+        }
+
+        parent.background.enabled = true;
+        yield return Effects.Wait(0.083333336f);
+        parent.background.enabled = false;
+        parent.flameParent.SetActive(true);
+        parent.flameParent.transform.localScale = new(1f, 0.3f, 1f);
+        parent.flameParent.transform.localEulerAngles = new(0f, 0f, 25f);
+        yield return Effects.Wait(0.083333336f);
+        parent.flameParent.transform.localScale = new(1f, 0.5f, 1f);
+        parent.flameParent.transform.localEulerAngles = new(0f, 0f, -15f);
+        yield return Effects.Wait(0.083333336f);
+        parent.flameParent.transform.localScale = new(1f, 1f, 1f);
+        parent.flameParent.transform.localEulerAngles = new(0f, 0f, 0f);
+        __instance.gameObject.SetActive(true);
+
+        if (__instance.TryGetComponent<CustomKillAnimationPlayer>(out var customKillAnim))
+            yield return customKillAnim.WaitForFinish().WrapToIl2Cpp();
+        else
+            yield return __instance.WaitForFinish();
+
+        __instance.gameObject.SetActive(false);
+        yield return PerformTimedAction(0.16666667f, t => parent.flameParent.transform.localScale = new(1f, 1f - t, 1f));
+        parent.flameParent.SetActive(false);
     }
 
     private static int OutfitTypeCache;
@@ -602,25 +639,19 @@ public static class OverrideKillAnim
 }
 
 [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames), typeof(Il2CppReferenceArray<IObject>))]
-public static class PatchColours
+public static class PatchTranslations
 {
-    public static bool Prefix(StringNames id, ref string __result)
+    public static bool Prefix(TranslationController __instance, StringNames id, Il2CppReferenceArray<IObject> parts, ref string __result)
     {
         if (id >= 0)
-            return true;
-
-        var result = TranslationManager.Translate(id, out var customString);
-
-        if (result)
+            __result = __instance.GetString(id.ToString(), "STRMISS", parts); // This is stupid
+        else if (TranslationManager.Translate(id, out var customString))
             __result = customString;
 
-        return !result;
-    }
-
-    public static void Postfix(StringNames id, ref string __result)
-    {
         if (__result.StartsWith("STRMISS") && !__result.Contains('('))
             __result += $" ({id})";
+
+        return false;
     }
 }
 
@@ -661,6 +692,7 @@ public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
 {
     [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))] // I have a hate-only relationship with ModManager
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
+    [HarmonyPatch(typeof(NameHandler), nameof(NameHandler.UpdateGameName))] // Patching my own code...that's a first
     public static Exception Finalizer() => null; // My first use of a finalizer ong
 }
 

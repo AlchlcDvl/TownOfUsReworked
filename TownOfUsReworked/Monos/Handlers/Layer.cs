@@ -142,6 +142,7 @@ public sealed class LayerHandler : RoleBehaviour
         CurrentAbility.UpdatePlayer(__instance);
         CurrentModifier.UpdatePlayer(__instance);
         CurrentDisposition.UpdatePlayer(__instance);
+        TasksCountTowardProgress = Player.CanDoTasks() && (CurrentRole is Runner or Hunted || CurrentFaction == Faction.Crew);
     }
 
     public void UpdateVoteArea()
@@ -275,12 +276,9 @@ public sealed class LayerHandler : RoleBehaviour
 
         CurrentLayers = [ CurrentRole, CurrentModifier, CurrentAbility, CurrentDisposition ];
         CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
-        ResetButtons();
 
         Channels = ChatChannel.None;
 
-        TasksCountTowardProgress = Player.CanDoTasks() && (CurrentRole is Runner or Hunted || CurrentFaction == Faction.Crew);
-        CanVent = Player.CanVent();
         AffectedByLightAffectors = !(CurrentAbility is Torch || !CurrentRole.AffectedByLights);
 
         Player.GetComponent<PlayerControlHandler>().UpdateCurrent();
@@ -289,6 +287,8 @@ public sealed class LayerHandler : RoleBehaviour
             CurrentFaction = CurrentRole.BaseFaction;
 
         CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Init());
+
+        ResetButtons();
     }
 
     public void Update()
@@ -340,7 +340,7 @@ public sealed class LayerHandler : RoleBehaviour
     public override void SpawnTaskHeader(PlayerControl playerControl)
     {
         if (playerControl.AmOwner)
-            PlayerTask.GetOrCreateTask<ImportantTextTask>(playerControl).Text = "Achieve your win condition!\n";
+            PlayerTask.GetOrCreateTask<ImportantTextTask>(playerControl).Text = "Achieve your goal!\n";
     }
 
     public override void AppendTaskHint(IStringBuilder taskStringBuilder) {}

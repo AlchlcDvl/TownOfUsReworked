@@ -62,7 +62,7 @@ public sealed class CustomKillAnimationPlayer : MonoBehaviour
 
     public void Update()
     {
-        if (!Frames.Any())
+        if (!Frames.Any() || Finished)
             return;
 
         PlayHead += Time.deltaTime;
@@ -77,7 +77,7 @@ public sealed class CustomKillAnimationPlayer : MonoBehaviour
         UpdateVisuals(currentFrame.Time, currentFrame.Offset, currentFrame.Animation);
     }
 
-    public void UpdateVisuals(float sampleTime, Vector2 characterOffset, int animation)
+    private void UpdateVisuals(float sampleTime, Vector2 characterOffset, int animation)
     {
         var skinData = Overlay.victimParts.cosmetics.skin.skin;
         UpdateVisuals(sampleTime, characterOffset, HUD().KillOverlay.KillAnims[animation].victimParts.cosmetics.bodySprites._items[0].BodySprite.GetComponent<SpriteAnim>().m_defaultAnim,
@@ -92,7 +92,7 @@ public sealed class CustomKillAnimationPlayer : MonoBehaviour
         );
     }
 
-    public void UpdateVisuals(float sampleTime, Vector2 characterOffset, AnimationClip bodyAnimClip, AnimationClip skinAnimClip)
+    private void UpdateVisuals(float sampleTime, Vector2 characterOffset, AnimationClip bodyAnimClip, AnimationClip skinAnimClip)
     {
         AnimationClip.SampleAnimation(BodyAnim.gameObject, bodyAnimClip, sampleTime, WrapMode.Default);
 
@@ -102,7 +102,7 @@ public sealed class CustomKillAnimationPlayer : MonoBehaviour
         Victim.transform.localPosition = characterOffset + new Vector2(-1.5f, 0);
     }
 
-    public void LoadFrom(string toLoad)
+    private void LoadFrom(string toLoad)
     {
         var frameCount = 0;
         Frames.Clear();

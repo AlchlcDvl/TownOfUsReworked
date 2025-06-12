@@ -61,7 +61,7 @@ public static class ActionButtonPatches
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.SetHudActive), typeof(PlayerControl), typeof(RoleBehaviour), typeof(bool))]
 public static class ToggleVisibility
 {
-    public static bool Visible;
+    public static bool Visible = true;
 
     public static void Postfix(bool isActive) => Visible = isActive;
 }
