@@ -18,12 +18,12 @@ public sealed class Survivor : Benign
     [ToggleOption]
     private static bool SurvSwitchVent = false;
 
-    public CustomButton VestButton { get; private set; }
+    public CustomButton VestButton;
 
     protected override UColor MainColor => CustomColorManager.Survivor;
     public override LayerEnum Type => LayerEnum.Survivor;
-    public override Func<string> StartText { get; } = () => "Do Whatever It Takes To Live";
-    public override Func<string> Description => () => "- You can put on a vest, which gives you basic defense for a short duration of time";
+    public override string StartText => "Do Whatever It Takes To Live";
+    public override string Description => "- You can put on a vest, which gives you basic defense for a short duration of time";
     public override DefenseEnum DefenseVal => VestButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool CanVent => base.CanVent && SurvVent;
     public override bool CanSwitchVents => SurvSwitchVent;

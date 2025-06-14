@@ -1,4 +1,6 @@
-﻿namespace TownOfUsReworked.Managers;
+﻿#pragma warning disable CS0162 // Unreachable code detected
+
+namespace TownOfUsReworked.Managers;
 
 // FIXME: Submerged messes with the body reporting, causing the report button to be entirely unusable, might have to make a custom report button for that ngl
 // TODO: Modify Submerged lights behaviour
@@ -313,7 +315,7 @@ public static class ModCompatibilityManager
     private static readonly string[] Unsupported = ["AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI"];
     private static readonly string[] DevOnly = ["sinai-dev-UnityExplorer"];
 
-    public static bool CheckAbort(out string mod) => Unsupported.TryFinding(ModExists, out mod) || (TownOfUsReworked.IsDev && DevOnly.TryFinding(ModExists, out mod));
+    public static bool CheckAbort(out string mod) => Unsupported.TryFinding(ModExists, out mod) || (!TownOfUsReworked.IsDev && DevOnly.TryFinding(ModExists, out mod));
 
     private static bool ModExists(string modName)
     {

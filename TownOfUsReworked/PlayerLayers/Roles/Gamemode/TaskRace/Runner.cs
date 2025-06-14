@@ -10,7 +10,7 @@ public sealed class Runner : GameMode
     public static bool RunnerFlashlight = false;
 
     public override LayerEnum Type => LayerEnum.Runner;
-    public override Func<string> StartText { get; } = () => "Speedrun Tasks To Be The Victor";
+    public override string StartText => "Speedrun Tasks To Be The Victor";
     protected override UColor MainColor => CustomColorManager.Runner;
     public override string FactionName => "Task Race";
     public override Alignment Alignment => Alignment.TaskRace;
@@ -25,5 +25,14 @@ public sealed class Runner : GameMode
     {
         if (TasksLeft == 1)
             Flash(Color);
+    }
+
+    protected override void CheckWin(HashSet<byte> winnerIds)
+    {
+        if (!TasksDone)
+            return;
+
+        WinState = WinLose.TaskRunnerWins;
+        winnerIds.Add(PlayerId);
     }
 }

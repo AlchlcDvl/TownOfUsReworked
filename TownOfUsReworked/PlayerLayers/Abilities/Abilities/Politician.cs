@@ -4,15 +4,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 public sealed class Politician : Ability
 {
     [NumberOption(0, 10, 1)]
-    public static Number PoliticianVoteBank = 0;
+    private static Number PoliticianVoteBank = 0;
 
     [ToggleOption]
     public static bool PoliticianButton = true;
 
-    public int VoteBank { get; set; }
-    public bool SelfVote { get; set; }
-    public bool VotedOnce { get; set; }
-    public PlayerVoteArea Abstain { get; set; }
+    public int VoteBank;
+    public bool SelfVote;
+    public bool VotedOnce;
+    public PlayerVoteArea Abstain;
 
     public List<byte> ExtraVotes { get; } = [];
 
@@ -21,7 +21,7 @@ public sealed class Politician : Ability
 
     protected override UColor MainColor => CustomColorManager.Politician;
     public override LayerEnum Type => LayerEnum.Politician;
-    public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
+    public override string Description => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 
     public override void Init()
@@ -32,8 +32,6 @@ public sealed class Politician : Ability
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
-
         if (CanKill || !Abstain)
             return;
 

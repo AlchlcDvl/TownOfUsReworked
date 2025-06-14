@@ -15,21 +15,21 @@ public sealed class Jester : Evil
     [ToggleOption]
     public static bool JestEjectScreen = false;
 
-    public bool VotedOut { get; set; }
-    private HashSet<byte> ToHaunt { get; } = [];
-    private bool HasHaunted { get; set; }
-    private CustomButton HauntButton { get; set; }
+    public bool VotedOut;
+    private readonly HashSet<byte> ToHaunt = [];
+    private bool HasHaunted;
+    private CustomButton HauntButton;
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !OutcastSettings.AvoidOutcastKingmakers;
 
     protected override UColor MainColor => CustomColorManager.Jester;
     public override LayerEnum Type => LayerEnum.Jester;
-    public override Func<string> StartText { get; } = () => "It Was Jest A Prank Bro";
-    public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
+    public override string StartText => "It Was Jest A Prank Bro";
+    public override string Description => VotedOut ? "- You can haunt those who voted for you" : "- None";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => VotedOut;
     public override bool CanVent => base.CanVent && JesterVent;
     public override bool CanSwitchVents => JestSwitchVent;
-    public override WinLose EndState => WinLose.JesterWins;
+    protected override WinLose EndState => WinLose.JesterWins;
 
     public override void Init()
     {

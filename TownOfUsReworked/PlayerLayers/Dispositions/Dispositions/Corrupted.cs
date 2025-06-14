@@ -9,12 +9,12 @@ public sealed class Corrupted : Disposition
     [ToggleOption]
     private static bool CorruptedVent = false;
 
-    private CustomButton CorruptButton { get; set; }
+    private CustomButton CorruptButton;
 
     protected override UColor MainColor => CustomColorManager.Corrupted;
     public override string Symbol => "δ";
     public override LayerEnum Type => LayerEnum.Corrupted;
-    public override Func<string> Description => () => "- Corrupt everyone";
+    public override string Description => "- Corrupt everyone";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => CorruptedVent;
 

@@ -9,12 +9,12 @@ public sealed class Murderer : OKilling
     [ToggleOption]
     private static bool MurdVent = false;
 
-    private CustomButton MurderButton { get; set; }
+    private CustomButton MurderButton;
 
     protected override UColor MainColor => CustomColorManager.Murderer;
     public override LayerEnum Type => LayerEnum.Murderer;
-    public override Func<string> StartText { get; } = () => "I Got Murder On My Mind";
-    public override Func<string> Description => () => "- You can kill";
+    public override string StartText => "I Got Murder On My Mind";
+    public override string Description => "- You can kill";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => DefenseEnum.Basic;
     public override bool CanVent => base.CanVent && MurdVent;

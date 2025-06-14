@@ -27,14 +27,14 @@ public sealed class Altruist : Protective, IReviver
     [ToggleOption]
     public static bool AltruistTargetBody = false;
 
-    private CustomButton ReviveButton { get; set; }
-    private CustomButton ManaButton { get; set; }
-    private byte ParentId { get; set; }
+    private CustomButton ReviveButton;
+    private CustomButton ManaButton;
+    private byte ParentId;
 
     protected override UColor MainColor => CustomColorManager.Altruist;
     public override LayerEnum Type => LayerEnum.Altruist;
-    public override Func<string> StartText { get; } = () => "Sacrifice Yourself To Save Another";
-    public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {ReviveDur}s\n- If a meeting is called or you are killed during your revive, " +
+    public override string StartText => "Sacrifice Yourself To Save Another";
+    public override string Description => $"- You can revive a dead body\n- Reviving a body takes {ReviveDur}s\n- If a meeting is called or you are killed during your revive, " +
         "the revive fails";
 
     public override void Init()
@@ -83,8 +83,7 @@ public sealed class Altruist : Protective, IReviver
     {
         ParentId = target.ParentId;
         Spread(Player, PlayerByBody(target));
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ReviveButton, ParentId);
-        ReviveButton.Begin();
+        ReviveButton.TriggerRpcAndBegin(ParentId);
         Flash(Color, ReviveDur);
 
         if (AltruistTargetBody)
@@ -102,11 +101,7 @@ public sealed class Altruist : Protective, IReviver
 
     private bool Usable() => ReviveButton.UsesCount != ReviveButton.Max;
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        ReviveButton.Uses += PassiveAltManaGain;
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => ReviveButton.Uses += PassiveAltManaGain;
 
     public override void ReadRPC(RpcReader reader)
     {

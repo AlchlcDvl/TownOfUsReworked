@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers;
 /// The main class that identifies the aspects attached to a player.
 /// </summary>
 /// <remarks>Adopted from the role system of Town of Us but restructured to be better.</remarks>
-public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
+public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable, IEquatable<PlayerLayer>
 {
     /// <summary>
     /// Gets the main color for this layer.
@@ -27,14 +27,14 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public abstract LayerEnum Type { get; }
 
     /// <summary>
-    /// Get a value indicating condition to check whether or not the layer's main should be used (if not, its base color is used).
+    /// Get a value indicating condition to check whether or not the layer's main color should be used (if not, its base color is used).
     /// </summary>
     protected abstract bool UseMainColor { get; }
 
     /// <summary>
     /// Gets the description for the layer.
     /// </summary>
-    public virtual Func<string> Description => () => "- None";
+    public virtual string Description => "- None";
 
     /// <summary>
     /// Gets the attack value of the layer.
@@ -52,7 +52,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public virtual bool Hidden => false;
 
     /// <summary>
-    /// Gets gets a value indicating whether or not the layer can allow the player to vent.
+    /// Gets a value indicating whether or not the layer can allow the player to vent.
     /// </summary>
     public virtual bool CanVent => false;
 
@@ -62,9 +62,9 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     public virtual bool HasWon => false;
 
     /// <summary>
-    /// Gets the related wing related end state for the layer.
+    /// Gets the related win related end state for the layer.
     /// </summary>
-    public virtual WinLose EndState { get; }
+    protected virtual WinLose EndState => WinLose.None;
 
     /// <summary>
     /// Gets or sets the name of the layer.
@@ -79,7 +79,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Gets or sets the player.
     /// </summary>
-    public PlayerControl Player { get; set; }
+    public PlayerControl Player { get; private set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether or not the layer has been deinitialised.
@@ -159,6 +159,9 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
         get;
         set
         {
+            if (field == value)
+                return;
+
             field = value;
             OnTrueDeath(value);
         }
@@ -367,7 +370,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
     /// <summary>
     /// Clears all arrows contained by this layer. Runs for everyone.
     /// </summary>
-    public virtual void ClearArrows() {}
+    protected virtual void ClearArrows() {}
 
     /// <summary>
     /// Checks if this layer has achieved their win. Runs for the host.
@@ -412,25 +415,8 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
         CheckWin(winnerIds);
     }
 
-    /// <summary>
-    /// Equality check.
-    /// </summary>
-    /// <param name="a">Left layer.</param>
-    /// <param name="b">Right layer.</param>
-    /// <returns>true if a and b are the same layer.</returns>
-    public static bool operator ==(PlayerLayer a, PlayerLayer b)
-    {
-        if (a is null && b is null)
-            return true;
-
-        if (a is null || b is null)
-            return false;
-
-        return a.Equals(b);
-    }
-
-    /// <inheritdoc cref="Equals(object)"/>
-    private bool Equals(PlayerLayer obj) => obj.Player == Player && obj.LayerType == LayerType && Type == obj.Type;
+    /// <inheritdoc/>
+    public bool Equals(PlayerLayer other) => other && other!.Player == Player && Type == other.Type;
 
     /// <inheritdoc/>
     public override bool Equals(object obj)
@@ -456,6 +442,20 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable
 
     /// <inheritdoc/>
     public IEnumerable<byte> GetBytes() => [ PlayerId, (byte)Type ];
+
+    /// <summary>
+    /// Equality check.
+    /// </summary>
+    /// <param name="a">Left layer.</param>
+    /// <param name="b">Right layer.</param>
+    /// <returns>true if a and b are the same layer.</returns>
+    public static bool operator ==(PlayerLayer a, PlayerLayer b)
+    {
+        if (a is null)
+            return b is null;
+
+        return a.Equals(b);
+    }
 
     /// <summary>
     /// Inequality check.

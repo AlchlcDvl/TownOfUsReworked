@@ -18,18 +18,18 @@ public sealed class Cryomaniac : OKilling, IDouser
     [ToggleOption]
     private static bool CryoVent = false;
 
-    private CustomButton FreezeButton { get; set; }
-    private CustomButton DouseButton { get; set; }
-    private CustomButton KillButton { get; set; }
+    private CustomButton FreezeButton;
+    private CustomButton DouseButton;
+    private CustomButton KillButton;
+    public bool FreezeUsed;
     public HashSet<byte> Doused { get; } = [];
-    public bool FreezeUsed { get; set; }
     private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Outcast) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
     protected override UColor MainColor => CustomColorManager.Cryomaniac;
     public override LayerEnum Type => LayerEnum.Cryomaniac;
-    public override Func<string> StartText { get; } = () => "Who Likes Ice Cream?";
-    public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
+    public override string StartText => "Who Likes Ice Cream?";
+    public override string Description => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;

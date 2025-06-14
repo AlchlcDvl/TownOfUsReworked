@@ -83,10 +83,9 @@ public sealed class AppearanceHandler : MonoBehaviour
         if (shouldUpdate || ShouldChangeFunc())
         {
             var former = GetCurrent();
-            (Current, CurrentOutfitType, OutfitTime, ShouldChangeFunc, ConcurrentAction) = QueuedOutfits.TryDequeue(out var queue) ? queue : (Default, IsLobby()
-                ? CustomPlayerOutfitType.Default
-                : CustomPlayerOutfitType.Default,
-                -1, BlankFalse, BlankVoid);
+            (Current, CurrentOutfitType, OutfitTime, ShouldChangeFunc, ConcurrentAction) = QueuedOutfits.TryDequeue(out var queue)
+                ? queue
+                : (Default, CustomPlayerOutfitType.Default, -1, BlankFalse, BlankVoid);
             ChangeTo(former, Current, CurrentOutfitType);
             Mimicked = null;
         }
@@ -104,7 +103,7 @@ public sealed class AppearanceHandler : MonoBehaviour
         Size = Current.Size;
         Speed = Current.Speed;
         Color.name = Color.text = Current.ColorName + (ClientOptions.LighterDarker && IsInGame() ? $" ({Current.GetLightOrDark()})" : "");
-        CurrentOutfitType = IsLobby() ? CustomPlayerOutfitType.Default : CustomPlayerOutfitType.Default;
+        CurrentOutfitType = CustomPlayerOutfitType.Default;
         Outfits[CurrentOutfitType] = Default;
     }
 
@@ -144,6 +143,9 @@ public sealed class AppearanceHandler : MonoBehaviour
     [HideFromIl2Cpp]
     public void QueueOutfit(CustomOutfit outfit, PlayerOutfitType type, float duration = -1, Func<bool> func = null, Action concurrent = null)
     {
+        if (duration > 0 && OutfitTime > 0)
+            duration -= OutfitTime;
+
         if (QueuedOutfits.Count == 0 && !Transitioning && OutfitTime <= 0f)
             OverrideOutfit(outfit, type, duration, func);
         else

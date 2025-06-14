@@ -4,29 +4,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Morphling : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number MorphCd = 25;
+    private static Number MorphCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number MorphDur = 10;
+    private static Number MorphDur = 10;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number SampleCd = 25;
+    private static Number SampleCd = 25;
 
     [ToggleOption]
-    public static bool MorphCooldownsLinked = false;
+    private static bool MorphCooldownsLinked = false;
 
     [ToggleOption]
-    public static bool MorphlingVent = false;
+    private static bool MorphlingVent = false;
 
-    private CustomButton MorphButton { get; set; }
-    private CustomButton SampleButton { get; set; }
-    private PlayerControl SampledPlayer { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton MorphButton;
+    private CustomButton SampleButton;
+    private PlayerControl SampledPlayer;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Morphling;
     public override LayerEnum Type => LayerEnum.Morphling;
-    public override Func<string> StartText { get; } = () => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
-    public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
+    public override string StartText => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
+    public override string Description => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
     public override bool CanVent => MorphlingVent;
 
     public override void Init()

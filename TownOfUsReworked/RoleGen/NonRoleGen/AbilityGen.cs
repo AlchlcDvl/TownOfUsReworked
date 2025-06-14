@@ -30,11 +30,11 @@ public sealed class AbilityGen : BaseGen
                 var rateLimit = 0;
                 var cachedCount = AllAbilities.Count;
 
+                if (!id.TryCastToLayer(out var layer))
+                    layer = abilities.Random();
+
                 while (rateLimit < 10000 && AllAbilities.Count == cachedCount)
                 {
-                    if (!id.TryCastToLayer(out var layer))
-                        layer = abilities.Random();
-
                     if (ListGen.CannotAdd(layer, AllAbilities))
                         rateLimit++;
                     else

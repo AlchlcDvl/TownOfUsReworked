@@ -4,13 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Enforcer : IKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number EnforceCd = 25;
+    private static Number EnforceCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number EnforceDur = 10;
+    private static Number EnforceDur = 10;
 
     [NumberOption(1f, 15f, 1f, Format.Time)]
-    public static Number EnforceDelay = 5;
+    private static Number EnforceDelay = 5;
 
     [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
     private static Number EnforceRadius = 1.5f;
@@ -21,8 +21,8 @@ public sealed class Enforcer : IKilling
 
     protected override UColor MainColor => CustomColorManager.Enforcer;
     public override LayerEnum Type => LayerEnum.Enforcer;
-    public override Func<string> StartText { get; } = () => "Force The <#8CFFFFFF>Crew</color> To Do Your Bidding";
-    public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
+    public override string StartText => "Force The <#8CFFFFFF>Crew</color> To Do Your Bidding";
+    public override string Description => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
         $"{EnforceDur}s, the bomb will detonate and kill everyone within a {EnforceRadius}m radius\n{CommonAbilities}";
 
     public override void Init()
@@ -54,7 +54,7 @@ public sealed class Enforcer : IKilling
         BombSuccessful = false;
     }
 
-    public static void Explode(PlayerControl centre, PlayerControl enf)
+    private static void Explode(PlayerControl centre, PlayerControl enf)
     {
         foreach (var player in GetClosestPlayers(centre, EnforceRadius))
         {

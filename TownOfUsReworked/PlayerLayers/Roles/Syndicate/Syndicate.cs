@@ -2,12 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Syndicate : Role, IPromoter
 {
-    private CustomButton KillButton { get; set; }
-    public Rebel Promoter { get; set; }
+    private CustomButton KillButton;
+    public Rebel Promoter;
     public bool IsUnderling { get; set; }
     public bool IsPromoted { get; set; }
-    public LayerEnum UnderlingType { get; } = LayerEnum.Sidekick;
-    public LayerEnum PromoterType { get; } = LayerEnum.Rebel;
+    public LayerEnum UnderlingType => LayerEnum.Sidekick;
+    public LayerEnum PromoterType => LayerEnum.Rebel;
     public float PromotionModifier { get; } = Rebel.RebPromotionCdDecrease;
     protected string CommonAbilities => "<#008000FF>" + (KillUsable() ? "- You can kill players directly" : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
     public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive);
@@ -95,14 +95,14 @@ public abstract class Syndicate : Role, IPromoter
     {
         base.UpdatePlayer();
 
-        if (!IsPromoted && IsUnderling && (Promoter?.Dead ?? false))
-        {
-            IsPromoted = true;
-            IsUnderling = false;
-            Promoter = null;
-            Name = TranslationManager.Translate("Layer.Rebel");
-            Handler.History.Add((LayerEnum.Sidekick, Faction));
-        }
+        if (IsPromoted || !IsUnderling || (!(Promoter?.Dead ?? false)))
+            return;
+
+        IsPromoted = true;
+        IsUnderling = false;
+        Promoter = null;
+        Name = TranslationManager.Translate("Layer.Rebel");
+        Handler.History.Add((LayerEnum.Sidekick, Faction));
     }
 
     protected virtual void OnDriveReceivedLocal() {}

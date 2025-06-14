@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // TODO: Change how this works by using its substituted roles rather than copy pasted code
-public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger
+public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper, IAlerter, IMover, IBlocker, IExaminer, IBugger, IShaman
 {
     public override void Init()
     {
@@ -23,16 +23,16 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     }
 
     // Retributionist Stuff
-    private PlayerVoteArea Selected { get; set; }
-    private PlayerControl Revived { get; set; }
+    private PlayerVoteArea Selected;
+    private PlayerControl Revived;
     private Role RevivedRole => Revived ? (Revived.Is<Revealer>(out var rev) ? rev.FormerRole : Revived.GetRole()) : null;
-    public CustomMeeting RetMenu { get; private set; }
-    private bool ClickedAgain { get; set; }
+    public CustomMeeting RetMenu;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => RevivedRole?.Color ?? CustomColorManager.Retributionist;
     public override LayerEnum Type => LayerEnum.Retributionist;
-    public override Func<string> StartText { get; } = () => "Mimic the Dead";
-    public override Func<string> Description => () => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description()}" : "");
+    public override string StartText => "Mimic the Dead";
+    public override string Description => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description}" : "");
     public override AttackEnum AttackVal
     {
         get
@@ -87,13 +87,13 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         if (Trapped.Contains(player.PlayerId))
             name += " <#BE1C8CFF>∮</color>";
 
-        if (Reported.Contains(player.PlayerId) && !revealed && meeting)
-        {
-            var role = handler.CurrentRole;
-            color = role.Color;
-            name += $"\n{role}";
-            revealed = true;
-        }
+        if (!Reported.Contains(player.PlayerId) || revealed || !meeting)
+            return;
+
+        var role = handler.CurrentRole;
+        color = role.Color;
+        name += $"\n{role}";
+        revealed = true;
     }
 
     protected override void Deinit()
@@ -105,7 +105,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         Bugs.Clear();
     }
 
-    public override void ClearArrows()
+    protected override void ClearArrows()
     {
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();
@@ -279,7 +279,6 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
         RetMenu.GenButtons(__instance);
         Selected = null;
 
@@ -323,7 +322,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
             {
                 message = "Your trap detected the following roles: ";
                 TriggeredRoles.Shuffle();
-                message += Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
+                message += Join(", ", TriggeredRoles.Select(x => LayerDictionary[x].Name));
             }
 
             if (!IsNullEmptyOrWhiteSpace(message))
@@ -470,11 +469,11 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     }
 
     // Coroner Stuff
-    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
-    private CustomButton AutopsyButton { get; set; }
-    private CustomButton CompareButton { get; set; }
-    private List<DeadPlayer> ReferenceBodies { get; } = [];
-    private HashSet<byte> Reported { get; } = [];
+    private readonly Dictionary<byte, PositionalArrow> BodyArrows = [];
+    private CustomButton AutopsyButton;
+    private CustomButton CompareButton;
+    private readonly List<DeadPlayer> ReferenceBodies = [];
+    private readonly HashSet<byte> Reported = [];
     private bool IsCor => RevivedRole is Coroner;
 
     private void Autopsy(DeadBody target)
@@ -499,7 +498,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool CorUsable2() => ReferenceBodies.Any() && IsCor;
 
     // Detective Stuff
-    private CustomButton ExamineButton { get; set; }
+    private CustomButton ExamineButton;
     private bool IsDet => RevivedRole is Detective;
 
     private void Examine(PlayerControl target)
@@ -518,9 +517,9 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool DetUsable() => IsDet;
 
     // Medium Stuff
-    private Dictionary<byte, PlayerArrow> MediateArrows { get; } = [];
-    private CustomButton MediateButton { get; set; }
     public HashSet<byte> MediatedPlayers { get; } = [];
+    private readonly Dictionary<byte, PlayerArrow> MediateArrows = [];
+    private CustomButton MediateButton;
     private bool IsMed => RevivedRole is Medium;
 
     private void Mediate()
@@ -569,9 +568,9 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool MedUsable() => IsMed;
 
     // Operative Stuff
-    private List<Bug> Bugs { get; } = [];
+    private readonly List<Bug> Bugs = [];
     public List<LayerEnum> BuggedPlayers { get; } = [];
-    private CustomButton BugButton { get; set; }
+    private CustomButton BugButton;
     public bool IsOp => RevivedRole is Operative;
 
     private void PlaceBug()
@@ -585,7 +584,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool OpCondition() => !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.transform.position) < x.Size * 2);
 
     // Sheriff Stuff
-    private CustomButton InterrogateButton { get; set; }
+    private CustomButton InterrogateButton;
     private bool IsSher => RevivedRole is Sheriff;
 
     private void Interrogate(PlayerControl target)
@@ -598,14 +597,13 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool SherException(PlayerControl player) => (Faction.IsFactionedEvil(true) && player.Is(Faction) && GameModifiers.FactionSeeRoles) || (Player.IsOtherLover(player) && Lovers.LoversRoles) ||
-        (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
+    private bool SherException(PlayerControl player) => (Faction.IsFactionedEvil(true) && player.Is(Faction) && GameModifiers.FactionSeeRoles) || Player.KnowsRoleOf(player);
 
     private bool SherUsable() => IsSher;
 
     // Tracker Stuff
-    private Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
-    private CustomButton TrackButton { get; set; }
+    private readonly Dictionary<byte, PlayerArrow> TrackerArrows = [];
+    private CustomButton TrackButton;
     private bool IsTrack => RevivedRole is Tracker;
 
     private void Track(PlayerControl target)
@@ -623,7 +621,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool TrackUsable() => IsTrack;
 
     // Vigilante Stuff
-    private CustomButton ShootButton { get; set; }
+    private CustomButton ShootButton;
     private bool IsVig => RevivedRole is Vigilante;
 
     private void Shoot(PlayerControl target) => ShootButton.StartCooldown(Interact(Player, target, true));
@@ -647,9 +645,9 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool AlertEnd() => Dead;
 
     // Altruist Stuff
-    private CustomButton ReviveButton { get; set; }
-    private CustomButton ManaButton { get; set; }
-    private byte ParentId { get; set; }
+    private CustomButton ReviveButton;
+    private CustomButton ManaButton;
+    private byte ParentId;
     private bool IsAlt => RevivedRole is Altruist;
 
     private bool AltUsable() => IsAlt;
@@ -712,7 +710,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     // Medic Stuff
     public PlayerControl ShieldedPlayer { get; set; }
     public bool ShieldBroken { get; set; }
-    private CustomButton ShieldButton { get; set; }
+    private CustomButton ShieldButton;
     private bool IsMedic => RevivedRole is Medic;
 
     private void Protect(PlayerControl target)
@@ -739,7 +737,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool MedicUsable() => !ShieldBroken && IsMedic;
 
     // Chameleon Stuff
-    private CustomButton SwoopButton { get; set; }
+    private CustomButton SwoopButton;
     private bool IsCham => RevivedRole is Chameleon;
 
     private void Invis() => MiscUtils.Invis(Player, Chameleon.SwoopDur, SwoopEnd);
@@ -757,7 +755,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool ChamUsable() => IsCham;
 
     // Engineer Stuff
-    private CustomButton FixButton { get; set; }
+    private CustomButton FixButton;
     private bool IsEngi => RevivedRole is Engineer;
 
     private void Fix()
@@ -769,7 +767,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool EngiUsable() => IsEngi && Engineer.MaxFixes > 0;
 
     // Mystic Stuff
-    private CustomButton RevealButton { get; set; }
+    private CustomButton RevealButton;
     private bool IsMys => RevivedRole is Mystic;
 
     private void Reveal(PlayerControl target)
@@ -787,7 +785,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool MysUsable() => IsMys;
 
     // Seer Stuff
-    private CustomButton SeerButton { get; set; }
+    private CustomButton SeerButton;
     private bool IsSeer => RevivedRole is Seer;
 
     private void See(PlayerControl target)
@@ -804,7 +802,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
     // Escort Stuff
     public PlayerControl BlockTarget { get; private set; }
-    private CustomButton BlockButton { get; set; }
+    private CustomButton BlockButton;
     private bool IsEsc => RevivedRole is Escort;
 
     private void UnBlock()
@@ -840,8 +838,8 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool EscUsable() => IsEsc;
 
     // Transporter Stuff
-    private CustomButton TransportButton { get; set; }
-    private CustomPlayerMenu TransportMenu { get; set; }
+    private CustomButton TransportButton;
+    private CustomPlayerMenu TransportMenu;
     public bool Moving { get; set; }
     private bool IsTrans => RevivedRole is Transporter;
 
@@ -890,7 +888,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     }
 
     // Bastion Stuff
-    private CustomButton BombButton { get; set; }
+    private CustomButton BombButton;
     public List<int> BombedIDs { get; } = [];
     private bool IsBast => RevivedRole is Bastion;
 
@@ -912,13 +910,13 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     private bool BastUsable() => IsBast;
 
     // Trapper Stuff
-    private CustomButton BuildButton { get; set; }
-    private CustomButton TrapButton { get; set; }
     public bool Building { get; private set; }
     public HashSet<byte> Trapped { get; } = [];
-    private List<Role> TriggeredRoles { get; } = [];
-    private int TrapsMade { get; set; }
-    private bool AttackedSomeone { get; set; }
+    private CustomButton BuildButton;
+    private CustomButton TrapButton;
+    private readonly List<LayerEnum> TriggeredRoles = [];
+    private int TrapsMade;
+    private bool AttackedSomeone;
     private bool IsTrap => RevivedRole is Trapper;
 
     private void StartBuilding()
@@ -957,7 +955,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         if (trigger.AmOwner)
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RetActionsRPC.Trigger, trapped, trigger, isAttack);
 
-        TriggeredRoles.Add(trigger.GetRole());
+        TriggeredRoles.Add(trigger.GetRole().Type);
         AttackedSomeone = isAttack;
         Trapped.Remove(trapped.PlayerId);
     }

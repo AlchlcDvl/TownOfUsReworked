@@ -57,7 +57,7 @@ public static class MiscUtils
 
     private static void CamoSingle(PlayerControl player, Func<bool> func, float duration = -1)
     {
-        if (player.HasDied() || (int)player.GetCustomOutfitType() is 4 or 5 or 6 or 7 || (LocalPlayer.HasDied() && DeadSeeEverything()) || player.AmOwner)
+        if (player.HasDied() || (LocalPlayer.HasDied() && DeadSeeEverything()) || player.AmOwner)
             return;
 
         player.QueueOutfit(CamoOutfit(player), CustomPlayerOutfitType.Camouflage, duration, func);
@@ -754,7 +754,7 @@ public static class MiscUtils
 
     public static void RpcBreakShield(PlayerControl target)
     {
-        Role.BreakShield(target, Medic.ShieldBreaks);
+        BreakShield(target, Medic.ShieldBreaks);
         CallRpc(CustomRPC.Misc, MiscRPC.BreakShield, target);
     }
 

@@ -16,7 +16,7 @@ public sealed class Giant : Modifier
 
     protected override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Giant;
     public override LayerEnum Type => LayerEnum.Giant;
-    public override Func<string> Description => () => Useless ? "- Why" : $"- You are {Text}";
+    public override string Description => Useless ? "- Why" : $"- You are {Text}";
 
     public override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Chonk ? (Snail ? "Chonker" : "Giant") : "Sloth"))}");
 }

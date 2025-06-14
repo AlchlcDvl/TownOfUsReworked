@@ -38,7 +38,7 @@ public static class MapBehaviourPatches
             else
                 __instance.ShowNormalMap();
 
-            __instance.taskOverlay.gameObject.SetActive(!IsTaskRace() && !IsCustomHnS());
+            __instance.taskOverlay.gameObject.SetActive(!IsTaskRace() && !IsCustomHnS() && GameOptions.ShowTasks);
             notModified = false;
         }
 
@@ -342,6 +342,7 @@ public static class EmergencyMinigameUpdatePatch
     {
         if ((LocalPlayer.CanButton(out var name) && LocalPlayer.RemainingEmergencies != 0) || LocalPlayer.myTasks.Any(PlayerTask.TaskIsEmergency))
             return;
+
         __instance.StatusText.text = name switch
         {
             "Shy" => "You are too shy to call a meeting",
@@ -425,7 +426,6 @@ public static class MeetingCooldowns
 [HarmonyPatch(typeof(KillOverlay), nameof(KillOverlay.ShowKillAnimation), typeof(NetworkedPlayerInfo), typeof(NetworkedPlayerInfo))]
 public static class ShowCustomAnim
 {
-    private static OverlayKillAnimation selfDeath;
     private static OverlayKillAnimation SelfDeath
     {
         get
@@ -443,29 +443,29 @@ public static class ShowCustomAnim
             // SIR YES SIR o7
             // - AD
 
-            if (!selfDeath)
+            if (!field)
             {
                 var overlay = HUD().KillOverlay;
 
                 var parent = new GameObject("SelfKillObject").DontDestroy().transform;
                 parent.gameObject.SetActive(false);
 
-                selfDeath = UObject.Instantiate(overlay.KillAnims[0], parent);
+                field = UObject.Instantiate(overlay.KillAnims[0], parent);
 
-                selfDeath.killerParts.gameObject.SetActive(false);
-                selfDeath.killerParts = null;
-                selfDeath.transform.Find("killstabknife").gameObject.SetActive(false);
-                selfDeath.transform.Find("killstabknifehand").gameObject.SetActive(false);
+                field.killerParts.gameObject.SetActive(false);
+                field.killerParts = null;
+                field.transform.Find("killstabknife").gameObject.SetActive(false);
+                field.transform.Find("killstabknifehand").gameObject.SetActive(false);
 
-                selfDeath.victimParts.transform.localPosition = new(-1.5f, 0, 0);
-                selfDeath.KillType = (KillAnimType)10;
+                field.victimParts.transform.localPosition = new(-1.5f, 0, 0);
+                field.KillType = (KillAnimType)10;
 
-                selfDeath.AddComponent<CustomKillAnimationPlayer>();
+                field.AddComponent<CustomKillAnimationPlayer>();
 
-                overlay.KillAnims = overlay.KillAnims.AddItem(selfDeath).ToArray();
+                overlay.KillAnims = overlay.KillAnims.AddItem(field).ToArray();
             }
 
-            return selfDeath;
+            return field;
         }
     }
 
@@ -502,7 +502,7 @@ public static class OverlayKillAnimationPatches
     private static IEnumerator KillAnimInliningFix(OverlayKillAnimation __instance, KillOverlay parent)
     {
         if (Constants.ShouldPlaySfx())
-            SoundManager.Instance.PlaySound(__instance.Stinger, false, 1f, null).volume = __instance.StingerVolume;
+            SoundManager.Instance.PlaySound(__instance.Stinger, false).volume = __instance.StingerVolume;
 
         __instance.petObjects = new();
 
@@ -643,10 +643,10 @@ public static class PatchTranslations
 {
     public static bool Prefix(TranslationController __instance, StringNames id, Il2CppReferenceArray<IObject> parts, ref string __result)
     {
-        if (id >= 0)
-            __result = __instance.GetString(id.ToString(), "STRMISS", parts); // This is stupid
-        else if (TranslationManager.Translate(id, out var customString))
+        if (TranslationManager.Translate(id, out var customString))
             __result = customString;
+        else if (id >= 0)
+            __result = __instance.GetString(id.ToString(), "STRMISS", parts); // This is stupid
 
         if (__result.StartsWith("STRMISS") && !__result.Contains('('))
             __result += $" ({id})";

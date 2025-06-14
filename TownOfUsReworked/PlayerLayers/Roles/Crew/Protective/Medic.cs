@@ -14,12 +14,13 @@ public sealed class Medic : Protective, IShielder
 
     public PlayerControl ShieldedPlayer { get; set; }
     public bool ShieldBroken { get; set; }
-    private CustomButton ShieldButton { get; set; }
+
+    private CustomButton ShieldButton;
 
     protected override UColor MainColor => CustomColorManager.Medic;
     public override LayerEnum Type => LayerEnum.Medic;
-    public override Func<string> StartText { get; } = () => "Shield A Player To Protect Them";
-    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?
+    public override string StartText => "Shield A Player To Protect Them";
+    public override string Description => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?
         "\n- If your target is attacked, you will be notified of it" : "");
 
     public override void Init()

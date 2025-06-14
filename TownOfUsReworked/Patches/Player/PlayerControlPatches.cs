@@ -267,24 +267,31 @@ public static class PlayerControlPatches
             body.name = name + "Body";
     }
 
-    // Inlining fix + modded rpcs
+    // Inlining fix + modded RPCs
     [HarmonyPatch(nameof(PlayerControl.HandleRpc))]
     public static bool Prefix(PlayerControl __instance, byte callId, MessageReader reader)
     {
-        if (callId == 4)
-            __instance.Exiled();
-        else if (callId == CustomRPCCallID)
+        switch (callId)
         {
-            var targetClientId = -1;
+            case 4:
+            {
+                __instance.Exiled();
+                break;
+            }
+            case CustomRPCCallID:
+            {
+                var targetClientId = -1;
 
-            if (reader.ReadBoolean())
-                targetClientId = reader.ReadPackedInt32();
+                if (reader.ReadBoolean())
+                    targetClientId = reader.ReadPackedInt32();
 
-            var data = new RpcReader(reader.ReadBytesAndSize());
-            HandleRpc(data, targetClientId);
+                var data = new RpcReader(reader.ReadBytesAndSize());
+                HandleRpc(data, targetClientId);
+                break;
+            }
+            default:
+                return true;
         }
-        else
-            return true;
 
         return false;
     }

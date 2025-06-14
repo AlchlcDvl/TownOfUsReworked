@@ -7,7 +7,7 @@ public sealed class Gluttony : Deity
     private static Number HungerCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number HungerDur = 10;
+    private static Number HungerDur = 10;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ConsumeCd = 25;
@@ -20,7 +20,7 @@ public sealed class Gluttony : Deity
 
     protected override UColor MainColor => CustomColorManager.Gluttony;
     public override LayerEnum Type => LayerEnum.Gluttony;
-    public override Func<string> Description => () => "- You can initiate an insatiable hunger into people, causing them to be unable to use their abilities" + CommonAbilities;
+    public override string Description => "- You can initiate an insatiable hunger into people, causing them to be unable to use their abilities" + CommonAbilities;
     public override bool CanVent => base.CanVent && GlutVent;
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 

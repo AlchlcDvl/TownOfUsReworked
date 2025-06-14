@@ -2,15 +2,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public sealed class Radar : Ability
 {
-    private CustomArrow RadarArrow { get; set; }
+    private CustomArrow RadarArrow;
 
     protected override UColor MainColor => CustomColorManager.Radar;
     public override LayerEnum Type => LayerEnum.Radar;
-    public override Func<string> Description => () => "- You are aware of those close to you";
+    public override string Description => "- You are aware of those close to you";
 
     public override void Init() => RadarArrow = new(Player, Color, Target);
 
-    public override void ClearArrows() => RadarArrow?.Destroy();
+    protected override void ClearArrows() => RadarArrow?.Destroy();
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 

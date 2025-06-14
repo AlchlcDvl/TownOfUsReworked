@@ -2,13 +2,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Intruder : Role, IPromoter
 {
-    protected CustomButton KillButton { get; private set; }
     public bool IsUnderling { get; set; }
     public bool IsPromoted { get; set; }
-    public Godfather Promoter { get; set; }
-    public LayerEnum UnderlingType { get; } = LayerEnum.Mafioso;
-    public LayerEnum PromoterType { get; } = LayerEnum.Godfather;
+    public LayerEnum UnderlingType => LayerEnum.Mafioso;
+    public LayerEnum PromoterType => LayerEnum.Godfather;
     public float PromotionModifier { get; } = Godfather.GfPromotionCdDecrease;
+
+    protected CustomButton KillButton;
+    public Godfather Promoter;
 
     protected string CommonAbilities => $"<#{FactionColor.ToHtmlStringRGBA()}>- You can kill players</color>" + (Player.CanSabotage() ?
         "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "");
@@ -63,14 +64,14 @@ public abstract class Intruder : Role, IPromoter
     {
         base.UpdatePlayer();
 
-        if (!IsPromoted && IsUnderling && (Promoter?.Dead ?? false))
-        {
-            IsPromoted = true;
-            IsUnderling = false;
-            Promoter = null;
-            Name = TranslationManager.Translate("Layer.Godfather");
-            Handler.History.Add((LayerEnum.Mafioso, Faction));
-        }
+        if (IsPromoted || !IsUnderling || (!(Promoter?.Dead ?? false)))
+            return;
+
+        IsPromoted = true;
+        IsUnderling = false;
+        Promoter = null;
+        Name = TranslationManager.Translate("Layer.Godfather");
+        Handler.History.Add((LayerEnum.Mafioso, Faction));
     }
 
     protected virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));

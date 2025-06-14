@@ -37,6 +37,40 @@ public static class MeetingPatches
 
         Coroutines.Start(Announcements());
         CachedFirstDead = null;
+        GameTimerHandler.Instance?.UpdateTimer();
+
+        PlayerLayer.GetLayers<Arsonist>().Do(x => x.Doused.Clear());
+
+        foreach (var dict in PlayerLayer.GetLayers<Dictator>())
+        {
+            dict.ToBeEjected = null;
+            dict.Tribunal = false;
+        }
+
+        foreach (var cryo in PlayerLayer.GetLayers<Cryomaniac>())
+        {
+            cryo.FreezeUsed = false;
+            cryo.Doused.Clear();
+        }
+
+        foreach (var swapper in PlayerLayer.GetLayers<Swapper>())
+        {
+            swapper.Swap1 = null;
+            swapper.Swap2 = null;
+        }
+
+        foreach (var pol in PlayerLayer.GetLayers<Politician>())
+        {
+            pol.DestroyAbstain();
+
+            if (pol.VoteBank < 0)
+                pol.VoteBank = 0;
+
+            pol.VotedOnce = false;
+
+            if (!pol.CanKill)
+                pol.VoteBank++;
+        }
     }
 
     public static float MeetingStartTime;
@@ -212,6 +246,7 @@ public static class MeetingPatches
     public static void ClosePostfix(MeetingHud __instance)
     {
         LocalPlayer.EnableButtons();
+        PlayerLayer.GetLayers<Werewolf>().Do(x => x.Rounds++);
 
         if (LayerHandler.Handlers.TryGetValue(LocalPlayer.PlayerId, out var handler))
             handler.OnMeetingEnd(__instance);

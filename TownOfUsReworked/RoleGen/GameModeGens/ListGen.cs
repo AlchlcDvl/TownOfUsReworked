@@ -20,21 +20,16 @@ public sealed class ListGen : BaseRoleGen
 
                 var rateLimit = 0;
                 var cachedCount = AllRoles.Count;
-                LayerEnum[] bucket;
-
-                if (id.TryCastToLayer(out var layer))
-                    bucket = [ layer ];
-                else
-                    bucket = GetBucket(id);
+                var bucket = id.TryCastToLayer(out var layer) ? [ layer ] : GetBucket(id);
 
                 while (rateLimit < 10000 && AllRoles.Count == cachedCount)
                 {
                     var layer2 = bucket.Random();
 
-                    if (CannotAdd(layer, AllRoles))
+                    if (CannotAdd(layer2, AllRoles))
                         rateLimit++;
                     else
-                        AllRoles.Add(GetSpawnItem(layer));
+                        AllRoles.Add(GetSpawnItem(layer2));
                 }
             }
         }
@@ -101,7 +96,8 @@ public sealed class ListGen : BaseRoleGen
         ListSlot.PandoraDecep => PDe(),
         ListSlot.PandoraDisrup => PDi(),
         ListSlot.PandoraSupport => PS(),
-        ListSlot.PandoraHead => PHa(),
+        ListSlot.PandoraHead => PHe(),
+        ListSlot.PandoraHarb => PHa(),
         ListSlot.PandoraUtil => PU(),
         ListSlot.RandomPandora => Pandorica(),
         ListSlot.RegularPandora => RegPandorica(),

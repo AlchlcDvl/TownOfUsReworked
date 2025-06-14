@@ -4,15 +4,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Stalker : SSupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number StalkCd = 25;
+    private static Number StalkCd = 25;
 
-    private Dictionary<byte, PlayerArrow> StalkerArrows { get; } = [];
-    private CustomButton StalkButton { get; set; }
+    private readonly Dictionary<byte, PlayerArrow> StalkerArrows = [];
+    private CustomButton StalkButton;
 
     protected override UColor MainColor => CustomColorManager.Stalker;
     public override LayerEnum Type => LayerEnum.Stalker;
-    public override Func<string> StartText { get; } = () => "Stalk Everyone To Monitor Their Movements";
-    public override Func<string> Description => () => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
+    public override string StartText => "Stalk Everyone To Monitor Their Movements";
+    public override string Description => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;
 
     public override void Init()
@@ -23,7 +23,7 @@ public sealed class Stalker : SSupport
             (PlayerBodyExclusion)Exception1);
     }
 
-    public override void ClearArrows()
+    protected override void ClearArrows()
     {
         StalkerArrows.Values.DestroyAll();
         StalkerArrows.Clear();

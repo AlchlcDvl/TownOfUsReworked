@@ -9,15 +9,15 @@ public sealed class Shifter : Evil
     public static List<PlayerControl> Shifters = [];
     public static List<PlayerControl> Originals = [];
 
-    private CustomButton ShiftButton { get; set; }
-    private CustomPlayerMenu ShifterMenu { get; set; }
+    private CustomButton ShiftButton;
+    private CustomPlayerMenu ShifterMenu;
 
     protected override UColor MainColor => CustomColorManager.Shifter;
     public override LayerEnum Type => LayerEnum.Shifter;
-    public override Func<string> StartText { get; } = () => "Shift Around Roles";
-    public override Func<string> Description => () => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";
+    public override string StartText => "Shift Around Roles";
+    public override string Description => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";
     public override bool HasWon => Shifters.All(x => !Originals.Contains(x) && x.HasDied());
-    public override WinLose EndState => WinLose.ShifterWins;
+    protected override WinLose EndState => WinLose.ShifterWins;
 
     public override void Init()
     {

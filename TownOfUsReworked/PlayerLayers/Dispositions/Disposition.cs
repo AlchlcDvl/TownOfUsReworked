@@ -11,7 +11,4 @@ public abstract class Disposition : PlayerLayer
     public virtual string Symbol => "φ";
 
     public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
-
-    public static bool DispositionWins => WinState is WinLose.LoveWins or WinLose.RivalWins or WinLose.OverlordWins or WinLose.CorruptedWins or WinLose.DefectorWins or WinLose.MafiaWins or
-        WinLose.TaskmasterWins;
 }

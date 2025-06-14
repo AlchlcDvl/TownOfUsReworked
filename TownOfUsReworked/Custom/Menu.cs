@@ -6,7 +6,7 @@ public abstract class CustomMenu : IDisposable
     public static bool IsActive;
 
     public ShapeshifterMinigame Menu { get; private set; }
-    public PlayerControl Owner { get; set; }
+    public PlayerControl Owner { get; }
     private MenuType Type { get; }
     private bool Disposed { get; set; }
 
@@ -42,7 +42,7 @@ public abstract class CustomMenu : IDisposable
 
     public abstract ISystem.List<UiElement> CreateMenu(ShapeshifterMinigame __instance);
 
-    public void Destroy()
+    private void Destroy()
     {
         if (!Menu)
             return;

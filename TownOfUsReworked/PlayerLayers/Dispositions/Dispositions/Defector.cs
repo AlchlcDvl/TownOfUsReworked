@@ -9,13 +9,17 @@ public sealed class Defector : Disposition
     [StringOption<DefectorFaction>]
     private static DefectorFaction DefectorFaction = DefectorFaction.Random;
 
-    public bool Turned { get; private set; }
-    public Faction Side { get; private set; }
+    private bool Turned;
+    private Faction Side
+    {
+        get;
+        set => Handler.CurrentFaction = field = value;
+    }
 
     protected override UColor MainColor => CustomColorManager.Defector;
     public override string Symbol => "ε";
     public override LayerEnum Type => LayerEnum.Defector;
-    public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
+    public override string Description => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !DefectorKnows && !Turned;
 
     public override void Init() => Side = Handler.CurrentFaction;

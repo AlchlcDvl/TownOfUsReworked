@@ -4,25 +4,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Blackmailer : Concealing, IIntimidator
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number BlackmailCd = 25;
+    private static Number BlackmailCd = 25;
 
     [ToggleOption]
     public static bool WhispersNotPrivateB = true;
 
     [ToggleOption]
-    public static bool BlackmailMates = false;
+    private static bool BlackmailMates = false;
 
     [ToggleOption]
     public static bool BmRevealed = true;
 
-    private CustomButton BlackmailButton { get; set; }
+    private CustomButton BlackmailButton;
     public bool ShookAlready { get; set; }
     public PlayerControl Target { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Blackmailer;
     public override LayerEnum Type => LayerEnum.Blackmailer;
-    public override Func<string> StartText { get; } = () => "You Know Their Secrets";
-    public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say\n" + (BmRevealed ? ("- Everyone will be alerted at the start " +
+    public override string StartText => "You Know Their Secrets";
+    public override string Description => "- You can silence players to ensure they cannot hear what others say\n" + (BmRevealed ? ("- Everyone will be alerted at the start " +
         "of the meeting that someone has been silenced ") : "") + (WhispersNotPrivateB ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
 
     public override void Init()

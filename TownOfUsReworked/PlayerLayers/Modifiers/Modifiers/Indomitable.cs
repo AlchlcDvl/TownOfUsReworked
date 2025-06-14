@@ -10,6 +10,6 @@ public sealed class Indomitable : Modifier
 
     protected override UColor MainColor => CustomColorManager.Indomitable;
     public override LayerEnum Type => LayerEnum.Indomitable;
-    public override Func<string> Description => () => "- You cannot be guessed";
+    public override string Description => "- You cannot be guessed";
     public override bool Hidden => !IndomitableKnows && !AttemptedGuess && !Dead;
 }

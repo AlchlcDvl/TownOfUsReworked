@@ -4,6 +4,7 @@ namespace TownOfUsReworked.Options.Attributes;
 public abstract class BaseHeaderOptionAttribute(MultiMenu menu) : OptionAttribute<BaseHeaderOption>
 {
     protected MultiMenu Menu { get; } = menu;
+    public bool IsOpen { get; init; }
     public bool ClientOnly { get; init; }
 
     /// <summary>
@@ -15,6 +16,7 @@ public abstract class BaseHeaderOptionAttribute(MultiMenu menu) : OptionAttribut
         header.ClientOnly = ClientOnly;
         header.All = All;
         header.SetTypeAndOptions(type);
+        header.Value = IsOpen;
     }
 }
 

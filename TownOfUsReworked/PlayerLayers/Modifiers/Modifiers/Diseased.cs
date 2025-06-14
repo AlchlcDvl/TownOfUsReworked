@@ -11,7 +11,7 @@ public sealed class Diseased : Modifier
 
     protected override UColor MainColor => CustomColorManager.Diseased;
     public override LayerEnum Type => LayerEnum.Diseased;
-    public override Func<string> Description => () => $"- Your killer's cooldown increases by {DiseasedMultiplier} times";
+    public override string Description => $"- Your killer's cooldown increases by {DiseasedMultiplier} times";
     public override bool Hidden => !DiseasedKnows && !Dead;
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)

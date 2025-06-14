@@ -4,32 +4,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Janitor : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number CleanCd = 25;
+    private static Number CleanCd = 25;
 
     [ToggleOption]
-    public static bool JaniCooldownsLinked = true;
+    private static bool JaniCooldownsLinked = true;
 
     [ToggleOption]
-    public static bool SoloBoost = false;
+    private static bool SoloBoost = false;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number DragCd = 25;
+    private static Number DragCd = 25;
 
     [NumberOption(0.25f, 3f, 0.25f, Format.Multiplier)]
     public static Number DragModifier = 0.5f;
 
     [StringOption<JanitorOptions>]
-    public static JanitorOptions JanitorVentOptions = JanitorOptions.Never;
+    private static JanitorOptions JanitorVentOptions = JanitorOptions.Never;
 
-    private CustomButton CleanButton { get; set; }
-    private CustomButton DragButton { get; set; }
-    private CustomButton DropButton { get; set; }
-    public DeadBodyHandler CurrentlyDragging { get; set; }
+    private CustomButton CleanButton;
+    private CustomButton DragButton;
+    private CustomButton DropButton;
+    public DeadBodyHandler CurrentlyDragging;
 
     protected override UColor MainColor => CustomColorManager.Janitor;
     public override LayerEnum Type => LayerEnum.Janitor;
-    public override Func<string> StartText { get; } = () => "Sanitise The Ship, By Any Means Necessary";
-    public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
+    public override string StartText => "Sanitise The Ship, By Any Means Necessary";
+    public override string Description => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
         CommonAbilities;
     public override bool CanVent => base.CanVent && ((int)JanitorVentOptions is 3 || (CurrentlyDragging && (int)JanitorVentOptions is 1) || (!CurrentlyDragging && (int)JanitorVentOptions is 2));
 

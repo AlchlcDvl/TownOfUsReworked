@@ -10,21 +10,21 @@ public sealed class Amnesiac : Benign
     private static Number RememberArrowDelay = 5;
 
     [ToggleOption]
-    public static bool AmneVent = false;
+    private static bool AmneVent = false;
 
     [ToggleOption]
-    public static bool AmneSwitchVent = false;
+    private static bool AmneSwitchVent = false;
 
     [ToggleOption]
     private static bool AmneToThief = true;
 
-    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
-    private CustomButton RememberButton { get; set; }
+    private readonly Dictionary<byte, PositionalArrow> BodyArrows = [];
+    private CustomButton RememberButton;
 
     protected override UColor MainColor => CustomColorManager.Amnesiac;
     public override LayerEnum Type => LayerEnum.Amnesiac;
-    public override Func<string> StartText { get; } = () => "You Forgor <i>:skull:</i>";
-    public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
+    public override string StartText => "You Forgor <i>:skull:</i>";
+    public override string Description => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
         + " to their body") : "") + "\n- If there are less than 4 players alive, you will become a <#80FF00FF>Thief</color>";
     public override bool CanVent => base.CanVent && AmneVent;
     public override bool CanSwitchVents => AmneSwitchVent;
@@ -43,7 +43,7 @@ public sealed class Amnesiac : Benign
             arrow.Destroy();
     }
 
-    public override void ClearArrows()
+    protected override void ClearArrows()
     {
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();

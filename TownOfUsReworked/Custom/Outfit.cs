@@ -31,7 +31,7 @@ public sealed class CustomOutfit
 
     public CustomOutfit() {}
 
-    public CustomOutfit(PlayerOutfit source)
+    private CustomOutfit(PlayerOutfit source)
     {
         ColorId = source.ColorId;
         HatId = source.HatId;

@@ -10,19 +10,19 @@ public sealed class Lovers : Paired
     public static bool LoversChat = true;
 
     [ToggleOption]
-    public static bool LoversRoles = true;
+    private static bool LoversRoles = true;
 
     [ToggleOption]
     public static bool ConvertLovers = true;
 
-    public bool LoversAlive => !Player.HasDied() && !Other.HasDied();
+    private bool LoversAlive => !Player.HasDied() && !Other.HasDied();
 
     protected override UColor MainColor => CustomColorManager.Lovers;
     public override string Symbol => "♥";
     public override LayerEnum Type => LayerEnum.Lovers;
-    public override Func<string> Description => () => $"- Live to the final 3 with {Other.name}";
+    public override string Description => $"- Live to the final 3 with {Other.name}";
     protected override bool RevealRole => LoversRoles;
-    protected override ChatChannel Channel => ChatChannel.Rivals;
+    protected override ChatChannel Channel => ChatChannel.Lovers;
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {

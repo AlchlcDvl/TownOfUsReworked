@@ -7,12 +7,12 @@ public sealed class Fanatic : FactionChanger
     private static bool FanaticKnows = true;
 
     [ToggleOption]
-    public static bool FanaticColourSwap = false;
+    private static bool FanaticColourSwap = false;
 
     protected override UColor MainColor => CustomColorManager.Fanatic;
     public override string Symbol => "♠";
     public override LayerEnum Type => LayerEnum.Fanatic;
-    public override Func<string> Description => () => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";
+    public override string Description => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";
     public override bool Hidden => !FanaticKnows && !Turned && !Dead;
     public override bool SnitchReveals => Snitch.SnitchSeesFanatic;
     public override bool RevealerReveals => Revealer.RevealerRevealsFanatic;

@@ -20,7 +20,7 @@
 - Addition: Added a few anti cheat measures to prevent tampering
 
 Changes!
-- Update: Updated to Among Us v16.0.5 (or 2025.5.20)
+- Update: Updated to Among Us v16.1.0 (or 2025.5.20)
 - Update: Updated to Reactor v2.5.0
 - Update: Updated to BepInEx v6.0.0-be.735
 - Overhaul: Mayor is now a second stage role for the new Democrat role
@@ -47,6 +47,7 @@ Changes!
 - Change: Options now have a newer look
 - Change: Assets are now stored in "%APPDATA%\..\LocalLow\Innersloth\Among Us" instead of the game folder to ensure persistence between version updates
 - Change: The end game summary will now only show the initial and the final role of a player. To view the full role history of a player, use the /summary command
+- Change: Syndicate (Power) roles are now Syndicate (Head) instead
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Nerf: Engineer can no longer vent (you now need the Tunneler ability to do so as a crewmate)
 - Nerf: Button Barry will now only fix critical sabotages, leaving lights and comms unaffected

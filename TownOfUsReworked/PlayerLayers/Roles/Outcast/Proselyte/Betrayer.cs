@@ -9,12 +9,12 @@ public sealed class Betrayer : Proselyte
     [ToggleOption]
     private static bool BetrayerVent = true;
 
-    private CustomButton KillButton { get; set; }
+    private CustomButton KillButton;
 
     protected override UColor MainColor => CustomColorManager.Betrayer;
     public override LayerEnum Type => LayerEnum.Betrayer;
-    public override Func<string> StartText { get; } = () => "Those Backs Are Ripe For Some Stabbing";
-    public override Func<string> Description => () => "- You can kill";
+    public override string StartText => "Those Backs Are Ripe For Some Stabbing";
+    public override string Description => "- You can kill";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && BetrayerVent;
 

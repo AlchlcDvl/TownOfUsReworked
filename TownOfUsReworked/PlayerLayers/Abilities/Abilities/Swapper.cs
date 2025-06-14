@@ -9,13 +9,13 @@ public sealed class Swapper : Ability
     [ToggleOption]
     private static bool SwapSelf = true;
 
-    public PlayerVoteArea Swap1 { get; set; }
-    public PlayerVoteArea Swap2 { get; set; }
-    public CustomMeeting SwapMenu { get; private set; }
+    public PlayerVoteArea Swap1;
+    public PlayerVoteArea Swap2;
+    public CustomMeeting SwapMenu;
 
     protected override UColor MainColor => CustomColorManager.Swapper;
     public override LayerEnum Type => LayerEnum.Swapper;
-    public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
+    public override string Description => "- You can swap the votes against 2 players in meetings";
 
     public override void Init()
     {
@@ -38,11 +38,7 @@ public sealed class Swapper : Ability
         Swap2 = reader.ReadVoteArea();
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        SwapMenu.GenButtons(__instance);
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => SwapMenu.GenButtons(__instance);
 
     public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update();
 
@@ -69,13 +65,13 @@ public sealed class Swapper : Ability
         }
         else if (Swap1 == voteArea)
         {
+            SwapMenu.Actives[Swap1.TargetPlayerId] = false;
             Swap1 = null;
-            SwapMenu.Actives[Swap1!.TargetPlayerId] = false;
         }
         else if (Swap2 == voteArea)
         {
+            SwapMenu.Actives[Swap2.TargetPlayerId] = false;
             Swap2 = null;
-            SwapMenu.Actives[Swap2!.TargetPlayerId] = false;
         }
         else
         {

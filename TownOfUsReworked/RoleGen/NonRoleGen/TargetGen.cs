@@ -10,7 +10,6 @@ public sealed class TargetGen : BaseGen
         {
             foreach (var ally in PlayerLayer.GetLayers<Allied>())
             {
-                var alliedRole = ally.Player.GetRole();
                 var factions = new List<Faction>() { Faction.Crew, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse };
 
                 if (BadGuysSettings.PandoricaOpens)

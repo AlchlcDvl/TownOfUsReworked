@@ -7,13 +7,13 @@ public sealed class Hunter : HideAndSeek
     public static Number HunterCount = 1;
 
     [NumberOption(5f, 60f, 5f, Format.Time)]
-    public static Number HuntCd = 10;
+    private static Number HuntCd = 10;
 
     [NumberOption(5f, 60f, 5f, Format.Time)]
-    public static Number StartTime = 10;
+    private static Number StartTime = 10;
 
     [ToggleOption]
-    public static bool HunterVent = true;
+    private static bool HunterVent = true;
 
     [NumberOption(0.1f, 1f, 0.05f, Format.Multiplier)]
     public static Number HunterVision = 0.25f;
@@ -25,7 +25,7 @@ public sealed class Hunter : HideAndSeek
     public static bool HunterFlashlight = false;
 
     public override LayerEnum Type => LayerEnum.Hunter;
-    public override Func<string> StartText { get; } = () => "Hunt Them All Down";
+    public override string StartText => "Hunt Them All Down";
     protected override UColor MainColor => CustomColorManager.Hunter;
     public override bool CanVent => HunterVent;
 
@@ -52,7 +52,7 @@ public sealed class Hunter : HideAndSeek
             HuntButton.StartCooldown();
     }
 
-    private bool Exception(PlayerControl player) => player.Is<Hunter>();
+    private static bool Exception(PlayerControl player) => player.Is<Hunter>();
 
     private bool Usable() => !Starting;
 

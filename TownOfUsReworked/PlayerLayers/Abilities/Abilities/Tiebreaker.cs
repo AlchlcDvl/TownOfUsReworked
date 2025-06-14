@@ -8,6 +8,6 @@ public sealed class Tiebreaker : Ability
 
     protected override UColor MainColor => CustomColorManager.Tiebreaker;
     public override LayerEnum Type => LayerEnum.Tiebreaker;
-    public override Func<string> Description => () => "- Your votes break ties";
+    public override string Description => "- Your votes break ties";
     public override bool Hidden => !TiebreakerKnows && !Dead;
 }

@@ -5,9 +5,9 @@ public static class CustomPlayerOutfitType
     private static readonly EnumInjector<PlayerOutfitType> Injector = new();
 
     public const PlayerOutfitType Default = PlayerOutfitType.Default;
-    public const PlayerOutfitType Shapeshifted = PlayerOutfitType.Shapeshifted;
-    public const PlayerOutfitType HorseWrangler = PlayerOutfitType.HorseWrangler;
-    public const PlayerOutfitType MushroomMixup = PlayerOutfitType.MushroomMixup;
+    // public const PlayerOutfitType Shapeshifted = PlayerOutfitType.Shapeshifted;
+    // public const PlayerOutfitType HorseWrangler = PlayerOutfitType.HorseWrangler;
+    // public const PlayerOutfitType MushroomMixup = PlayerOutfitType.MushroomMixup;
 
     public static readonly PlayerOutfitType Morph = Injector.InjectAndReturn("Morph"); // 4
     public static readonly PlayerOutfitType Camouflage = Injector.InjectAndReturn("Camouflage"); // 5

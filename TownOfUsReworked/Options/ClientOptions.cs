@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Options;
 /// <summary>
 /// All of the options that are client sided and not networked in any way.
 /// </summary>
-[HeaderOption(MultiMenu.Client, ClientOnly = true)]
+[HeaderOption(MultiMenu.Client, ClientOnly = true, IsOpen = true)]
 public static class ClientOptions
 {
     public static ReworkedToggleOption LighterDarker = new(true);

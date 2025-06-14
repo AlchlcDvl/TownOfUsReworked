@@ -9,13 +9,13 @@ public sealed class Escort : CSupport, IBlocker
     [NumberOption(5f, 30f, 1f, Format.Time)]
     public static Number EscortDur = 10;
 
-    public PlayerControl BlockTarget { get; set; }
-    private CustomButton BlockButton { get; set; }
+    public PlayerControl BlockTarget { get; private set; }
+    private CustomButton BlockButton;
 
     protected override UColor MainColor => CustomColorManager.Escort;
     public override LayerEnum Type => LayerEnum.Escort;
-    public override Func<string> StartText { get; } = () => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";
-    public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
+    public override string StartText => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";
+    public override string Description => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
         "to blocks\n- If you attempt to block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you";
     public override bool RoleBlockImmune => true;
 

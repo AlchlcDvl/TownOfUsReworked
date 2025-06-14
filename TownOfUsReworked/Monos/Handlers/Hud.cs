@@ -1,3 +1,5 @@
+#pragma warning disable CA1822
+
 namespace TownOfUsReworked.Monos;
 
 public sealed class HudHandler : MonoBehaviour
@@ -26,13 +28,5 @@ public sealed class HudHandler : MonoBehaviour
             UninteractablePlayers.Remove(player.PlayerId);
             UninteractablePlayers2.Remove(player.PlayerId);
         }
-
-        if (!BetterSabotages.CamouflagedComms)
-            return;
-
-        if (!CommsEnabled && Ship().Systems.TryGetValue(SystemTypes.Comms, out var sab) && sab.TryCast<IActivatable>(out var comms) && comms.IsActive)
-            CommsEnabled = true;
-        else if (CommsEnabled)
-            CommsEnabled = false;
     }
 }

@@ -7,12 +7,12 @@ public sealed class Linked : Paired
     public static bool LinkedChat = true;
 
     [ToggleOption]
-    public static bool LinkedRoles = true;
+    private static bool LinkedRoles = true;
 
     protected override UColor MainColor => CustomColorManager.Linked;
     public override string Symbol => "Ψ";
     public override LayerEnum Type => LayerEnum.Linked;
-    public override Func<string> Description => () => $"- Help {Other.name} win";
+    public override string Description => $"- Help {Other.name} win";
     protected override bool RevealRole => LinkedRoles;
     protected override ChatChannel Channel => ChatChannel.Linked;
 }

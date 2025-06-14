@@ -4,25 +4,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Silencer : Disruption, IIntimidator
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number SilenceCd = 25;
+    private static Number SilenceCd = 25;
 
     [ToggleOption]
     public static bool WhispersNotPrivateS = true;
 
     [ToggleOption]
-    public static bool SilenceMates = false;
+    private static bool SilenceMates = false;
 
     [ToggleOption]
     public static bool SilenceRevealed = true;
 
-    private CustomButton SilenceButton { get; set; }
+    private CustomButton SilenceButton;
     public bool ShookAlready { get; set; }
     public PlayerControl Target { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Silencer;
     public override LayerEnum Type => LayerEnum.Silencer;
-    public override Func<string> StartText { get; } = () => "You Are The One Who Hushes";
-    public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +
+    public override string StartText => "You Are The One Who Hushes";
+    public override string Description => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +
         "start of the meeting that someone has been silenced " : "") + (WhispersNotPrivateS ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
 
     public override void Init()

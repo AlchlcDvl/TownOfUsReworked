@@ -17,13 +17,13 @@ public sealed class Dracula : Neophyte
 
     private static int AliveCount => AllPlayers().Count(x => !x.HasDied());
 
-    private CustomButton BiteButton { get; set; }
-    private bool HasConverted { get; set; }
+    private CustomButton BiteButton;
+    private bool HasConverted;
 
     protected override UColor MainColor => CustomColorManager.Dracula;
     public override LayerEnum Type => LayerEnum.Dracula;
-    public override Func<string> StartText { get; } = () => "Lead The <#7B8968FF>Undead</color> To Victory";
-    public override Func<string> Description => () => "- You can bite a player in an attempt to convert them\n- If the target cannot be converted or the number of alive <#7B8968FF>Undead</color> " +
+    public override string StartText => "Lead The <#7B8968FF>Undead</color> To Victory";
+    public override string Description => "- You can bite a player in an attempt to convert them\n- If the target cannot be converted or the number of alive <#7B8968FF>Undead</color> " +
         $"exceeds {AliveVampCount}, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && DracVent;
@@ -37,11 +37,7 @@ public sealed class Dracula : Neophyte
             (UsableFunc)Usable);
     }
 
-    public override void OnMeetingEnd(MeetingHud __instance)
-    {
-        base.OnMeetingEnd(__instance);
-        HasConverted = false;
-    }
+    public override void OnMeetingEnd(MeetingHud __instance) => HasConverted = false;
 
     private void Convert(PlayerControl target)
     {

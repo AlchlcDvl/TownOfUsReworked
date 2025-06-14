@@ -78,7 +78,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public readonly Harmony Harmony = new(Id);
 
-    public static string ModHash { get; private set; }
+    private static string ModHash { get; set; }
 
     public override void Load()
     {

@@ -27,16 +27,17 @@ public sealed class Arsonist : OKilling, IDouser
     [NumberOption(0f, 10f, 0.5f, Format.Time, zeroIsInf: true)]
     private static Number IgniteRadius = 25;
 
-    private CustomButton IgniteButton { get; set; }
-    private CustomButton DouseButton { get; set; }
+    private CustomButton IgniteButton;
+    private CustomButton DouseButton;
+
     private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Outcast) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
         or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
     public HashSet<byte> Doused { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Arsonist;
     public override LayerEnum Type => LayerEnum.Arsonist;
-    public override Func<string> StartText { get; } = () => "PYROMANIAAAAAAAAAAAAAA";
-    public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +
+    public override string StartText => "PYROMANIAAAAAAAAAAAAAA";
+    public override string Description => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +
         "get doused";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;

@@ -4,21 +4,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Ambusher : IKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number AmbushCd = 25;
+    private static Number AmbushCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number AmbushDur = 10;
+    private static Number AmbushDur = 10;
 
     [ToggleOption]
-    public static bool AmbushMates = false;
+    private static bool AmbushMates = false;
 
-    public PlayerControl AmbushedPlayer { get; private set; }
-    public CustomButton AmbushButton { get; private set; }
+    public PlayerControl AmbushedPlayer;
+    public CustomButton AmbushButton;
 
     protected override UColor MainColor => CustomColorManager.Ambusher;
     public override LayerEnum Type => LayerEnum.Ambusher;
-    public override Func<string> StartText { get; } = () => "Spook The <#8CFFFFFF>Crew</color>";
-    public override Func<string> Description => () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
+    public override string StartText => "Spook The <#8CFFFFFF>Crew</color>";
+    public override string Description => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
 
     public override void Init()
     {

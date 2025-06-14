@@ -6,15 +6,16 @@ public sealed class Ghoul : IUtility, IGhosty
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number GhoulMarkCd = 25;
 
-    private CustomButton MarkButton { get; set; }
+    private CustomButton MarkButton;
+    public PlayerControl MarkedPlayer;
+
     public bool Caught { get; set; }
-    public PlayerControl MarkedPlayer { get; set; }
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Ghoul;
     public override LayerEnum Type => LayerEnum.Ghoul;
-    public override Func<string> StartText { get; } = () => "BOO!";
-    public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +
+    public override string StartText => "BOO!";
+    public override string Description => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +
         " meeting if you are not clicked";
 
     public override void Init()

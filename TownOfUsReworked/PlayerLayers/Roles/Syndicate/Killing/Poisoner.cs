@@ -4,20 +4,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Poisoner : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number PoisonCd = 25;
+    private static Number PoisonCd = 25;
 
     [NumberOption(1f, 15f, 1f, Format.Time)]
-    public static Number PoisonDur = 5;
+    private static Number PoisonDur = 5;
 
-    private CustomButton PoisonButton { get; set; }
-    private CustomButton GlobalPoisonButton { get; set; }
-    private PlayerControl PoisonedPlayer { get; set; }
-    private CustomPlayerMenu PoisonMenu { get; set; }
+    private CustomButton PoisonButton;
+    private CustomButton GlobalPoisonButton;
+    private PlayerControl PoisonedPlayer;
+    private CustomPlayerMenu PoisonMenu;
 
     protected override UColor MainColor => CustomColorManager.Poisoner;
     public override LayerEnum Type => LayerEnum.Poisoner;
-    public override Func<string> StartText { get; } = () => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
-    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" + CommonAbilities;
+    public override string StartText => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
+    public override string Description => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" + CommonAbilities;
 
     public override void Init()
     {

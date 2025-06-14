@@ -118,7 +118,7 @@ public static class VentPatches
             return true;
 
         LocalPlayer.RpcSuicide();
-        Role.BastionBomb(vent, Bastion.BombRemovedOnKill);
+        BastionBomb(vent, Bastion.BombRemovedOnKill);
         CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
         return false;
     }

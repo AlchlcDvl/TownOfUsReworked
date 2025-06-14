@@ -125,7 +125,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
                         SetPostmortals.Phantoms++;
                 }
             }
-            else  */if (spawn.IsActive())
+            else */if (spawn.IsActive())
             {
                 if (AH.Contains(layer) || AD.Contains(layer))
                     RoleGenManager.ApocalypseHarbingerRoles.AddMany(spawn.Clone, spawn.Count);

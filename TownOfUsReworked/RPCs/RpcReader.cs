@@ -1,5 +1,4 @@
 using System.Buffers;
-using AmongUs.InnerNet.GameDataMessages;
 
 namespace TownOfUsReworked.RPCs;
 
@@ -106,13 +105,13 @@ public sealed class RpcReader : IDisposable
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
     public T Read<T>() => (T)Read(typeof(T));
 
-    /// <summary>
-    /// Reads a value from the data.
-    /// </summary>
-    /// <typeparam name="T">The type of value to read.</typeparam>
-    /// <returns>The deserialized value of type <typeparamref name="T"/>.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public T ReadFromTypeCode<T>() => (T)Read();
+    // /// <summary>
+    // /// Reads a value from the data.
+    // /// </summary>
+    // /// <typeparam name="T">The type of value to read.</typeparam>
+    // /// <returns>The deserialized value of type <typeparamref name="T"/>.</returns>
+    // /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    // public T ReadFromTypeCode<T>() => (T)Read();
 
     /// <summary>
     /// Reads a value of the specified type from the data.

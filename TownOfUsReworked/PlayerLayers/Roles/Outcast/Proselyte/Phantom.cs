@@ -14,10 +14,10 @@ public sealed class Phantom : Proselyte, IGhosty
 
     protected override UColor MainColor => CustomColorManager.Phantom;
     public override LayerEnum Type => LayerEnum.Phantom;
-    public override Func<string> StartText { get; } = () => "Peek-A-Boo!";
-    public override Func<string> Description => () => "- You end the game upon finishing your objective";
+    public override string StartText => "Peek-A-Boo!";
+    public override string Description => "- You end the game upon finishing your objective";
     public override bool HasWon => TasksDone;
-    public override WinLose EndState => WinLose.PhantomWins;
+    protected override WinLose EndState => WinLose.PhantomWins;
 
     public override void Init()
     {

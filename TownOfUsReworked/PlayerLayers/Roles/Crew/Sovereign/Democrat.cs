@@ -12,20 +12,22 @@ public sealed class Democrat : Sovereign
     [ToggleOption]
     public static bool DemocratButton = true;
 
-    public HashSet<byte> Campaigned { get; } = [];
-    private CustomButton RevealButton { get; set; }
-    private CustomButton CampaignButton { get; set; }
-    private bool RoundOne { get; set; }
+    public readonly HashSet<byte> Campaigned = [];
+
+    private CustomButton RevealButton;
+    private CustomButton CampaignButton;
+    private bool RoundOne;
 
     protected override UColor MainColor => CustomColorManager.Democrat;
     public override LayerEnum Type => LayerEnum.Democrat;
-    public override Func<string> StartText { get; } = () => "Start A Campaign To Get Elected!";
-    public override Func<string> Description => () => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
+    public override string StartText => "Start A Campaign To Get Elected!";
+    public override string Description => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
         "<#704FA8FF>Mayor</color>";
 
     public override void Init()
     {
         base.Init();
+        Campaigned.Clear();
         RevealButton ??= new(this, new SpriteName("MayorReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable2, "REVEAL");
         CampaignButton ??= new(this, "CAMPAIGN", new SpriteName("Campaign"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Campaign, new Cooldown(CampaignCd),
             (UsableFunc)Usable1, (PlayerBodyExclusion)Exception);
@@ -68,9 +70,5 @@ public sealed class Democrat : Sovereign
 
     public override void ReadRPC(RpcReader reader) => Campaigned.Add(reader.ReadByte());
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        Campaigned.RemoveAll(x => PlayerById(x).HasDied());
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => Campaigned.RemoveAll(x => PlayerById(x).HasDied());
 }

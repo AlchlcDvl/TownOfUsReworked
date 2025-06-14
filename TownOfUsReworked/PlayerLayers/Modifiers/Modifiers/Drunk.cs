@@ -14,11 +14,11 @@ public sealed class Drunk : Modifier
 
     private static float Time;
     public int Modify { get; private set; }
-    private bool Exposed { get; set; }
+    private bool Exposed;
 
     protected override UColor MainColor => CustomColorManager.Drunk;
     public override LayerEnum Type => LayerEnum.Drunk;
-    public override Func<string> Description => () => DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
+    public override string Description => DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
     public override bool Hidden => !DrunkKnows && !Exposed && !Dead;
 
     public override void Init()

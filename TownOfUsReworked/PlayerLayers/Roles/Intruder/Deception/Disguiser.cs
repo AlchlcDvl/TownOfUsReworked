@@ -4,33 +4,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Disguiser : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number DisguiseCd = 25;
+    private static Number DisguiseCd = 25;
 
     [NumberOption(2.5f, 15f, 2.5f, Format.Time)]
-    public static Number DisguiseDelay = 5;
+    private static Number DisguiseDelay = 5;
 
     [NumberOption(5f, 30f, 2.5f, Format.Time)]
-    public static Number DisguiseDur = 10;
+    private static Number DisguiseDur = 10;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number MeasureCd = 25;
+    private static Number MeasureCd = 25;
 
     [ToggleOption]
-    public static bool DisgCooldownsLinked = false;
+    private static bool DisgCooldownsLinked = false;
 
     [StringOption<DisguiserTargets>]
-    public static DisguiserTargets DisguiseTarget = DisguiserTargets.Everyone;
+    private static DisguiserTargets DisguiseTarget = DisguiserTargets.Everyone;
 
-    private CustomButton DisguiseButton { get; set; }
-    private CustomButton MeasureButton { get; set; }
-    private PlayerControl MeasuredPlayer { get; set; }
-    private PlayerControl DisguisedPlayer { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton DisguiseButton;
+    private CustomButton MeasureButton;
+    private PlayerControl MeasuredPlayer;
+    private PlayerControl DisguisedPlayer;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Disguiser;
     public override LayerEnum Type => LayerEnum.Disguiser;
-    public override Func<string> StartText { get; } = () => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
-    public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
+    public override string StartText => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
+    public override string Description => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
 
     public override void Init()
     {

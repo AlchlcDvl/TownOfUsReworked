@@ -2,7 +2,7 @@
 
 public abstract class Sovereign : Crew
 {
-    public bool Revealed { get; set; }
+    public bool Revealed;
 
     public override Alignment Alignment => Alignment.Sovereign;
 

@@ -4,18 +4,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Camouflager : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number CamouflageCd = 25;
+    private static Number CamouflageCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number CamouflageDur = 10;
+    private static Number CamouflageDur = 10;
 
-    private CustomButton CamouflageButton { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton CamouflageButton;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Camouflager;
     public override LayerEnum Type => LayerEnum.Camouflager;
-    public override Func<string> StartText { get; } = () => "Hinder The <#8CFFFFFF>Crew</color>'s Recognition";
-    public override Func<string> Description => () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey " +
+    public override string StartText => "Hinder The <#8CFFFFFF>Crew</color>'s Recognition";
+    public override string Description => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey " +
         $"with fluctuating names and no cosmetics\n{CommonAbilities}";
 
     public override void Init()
@@ -41,5 +41,5 @@ public sealed class Camouflager : Concealing
 
     private void ClickAgain() => ClickedAgain = true;
 
-    public bool Condition() => !Hud.Instance.IsCamoed || ClickedAgain;
+    private bool Condition() => !Hud.Instance.IsCamoed || ClickedAgain;
 }

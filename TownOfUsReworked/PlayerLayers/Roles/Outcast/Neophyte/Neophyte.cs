@@ -37,17 +37,17 @@ public abstract class Neophyte : Outcast
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {
-        if (Members.Contains(player.PlayerId))
+        if (!Members.Contains(player.PlayerId))
+            return;
+
+        if (GameModifiers.FactionSeeRoles && !revealed)
         {
-            if (GameModifiers.FactionSeeRoles && !revealed)
-            {
-                var role = handler.CurrentRole;
-                color = role.Color;
-                name += $"\n{role}";
-                revealed = true;
-            }
-            else
-                color = FactionColor;
+            var role = handler.CurrentRole;
+            color = role.Color;
+            name += $"\n{role}";
+            revealed = true;
         }
+        else
+            color = FactionColor;
     }
 }

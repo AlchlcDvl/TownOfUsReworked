@@ -15,14 +15,14 @@ public sealed class Transporter : CSupport, IMover
     [ToggleOption]
     public static bool TransSelf = true;
 
-    private CustomButton TransportButton { get; set; }
-    private CustomPlayerMenu TransportMenu { get; set; }
+    private CustomButton TransportButton;
+    private CustomPlayerMenu TransportMenu;
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Transporter;
     public override LayerEnum Type => LayerEnum.Transporter;
-    public override Func<string> StartText { get; } = () => "Swap Locations Of Players For Maximum Confusion";
-    public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
+    public override string StartText => "Swap Locations Of Players For Maximum Confusion";
+    public override string Description => "- You can swap the locations of 2 players of your choice";
 
     public override void Init()
     {

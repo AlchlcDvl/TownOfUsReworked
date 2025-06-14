@@ -4,25 +4,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Bomber : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number BombCd = 25;
+    private static Number BombCd = 25;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number DetonateCd = 25;
+    private static Number DetonateCd = 25;
 
     [ToggleOption]
-    public static bool BombCooldownsLinked = false;
+    private static bool BombCooldownsLinked = false;
 
     [ToggleOption]
-    public static bool BombsRemoveOnNewRound = false;
+    private static bool BombsRemoveOnNewRound = false;
 
     [ToggleOption]
-    public static bool BombsDetonateOnMeetingStart = false;
+    private static bool BombsDetonateOnMeetingStart = false;
 
     [ToggleOption]
-    public static bool ShowBomb = true;
+    private static bool ShowBomb = true;
 
     [ToggleOption]
-    public static bool BombAlert = true;
+    private static bool BombAlert = true;
 
     [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
     public static Number BombRange = 1.5f;
@@ -30,14 +30,14 @@ public sealed class Bomber : SKilling
     [NumberOption(0.5f, 5f, 0.25f, Format.Distance)]
     public static Number ChaosDriveBombRange = 0.5f;
 
-    private CustomButton BombButton { get; set; }
-    private CustomButton DetonateButton { get; set; }
-    private List<Bomb> Bombs { get; } = [];
+    private CustomButton BombButton;
+    private CustomButton DetonateButton;
+    private readonly List<Bomb> Bombs = [];
 
     protected override UColor MainColor => CustomColorManager.Bomber;
     public override LayerEnum Type => LayerEnum.Bomber;
-    public override Func<string> StartText { get; } = () => "Make People Go Boom";
-    public override Func<string> Description => () => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";
+    public override string StartText => "Make People Go Boom";
+    public override string Description => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";
 
     public override void Init()
     {
@@ -51,11 +51,11 @@ public sealed class Bomber : SKilling
 
     public override void Reset(bool meeting, bool start)
     {
-        if (BombsRemoveOnNewRound && meeting)
-        {
-            Bombs.ForEach(x => x?.gameObject?.Destroy());
-            Bombs.Clear();
-        }
+        if (!BombsRemoveOnNewRound || !meeting)
+            return;
+
+        Bombs.ForEach(x => x?.gameObject?.Destroy());
+        Bombs.Clear();
     }
 
     protected override void Deinit()

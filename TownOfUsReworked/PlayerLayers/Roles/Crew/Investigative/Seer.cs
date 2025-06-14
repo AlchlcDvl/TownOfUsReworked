@@ -8,12 +8,13 @@ public sealed class Seer : Investigative
 
     private static bool ChangedDead => !GetLayers<Role>().Any(x => !x.Alive && (x.Handler.History.Any() || x is Amnesiac or Thief or Actor or Godfather or Guesser or Rebel or Mystic or Executioner
         or GuardianAngel or BountyHunter || x.Handler.CurrentDisposition is Traitor or Fanatic));
-    private CustomButton SeerButton { get; set; }
+
+    private CustomButton SeerButton;
 
     protected override UColor MainColor => CustomColorManager.Seer;
     public override LayerEnum Type => LayerEnum.Seer;
-    public override Func<string> StartText { get; } = () => "You Can See People's Histories";
-    public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
+    public override string StartText => "You Can See People's Histories";
+    public override string Description => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
         "<#FFCC80FF>Sheriff</color>";
 
     public override void Init()

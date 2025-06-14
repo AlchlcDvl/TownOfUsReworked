@@ -48,15 +48,15 @@ public sealed class Necromancer : Neophyte, IReviver
     [ToggleOption]
     public static bool ResurrectVent = false;
 
-    private byte ParentId { get; set; }
-    private CustomButton ResurrectButton { get; set; }
-    private CustomButton SacrificeButton { get; set; }
-    private CustomButton ManaButton { get; set; }
+    private byte ParentId;
+    private CustomButton ResurrectButton;
+    private CustomButton SacrificeButton;
+    private CustomButton ManaButton;
 
     protected override UColor MainColor => CustomColorManager.Necromancer;
     public override LayerEnum Type => LayerEnum.Necromancer;
-    public override Func<string> StartText { get; } = () => "Resurrect The Dead Into Doing Your Bidding";
-    public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
+    public override string StartText => "Resurrect The Dead Into Doing Your Bidding";
+    public override string Description => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && NecroVent;
@@ -156,11 +156,7 @@ public sealed class Necromancer : Neophyte, IReviver
 
     private bool Usable() => ResurrectButton.UsesCount != ResurrectButton.Max;
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        ResurrectButton.Uses += PassiveNecroManaGain;
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => ResurrectButton.Uses += PassiveNecroManaGain;
 
     private float Difference2() => SacrificeCdIncreases ? (KillCounts.GetValueOrDefault(PlayerId, 0) * SacrificeCdIncrease) : 0;
 

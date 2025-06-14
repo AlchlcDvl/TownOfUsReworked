@@ -17,7 +17,7 @@ public sealed class ModifierGen : BaseGen
 
     private static void InitRlList()
     {
-        var abilities = GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller);
+        var modifiers = GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller);
 
         foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier && x.Num <= GameData.Instance.PlayerCount))
         {
@@ -29,11 +29,11 @@ public sealed class ModifierGen : BaseGen
                 var rateLimit = 0;
                 var cachedCount = AllModifiers.Count;
 
+                if (!id.TryCastToLayer(out var layer))
+                    layer = modifiers.Random();
+
                 while (rateLimit < 10000 && AllModifiers.Count == cachedCount)
                 {
-                    if (!id.TryCastToLayer(out var layer))
-                        layer = abilities.Random();
-
                     if (ListGen.CannotAdd(layer, AllModifiers))
                         rateLimit++;
                     else

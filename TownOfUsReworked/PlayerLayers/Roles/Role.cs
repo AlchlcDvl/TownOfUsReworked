@@ -11,7 +11,7 @@ public abstract class Role : PlayerLayer
     public abstract Faction BaseFaction { get; }
     public abstract Alignment Alignment { get; }
 
-    public virtual Func<string> StartText => () => "Woah The Game Started";
+    public virtual string StartText => "Woah The Game Started";
     public virtual bool RoleBlockImmune => false;
     public virtual bool AffectedByLights => true;
     public virtual bool CanSwitchVents => true;
@@ -75,12 +75,19 @@ public abstract class Role : PlayerLayer
     {
         var team = new List<PlayerControl>() { Player };
 
-        if (Handler.CurrentDisposition is Lovers)
-            team.Add(Player.GetOtherLover());
-        else if (Handler.CurrentDisposition is Rivals)
-            team.Add(Player.GetOtherRival());
-        else if (Handler.CurrentDisposition is Mafia)
-            team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
+        switch (Handler.CurrentDisposition)
+        {
+            case Paired pair:
+            {
+                team.Add(pair.Other);
+                break;
+            }
+            case Mafia:
+            {
+                team.AddRange(AllPlayers().Where(x => x != Player && x.Is<Mafia>()));
+                break;
+            }
+        }
 
         if (Faction == Faction.Cabal && Alignment != Alignment.Neophyte)
         {
@@ -127,50 +134,21 @@ public abstract class Role : PlayerLayer
             handler.SetUpLayers(inherit);
     }
 
-    public override void OnMeetingEnd(MeetingHud __instance) => GetLayers<Werewolf>().Do(x => x.Rounds++);
-
     public override void UpdateMap(MapBehaviour __instance)
     {
         __instance.ColorControl.baseColor = Color;
         __instance.ColorControl.SetColor(Color);
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void BeforeMeeting()
     {
-        GetLayers<Arsonist>().Do(x => x.Doused.Clear());
+        if (!Requesting || BountyTimer <= 2)
+            return;
 
-        if (Requesting && BountyTimer > 2)
-        {
-            CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, Player);
-            Requestor.GetLayer<BountyHunter>().TentativeTarget = Player;
-            Requesting = false;
-            Requestor = null;
-        }
-
-        foreach (var bh in GetLayers<BountyHunter>())
-        {
-            if (bh.TargetPlayer || !bh.TentativeTarget || bh.Assigned)
-                continue;
-
-            bh.TargetPlayer = bh.TentativeTarget;
-            bh.Assigned = true;
-
-            // Ensures only the Bounty Hunter sees this
-            if (bh.Local)
-                Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
-        }
-
-        foreach (var dict in GetLayers<Dictator>())
-        {
-            dict.ToBeEjected = null;
-            dict.Tribunal = false;
-        }
-
-        foreach (var cryo in GetLayers<Cryomaniac>())
-        {
-            cryo.FreezeUsed = false;
-            cryo.Doused.Clear();
-        }
+        CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, Player);
+        Requestor.GetLayer<BountyHunter>().TentativeTarget = Player;
+        Requesting = false;
+        Requestor = null;
     }
 
     private void PlaceHit(PlayerControl target)
@@ -182,57 +160,6 @@ public abstract class Role : PlayerLayer
         CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, target);
     }
 
-    public static void PublicReveal(PlayerControl player)
-    {
-        if (!player.Is<Sovereign>(out var revealer))
-            return;
-
-        Flash(revealer.Color);
-        BreakShield(player, true);
-        GetLayers<ITrapper>().Do(x => x.Trapped.Remove(player.PlayerId));
-        revealer.Revealed = true;
-        revealer.OnReveal();
-    }
-
-    public static void BreakShield(PlayerControl player, bool flag)
-    {
-        foreach (var role2 in GetLayers<IShielder>())
-        {
-            if (role2.ShieldedPlayer != player)
-                continue;
-
-            if ((role2.Local && Medic.WhoGetsNotification == ShieldOptions.Medic) || Medic.WhoGetsNotification == ShieldOptions.Everyone || (player.AmOwner && Medic.WhoGetsNotification ==
-                ShieldOptions.Shielded))
-            {
-                var roleEffectAnimation = UObject.Instantiate(GetRoleAnim("ProtectAnim"), player.gameObject.transform);
-                roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
-                roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Global);
-                Flash(role2.Color);
-            }
-
-            if (!flag)
-                continue;
-
-            role2.ShieldedPlayer = null;
-            role2.ShieldBroken = true;
-
-            if (TownOfUsReworked.MciActive)
-                Message(player.name + " Is Now Ex-Shielded");
-        }
-    }
-
-    public static void BastionBomb(Vent vent, bool flag)
-    {
-        foreach (var role2 in GetLayers<IVentBomber>())
-        {
-            if (role2.BombedIDs.Contains(vent.Id) && role2.Local)
-                Flash(role2.Color);
-
-            if (flag)
-                role2.BombedIDs.Remove(vent.Id);
-        }
-    }
-
     private void BombKill(PlayerControl target)
     {
         var success = Interact(Player, target, true) != CooldownType.Fail;
@@ -241,6 +168,4 @@ public abstract class Role : PlayerLayer
     }
 
     public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Deinitialised);
-
-    public static IEnumerable<Role> GetRoles(Alignment ra) => GetLayers<Role>().Where(x => x.Alignment == ra && !x.Deinitialised);
 }

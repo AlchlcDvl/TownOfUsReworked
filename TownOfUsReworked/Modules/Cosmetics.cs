@@ -187,10 +187,7 @@ public sealed class CustomColor : CustomCosmetic // There's no view or regular d
         var index = Mathf.Clamp(Mathf.FloorToInt(point), 0, length - 1); // Clamping to ensure there's no out of range exception
         var t = point - index;
 
-        if (index == colors.Length - 1)
-            return UColor.Lerp(colors[^1], colors[0], t);
-
-        return UColor.Lerp(colors[index], colors[index + 1], t);
+        return index == colors.Length - 1 ? UColor.Lerp(colors[^1], colors[0], t) : UColor.Lerp(colors[index], colors[index + 1], t);
         // Index out of range usually never happens because how the function is set up, and if it does happen, it's only for a fraction of a second and not perceptible
     }
 

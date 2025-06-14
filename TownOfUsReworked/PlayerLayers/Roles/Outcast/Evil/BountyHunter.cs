@@ -16,7 +16,7 @@ public sealed class BountyHunter : Evil, ITargeter
     private static Number BhHuntCd = 25;
 
     [ToggleOption]
-    public static bool BhVent = false;
+    private static bool BhVent = false;
 
     [ToggleOption]
     private static bool BhToTroll = true;
@@ -24,34 +24,35 @@ public sealed class BountyHunter : Evil, ITargeter
     [ToggleOption]
     public static bool BhTargetKnows = false;
 
-    public PlayerControl TargetPlayer { get; set; }
-    public bool TargetKilled { get; set; }
-    private bool ColorHintGiven { get; set; }
-    private bool RoleHintGiven { get; set; }
-    private bool TargetFound { get; set; }
-    private CustomButton GuessButton { get; set; }
-    private CustomButton HuntButton { get; set; }
-    private CustomButton RequestButton { get; set; }
-    private PlayerControl RequestingPlayer { get; set; }
-    public PlayerControl TentativeTarget { get; set; }
     private bool Failed => (!TargetPlayer && Rounds > 2) || (!GuessButton.Usable() && !TargetFound) || (!TargetKilled && TargetPlayer && TargetPlayer.HasDied());
-    private int LettersGiven { get; set; }
-    private bool LettersExhausted { get; set; }
-    private List<string> Letters { get; } = [];
     private bool CanHunt => TargetPlayer && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !OutcastSettings.AvoidOutcastKingmakers));
-    public bool Assigned { get; set; }
-    public int Rounds { get; set; }
+
+    public PlayerControl TargetPlayer { get; set; }
+    private bool TargetKilled;
+    private bool ColorHintGiven;
+    private bool RoleHintGiven;
+    private bool TargetFound;
+    private CustomButton GuessButton;
+    private CustomButton HuntButton;
+    private CustomButton RequestButton;
+    private PlayerControl RequestingPlayer;
+    public PlayerControl TentativeTarget;
+    private int LettersGiven;
+    private bool LettersExhausted;
+    private readonly List<string> Letters = [];
+    private bool Assigned;
+    private int Rounds;
 
     protected override UColor MainColor => CustomColorManager.BountyHunter;
     public override LayerEnum Type => LayerEnum.BountyHunter;
-    public override Func<string> StartText { get; } = () => "Find And Kill Your Target";
-    public override Func<string> Description => () => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
+    public override string StartText => "Find And Kill Your Target";
+    public override string Description => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
         "finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you will" +
         " become a <#678D36FF>Troll</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetKilled;
     public override bool CanVent => base.CanVent && BhVent;
-    public override WinLose EndState => WinLose.BountyHunterWins;
+    protected override WinLose EndState => WinLose.BountyHunterWins;
 
     public override void Init()
     {
@@ -82,7 +83,15 @@ public sealed class BountyHunter : Evil, ITargeter
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
+        if (!TargetPlayer && TentativeTarget && !Assigned)
+        {
+            TargetPlayer = TentativeTarget;
+            Assigned = true;
+
+            // Ensures only the Bounty Hunter sees this
+            if (Local)
+                Run("<#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
+        }
 
         if (TargetPlayer.HasDied() || Dead)
             return;

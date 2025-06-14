@@ -16,7 +16,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
     private static Number EatArrowDelay = 5;
 
     [ToggleOption]
-    public static bool CannibalVent = false;
+    private static bool CannibalVent = false;
 
     private CustomButton EatButton { get; set; }
     private int EatNeed { get; set; }
@@ -24,8 +24,8 @@ public sealed class Cannibal : Harbinger<Gluttony>
 
     protected override UColor MainColor => CustomColorManager.Cannibal;
     public override LayerEnum Type => LayerEnum.Cannibal;
-    public override Func<string> StartText { get; } = () => "Eat The Bodies Of The Dead";
-    public override Func<string> Description => () => "- You can consume a body, making it disappear" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" : "");
+    public override string StartText => "Eat The Bodies Of The Dead";
+    public override string Description => "- You can consume a body, making it disappear" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" : "");
     public override bool CanVent => base.CanVent && CannibalVent;
     public override DefenseEnum DefenseVal => EatNeed <= 2 ? DefenseEnum.None : DefenseEnum.Basic;
 
@@ -44,7 +44,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
             arrow.Destroy();
     }
 
-    public override void ClearArrows()
+    protected override void ClearArrows()
     {
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();

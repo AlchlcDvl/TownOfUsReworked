@@ -116,6 +116,7 @@ public readonly struct ColorPair(UColor color1, UColor color2)
 public sealed class VersionData
 {
     [JsonPropertyName("gameVers")]
+    // ReSharper disable once CollectionNeverUpdated.Global
     public Dictionary<int, string> GameVersions { get; set; }
 
     [JsonPropertyName("modVers")]

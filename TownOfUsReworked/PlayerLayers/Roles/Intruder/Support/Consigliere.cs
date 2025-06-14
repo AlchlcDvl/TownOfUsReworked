@@ -4,18 +4,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Consigliere : ISupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number InvestigateCd = 25;
+    private static Number InvestigateCd = 25;
 
     [StringOption<ConsigInfo>]
     public static ConsigInfo ConsigInfo = ConsigInfo.Role;
 
-    public HashSet<byte> Investigated { get; } = [];
-    private CustomButton InvestigateButton { get; set; }
+    public readonly HashSet<byte> Investigated = [];
+    private CustomButton InvestigateButton;
 
     protected override UColor MainColor => CustomColorManager.Consigliere;
     public override LayerEnum Type => LayerEnum.Consigliere;
-    public override Func<string> StartText { get; } = () => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
-    public override Func<string> Description => () => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}{(Player.Is<Assassin>() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "")}\n{CommonAbilities}";
+    public override string StartText => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
+    public override string Description => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}{(Player.Is<Assassin>() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "")}\n{CommonAbilities}";
 
     public override void Init()
     {
@@ -41,9 +41,7 @@ public sealed class Consigliere : ISupport
         InvestigateButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (Faction.IsFactionedEvil(true) && player.Is(Faction)) || (Player.IsOtherLover(player) &&
-        Lovers.LoversRoles) || (Player.IsOtherRival(player) && Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) &&
-        Linked.LinkedRoles);
+    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (Faction.IsFactionedEvil(true) && player.Is(Faction)) || Player.KnowsRoleOf(player);
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {

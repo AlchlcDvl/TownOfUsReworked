@@ -12,12 +12,12 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// <summary>
     /// The id of the client that the message targets.
     /// </summary>
-    private int TargetClientId { get; } = targetClientId;
+    private readonly int TargetClientId = targetClientId;
 
     /// <summary>
     /// The byte data to be networked.
     /// </summary>
-    private Il2CppStructArray<byte> Payload { get; } = payload;
+    private readonly Il2CppStructArray<byte> Payload = payload;
 
     /// <summary>
     /// Value injector to ensure seamless integration with the base game.

@@ -6,12 +6,12 @@ public sealed class ButtonBarry : Ability
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ButtonCd = 25;
 
-    private bool ButtonUsed { get; set; }
-    private CustomButton ButtonButton { get; set; }
+    private bool ButtonUsed;
+    private CustomButton ButtonButton;
 
     protected override UColor MainColor => CustomColorManager.ButtonBarry;
     public override LayerEnum Type => LayerEnum.ButtonBarry;
-    public override Func<string> Description => () => "- You can call a button from anywhere";
+    public override string Description => "- You can call a button from anywhere";
 
     public override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,
         new Cooldown(ButtonCd));

@@ -18,12 +18,12 @@ public sealed class Detective : Investigative
     [StringOption<FootprintVisibility>]
     public static FootprintVisibility AnonymousFootPrint = FootprintVisibility.OnlyWhenCamouflaged;
 
-    private CustomButton ExamineButton { get; set; }
+    private CustomButton ExamineButton;
 
     protected override UColor MainColor => CustomColorManager.Detective;
     public override LayerEnum Type => LayerEnum.Detective;
-    public override Func<string> StartText { get; } = () => "Examine Players For <#AA0000FF>Blood</color>";
-    public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
+    public override string StartText => "Examine Players For <#AA0000FF>Blood</color>";
+    public override string Description => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
 
     public override void Init()

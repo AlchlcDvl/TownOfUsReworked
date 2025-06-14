@@ -13,13 +13,13 @@ public sealed class Werewolf : OKilling
     private static WerewolfVentOptions WerewolfVent = WerewolfVentOptions.Always;
 
     private bool CanMaul => Rounds is not (0 or 2) || CanStillAttack;
-    private CustomButton MaulButton { get; set; }
-    public int Rounds { get; set; }
+    private CustomButton MaulButton;
+    public int Rounds;
 
     protected override UColor MainColor => CustomColorManager.Werewolf;
     public override LayerEnum Type => LayerEnum.Werewolf;
-    public override Func<string> StartText { get; } = () => "AWOOOOOOOOOO";
-    public override Func<string> Description => () => $"- You kill everyone within {GameOptions.InteractionDistance}m";
+    public override string StartText => "AWOOOOOOOOOO";
+    public override string Description => $"- You kill everyone within {GameOptions.InteractionDistance}m";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
     public override bool CanVent => base.CanVent && (WerewolfVent == 0 || (CanMaul && (int)WerewolfVent == 1) || (!CanMaul && (int)WerewolfVent == 2));

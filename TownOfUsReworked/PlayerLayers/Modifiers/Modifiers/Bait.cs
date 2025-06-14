@@ -14,7 +14,7 @@ public sealed class Bait : Modifier
 
     protected override UColor MainColor => CustomColorManager.Bait;
     public override LayerEnum Type => LayerEnum.Bait;
-    public override Func<string> Description => () => "- Killing you causes the killer to report your body, albeit with a slight delay";
+    public override string Description => "- Killing you causes the killer to report your body, albeit with a slight delay";
     public override bool Hidden => !BaitKnows && !Dead;
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)

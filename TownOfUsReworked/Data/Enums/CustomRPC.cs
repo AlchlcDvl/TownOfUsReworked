@@ -4,6 +4,6 @@ public enum CustomRPC : byte
 {
     Action,
     Misc,
-    Test,
+    // Test,
     Vanilla
 }

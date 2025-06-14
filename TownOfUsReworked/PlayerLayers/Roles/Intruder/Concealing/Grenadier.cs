@@ -4,33 +4,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Grenadier : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number FlashCd = 25;
+    private static Number FlashCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number FlashDur = 10;
+    private static Number FlashDur = 10;
 
     [NumberOption(0.5f, 10f, 0.5f, Format.Distance)]
-    public static Number FlashRadius = 4.5f;
+    private static Number FlashRadius = 4.5f;
 
     [ToggleOption]
-    public static bool GrenadierIndicators = false;
+    private static bool GrenadierIndicators = false;
 
     [ToggleOption]
-    public static bool GrenadierVent = false;
+    private static bool GrenadierVent = false;
 
-    private CustomButton FlashButton { get; set; }
-    public IEnumerable<byte> FlashedPlayers { get; private set; }
+    private CustomButton FlashButton;
+    public readonly HashSet<byte> FlashedPlayers = [];
 
     protected override UColor MainColor => CustomColorManager.Grenadier;
     public override LayerEnum Type => LayerEnum.Grenadier;
-    public override Func<string> StartText { get; } = () => "Blind The <#8CFFFFFF>Crew</color> With Your Magnificent Figure";
-    public override Func<string> Description => () => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
+    public override string StartText => "Blind The <#8CFFFFFF>Crew</color> With Your Magnificent Figure";
+    public override string Description => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
     public override bool CanVent => GrenadierVent;
 
     public override void Init()
     {
         base.Init();
-        FlashedPlayers = [];
+        FlashedPlayers.Clear();
         FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
             "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, new CanClickAgain(false));
     }
@@ -43,24 +43,19 @@ public sealed class Grenadier : Concealing
 
     private void Flash()
     {
-        foreach (var id in FlashedPlayers)
-        {
-            var player = PlayerById(id);
+        if (!FlashedPlayers.Any(x => PlayerById(x).AmOwner))
+            return;
 
-            if (!player.AmOwner)
-                continue;
+        if (MapBehaviourPatches.MapActive)
+            Map().Close();
 
-            if (MapBehaviourPatches.MapActive)
-                Map().Close();
-
-            if (ActiveTask())
-                ActiveTask().Close();
-        }
+        if (ActiveTask())
+            ActiveTask().Close();
     }
 
     private bool ShouldPlayerBeDimmed(PlayerControl player) => Meeting() || player.HasDied() || Player.IsBuddyWith(player, Faction) || player == Player;
 
-    private void UnFlash() => FlashedPlayers = [];
+    private void UnFlash() => FlashedPlayers.Clear();
 
     private void HitFlash()
     {
@@ -70,11 +65,12 @@ public sealed class Grenadier : Concealing
 
     private void StartFlash()
     {
-        FlashedPlayers = [ .. GetClosestPlayers(Player, FlashRadius, includeDead: true).Select(x => x.PlayerId), PlayerId];
+        FlashedPlayers.AddRange(GetClosestPlayers(Player, FlashRadius, includeDead: true).Select(x => x.PlayerId));
+        FlashedPlayers.Add(PlayerId);
 
         if (FlashedPlayers.Contains(LocalPlayer.PlayerId))
             TransitionFlash(CustomColorManager.BlindVision, FlashDur, ShouldPlayerBeDimmed(LocalPlayer) ? 0.4f : 1f);
     }
 
-    public static bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
+    private static bool Condition() => !Ship().Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>().AnyActive;
 }

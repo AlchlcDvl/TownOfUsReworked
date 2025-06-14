@@ -15,12 +15,12 @@ public sealed class Sheriff : Investigative
     [ToggleOption]
     public static bool NeutNeophyteRed = false;
 
-    private CustomButton InterrogateButton { get; set; }
+    private CustomButton InterrogateButton;
 
     protected override UColor MainColor => CustomColorManager.Sheriff;
     public override LayerEnum Type => LayerEnum.Sheriff;
-    public override Func<string> StartText { get; } = () => "Reveal The Alignment Of Other Players";
-    public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
+    public override string StartText => "Reveal The Alignment Of Other Players";
+    public override string Description => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
 
     public override void Init()
     {
@@ -39,6 +39,5 @@ public sealed class Sheriff : Investigative
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => (Faction.IsFactionedEvil(true) && player.Is(Faction)) || (Player.IsOtherLover(player) && Lovers.LoversRoles) || (Player.IsOtherRival(player) &&
-        Rivals.RivalsRoles) || (player.Is<Mafia>() && Player.Is<Mafia>() && Mafia.MafiaRoles) || (Player.IsOtherLink(player) && Linked.LinkedRoles);
+    private bool Exception(PlayerControl player) => (Faction.IsFactionedEvil(true) && player.Is(Faction)) || Player.KnowsRoleOf(player);
 }

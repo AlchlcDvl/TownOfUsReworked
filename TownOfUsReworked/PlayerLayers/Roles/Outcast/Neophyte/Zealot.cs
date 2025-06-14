@@ -12,13 +12,13 @@ public sealed class Zealot : Neophyte
     [ToggleOption]
     public static bool FollowersVent = false;
 
-    private CustomButton PreachButton { get; set; }
-    private bool HasConverted { get; set; }
+    private CustomButton PreachButton;
+    private bool HasConverted;
 
     protected override UColor MainColor => CustomColorManager.Zealot;
     public override LayerEnum Type => LayerEnum.Zealot;
-    public override Func<string> StartText { get; } = () => "Brings Others To Your Religion At Any Cost";
-    public override Func<string> Description => () => "- You can preach your gospel to a player in an attempt to convert them\n- If the target cannot be converted, you will kill them instead";
+    public override string StartText => "Brings Others To Your Religion At Any Cost";
+    public override string Description => "- You can preach your gospel to a player in an attempt to convert them\n- If the target cannot be converted, you will kill them instead";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && ZealVent;
     protected override Faction ActualFaction => Faction.Followers;

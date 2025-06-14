@@ -16,8 +16,8 @@ public sealed class Veteran : CKilling, IAlerter
 
     protected override UColor MainColor => CustomColorManager.Veteran;
     public override LayerEnum Type => LayerEnum.Veteran;
-    public override Func<string> StartText { get; } = () => "Alert To Kill Anyone Who Dares To Touch You";
-    public override Func<string> Description => () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
+    public override string StartText => "Alert To Kill Anyone Who Dares To Touch You";
+    public override string Description => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
     public override DefenseEnum DefenseVal => AlertButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
     public override AttackEnum AttackVal => AlertButton.EffectActive ? AttackEnum.Powerful : AttackEnum.None;
 
@@ -31,8 +31,7 @@ public sealed class Veteran : CKilling, IAlerter
     private void Alert()
     {
         Play("Alert");
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AlertButton);
-        AlertButton.Begin();
+        AlertButton.TriggerRpcAndBegin();
     }
 
     private bool EndEffect() => Dead;

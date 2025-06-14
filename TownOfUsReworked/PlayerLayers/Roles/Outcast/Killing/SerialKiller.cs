@@ -15,13 +15,13 @@ public sealed class SerialKiller : OKilling
     [StringOption<SkVentOptions>]
     private static SkVentOptions SkVentOptions = SkVentOptions.Always;
 
-    public CustomButton BloodlustButton { get; private set; }
-    private CustomButton StabButton { get; set; }
+    public CustomButton BloodlustButton;
+    private CustomButton StabButton;
 
     protected override UColor MainColor => CustomColorManager.SerialKiller;
     public override LayerEnum Type => LayerEnum.SerialKiller;
-    public override Func<string> StartText { get; } = () => "You Like To Play With Knives";
-    public override Func<string> Description => () => "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <#803333FF>Escort</color>," +
+    public override string StartText => "You Like To Play With Knives";
+    public override string Description => "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <#803333FF>Escort</color>," +
         " <#801780FF>Consort</color> or <#00FF00FF>Glitch</color> tries to block you, you will immediately kill them, regardless of your cooldown\n- You are immune to roleblocks";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;

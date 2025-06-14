@@ -162,12 +162,12 @@ public static class PlayerControlExtensions
         if (physics.myPlayer.inMovingPlat)
             physics.myPlayer.cosmetics.AnimateSkinJump();
 
-        if (physics.Animations.IsPlayingClimbAnimation())
-        {
-            var flag = physics.Velocity.y <= 0f;
-            physics.Animations.PlayClimbAnimation(flag);
-            physics.myPlayer.cosmetics.AnimateClimb(flag);
-        }
+        if (!physics.Animations.IsPlayingClimbAnimation())
+            return;
+
+        var flag = physics.Velocity.y <= 0f;
+        physics.Animations.PlayClimbAnimation(flag);
+        physics.myPlayer.cosmetics.AnimateClimb(flag);
     });
 
     private static void SetSkin(this CosmeticsLayer layer, string skinId, ColorPair color, Action onLoaded)

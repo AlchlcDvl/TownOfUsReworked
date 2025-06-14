@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Revealer : CUtility, IGhosty
 {
     [NumberOption(1, 10, 1)]
-    public static Number RevealerTasksRemainingClicked = 5;
+    private static Number RevealerTasksRemainingClicked = 5;
 
     [NumberOption(1, 5, 1)]
     private static Number RevealerTasksRemainingAlert = 1;
@@ -25,7 +25,7 @@ public sealed class Revealer : CUtility, IGhosty
     public static bool RevealerRevealsFanatic = false;
 
     [StringOption<RevealerCanBeClickedBy>]
-    public static RevealerCanBeClickedBy RevealerCanBeClickedBy = RevealerCanBeClickedBy.Everyone;
+    private static RevealerCanBeClickedBy RevealerCanBeClickedBy = RevealerCanBeClickedBy.Everyone;
 
     public bool Caught { get; set; }
     public bool Revealed { get; private set; }
@@ -34,8 +34,8 @@ public sealed class Revealer : CUtility, IGhosty
 
     protected override UColor MainColor => CustomColorManager.Revealer;
     public override LayerEnum Type => LayerEnum.Revealer;
-    public override Func<string> StartText { get; } = () => "OOOOOOO";
-    public override Func<string> Description => () => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
+    public override string StartText => "OOOOOOO";
+    public override string Description => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 
     public override void Init()
     {

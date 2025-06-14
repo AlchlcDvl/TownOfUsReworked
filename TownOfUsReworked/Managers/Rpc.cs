@@ -307,12 +307,12 @@ public static class RpcManager
                     }
                     case MiscRPC.BreakShield:
                     {
-                        Role.BreakShield(reader.ReadPlayer(), Medic.ShieldBreaks);
+                        BreakShield(reader.ReadPlayer(), Medic.ShieldBreaks);
                         return;
                     }
                     case MiscRPC.BastionBomb:
                     {
-                        Role.BastionBomb(reader.ReadVent(), Bastion.BombRemovedOnKill);
+                        BastionBomb(reader.ReadVent(), Bastion.BombRemovedOnKill);
                         return;
                     }
                     case MiscRPC.Catch:
@@ -439,7 +439,7 @@ public static class RpcManager
                             case Actor actor:
                             {
                                 actor.PretendRoles.Clear();
-                                actor.PretendRoles.AddRange(reader.ReadValues<Role>());
+                                actor.PretendRoles.AddRange(reader.ReadValues<LayerEnum>());
                                 break;
                             }
                             case Allied ally:
@@ -644,7 +644,7 @@ public static class RpcManager
                     }
                     case ActionsRPC.PublicReveal:
                     {
-                        Role.PublicReveal(reader.ReadPlayer());
+                        PublicReveal(reader.ReadPlayer());
                         return;
                     }
                     default:

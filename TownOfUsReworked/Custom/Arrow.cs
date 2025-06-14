@@ -92,7 +92,7 @@ public class CustomArrow : IDisposable
         ArrowObj?.Destroy();
     }
 
-    private void Enable()
+    public void Enable()
     {
         if (!Disabled || !Owner.AmOwner)
             return;

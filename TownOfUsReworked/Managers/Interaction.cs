@@ -200,7 +200,7 @@ public static class InteractionManager
         else if (PlayerLayer.GetLayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
             bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
 
-        Role.BastionBomb(target, Bastion.BombRemovedOnKill);
+        BastionBomb(target, Bastion.BombRemovedOnKill);
         CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);
         return abilityUsed ? CooldownType.Reset : CooldownType.Fail;
     }

@@ -4,9 +4,9 @@ public sealed class Yeller : Modifier
 {
     protected override UColor MainColor => CustomColorManager.Yeller;
     public override LayerEnum Type => LayerEnum.Yeller;
-    public override Func<string> Description => () => "- Everyone knows where you are";
+    public override string Description => "- Everyone knows where you are";
 
-    private PlayerArrow Arrow { get; set; }
+    private PlayerArrow Arrow;
 
     public override void Init()
     {
@@ -16,12 +16,19 @@ public sealed class Yeller : Modifier
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {
-        if (Local)
-            return;
-
-        Arrow.Destroy();
-        Arrow = null;
+        if (!Local)
+            Arrow.Disable();
     }
 
-    public override void OnRevive() => Init();
+    public override void OnRevive()
+    {
+        if (!Local)
+            Arrow.Enable();
+    }
+
+    public override void EnteringLayer()
+    {
+        if (!Local && Arrow == null)
+            Arrow = new(LocalPlayer, Player, Color);
+    }
 }

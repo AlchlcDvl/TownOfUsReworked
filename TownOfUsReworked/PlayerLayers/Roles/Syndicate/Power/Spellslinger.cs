@@ -4,18 +4,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Spellslinger : SHead
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number SpellCd { get; set; } = 25f;
+    private static Number SpellCd = 25f;
 
     [NumberOption(2.5f, 30f, 2.5f, Format.Time)]
-    public static Number SpellCdIncrease { get; set; } = 5;
+    private static Number SpellCdIncrease = 5;
 
-    private CustomButton SpellButton { get; set; }
-    public HashSet<byte> Spelled { get; } = [];
+    private CustomButton SpellButton;
+    public readonly HashSet<byte> Spelled = [];
 
     protected override UColor MainColor => CustomColorManager.Spellslinger;
     public override LayerEnum Type => LayerEnum.Spellslinger;
-    public override Func<string> StartText { get; } = () => "Place the <#8CFFFFFF>Crew</color> Under A Curse";
-    public override Func<string> Description => () => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
+    public override string StartText => "Place the <#8CFFFFFF>Crew</color> Under A Curse";
+    public override string Description => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
         $"{FactionColorString}{Faction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
 
     public override void Init()

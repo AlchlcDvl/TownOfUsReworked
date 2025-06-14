@@ -27,14 +27,15 @@ public sealed class Operative : Investigative, IBugger
     [ToggleOption]
     public static bool PreciseOperativeInfo = false;
 
-    public List<Bug> Bugs { get; } = [];
     public List<LayerEnum> BuggedPlayers { get; } = [];
-    private CustomButton BugButton { get; set; }
+
+    private CustomButton BugButton;
+    private readonly List<Bug> Bugs = [];
 
     protected override UColor MainColor => CustomColorManager.Operative;
     public override LayerEnum Type => LayerEnum.Operative;
-    public override Func<string> StartText { get; } = () => "Detect Which Roles Are Here";
-    public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
+    public override string StartText => "Detect Which Roles Are Here";
+    public override string Description => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
         " meeting\n- You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
 
     public override void Init()
@@ -65,8 +66,6 @@ public sealed class Operative : Investigative, IBugger
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
-
         if (Dead)
             return;
 

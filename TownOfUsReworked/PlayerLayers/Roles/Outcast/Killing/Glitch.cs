@@ -21,19 +21,19 @@ public sealed class Glitch : OKilling, IBlocker
     [ToggleOption]
     private static bool GlitchVent = false;
 
-    private CustomButton HackButton { get; set; }
-    private CustomButton MimicButton { get; set; }
-    private CustomButton OutcastiseButton { get; set; }
-    public PlayerControl HackTarget { get; private set; }
-    private PlayerControl MimicTarget { get; set; }
-    private CustomPlayerMenu MimicMenu { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton HackButton;
+    private CustomButton MimicButton;
+    private CustomButton NeutraliseButton;
+    public PlayerControl HackTarget;
+    private PlayerControl MimicTarget;
+    private CustomPlayerMenu MimicMenu;
+    private bool ClickedAgain;
     public PlayerControl BlockTarget => HackTarget;
 
     protected override UColor MainColor => CustomColorManager.Glitch;
     public override LayerEnum Type => LayerEnum.Glitch;
-    public override Func<string> StartText { get; } = () => "foreach var PlayerControl Glitch.MurderPlayer";
-    public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
+    public override string StartText => "foreach var PlayerControl Glitch.MurderPlayer";
+    public override string Description => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
         "short while\n- You are immune to blocks\n- If you hack a <#336EFFFF>Serial Killer</color> they will be forced to kill you";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
@@ -44,9 +44,9 @@ public sealed class Glitch : OKilling, IBlocker
     public override void Init()
     {
         base.Init();
-        Objectives = () => "- Outcastise anyone who can oppose you";
+        Objectives = () => "- Neutralise anyone who can oppose you";
         MimicMenu = new(Player, Click, Color, Exception3);
-        OutcastiseButton ??= new(this, new SpriteName("Outcastise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Outcastise, (PlayerBodyExclusion)Exception1, "OUTCASTISE",
+        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
             new Cooldown(NeutraliseCd));
         HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EndFunc)EndHack, new Duration(HackDur),
             (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
@@ -94,7 +94,7 @@ public sealed class Glitch : OKilling, IBlocker
             HackButton.StartCooldown(cooldown);
     }
 
-    private void Outcastise(PlayerControl target) => OutcastiseButton.StartCooldown(Interact(Player, target, true));
+    private void Neutralise(PlayerControl target) => NeutraliseButton.StartCooldown(Interact(Player, target, true));
 
     private void HitMimic()
     {

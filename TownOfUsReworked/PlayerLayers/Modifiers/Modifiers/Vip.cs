@@ -8,7 +8,7 @@ public sealed class Vip : Modifier
 
     protected override UColor MainColor => CustomColorManager.Vip;
     public override LayerEnum Type => LayerEnum.Vip;
-    public override Func<string> Description => () => "- Your death will alert everyone and will have an arrow pointing at your body";
+    public override string Description => "- Your death will alert everyone and will have an arrow pointing at your body";
     public override bool Hidden => !VipKnows && !Dead;
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
@@ -17,7 +17,7 @@ public sealed class Vip : Modifier
         var allArrows = LayerHandler.Handlers[LocalPlayer.PlayerId].AllArrows;
 
         if (!allArrows.TryGetValue(Player.PlayerId, out var arrow))
-            allArrows[Player.PlayerId] = new(LocalPlayer, Player, Color);
+            allArrows[Player.PlayerId] = arrow = new(LocalPlayer, Player, Color);
 
         arrow.Update(Color);
     }

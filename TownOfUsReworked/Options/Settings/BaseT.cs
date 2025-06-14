@@ -6,7 +6,7 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
     public T Value
     {
         get => innerValue;
-        protected set
+        set
         {
             if (SelfMember)
             {

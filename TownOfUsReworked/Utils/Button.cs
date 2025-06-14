@@ -16,13 +16,7 @@ public static class ButtonUtils
 
     public static IEnumerable<CustomButton> GetButtonsFromList(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player);
 
-    public static IEnumerable<CustomButton> GetButtons(this PlayerControl player)
-    {
-        if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
-            return handler.Buttons;
-
-        return player.GetButtonsFromList();
-    }
+    public static IEnumerable<CustomButton> GetButtons(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler) ? handler.Buttons : player.GetButtonsFromList();
 
     public static void ResetButtons(this PlayerControl player)
     {

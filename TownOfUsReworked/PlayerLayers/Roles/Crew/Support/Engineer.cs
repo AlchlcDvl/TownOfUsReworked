@@ -9,12 +9,12 @@ public sealed class Engineer : CSupport
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number FixCd = 5;
 
-    private CustomButton FixButton { get; set; }
+    private CustomButton FixButton;
 
     protected override UColor MainColor => CustomColorManager.Engineer;
     public override LayerEnum Type => LayerEnum.Engineer;
-    public override Func<string> StartText { get; } = () => "Just Fix It";
-    public override Func<string> Description => () => "- You can fix sabotages at any time from anywhere\n- You can vent";
+    public override string StartText => "Just Fix It";
+    public override string Description => "- You can fix sabotages at any time from anywhere\n- You can vent";
 
     public override void Init()
     {

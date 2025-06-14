@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Modules;
 
 [Serializable]
-public sealed class SummaryInfo() : INetSerializable, INetDeserializable, IDisposable
+public sealed class SummaryInfo : INetSerializable, INetDeserializable, IDisposable
 {
     ~SummaryInfo() => Modules.Clear();
 

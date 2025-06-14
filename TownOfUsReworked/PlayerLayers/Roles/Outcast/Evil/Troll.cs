@@ -15,18 +15,18 @@ public sealed class Troll : Evil
     [ToggleOption]
     private static bool TrollSwitchVent = false;
 
-    private CustomButton InteractButton { get; set; }
+    private CustomButton InteractButton;
 
     protected override UColor MainColor => CustomColorManager.Troll;
     public override LayerEnum Type => LayerEnum.Troll;
-    public override Func<string> StartText { get; } = () => "Troll Everyone With Your Death";
-    public override Func<string> Description => () => "- If you are killed, you will also kill your killer" + (CanInteract ? "\n- You can interact with players\n- Your interactions do nothing "
+    public override string StartText => "Troll Everyone With Your Death";
+    public override string Description => "- If you are killed, you will also kill your killer" + (CanInteract ? "\n- You can interact with players\n- Your interactions do nothing "
         + "except spread infection and possibly kill you via touch sensitive roles" : "");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => Handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public override bool CanVent => base.CanVent && TrollVent;
     public override bool CanSwitchVents => TrollSwitchVent;
-    public override WinLose EndState => WinLose.TrollWins;
+    protected override WinLose EndState => WinLose.TrollWins;
 
     public override void Init()
     {

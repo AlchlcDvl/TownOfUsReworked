@@ -30,15 +30,15 @@ public sealed class Whisperer : Neophyte
     [ToggleOption]
     public static bool PersuadedVent = false;
 
-    private CustomButton WhisperButton { get; set; }
-    private int WhisperCount { get; set; }
-    public Dictionary<byte, byte> PlayerConversion { get; } = [];
-    private int WhisperConversion { get; set; }
+    private CustomButton WhisperButton;
+    private int WhisperCount;
+    private int WhisperConversion;
+    public readonly Dictionary<byte, byte> PlayerConversion = [];
 
     protected override UColor MainColor => CustomColorManager.Whisperer;
     public override LayerEnum Type => LayerEnum.Whisperer;
-    public override Func<string> StartText { get; } = () => "PSST";
-    public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
+    public override string StartText => "PSST";
+    public override string Description => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <#F995FCFF>Cult</color>";
     public override AttackEnum AttackVal => AttackEnum.Basic;
     public override bool CanVent => base.CanVent && WhispVent;

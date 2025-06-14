@@ -7,6 +7,7 @@ public sealed class Allied : Disposition
     public static AlliedFaction AlliedFaction
     {
         get => AlliedFactionBacking;
+        // ReSharper disable once UnusedMember.Global
         set
         {
             if (value == AlliedFaction.Compliance && (!BadGuysSettings.OrderOfCompliance || BadGuysSettings.ComplianceMembers == ComplianceType.Killers))
@@ -40,7 +41,7 @@ public sealed class Allied : Disposition
     };
     public override string Symbol => "ζ";
     public override LayerEnum Type => LayerEnum.Allied;
-    public override Func<string> Description => () => Side == Faction.Outcast ? "- You are conflicted" : "";
+    public override string Description => Side == Faction.Outcast ? "- You are conflicted" : "";
 
     public override void Init() => Side = Faction.Outcast;
 }

@@ -57,7 +57,7 @@ public static class ShowRolePatch
         __instance.__4__this.RoleText.text = handler.CurrentRole.Name;
         __instance.__4__this.RoleText.color = __instance.__4__this.YouAreText.color = __instance.__4__this.RoleBlurbText.color = __instance.__4__this.BackgroundBar.material.color =
             handler.CurrentRole.Color;
-        __instance.__4__this.RoleBlurbText.text = handler.CurrentRole.StartText() + statusString;
+        __instance.__4__this.RoleBlurbText.text = handler.CurrentRole.StartText + statusString;
 #if ANDROID
         var pos = __instance.__4__this.BackgroundBar.transform.localPosition;
         __instance.__4__this.BackgroundBar.transform.localPosition = new(pos.x, pos.y, -15f);

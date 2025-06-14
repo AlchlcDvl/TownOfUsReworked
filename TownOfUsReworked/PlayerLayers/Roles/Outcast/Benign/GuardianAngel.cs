@@ -38,17 +38,18 @@ public sealed class GuardianAngel : Benign, ITargeter
 
     public PlayerControl TargetPlayer { get; set; }
     public bool TargetAlive => !Disconnected && !TargetPlayer.HasDied();
-    private CustomButton ProtectButton { get; set; }
-    public CustomButton GraveProtectButton { get; private set; }
-    private int Rounds { get; set; }
-    private CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer ? !TargetAlive : Rounds > 2;
-    public bool Protecting { get; private set; }
+
+    private CustomButton ProtectButton;
+    public CustomButton GraveProtectButton;
+    private int Rounds;
+    private CustomButton TargetButton;
+    public bool Protecting;
 
     protected override UColor MainColor => CustomColorManager.GuardianAngel;
     public override LayerEnum Type => LayerEnum.GuardianAngel;
-    public override Func<string> StartText { get; } = () => "Find Someone To Protect";
-    public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +
+    public override string StartText => "Find Someone To Protect";
+    public override string Description => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +
         $"\n- If {TargetPlayer?.name} dies, you will become a <#DDDD00FF>Survivor</color>");
     public override bool CanVent => base.CanVent && GaVent;
     public override bool CanSwitchVents => GaSwitchVent;

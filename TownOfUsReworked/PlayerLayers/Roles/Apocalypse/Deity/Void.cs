@@ -19,7 +19,7 @@ public sealed class Void : Deity
 
     protected override UColor MainColor => CustomColorManager.Void;
     public override LayerEnum Type => LayerEnum.Void;
-    public override Func<string> Description => () => "- Anyone who either you interact with or interacts with you will lose their role\n- Your victim's bodies cannot be reported" +
+    public override string Description => "- Anyone who either you interact with or interacts with you will lose their role\n- Your victim's bodies cannot be reported" +
         CommonAbilities;
     public override bool CanVent => base.CanVent && VoidVent;
     public override AttackEnum AttackVal => AttackEnum.Powerful;
@@ -33,9 +33,9 @@ public sealed class Void : Deity
             new Cooldown(BanishCd));
     }
 
-    public void Banish(PlayerControl target) => BanishButton.StartCooldown(Interact(Player, target, true));
+    private void Banish(PlayerControl target) => BanishButton.StartCooldown(Interact(Player, target, true));
 
-    public void Extract(PlayerControl target)
+    private void Extract(PlayerControl target)
     {
         var cooldown = Interact(Player, target);
 

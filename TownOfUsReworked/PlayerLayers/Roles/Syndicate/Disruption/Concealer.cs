@@ -1,27 +1,26 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-// FIXME: Doesn't actually make people invisible
 [LayerHeaderOption(LayerEnum.Concealer)]
 public sealed class Concealer : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ConcealCd = 25;
+    private static Number ConcealCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number ConcealDur = 10;
+    private static Number ConcealDur = 10;
 
     [ToggleOption]
-    public static bool ConcealMates = false;
+    private static bool ConcealMates = false;
 
-    private CustomButton ConcealButton { get; set; }
-    private PlayerControl ConcealedPlayer { get; set; }
-    private CustomPlayerMenu ConcealMenu { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton ConcealButton;
+    private PlayerControl ConcealedPlayer;
+    private CustomPlayerMenu ConcealMenu;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Concealer;
     public override LayerEnum Type => LayerEnum.Concealer;
-    public override Func<string> StartText { get; } = () => "Turn The <#8CFFFFFF>Crew</color> Invisible For Some Chaos";
-    public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
+    public override string StartText => "Turn The <#8CFFFFFF>Crew</color> Invisible For Some Chaos";
+    public override string Description => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
 
     public override void Init()
     {

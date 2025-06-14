@@ -65,7 +65,7 @@ public static class RoleGenManager
 
     public static readonly LayerEnum[] AH = [ LayerEnum.Plaguebearer, LayerEnum.Cannibal, LayerEnum.Cultist ];
     public static readonly LayerEnum[] AD = [ LayerEnum.Pestilence, LayerEnum.Void, LayerEnum.Gluttony ];
-    public static readonly LayerEnum[] Apocalypse = [ .. AH ];
+    private static readonly LayerEnum[] Apocalypse = [ .. AH ];
 
     public static readonly LayerEnum[] IC = [ LayerEnum.Blackmailer, LayerEnum.Camouflager, LayerEnum.Grenadier, LayerEnum.Janitor ];
     public static readonly LayerEnum[] ID = [ LayerEnum.Morphling, LayerEnum.Disguiser, LayerEnum.Wraith ];

@@ -4,22 +4,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Drunkard : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ConfuseCd = 25;
+    private static Number ConfuseCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number ConfuseDur = 10;
+    private static Number ConfuseDur = 10;
 
     [ToggleOption]
-    public static bool ConfuseImmunity = true;
+    private static bool ConfuseImmunity = true;
 
-    public CustomButton ConfuseButton { get; private set; }
-    public PlayerControl ConfusedPlayer { get; private set; }
-    private CustomPlayerMenu ConfuseMenu { get; set; }
+    public CustomButton ConfuseButton;
+    public PlayerControl ConfusedPlayer;
+    private CustomPlayerMenu ConfuseMenu;
 
     protected override UColor MainColor => CustomColorManager.Drunkard;
     public override LayerEnum Type => LayerEnum.Drunkard;
-    public override Func<string> StartText { get; } = () => "<i>Burp</i>";
-    public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
+    public override string StartText => "<i>Burp</i>";
+    public override string Description => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
 
     public override void Init()
     {

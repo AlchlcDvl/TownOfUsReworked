@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 public sealed class Overlord : Disposition
 {
     [ToggleOption]
-    public static bool OverlordKnows = true;
+    private static bool OverlordKnows = true;
 
     [NumberOption(1, 20, 1)]
     public static Number OverlordMeetingWinCount = 3;
@@ -12,7 +12,7 @@ public sealed class Overlord : Disposition
     protected override UColor MainColor => CustomColorManager.Overlord;
     public override string Symbol => "β";
     public override LayerEnum Type => LayerEnum.Overlord;
-    public override Func<string> Description => () => $"- Stay alive for {OverlordMeetingWinCount} rounds";
+    public override string Description => $"- Stay alive for {OverlordMeetingWinCount} rounds";
     public override bool Hidden => !OverlordKnows && !Dead;
 
     protected override void CheckWin(HashSet<byte> winnerIds)

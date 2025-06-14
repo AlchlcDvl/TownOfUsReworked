@@ -15,14 +15,14 @@ public sealed class Thief : Benign, IGuesser
     [ToggleOption]
     private static bool ThiefVent = false;
 
-    private CustomButton StealButton { get; set; }
+    private CustomButton StealButton;
     public CustomMeeting GuessMenu { get; private set; }
     public CustomGuessingMenu GuessingMenu { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Thief;
     public override LayerEnum Type => LayerEnum.Thief;
-    public override Func<string> StartText { get; } = () => "Steal From The Killers";
-    public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
+    public override string StartText => "Steal From The Killers";
+    public override string Description => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
     public override bool CanVent => base.CanVent && ThiefVent;
 
@@ -130,11 +130,7 @@ public sealed class Thief : Benign, IGuesser
         GuessingMenu.Open(PlayerByVoteArea(voteArea));
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        GuessMenu.GenButtons(__instance, ThiefCanGuess);
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => GuessMenu.GenButtons(__instance, ThiefCanGuess);
 
     public override void ReadRPC(RpcReader reader)
     {

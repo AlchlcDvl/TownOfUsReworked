@@ -1,10 +1,10 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 [LayerHeaderOption(LayerEnum.Mafia)]
-public sealed class Mafia : Disposition
+public sealed class Mafia : Teamed
 {
     [ToggleOption]
-    public static bool MafiaRoles = true;
+    private static bool MafiaRoles = true;
 
     [ToggleOption]
     private static bool MafVent = false;
@@ -15,10 +15,16 @@ public sealed class Mafia : Disposition
     protected override UColor MainColor => CustomColorManager.Mafia;
     public override string Symbol => "ω";
     public override LayerEnum Type => LayerEnum.Mafia;
-    public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
+    public override string Description => "- Eliminate anyone who opposes the Mafia";
     public override bool CanVent => MafVent;
+    protected override bool RevealRole => MafiaRoles;
+    protected override ChatChannel Channel => ChatChannel.Mafia;
 
-    public override void Init() => Handler.CurrentFaction = Faction.Mafia;
+    public override void Init()
+    {
+        base.Init();
+        Handler.CurrentFaction = Faction.Mafia;
+    }
 
     protected override void CheckWin(HashSet<byte> winnerIds)
     {
@@ -29,20 +35,5 @@ public sealed class Mafia : Disposition
         winnerIds.Add(PlayerId);
     }
 
-    public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
-    {
-        if (handler.CurrentDisposition is not Mafia)
-            return;
-
-        name += $" {ColoredSymbol}";
-
-        if (!MafiaRoles || revealed)
-            return;
-
-        var role = handler.CurrentRole;
-        color = role.Color;
-        name += $"\n{role}";
-        revealed = true;
-        removeFromConsig = true;
-    }
+    public override bool RoleCondition(LayerHandler handler) => handler.CurrentDisposition is Mafia;
 }

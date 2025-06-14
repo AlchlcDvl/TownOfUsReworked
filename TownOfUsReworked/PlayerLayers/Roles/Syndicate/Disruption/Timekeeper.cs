@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Timekeeper : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number TimeCd = 25;
+    private static Number TimeCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
     public static Number TimeDur = 10;
@@ -15,15 +15,15 @@ public sealed class Timekeeper : Disruption
     [ToggleOption]
     public static bool TimeRewindImmunity = true;
 
-    public static bool TkExists { get; private set; }
-    public static Faction TkFaction { get; private set; }
+    public static bool TkExists;
+    public static Faction TkFaction;
 
-    public CustomButton TimeButton { get; private set; }
+    public CustomButton TimeButton;
 
     protected override UColor MainColor => CustomColorManager.Timekeeper;
     public override LayerEnum Type => LayerEnum.Timekeeper;
-    public override Func<string> StartText { get; } = () => "Bend Time To Your Will";
-    public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
+    public override string StartText => "Bend Time To Your Will";
+    public override string Description => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
         CommonAbilities;
 
     public override void Init()
@@ -47,17 +47,13 @@ public sealed class Timekeeper : Disruption
         TkFaction = Handler.CurrentFaction;
     }
 
-    public static void UnControl()
+    private static void UnControl()
     {
         AllPlayers().Do(x => LayerHandler.Handlers[x.PlayerId].Rewinding = false);
         TkFaction = Faction.None;
     }
 
-    private void TimeControl()
-    {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, TimeButton);
-        TimeButton.Begin();
-    }
+    private void TimeControl() => TimeButton.TriggerRpcAndBegin();
 
     private string Label() => HoldsDrive ? "REWIND" : "FREEZE";
 

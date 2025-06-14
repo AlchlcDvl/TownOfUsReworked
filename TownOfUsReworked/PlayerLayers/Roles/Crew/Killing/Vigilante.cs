@@ -25,14 +25,15 @@ public sealed class Vigilante : CKilling
     public static Number ShootCd = 25;
 
     public bool KilledInno { get; private set; }
-    private bool KeepKilling { get; set; }
-    private CustomButton ShootButton { get; set; }
-    private bool RoundOne { get; set; }
+
+    private bool KeepKilling;
+    private CustomButton ShootButton;
+    private bool RoundOne;
 
     protected override UColor MainColor => CustomColorManager.Vigilante;
     public override LayerEnum Type => LayerEnum.Vigilante;
-    public override Func<string> StartText { get; } = () => "Shoot The <#FF0000FF>Evildoers</color>";
-    public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
+    public override string StartText => "Shoot The <#FF0000FF>Evildoers</color>";
+    public override string Description => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
     public override AttackEnum AttackVal => AttackEnum.Basic;
 
     public override void Init()
@@ -54,8 +55,6 @@ public sealed class Vigilante : CKilling
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
-
         if (KilledInno && HowIsVigilanteNotified == VigiNotif.Message && HowDoesVigilanteDie != VigiOptions.Immediate)
             Run("<#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }

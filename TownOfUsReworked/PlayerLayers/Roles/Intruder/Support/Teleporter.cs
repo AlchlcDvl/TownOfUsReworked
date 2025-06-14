@@ -4,29 +4,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Teleporter : ISupport, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number TeleportCd = 25;
+    private static Number TeleportCd = 25;
 
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number TeleMarkCd = 25;
+    private static Number TeleMarkCd = 25;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
     private static Number TeleportDur = 5;
 
     [ToggleOption]
-    public static bool TeleCooldownsLinked = false;
+    private static bool TeleCooldownsLinked = false;
 
     [ToggleOption]
-    public static bool TeleVent = false;
+    private static bool TeleVent = false;
 
-    private CustomButton TeleportButton { get; set; }
-    private CustomButton MarkButton { get; set; }
-    private Vector2 TeleportPoint { get; set; }
+    private CustomButton TeleportButton;
+    private CustomButton MarkButton;
+    private Vector2 TeleportPoint;
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Teleporter;
     public override LayerEnum Type => LayerEnum.Teleporter;
-    public override Func<string> StartText { get; } = () => "X Marks The Spot";
-    public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
+    public override string StartText => "X Marks The Spot";
+    public override string Description => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
     public override bool CanVent => TeleVent;
 
     public override void Init()
@@ -69,7 +69,7 @@ public sealed class Teleporter : ISupport, IMover
 
     private bool Condition2() => Vector2.Distance(Player.transform.position, TeleportPoint) <= 1f && !Moving;
 
-    public static IEnumerator TeleportPlayer(Vector2 point, IMover teleporter)
+    private static IEnumerator TeleportPlayer(Vector2 point, IMover teleporter)
     {
         var player = teleporter.Player;
         DeadBody playerBody;

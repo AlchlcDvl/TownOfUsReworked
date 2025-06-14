@@ -472,6 +472,12 @@ public sealed class CustomButton : IDisposable, INetSerializable
             ButtonOtherDelay();
     }
 
+    public void TriggerRpcAndBegin(params object[] args)
+    {
+        CallRpc(CustomRPC.Action, [ActionsRPC.ButtonAction, this, .. args]);
+        Begin();
+    }
+
     private void ButtonEffect()
     {
         if (!EffectEnabled)

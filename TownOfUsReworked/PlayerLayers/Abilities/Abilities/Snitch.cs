@@ -29,7 +29,7 @@ public sealed class Snitch : Ability
 
     protected override UColor MainColor => CustomColorManager.Snitch;
     public override LayerEnum Type => LayerEnum.Snitch;
-    public override Func<string> Description => () => "- You can finish your tasks to get information on who's evil";
+    public override string Description => "- You can finish your tasks to get information on who's evil";
     public override bool Hidden => !SnitchKnows && !TasksDone && !Dead;
 
     public override void UponTaskComplete(uint taskId)
@@ -40,10 +40,10 @@ public sealed class Snitch : Ability
         {
             if (Local)
                 Flash(Color);
-            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || (LocalPlayer.GetFaction() == Faction.Outcast && SnitchSeesOutcasts))
+            else if (LocalPlayer.GetFaction().IsFactionedEvil() || (LocalPlayer.GetFaction() == Faction.Outcast && SnitchSeesOutcasts))
             {
                 Flash(Color);
-                local.AllArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
+                local.AllArrows.TryAdd(PlayerId, new(LocalPlayer, Player, Color));
             }
         }
         else if (TasksDone)
@@ -52,7 +52,7 @@ public sealed class Snitch : Ability
             {
                 Flash(UColor.green);
                 AllPlayers().Where(x => x.GetFaction().IsFactionedEvil() || (x.GetFaction() == Faction.Outcast && SnitchSeesOutcasts)).Do(x =>
-                    local.AllArrows.Add(x.PlayerId, new(Player, x, Color)));
+                    local.AllArrows.TryAdd(x.PlayerId, new(Player, x, Color)));
             }
             else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || (LocalPlayer.GetFaction() == Faction.Outcast && SnitchSeesOutcasts))
                 Flash(UColor.red);
@@ -75,7 +75,7 @@ public sealed class Snitch : Ability
             name += $"\n{role.Name}";
             revealed = true;
         }
-        else if (role.Faction is not (Faction.Crew or Faction.Outcast) || (role.Faction == Faction.Outcast && SnitchSeesOutcasts) || (role.Faction == Faction.Crew && SnitchSeesCrew))
+        else if (role.Faction.IsFactionedEvil() || (role.Faction == Faction.Outcast && SnitchSeesOutcasts) || (role.Faction == Faction.Crew && SnitchSeesCrew))
         {
             if (handler.CurrentDisposition is FactionChanger { SnitchReveals: false })
             {

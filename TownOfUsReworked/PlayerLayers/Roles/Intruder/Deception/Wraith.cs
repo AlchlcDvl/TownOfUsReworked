@@ -1,26 +1,24 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-// FIXME: Doesn't actually go invisible
-// FIXME: Somehow Wraith and Poisoner can't kill each other with a dead poisoned Monarch
 [LayerHeaderOption(LayerEnum.Wraith)]
 public sealed class Wraith : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number InvisCd = 25;
+    private static Number InvisCd = 25;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number InvisDur = 10;
+    private static Number InvisDur = 10;
 
     [ToggleOption]
-    public static bool WraithVent = false;
+    private static bool WraithVent = false;
 
-    private CustomButton InvisButton { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton InvisButton;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Wraith;
     public override LayerEnum Type => LayerEnum.Wraith;
-    public override Func<string> StartText { get; } = () => "Sneaky Sneaky";
-    public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";
+    public override string StartText => "Sneaky Sneaky";
+    public override string Description => $"- You can turn invisible\n{CommonAbilities}";
     public override bool CanVent => WraithVent;
 
     public override void Init()

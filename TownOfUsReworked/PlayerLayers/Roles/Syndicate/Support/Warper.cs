@@ -4,22 +4,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Warper : SSupport, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number WarpCd = 25;
+    private static Number WarpCd = 25;
 
     [NumberOption(1f, 20f, 1f, Format.Time)]
     private static Number WarpDur = 5;
 
     [ToggleOption]
-    public static bool WarpSelf = true;
+    private static bool WarpSelf = true;
 
-    private CustomButton WarpButton { get; set; }
-    private CustomPlayerMenu WarpMenu { get; set; }
+    private CustomButton WarpButton;
+    private CustomPlayerMenu WarpMenu;
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Warper;
     public override LayerEnum Type => LayerEnum.Warper;
-    public override Func<string> StartText { get; } = () => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
-    public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
+    public override string StartText => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
+    public override string Description => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
 
     public override void Init()
@@ -29,7 +29,7 @@ public sealed class Warper : SSupport, IMover
         WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
     }
 
-    public static IEnumerator WarpPlayers(PlayerControl player1, PlayerControl player2, IMover warper)
+    private static IEnumerator WarpPlayers(PlayerControl player1, PlayerControl player2, IMover warper)
     {
         DeadBody player1Body = null;
         DeadBody player2Body = null;
@@ -164,7 +164,7 @@ public sealed class Warper : SSupport, IMover
     private bool Exception1(PlayerControl player) => (player == Player && !WarpSelf) || UninteractablePlayers.ContainsKey(player.PlayerId) || player.IsMoving() || (!BodyById(player.PlayerId) &&
         player.Data.IsDead);
 
-    public static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IMover warper)
+    private static IEnumerator WarpAll(Dictionary<byte, Vector2> coords, IMover warper)
     {
         Flash(warper.Color, WarpDur);
         AllPlayers().Do(x => AnimatePortal(x, WarpDur));

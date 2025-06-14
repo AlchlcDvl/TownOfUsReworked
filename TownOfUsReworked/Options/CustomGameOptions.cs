@@ -77,6 +77,9 @@ public static class GameOptions
 
     [StringOption<GhostSpawnType>]
     public static GhostSpawnType GhostSpawn = GhostSpawnType.Random;
+
+    [ToggleOption]
+    public static bool ShowTasks = true;
 }
 
 [HeaderOption(MultiMenu.Main)]

@@ -4,9 +4,9 @@ public sealed class Colorblind : Modifier
 {
     protected override UColor MainColor => CustomColorManager.Colorblind;
     public override LayerEnum Type => LayerEnum.Colorblind;
-    public override Func<string> Description => () => "- You can't tell the difference between players";
+    public override string Description => "- You can't tell the difference between players";
 
-    private bool AllToNormal { get; set; }
+    private bool AllToNormal;
 
     public override void Init()
     {

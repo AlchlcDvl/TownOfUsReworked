@@ -15,13 +15,13 @@ public sealed class Mayor : Sovereign
     [ToggleOption]
     private static bool RoundOneNoMayorReveal = true;
 
-    private bool RoundOne { get; set; }
-    private CustomButton RevealButton { get; set; }
+    private bool RoundOne;
+    private CustomButton RevealButton;
 
     protected override UColor MainColor => CustomColorManager.Mayor;
     public override LayerEnum Type => LayerEnum.Mayor;
-    public override Func<string> StartText { get; } = () => "Commit Voter Fraud!";
-    public override Func<string> Description => () => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";
+    public override string StartText => "Commit Voter Fraud!";
+    public override string Description => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";
 
     public override void Init()
     {

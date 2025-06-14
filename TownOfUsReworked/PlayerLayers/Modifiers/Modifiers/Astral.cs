@@ -6,7 +6,7 @@ public sealed class Astral : Modifier, IPositioner
 
     protected override UColor MainColor => CustomColorManager.Astral;
     public override LayerEnum Type => LayerEnum.Astral;
-    public override Func<string> Description => () => "- You will not teleport to the meeting button";
+    public override string Description => "- You will not teleport to the meeting button";
 
     public override void Init() => LastPosition = Vector3.zero;
 

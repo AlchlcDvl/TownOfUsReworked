@@ -9,15 +9,15 @@ public sealed class Banshee : SUtility, IGhosty
     [NumberOption(5f, 30f, 1f, Format.Time)]
     private static Number ScreamDur = 10;
 
-    private CustomButton ScreamButton { get; set; }
-    public HashSet<byte> Blocked { get; } = [];
+    private CustomButton ScreamButton;
+    public readonly HashSet<byte> Blocked = [];
     public bool Caught { get; set; }
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Banshee;
     public override LayerEnum Type => LayerEnum.Banshee;
-    public override Func<string> StartText { get; } = () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
-    public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
+    public override string StartText => "AAAAAAAAAAAAAAAAAAAAAAAAA";
+    public override string Description => "- You can scream loudly, blocking all players as long as you are not clicked";
     public override bool RoleBlockImmune => true; // Not taking chances
 
     public override void Init()

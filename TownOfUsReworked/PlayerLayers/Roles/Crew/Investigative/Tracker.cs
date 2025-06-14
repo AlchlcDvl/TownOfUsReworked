@@ -15,13 +15,13 @@ public sealed class Tracker : Investigative
     [NumberOption(0f, 15f, 0.5f, Format.Time)]
     public static Number UpdateInterval = 5;
 
-    private Dictionary<byte, PlayerArrow> TrackerArrows { get; } = [];
-    private CustomButton TrackButton { get; set; }
+    private readonly Dictionary<byte, PlayerArrow> TrackerArrows = [];
+    private CustomButton TrackButton;
 
     protected override UColor MainColor => CustomColorManager.Tracker;
     public override LayerEnum Type => LayerEnum.Tracker;
-    public override Func<string> StartText { get; } = () => "Track Everyone's Movements";
-    public override Func<string> Description => () => "- You can track players which creates arrows that update every now and then with the target's position";
+    public override string StartText => "Track Everyone's Movements";
+    public override string Description => "- You can track players which creates arrows that update every now and then with the target's position";
 
     public override void Init()
     {
@@ -45,7 +45,7 @@ public sealed class Tracker : Investigative
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 
-    public override void ClearArrows()
+    protected override void ClearArrows()
     {
         TrackerArrows.Values.DestroyAll();
         TrackerArrows.Clear();

@@ -98,16 +98,16 @@ public struct Number(float num) : IComparable, IFormattable, INetSerializable, I
     public readonly IEnumerable<byte> GetBytes() => RpcWriter.GetBytes(Value);
 
     /// <inheritdoc/>
-    public readonly override int GetHashCode() => Value.GetHashCode();
+    public override readonly int GetHashCode() => Value.GetHashCode();
 
     /// <inheritdoc/>
     public readonly bool Equals(Number other) => Value == other.Value;
 
     /// <inheritdoc/>
-    public readonly override bool Equals(object obj) => obj is Number number && Value == number.Value;
+    public override readonly bool Equals(object obj) => obj is Number number && Value == number.Value;
 
     /// <inheritdoc/>
-    public readonly override string ToString() => Value.ToString();
+    public override readonly string ToString() => Value.ToString();
 
     /// <inheritdoc/>
     public readonly string ToString(string format, IFormatProvider formatProvider) => Value.ToString(format, formatProvider);

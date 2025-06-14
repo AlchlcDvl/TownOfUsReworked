@@ -15,18 +15,19 @@ public sealed class Trapper : Protective, ITrapper
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number TrapCd = 25;
 
-    private CustomButton BuildButton { get; set; }
-    private CustomButton TrapButton { get; set; }
-    public bool Building { get ; private set; }
     public HashSet<byte> Trapped { get; } = [];
-    private List<Role> TriggeredRoles { get; } = [];
-    private int TrapsMade { get; set; }
-    private bool AttackedSomeone { get; set; }
+    public bool Building { get ; private set; }
+
+    private readonly List<LayerEnum> TriggeredRoles = [];
+    private CustomButton BuildButton;
+    private CustomButton TrapButton;
+    private int TrapsMade;
+    private bool AttackedSomeone;
 
     protected override UColor MainColor => CustomColorManager.Trapper;
     public override LayerEnum Type => LayerEnum.Trapper;
-    public override Func<string> StartText { get; } = () => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
-    public override Func<string> Description => () => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
+    public override string StartText => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
+    public override string Description => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
         "them\nor protect from an attack once and attack the attacker in return";
 
     public override void Init()
@@ -85,7 +86,7 @@ public sealed class Trapper : Protective, ITrapper
         if (trigger.AmOwner)
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Trigger, trapped, trigger, isAttack);
 
-        TriggeredRoles.Add(trigger.GetRole());
+        TriggeredRoles.Add(trigger.GetRole().Type);
         AttackedSomeone = isAttack;
         Trapped.Remove(trapped.PlayerId);
     }
@@ -116,7 +117,6 @@ public sealed class Trapper : Protective, ITrapper
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
         var message = "";
 
         if (AttackedSomeone)
@@ -125,7 +125,7 @@ public sealed class Trapper : Protective, ITrapper
         {
             message = "Your trap detected the following roles: ";
             TriggeredRoles.Shuffle();
-            message += Join(", ", TriggeredRoles.Select(x => LayerDictionary[x.Type].Name));
+            message += Join(", ", TriggeredRoles.Select(x => LayerDictionary[x].Name));
         }
 
         if (!IsNullEmptyOrWhiteSpace(message))

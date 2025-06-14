@@ -65,10 +65,10 @@ public abstract class Assassin : Ability, IGuesser
 
     public CustomMeeting GuessMenu { get; private set; }
     public CustomGuessingMenu GuessingMenu { get; private set; }
-    private int Lives { get; set; }
+    private int Lives;
 
     protected override UColor MainColor => CustomColorManager.Assassin;
-    public override Func<string> Description => () => "- You can guess players mid-meetings";
+    public override string Description => "- You can guess players mid-meetings";
     public override AttackEnum AttackVal => AttackEnum.Powerful;
 
     public override void Init()
@@ -78,11 +78,7 @@ public abstract class Assassin : Ability, IGuesser
         Lives = AssassinChance ? AssassinChances : 0;
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        GuessMenu.GenButtons(__instance, RemainingKills > 0);
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => GuessMenu.GenButtons(__instance, RemainingKills > 0);
 
     public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update();
 
@@ -245,7 +241,7 @@ public abstract class Assassin : Ability, IGuesser
             var promoterFlag = player.Is<IPromoter>(out var promoter) && ((promoter.UnderlingType == guess && promoter.IsUnderling) || (promoter.PromoterType == guess && promoter.IsPromoted));
             var actorGuessed = false;
 
-            if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Any(x => x.Type == guess))
+            if (guess != LayerEnum.Actor && player.Is<Actor>(out var actor) && actor.PretendRoles.Contains(guess))
             {
                 actor.Guessed = true;
                 actorGuessed = true;
@@ -309,7 +305,7 @@ public abstract class Assassin : Ability, IGuesser
                 ind.AttemptedGuess = true;
             }
 
-            if (guess != LayerEnum.Actor && player.Is<Actor>(out var act) && act.PretendRoles.Any(x => x.Type == guess))
+            if (guess != LayerEnum.Actor && player.Is<Actor>(out var act) && act.PretendRoles.Contains(guess))
                 act.Guessed = true;
         }
 

@@ -4,28 +4,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Shapeshifter : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number ShapeshiftCd = 25f;
+    private static Number ShapeshiftCd = 25f;
 
     [NumberOption(5f, 30f, 1f, Format.Time)]
-    public static Number ShapeshiftDur = 10;
+    private static Number ShapeshiftDur = 10;
 
     [ToggleOption]
-    public static bool ShapeshiftMates = false;
+    private static bool ShapeshiftMates = false;
 
     [ToggleOption]
-    public static bool ShapeshiftSelf = false;
+    private static bool ShapeshiftSelf = false;
 
-    private CustomButton ShapeshiftButton { get; set; }
-    public PlayerControl ShapeshiftPlayer1 { get; private set; }
-    public PlayerControl ShapeshiftPlayer2 { get; private set; }
-    private CustomPlayerMenu ShapeshiftMenu1 { get; set; }
-    private CustomPlayerMenu ShapeshiftMenu2 { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton ShapeshiftButton;
+    private PlayerControl ShapeshiftPlayer1;
+    private PlayerControl ShapeshiftPlayer2;
+    private CustomPlayerMenu ShapeshiftMenu1;
+    private CustomPlayerMenu ShapeshiftMenu2;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Shapeshifter;
     public override LayerEnum Type => LayerEnum.Shapeshifter;
-    public override Func<string> StartText { get; } = () => "Change Everyone's Appearances";
-    public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
+    public override string StartText => "Change Everyone's Appearances";
+    public override string Description => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
 
     public override void Init()
     {

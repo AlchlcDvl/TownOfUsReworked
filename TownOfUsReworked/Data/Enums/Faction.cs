@@ -25,6 +25,8 @@ public enum Faction : byte
     Murderer,
     SerialKiller,
     Werewolf,
+    Defector,
+    Betrayer,
 
     // Disposition
     Mafia,

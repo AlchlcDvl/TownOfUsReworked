@@ -14,8 +14,8 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
 
     protected override UColor MainColor => CustomColorManager.Plaguebearer;
     public override LayerEnum Type => LayerEnum.Plaguebearer;
-    public override Func<string> StartText { get; } = () => "Spread Disease To Summon <#424242FF>Pestilence</color>";
-    public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <#424242FF>Pestilence</color>\n- Infections can "
+    public override string StartText => "Spread Disease To Summon <#424242FF>Pestilence</color>";
+    public override string Description => "- You can infect players\n- When all players are infected, you will turn into <#424242FF>Pestilence</color>\n- Infections can "
         + "spread via interaction between players" + CommonAbilities;
     public override DefenseEnum DefenseVal => Infected.Count < GameData.Instance.PlayerCount / 2 ? DefenseEnum.Basic : DefenseEnum.None;
     public override bool CanVent => base.CanVent && PbVent;

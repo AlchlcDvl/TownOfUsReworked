@@ -4,30 +4,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Miner : ISupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
-    public static Number MineCd = 25;
+    private static Number MineCd = 25;
 
     [ToggleOption]
     public static bool MinerSpawnOnMira = true;
 
-    private CustomButton MineButton { get; set; }
-    public List<Vent> Vents { get; } = [];
+    private CustomButton MineButton;
+    private readonly List<Vent> Vents = [];
 
     protected override UColor MainColor => CustomColorManager.Miner;
     public override LayerEnum Type => LayerEnum.Miner;
-    public override Func<string> StartText { get; } = () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
+    public override string StartText => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
         "From The Top, Make It Drop, Boom, That's A Vent";
-    public override Func<string> Description => () => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
+    public override string Description => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
 
     public override void Init()
     {
         base.Init();
-        Name = TranslationManager.Translate($"Layer.{(MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner")}");
         MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);
         Vents.Clear();
+
+        if (MapPatches.CurrentMap == 5)
+            Name = TranslationManager.Translate("Layer.Herbalist");
     }
 
-    public static string SpriteName => MapPatches.CurrentMap switch
+    private static string SpriteName => MapPatches.CurrentMap switch
     {
         5 => "PlantPlant",
         _ => "Mine"
@@ -43,7 +45,7 @@ public sealed class Miner : ISupport
     private bool Condition() => !Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0).Any(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)) &&
         Player.moveable && !GetPlayerElevator(Player).IsInElevator && Vents.All(x => x.transform.position != Player.transform.position);
 
-    public static string Label() => MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT";
+    private static string Label() => MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT";
 
     public override void ReadRPC(RpcReader reader) => Vents.Add(SpawnVent(Vents, reader.ReadVector2(), Player.transform.position.z));
 
@@ -69,22 +71,20 @@ public sealed class Miner : ISupport
         vent.name = $"MinerVent{vents.Count}";
         vent.myAnim?.Stop();
 
-        var allVents = AllMapVents().ToList();
-        allVents.Add(vent);
-        Ship().AllVents = allVents.ToArray();
+        Ship().AllVents = AllMapVents().AddItem(vent).ToArray();
 
-        if (IsSubmerged())
+        if (!IsSubmerged())
+            return vent;
+
+        vent.gameObject.layer = 12;
+        vent.gameObject.AddSubmergedComponent("ElevatorMover"); // Just in case the elevator vent is not blocked
+
+        if (vent.transform.position.y > -7)
+            vent.transform.SetWorldZ(0.03f);
+        else
         {
-            vent.gameObject.layer = 12;
-            vent.gameObject.AddSubmergedComponent("ElevatorMover"); // Just in case the elevator vent is not blocked
-
-            if (vent.transform.position.y > -7)
-                vent.transform.SetWorldZ(0.03f);
-            else
-            {
-                vent.transform.SetWorldZ(0.0009f);
-                vent.transform.SetLocalZ(-0.003f);
-            }
+            vent.transform.SetWorldZ(0.0009f);
+            vent.transform.SetLocalZ(-0.003f);
         }
 
         return vent;

@@ -12,16 +12,16 @@ public sealed class Dictator : Sovereign
     [NumberOption(0, 10, 1, zeroIsInf: true)]
     private static Number MaxTribunals = 2;
 
-    private bool RoundOne { get; set; }
-    public bool Tribunal { get; set; }
-    public PlayerControl ToBeEjected { get; set; }
-    private CustomButton RevealButton { get; set; }
-    public CustomMeeting DictMenu { get; private set; }
+    private bool RoundOne;
+    public bool Tribunal;
+    public PlayerControl ToBeEjected;
+    private CustomButton RevealButton;
+    public CustomMeeting DictMenu;
 
     protected override UColor MainColor => CustomColorManager.Dictator;
     public override LayerEnum Type => LayerEnum.Dictator;
-    public override Func<string> StartText { get; } = () => "You Have The Final Say";
-    public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
+    public override string StartText => "You Have The Final Say";
+    public override string Description => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
 
     public override void Init()
     {
@@ -77,11 +77,7 @@ public sealed class Dictator : Sovereign
             DictMenu.Actives[prev.PlayerId] = false;
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        DictMenu.GenButtons(__instance, Tribunal && !Dead);
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => DictMenu.GenButtons(__instance, Tribunal && !Dead);
 
     private bool IsExempt(PlayerVoteArea voteArea)
     {

@@ -15,6 +15,7 @@ public sealed class GameTimerHandler : MonoBehaviour
     private float Timer;
     private bool IsFinalStage;
     private UColor Original;
+    private int Increment;
 
     public void Start()
     {
@@ -89,12 +90,16 @@ public sealed class GameTimerHandler : MonoBehaviour
 
     public void TaskComplete() => StartChunkCoroutine();
 
-    public void ExtendTimer()
+    public void ExtendTimer() => Increment++;
+
+    public void UpdateTimer()
     {
-        Timer = Mathf.Clamp(Timer + GameModifiers.TimerExtension, 0f, GameModifiers.GameTimer);
+        Timer = Mathf.Clamp(Timer + (Increment * GameModifiers.TimerExtension), 0f, GameModifiers.GameTimer);
 
         if (IsFinalStage && Timer > GameModifiers.GameTimer * 0.2f)
             StartFinalMoments();
+
+        Increment = 0;
     }
 
     private void StartChunkCoroutine()

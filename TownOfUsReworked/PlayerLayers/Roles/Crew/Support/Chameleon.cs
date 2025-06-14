@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-// FIXME: Doesn't actually go invisible
 [LayerHeaderOption(LayerEnum.Chameleon)]
 public sealed class Chameleon : CSupport
 {
@@ -13,13 +12,13 @@ public sealed class Chameleon : CSupport
     [NumberOption(5f, 30f, 1f, Format.Time)]
     public static Number SwoopDur = 10;
 
-    private CustomButton SwoopButton { get; set; }
-    private bool ClickedAgain { get; set; }
+    private CustomButton SwoopButton;
+    private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Chameleon;
     public override LayerEnum Type => LayerEnum.Chameleon;
-    public override Func<string> StartText { get; } = () => "Go Invisible To Stalk Players";
-    public override Func<string> Description => () => "- You can turn invisible";
+    public override string StartText => "Go Invisible To Stalk Players";
+    public override string Description => "- You can turn invisible";
 
     public override void Init()
     {
@@ -34,11 +33,7 @@ public sealed class Chameleon : CSupport
 
     private void ClickAgain() => ClickedAgain = true;
 
-    private void Swoop()
-    {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, SwoopButton);
-        SwoopButton.Begin();
-    }
+    private void Swoop() => SwoopButton.TriggerRpcAndBegin();
 
     private bool EndEffect() => Dead || ClickedAgain;
 }

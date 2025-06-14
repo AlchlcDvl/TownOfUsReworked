@@ -21,15 +21,16 @@ public sealed class Monarch : Sovereign
     [ToggleOption]
     public static bool KnightButton = true;
 
-    private bool RoundOne { get; set; }
-    private CustomButton KnightingButton { get; set; }
-    public HashSet<byte> ToBeKnighted { get; } = [];
-    public HashSet<byte> Knighted { get; } = [];
+    private bool RoundOne;
+    private CustomButton KnightingButton;
+
+    public readonly HashSet<byte> ToBeKnighted = [];
+    public readonly HashSet<byte> Knighted = [];
 
     protected override UColor MainColor => CustomColorManager.Monarch;
     public override LayerEnum Type => LayerEnum.Monarch;
-    public override Func<string> StartText { get; } = () => "Knight Those Who You Trust";
-    public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"
+    public override string StartText => "Knight Those Who You Trust";
+    public override string Description => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"
         + " you cannot be killed\n- You will know when a knight of yours dies";
     public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
 
@@ -73,9 +74,5 @@ public sealed class Monarch : Sovereign
 
     private bool Usable() => !RoundOne;
 
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        Knighted.RemoveAll(x => PlayerById(x).HasDied());
-    }
+    public override void OnMeetingStart(MeetingHud __instance) => Knighted.RemoveAll(x => PlayerById(x).HasDied());
 }

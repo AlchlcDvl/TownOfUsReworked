@@ -8,5 +8,5 @@ public sealed class Multitasker : Ability
 
     protected override UColor MainColor => CustomColorManager.Multitasker;
     public override LayerEnum Type => LayerEnum.Multitasker;
-    public override Func<string> Description => () => "- Your task windows are transparent";
+    public override string Description => "- Your task windows are transparent";
 }

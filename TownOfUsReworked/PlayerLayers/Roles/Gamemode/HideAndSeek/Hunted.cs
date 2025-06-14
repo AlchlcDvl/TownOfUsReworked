@@ -13,7 +13,7 @@ public sealed class Hunted : HideAndSeek
     public static bool HuntedChat = true;
 
     public override LayerEnum Type => LayerEnum.Hunted;
-    public override Func<string> StartText { get; } = () => "Run, Hide And Do Tasks";
+    public override string StartText => "Run, Hide And Do Tasks";
     protected override UColor MainColor => CustomColorManager.Hunted;
 
     public override void Init()

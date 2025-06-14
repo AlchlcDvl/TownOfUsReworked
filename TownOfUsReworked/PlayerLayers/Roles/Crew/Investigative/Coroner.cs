@@ -21,17 +21,17 @@ public sealed class Coroner : Investigative, IExaminer
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number AutopsyCd = 25;
 
-    private CustomButton CompareButton { get; set; }
-    private CustomButton AutopsyButton { get; set; }
+    private CustomButton CompareButton;
+    private CustomButton AutopsyButton;
 
-    public HashSet<byte> Reported { get; } = [];
-    private List<DeadPlayer> ReferenceBodies { get; } = [];
-    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
+    private readonly HashSet<byte> Reported = [];
+    private readonly List<DeadPlayer> ReferenceBodies = [];
+    private readonly Dictionary<byte, PositionalArrow> BodyArrows = [];
 
     protected override UColor MainColor => CustomColorManager.Coroner;
     public override LayerEnum Type => LayerEnum.Coroner;
-    public override Func<string> StartText { get; } = () => "Examine The Dead For Information";
-    public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
+    public override string StartText => "Examine The Dead For Information";
+    public override string Description => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
         "when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";
 
     public override void Init()
@@ -62,7 +62,7 @@ public sealed class Coroner : Investigative, IExaminer
             arrow.Destroy();
     }
 
-    public override void ClearArrows()
+    protected override void ClearArrows()
     {
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();

@@ -384,7 +384,7 @@ public static class LayerExtensions
 
         if (info[3] && !disposition.Hidden && disposition.Type != LayerEnum.NoneDisposition)
         {
-            objectives += $"\n{disposition.ColorString}{disposition.Description()}</color>";
+            objectives += $"\n{disposition.ColorString}{disposition.Description}</color>";
             dispositionName += $"{disposition.ColorString}{disposition.Name} {disposition.Symbol}</color>";
         }
         else
@@ -406,21 +406,18 @@ public static class LayerExtensions
 
         modifierName += "</b></color>";
         objectives += "</color>";
-        var desc1 = role.Description();
 
-        if (info[0] && desc1 is not ("" or "- None"))
-            abilities += $"\n{role.ColorString}{desc1}</color>";
+        if (info[0] && role.Description is not ("" or "- None"))
+            abilities += $"\n{role.ColorString}{role.Description}</color>";
 
         if (info[0] && role.RoleBlockImmune)
             abilities += "\n- You are immune to roleblocks";
 
-        var desc2 = ability.Description();
-
-        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.NoneAbility && desc2 is not ("" or "- None"))
-            abilities += $"\n{ability.ColorString}{desc2}</color>";
+        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.NoneAbility && ability.Description is not ("" or "- None"))
+            abilities += $"\n{ability.ColorString}{ability.Description}</color>";
 
         abilities = abilities == $"{AbilitiesColorString}Abilities:" ? "" : $"\n{abilities}</color>";
-        var desc3 = modifier.Description();
+        var desc3 = modifier.Description;
 
         if (info[1] && !modifier.Hidden && modifier.Type != LayerEnum.NoneModifier && desc3 is not ("" or "- None"))
             attributes += $"\n{modifier.ColorString}{desc3}</color>";
@@ -682,4 +679,63 @@ public static class LayerExtensions
     public static bool IsOk(this Faction faction) => faction is > Faction.GameMode and < Faction.Cabal;
 
     public static bool IsBuddyWith(this PlayerControl player, PlayerControl refPlayer, Faction faction) => (refPlayer.Is(faction) && faction.IsFactionedEvil(true)) || player.IsLinkedTo(refPlayer);
+
+    public static bool KnowsRoleOf(this PlayerControl player, PlayerControl refPlayer)
+    {
+        if (!player.Is<Teamed>(out var teamed))
+            return false;
+
+        return teamed.RoleCondition(refPlayer) || teamed.RoleCondition(LayerHandler.Handlers[refPlayer.PlayerId]);
+    }
+
+    public static void PublicReveal(PlayerControl player)
+    {
+        if (!player.Is<Sovereign>(out var revealer))
+            return;
+
+        Flash(revealer.Color);
+        BreakShield(player, true);
+        PlayerLayer.GetLayers<ITrapper>().Do(x => x.Trapped.Remove(player.PlayerId));
+        revealer.Revealed = true;
+        revealer.OnReveal();
+    }
+
+    public static void BreakShield(PlayerControl player, bool flag)
+    {
+        foreach (var role2 in PlayerLayer.GetLayers<IShielder>())
+        {
+            if (role2.ShieldedPlayer != player)
+                continue;
+
+            if ((role2.Local && Medic.WhoGetsNotification == ShieldOptions.Medic) || Medic.WhoGetsNotification == ShieldOptions.Everyone || (player.AmOwner && Medic.WhoGetsNotification ==
+                ShieldOptions.Shielded))
+            {
+                var roleEffectAnimation = UObject.Instantiate(GetRoleAnim("ProtectAnim"), player.gameObject.transform);
+                roleEffectAnimation.SetMaskLayerBasedOnWhoShouldSee(true);
+                roleEffectAnimation.Play(player, null, player.cosmetics.FlipX, RoleEffectAnimation.SoundType.Global);
+                Flash(role2.Color);
+            }
+
+            if (!flag)
+                continue;
+
+            role2.ShieldedPlayer = null;
+            role2.ShieldBroken = true;
+
+            if (TownOfUsReworked.MciActive)
+                Message(player.name + " Is Now Ex-Shielded");
+        }
+    }
+
+    public static void BastionBomb(Vent vent, bool flag)
+    {
+        foreach (var role2 in PlayerLayer.GetLayers<IVentBomber>())
+        {
+            if (role2.BombedIDs.Contains(vent.Id) && role2.Local)
+                Flash(role2.Color);
+
+            if (flag)
+                role2.BombedIDs.Remove(vent.Id);
+        }
+    }
 }

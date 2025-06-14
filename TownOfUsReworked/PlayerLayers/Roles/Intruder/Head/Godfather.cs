@@ -6,13 +6,13 @@ public sealed class Godfather : Intruder
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
     public static Number GfPromotionCdDecrease = 0.75f;
 
-    private bool HasDeclared { get; set; }
-    private CustomButton DeclareButton { get; set; }
+    private bool HasDeclared;
+    private CustomButton DeclareButton;
 
     protected override UColor MainColor => CustomColorManager.Godfather;
     public override LayerEnum Type => LayerEnum.Godfather;
-    public override Func<string> StartText { get; } = () => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
-    public override Func<string> Description => () => "- You can promote a fellow <#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <#FF1919FF>" +
+    public override string StartText => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
+    public override string Description => "- You can promote a fellow <#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <#FF1919FF>" +
         "Intruder</color> turns them into a <#6400FFFF>Mafioso</color>\n- If you die, the <#6400FFFF>Mafioso</color> will become the new <#404C08FF>Godfather</color>"
         + $"\nand inherits better abilities of their former role\n{CommonAbilities}";
     protected override Alignment ActualAlignment => Alignment.Head;

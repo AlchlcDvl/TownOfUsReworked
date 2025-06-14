@@ -2,9 +2,13 @@ namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
 public abstract class FactionChanger : Disposition
 {
-    public bool Turned { get; set; }
-    public Faction Side { get; private set; }
-    protected bool Betrayed { get; set; }
+    public bool Turned;
+    private bool Betrayed;
+    private Faction Side
+    {
+        get;
+        set => Handler.CurrentFaction = field = value;
+    }
 
     public abstract bool SheriffSwap { get; }
     public abstract bool RevealerReveals { get; }
@@ -32,7 +36,7 @@ public abstract class FactionChanger : Disposition
             foreach (var snitch in GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= Snitch.SnitchTasksRemaining && Local)
-                    local.AllArrows.Add(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
+                    local.AllArrows.TryAdd(snitch.PlayerId, new(Player, snitch.Player, snitch.Color));
                 else if (snitch.TasksDone && snitch.Local)
                     LayerHandler.Handlers[snitch.PlayerId].AllArrows.Add(PlayerId, new(snitch.Player, Player, snitch.Color));
             }
@@ -43,7 +47,7 @@ public abstract class FactionChanger : Disposition
             foreach (var revealer in GetLayers<Revealer>())
             {
                 if (revealer.Revealed)
-                    local.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
+                    local.AllArrows.TryAdd(revealer.PlayerId, new(Player, revealer.Player, revealer.Color));
             }
         }
 

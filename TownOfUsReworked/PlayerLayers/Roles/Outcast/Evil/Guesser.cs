@@ -28,30 +28,30 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
     private static bool GuessToAct = true;
 
     public PlayerControl TargetPlayer { get; set; }
-    public bool TargetGuessed { get; set; }
-    private int RemainingGuesses { get; set; }
-    private bool FactionHintGiven { get; set; }
-    private bool AlignmentHintGiven { get; set; }
-    private int LettersGiven { get; set; }
-    private bool LettersExhausted { get; set; }
-    private string RoleName { get; set; }
-    private List<string> Letters { get; } = [];
-    private int Rounds { get; set; }
-    private CustomButton TargetButton { get; set; }
     private bool Failed => TargetPlayer ? (!TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied())) : Rounds > 2;
     public CustomMeeting GuessMenu { get; private set; }
     public CustomGuessingMenu GuessingMenu { get; private set; }
 
+    private bool TargetGuessed;
+    private int RemainingGuesses;
+    private bool FactionHintGiven;
+    private bool AlignmentHintGiven;
+    private bool LettersExhausted;
+    private string RoleName;
+    private readonly HashSet<char> Letters = [];
+    private int Rounds;
+    private CustomButton TargetButton;
+
     protected override UColor MainColor => CustomColorManager.Guesser;
     public override LayerEnum Type => LayerEnum.Guesser;
-    public override Func<string> StartText { get; } = () => "Guess What Someone Might Be";
-    public override Func<string> Description => () => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
+    public override string StartText => "Guess What Someone Might Be";
+    public override string Description => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
         $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetGuessed;
     public override bool CanVent => base.CanVent && GuessVent;
     public override bool CanSwitchVents => GuessSwitchVent;
-    public override WinLose EndState => WinLose.GuesserWins;
+    protected override WinLose EndState => WinLose.GuesserWins;
 
     public override void Init()
     {
@@ -246,8 +246,6 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
-        base.OnMeetingStart(__instance);
-
         if (TargetPlayer.HasDied() || Dead)
             return;
 
@@ -262,78 +260,24 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         if (roleChanged)
         {
             something = "Your target's role changed!";
-            LettersGiven = 0;
             LettersExhausted = false;
             Letters.Clear();
             FactionHintGiven = false;
         }
         else if (!LettersExhausted)
         {
-            var random = URandom.RandomRangeInt(0, RoleName!.Length);
-            var random2 = URandom.RandomRangeInt(0, RoleName.Length);
-            var random3 = URandom.RandomRangeInt(0, RoleName.Length);
+            var random = RoleName.Random(x => !Letters.Contains(x));
 
-            if (LettersGiven <= RoleName.Length - 3)
-            {
-                while (random == random2 || random2 == random3 || random == random3 || Letters.Contains($"{RoleName[random]}") || Letters.Contains($"{RoleName[random2]}") ||
-                    Letters.Contains($"{RoleName[random3]}"))
-                {
-                    if (random == random2 || Letters.Contains($"{RoleName[random2]}"))
-                        random2 = URandom.RandomRangeInt(0, RoleName.Length);
+            if (random != '\0')
+                Letters.Add(random);
 
-                    if (random2 == random3 || Letters.Contains($"{RoleName[random3]}"))
-                        random3 = URandom.RandomRangeInt(0, RoleName.Length);
+            var random2 = RoleName.Random(x => !Letters.Contains(x));
 
-                    if (random == random3 || Letters.Contains($"{RoleName[random]}"))
-                        random = URandom.RandomRangeInt(0, RoleName.Length);
-                }
+            if (random2 != '\0')
+                Letters.Add(random2);
 
-                something = $"Your target's role as the Letters {RoleName[random]}, {RoleName[random2]} and {RoleName[random3]} in it!";
-            }
-            else if (LettersGiven == RoleName.Length - 2)
-            {
-                while (random == random2 || Letters.Contains($"{RoleName[random]}") || Letters.Contains($"{RoleName[random2]}"))
-                {
-                    if (Letters.Contains($"{RoleName[random2]}"))
-                        random2 = URandom.RandomRangeInt(0, RoleName.Length);
-
-                    if (Letters.Contains($"{RoleName[random]}"))
-                        random = URandom.RandomRangeInt(0, RoleName.Length);
-
-                    if (random == random2)
-                        random = URandom.RandomRangeInt(0, RoleName.Length);
-                }
-
-                something = $"Your target's role as the Letters {RoleName[random]} and {RoleName[random2]} in it!";
-            }
-            else if (LettersGiven == RoleName.Length - 1)
-            {
-                while (Letters.Contains($"{RoleName[random]}"))
-                    random = URandom.RandomRangeInt(0, RoleName.Length);
-
-                something = $"Your target's role as the letter {RoleName[random]} in it!";
-            }
-            else if (LettersGiven == RoleName.Length)
+            if (Letters.Count == RoleName.Length)
                 LettersExhausted = true;
-
-            if (!LettersExhausted)
-            {
-                if (LettersGiven <= RoleName.Length - 3)
-                {
-                    Letters.Add($"{RoleName[random]}", $"{RoleName[random2]}", $"{RoleName[random3]}");
-                    LettersGiven += 3;
-                }
-                else if (LettersGiven == RoleName.Length - 2)
-                {
-                    Letters.Add($"{RoleName[random]}", $"{RoleName[random2]}");
-                    LettersGiven += 2;
-                }
-                else if (LettersGiven == RoleName.Length - 1)
-                {
-                    Letters.Add($"{RoleName[random]}");
-                    LettersGiven++;
-                }
-            }
         }
         else if (!FactionHintGiven && LettersExhausted)
         {

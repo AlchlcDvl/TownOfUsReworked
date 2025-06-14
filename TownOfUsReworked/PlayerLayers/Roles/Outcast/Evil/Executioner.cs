@@ -31,26 +31,27 @@ public sealed class Executioner : Evil, ITargeter
     private static bool ExeToJest = true;
 
     public PlayerControl TargetPlayer { get; set; }
-    public bool TargetVotedOut { get; set; }
-    private HashSet<byte> ToDoom { get; } = [];
-    private bool HasDoomed { get; set; }
-    private CustomButton DoomButton { get; set; }
     private bool CanDoom => TargetPlayer && TargetVotedOut && !HasDoomed && ToDoom.Any() && !OutcastSettings.AvoidOutcastKingmakers;
     private bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
-    private int Rounds { get; set; }
-    private CustomButton TargetButton { get; set; }
     private bool TargetFailed => !TargetPlayer && Rounds > 2;
+
+    private readonly HashSet<byte> ToDoom = [];
+    public bool TargetVotedOut;
+    private bool HasDoomed;
+    private CustomButton DoomButton;
+    private int Rounds;
+    private CustomButton TargetButton;
 
     protected override UColor MainColor => CustomColorManager.Executioner;
     public override LayerEnum Type => LayerEnum.Executioner;
-    public override Func<string> StartText { get; } = () => "Find Someone To Eject";
-    public override Func<string> Description => () => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
+    public override string StartText => "Find Someone To Eject";
+    public override string Description => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override AttackEnum AttackVal => AttackEnum.Unstoppable;
     public override bool HasWon => TargetVotedOut;
     public override bool CanVent => base.CanVent && ExeVent;
     public override bool CanSwitchVents => ExeSwitchVent;
-    public override WinLose EndState => WinLose.ExecutionerWins;
+    protected override WinLose EndState => WinLose.ExecutionerWins;
 
     public override void Init()
     {
