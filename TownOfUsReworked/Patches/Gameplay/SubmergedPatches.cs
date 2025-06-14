@@ -5,7 +5,7 @@ public static class SubmergedStartPatch
 {
     public static void Postfix()
     {
-        if (LocalPlayer && LocalPlayer.Data && IsSubmerged())
+        if (LocalPlayer?.Data && IsSubmerged())
             Coroutines.Start(WaitAction(() => ButtonUtils.Reset(CooldownType.Start)));
     }
 }

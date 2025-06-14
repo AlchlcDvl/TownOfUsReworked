@@ -50,7 +50,9 @@ public abstract class NameHandler : MonoBehaviour
                 revealed = true;
             }
 
-            if (same && isFactionedEvil)
+            var neo = local.GetNeophyte();
+
+            if (same && (isFactionedEvil || (neo && neo == player.GetNeophyte())))
             {
                 if (GameModifiers.FactionSeeRoles && !revealed)
                 {

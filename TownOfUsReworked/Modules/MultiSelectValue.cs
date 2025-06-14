@@ -102,6 +102,10 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// <returns>Returns the first value.</returns>
     public T First() => values.First();
 
+    public IEnumerable<E> Select<E>(Func<T, E> predicate) => values.Select(predicate);
+
+    public IEnumerable<E> SelectMany<E>(Func<T, IEnumerable<E>> predicate) => values.SelectMany(predicate);
+
     /// <summary>
     /// Converts the collection to its string representation.
     /// </summary>

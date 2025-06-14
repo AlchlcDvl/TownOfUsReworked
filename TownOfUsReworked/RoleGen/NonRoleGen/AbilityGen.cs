@@ -22,24 +22,18 @@ public sealed class AbilityGen : BaseGen
 
         foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Ability && x.Num <= GameData.Instance.PlayerCount))
         {
-            foreach (var id in entry.Value)
+            var rateLimit = 0;
+            var cachedCount = AllAbilities.Count;
+            var bucket = entry.Value.Select(x => x.TryCastToLayer(out var layer) ? layer : abilities.Random());
+
+            while (rateLimit < 10000 && AllAbilities.Count == cachedCount)
             {
-                if (id == ListSlot.None)
-                    break;
+                var layer2 = bucket.Random();
 
-                var rateLimit = 0;
-                var cachedCount = AllAbilities.Count;
-
-                if (!id.TryCastToLayer(out var layer))
-                    layer = abilities.Random();
-
-                while (rateLimit < 10000 && AllAbilities.Count == cachedCount)
-                {
-                    if (ListGen.CannotAdd(layer, AllAbilities))
-                        rateLimit++;
-                    else
-                        AllAbilities.Add(GetSpawnItem(layer));
-                }
+                if (ListGen.CannotAdd(layer2, AllAbilities))
+                    rateLimit++;
+                else
+                    AllAbilities.Add(GetSpawnItem(layer2));
             }
         }
     }

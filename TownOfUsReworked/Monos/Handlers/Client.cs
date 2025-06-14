@@ -31,15 +31,14 @@ public sealed class ClientHandler : MonoBehaviour
 
     private Transform ButtonsParent;
 
-    private ProgressTracker taskBar;
     private ProgressTracker TaskBar
     {
         get
         {
-            if (!taskBar)
-                taskBar = FindObjectOfType<ProgressTracker>(true);
+            if (!field)
+                field = FindObjectOfType<ProgressTracker>(true);
 
-            return taskBar;
+            return field;
         }
     }
 

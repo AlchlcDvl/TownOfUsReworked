@@ -406,15 +406,18 @@ public static class LayerExtensions
 
         modifierName += "</b></color>";
         objectives += "</color>";
+        var desc1 = role.Description;
 
-        if (info[0] && role.Description is not ("" or "- None"))
-            abilities += $"\n{role.ColorString}{role.Description}</color>";
+        if (info[0] && desc1 is not ("" or "- None"))
+            abilities += $"\n{role.ColorString}{desc1}</color>";
 
         if (info[0] && role.RoleBlockImmune)
             abilities += "\n- You are immune to roleblocks";
 
-        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.NoneAbility && ability.Description is not ("" or "- None"))
-            abilities += $"\n{ability.ColorString}{ability.Description}</color>";
+        var desc2 = ability.Description;
+
+        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.NoneAbility && desc2 is not ("" or "- None"))
+            abilities += $"\n{ability.ColorString}{desc2}</color>";
 
         abilities = abilities == $"{AbilitiesColorString}Abilities:" ? "" : $"\n{abilities}</color>";
         var desc3 = modifier.Description;

@@ -13,24 +13,18 @@ public sealed class ListGen : BaseRoleGen
 
         foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role && x.Num <= GameData.Instance.PlayerCount))
         {
-            foreach (var id in entry.Value)
+            var rateLimit = 0;
+            var cachedCount = AllRoles.Count;
+            var bucket = entry.Value.SelectMany(x => x.TryCastToLayer(out var layer) ? [layer] : GetBucket(x));
+
+            while (rateLimit < 10000 && AllRoles.Count == cachedCount)
             {
-                if (id == ListSlot.None)
-                    continue;
+                var layer2 = bucket.Random();
 
-                var rateLimit = 0;
-                var cachedCount = AllRoles.Count;
-                var bucket = id.TryCastToLayer(out var layer) ? [ layer ] : GetBucket(id);
-
-                while (rateLimit < 10000 && AllRoles.Count == cachedCount)
-                {
-                    var layer2 = bucket.Random();
-
-                    if (CannotAdd(layer2, AllRoles))
-                        rateLimit++;
-                    else
-                        AllRoles.Add(GetSpawnItem(layer2));
-                }
+                if (CannotAdd(layer2, AllRoles))
+                    rateLimit++;
+                else
+                    AllRoles.Add(GetSpawnItem(layer2));
             }
         }
 

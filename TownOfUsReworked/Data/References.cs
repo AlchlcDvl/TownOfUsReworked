@@ -48,6 +48,9 @@ public static class References
         get;
         set
         {
+            if (field == value)
+                return;
+
             if (value)
                 CameraEffectHandler.AddEffect("GlitchedMaterial");
             else

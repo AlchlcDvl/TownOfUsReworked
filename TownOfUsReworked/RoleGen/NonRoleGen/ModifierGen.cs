@@ -21,24 +21,18 @@ public sealed class ModifierGen : BaseGen
 
         foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier && x.Num <= GameData.Instance.PlayerCount))
         {
-            foreach (var id in entry.Value)
+            var rateLimit = 0;
+            var cachedCount = AllModifiers.Count;
+            var bucket = entry.Value.Select(x => x.TryCastToLayer(out var layer) ? layer : modifiers.Random());
+
+            while (rateLimit < 10000 && AllModifiers.Count == cachedCount)
             {
-                if (id == ListSlot.None)
-                    break;
+                var layer2 = bucket.Random();
 
-                var rateLimit = 0;
-                var cachedCount = AllModifiers.Count;
-
-                if (!id.TryCastToLayer(out var layer))
-                    layer = modifiers.Random();
-
-                while (rateLimit < 10000 && AllModifiers.Count == cachedCount)
-                {
-                    if (ListGen.CannotAdd(layer, AllModifiers))
-                        rateLimit++;
-                    else
-                        AllModifiers.Add(GetSpawnItem(layer));
-                }
+                if (ListGen.CannotAdd(layer2, AllModifiers))
+                    rateLimit++;
+                else
+                    AllModifiers.Add(GetSpawnItem(layer2));
             }
         }
     }
