@@ -151,7 +151,7 @@ public static class MiscUtils
     public static void RpcMurderPlayer(this PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
         killer.MurderPlayer(target, reason, lunge);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.BypassKill, killer, target, reason, lunge);
+        CallRpc(ActionsRpc.BypassKill, killer, target, reason, lunge);
     }
 
     public static void Suicide(this PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Suicide) => self.MurderPlayer(self, reason, false);
@@ -190,13 +190,13 @@ public static class MiscUtils
                 swapper.Swap1 = null;
                 swapper.Swap2 = null;
                 swapper.SwapMenu.HideButtons();
-                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, swapper, 255, 255);
+                CallRpc(ActionsRpc.LayerAction, swapper, 255, 255);
             }
             else if (target.Is<Dictator>(out var dict))
             {
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected = null;
-                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, dict, DictActionsRpc.SelectToEject, 255);
+                CallRpc(ActionsRpc.LayerAction, dict, DictActionsRpc.SelectToEject, 255);
             }
             else if (target.Is<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
@@ -223,7 +223,7 @@ public static class MiscUtils
                         swapper.Swap2 = null;
 
                     swapper.SwapMenu.Actives[target.PlayerId] = false;
-                    CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, swapper, 255, 255);
+                    CallRpc(ActionsRpc.LayerAction, swapper, 255, 255);
                 }
 
                 swapper.SwapMenu.HideSingle(target.PlayerId);
@@ -234,7 +234,7 @@ public static class MiscUtils
                 {
                     dict.ToBeEjected = null;
                     dict.DictMenu.Actives.Keys.Do(x => dict.DictMenu.Actives[x] = false);
-                    CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, dict, DictActionsRpc.SelectToEject, dict.ToBeEjected);
+                    CallRpc(ActionsRpc.LayerAction, dict, DictActionsRpc.SelectToEject, dict.ToBeEjected);
                 }
 
                 dict.DictMenu.HideSingle(target.PlayerId);
@@ -277,7 +277,7 @@ public static class MiscUtils
             {
                 var votesRegained = pol.ExtraVotes.RemoveAll(x => x == target.PlayerId);
                 pol.VoteBank += votesRegained;
-                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, pol, PoliticianActionsRpc.Add, votesRegained);
+                CallRpc(ActionsRpc.LayerAction, pol, PoliticianActionsRpc.Add, votesRegained);
             }
         }
 
@@ -755,7 +755,7 @@ public static class MiscUtils
     public static void RpcBreakShield(PlayerControl target)
     {
         BreakShield(target, Medic.ShieldBreaks);
-        CallRpc(ReworkedRpc.Misc, MiscRpc.BreakShield, target);
+        CallRpc(MiscRpc.BreakShield, target);
     }
 
     public static T AddComponent<T>(this Component component) where T : Component => component?.gameObject?.AddComponent<T>();
@@ -763,23 +763,6 @@ public static class MiscUtils
     public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();
 
     private static T EnsureComponent<T>(this GameObject gameObject) where T : Component => gameObject?.TryGetComponent<T>(out var comp) == true ? comp : gameObject?.AddComponent<T>();
-
-    public static void CallMeeting(PlayerControl player)
-    {
-        if (player.AmOwner)
-            player.RemainingEmergencies++;
-
-        if (AmongUsClient.Instance.AmHost)
-        {
-            MeetingRoomManager.Instance.reporter = player;
-            MeetingRoomManager.Instance.target = null;
-            AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-            HUD().OpenMeetingRoom(player);
-            player.RpcStartMeeting(null);
-        }
-        else
-            CallRpc(ReworkedRpc.Action, ActionsRpc.CallMeeting, player);
-    }
 
     public static void SetOutlineColor(this Renderer renderer, UColor? color)
     {
@@ -823,7 +806,7 @@ public static class MiscUtils
     public static void RpcCustomSnapTo(this PlayerControl player, Vector2 pos)
     {
         player.CustomSnapTo(pos);
-        CallRpc(ReworkedRpc.Vanilla, VanillaRpc.SnapTo, player, pos);
+        CallRpc(VanillaRpc.SnapTo, player, pos);
     }
 
     public static void CustomSnapTo(this PlayerControl player, Vector2 pos)
@@ -1047,7 +1030,7 @@ public static class MiscUtils
             var tracker = hud.roomTracker.text;
             var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
             BodyLocations[player.PlayerId] = location;
-            CallRpc(ReworkedRpc.Misc, MiscRpc.BodyLocation, player, location);
+            CallRpc(MiscRpc.BodyLocation, player, location);
 
             if (Vent.currentVent)
                 Vent.currentVent.Buttons?.Do(x => x.gameObject.SetActive(false));

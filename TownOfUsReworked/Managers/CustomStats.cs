@@ -175,7 +175,7 @@ public static class CustomStatsManager
         if (player.AmOwner || TownOfUsReworked.MciActive)
             IncrementStat(stat);
         else
-            CallTargetedRpc(player.OwnerId, ReworkedRpc.Misc, MiscRpc.Stat, stat);
+            CallTargetedRpc(player.OwnerId, MiscRpc.Stat, stat);
     }
 
     public static IObject GetStat(StringNames stat)

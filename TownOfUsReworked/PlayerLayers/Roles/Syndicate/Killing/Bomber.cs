@@ -82,7 +82,7 @@ public sealed class Bomber : SKilling
             DetonateButton.StartCooldown();
 
         if (ShowBomb)
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, BomberActionsRpc.DropBomb);
+            CallRpc(ActionsRpc.LayerAction, this, BomberActionsRpc.DropBomb);
     }
 
     private void Detonate()
@@ -94,7 +94,7 @@ public sealed class Bomber : SKilling
         if (BombCooldownsLinked)
             BombButton.StartCooldown();
 
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, BomberActionsRpc.Explode);
+        CallRpc(ActionsRpc.LayerAction, this, BomberActionsRpc.Explode);
         Play("Bomb");
     }
 

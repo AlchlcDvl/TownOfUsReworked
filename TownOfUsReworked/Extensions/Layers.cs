@@ -161,7 +161,7 @@ public static class LayerExtensions
 
             result = true;
             douser.Doused.Remove(player.PlayerId);
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, douser, DouseActionsRpc.UnDouse, player.PlayerId);
+            CallRpc(ActionsRpc.LayerAction, douser, DouseActionsRpc.UnDouse, player.PlayerId);
         }
 
         return result;
@@ -607,7 +607,7 @@ public static class LayerExtensions
 
         Syndicate.DriveHolder = chosen?.Player;
         Syndicate.SyndicateHasChaosDrive = chosen;
-        CallRpc(ReworkedRpc.Misc, MiscRpc.ChaosDrive, chosen?.PlayerId ?? 255);
+        CallRpc(MiscRpc.ChaosDrive, chosen?.PlayerId ?? 255);
     }
 
     public static void ConvertPlayer(byte target, byte convert, bool skip)
@@ -671,7 +671,7 @@ public static class LayerExtensions
     public static void RpcConvert(byte target, byte convert, bool condition = false)
     {
         ConvertPlayer(target, convert, condition);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.Convert, convert, target, condition);
+        CallRpc(ActionsRpc.Convert, convert, target, condition);
     }
 
     public static bool IsConvertible(this Faction originalFaction) => originalFaction is < Faction.Outcast or Faction.Pandorica or (> Faction.GameMode and < Faction.Mafia);

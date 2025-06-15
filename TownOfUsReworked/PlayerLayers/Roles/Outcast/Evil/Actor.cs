@@ -67,7 +67,7 @@ public sealed class Actor : Evil
     private void PickRole(PlayerControl target)
     {
         FillRoles(target);
-        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, PretendRoles);
+        CallRpc(MiscRpc.SetTarget, this, PretendRoles);
     }
 
     public void TurnRole(Layer role)
@@ -187,7 +187,7 @@ public sealed class Actor : Evil
             target = targetList.Random();
         }
 
-        CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this, target);
+        CallRpc(MiscRpc.ChangeRoles, this, target);
         TurnRole(target);
     }
 

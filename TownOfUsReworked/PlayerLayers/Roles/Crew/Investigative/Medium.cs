@@ -112,7 +112,7 @@ public sealed class Medium : Investigative, IShaman
 
         MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
         MediatedPlayers.Add(dead.PlayerId);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, dead.PlayerId);
+        CallRpc(ActionsRpc.LayerAction, this, dead.PlayerId);
     }
 
     public override void ReadRPC(RpcReader reader)

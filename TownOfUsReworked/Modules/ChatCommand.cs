@@ -197,7 +197,7 @@ public sealed class ChatCommand : IDisposable
         else
         {
             Run("<#4D4DFFFF>「 Whispers 」</color>", $"You whisper to #({whispered.name}): {message}");
-            CallRpc(ReworkedRpc.Misc, MiscRpc.Whisper, LocalPlayer, whispered, message);
+            CallRpc(MiscRpc.Whisper, LocalPlayer, whispered, message);
         }
     }
 

@@ -85,7 +85,7 @@ public sealed class Arsonist : OKilling, IDouser
 
         if (IgnitionCremates)
         {
-            CallRpc(ReworkedRpc.Action, ActionsRpc.Burn, disappear);
+            CallRpc(ActionsRpc.Burn, disappear);
 
             foreach (var body in AllBodies())
             {
@@ -120,7 +120,7 @@ public sealed class Arsonist : OKilling, IDouser
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
+        CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
     }
 
     private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(Faction) && Faction is not

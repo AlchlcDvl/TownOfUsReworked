@@ -76,7 +76,7 @@ public sealed class GameTab : BaseTab
                 Meeting().RpcClose();
         }
         else if (GUILayout.Button("Start Meeting"))
-            CallMeeting(LocalPlayer);
+			LocalPlayer.CmdReportDeadBody(null);
 
         if (GUILayout.Button("Kill Self"))
             LocalPlayer.Suicide();

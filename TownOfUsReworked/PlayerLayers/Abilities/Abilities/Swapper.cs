@@ -29,7 +29,7 @@ public sealed class Swapper : Ability
         SwapMenu.HideButtons();
 
         if (Swap1 && Swap2 && !Dead)
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, Swap1, Swap2);
+            CallRpc(ActionsRpc.LayerAction, this, Swap1, Swap2);
     }
 
     public override void ReadRPC(RpcReader reader)

@@ -171,7 +171,7 @@ public sealed class Thief : Benign, IGuesser
                 if (target.GetRole() is OKilling or IPromoter or Neophyte or Harbinger or Betrayer or CKilling)
                 {
                     Player.RpcMurderPlayer(target);
-                    CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, ThiefActionsRpc.Steal, target);
+                    CallRpc(ActionsRpc.LayerAction, this, ThiefActionsRpc.Steal, target);
                 }
                 else
                 {
@@ -292,7 +292,7 @@ public sealed class Thief : Benign, IGuesser
     private void RpcMurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, ThiefActionsRpc.Guess, player, guess, guessTarget);
+        CallRpc(ActionsRpc.LayerAction, this, ThiefActionsRpc.Guess, player, guess, guessTarget);
     }
 
     private void MurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)

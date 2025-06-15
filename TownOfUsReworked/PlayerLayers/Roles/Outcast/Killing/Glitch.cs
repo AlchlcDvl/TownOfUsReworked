@@ -86,8 +86,7 @@ public sealed class Glitch : OKilling, IBlocker
         if (cooldown != CooldownType.Fail)
         {
             HackTarget = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, HackButton, GlitchActionsRPC.Hack, HackTarget);
-            HackButton.Begin();
+            HackButton.TriggerRpcAndBegin(GlitchActionsRPC.Hack, HackTarget);
             Play("Hack");
         }
         else
@@ -99,10 +98,7 @@ public sealed class Glitch : OKilling, IBlocker
     private void HitMimic()
     {
         if (MimicTarget)
-        {
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, MimicButton, GlitchActionsRPC.Mimic, MimicTarget);
-            MimicButton.Begin();
-        }
+            MimicButton.TriggerRpcAndBegin(GlitchActionsRPC.Mimic, MimicTarget);
         else
             MimicMenu.Open();
     }

@@ -60,10 +60,7 @@ public sealed class Consort : ISupport, IBlocker
         if (!BlockTarget)
             BlockMenu.Open();
         else
-        {
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BlockButton, BlockTarget);
-            BlockButton.Begin();
-        }
+            BlockButton.TriggerRpcAndBegin(BlockTarget);
     }
 
     private bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || Player.IsBuddyWith(player, Faction);

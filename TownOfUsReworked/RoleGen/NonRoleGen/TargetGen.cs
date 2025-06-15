@@ -23,7 +23,7 @@ public sealed class TargetGen : BaseGen
 
                 var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());
                 ally.Side = faction;
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, ally, faction);
+                CallRpc(MiscRpc.SetTarget, ally, faction);
             }
 
             Message("Allied Factions Set");
@@ -48,7 +48,7 @@ public sealed class TargetGen : BaseGen
 
                 lover.Other = other.Player;
                 other.Other = lover.Player;
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, lover, other);
+                CallRpc(MiscRpc.SetTarget, lover, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
@@ -77,7 +77,7 @@ public sealed class TargetGen : BaseGen
 
                 rival.Other = other.Player;
                 other.Other = rival.Player;
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, rival, other);
+                CallRpc(MiscRpc.SetTarget, rival, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
@@ -106,7 +106,7 @@ public sealed class TargetGen : BaseGen
 
                 link.Other = other.Player;
                 other.Other = link.Player;
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, link, other);
+                CallRpc(MiscRpc.SetTarget, link, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Linked = {link.PlayerName} & {other.PlayerName}");
@@ -135,7 +135,7 @@ public sealed class TargetGen : BaseGen
                 if (!exe.TargetPlayer)
                     continue;
 
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, exe, exe.TargetPlayer);
+                CallRpc(MiscRpc.SetTarget, exe, exe.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Exe Target = {exe.TargetPlayer.name}");
@@ -154,7 +154,7 @@ public sealed class TargetGen : BaseGen
                 if (!guess.TargetPlayer)
                     continue;
 
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, guess, guess.TargetPlayer);
+                CallRpc(MiscRpc.SetTarget, guess, guess.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Guess Target = {guess.TargetPlayer.name}");
@@ -172,7 +172,7 @@ public sealed class TargetGen : BaseGen
                 if (!ga.TargetPlayer)
                     continue;
 
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, ga, ga.TargetPlayer);
+                CallRpc(MiscRpc.SetTarget, ga, ga.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"GA Target = {ga.TargetPlayer.name}");
@@ -190,7 +190,7 @@ public sealed class TargetGen : BaseGen
                 if (!bh.TargetPlayer)
                     continue;
 
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, bh, bh.TargetPlayer);
+                CallRpc(MiscRpc.SetTarget, bh, bh.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"BH Target = {bh.TargetPlayer.name}");
@@ -204,7 +204,7 @@ public sealed class TargetGen : BaseGen
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
                 act.FillRoles(AllPlayers().Random(x => x != act.Player));
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, act, act.PretendRoles);
+                CallRpc(MiscRpc.SetTarget, act, act.PretendRoles);
 
                 if (TownOfUsReworked.MciActive && act.PretendRoles.Count > 0)
                     Message($"Act Targets = {act.PretendListString()}");

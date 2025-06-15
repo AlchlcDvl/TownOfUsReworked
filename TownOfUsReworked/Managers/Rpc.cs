@@ -16,7 +16,7 @@ public static class RpcManager
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
     /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
-    public static RpcWriter CreateWriter(ReworkedRpc rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
+    public static RpcWriter CreateWriter(Enum rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
 
     // /// <summary>
     // /// Creates an instance of <see cref="RpcWriter"/> to potentially write more data to.
@@ -31,14 +31,14 @@ public static class RpcManager
     /// </summary>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallRpc(ReworkedRpc rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
+    public static void CallRpc(Enum rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
 
     /// <summary>
     /// Sends a late RPC message to all players.
     /// </summary>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateRpc(ReworkedRpc rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
+    public static void CallLateRpc(Enum rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
 
     // /// <summary>
     // /// Sends an RPC message with type codes to all players.
@@ -60,7 +60,7 @@ public static class RpcManager
     /// <param name="targetClientId">The player to send the data to.</param>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallTargetedRpc(int targetClientId, ReworkedRpc rpc, params object[] data)
+    public static void CallTargetedRpc(int targetClientId, Enum rpc, params object[] data)
     {
         using var writer = CreateWriter(rpc, data);
         writer?.Send(targetClientId);
@@ -72,7 +72,7 @@ public static class RpcManager
     /// <param name="targetClientId">The player to send the data to.</param>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateTargetedRpc(int targetClientId, ReworkedRpc rpc, params object[] data)
+    public static void CallLateTargetedRpc(int targetClientId, Enum rpc, params object[] data)
     {
         using var writer = CreateWriter(rpc, data);
         writer?.SendLate(targetClientId);
@@ -136,7 +136,7 @@ public static class RpcManager
 
         foreach (var list in split)
         {
-            using var writer = CreateWriter(ReworkedRpc.Misc, MiscRpc.SyncCustomSettings, (byte)list.Length);
+            using var writer = CreateWriter(MiscRpc.SyncCustomSettings, (byte)list.Length);
 
             foreach (var option in list)
             {
@@ -532,6 +532,11 @@ public static class RpcManager
                         reader.ReadPlayer().SetColor(reader.ReadByte());
                         return;
                     }
+                    case VanillaRpc.Report:
+                    {
+                        reader.ReadPlayer().ReportDeadBody(GameData.Instance.GetPlayerById(reader.ReadByte()));
+                        return;
+                    }
                     default:
                     {
                         Failure($"Received unknown vanilla RPC - {vanilla}");
@@ -588,11 +593,6 @@ public static class RpcManager
                             Error(e);
                         }
 
-                        return;
-                    }
-                    case ActionsRpc.CallMeeting:
-                    {
-                        CallMeeting(reader.ReadPlayer());
                         return;
                     }
                     case ActionsRpc.BaitReport:

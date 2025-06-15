@@ -50,7 +50,7 @@ public static class InteractionManager
         else if (Pestilence.Infected.TryGetValue(interactor.PlayerId, out count) && count >= Pestilence.MaxStacks)
             target.RpcMurderPlayer(interactor, DeathReasonEnum.Infected, false);
         else
-            CallRpc(ReworkedRpc.Action, ActionsRpc.Infect, targetId, Pestilence.Infected[targetId]);
+            CallRpc(ActionsRpc.Infect, targetId, Pestilence.Infected[targetId]);
     }
 
     public static CooldownType Interact(PlayerControl source, PlayerControl target, bool isAttack = false, bool astral = false, bool bypass = false, bool delayed = false, DeathReasonEnum reason
@@ -82,7 +82,7 @@ public static class InteractionManager
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsConvertedFanatics);
-                    CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, fanatic, false, faction);
+                    CallRpc(MiscRpc.ChangeRoles, fanatic, false, faction);
                     fanatic.TurnFaction(faction);
                 }
                 else
@@ -201,7 +201,7 @@ public static class InteractionManager
             bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
 
         BastionBomb(target, Bastion.BombRemovedOnKill);
-        CallRpc(ReworkedRpc.Misc, MiscRpc.BastionBomb, target);
+        CallRpc(MiscRpc.BastionBomb, target);
         return abilityUsed ? CooldownType.Reset : CooldownType.Fail;
     }
 

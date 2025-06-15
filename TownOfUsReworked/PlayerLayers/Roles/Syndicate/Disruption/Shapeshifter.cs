@@ -89,7 +89,7 @@ public sealed class Shapeshifter : Disruption
     {
         if (HoldsDrive || (ShapeshiftPlayer1 && ShapeshiftPlayer2))
         {
-            using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.ButtonAction, ShapeshiftButton);
+            using var writer = CreateWriter(ActionsRpc.ButtonAction, ShapeshiftButton);
 
             if (writer is not null)
             {

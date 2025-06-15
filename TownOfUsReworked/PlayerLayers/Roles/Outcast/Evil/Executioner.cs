@@ -103,7 +103,7 @@ public sealed class Executioner : Evil, ITargeter
     private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
-        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, TargetPlayer);
+        CallRpc(MiscRpc.SetTarget, this, TargetPlayer);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -147,14 +147,14 @@ public sealed class Executioner : Evil, ITargeter
 
         if (ExeToJest)
         {
-            CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this);
+            CallRpc(MiscRpc.ChangeRoles, this);
             TurnJest();
         }
         else if (ExecutionerCanPickTargets)
         {
             TargetPlayer = null;
             Rounds = 0;
-            CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
+            CallRpc(MiscRpc.SetTarget, this, 255);
         }
         else
             Player.RpcSuicide();

@@ -94,7 +94,7 @@ public sealed class Altruist : Protective, IReviver
     {
         ReviveButton.Uses += AltManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
-        CallRpc(ReworkedRpc.Action, ActionsRpc.FadeBody, target);
+        CallRpc(ActionsRpc.FadeBody, target);
         FadeBody(target);
         ManaButton.StartCooldown();
     }

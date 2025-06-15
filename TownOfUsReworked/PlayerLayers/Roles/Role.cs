@@ -141,7 +141,7 @@ public abstract class Role : PlayerLayer
         if (!Requesting || BountyTimer <= 2)
             return;
 
-        CallRpc(ReworkedRpc.Action, ActionsRpc.PlaceHit, Player, Player);
+        CallRpc(ActionsRpc.PlaceHit, Player, Player);
         Requestor.GetLayer<BountyHunter>().TentativeTarget = Player;
         Requesting = false;
         Requestor = null;
@@ -153,14 +153,14 @@ public abstract class Role : PlayerLayer
         Requestor.GetLayer<BountyHunter>().TentativeTarget = target;
         Requesting = false;
         Requestor = null;
-        CallRpc(ReworkedRpc.Action, ActionsRpc.PlaceHit, Player, target);
+        CallRpc(ActionsRpc.PlaceHit, Player, target);
     }
 
     private void BombKill(PlayerControl target)
     {
         var success = Interact(Player, target, true) != CooldownType.Fail;
         GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).Do(x => x.BombSuccessful = success);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ForceKill, Player, success);
+        CallRpc(ActionsRpc.ForceKill, Player, success);
     }
 
     public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Deinitialised);

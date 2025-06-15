@@ -50,11 +50,7 @@ public sealed class Banshee : SUtility, IGhosty
         Blocked.Clear();
     }
 
-    private void HitScream()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, ScreamButton);
-        ScreamButton.Begin();
-    }
+    private void HitScream() => ScreamButton.TriggerRpcAndBegin();
 
     private bool Usable() => !Caught;
 

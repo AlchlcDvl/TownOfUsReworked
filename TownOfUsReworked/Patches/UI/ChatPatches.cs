@@ -206,7 +206,7 @@ public static class ChatPatches
         else if (!LocalPlayer.HasDied() && !IsNullEmptyOrWhiteSpace(text))
         {
             Notify(LocalPlayer.PlayerId);
-            CallRpc(ReworkedRpc.Misc, MiscRpc.Notify, LocalPlayer.PlayerId);
+            CallRpc(MiscRpc.Notify, LocalPlayer.PlayerId);
         }
 
         if (!chatHandled)

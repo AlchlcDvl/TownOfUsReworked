@@ -48,8 +48,7 @@ public sealed class Escort : CSupport, IBlocker
         if (cooldown != CooldownType.Fail)
         {
             BlockTarget = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BlockButton, BlockTarget);
-            BlockButton.Begin();
+            BlockButton.TriggerRpcAndBegin(BlockTarget);
         }
         else
             BlockButton.StartCooldown(cooldown);

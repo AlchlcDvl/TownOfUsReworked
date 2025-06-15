@@ -34,11 +34,7 @@ public sealed class Wraith : Deception
 
     private void ClickAgain() => ClickedAgain = true;
 
-    private void HitInvis()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, InvisButton);
-        InvisButton.Begin();
-    }
+    private void HitInvis() => InvisButton.TriggerRpcAndBegin();
 
     private bool EndEffect() => Dead || ClickedAgain;
 }

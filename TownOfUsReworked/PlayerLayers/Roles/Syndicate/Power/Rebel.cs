@@ -32,7 +32,7 @@ public sealed class Rebel : SHead
             allow = Interact(Player, target) != CooldownType.Fail;
 
             if (allow)
-                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
+                CallRpc(ActionsRpc.LayerAction, this, target);
         }
 
         if (!allow)

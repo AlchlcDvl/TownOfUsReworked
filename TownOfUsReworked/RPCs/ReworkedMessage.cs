@@ -10,16 +10,6 @@ namespace TownOfUsReworked.RPCs;
 public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> payload) : BaseRpcMessage(LocalPlayer.NetId)
 {
     /// <summary>
-    /// The id of the client that the message targets.
-    /// </summary>
-    private readonly int TargetClientId = targetClientId;
-
-    /// <summary>
-    /// The byte data to be networked.
-    /// </summary>
-    private readonly Il2CppStructArray<byte> Payload = payload;
-
-    /// <summary>
     /// Value injector to ensure seamless integration with the base game.
     /// </summary>
     private static readonly EnumInjector<RpcCalls> Injector = new(false);
@@ -28,6 +18,16 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// The custom injected enum value that indicates it's a modded rpc.
     /// </summary>
     private static readonly RpcCalls ReworkedType = Injector.InjectAndReturn("ReworkedRpc", CustomRPCCallID); // 255 is used by Reactor
+
+    /// <summary>
+    /// The id of the client that the message targets.
+    /// </summary>
+    private readonly int TargetClientId = targetClientId;
+
+    /// <summary>
+    /// The byte data to be networked.
+    /// </summary>
+    private readonly Il2CppStructArray<byte> Payload = payload;
 
     /// <summary>
     /// The type of the rpc.

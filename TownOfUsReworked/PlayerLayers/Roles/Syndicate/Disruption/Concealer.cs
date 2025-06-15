@@ -65,7 +65,7 @@ public sealed class Concealer : Disruption
     {
         if (HoldsDrive || ConcealedPlayer)
         {
-            using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.ButtonAction, ConcealButton);
+            using var writer = CreateWriter(ActionsRpc.ButtonAction, ConcealButton);
 
             if (writer is not null)
             {

@@ -87,7 +87,7 @@ public sealed class Whisperer : Neophyte
         Members.Do(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
-        using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.LayerAction, this, (byte)PlayerConversion.Count);
+        using var writer = CreateWriter(ActionsRpc.LayerAction, this, (byte)PlayerConversion.Count);
 
         if (writer is null)
             return;

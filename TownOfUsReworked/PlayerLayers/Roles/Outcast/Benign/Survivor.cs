@@ -36,9 +36,5 @@ public sealed class Survivor : Benign
             MaxVests);
     }
 
-    private void HitVest()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, VestButton);
-        VestButton.Begin();
-    }
+    private void HitVest() => VestButton.TriggerRpcAndBegin();
 }

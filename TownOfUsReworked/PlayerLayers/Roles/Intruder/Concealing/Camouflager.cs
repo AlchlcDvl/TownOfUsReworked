@@ -33,11 +33,7 @@ public sealed class Camouflager : Concealing
 
     private static void UnCamouflage() => Hud.Instance.CamouflagerEnabled = false;
 
-    private void HitCamouflage()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, CamouflageButton);
-        CamouflageButton.Begin();
-    }
+    private void HitCamouflage() => CamouflageButton.TriggerRpcAndBegin();
 
     private void ClickAgain() => ClickedAgain = true;
 

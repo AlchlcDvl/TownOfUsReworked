@@ -37,7 +37,7 @@ public sealed class Miner : ISupport
 
     private void Mine()
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, (Vector2)Player.transform.position);
+        CallRpc(ActionsRpc.LayerAction, this, (Vector2)Player.transform.position);
         Vents.Add(SpawnVent(Vents, Player.transform.position, Player.transform.position.z));
         MineButton.StartCooldown();
     }

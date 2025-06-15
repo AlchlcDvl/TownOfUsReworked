@@ -95,7 +95,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
     private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
-        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, TargetPlayer);
+        CallRpc(MiscRpc.SetTarget, this, TargetPlayer);
     }
 
     private void SetLists()
@@ -230,7 +230,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         {
             TargetPlayer = null;
             Rounds = 0;
-            CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
+            CallRpc(MiscRpc.SetTarget, this, 255);
         }
         else
             Player.RpcSuicide();
@@ -315,7 +315,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
     private void RpcMurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, player, guess, guessTarget);
+        CallRpc(ActionsRpc.LayerAction, this, player, guess, guessTarget);
     }
 
     private void MurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)

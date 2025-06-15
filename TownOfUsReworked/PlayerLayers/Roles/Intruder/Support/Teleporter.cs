@@ -52,7 +52,7 @@ public sealed class Teleporter : ISupport, IMover
 
     private void Teleport()
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, TeleportPoint);
+        CallRpc(ActionsRpc.LayerAction, this, TeleportPoint);
         Coroutines.Start(TeleportPlayer(TeleportPoint, this));
         TeleportButton.StartCooldown();
 

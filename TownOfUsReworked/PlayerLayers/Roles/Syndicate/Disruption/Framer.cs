@@ -41,7 +41,7 @@ public sealed class Framer : Disruption
             return;
 
         Framed.Add(player.PlayerId);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, player.PlayerId);
+        CallRpc(ActionsRpc.LayerAction, this, player.PlayerId);
     }
 
     private void Frame(PlayerControl target)

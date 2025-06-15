@@ -274,7 +274,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
             return;
 
         Revived = PlayerByVoteArea(Selected);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RetActionsRpc.Revive, Selected);
+        CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Revive, Selected);
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -562,7 +562,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
         MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
         MediatedPlayers.Add(dead.PlayerId);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RetActionsRpc.Mediate, dead.PlayerId);
+        CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Mediate, dead.PlayerId);
     }
 
     private bool MedUsable() => IsMed;
@@ -634,11 +634,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     public CustomButton AlertButton { get; private set; }
     private bool IsVet => RevivedRole is Veteran;
 
-    private void Alert()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, AlertButton);
-        AlertButton.Begin();
-    }
+    private void Alert() => AlertButton.TriggerRpcAndBegin();
 
     private bool VetUsable() => IsVet;
 
@@ -691,8 +687,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     {
         ParentId = target.ParentId;
         Spread(Player, PlayerByBody(target));
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, ReviveButton, RetActionsRpc.AltRevive, ParentId);
-        ReviveButton.Begin();
+        ReviveButton.TriggerRpcAndBegin(RetActionsRpc.AltRevive, ParentId);
         Flash(Color, Altruist.ReviveDur);
 
         if (Altruist.AltruistTargetBody)
@@ -703,7 +698,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
     {
         ReviveButton.Uses += Altruist.AltManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
-        CallRpc(ReworkedRpc.Action, ActionsRpc.FadeBody, target);
+        CallRpc(ActionsRpc.FadeBody, target);
         FadeBody(target);
     }
 
@@ -720,7 +715,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         if (cooldown != CooldownType.Fail)
         {
             ShieldedPlayer = ShieldedPlayer ? null : target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RetActionsRpc.Shield, ShieldedPlayer?.PlayerId ?? 255);
+            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Shield, ShieldedPlayer?.PlayerId ?? 255);
         }
 
         ShieldButton.StartCooldown(cooldown);
@@ -746,11 +741,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
     private bool SwoopEnd() => Dead || ClickedAgain;
 
-    private void Swoop()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, SwoopButton);
-        SwoopButton.Begin();
-    }
+    private void Swoop() => SwoopButton.TriggerRpcAndBegin();
 
     private bool ChamUsable() => IsCham;
 
@@ -826,8 +817,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         if (cooldown != CooldownType.Fail)
         {
             BlockTarget = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BlockButton, RetActionsRpc.Roleblock, BlockTarget);
-            BlockButton.Begin();
+            BlockButton.TriggerRpcAndBegin(BlockTarget);
         }
         else
             BlockButton.StartCooldown(cooldown);
@@ -880,7 +870,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         }
         else
         {
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RetActionsRpc.Transport, TransportMenu.Selected[0], TransportMenu.Selected[1]);
+            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Transport, TransportMenu.Selected[0], TransportMenu.Selected[1]);
             Coroutines.Start(Transporter.TransportPlayers(PlayerById(TransportMenu.Selected[0]), PlayerById(TransportMenu.Selected[1]), this));
             TransportMenu.Selected.Clear();
             TransportButton.StartCooldown();
@@ -901,7 +891,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         if (cooldown != CooldownType.Fail)
         {
             BombedIDs.Add(target.Id);
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RetActionsRpc.Bomb, target);
+            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Bomb, target);
         }
 
         BombButton.StartCooldown(cooldown);
@@ -938,7 +928,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RetActionsRpc.Place, target.PlayerId);
+            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Place, target.PlayerId);
             Trapped.Add(target.PlayerId);
         }
 
@@ -953,7 +943,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
             return;
 
         if (trigger.AmOwner)
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RetActionsRpc.Trigger, trapped, trigger, isAttack);
+            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Trigger, trapped, trigger, isAttack);
 
         TriggeredRoles.Add(trigger.GetRole().Type);
         AttackedSomeone = isAttack;

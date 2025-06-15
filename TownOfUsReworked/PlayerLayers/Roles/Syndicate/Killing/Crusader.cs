@@ -49,8 +49,7 @@ public sealed class Crusader : SKilling
         if (cooldown != CooldownType.Fail)
         {
             CrusadedPlayer = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, CrusadeButton, CrusadedPlayer);
-            CrusadeButton.Begin();
+            CrusadeButton.TriggerRpcAndBegin(CrusadedPlayer);
         }
         else
             CrusadeButton.StartCooldown(cooldown);

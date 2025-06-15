@@ -68,8 +68,7 @@ public sealed class Disguiser : Deception
         if (cooldown != CooldownType.Fail)
         {
             DisguisedPlayer = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, DisguiseButton, MeasuredPlayer, DisguisedPlayer);
-            DisguiseButton.Begin();
+            DisguiseButton.TriggerRpcAndBegin(MeasuredPlayer, DisguisedPlayer);
             PopNotif("<b>You have disguised " + target.name + " into " + MeasuredPlayer.name + "!</b>", Color);
         }
         else

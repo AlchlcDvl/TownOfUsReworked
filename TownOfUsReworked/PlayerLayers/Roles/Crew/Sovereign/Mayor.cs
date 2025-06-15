@@ -33,7 +33,7 @@ public sealed class Mayor : Sovereign
 
     private void Reveal()
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.PublicReveal, Player);
+        CallRpc(ActionsRpc.PublicReveal, Player);
         PublicReveal(Player);
 
         if (!MayorDirectSpawn && MeetingPatches.MeetingCount <= 3)

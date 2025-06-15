@@ -80,7 +80,7 @@ public sealed class Hunter : HideAndSeek
             }
             case HnSMode.Infection:
             {
-                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
+                CallRpc(ActionsRpc.LayerAction, this, target);
                 TurnHunter(target);
 
                 if (AmongUsClient.Instance.AmHost)

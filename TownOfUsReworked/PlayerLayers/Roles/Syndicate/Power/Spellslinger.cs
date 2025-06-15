@@ -39,7 +39,7 @@ public sealed class Spellslinger : SHead
         if (cooldown != CooldownType.Fail)
         {
             Spelled.Add(target.PlayerId);
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
+            CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
 
             if (AmongUsClient.Instance.AmHost)
                 CheckEndGame.CheckSpellWin(this);

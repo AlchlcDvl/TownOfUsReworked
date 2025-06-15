@@ -121,7 +121,7 @@ public static class CustomAchievementManager
         if (player.AmOwner || TownOfUsReworked.MciActive)
             UnlockAchievement(name);
         else
-            CallTargetedRpc(player.OwnerId, ReworkedRpc.Misc, MiscRpc.Achievement, name);
+            CallTargetedRpc(player.OwnerId, MiscRpc.Achievement, name);
     }
 
     public static void UnlockAchievement(string name)

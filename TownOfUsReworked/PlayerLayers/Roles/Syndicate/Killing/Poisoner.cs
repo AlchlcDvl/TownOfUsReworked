@@ -78,8 +78,7 @@ public sealed class Poisoner : SKilling
         if (cooldown != CooldownType.Fail)
         {
             PoisonedPlayer = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, PoisonButton, PoisonedPlayer);
-            PoisonButton.Begin();
+            PoisonButton.TriggerRpcAndBegin(PoisonedPlayer);
         }
         else
             PoisonButton.StartCooldown(cooldown);
@@ -88,10 +87,7 @@ public sealed class Poisoner : SKilling
     private void HitGlobalPoison()
     {
         if (PoisonedPlayer)
-        {
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, GlobalPoisonButton, PoisonedPlayer);
-            GlobalPoisonButton.Begin();
-        }
+            GlobalPoisonButton.TriggerRpcAndBegin(PoisonedPlayer);
         else
             PoisonMenu.Open();
     }

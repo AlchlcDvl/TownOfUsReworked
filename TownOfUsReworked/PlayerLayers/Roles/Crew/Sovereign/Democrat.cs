@@ -43,7 +43,7 @@ public sealed class Democrat : Sovereign
 
     private void Reveal()
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.PublicReveal, Player);
+        CallRpc(ActionsRpc.PublicReveal, Player);
         PublicReveal(Player);
     }
 
@@ -54,7 +54,7 @@ public sealed class Democrat : Sovereign
         if (cooldown != CooldownType.Fail)
         {
             Campaigned.Add(target.PlayerId);
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
+            CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
         }
 
         CampaignButton.StartCooldown(cooldown);

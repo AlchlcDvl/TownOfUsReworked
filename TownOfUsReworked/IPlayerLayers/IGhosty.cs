@@ -34,7 +34,7 @@ public interface IGhosty : IPositioner
     public void Catch(PlayerControl clicker)
     {
         if (clicker.AmOwner)
-            CallRpc(ReworkedRpc.Misc, MiscRpc.Catch, Player, clicker);
+            CallRpc(MiscRpc.Catch, Player, clicker);
 
         Player.CustomDie(DeathReasonEnum.Caught, clicker);
         Player.gameObject.layer = LayerMask.NameToLayer("Ghost");

@@ -72,8 +72,7 @@ public sealed class Enforcer : IKilling
         if (cooldown != CooldownType.Fail)
         {
             BombedPlayer = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BombButton, BombedPlayer);
-            BombButton.Begin();
+            BombButton.TriggerRpcAndBegin(BombedPlayer);
         }
         else
             BombButton.StartCooldown(cooldown);

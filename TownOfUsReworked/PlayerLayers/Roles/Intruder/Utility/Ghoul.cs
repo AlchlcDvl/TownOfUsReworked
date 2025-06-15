@@ -35,7 +35,7 @@ public sealed class Ghoul : IUtility, IGhosty
 
     private void Mark(PlayerControl target)
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, MarkedPlayer);
+        CallRpc(ActionsRpc.LayerAction, this, MarkedPlayer);
         MarkButton.StartCooldown();
     }
 

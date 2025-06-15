@@ -66,7 +66,7 @@ public sealed class Cryomaniac : OKilling, IDouser
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, DouseActionsRpc.Douse, target.PlayerId);
+        CallRpc(ActionsRpc.LayerAction, this, DouseActionsRpc.Douse, target.PlayerId);
     }
 
     public override void BeforeMeeting()

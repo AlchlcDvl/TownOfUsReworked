@@ -90,7 +90,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             Uses = Mathf.Clamp(Uses, 0, Max);
 
             if (Owner.Local)
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SyncMaxUses, this, value);
+                CallRpc(MiscRpc.SyncMaxUses, this, value);
         }
     }
     public int UsesCount = -1;
@@ -107,7 +107,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             if (!Owner.Local)
                 return;
 
-            CallRpc(ReworkedRpc.Misc, MiscRpc.SyncUses, this, value);
+            CallRpc(MiscRpc.SyncUses, this, value);
             Base.SetUsesRemaining(UsesCount);
         }
     }
@@ -455,7 +455,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             {
                 ClickedAgain = true;
                 OnClickedAgain();
-                CallRpc(ReworkedRpc.Action, ActionsRpc.Cancel, this);
+                CallRpc(ActionsRpc.Cancel, this);
             }
         }
 
@@ -474,7 +474,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     public void TriggerRpcAndBegin(params object[] args)
     {
-        CallRpc(ReworkedRpc.Action, [ActionsRpc.ButtonAction, this, .. args]);
+        CallRpc(ActionsRpc.ButtonAction, [this, .. args]);
         Begin();
     }
 

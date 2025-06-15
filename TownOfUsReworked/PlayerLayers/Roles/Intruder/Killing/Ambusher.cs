@@ -45,8 +45,7 @@ public sealed class Ambusher : IKilling
         if (cooldown != CooldownType.Fail)
         {
             AmbushedPlayer = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, AmbushButton, AmbushedPlayer);
-            AmbushButton.Begin();
+            AmbushButton.TriggerRpcAndBegin(AmbushedPlayer);
         }
         else
             AmbushButton.StartCooldown(cooldown);

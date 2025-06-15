@@ -57,11 +57,7 @@ public sealed class Grenadier : Concealing
 
     private void UnFlash() => FlashedPlayers.Clear();
 
-    private void HitFlash()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, FlashButton);
-        FlashButton.Begin();
-    }
+    private void HitFlash() => FlashButton.TriggerRpcAndBegin();
 
     private void StartFlash()
     {

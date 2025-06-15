@@ -191,7 +191,7 @@ public sealed class LayerHandler : RoleBehaviour
         {
             WinState = WinLose.TaskRunnerWins;
             Winner = true;
-            CallRpc(ReworkedRpc.Misc, MiscRpc.WinLose, WinState, Player);
+            CallRpc(MiscRpc.WinLose, WinState, Player);
         }
 
         if (!CurrentRole.TasksDone)

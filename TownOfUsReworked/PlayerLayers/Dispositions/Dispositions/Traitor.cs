@@ -24,7 +24,7 @@ public sealed class Traitor : FactionChanger
             return;
 
         var faction = GetFactionChoice();
-        CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this, false, faction);
+        CallRpc(MiscRpc.ChangeRoles, this, false, faction);
         TurnFaction(faction);
     }
 

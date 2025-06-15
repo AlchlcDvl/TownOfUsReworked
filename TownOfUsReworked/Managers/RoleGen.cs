@@ -339,7 +339,7 @@ public static class RoleGenManager
         GetLayer(id, rpc).Start(player);
 
         if (!TownOfUsReworked.MciActive)
-            CallRpc(ReworkedRpc.Misc, MiscRpc.SetLayer, id, rpc, player);
+            CallRpc(MiscRpc.SetLayer, id, rpc, player);
     }
 
     public static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, Layer.None, rpc);
@@ -367,7 +367,7 @@ public static class RoleGenManager
         Message("Role Gen Start");
         Message($"Current Mode = {GameModeSettings.GameMode}");
         ResetEverything();
-        CallRpc(ReworkedRpc.Misc, MiscRpc.Start);
+        CallRpc(MiscRpc.Start);
         Message("Cleared Variables");
         var gen = RoleGen[GameModeSettings.GameMode];
 
@@ -477,7 +477,7 @@ public static class RoleGenManager
         else
         {
             allPlayers.Do(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
-            CallRpc(ReworkedRpc.Misc, MiscRpc.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
+            CallRpc(MiscRpc.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
                 BetterAirship.SpawnPoints);
         }
 

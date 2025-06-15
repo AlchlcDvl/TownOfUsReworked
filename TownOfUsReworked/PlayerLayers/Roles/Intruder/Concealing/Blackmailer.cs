@@ -48,7 +48,7 @@ public sealed class Blackmailer : Concealing, IIntimidator
         if (cooldown != CooldownType.Fail)
         {
             Target = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, Target);
+            CallRpc(ActionsRpc.LayerAction, this, Target);
 
             if (target.IsSilenced())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");

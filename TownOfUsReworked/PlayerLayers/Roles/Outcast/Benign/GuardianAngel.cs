@@ -112,23 +112,21 @@ public sealed class GuardianAngel : Benign, ITargeter
     private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
-        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, TargetPlayer);
+        CallRpc(MiscRpc.SetTarget, this, TargetPlayer);
     }
 
     private void TurnSurv() => new Survivor().RoleUpdate(this);
 
     private void HitProtect()
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, ProtectButton);
-        ProtectButton.Begin();
+        ProtectButton.TriggerRpcAndBegin();
         GraveProtectButton.Uses--;
         TrulyDead = GraveProtectButton.Uses <= 0 && Dead;
     }
 
     private void HitGraveProtect()
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, GraveProtectButton);
-        GraveProtectButton.Begin();
+        GraveProtectButton.TriggerRpcAndBegin();
         ProtectButton.Uses--;
         TrulyDead = ProtectButton.Uses <= 0 && Dead;
     }
@@ -150,7 +148,7 @@ public sealed class GuardianAngel : Benign, ITargeter
         {
             TargetPlayer = null;
             Rounds = 0;
-            CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
+            CallRpc(MiscRpc.SetTarget, this, 255);
         }
         else
             Player.RpcSuicide();

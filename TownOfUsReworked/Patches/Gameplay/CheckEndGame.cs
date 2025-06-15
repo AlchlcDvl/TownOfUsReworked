@@ -28,7 +28,7 @@ public static class CheckEndGame
             });
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
             winners.Do(x => LayerHandler.Handlers[x.PlayerId].Winner = true);
-            CallRpc(ReworkedRpc.Misc, [MiscRpc.WinLose, WinState, .. winners]);
+            CallRpc(MiscRpc.WinLose, [WinState, .. winners]);
         }
 
         if (WinState == WinLose.None)
@@ -66,7 +66,7 @@ public static class CheckEndGame
             return;
 
         winnerIds.Do(x => LayerHandler.Handlers[x].Winner = true);
-        CallRpc(ReworkedRpc.Misc, [ MiscRpc.WinLose, WinState, .. winnerIds ]);
+        CallRpc(MiscRpc.WinLose, [WinState, .. winnerIds]);
     }
 
     public static void CheckSpellWin(Spellslinger hexer)
@@ -115,7 +115,7 @@ public static class CheckEndGame
             },
             _ => WinLose.NobodyWins
         };
-        CallRpc(ReworkedRpc.Misc, [ MiscRpc.WinLose, WinState, .. players.Where(factionCheck) ]);
+        CallRpc(MiscRpc.WinLose, [WinState, .. players.Where(factionCheck)]);
     }
 
     private static void CheckFactionWin(HashSet<byte> winnerIds)
@@ -183,7 +183,7 @@ public static class CheckEndGame
     public static void PerformStalemate()
     {
         WinState = WinLose.NobodyWins;
-        CallRpc(ReworkedRpc.Misc, MiscRpc.WinLose, WinState);
+        CallRpc(MiscRpc.WinLose, WinState);
     }
 
     public static bool TasksDone()

@@ -52,7 +52,7 @@ public sealed class Drunkard : Disruption
     {
         if (HoldsDrive || ConfusedPlayer)
         {
-            using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.ButtonAction, ConfusedPlayer);
+            using var writer = CreateWriter(ActionsRpc.ButtonAction, ConfusedPlayer);
 
             if (writer is not null)
             {

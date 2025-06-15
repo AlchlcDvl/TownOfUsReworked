@@ -157,11 +157,7 @@ public sealed class RpcReader : IDisposable
     /// </summary>
     /// <returns>The deserialized value.</returns>
     /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private object Read(byte? typeId = null)
-    {
-        typeId ??= ReadByte();
-        return Read(typeId.Value.GetTypeFromId());
-    }
+    private object Read(byte? typeId = null) => Read((typeId ?? ReadByte()).GetTypeFromId());
 
     /// <summary>
     /// Reads a casted collection of values from the data, prefixed by a count.

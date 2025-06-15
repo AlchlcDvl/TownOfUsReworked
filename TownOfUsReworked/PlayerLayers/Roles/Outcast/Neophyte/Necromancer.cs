@@ -118,8 +118,7 @@ public sealed class Necromancer : Neophyte, IReviver
         {
             ParentId = target.ParentId;
             Spread(Player, player);
-            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, ResurrectButton, ParentId);
-            ResurrectButton.Begin();
+            ResurrectButton.TriggerRpcAndBegin(ParentId);
             Flash(Color, ResurrectDur);
 
             if (NecromancerTargetBody)
@@ -149,7 +148,7 @@ public sealed class Necromancer : Neophyte, IReviver
     {
         ResurrectButton.Uses += NecroManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
-        CallRpc(ReworkedRpc.Action, ActionsRpc.FadeBody, target);
+        CallRpc(ActionsRpc.FadeBody, target);
         FadeBody(target);
         ManaButton.StartCooldown();
     }

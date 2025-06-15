@@ -11,6 +11,12 @@ public static class CalculateLightRadiusPatch
             return false;
         }
 
+        if (!LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+        {
+            __result = 1f;
+            return false;
+        }
+
         if (IsSubmerged()) // Custom implementation
             return false;
 
@@ -28,15 +34,14 @@ public static class CalculateLightRadiusPatch
             return false;
         }
 
-        var pc = player.Object;
         var baseT = __instance.MaxLightRadius;
         var t = 1f;
         bool affectedByLights;
 
-        if (pc.Is<Role>(out var role))
+        if (handler.CurrentRole is {} role)
         {
-            affectedByLights = !pc.Is<Torch>() && role.AffectedByLights;
-            t *= role.Faction switch
+            affectedByLights = handler.CurrentAbility is not Torch && role.AffectedByLights;
+            t *= handler.CurrentFaction switch
             {
                 Faction.Crew => CrewSettings.CrewVision,
                 Faction.Intruder => IntruderSettings.IntruderVision,

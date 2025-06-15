@@ -119,7 +119,7 @@ public static class VentPatches
 
         LocalPlayer.RpcSuicide();
         BastionBomb(vent, Bastion.BombRemovedOnKill);
-        CallRpc(ReworkedRpc.Misc, MiscRpc.BastionBomb, vent);
+        CallRpc(MiscRpc.BastionBomb, vent);
         return false;
     }
 

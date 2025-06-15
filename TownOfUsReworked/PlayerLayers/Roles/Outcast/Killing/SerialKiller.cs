@@ -39,11 +39,7 @@ public sealed class SerialKiller : OKilling
             (UsableFunc)Usable);
     }
 
-    private void Lust()
-    {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BloodlustButton);
-        BloodlustButton.Begin();
-    }
+    private void Lust() => BloodlustButton.TriggerRpcAndBegin();
 
     private void Stab(PlayerControl target) => StabButton.StartCooldown(Interact(Player, target, true));
 

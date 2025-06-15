@@ -30,7 +30,7 @@ public sealed class Defector : Disposition
             return;
 
         var faction = GetFactionChoice();
-        CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this, faction);
+        CallRpc(MiscRpc.ChangeRoles, this, faction);
         TurnSides(faction);
     }
 

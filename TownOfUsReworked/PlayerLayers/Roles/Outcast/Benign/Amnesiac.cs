@@ -55,7 +55,7 @@ public sealed class Amnesiac : Benign
     {
         var player = PlayerByBody(target);
         Spread(Player, player);
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, player);
+        CallRpc(ActionsRpc.LayerAction, this, player);
         Remember(player);
     }
 

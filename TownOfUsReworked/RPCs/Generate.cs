@@ -8,14 +8,14 @@ public static partial class Generate
     {
         byte id = 0;
 
-        // C# primitive types (these never change)
+        // C# primitive types (these never change...hopefully)
         var primitives = new[] { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long), typeof(ulong), typeof(Half), typeof(float), typeof(double),
             typeof(decimal), typeof(bool), typeof(char), typeof(string), typeof(Enum), typeof(Type), typeof(IEnumerable) };
 
         foreach (var type in primitives)
             TypeIdMap[id++] = type;
 
-        // Base game types (ideally this array never changes, unless I want to start needing serialising another base game type)
+        // Base game types (ideally this array also never changes, unless I want to start serialising another base game type)
         var gameTypes = new[] { typeof(PlayerControl), typeof(DeadBody), typeof(Vent), typeof(PlayerVoteArea), typeof(Vector2) };
 
         foreach (var type in gameTypes)

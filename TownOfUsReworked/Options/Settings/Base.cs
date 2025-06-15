@@ -271,7 +271,7 @@ public abstract class Option(CustomOptionType type)
         }
         else
         {
-            CallRpc(ReworkedRpc.Misc, MiscRpc.LoadPreset, presetName);
+            CallRpc(MiscRpc.LoadPreset, presetName);
             SettingsPatches.CurrentPreset = presetName;
             LoadSettings(text);
             FlashText(tmp, UColor.green);
@@ -342,7 +342,7 @@ public abstract class Option(CustomOptionType type)
         }
 
         SendOptionRPC(save: false);
-        CallRpc(ReworkedRpc.Misc, MiscRpc.SyncMap, MapSettings.Map);
+        CallRpc(MiscRpc.SyncMap, MapSettings.Map);
     }
 
     public static IEnumerable<T> GetOptions<T>() where T : Option => AllOptions.OfType<T>();

@@ -42,7 +42,7 @@ public sealed class Void : Deity
         if (cooldown != CooldownType.Fail)
         {
             ToBeExtracted.Add(target.PlayerId);
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
+            CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
         }
 
         ExtractButton.StartCooldown(cooldown);

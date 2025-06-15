@@ -6,7 +6,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.CmdCheckColor)), HarmonyPrefix]
     public static bool CmdCheckColorPrefix(PlayerControl __instance, byte bodyColor)
     {
-        CallRpc(ReworkedRpc.Vanilla, VanillaRpc.SetColor, __instance, bodyColor);
+        CallRpc(VanillaRpc.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
         return false;
     }
@@ -176,7 +176,7 @@ public static class PlayerControlPatches
                 WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
                 var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
                 winners.Do(x => LayerHandler.Handlers[x.PlayerId].Winner = true);
-                CallRpc(ReworkedRpc.Misc, [ MiscRpc.WinLose, WinState, .. winners ]);
+                CallRpc(MiscRpc.WinLose, [WinState, .. winners]);
             }
             else
                 CheckEndGame.CheckPlayerWins();
@@ -293,6 +293,40 @@ public static class PlayerControlPatches
                 return true;
         }
 
+        return false;
+    }
+
+    [HarmonyPatch(nameof(PlayerControl.CmdReportDeadBody)), HarmonyPrefix]
+    public static bool CmdReportDeadBodyPrefix(PlayerControl __instance, NetworkedPlayerInfo target)
+    {
+        if (TownOfUsReworked.MciActive || AmongUsClient.Instance.AmHost)
+            __instance.ReportDeadBody(target);
+        else
+            CallLateTargetedRpc(GameData.Instance.GetHost().OwnerId, VanillaRpc.Report, __instance, target?.PlayerId ?? 255);
+
+        return false;
+    }
+
+    [HarmonyPatch(nameof(PlayerControl.ReportDeadBody)), HarmonyPrefix]
+    public static bool ReportDeadBodyPrefix(PlayerControl __instance, NetworkedPlayerInfo target)
+    {
+		if (AmongUsClient.Instance.IsGameOver || MeetingHud.Instance)
+			return false;
+
+		if (!target && PlayerControl.LocalPlayer.myTasks.Any(PlayerTask.TaskIsEmergency))
+			return false;
+
+		if (__instance.Data.IsDead)
+			return false;
+
+		MeetingRoomManager.Instance.AssignSelf(__instance, target);
+
+		if (!AmongUsClient.Instance.AmHost || GameManager.Instance.CheckTaskCompletion())
+			return false;
+
+		__instance.logger.Debug(target ? $"Reporting dead body {target.PlayerId}" : "Calling emergency meeting");
+		HUD().OpenMeetingRoom(__instance);
+		__instance.RpcStartMeeting(target);
         return false;
     }
 }

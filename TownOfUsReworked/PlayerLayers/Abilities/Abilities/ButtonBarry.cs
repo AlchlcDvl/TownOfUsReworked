@@ -20,7 +20,7 @@ public sealed class ButtonBarry : Ability
     {
         ButtonUsed = true;
         FixUtils.FixCritSabotages();
-        CallMeeting(Player);
+        Player.CmdReportDeadBody(null);
     }
 
     private bool Usable() => !ButtonUsed;

@@ -45,7 +45,7 @@ public sealed class Bastion : CKilling, IVentBomber
         if (cooldown != CooldownType.Fail)
         {
             BombedIDs.Add(target.Id);
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
+            CallRpc(ActionsRpc.LayerAction, this, target);
         }
 
         BombButton.StartCooldown(cooldown);

@@ -49,7 +49,7 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
         else
             return;
 
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, id);
+        CallRpc(ActionsRpc.LayerAction, this, id);
         Infected.Add(id);
     }
 

@@ -5,7 +5,6 @@ using BepInEx.Logging;
 
 namespace TownOfUsReworked;
 
-// FIXME: Can't call meetings (something I'm patching is rejecting it???)
 // TODO: Add commenting and documentation for the codebase - IPR
 // TODO: Re-add version handling
 // TODO: Finish adding missing translation keys before the next release - IPR
@@ -27,7 +26,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 63;
+    private const int DevBuild = 64;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -55,7 +54,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     private static readonly string DevString = IsDev ? ("-dev" + DevBuild) : "";
     private const string StreamString = IsStream ? "s" : "";
     public static readonly string VersionFinal = $"v{VersionS}{DevString}{StreamString}";
-    private static string VersionFull => $"v{VersionFinal}+{VersionSignature}+{ModHash}";
+    private static string VersionFull => $"{VersionFinal}+{VersionSignature}+{ModHash}";
 
     public static readonly Version ModVer = new(VersionS);
 

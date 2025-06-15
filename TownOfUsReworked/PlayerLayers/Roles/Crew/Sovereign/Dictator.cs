@@ -36,7 +36,7 @@ public sealed class Dictator : Sovereign
     {
         if (!Revealed && !GetLayers<Dictator>().Any(x => !x.TrulyDead && x.Revealed))
         {
-            CallRpc(ReworkedRpc.Action, ActionsRpc.PublicReveal, Player);
+            CallRpc(ActionsRpc.PublicReveal, Player);
             PublicReveal(Player);
         }
         else
@@ -46,7 +46,7 @@ public sealed class Dictator : Sovereign
     public override void OnReveal()
     {
         if (Local)
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, DictActionsRpc.Tribunal);
+            CallRpc(ActionsRpc.LayerAction, this, DictActionsRpc.Tribunal);
 
         Tribunal = true;
     }
@@ -56,7 +56,7 @@ public sealed class Dictator : Sovereign
         DictMenu.HideButtons();
 
         if (ToBeEjected && !Dead)
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, DictActionsRpc.SelectToEject, ToBeEjected);
+            CallRpc(ActionsRpc.LayerAction, this, DictActionsRpc.SelectToEject, ToBeEjected);
     }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)

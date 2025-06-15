@@ -29,11 +29,23 @@ public sealed class RpcWriter : IDisposable
     /// <param name="rpc">The main RPC header enum value for this message.</param>
     /// <param name="withTypeCode">A flag indicating whether type codes should be used for initial data serialization.</param>
     /// <param name="data">Optional initial data to serialize into the buffer during initialization.</param>
-    public RpcWriter(ReworkedRpc rpc, bool withTypeCode, params object[] data)
+    public RpcWriter(Enum rpc, bool withTypeCode, params object[] data)
     {
         Payload = ArrayPool<byte>.Shared.Rent(256);
         Position = 0;
-        Payload[Position++] = (byte)rpc;
+        var header = rpc switch
+        {
+            ActionsRpc => ReworkedRpc.Action,
+            MiscRpc => ReworkedRpc.Misc,
+            VanillaRpc => ReworkedRpc.Vanilla,
+            // TestRpc => ReworkedRpc.Test,
+            ReworkedRpc => throw new InvalidOperationException("Can't use ReworkedRpc in this context"),
+            _ => throw new InvalidDataException($"Unknown Rpc Enum {rpc.GetType().Name} is being used")
+        };
+        Payload[Position++] = (byte)header;
+
+        foreach (var b in GetBytes(rpc, withTypeCode))
+            Payload[Position++] = b;
 
         foreach (var b in data.SelectMany(x => GetBytes(x, withTypeCode)))
             Payload[Position++] = b;
@@ -216,15 +228,9 @@ public sealed class RpcWriter : IDisposable
         yield return value;
     }
 
-    private static IEnumerable<byte> GetBytes(bool value)
-    {
-        yield return (byte)(value ? 1 : 0);
-    }
+    private static IEnumerable<byte> GetBytes(bool value) => GetBytes((byte)(value ? 1 : 0));
 
-    private static IEnumerable<byte> GetBytes(sbyte value)
-    {
-        yield return (byte)(value + 128);
-    }
+    private static IEnumerable<byte> GetBytes(sbyte value) => GetBytes((byte)(value + 128));
 
     private static IEnumerable<byte> GetBytes(char value) => BitConverter.GetBytes(value);
 

@@ -203,7 +203,7 @@ public sealed class BountyHunter : Evil, ITargeter
             {
                 TargetPlayer = null;
                 Rounds = 0;
-                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
+                CallRpc(MiscRpc.SetTarget, this, 255);
             }
             else
                 Player.RpcSuicide();
@@ -224,7 +224,7 @@ public sealed class BountyHunter : Evil, ITargeter
         var role = RequestingPlayer.GetRole();
         role.Requesting = true;
         role.Requestor = Player;
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RequestingPlayer);
+        CallRpc(ActionsRpc.LayerAction, this, RequestingPlayer);
     }
 
     public override void ReadRPC(RpcReader reader)

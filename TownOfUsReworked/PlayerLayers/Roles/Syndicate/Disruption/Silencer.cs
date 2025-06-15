@@ -48,7 +48,7 @@ public sealed class Silencer : Disruption, IIntimidator
         if (cooldown != CooldownType.Fail)
         {
             Target = target;
-            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, Target);
+            CallRpc(ActionsRpc.LayerAction, this, Target);
 
             if (target.IsBlackmailed())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");

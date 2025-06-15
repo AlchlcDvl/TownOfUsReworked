@@ -48,7 +48,7 @@ public sealed class Janitor : Concealing
     private void Clean(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));
-        CallRpc(ReworkedRpc.Action, ActionsRpc.FadeBody, target);
+        CallRpc(ActionsRpc.FadeBody, target);
         FadeBody(target);
         CleanButton.StartCooldown();
 
@@ -60,7 +60,7 @@ public sealed class Janitor : Concealing
     {
         target.GetComponent<DeadBodyHandler>().StartDrag(Player);
         Spread(Player, PlayerByBody(target));
-        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
+        CallRpc(ActionsRpc.LayerAction, this, target);
     }
 
     public void Drop()
@@ -68,7 +68,7 @@ public sealed class Janitor : Concealing
         if (!CurrentlyDragging)
             return;
 
-        CallRpc(ReworkedRpc.Action, ActionsRpc.Drop, CurrentlyDragging.Body);
+        CallRpc(ActionsRpc.Drop, CurrentlyDragging.Body);
         CurrentlyDragging.StopDrag();
         DragButton.StartCooldown();
     }

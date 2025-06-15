@@ -52,8 +52,7 @@ public sealed class Morphling : Deception
 
     private void HitMorph()
     {
-        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, MorphButton, SampledPlayer);
-        MorphButton.Begin();
+        MorphButton.TriggerRpcAndBegin(SampledPlayer);
         PopNotif("<b>You have morphed into " + SampledPlayer.name + "!</b>", Color);
     }
 
