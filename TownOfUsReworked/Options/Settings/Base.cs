@@ -55,7 +55,7 @@ public abstract class Option(CustomOptionType type)
         (["CrewMax", "CrewMin", "OutcastMax", "OutcastMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin", "ApocalypseMax", "ApocalypseMin", "ComplianceMax", "ComplianceMin",
             "PandoricaMax", "PandoricaMin", "IlluminatiMax", "IlluminatiMin"], ["not+IgnoreFactionCaps"]),
         (["MaxDispositions", "MinDispositions", "MinAbilities", "MaxAbilities", "MinModifiers", "MaxModifiers"], ["not+IgnoreLayerCaps"]),
-        (["MaxCI", "MaxCK", "MaxCrP", "MaxCSv", "MaxCS", "MaxNB", "MaxNE", "MaxNH", "MaxNK", "MaxNN", "MaxIC", "MaxID", "MaxIH", "MaxIK", "MaxIS", "MaxSD", "MaxSyK", "MaxSP", "MaxSSu"], [
+        (["MaxCi", "MaxCk", "MaxCrP", "MaxCSv", "MaxCs", "MaxNb", "MaxNe", "MaxNh", "MaxAh", "MaxNn", "MaxNk", "MaxIc", "MaxID", "MaxIh", "MaxIs", "MaxSD", "MaxSyK", "MaxSh", "MaxSSu"], [
             "not+IgnoreAlignmentCaps"]),
         (["Allied", "Allied1"], ["not+IlluminatiUnleashed", "not+OrderOfCompliance"]),
         (["PandoricaOpens", "OrderOfCompliance"], ["not+IlluminatiUnleashed"]),
@@ -205,7 +205,7 @@ public abstract class Option(CustomOptionType type)
 
     public virtual void Debug() => TranslationManager.DebugId(ID);
 
-    public virtual bool IsId(string id) => ID.ToLower() == id;
+    public virtual bool IsId(string id) => ID == id;
 
     public virtual void ReadValueRpc(RpcReader reader) {}
 
@@ -349,17 +349,9 @@ public abstract class Option(CustomOptionType type)
 
     public static IEnumerable<T> GetHeaderOptions<T>() where T : BaseHeaderOption => SortedOptions.OfType<T>();
 
-    private static Option GetOption(string id)
-    {
-        id = id.ToLower();
-        return AllOptions.Find(x => x.ID.ToLower().IsAny($"customOption.{id}", id) || x.Name.ToLower() == id); // To support any case changes
-    }
+    private static Option GetOption(string id) => AllOptions.Find(x => x.ID.IsAny($"customOption.{id}", id) || x.Name == id);
 
-    private static bool TryGetOption(string id, out Option option)
-    {
-        id = id.ToLower();
-        return AllOptions.TryFinding(x => x.ID.ToLower().IsAny($"customOption.{id}", id) || x.Name.ToLower() == id, out option);
-    }
+    private static bool TryGetOption(string id, out Option option) => AllOptions.TryFinding(x => x.ID.IsAny($"customOption.{id}", id) || x.Name == id, out option);
 
     public static Option GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);
 

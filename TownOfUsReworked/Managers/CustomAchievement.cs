@@ -61,12 +61,38 @@ public static class CustomAchievementManager
         }
 
         // Adding in achievements for each type of win (an achievement for 5 wins for each), I was just too lazy to add them all manually to the list
-        LayerDictionary.Keys.Where(x => x != LayerEnum.Assassin).Do(layer => AllAchievements.Add(new($"LayerWins.{layer}")));
+        foreach (var layer in LayerDictionary.Keys.Where(x => x != LayerEnum.Assassin))
+        {
+            AllAchievements.Add(new($"LayerWins.{layer}", eog: true));
+            TranslationManager.RegisterComplexId($"Achievement.LayerWins.{layer}.Description");
+        }
+
+        TranslationManager.RegisterComplexId("Achievement.LayerWins.Description");
 
         foreach (var map in Enum.GetValues<MapEnum>())
         {
-            if (map != MapEnum.Random)
-                AllAchievements.Add(new($"MapWins.{map}"));
+            if (map == MapEnum.Random)
+                continue;
+
+            AllAchievements.Add(new($"MapWins.{map}", eog: true));
+            TranslationManager.RegisterComplexId($"Achievement.MapWins.{map}.Description");
+        }
+
+        TranslationManager.RegisterComplexId("Achievement.MapWins.Description");
+
+        if (TownOfUsReworked.IsDev)
+        {
+            foreach (var ach in AllAchievements)
+            {
+                TranslationManager.DebugId($"Achievement.{ach.Name}.Title");
+                TranslationManager.DebugId($"Achievement.{ach.Name}.Description");
+            }
+
+            foreach (var id in TranslationManager.AllTranslations.Keys.Where(x => x.StartsWith("Achievement")))
+            {
+                if (!AllAchievements.Any(x => x.IsId(id)))
+                    Fatal(id);
+            }
         }
     }
 

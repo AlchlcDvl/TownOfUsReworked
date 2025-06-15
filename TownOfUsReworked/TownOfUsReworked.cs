@@ -11,9 +11,11 @@ namespace TownOfUsReworked;
 // TODO: Finish adding missing translation keys before the next release - IPR
 [BepInAutoPlugin("me.alchlcdvl.reworked", "Reworked")]
 [BepInDependency(ReactorPlugin.Id)]
-[BepInIncompatibility("MalumMenu")]
 [ReactorModFlags(ModFlags.RequireOnAllClients | ModFlags.DisableServerAuthority)]
 [BepInProcess("Among Us.exe")]
+#if PC
+[BepInIncompatibility("MalumMenu")] // CHEATERS BEGONE! *epic thunderclap is heard behind me*
+# endif
 public sealed partial class TownOfUsReworked : BasePlugin
 {
     // A bit of forewarning to whoever dares to look through my horrid codebase, majority of the comments and documentation have been written months,
@@ -25,7 +27,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 62;
+    private const int DevBuild = 63;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -37,7 +39,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static readonly string Visors = Path.Combine(Assets, "Visors");
     public static readonly string Nameplates = Path.Combine(Assets, "Nameplates");
     public static readonly string Colors = Path.Combine(Assets, "Colors");
-    public static readonly string Options = Path.Combine(Assets, "ReworkedOptions");
+    public static readonly string Options = Path.Combine(Assets, "Options");
     public static readonly string Images = Path.Combine(Assets, "Images");
     public static readonly string Sounds = Path.Combine(Assets, "Sounds");
     public static readonly string Bundles = Path.Combine(Assets, "Bundles");
@@ -59,7 +61,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static NormalGameOptionsV09 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV09 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
-    public static IGameOptions CurrentOptions => GameOptionsManager.Instance.CurrentGameOptions;
+    // public static IGameOptions CurrentOptions => GameOptionsManager.Instance.CurrentGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
     public static bool DebugMode => IsDev || ClientOptions.DebugModeOn;

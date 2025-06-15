@@ -316,7 +316,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
             var maxSSu = Mathf.Clamp(SyndicateSupportSettings.MaxSSu.Value, 0, RoleGenManager.SyndicateSupportRoles.Count);
             var maxSD = Mathf.Clamp(SyndicateDisruptionSettings.MaxSD.Value, 0, RoleGenManager.SyndicateDisruptionRoles.Count);
             var maxSyK = Mathf.Clamp(SyndicateKillingSettings.MaxSyK.Value, 0, RoleGenManager.SyndicateKillingRoles.Count);
-            var maxSp = Mathf.Clamp(SyndicateHeadSettings.MaxSp.Value, 0, RoleGenManager.SyndicateHeadRoles.Count);
+            var maxSp = Mathf.Clamp(SyndicateHeadSettings.MaxSh.Value, 0, RoleGenManager.SyndicateHeadRoles.Count);
             var maxSynSum = maxSSu + maxSD + maxSyK + maxSp;
 
             while (maxSynSum > maxSyn && maxSynSum > 0)

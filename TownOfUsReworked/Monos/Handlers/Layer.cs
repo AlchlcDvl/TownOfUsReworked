@@ -356,20 +356,7 @@ public sealed class LayerHandler : RoleBehaviour
         InitializeAbilityButton();
 
         if (player.AmOwner && !TutorialManager.InstanceExists && !TownOfUsReworked.MciActive)
-        {
-            CustomStatsManager.IncrementStat(CurrentRole.Faction switch
-            {
-                Faction.Crew => CustomStatsManager.StatsGamesCrew,
-                Faction.Intruder => CustomStatsManager.StatsGamesIntruder,
-                Faction.Outcast => CustomStatsManager.StatsGamesOutcast,
-                Faction.Syndicate => CustomStatsManager.StatsGamesSyndicate,
-                Faction.Apocalypse => CustomStatsManager.StatsGamesApocalypse,
-                Faction.Pandorica => CustomStatsManager.StatsGamesPandorica,
-                Faction.Compliance => CustomStatsManager.StatsGamesCompliance,
-                Faction.Illuminati => CustomStatsManager.StatsGamesIlluminati,
-                _ => StringNames.None
-            });
-        }
+            CustomStatsManager.IncrementStat(CurrentRole.Faction);
     }
 
     public override void OnMeetingStart()

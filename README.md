@@ -325,7 +325,7 @@ The Dictator has the ability to call tribunals. Upon calling the first tribunal,
 
 **Origin**: Town Of Us
 
-The Engineer can fix sabotages from anywhere on the map and use vents to get across the map easily.
+The Engineer can fix sabotages from anywhere on the map.
 
 ## Escort <img height="17" src="./Images/Escort.png">
 

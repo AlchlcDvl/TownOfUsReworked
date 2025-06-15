@@ -10,12 +10,12 @@ public abstract class AssetLoader<T> : AssetLoader
         if (!Directory.Exists(DirectoryInfo))
             Directory.CreateDirectory(DirectoryInfo);
 
-        byte[] json;
+        string json;
         var path = Path.Combine(DirectoryInfo, $"{Manifest}.json");
 
         if (ClientOptions.ForceUseLocal)
         {
-            var task = File.ReadAllBytesAsync(path);
+            using var task = File.ReadAllTextAsync(path);
             yield return WaitUntilTaskComplete(task);
             json = task.Result;
         }
@@ -29,24 +29,24 @@ public abstract class AssetLoader<T> : AssetLoader
             if (isError)
             {
                 Error(www.error);
-                var task = File.ReadAllBytesAsync(path);
+                using var task = File.ReadAllTextAsync(path);
                 yield return WaitUntilTaskComplete(task);
                 json = task.Result;
             }
             else
             {
-                json = www.downloadHandler.data;
+                json = www.downloadHandler.text;
 
                 if (json?.Length is null or 0)
                 {
                     Warning($"Online JSON for {Manifest} was missing");
-                    var task = File.ReadAllBytesAsync(path);
+                    using var task = File.ReadAllTextAsync(path);
                     yield return WaitUntilTaskComplete(task);
                     json = task.Result;
                 }
                 else
                 {
-                    var task = File.WriteAllBytesAsync(path, json);
+                    using var task = File.WriteAllTextAsync(path, json);
                     yield return WaitUntilTaskComplete(task);
                 }
             }

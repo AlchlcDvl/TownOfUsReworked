@@ -23,7 +23,13 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
             item.ShadowColors = [ .. item.ShadowColorValues.Select(FromHex) ];
 
         if (!item.Default)
-            item.StringID = TranslationManager.GetOrAddName($"Colors.{item.Name}");
+        {
+            var id = $"Colors.{item.Name}";
+            item.StringID = TranslationManager.GetOrAddName(id);
+
+            if (TownOfUsReworked.IsDev)
+                TranslationManager.DebugId(id);
+        }
 
         AllColors[item.ColorID] = item;
     }
@@ -34,5 +40,14 @@ public sealed class ColorLoader : BaseCosmeticLoader<CustomColor>
         Palette.TextColors = Palette.PlayerColors = response.Select(x => (Color32)x.GetMainColor()).ToArray();
         Palette.ShadowColors = response.Select(x => (Color32)x.GetShadowColor()).ToArray();
         Palette.TextOutlineColors = Palette.PlayerColors.Select(x => x.Alternate()).ToArray();
+
+        if (TownOfUsReworked.IsDev)
+        {
+            foreach (var id in TranslationManager.AllTranslations.Keys.Where(x => x.StartsWith("Colors")))
+            {
+                if (!AllColors.Values.Any(x => !x.Default && id == $"Colors.{x.Name}"))
+                    Fatal(id);
+            }
+        }
     }
 }

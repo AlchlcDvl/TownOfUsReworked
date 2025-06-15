@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Modules;
 /// </summary>
 /// <typeparam name="T">The enum type that this collection will store.</typeparam>
 [Serializable]
-public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelectValue<T>>, IDisposable, INetSerializable, INetDeserializable
+public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDeserializable, ICollection<T>, IEquatable<MultiSelectValue<T>>
     where T : struct, Enum
 {
     /// <summary>
@@ -102,8 +102,10 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// <returns>Returns the first value.</returns>
     public T First() => values.First();
 
+    /// <inheritdoc cref="Enumerable.Select"/>
     public IEnumerable<E> Select<E>(Func<T, E> predicate) => values.Select(predicate);
 
+    /// <inheritdoc cref="Enumerable.SelectMany"/>
     public IEnumerable<E> SelectMany<E>(Func<T, IEnumerable<E>> predicate) => values.SelectMany(predicate);
 
     /// <summary>
@@ -199,7 +201,7 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
     /// Converts the array of values to an instance of MultiSelectValue.
     /// </summary>
     /// <param name="values">The values to convert.</param>
-    public static implicit operator MultiSelectValue<T>(T[] values) => new(values);
+    public static implicit operator MultiSelectValue<T>(T[] values) => [.. values];
 
     /// <summary>
     /// Converts the value string to an instance of MultiSelectValue.
@@ -256,4 +258,176 @@ public sealed class MultiSelectValue<T> : ICollection<T>, IEquatable<MultiSelect
         left.values.RemoveRange(right);
         return left;
     }
+}
+
+[Serializable]
+public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable, INetDeserializable, IEquatable<RoleOptionData>
+{
+    public RoleOptionData() : this(0, 0, false, false, LayerEnum.None) {}
+
+    public byte Chance { get; set; } = chance;
+    public byte Count { get; set; } = count;
+    public bool Unique { get; set; } = unique;
+    public bool Active { get; set; } = active;
+    public LayerEnum ID { get; set; } = layer;
+
+    public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
+
+    public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
+
+    public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && Count > 0 && IsClassic()) || (Active && IsAllAny()) || (IsList() && ListEntryOption.IsAdded(ID.CastToSlot()))) &&
+        ID.IsValid(relatedCount);
+
+    public readonly IEnumerable<byte> GetBytes() => [ Chance, Count, (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
+
+    public void FromBytes(RpcReader reader)
+    {
+        Chance = reader.ReadByte();
+        Count = reader.ReadByte();
+        Unique = reader.ReadBool();
+        Active = reader.ReadBool();
+        ID = (LayerEnum)reader.ReadByte();
+    }
+
+    public readonly bool Equals(RoleOptionData other) => other.Chance == Chance && other.Count == Count && other.Unique == Unique && other.Active == Active && other.ID == ID;
+
+    public override readonly bool Equals(object obj) => obj is RoleOptionData data && Equals(data);
+
+    public override readonly int GetHashCode() => HashCode.Combine(Chance, Count, Unique, Active, ID);
+
+    public static bool operator ==(RoleOptionData left, RoleOptionData right) => left.Equals(right);
+
+    public static bool operator !=(RoleOptionData left, RoleOptionData right) => !(left == right);
+
+    public static RoleOptionData Parse(string input)
+    {
+        var parts = input.TrueSplit(',');
+        return new(byte.Parse(parts[0]), byte.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
+    }
+}
+
+/// <summary>
+/// A wrapper for handling quick value conversions between <see cref="byte"/>, <see cref="int"/> and <see cref="float"/>.
+/// </summary>
+/// <param name="num">The value to be set.</param>
+[Serializable]
+public struct Number(float num) : IComparable, IFormattable, INetSerializable, INetDeserializable, IEquatable<Number>, IComparable<Number>
+{
+    public Number() : this(0) {}
+
+    /// <summary>
+    /// Gets the value.
+    /// </summary>
+    public float Value { get; private set; } = num;
+
+    /// <summary>
+    /// Implicitly converts to float.
+    /// </summary>
+    /// <param name="number">The number to convert.</param>
+    /// <returns>A float value.</returns>
+    public static implicit operator float(Number number) => number.Value;
+
+    /// <summary>
+    /// Implicitly converts to int.
+    /// </summary>
+    /// <param name="number">The number to convert.</param>
+    /// <returns>An int value.</returns>
+    public static implicit operator int(Number number) => (int)number.Value;
+
+    /// <summary>
+    /// Implicitly converts to byte.
+    /// </summary>
+    /// <param name="number">The number to convert.</param>
+    /// <returns>A byte value.</returns>
+    public static implicit operator byte(Number number) => (byte)number.Value;
+
+    /// <summary>
+    /// Implicitly converts to Number.
+    /// </summary>
+    /// <param name="num">The number to convert.</param>
+    /// <returns>A Number instance.</returns>
+    public static implicit operator Number(float num) => new(num);
+
+    /// <inheritdoc cref="op_Implicit(float)"/>
+    public static implicit operator Number(int num) => new(num);
+
+    /// <summary>
+    /// Equality check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if both values match</returns>
+    public static bool operator ==(Number a, Number b) => a.Value == b.Value;
+
+    /// <summary>
+    /// Inequality check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if neither values match</returns>
+    public static bool operator !=(Number a, Number b) => a.Value != b.Value;
+
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if <paramref name="a"/> is greater than <paramref name="b"/>.</returns>
+    public static bool operator >(Number a, Number b) => a.Value > b.Value;
+
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if <paramref name="a"/> is greater than or equal <paramref name="b"/>.</returns>
+    public static bool operator >=(Number a, Number b) => a.Value >= b.Value;
+
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if <paramref name="a"/> is lesser than <paramref name="b"/>.</returns>
+    public static bool operator <(Number a, Number b) => a.Value < b.Value;
+
+    /// <summary>
+    /// Order check.
+    /// </summary>
+    /// <param name="a">Left.</param>
+    /// <param name="b">Right.</param>
+    /// <returns><c>true</c> if both values match</returns>
+    /// <returns><c>true</c> if <paramref name="a"/> is lesser than or equal <paramref name="b"/>.</returns>
+    public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
+
+    /// <inheritdoc/>
+    public readonly IEnumerable<byte> GetBytes() => RpcWriter.GetBytes(Value);
+
+    /// <inheritdoc/>
+    public override readonly int GetHashCode() => Value.GetHashCode();
+
+    /// <inheritdoc/>
+    public readonly bool Equals(Number other) => Value == other.Value;
+
+    /// <inheritdoc/>
+    public override readonly bool Equals(object obj) => obj is Number number && Value == number.Value;
+
+    /// <inheritdoc/>
+    public override readonly string ToString() => Value.ToString();
+
+    /// <inheritdoc/>
+    public readonly string ToString(string format, IFormatProvider formatProvider) => Value.ToString(format, formatProvider);
+
+    /// <inheritdoc/>
+    public readonly int CompareTo(object obj) => obj switch
+    {
+        Number i => CompareTo(i),
+        _ => Value.CompareTo(obj)
+    };
+
+    /// <inheritdoc/>
+    public readonly int CompareTo(Number other) => Value.CompareTo(other.Value);
+
+    /// <inheritdoc/>
+    public void FromBytes(RpcReader reader) => Value = reader.ReadFloat();
 }

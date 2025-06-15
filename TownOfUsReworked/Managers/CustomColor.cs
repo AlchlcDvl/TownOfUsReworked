@@ -64,7 +64,7 @@ public static class CustomColorManager
 
     public static UColor Alternate(this UColor color, float val = 0.2f) => color.IsDark() ? color.Light(val) : color.Shadow(val);
 
-    // public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
+    public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
 
     private static bool IsDark(this UColor color) => (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f) < 0.5f;
 
@@ -294,7 +294,7 @@ public static class CustomColorManager
     public static readonly UColor What = FromHex("#6697FFFF");
     public static readonly UColor FirstShield = FromHex("#C2185BFF");
     public static readonly UColor AcceptedTeal = FromHex("#2CEAC6FF");
-    public static readonly UColor BlindVision = FromHex("#D4D4D4FF");
+    public static readonly UColor BlindVision = FromHex("#888888");
     public static readonly UColor Attack = FromHex("#E37C21FF");
     public static readonly UColor Defense = FromHex("#2B0538FF");
 
@@ -308,5 +308,5 @@ public static class CustomColorManager
     // #B34D99 #FFC34F
 
     // Symbol Storage
-    // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 ī l · ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
+    // ⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν ψ ✧ ¢ ⁂ ¤ 彡 个 「 」 요 ロ 卄 ī l · ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ Σ Λ $ γ
 }

@@ -1349,7 +1349,7 @@ public static class SyndicateKillingSettings
 [AlignmentHeaderOption(ListSlot.SyndicateHead)]
 public static class SyndicateHeadSettings
 {
-    public static ReworkedNumberOption MaxSp = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
+    public static ReworkedNumberOption MaxSh = new(0, 250, 1, defaultValue: 1) { ModifyValue = HandleMaxMinLimits.Set };
 }
 
 [AlignmentHeaderOption(ListSlot.SyndicateSupport)]

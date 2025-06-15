@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
+// TODO: Finish this
 [LayerHeaderOption(LayerEnum.Gluttony)]
 public sealed class Gluttony : Deity
 {

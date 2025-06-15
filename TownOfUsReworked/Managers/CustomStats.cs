@@ -8,17 +8,10 @@ public static class CustomStatsManager
     public static StringNames StatsRoleblocked;
     public static StringNames StatsKilled;
     public static StringNames StatsHitImmune;
-    public static StringNames StatsGamesCrew;
-    public static StringNames StatsGamesIntruder;
-    public static StringNames StatsGamesSyndicate;
-    public static StringNames StatsGamesApocalypse;
-    public static StringNames StatsGamesOutcast;
-    public static StringNames StatsGamesIlluminati;
-    public static StringNames StatsGamesCompliance;
-    public static StringNames StatsGamesPandorica;
     public static StringNames StatsConvertedFanatics;
     private static StringNames StatsLayerWins;
     private static StringNames StatsMapWins;
+    private static StringNames StatsFactionGames;
 
     public static List<StringNames> OrderedStats;
     private static readonly List<StringNames> SupportVanillaStats =
@@ -39,17 +32,30 @@ public static class CustomStatsManager
     ];
 
     private static readonly Dictionary<MapEnum, uint> MapWins = [];
+    private static readonly Dictionary<Faction, uint> FactionWins = [];
     private static readonly Dictionary<LayerEnum, uint> LayerWins = [];
     private static readonly Dictionary<StringNames, uint> CustomStats = [];
 
     private static readonly ValueMap<StringNames, MapEnum> MapMap = [];
-    private static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
     private static readonly ValueMap<StringNames, StatID> StatsMap = [];
+    private static readonly ValueMap<StringNames, Faction> FactionMap = [];
+    private static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
 
     private static readonly EnumInjector<StatID> Injector = new();
 
     public static void Setup()
     {
+        var path = Path.Combine(Application.persistentDataPath, "reworkedStats");
+
+        if (File.Exists(path))
+        {
+            try
+            {
+                using var reader = new BinaryReader(File.OpenRead(path));
+                reader.DeserializeCustomStats();
+            } catch {}
+        }
+
         StatsGamesWon = TranslationManager.GetOrAddName("Stats.GamesWon");
         StatsGamesLost = TranslationManager.GetOrAddName("Stats.GamesLost");
         StatsGamesDrawn = TranslationManager.GetOrAddName("Stats.GamesDrawn");
@@ -57,27 +63,39 @@ public static class CustomStatsManager
         StatsKilled = TranslationManager.GetOrAddName("Stats.Killed", StringNames.StatsImpostorKills);
         StatsHitImmune = TranslationManager.GetOrAddName("Stats.HitImmune");
         StatsConvertedFanatics = TranslationManager.GetOrAddName("Stats.ConvertedFanatics");
-        StatsGamesCrew = TranslationManager.GetOrAddName("Stats.CrewGames");
-        StatsGamesIntruder = TranslationManager.GetOrAddName("Stats.IntruderGames");
-        StatsGamesSyndicate = TranslationManager.GetOrAddName("Stats.SyndicateGames");
-        StatsGamesApocalypse = TranslationManager.GetOrAddName("Stats.ApocalypseGames");
-        StatsGamesOutcast = TranslationManager.GetOrAddName("Stats.OutcastGames");
-        StatsGamesIlluminati = TranslationManager.GetOrAddName("Stats.IlluminatiGames");
-        StatsGamesCompliance = TranslationManager.GetOrAddName("Stats.ComplianceGames");
-        StatsGamesPandorica = TranslationManager.GetOrAddName("Stats.PandoricaGames");
         StatsLayerWins = TranslationManager.GetOrAddName("Stats.LayerWins");
         StatsMapWins = TranslationManager.GetOrAddName("Stats.MapWins");
+        StatsFactionGames = TranslationManager.GetOrAddName("Stats.Games");
+
+        // Preloading any missing stats
+        var factions = new[] { Faction.Crew, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse, Faction.Outcast, Faction.Pandorica, Faction.Compliance, Faction.Illuminati,
+            Faction.Cabal, Faction.Cult, Faction.Followers, Faction.Reanimated, Faction.Undead };
+
+        Enum.GetValues<MapEnum>().Do(x => GetMapWins(x));
+        LayerDictionary.Keys.Do(x => GetLayerWins(x));
+        factions.Do(x => GetFactionWins(x));
+        Enum.GetValues<StringNames>().Do(x => GetStat(x));
+
+        foreach (var faction in factions)
+        {
+            FactionMap[TranslationManager.GetOrAddName($"Stats.Games.{faction}", customName: StatsFactionGames, replacements: [("%faction%", () =>
+                TranslationManager.Translate($"Faction.{faction}"))])] = faction;
+        }
+
+        foreach (var map in MapWins.Keys)
+        {
+            MapMap[TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [("%map%", () => TranslationManager.Translate($"Map.{map}"))])] = map;
+        }
+
+        foreach (var layer in LayerWins.Keys)
+        {
+            LayerMap[TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [("%layer%", () => TranslationManager.Translate($"Layer.{layer}"))])] =
+                layer;
+        }
 
         OrderedStats =
         [
-            StatsGamesCrew,
-            StatsGamesIntruder,
-            StatsGamesSyndicate,
-            StatsGamesApocalypse,
-            StatsGamesOutcast,
-            StatsGamesIlluminati,
-            StatsGamesCompliance,
-            StatsGamesPandorica,
+            .. MapMap.Keys,
             StatsGamesWon,
             StatsGamesLost,
             StatsGamesDrawn,
@@ -93,38 +111,10 @@ public static class CustomStatsManager
             StringNames.StatsTimesEjected,
             StatsHitImmune,
             StatsConvertedFanatics,
-            StringNames.StatsTimesPettedPet
+            StringNames.StatsTimesPettedPet,
+            .. MapMap.Keys,
+            .. LayerMap.Keys
         ];
-
-        var path = Path.Combine(Application.persistentDataPath, "reworkedStats");
-
-        if (File.Exists(path))
-        {
-            try
-            {
-                using var reader = new BinaryReader(File.OpenRead(path));
-                reader.DeserializeCustomStats();
-            } catch {}
-        }
-
-        // Preloading any missing stats
-        Enum.GetValues<MapEnum>().Do(x => GetMapWins(x));
-        LayerDictionary.Keys.Do(x => GetLayerWins(x));
-        Enum.GetValues<StringNames>().Do(x => GetStat(x));
-
-        foreach (var map in MapWins.Keys)
-        {
-            var val = TranslationManager.GetOrAddName($"Stats.MapWins.{map}", customName: StatsMapWins, replacements: [("%map%", () => TranslationManager.Translate($"Map.{map}"))]);
-            OrderedStats.Add(val);
-            MapMap[val] = map;
-        }
-
-        foreach (var layer in LayerWins.Keys)
-        {
-            var val = TranslationManager.GetOrAddName($"Stats.LayerWins.{layer}", customName: StatsLayerWins, replacements: [("%layer%", () => TranslationManager.Translate($"Layer.{layer}"))]);
-            OrderedStats.Add(val);
-            LayerMap[val] = layer;
-        }
 
         foreach (var pair in StatsPopup.BaseStatsToShow)
         {
@@ -149,6 +139,12 @@ public static class CustomStatsManager
     }
 
     private static void IncrementStat(MapEnum map) => MapWins[map] = MapWins.GetValueOrDefault(map) + 1;
+
+    public static void IncrementStat(Faction faction)
+    {
+        if (FactionDictionary.ContainsKey(faction))
+            FactionWins[faction] = FactionWins.GetValueOrDefault(faction) + 1;
+    }
 
     public static void IncrementStat(StatID stat) => IncrementStat(StatsMap[stat]);
 
@@ -193,6 +189,9 @@ public static class CustomStatsManager
         if (MapMap.TryGetValue(stat, out var map))
             return GetMapWins(map);
 
+        if (FactionMap.TryGetValue(stat, out var faction))
+            return GetFactionWins(faction);
+
         if (!CustomStats.TryGetValue(stat, out var val))
             CustomStats[stat] = val = 0;
 
@@ -217,6 +216,17 @@ public static class CustomStatsManager
 
         if (!LayerWins.TryGetValue(layer, out var val))
             return LayerWins[layer] = 0;
+
+        return val;
+    }
+
+    private static uint GetFactionWins(Faction faction)
+    {
+        if (!FactionDictionary.ContainsKey(faction))
+            return 0;
+
+        if (!FactionWins.TryGetValue(faction, out var val))
+            return FactionWins[faction] = 0;
 
         return val;
     }

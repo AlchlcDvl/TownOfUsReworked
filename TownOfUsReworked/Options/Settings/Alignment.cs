@@ -124,6 +124,7 @@ public sealed class AlignmentOption(ListSlot alignment, bool noParts = false) : 
             Right.gameObject.SetActive(false);
             Center.gameObject.SetActive(false);
             Single.gameObject.SetActive(true);
+            SavedMode = Mode.None;
             return;
         }
 

@@ -88,6 +88,7 @@ public static class UpdateSplashPatch
         Generate.GenerateAll();
         Modules.Info.SetAllInfo();
         UpdateRegions();
+        TranslationManager.Debug();
 
         yield return null;
     }

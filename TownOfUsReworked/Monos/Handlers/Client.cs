@@ -330,28 +330,28 @@ public sealed class ClientHandler : MonoBehaviour
             prefabs.Add(SettingsPatches.AlignmentPrefab);
         }
 
-        if (!SettingsPatches.LayerHeaderPrefab)
+        if (!SettingsPatches.SpecialHeaderPrefab)
         {
             // Using MissingBehaviour because it literally does nothing, and I need a MonoBehaviour reference for the layer header prefabs
 
             // Label = 0, Title = 1, Info = 2, Desc = 3, Collapse = 4
             //                       ┗---------┗------- Text = 0
-            SettingsPatches.LayerHeaderPrefab = new GameObject("LayerHeaderPrefab").DontDestroy().AddComponent<BlankBehaviour>();
+            SettingsPatches.SpecialHeaderPrefab = new GameObject("LayerHeaderPrefab").DontDestroy().AddComponent<BlankBehaviour>();
 
-            var label = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(0), SettingsPatches.LayerHeaderPrefab.transform);
+            var label = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(0), SettingsPatches.SpecialHeaderPrefab.transform);
             label.localPosition += new Vector3(0.12f, 0.08f, 0f);
             label.name = "Label";
 
-            var title = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(1), SettingsPatches.LayerHeaderPrefab.transform);
+            var title = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(2).GetChild(1), SettingsPatches.SpecialHeaderPrefab.transform);
             title.GetComponent<RectTransform>().sizeDelta = new(1.8f, 0.2201f);
             title.localPosition += new Vector3(0f, 0.08f, 0f);
             title.name = "Title";
 
-            var info = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(3), SettingsPatches.LayerHeaderPrefab.transform);
+            var info = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(3), SettingsPatches.SpecialHeaderPrefab.transform);
             info.localPosition = new(-5.7f, -0.2f, 0f);
             info.name = "Info";
 
-            var desc = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(4), SettingsPatches.LayerHeaderPrefab.transform);
+            var desc = Instantiate(roles.AdvancedRolesSettings.transform.GetChild(4), SettingsPatches.SpecialHeaderPrefab.transform);
             desc.localPosition = new(-3.028f, -0.4478f, 0f);
             desc.localScale = new(0.1135f, 0.1494f, 0.5687f);
             desc.name = "Desc";
@@ -360,16 +360,16 @@ public sealed class ClientHandler : MonoBehaviour
             descText.localScale = new(10f, 6.6931f, 1.7584f);
             descText.name = "Text";
 
-            var newButton = Instantiate(SettingsPatches.StringPrefab.PlusBtn, SettingsPatches.LayerHeaderPrefab.transform);
+            var newButton = Instantiate(SettingsPatches.StringPrefab.PlusBtn, SettingsPatches.SpecialHeaderPrefab.transform);
             newButton.transform.localScale *= 0.4f;
             newButton.transform.localPosition = new(-2.1f, 0f, 0f);
             newButton.OverrideOnClickListeners(BlankVoid);
             newButton.name = "Collapse";
 
-            LayerHeaderOption.OgLabel = label.GetComponent<SpriteRenderer>().sprite;
-            LayerHeaderOption.OgPosition = label.localPosition;
+            SpecialHeader.OgLabel = label.GetComponent<SpriteRenderer>().sprite;
+            SpecialHeader.OgPosition = label.localPosition;
 
-            prefabs.Add(SettingsPatches.LayerHeaderPrefab);
+            prefabs.Add(SettingsPatches.SpecialHeaderPrefab);
         }
 
         foreach (var mono in prefabs)

@@ -9,10 +9,10 @@ public static class TranslationManager
     private static readonly Dictionary<string, (string Key, Func<string> Value)[]> ReplacementsMap = [];
     private static readonly List<string> MissingIds = [];
     private static readonly EnumInjector<StringNames> Injector = new();
+    private static readonly List<string> ComplexIds = [];
 
     private static string Translate(string id, (string Key, string Value)[] toReplace, string language)
     {
-        id = id.ToLower();
         language ??= DataManager.Settings.Language.CurrentLanguage.ToString().ToLower(); // Get the current language if none is provided
 
         try
@@ -34,23 +34,22 @@ public static class TranslationManager
 
     // public static string Translate(string id, string language, params (string Key, string Value)[] toReplace) => Translate(id, toReplace, language);
 
-    public static bool IdExists(string id) => AllTranslations.ContainsKey(id.ToLower());
+    public static bool IdExists(string id) => AllTranslations.ContainsKey(id);
 
     public static void DebugId(string id)
     {
-        id = id.ToLower();
-
-        if (IdExists(id) || MissingIds.Contains(id))
+        if (IdExists(id) || MissingIds.Contains(id) || ComplexIds.Contains(id))
             return;
 
         Fatal(id);
         MissingIds.Add(id);
     }
 
+    public static void RegisterComplexId(string id) => ComplexIds.Add(id);
+
     private static StringNames AddNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
         var value = Injector.InjectAndReturn(id.Replace(".", ""), true); // Inject and find the translations
-        id = id.ToLower();
         CustomStringNames[value] = id; // Add the id to the dictionary
 
         // If the custom value overrides translations of a vanilla one, add it to the dictionary for later remapping
@@ -64,6 +63,8 @@ public static class TranslationManager
                 list.Add(value);
             else
                 CustomToCustom[customName] = [value];
+
+            ComplexIds.Add(id);
         }
 
         if (replacements is not null)
@@ -114,12 +115,23 @@ public static class TranslationManager
 
     public static StringNames GetOrAddName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
-        id = id.ToLower();
-
         if (CustomStringNames.TryGetKey(id, out var value)) // Try to find a custom string name by the given id
             return value;
 
         return VanillaToCustomMap.TryGetValue(vanillaName, out value) ? // Contingency in case the value could not be found
             value : AddNextName(id, vanillaName, customName, replacements); // Add and return the new id if it could not be found
+    }
+
+    public static void Debug()
+    {
+        foreach (var layer in LayerDictionary.Keys)
+        {
+            DebugId($"Layer.{layer}");
+        }
+
+        foreach (var layer in FactionDictionary.Keys)
+        {
+            DebugId($"Faction.{layer}");
+        }
     }
 }

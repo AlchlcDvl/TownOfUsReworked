@@ -137,7 +137,7 @@ public static class SettingsPatches
     public static StringOption MultiSelectPrefab;
     public static BlankBehaviour MultiOptionPrefab;
     public static CategoryHeaderMasked HeaderPrefab;
-    public static BlankBehaviour LayerHeaderPrefab;
+    public static BlankBehaviour SpecialHeaderPrefab;
     public static CategoryHeaderEditRole AlignmentPrefab;
     private static PassiveButton ButtonPrefab;
 
@@ -263,9 +263,9 @@ public static class SettingsPatches
             {
                 header.Setting = UObject.Instantiate((MonoBehaviour)(header.Type switch
                 {
-                    CustomOptionType.Header or CustomOptionType.ListHolder or CustomOptionType.AlignmentHeader => HeaderPrefab,
+                    CustomOptionType.Header or CustomOptionType.ListHolder => HeaderPrefab,
                     CustomOptionType.Alignment => AlignmentPrefab,
-                    CustomOptionType.LayerHeader => LayerHeaderPrefab,
+                    CustomOptionType.LayerHeader or CustomOptionType.AlignmentHeader => SpecialHeaderPrefab,
                     _ =>  throw new ArgumentOutOfRangeException($"There's no header prefab for {header.Type}")
                 }), parent);
                 header.OptionCreated();
@@ -465,7 +465,7 @@ public static class SettingsPatches
                     }
 
                     var isHeader = header is HeaderOption;
-                    var isLayerHeader = header is LayerHeaderOption;
+                    var isLayerHeader = header is LayerHeaderOption or AlignmentHeaderOption;
 
                     if (!isHeader)
                         y -= 0.1f;

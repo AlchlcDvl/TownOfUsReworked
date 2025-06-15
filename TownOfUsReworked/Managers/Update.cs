@@ -33,12 +33,12 @@ public static class UpdateManager
 
         WrongAuVersion = null;
 
-        byte[] json;
+        string json;
         var path = Path.Combine(TownOfUsReworked.Other, "Versions.json");
 
         if (ClientOptions.ForceUseLocal)
         {
-            using var task = File.ReadAllBytesAsync(path);
+            using var task = File.ReadAllTextAsync(path);
             yield return WaitUntilTaskComplete(task);
             json = task.Result;
         }
@@ -52,24 +52,24 @@ public static class UpdateManager
             if (isError)
             {
                 Error(www.error);
-                using var task = File.ReadAllBytesAsync(path);
+                using var task = File.ReadAllTextAsync(path);
                 yield return WaitUntilTaskComplete(task);
                 json = task.Result;
             }
             else
             {
-                json = www.downloadHandler.data;
+                json = www.downloadHandler.text;
 
                 if (json?.Length is null or 0)
                 {
-                    using var task = File.ReadAllBytesAsync(path);
+                    using var task = File.ReadAllTextAsync(path);
                     yield return WaitUntilTaskComplete(task);
                     json = task.Result;
                     Warning("Online versioning JSON for was missing");
                 }
                 else
                 {
-                    using var task = File.WriteAllBytesAsync(path, json);
+                    using var task = File.WriteAllTextAsync(path, json);
                     yield return WaitUntilTaskComplete(task);
                 }
             }
@@ -92,6 +92,9 @@ public static class UpdateManager
 
         var auVer = ConstantsPatch.OriginalGetBroadcastVersion();
 
+        if (TownOfUsReworked.IsDev)
+            Info("Internal Ver: " + auVer);
+
         if (relevant.GameVersions.ContainsKey(auVer))
             yield break;
 
@@ -112,12 +115,12 @@ public static class UpdateManager
         UpdateSplashPatch.SetText($"Fetching {updateType} Data");
         Message($"Getting update info for {updateType}");
 
-        byte[] json;
+        string json;
         var path = Path.Combine(TownOfUsReworked.Other, $"{updateType}UpdateData.json");
 
         if (ClientOptions.ForceUseLocal)
         {
-            using var task = File.ReadAllBytesAsync(path);
+            using var task = File.ReadAllTextAsync(path);
             yield return WaitUntilTaskComplete(task);
             json = task.Result;
         }
@@ -132,24 +135,24 @@ public static class UpdateManager
             if (isError)
             {
                 Error(www.error);
-                using var task = File.ReadAllBytesAsync(path);
+                using var task = File.ReadAllTextAsync(path);
                 yield return WaitUntilTaskComplete(task);
                 json = task.Result;
             }
             else
             {
-                json = www.downloadHandler.data;
+                json = www.downloadHandler.text;
 
                 if (json?.Length is null or 0)
                 {
-                    using var task = File.ReadAllBytesAsync(path);
+                    using var task = File.ReadAllTextAsync(path);
                     yield return WaitUntilTaskComplete(task);
                     json = task.Result;
                     Warning($"Online JSON for {updateType} was missing");
                 }
                 else
                 {
-                    using var task = File.WriteAllBytesAsync(path, json);
+                    using var task = File.WriteAllTextAsync(path, json);
                     yield return WaitUntilTaskComplete(task);
                 }
             }
@@ -260,7 +263,7 @@ public static class UpdateManager
             if (File.Exists(filePath))
                 File.Move(filePath, filePath + ".old");
 
-            using var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.data);
+            using var persistTask = File.WriteAllBytesAsync(filePath, www.downloadHandler.GetUnstrippedData());
             yield return WaitUntilTaskComplete(persistTask);
 
             if (persistTask.Exception is not null)

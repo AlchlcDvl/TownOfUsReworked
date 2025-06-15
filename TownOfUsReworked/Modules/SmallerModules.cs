@@ -22,42 +22,6 @@ public sealed class GitHubApiAsset
     public string URL { get; set; }
 }
 
-[Serializable]
-public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable, INetDeserializable
-{
-    public RoleOptionData() : this(0, 0, false, false, LayerEnum.None) { }
-
-    public byte Chance { get; set; } = chance;
-    public byte Count { get; set; } = count;
-    public bool Unique { get; set; } = unique;
-    public bool Active { get; set; } = active;
-    public LayerEnum ID { get; set; } = layer;
-
-    public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
-
-    public readonly RoleOptionData Clone() => new(Chance, Count, Unique, Active, ID);
-
-    public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && IsClassic()) || (Active && IsAllAny()) || (IsList() && ListEntryOption.IsAdded(ID.CastToSlot()))) &&
-        ID.IsValid(relatedCount);
-
-    public readonly IEnumerable<byte> GetBytes() => [ Chance, Count, (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
-
-    public void FromBytes(RpcReader reader)
-    {
-        Chance = reader.ReadByte();
-        Count = reader.ReadByte();
-        Unique = reader.ReadBool();
-        Active = reader.ReadBool();
-        ID = (LayerEnum)reader.ReadByte();
-    }
-
-    public static RoleOptionData Parse(string input)
-    {
-        var parts = input.TrueSplit(',');
-        return new(byte.Parse(parts[0]), byte.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
-    }
-}
-
 public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer, string Symbol = null)
 {
     public string Name => TranslationManager.Translate($"Layer.{Layer}");
@@ -75,6 +39,8 @@ public sealed class Achievement(string name, bool unlocked = false, bool hidden 
     public bool Hidden { get; } = hidden;
     public bool EndOfGame { get; } = eog;
     public bool Unlocked { get; set; } = unlocked;
+
+    public bool IsId(string id) => id.IsAny($"Achievement.{Name}.Title", $"Achievement.{Name}.Description");
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]

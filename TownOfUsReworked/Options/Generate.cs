@@ -44,7 +44,7 @@ public static partial class Generate
         if (TownOfUsReworked.IsDev)
         {
             // Sanitizing the languages json in case there are translation ids of settings that don't exist anymore
-            foreach (var id in TranslationManager.AllTranslations.Keys.Where(x => x.StartsWith("customoption") && !x.EndsWithAny("entry", "ban")))
+            foreach (var id in TranslationManager.AllTranslations.Keys.Where(x => x.StartsWith("CustomOption") && !x.EndsWithAny("Entry", "Ban")))
             {
                 if (!Option.AllOptions.Any(x => x.IsId(id)))
                     Fatal(id);

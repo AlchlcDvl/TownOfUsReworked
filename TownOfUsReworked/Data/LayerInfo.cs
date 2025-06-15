@@ -224,6 +224,7 @@ public static class AllInfo
 
     public static readonly IEnumerable<OtherInfo> AllOthers =
     [
+        new("ChaosDrive", CustomColorManager.Syndicate, "Drive", true)
     ];
 
     public static readonly IEnumerable<SymbolInfo> AllSymbols =
@@ -237,17 +238,13 @@ public static class AllInfo
         new("ArsoDoused", "Ξ", CustomColorManager.Arsonist),
         new("Bounty", "Θ", CustomColorManager.BountyHunter),
         new("CryoDoused", "λ", CustomColorManager.Cryomaniac),
-        new("Bitten", "γ", CustomColorManager.Undead),
         new("Tormented", "§", CustomColorManager.Executioner),
         new("Watched", "★", UColor.white),
         new("Protected", "η", UColor.white),
         new("Agonised", "π", CustomColorManager.Guesser),
-        new("Recruited", "$", CustomColorManager.Cabal),
-        new("Resurrected", "Σ", CustomColorManager.Reanimated),
         new("Infected", "ρ", CustomColorManager.Plaguebearer),
         new("Plague", "米", CustomColorManager.Pestilence),
         new("Vested", "υ", CustomColorManager.Survivor),
-        new("Persuaded", "Λ", CustomColorManager.Cult),
         new("Framed", "ς", CustomColorManager.Framer),
         new("Spellbound", "ø", CustomColorManager.Spellslinger),
         new("Blackmailed", "Φ", CustomColorManager.Blackmailer),
@@ -260,6 +257,8 @@ public static class AllInfo
         new("FirstDead", "Γ", CustomColorManager.FirstShield),
         new("Alerting", "σ", CustomColorManager.Veteran),
         new("Crusaded", "τ", CustomColorManager.Crusader),
+        new("Positive", "+", CustomColorManager.Collider),
+        new("Negative", "-", CustomColorManager.Collider),
         new("Ambushed", "人", CustomColorManager.Ambusher),
         new("Allied", "ζ", CustomColorManager.Allied),
         new("Corrupted", "δ", CustomColorManager.Corrupted),

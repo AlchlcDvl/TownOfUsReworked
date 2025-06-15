@@ -82,7 +82,7 @@ public static class CoroutineUtils
     {
         if (www.result == UnityWebRequest.Result.Success)
         {
-            using var persistTask = File.WriteAllBytesAsync(location, www.downloadHandler.data);
+            using var persistTask = File.WriteAllBytesAsync(location, www.downloadHandler.GetUnstrippedData());
             yield return WaitUntilTaskComplete(persistTask);
 
             if (persistTask.Exception is not null)
@@ -96,5 +96,15 @@ public static class CoroutineUtils
     {
         yield return coroutine;
         onCompletion();
+    }
+
+    public static byte[] GetUnstrippedData(this DownloadHandler dh)
+    {
+        var nativeData = dh.GetNativeData();
+
+        if (nativeData.IsCreated)
+            return nativeData.ToArray();
+
+        return null;
     }
 }

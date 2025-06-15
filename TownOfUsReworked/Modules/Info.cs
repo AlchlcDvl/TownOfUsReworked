@@ -14,9 +14,21 @@ public abstract class Info(string id, UColor color, bool footer = false)
     {
         AllLayerInfo.AddRanges(AllInfo.AllRoles, AllInfo.AllModifiers, AllInfo.AllAbilities, AllInfo.AllDispositions);
         AllInfos.AddRanges(AllLayerInfo, AllInfo.AllFactions, AllInfo.AllModes, AllInfo.AllOthers, AllInfo.AllSymbols);
+
+        if (TownOfUsReworked.IsDev)
+        {
+            foreach (var info in AllInfos)
+            {
+                TranslationManager.DebugId(info.ID);
+                TranslationManager.DebugId(info.DescID);
+                info.Debug();
+            }
+        }
     }
 
     public abstract string WikiEntry();
+
+    protected virtual void Debug() {}
 }
 
 public abstract class LayerInfo(LayerEnum layer, bool footer = false, UColor color = default) : Info($"{layer}", color == default ? LayerDictionary[layer].Color : color, footer);
@@ -41,6 +53,15 @@ public sealed class RoleInfo(LayerEnum role, Alignment alignmentEnum, Faction fa
         result += $"\n\n{WrapText(TranslationManager.Translate(Quote))}";
         return result;
     }
+
+    protected override void Debug()
+    {
+        TranslationManager.DebugId(Alignment);
+        TranslationManager.DebugId(WinCon);
+        TranslationManager.DebugId(Quote);
+        TranslationManager.DebugId(Attack);
+        TranslationManager.DebugId(Defense);
+    }
 }
 
 public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{faction}", faction switch
@@ -54,6 +75,21 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
     Faction.Pandorica => CustomColorManager.Pandorica,
     Faction.Compliance => CustomColorManager.Compliance,
     Faction.Apocalypse => CustomColorManager.Apocalypse,
+    Faction.Arsonist => CustomColorManager.Arsonist,
+    Faction.Cryomaniac => CustomColorManager.Cryomaniac,
+    Faction.Glitch => CustomColorManager.Glitch,
+    Faction.Juggernaut => CustomColorManager.Juggernaut,
+    Faction.Murderer => CustomColorManager.Murderer,
+    Faction.SerialKiller => CustomColorManager.SerialKiller,
+    Faction.Werewolf => CustomColorManager.Werewolf,
+    Faction.Defector => CustomColorManager.Defector,
+    Faction.Betrayer => CustomColorManager.Betrayer,
+    Faction.Mafia => CustomColorManager.Mafia,
+    Faction.Cabal => CustomColorManager.Cabal,
+    Faction.Cult => CustomColorManager.Cult,
+    Faction.Followers => CustomColorManager.Followers,
+    Faction.Reanimated => CustomColorManager.Reanimated,
+    Faction.Undead => CustomColorManager.Undead,
     _ => CustomColorManager.Faction
 }, footer)
 {
@@ -67,6 +103,8 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
         return result;
     }
+
+    protected override void Debug() => TranslationManager.DebugId(WinCon);
 }
 
 public sealed class AlignmentInfo(Alignment alignmentEnum, bool footer = false) : Info($"{alignmentEnum}", CustomColorManager.Alignment, footer)
@@ -80,10 +118,15 @@ public sealed class AlignmentInfo(Alignment alignmentEnum, bool footer = false) 
     }
 }
 
-public sealed class ModifierInfo(LayerEnum modifier, bool footer = false, UColor color = default) : LayerInfo(modifier, footer, color)
+public abstract class ApplicableLayer(LayerEnum layer, bool footer = false, UColor color = default) : LayerInfo(layer, footer, color)
 {
-    private string AppliesTo { get; } = $"Wiki.{modifier}.AppliesTo";
+    protected string AppliesTo { get; } = $"Wiki.{layer}.AppliesTo";
 
+    protected override void Debug() => TranslationManager.DebugId(AppliesTo);
+}
+
+public sealed class ModifierInfo(LayerEnum modifier, bool footer = false, UColor color = default) : ApplicableLayer(modifier, footer, color)
+{
     public override string WikiEntry()
     {
         var result = "";
@@ -94,9 +137,8 @@ public sealed class ModifierInfo(LayerEnum modifier, bool footer = false, UColor
     }
 }
 
-public sealed class DispositionInfo(LayerEnum disposition, string symbol, bool footer = false, UColor color = default) : LayerInfo(disposition, footer, color)
+public sealed class DispositionInfo(LayerEnum disposition, string symbol, bool footer = false, UColor color = default) : ApplicableLayer(disposition, footer, color)
 {
-    private string AppliesTo { get; } = $"Wiki.{disposition}.AppliesTo";
     private string WinCon { get; } = $"Wiki.{disposition}.WinCon";
     private string Symbol { get; } = symbol;
 
@@ -110,12 +152,16 @@ public sealed class DispositionInfo(LayerEnum disposition, string symbol, bool f
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
         return result;
     }
+
+    protected override void Debug()
+    {
+        base.Debug();
+        TranslationManager.DebugId(WinCon);
+    }
 }
 
-public sealed class AbilityInfo(LayerEnum ability, bool footer = false, UColor color = default) : LayerInfo(ability, footer, color)
+public sealed class AbilityInfo(LayerEnum ability, bool footer = false, UColor color = default) : ApplicableLayer(ability, footer, color)
 {
-    private string AppliesTo { get; } = $"Wiki.{ability}.AppliesTo";
-
     public override string WikiEntry()
     {
         var result = "";
@@ -128,15 +174,25 @@ public sealed class AbilityInfo(LayerEnum ability, bool footer = false, UColor c
 
 public sealed class OtherInfo(string id, UColor color, string otherNotes = "", bool footer = false) : Info(id, color, footer)
 {
-    private string OtherNotes { get; } = $"Wiki.{otherNotes}.Notes";
+    private string OtherNotes { get; } = otherNotes?.Length is null or 0 ? "" : $"Wiki.{otherNotes}.Notes";
+    private bool NotesExist { get; } = otherNotes?.Length is not (null or 0);
 
     public override string WikiEntry()
     {
         var result = "";
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
-        result += $"\n{WrapTexts(TranslationManager.Translate(OtherNotes).TrueSplit('\n'))}";
+
+        if (NotesExist)
+            result += $"\n{WrapTexts(TranslationManager.Translate(OtherNotes).TrueSplit('\n'))}";
+
         return result;
+    }
+
+    protected override void Debug()
+    {
+        if (NotesExist)
+            TranslationManager.DebugId(OtherNotes);
     }
 }
 

@@ -134,11 +134,7 @@ public abstract class Role : PlayerLayer
             handler.SetUpLayers(inherit);
     }
 
-    public override void UpdateMap(MapBehaviour __instance)
-    {
-        __instance.ColorControl.baseColor = Color;
-        __instance.ColorControl.SetColor(Color);
-    }
+    public override void UpdateMap(MapBehaviour __instance) => __instance.ColorControl.SetColor(Color);
 
     public override void BeforeMeeting()
     {
