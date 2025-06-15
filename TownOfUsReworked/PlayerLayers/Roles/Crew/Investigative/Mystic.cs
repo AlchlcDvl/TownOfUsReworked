@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Mystic)]
+[LayerHeaderOption(Layer.Mystic)]
 public sealed class Mystic : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -10,7 +10,7 @@ public sealed class Mystic : Investigative
     private CustomButton RevealButton;
 
     protected override UColor MainColor => CustomColorManager.Mystic;
-    public override LayerEnum Type => LayerEnum.Mystic;
+    public override Layer Type => Layer.Mystic;
     public override string StartText => "You Know When Converts Happen";
     public override string Description => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n-" +
         " When all converted and converters die, you will become a <#71368AFF>Seer</color>";

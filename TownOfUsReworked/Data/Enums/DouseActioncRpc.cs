@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum DouseActionsRPC : byte
+public enum DouseActionsRpc : byte
 {
     Douse,
     UnDouse

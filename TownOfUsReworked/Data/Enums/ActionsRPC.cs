@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum ActionsRPC : byte
+public enum ActionsRpc : byte
 {
     CallMeeting,
     Drop,

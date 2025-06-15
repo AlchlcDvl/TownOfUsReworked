@@ -61,7 +61,7 @@ public static class CustomAchievementManager
         }
 
         // Adding in achievements for each type of win (an achievement for 5 wins for each), I was just too lazy to add them all manually to the list
-        foreach (var layer in LayerDictionary.Keys.Where(x => x != LayerEnum.Assassin))
+        foreach (var layer in LayerDictionary.Keys.Where(x => x != Layer.Assassin))
         {
             AllAchievements.Add(new($"LayerWins.{layer}", eog: true));
             TranslationManager.RegisterComplexId($"Achievement.LayerWins.{layer}.Description");
@@ -69,9 +69,9 @@ public static class CustomAchievementManager
 
         TranslationManager.RegisterComplexId("Achievement.LayerWins.Description");
 
-        foreach (var map in Enum.GetValues<MapEnum>())
+        foreach (var map in Enum.GetValues<Map>())
         {
-            if (map == MapEnum.Random)
+            if (map == Data.Enums.Map.Random)
                 continue;
 
             AllAchievements.Add(new($"MapWins.{map}", eog: true));
@@ -121,7 +121,7 @@ public static class CustomAchievementManager
         if (player.AmOwner || TownOfUsReworked.MciActive)
             UnlockAchievement(name);
         else
-            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.Achievement, name);
+            CallTargetedRpc(player.OwnerId, ReworkedRpc.Misc, MiscRpc.Achievement, name);
     }
 
     public static void UnlockAchievement(string name)

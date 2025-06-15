@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Stalker)]
+[LayerHeaderOption(Layer.Stalker)]
 public sealed class Stalker : SSupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -10,7 +10,7 @@ public sealed class Stalker : SSupport
     private CustomButton StalkButton;
 
     protected override UColor MainColor => CustomColorManager.Stalker;
-    public override LayerEnum Type => LayerEnum.Stalker;
+    public override Layer Type => Layer.Stalker;
     public override string StartText => "Stalk Everyone To Monitor Their Movements";
     public override string Description => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;

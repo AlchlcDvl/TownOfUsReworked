@@ -3,7 +3,7 @@
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[LayerHeaderOption(LayerEnum.Volatile)]
+[LayerHeaderOption(Layer.Volatile)]
 public sealed class Volatile : Modifier
 {
     [NumberOption(10f, 30f, 1f, Format.Time)]
@@ -19,7 +19,7 @@ public sealed class Volatile : Modifier
     private static bool Lmao;
 
     protected override UColor MainColor => CustomColorManager.Volatile;
-    public override LayerEnum Type => LayerEnum.Volatile;
+    public override Layer Type => Layer.Volatile;
     public override string Description => "- You experience hallucinations";
     public override bool Hidden => !VolatileKnows && !Exposed && !Dead;
 

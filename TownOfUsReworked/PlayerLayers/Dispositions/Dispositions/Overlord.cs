@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Overlord)]
+[LayerHeaderOption(Layer.Overlord)]
 public sealed class Overlord : Disposition
 {
     [ToggleOption]
@@ -11,7 +11,7 @@ public sealed class Overlord : Disposition
 
     protected override UColor MainColor => CustomColorManager.Overlord;
     public override string Symbol => "β";
-    public override LayerEnum Type => LayerEnum.Overlord;
+    public override Layer Type => Layer.Overlord;
     public override string Description => $"- Stay alive for {OverlordMeetingWinCount} rounds";
     public override bool Hidden => !OverlordKnows && !Dead;
 

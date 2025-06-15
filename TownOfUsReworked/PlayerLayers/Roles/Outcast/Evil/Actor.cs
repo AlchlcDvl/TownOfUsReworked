@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Actor)]
+[LayerHeaderOption(Layer.Actor)]
 public sealed class Actor : Evil
 {
     [ToggleOption]
@@ -23,17 +23,17 @@ public sealed class Actor : Evil
     private bool TargetFailed => !Targeted && Rounds > 0;
 
     public bool Guessed;
-    public readonly List<LayerEnum> PretendRoles = [];
+    public readonly List<Layer> PretendRoles = [];
 
     private CustomButton PretendButton;
     private int Rounds;
     private bool Targeted;
 
     protected override UColor MainColor => CustomColorManager.Actor;
-    public override LayerEnum Type => LayerEnum.Actor;
+    public override Layer Type => Layer.Actor;
     public override string StartText => "Play Pretend With The Others";
     public override string Description => !Targeted ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you will kill your guesser";
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => Guessed;
     public override bool CanVent => base.CanVent && ActorVent;
     public override bool CanSwitchVents => ActSwitchVent;
@@ -67,103 +67,103 @@ public sealed class Actor : Evil
     private void PickRole(PlayerControl target)
     {
         FillRoles(target);
-        CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, PretendRoles);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, PretendRoles);
     }
 
-    public void TurnRole(LayerEnum role)
+    public void TurnRole(Layer role)
     {
         Role newRole = role switch
         {
             // Crew roles
-            LayerEnum.Altruist => new Altruist(),
-            LayerEnum.Bastion => new Bastion(),
-            LayerEnum.Chameleon => new Chameleon(),
-            LayerEnum.Coroner => new Coroner(),
-            LayerEnum.Crewmate => new Crewmate(),
-            LayerEnum.Detective => new Detective(),
-            LayerEnum.Dictator => new Dictator(),
-            LayerEnum.Engineer => new Engineer(),
-            LayerEnum.Escort => new Escort(),
-            LayerEnum.Mayor or LayerEnum.Democrat => new Democrat(),
-            LayerEnum.Medic => new Medic(),
-            LayerEnum.Medium => new Medium(),
-            LayerEnum.Monarch => new Monarch(),
-            LayerEnum.Mystic => new Mystic(),
-            LayerEnum.Operative => new Operative(),
-            LayerEnum.Retributionist => new Retributionist(),
-            LayerEnum.Sheriff => new Sheriff(),
-            LayerEnum.Seer => new Seer(),
-            LayerEnum.Shifter => new Shifter(),
-            LayerEnum.Tracker => new Tracker(),
-            LayerEnum.Transporter => new Transporter(),
-            LayerEnum.Trapper => new Trapper(),
-            LayerEnum.Veteran => new Veteran(),
-            LayerEnum.Vigilante => new Vigilante(),
+            Layer.Altruist => new Altruist(),
+            Layer.Bastion => new Bastion(),
+            Layer.Chameleon => new Chameleon(),
+            Layer.Coroner => new Coroner(),
+            Layer.Crewmate => new Crewmate(),
+            Layer.Detective => new Detective(),
+            Layer.Dictator => new Dictator(),
+            Layer.Engineer => new Engineer(),
+            Layer.Escort => new Escort(),
+            Layer.Mayor or Layer.Democrat => new Democrat(),
+            Layer.Medic => new Medic(),
+            Layer.Medium => new Medium(),
+            Layer.Monarch => new Monarch(),
+            Layer.Mystic => new Mystic(),
+            Layer.Operative => new Operative(),
+            Layer.Retributionist => new Retributionist(),
+            Layer.Sheriff => new Sheriff(),
+            Layer.Seer => new Seer(),
+            Layer.Shifter => new Shifter(),
+            Layer.Tracker => new Tracker(),
+            Layer.Transporter => new Transporter(),
+            Layer.Trapper => new Trapper(),
+            Layer.Veteran => new Veteran(),
+            Layer.Vigilante => new Vigilante(),
 
             // Outcast roles
-            LayerEnum.Amnesiac => new Amnesiac(),
-            LayerEnum.Arsonist => new Arsonist(),
-            LayerEnum.Betrayer => new Betrayer(),
-            LayerEnum.BountyHunter => new BountyHunter(),
-            LayerEnum.Cannibal => new Cannibal(),
-            LayerEnum.Cryomaniac => new Cryomaniac(),
-            LayerEnum.Dracula => new Dracula(),
-            LayerEnum.Executioner => new Executioner(),
-            LayerEnum.Glitch => new Glitch(),
-            LayerEnum.GuardianAngel => new GuardianAngel(),
-            LayerEnum.Guesser => new Guesser(),
-            LayerEnum.Jackal => new Jackal(),
-            LayerEnum.Jester => new Jester(),
-            LayerEnum.Juggernaut => new Juggernaut(),
-            LayerEnum.Murderer => new Murderer(),
-            LayerEnum.Necromancer => new Necromancer(),
-            LayerEnum.SerialKiller => new SerialKiller(),
-            LayerEnum.Survivor => new Survivor(),
-            LayerEnum.Thief => new Thief(),
-            LayerEnum.Troll => new Troll(),
-            LayerEnum.Werewolf => new Werewolf(),
-            LayerEnum.Whisperer => new Whisperer(),
+            Layer.Amnesiac => new Amnesiac(),
+            Layer.Arsonist => new Arsonist(),
+            Layer.Betrayer => new Betrayer(),
+            Layer.BountyHunter => new BountyHunter(),
+            Layer.Cannibal => new Cannibal(),
+            Layer.Cryomaniac => new Cryomaniac(),
+            Layer.Dracula => new Dracula(),
+            Layer.Executioner => new Executioner(),
+            Layer.Glitch => new Glitch(),
+            Layer.GuardianAngel => new GuardianAngel(),
+            Layer.Guesser => new Guesser(),
+            Layer.Jackal => new Jackal(),
+            Layer.Jester => new Jester(),
+            Layer.Juggernaut => new Juggernaut(),
+            Layer.Murderer => new Murderer(),
+            Layer.Necromancer => new Necromancer(),
+            Layer.SerialKiller => new SerialKiller(),
+            Layer.Survivor => new Survivor(),
+            Layer.Thief => new Thief(),
+            Layer.Troll => new Troll(),
+            Layer.Werewolf => new Werewolf(),
+            Layer.Whisperer => new Whisperer(),
 
             // Intruder roles
-            LayerEnum.Ambusher => new Ambusher(),
-            LayerEnum.Blackmailer => new Blackmailer(),
-            LayerEnum.Camouflager => new Camouflager(),
-            LayerEnum.Consigliere => new Consigliere(),
-            LayerEnum.Consort => new Consort(),
-            LayerEnum.Disguiser => new Disguiser(),
-            LayerEnum.Enforcer => new Enforcer(),
-            LayerEnum.Godfather => new Godfather(),
-            LayerEnum.Grenadier => new Grenadier(),
-            LayerEnum.Impostor => new Impostor(),
-            LayerEnum.Janitor => new Janitor(),
-            LayerEnum.Miner => new Miner(),
-            LayerEnum.Morphling => new Morphling(),
-            LayerEnum.Teleporter => new Teleporter(),
-            LayerEnum.Wraith => new Wraith(),
+            Layer.Ambusher => new Ambusher(),
+            Layer.Blackmailer => new Blackmailer(),
+            Layer.Camouflager => new Camouflager(),
+            Layer.Consigliere => new Consigliere(),
+            Layer.Consort => new Consort(),
+            Layer.Disguiser => new Disguiser(),
+            Layer.Enforcer => new Enforcer(),
+            Layer.Godfather => new Godfather(),
+            Layer.Grenadier => new Grenadier(),
+            Layer.Impostor => new Impostor(),
+            Layer.Janitor => new Janitor(),
+            Layer.Miner => new Miner(),
+            Layer.Morphling => new Morphling(),
+            Layer.Teleporter => new Teleporter(),
+            Layer.Wraith => new Wraith(),
 
             // Syndicate roles
-            LayerEnum.Anarchist => new Anarchist(),
-            LayerEnum.Bomber => new Bomber(),
-            LayerEnum.Collider => new Collider(),
-            LayerEnum.Concealer => new Concealer(),
-            LayerEnum.Crusader => new Crusader(),
-            LayerEnum.Drunkard => new Drunkard(),
-            LayerEnum.Framer => new Framer(),
-            LayerEnum.Poisoner => new Poisoner(),
-            LayerEnum.Rebel => new Rebel(),
-            LayerEnum.Shapeshifter => new Shapeshifter(),
-            LayerEnum.Silencer => new Silencer(),
-            LayerEnum.Spellslinger => new Spellslinger(),
-            LayerEnum.Stalker => new Stalker(),
-            LayerEnum.Timekeeper => new Timekeeper(),
-            LayerEnum.Warper => new Warper(),
+            Layer.Anarchist => new Anarchist(),
+            Layer.Bomber => new Bomber(),
+            Layer.Collider => new Collider(),
+            Layer.Concealer => new Concealer(),
+            Layer.Crusader => new Crusader(),
+            Layer.Drunkard => new Drunkard(),
+            Layer.Framer => new Framer(),
+            Layer.Poisoner => new Poisoner(),
+            Layer.Rebel => new Rebel(),
+            Layer.Shapeshifter => new Shapeshifter(),
+            Layer.Silencer => new Silencer(),
+            Layer.Spellslinger => new Spellslinger(),
+            Layer.Stalker => new Stalker(),
+            Layer.Timekeeper => new Timekeeper(),
+            Layer.Warper => new Warper(),
 
             // Apocalypse roles
-            LayerEnum.Cultist or LayerEnum.Void => new Cultist(),
-            LayerEnum.Plaguebearer or LayerEnum.Pestilence => new Plaguebearer(),
+            Layer.Cultist or Layer.Void => new Cultist(),
+            Layer.Plaguebearer or Layer.Pestilence => new Plaguebearer(),
 
             // Whatever remains
-            LayerEnum.Actor or _ => new Amnesiac(),
+            Layer.Actor or _ => new Amnesiac(),
         };
 
         newRole.RoleUpdate(this);
@@ -177,17 +177,17 @@ public sealed class Actor : Evil
             return;
 
         var allRoles = GetLayers<Role>().Select(x => x.Type);
-        var target = GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Warper, x => x is not (LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or LayerEnum.Actor
-            or LayerEnum.Sidekick or LayerEnum.Mafioso or LayerEnum.Betrayer or LayerEnum.Amnesiac) && allRoles.All(y => y != x)).Random(LayerEnum.Amnesiac);
+        var target = GetValuesFromTo(Layer.Altruist, Layer.Warper, x => x is not (Layer.Phantom or Layer.Revealer or Layer.Banshee or Layer.Ghoul or Layer.Actor
+            or Layer.Sidekick or Layer.Mafioso or Layer.Betrayer or Layer.Amnesiac) && allRoles.All(y => y != x)).Random(Layer.Amnesiac);
 
-        if (target == LayerEnum.Amnesiac)
+        if (target == Layer.Amnesiac)
         {
-            var targetList = (TargetFailed ? allRoles : PretendRoles).Where(x => x is not (LayerEnum.Phantom or LayerEnum.Revealer or LayerEnum.Banshee or LayerEnum.Ghoul or
-                LayerEnum.Actor or LayerEnum.Sidekick or LayerEnum.Mafioso));
+            var targetList = (TargetFailed ? allRoles : PretendRoles).Where(x => x is not (Layer.Phantom or Layer.Revealer or Layer.Banshee or Layer.Ghoul or
+                Layer.Actor or Layer.Sidekick or Layer.Mafioso));
             target = targetList.Random();
         }
 
-        CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, target);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this, target);
         TurnRole(target);
     }
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Executioner)]
+[LayerHeaderOption(Layer.Executioner)]
 public sealed class Executioner : Evil, ITargeter
 {
     [ToggleOption]
@@ -43,11 +43,11 @@ public sealed class Executioner : Evil, ITargeter
     private CustomButton TargetButton;
 
     protected override UColor MainColor => CustomColorManager.Executioner;
-    public override LayerEnum Type => LayerEnum.Executioner;
+    public override Layer Type => Layer.Executioner;
     public override string StartText => "Find Someone To Eject";
     public override string Description => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => TargetVotedOut;
     public override bool CanVent => base.CanVent && ExeVent;
     public override bool CanSwitchVents => ExeSwitchVent;
@@ -103,7 +103,7 @@ public sealed class Executioner : Evil, ITargeter
     private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
-        CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, TargetPlayer);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -147,14 +147,14 @@ public sealed class Executioner : Evil, ITargeter
 
         if (ExeToJest)
         {
-            CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this);
+            CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this);
             TurnJest();
         }
         else if (ExecutionerCanPickTargets)
         {
             TargetPlayer = null;
             Rounds = 0;
-            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
+            CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
         }
         else
             Player.RpcSuicide();

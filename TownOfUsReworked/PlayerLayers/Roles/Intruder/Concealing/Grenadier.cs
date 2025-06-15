@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Grenadier)]
+[LayerHeaderOption(Layer.Grenadier)]
 public sealed class Grenadier : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -22,7 +22,7 @@ public sealed class Grenadier : Concealing
     public readonly HashSet<byte> FlashedPlayers = [];
 
     protected override UColor MainColor => CustomColorManager.Grenadier;
-    public override LayerEnum Type => LayerEnum.Grenadier;
+    public override Layer Type => Layer.Grenadier;
     public override string StartText => "Blind The <#8CFFFFFF>Crew</color> With Your Magnificent Figure";
     public override string Description => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
     public override bool CanVent => GrenadierVent;
@@ -59,7 +59,7 @@ public sealed class Grenadier : Concealing
 
     private void HitFlash()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, FlashButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, FlashButton);
         FlashButton.Begin();
     }
 

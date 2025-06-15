@@ -276,7 +276,7 @@ public static class MeetingPatches
 
         foreach (var role in PlayerLayer.GetLayers<Role>())
         {
-            if (role.Type is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.GuardianAngel or LayerEnum.Jester || !role.Dead)
+            if (role.Type is Layer.Phantom or Layer.Ghoul or Layer.Banshee or Layer.Revealer or Layer.GuardianAngel or Layer.Jester || !role.Dead)
                 continue;
 
             role.TrulyDead = true;
@@ -329,7 +329,7 @@ public static class MeetingPatches
             }
 
             __instance.RpcVotingComplete(array, exiled, tie);
-            PlayerLayer.GetLayers<Politician>().Do(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, x, PoliticianActionsRPC.Remove, x.ExtraVotes.ToArray()));
+            PlayerLayer.GetLayers<Politician>().Do(x => CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, x, PoliticianActionsRpc.Remove, x.ExtraVotes.ToArray()));
         }
 
         return false;

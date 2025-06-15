@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Transporter)]
+[LayerHeaderOption(Layer.Transporter)]
 public sealed class Transporter : CSupport, IMover
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
@@ -20,7 +20,7 @@ public sealed class Transporter : CSupport, IMover
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Transporter;
-    public override LayerEnum Type => LayerEnum.Transporter;
+    public override Layer Type => Layer.Transporter;
     public override string StartText => "Swap Locations Of Players For Maximum Confusion";
     public override string Description => "- You can swap the locations of 2 players of your choice";
 
@@ -205,7 +205,7 @@ public sealed class Transporter : CSupport, IMover
         }
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TransportMenu.Selected[0], TransportMenu.Selected[1]);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, TransportMenu.Selected[0], TransportMenu.Selected[1]);
             Coroutines.Start(TransportPlayers(PlayerById(TransportMenu.Selected[0]), PlayerById(TransportMenu.Selected[1]), this));
             TransportMenu.Selected.Clear();
             TransportButton.StartCooldown();

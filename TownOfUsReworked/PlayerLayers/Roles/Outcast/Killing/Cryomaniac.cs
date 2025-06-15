@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Cryomaniac)]
+[LayerHeaderOption(Layer.Cryomaniac)]
 public sealed class Cryomaniac : OKilling, IDouser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -27,12 +27,12 @@ public sealed class Cryomaniac : OKilling, IDouser
         or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
 
     protected override UColor MainColor => CustomColorManager.Cryomaniac;
-    public override LayerEnum Type => LayerEnum.Cryomaniac;
+    public override Layer Type => Layer.Cryomaniac;
     public override string StartText => "Who Likes Ice Cream?";
     public override string Description => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
-    public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override Attack Attack => Attack.Unstoppable;
+    public override Defense Defense => Doused.Count is 1 or 2 ? Defense.Basic : Defense.None;
     public override bool CanVent => base.CanVent && CryoVent;
     protected override Faction ActualFaction => Faction.Cryomaniac;
 
@@ -66,7 +66,7 @@ public sealed class Cryomaniac : OKilling, IDouser
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DouseActionsRPC.Douse, target.PlayerId);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, DouseActionsRpc.Douse, target.PlayerId);
     }
 
     public override void BeforeMeeting()
@@ -79,7 +79,7 @@ public sealed class Cryomaniac : OKilling, IDouser
             if (cryo != this && !CryoFreezeAll)
                 continue;
 
-            foreach (var player2 in from player in cryo.Doused select PlayerById(player) into player2 where !player2.HasDied() && !player2.TryReversingDouses<Arsonist>() && CanAttack(AttackVal, player2.GetDefenseValue()) select player2)
+            foreach (var player2 in from player in cryo.Doused select PlayerById(player) into player2 where !player2.HasDied() && !player2.TryReversingDouses<Arsonist>() && CanAttack(Attack, player2.GetDefenseValue()) select player2)
                 Player.RpcMurderPlayer(player2, DeathReasonEnum.Frozen, false);
 
             cryo.Doused.Clear();
@@ -109,16 +109,16 @@ public sealed class Cryomaniac : OKilling, IDouser
 
     public override void ReadRPC(RpcReader reader)
     {
-        var cryoAction = reader.Read<DouseActionsRPC>();
+        var cryoAction = reader.Read<DouseActionsRpc>();
 
         switch (cryoAction)
         {
-            case DouseActionsRPC.Douse:
+            case DouseActionsRpc.Douse:
             {
                 Doused.Add(reader.ReadByte());
                 break;
             }
-            case DouseActionsRPC.UnDouse:
+            case DouseActionsRpc.UnDouse:
             {
                 Doused.Remove(reader.ReadByte());
                 break;

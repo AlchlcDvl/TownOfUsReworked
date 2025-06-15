@@ -31,15 +31,15 @@ public static class CustomStatsManager
         StringNames.StatsImpostorKills
     ];
 
-    private static readonly Dictionary<MapEnum, uint> MapWins = [];
+    private static readonly Dictionary<Map, uint> MapWins = [];
     private static readonly Dictionary<Faction, uint> FactionWins = [];
-    private static readonly Dictionary<LayerEnum, uint> LayerWins = [];
+    private static readonly Dictionary<Layer, uint> LayerWins = [];
     private static readonly Dictionary<StringNames, uint> CustomStats = [];
 
-    private static readonly ValueMap<StringNames, MapEnum> MapMap = [];
+    private static readonly ValueMap<StringNames, Map> MapMap = [];
     private static readonly ValueMap<StringNames, StatID> StatsMap = [];
     private static readonly ValueMap<StringNames, Faction> FactionMap = [];
-    private static readonly ValueMap<StringNames, LayerEnum> LayerMap = [];
+    private static readonly ValueMap<StringNames, Layer> LayerMap = [];
 
     private static readonly EnumInjector<StatID> Injector = new();
 
@@ -71,7 +71,7 @@ public static class CustomStatsManager
         var factions = new[] { Faction.Crew, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse, Faction.Outcast, Faction.Pandorica, Faction.Compliance, Faction.Illuminati,
             Faction.Cabal, Faction.Cult, Faction.Followers, Faction.Reanimated, Faction.Undead };
 
-        Enum.GetValues<MapEnum>().Do(x => GetMapWins(x));
+        Enum.GetValues<Map>().Do(x => GetMapWins(x));
         LayerDictionary.Keys.Do(x => GetLayerWins(x));
         factions.Do(x => GetFactionWins(x));
         Enum.GetValues<StringNames>().Do(x => GetStat(x));
@@ -132,13 +132,13 @@ public static class CustomStatsManager
     //     CustomStats.Clear();
     // }
 
-    private static void IncrementStat(LayerEnum layer)
+    private static void IncrementStat(Layer layer)
     {
         if (LayerDictionary.ContainsKey(layer))
             LayerWins[layer] = LayerWins.GetValueOrDefault(layer) + 1;
     }
 
-    private static void IncrementStat(MapEnum map) => MapWins[map] = MapWins.GetValueOrDefault(map) + 1;
+    private static void IncrementStat(Map map) => MapWins[map] = MapWins.GetValueOrDefault(map) + 1;
 
     public static void IncrementStat(Faction faction)
     {
@@ -175,7 +175,7 @@ public static class CustomStatsManager
         if (player.AmOwner || TownOfUsReworked.MciActive)
             IncrementStat(stat);
         else
-            CallTargetedRpc(player.OwnerId, CustomRPC.Misc, MiscRPC.Stat, stat);
+            CallTargetedRpc(player.OwnerId, ReworkedRpc.Misc, MiscRpc.Stat, stat);
     }
 
     public static IObject GetStat(StringNames stat)
@@ -198,9 +198,9 @@ public static class CustomStatsManager
         return val;
     }
 
-    private static uint GetMapWins(MapEnum map)
+    private static uint GetMapWins(Map map)
     {
-        if (map == MapEnum.Random)
+        if (map == Data.Enums.Map.Random)
             return 0;
 
         if (!MapWins.TryGetValue(map, out var val))
@@ -209,7 +209,7 @@ public static class CustomStatsManager
         return val;
     }
 
-    private static uint GetLayerWins(LayerEnum layer)
+    private static uint GetLayerWins(Layer layer)
     {
         if (!LayerDictionary.ContainsKey(layer))
             return 0;
@@ -235,7 +235,7 @@ public static class CustomStatsManager
     {
         IncrementStat(StatsGamesWon);
         IncrementStat(StatID.GamesFinished);
-        IncrementStat((MapEnum)map);
+        IncrementStat((Map)map);
 
         foreach (var layer in layers)
         {

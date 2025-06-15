@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Spellslinger)]
+[LayerHeaderOption(Layer.Spellslinger)]
 public sealed class Spellslinger : SHead
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,7 +13,7 @@ public sealed class Spellslinger : SHead
     public readonly HashSet<byte> Spelled = [];
 
     protected override UColor MainColor => CustomColorManager.Spellslinger;
-    public override LayerEnum Type => LayerEnum.Spellslinger;
+    public override Layer Type => Layer.Spellslinger;
     public override string StartText => "Place the <#8CFFFFFF>Crew</color> Under A Curse";
     public override string Description => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
         $"{FactionColorString}{Faction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
@@ -39,7 +39,7 @@ public sealed class Spellslinger : SHead
         if (cooldown != CooldownType.Fail)
         {
             Spelled.Add(target.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
 
             if (AmongUsClient.Instance.AmHost)
                 CheckEndGame.CheckSpellWin(this);

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Shapeshifter)]
+[LayerHeaderOption(Layer.Shapeshifter)]
 public sealed class Shapeshifter : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -23,7 +23,7 @@ public sealed class Shapeshifter : Disruption
     private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Shapeshifter;
-    public override LayerEnum Type => LayerEnum.Shapeshifter;
+    public override Layer Type => Layer.Shapeshifter;
     public override string StartText => "Change Everyone's Appearances";
     public override string Description => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
 
@@ -89,7 +89,7 @@ public sealed class Shapeshifter : Disruption
     {
         if (HoldsDrive || (ShapeshiftPlayer1 && ShapeshiftPlayer2))
         {
-            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ShapeshiftButton);
+            using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.ButtonAction, ShapeshiftButton);
 
             if (writer is not null)
             {

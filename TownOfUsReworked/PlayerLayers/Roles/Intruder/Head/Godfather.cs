@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Godfather)]
+[LayerHeaderOption(Layer.Godfather)]
 public sealed class Godfather : Intruder
 {
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
@@ -10,7 +10,7 @@ public sealed class Godfather : Intruder
     private CustomButton DeclareButton;
 
     protected override UColor MainColor => CustomColorManager.Godfather;
-    public override LayerEnum Type => LayerEnum.Godfather;
+    public override Layer Type => Layer.Godfather;
     public override string StartText => "Promote Your Fellow <#FF1919FF>Intruder</color> To Do Better";
     public override string Description => "- You can promote a fellow <#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <#FF1919FF>" +
         "Intruder</color> turns them into a <#6400FFFF>Mafioso</color>\n- If you die, the <#6400FFFF>Mafioso</color> will become the new <#404C08FF>Godfather</color>"
@@ -32,7 +32,7 @@ public sealed class Godfather : Intruder
             allow = Interact(Player, target) != CooldownType.Fail;
 
             if (allow)
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
         }
 
         if (!allow)

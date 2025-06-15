@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum PoliticianActionsRPC : byte
+public enum PoliticianActionsRpc : byte
 {
     Add,
     Remove

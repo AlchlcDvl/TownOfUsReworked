@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Vigilante)]
+[LayerHeaderOption(Layer.Vigilante)]
 public sealed class Vigilante : CKilling
 {
     [ToggleOption]
@@ -31,10 +31,10 @@ public sealed class Vigilante : CKilling
     private bool RoundOne;
 
     protected override UColor MainColor => CustomColorManager.Vigilante;
-    public override LayerEnum Type => LayerEnum.Vigilante;
+    public override Layer Type => Layer.Vigilante;
     public override string StartText => "Shoot The <#FF0000FF>Evildoers</color>";
     public override string Description => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
 
     public override void Init()
     {

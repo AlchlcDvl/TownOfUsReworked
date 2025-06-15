@@ -32,7 +32,7 @@ public static class OpenDoorConsolePatches
             return false;
 
         Ship().RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
-        CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.myDoor.Id);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.DoorSyncToilet, __instance.myDoor.Id);
         __instance.myDoor.SetDoorway(true);
         return false;
     }

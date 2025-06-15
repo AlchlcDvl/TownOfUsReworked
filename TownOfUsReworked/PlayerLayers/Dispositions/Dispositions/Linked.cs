@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Linked)]
+[LayerHeaderOption(Layer.Linked)]
 public sealed class Linked : Paired
 {
     [ToggleOption]
@@ -11,7 +11,7 @@ public sealed class Linked : Paired
 
     protected override UColor MainColor => CustomColorManager.Linked;
     public override string Symbol => "Ψ";
-    public override LayerEnum Type => LayerEnum.Linked;
+    public override Layer Type => Layer.Linked;
     public override string Description => $"- Help {Other.name} win";
     protected override bool RevealRole => LinkedRoles;
     protected override ChatChannel Channel => ChatChannel.Linked;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Revealer)]
+[LayerHeaderOption(Layer.Revealer)]
 public sealed class Revealer : CUtility, IGhosty
 {
     [NumberOption(1, 10, 1)]
@@ -33,7 +33,7 @@ public sealed class Revealer : CUtility, IGhosty
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Revealer;
-    public override LayerEnum Type => LayerEnum.Revealer;
+    public override Layer Type => Layer.Revealer;
     public override string StartText => "OOOOOOO";
     public override string Description => "- You can reveal evils players to the <#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
 

@@ -18,7 +18,7 @@ public static class InteractableTracker
         {
             UninteractablePlayers.TryAdd(player.PlayerId, Time.time);
             UninteractablePlayers2.TryAdd(player.PlayerId, time);
-            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, player, time, setRend);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.SetUninteractable, player, time, setRend);
         }
         catch (Exception e)
         {

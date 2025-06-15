@@ -6,9 +6,9 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
     private PlayerControl Selected { get; set; }
     public ShapeshifterPanel SelectedPanel { get; set; }
 
-    public HashSet<LayerEnum> Mapping { get; } = [];
+    public HashSet<Layer> Mapping { get; } = [];
 
-    private void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, LayerEnum role)
+    private void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, Layer role)
     {
         Click(selectedPanel, player, role);
         IsActive = false;
@@ -23,7 +23,7 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
         Open();
     }
 
-    private void SetRole(ShapeshifterPanel panel, int index, LayerEnum layer, Action onClick)
+    private void SetRole(ShapeshifterPanel panel, int index, Layer layer, Action onClick)
     {
         panel.shapeshift = onClick;
         // TODO: Replace the player icon with a layer icon because that looks nicer
@@ -37,7 +37,7 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
         var dictEntry = LayerDictionary[layer];
         PlayerMaterial.SetColors(dictEntry.Color, panel.PlayerIcon.cosmetics.currentBodySprite.BodySprite);
         panel.LevelNumberText.transform.parent.gameObject.SetActive(false);
-        panel.NameText.text = layer == LayerEnum.Miner && MapPatches.CurrentMap == 5 ? TranslationManager.Translate("Layer.Herbalist") : dictEntry.Name;
+        panel.NameText.text = layer == Layer.Miner && MapPatches.CurrentMap == 5 ? TranslationManager.Translate("Layer.Herbalist") : dictEntry.Name;
         panel.NameText.color = dictEntry.Color;
         panel.name = $"Guess{panel.NameText.text.Replace(" ", "")}";
 

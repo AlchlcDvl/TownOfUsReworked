@@ -28,7 +28,7 @@ public static class CheckEndGame
             });
             var winners = AllPlayers().Where(x => x.Is(BadGuysSettings.MainBadGuys));
             winners.Do(x => LayerHandler.Handlers[x.PlayerId].Winner = true);
-            CallRpc(CustomRPC.Misc, [MiscRPC.WinLose, WinState, .. winners]);
+            CallRpc(ReworkedRpc.Misc, [MiscRpc.WinLose, WinState, .. winners]);
         }
 
         if (WinState == WinLose.None)
@@ -66,7 +66,7 @@ public static class CheckEndGame
             return;
 
         winnerIds.Do(x => LayerHandler.Handlers[x].Winner = true);
-        CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winnerIds ]);
+        CallRpc(ReworkedRpc.Misc, [ MiscRpc.WinLose, WinState, .. winnerIds ]);
     }
 
     public static void CheckSpellWin(Spellslinger hexer)
@@ -79,7 +79,7 @@ public static class CheckEndGame
         {
             Faction.Outcast => hexer.Handler.CurrentDisposition switch
             {
-                Mafia => x => x.Is(LayerEnum.Mafia),
+                Mafia => x => x.Is(Layer.Mafia),
                 Lovers => x => x.IsOtherLover(hexer.Player),
                 Linked => x => x.IsOtherLink(hexer.Player),
                 _ => x => x == hexer.Player
@@ -115,7 +115,7 @@ public static class CheckEndGame
             },
             _ => WinLose.NobodyWins
         };
-        CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. players.Where(factionCheck) ]);
+        CallRpc(ReworkedRpc.Misc, [ MiscRpc.WinLose, WinState, .. players.Where(factionCheck) ]);
     }
 
     private static void CheckFactionWin(HashSet<byte> winnerIds)
@@ -183,7 +183,7 @@ public static class CheckEndGame
     public static void PerformStalemate()
     {
         WinState = WinLose.NobodyWins;
-        CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.WinLose, WinState);
     }
 
     public static bool TasksDone()

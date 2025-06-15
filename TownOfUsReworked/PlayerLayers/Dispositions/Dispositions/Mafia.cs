@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Mafia)]
+[LayerHeaderOption(Layer.Mafia)]
 public sealed class Mafia : Teamed
 {
     [ToggleOption]
@@ -14,7 +14,7 @@ public sealed class Mafia : Teamed
 
     protected override UColor MainColor => CustomColorManager.Mafia;
     public override string Symbol => "ω";
-    public override LayerEnum Type => LayerEnum.Mafia;
+    public override Layer Type => Layer.Mafia;
     public override string Description => "- Eliminate anyone who opposes the Mafia";
     public override bool CanVent => MafVent;
     protected override bool RevealRole => MafiaRoles;

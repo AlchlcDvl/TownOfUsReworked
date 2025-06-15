@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Banshee)]
+[LayerHeaderOption(Layer.Banshee)]
 public sealed class Banshee : SUtility, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -15,7 +15,7 @@ public sealed class Banshee : SUtility, IGhosty
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Banshee;
-    public override LayerEnum Type => LayerEnum.Banshee;
+    public override Layer Type => Layer.Banshee;
     public override string StartText => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override string Description => "- You can scream loudly, blocking all players as long as you are not clicked";
     public override bool RoleBlockImmune => true; // Not taking chances
@@ -52,7 +52,7 @@ public sealed class Banshee : SUtility, IGhosty
 
     private void HitScream()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ScreamButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, ScreamButton);
         ScreamButton.Begin();
     }
 

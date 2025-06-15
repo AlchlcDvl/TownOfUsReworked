@@ -16,7 +16,7 @@ public static class RpcManager
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
     /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
-    public static RpcWriter CreateWriter(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
+    public static RpcWriter CreateWriter(ReworkedRpc rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
 
     // /// <summary>
     // /// Creates an instance of <see cref="RpcWriter"/> to potentially write more data to.
@@ -31,14 +31,14 @@ public static class RpcManager
     /// </summary>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallRpc(CustomRPC rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
+    public static void CallRpc(ReworkedRpc rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
 
     /// <summary>
     /// Sends a late RPC message to all players.
     /// </summary>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateRpc(CustomRPC rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
+    public static void CallLateRpc(ReworkedRpc rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
 
     // /// <summary>
     // /// Sends an RPC message with type codes to all players.
@@ -60,7 +60,7 @@ public static class RpcManager
     /// <param name="targetClientId">The player to send the data to.</param>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
+    public static void CallTargetedRpc(int targetClientId, ReworkedRpc rpc, params object[] data)
     {
         using var writer = CreateWriter(rpc, data);
         writer?.Send(targetClientId);
@@ -72,7 +72,7 @@ public static class RpcManager
     /// <param name="targetClientId">The player to send the data to.</param>
     /// <param name="rpc">The main rpc header.</param>
     /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateTargetedRpc(int targetClientId, CustomRPC rpc, params object[] data)
+    public static void CallLateTargetedRpc(int targetClientId, ReworkedRpc rpc, params object[] data)
     {
         using var writer = CreateWriter(rpc, data);
         writer?.SendLate(targetClientId);
@@ -136,7 +136,7 @@ public static class RpcManager
 
         foreach (var list in split)
         {
-            using var writer = CreateWriter(CustomRPC.Misc, MiscRPC.SyncCustomSettings, (byte)list.Length);
+            using var writer = CreateWriter(ReworkedRpc.Misc, MiscRpc.SyncCustomSettings, (byte)list.Length);
 
             foreach (var option in list)
             {
@@ -235,7 +235,7 @@ public static class RpcManager
         if (TownOfUsReworked.DebugMode)
             Message($"Received rpc with {reader.DataSize} bytes");
 
-        var rpc = reader.Read<CustomRPC>();
+        var rpc = reader.Read<ReworkedRpc>();
 
         switch (rpc)
         {
@@ -264,28 +264,28 @@ public static class RpcManager
             //         }
             //     }
             // }
-            case CustomRPC.Misc:
+            case ReworkedRpc.Misc:
             {
-                var misc = reader.Read<MiscRPC>();
+                var misc = reader.Read<MiscRpc>();
 
                 switch (misc)
                 {
-                    case MiscRPC.SyncMaxUses:
+                    case MiscRpc.SyncMaxUses:
                     {
                         reader.ReadButton().MaxUses = reader.ReadInt();
                         return;
                     }
-                    case MiscRPC.SyncUses:
+                    case MiscRpc.SyncUses:
                     {
                         reader.ReadButton().Uses = reader.ReadInt();
                         return;
                     }
-                    case MiscRPC.SetLayer:
+                    case MiscRpc.SetLayer:
                     {
-                        RoleGenManager.GetLayer(reader.Read<LayerEnum>(), reader.Read<PlayerLayerEnum>()).Start(reader.ReadPlayer());
+                        RoleGenManager.GetLayer(reader.Read<Layer>(), reader.Read<PlayerLayerEnum>()).Start(reader.ReadPlayer());
                         return;
                     }
-                    case MiscRPC.Whisper:
+                    case MiscRpc.Whisper:
                     {
                         var whisperer = reader.ReadPlayer();
                         var whispered = reader.ReadPlayer();
@@ -300,35 +300,35 @@ public static class RpcManager
 
                         return;
                     }
-                    case MiscRPC.Start:
+                    case MiscRpc.Start:
                     {
                         RoleGenManager.ResetEverything();
                         return;
                     }
-                    case MiscRPC.BreakShield:
+                    case MiscRpc.BreakShield:
                     {
                         BreakShield(reader.ReadPlayer(), Medic.ShieldBreaks);
                         return;
                     }
-                    case MiscRPC.BastionBomb:
+                    case MiscRpc.BastionBomb:
                     {
                         BastionBomb(reader.ReadVent(), Bastion.BombRemovedOnKill);
                         return;
                     }
-                    case MiscRPC.Catch:
+                    case MiscRpc.Catch:
                     {
                         reader.ReadPlayer().GetLayer<IGhosty>().Catch(reader.ReadPlayer());
                         return;
                     }
-                    case MiscRPC.DoorSyncToilet:
+                    case MiscRpc.DoorSyncToilet:
                     {
                         var id2 = reader.ReadInt();
                         UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == id2)?.SetDoorway(true);
                         return;
                     }
-                    case MiscRPC.PlayerJoinSync:
+                    case MiscRpc.PlayerJoinSync:
                     {
-                        SettingsPatches.SetMap(reader.Read<MapEnum>());
+                        SettingsPatches.SetMap(reader.Read<Map>());
 
                         if (reader.ReadBool())
                             Summary = reader.Read<SummaryInfo>();
@@ -338,46 +338,46 @@ public static class RpcManager
 
                         return;
                     }
-                    case MiscRPC.SubmergedFixOxygen:
+                    case MiscRpc.SubmergedFixOxygen:
                     {
                         RepairOxygen();
                         return;
                     }
-                    case MiscRPC.FixLights:
+                    case MiscRpc.FixLights:
                     {
                         var lights = Ship().Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
                         lights.ActualSwitches = lights.ExpectedSwitches;
                         return;
                     }
-                    case MiscRPC.FixMixup:
+                    case MiscRpc.FixMixup:
                     {
                         var mixup = Ship().Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
                         mixup.secondsForAutoHeal = 0.1f;
                         return;
                     }
-                    case MiscRPC.ChaosDrive:
+                    case MiscRpc.ChaosDrive:
                     {
                         Syndicate.DriveHolder = reader.ReadPlayer();
                         Syndicate.SyndicateHasChaosDrive = Syndicate.DriveHolder;
                         return;
                     }
-                    case MiscRPC.SyncCustomSettings:
+                    case MiscRpc.SyncCustomSettings:
                     {
                         Holders.EnsureCount();
                         ReceiveOptionRPC(reader);
                         return;
                     }
-                    case MiscRPC.SyncMap:
+                    case MiscRpc.SyncMap:
                     {
-                        SettingsPatches.SetMap(reader.Read<MapEnum>());
+                        SettingsPatches.SetMap(reader.Read<Map>());
                         return;
                     }
-                    case MiscRPC.Notify:
+                    case MiscRpc.Notify:
                     {
                         ChatPatches.Notify(reader.ReadByte());
                         return;
                     }
-                    case MiscRPC.SetSettings:
+                    case MiscRpc.SetSettings:
                     {
                         MapPatches.CurrentMap = reader.ReadByte();
 
@@ -397,24 +397,24 @@ public static class RpcManager
                         MapPatches.AdjustSettings(true);
                         return;
                     }
-                    case MiscRPC.BodyLocation:
+                    case MiscRpc.BodyLocation:
                     {
                         BodyLocations[reader.ReadByte()] = reader.ReadString();
                         return;
                     }
-                    case MiscRPC.MoveBody:
+                    case MiscRpc.MoveBody:
                     {
                         reader.ReadBody().transform.position = reader.ReadVector2();
                         return;
                     }
-                    case MiscRPC.LoadPreset:
+                    case MiscRpc.LoadPreset:
                     {
                         var preset = reader.ReadString();
                         Run("<#00CC99FF>【 Loading Preset 】</color>", $"Loading the {preset} preset!");
                         SettingsPatches.CurrentPreset = preset;
                         return;
                     }
-                    case MiscRPC.EndRoleGen:
+                    case MiscRpc.EndRoleGen:
                     {
                         AllPlayers().Do(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
                         SetPostmortals.Revealers = reader.ReadByte();
@@ -427,7 +427,7 @@ public static class RpcManager
                         AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
                         return;
                     }
-                    case MiscRPC.SetTarget:
+                    case MiscRpc.SetTarget:
                     {
                         switch (reader.ReadLayer())
                         {
@@ -439,7 +439,7 @@ public static class RpcManager
                             case Actor actor:
                             {
                                 actor.PretendRoles.Clear();
-                                actor.PretendRoles.AddRange(reader.ReadValues<LayerEnum>());
+                                actor.PretendRoles.AddRange(reader.ReadValues<Layer>());
                                 break;
                             }
                             case Allied ally:
@@ -458,7 +458,7 @@ public static class RpcManager
 
                         return;
                     }
-                    case MiscRPC.ChangeRoles:
+                    case MiscRpc.ChangeRoles:
                     {
                         switch (reader.ReadLayer())
                         {
@@ -478,19 +478,19 @@ public static class RpcManager
                             }
                             case Actor act:
                             {
-                                act.TurnRole(reader.Read<LayerEnum>());
+                                act.TurnRole(reader.Read<Layer>());
                                 break;
                             }
                         }
 
                         return;
                     }
-                    case MiscRPC.Achievement:
+                    case MiscRpc.Achievement:
                     {
                         CustomAchievementManager.UnlockAchievement(reader.ReadString());
                         return;
                     }
-                    case MiscRPC.Stat:
+                    case MiscRpc.Stat:
                     {
                         CustomStatsManager.IncrementStat(reader.Read<StringNames>());
                         return;
@@ -500,7 +500,7 @@ public static class RpcManager
                     //     StatusUtils.AddStatusFromRpc(reader);
                     //     return;
                     // }
-                    case MiscRPC.WinLose:
+                    case MiscRpc.WinLose:
                     {
                         WinState = reader.Read<WinLose>();
 
@@ -516,18 +516,18 @@ public static class RpcManager
                     }
                 }
             }
-            case CustomRPC.Vanilla:
+            case ReworkedRpc.Vanilla:
             {
-                var vanilla = reader.Read<VanillaRPC>();
+                var vanilla = reader.Read<VanillaRpc>();
 
                 switch (vanilla)
                 {
-                    case VanillaRPC.SnapTo:
+                    case VanillaRpc.SnapTo:
                     {
                         reader.ReadPlayer().CustomSnapTo(reader.ReadVector2());
                         return;
                     }
-                    case VanillaRPC.SetColor:
+                    case VanillaRpc.SetColor:
                     {
                         reader.ReadPlayer().SetColor(reader.ReadByte());
                         return;
@@ -539,40 +539,40 @@ public static class RpcManager
                     }
                 }
             }
-            case CustomRPC.Action:
+            case ReworkedRpc.Action:
             {
-                var action = reader.Read<ActionsRPC>();
+                var action = reader.Read<ActionsRpc>();
 
                 switch (action)
                 {
-                    case ActionsRPC.FadeBody:
+                    case ActionsRpc.FadeBody:
                     {
                         FadeBody(reader.ReadBody());
                         return;
                     }
-                    case ActionsRPC.Convert:
+                    case ActionsRpc.Convert:
                     {
                         ConvertPlayer(reader.ReadByte(), reader.ReadByte(), reader.ReadBool());
                         return;
                     }
-                    case ActionsRPC.BypassKill:
+                    case ActionsRpc.BypassKill:
                     {
                         reader.ReadPlayer().MurderPlayer(reader.ReadPlayer(), reader.Read<DeathReasonEnum>(), reader.ReadBool());
                         return;
                     }
-                    case ActionsRPC.ForceKill:
+                    case ActionsRpc.ForceKill:
                     {
                         var victim = reader.ReadPlayer();
                         var success = reader.ReadBool();
                         PlayerLayer.GetLayers<Enforcer>().Where(x => x.BombedPlayer == victim).Do(x => x.BombSuccessful = success);
                         return;
                     }
-                    case ActionsRPC.Infect:
+                    case ActionsRpc.Infect:
                     {
                         Pestilence.Infected[reader.ReadByte()] = reader.ReadByte();
                         return;
                     }
-                    case ActionsRPC.SetUninteractable:
+                    case ActionsRpc.SetUninteractable:
                     {
                         try
                         {
@@ -590,22 +590,22 @@ public static class RpcManager
 
                         return;
                     }
-                    case ActionsRPC.CallMeeting:
+                    case ActionsRpc.CallMeeting:
                     {
                         CallMeeting(reader.ReadPlayer());
                         return;
                     }
-                    case ActionsRPC.BaitReport:
+                    case ActionsRpc.BaitReport:
                     {
                         reader.ReadPlayer().ReportDeadBody(reader.ReadPlayer().Data);
                         return;
                     }
-                    case ActionsRPC.Drop:
+                    case ActionsRpc.Drop:
                     {
                         reader.ReadBody().GetComponent<DeadBodyHandler>().StopDrag();
                         return;
                     }
-                    case ActionsRPC.Burn:
+                    case ActionsRpc.Burn:
                     {
                         var disappear = reader.ReadValues<byte>();
 
@@ -617,7 +617,7 @@ public static class RpcManager
 
                         return;
                     }
-                    case ActionsRPC.PlaceHit:
+                    case ActionsRpc.PlaceHit:
                     {
                         var requestor = reader.ReadPlayer().GetRole();
                         requestor.Requestor.GetLayer<BountyHunter>().TentativeTarget = reader.ReadPlayer();
@@ -625,24 +625,24 @@ public static class RpcManager
                         requestor.Requestor = null;
                         return;
                     }
-                    case ActionsRPC.ButtonAction:
+                    case ActionsRpc.ButtonAction:
                     {
                         reader.ReadButton().StartEffectRPC(reader);
                         return;
                     }
-                    case ActionsRPC.LayerAction:
+                    case ActionsRpc.LayerAction:
                     {
                         reader.ReadLayer().ReadRPC(reader);
                         return;
                     }
-                    case ActionsRPC.Cancel:
+                    case ActionsRpc.Cancel:
                     {
                         var button = reader.ReadButton();
                         button.ClickedAgain = true;
                         button.OnClickedAgain();
                         return;
                     }
-                    case ActionsRPC.PublicReveal:
+                    case ActionsRpc.PublicReveal:
                     {
                         PublicReveal(reader.ReadPlayer());
                         return;

@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum MapEnum : byte
+public enum Map : byte
 {
     Skeld,
     MiraHq,

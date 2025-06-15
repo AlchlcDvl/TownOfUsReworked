@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Lovers)]
+[LayerHeaderOption(Layer.Lovers)]
 public sealed class Lovers : Paired
 {
     [ToggleOption]
@@ -19,7 +19,7 @@ public sealed class Lovers : Paired
 
     protected override UColor MainColor => CustomColorManager.Lovers;
     public override string Symbol => "♥";
-    public override LayerEnum Type => LayerEnum.Lovers;
+    public override Layer Type => Layer.Lovers;
     public override string Description => $"- Live to the final 3 with {Other.name}";
     protected override bool RevealRole => LoversRoles;
     protected override ChatChannel Channel => ChatChannel.Lovers;

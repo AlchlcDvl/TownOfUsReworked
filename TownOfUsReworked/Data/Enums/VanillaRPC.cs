@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum VanillaRPC : byte
+public enum VanillaRpc : byte
 {
     SnapTo,
     SetColor

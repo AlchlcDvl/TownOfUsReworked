@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Zealot)]
+[LayerHeaderOption(Layer.Zealot)]
 public sealed class Zealot : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -16,10 +16,10 @@ public sealed class Zealot : Neophyte
     private bool HasConverted;
 
     protected override UColor MainColor => CustomColorManager.Zealot;
-    public override LayerEnum Type => LayerEnum.Zealot;
+    public override Layer Type => Layer.Zealot;
     public override string StartText => "Brings Others To Your Religion At Any Cost";
     public override string Description => "- You can preach your gospel to a player in an attempt to convert them\n- If the target cannot be converted, you will kill them instead";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool CanVent => base.CanVent && ZealVent;
     protected override Faction ActualFaction => Faction.Followers;
 

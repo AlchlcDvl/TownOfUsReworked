@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Trapper)]
+[LayerHeaderOption(Layer.Trapper)]
 public sealed class Trapper : Protective, ITrapper
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
@@ -18,14 +18,14 @@ public sealed class Trapper : Protective, ITrapper
     public HashSet<byte> Trapped { get; } = [];
     public bool Building { get ; private set; }
 
-    private readonly List<LayerEnum> TriggeredRoles = [];
+    private readonly List<Layer> TriggeredRoles = [];
     private CustomButton BuildButton;
     private CustomButton TrapButton;
     private int TrapsMade;
     private bool AttackedSomeone;
 
     protected override UColor MainColor => CustomColorManager.Trapper;
-    public override LayerEnum Type => LayerEnum.Trapper;
+    public override Layer Type => Layer.Trapper;
     public override string StartText => "<size=90%>Use Your Tinkering Skills To Obstruct The <#FF0000FF>Evildoers</color></size>";
     public override string Description => "- You can build a trap, adding it to your armory\n- You can place these traps on players and either log the roles of interactors on " +
         "them\nor protect from an attack once and attack the attacker in return";
@@ -67,7 +67,7 @@ public sealed class Trapper : Protective, ITrapper
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Place, target.PlayerId);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, TrapperActionsRpc.Place, target.PlayerId);
             Trapped.Add(target.PlayerId);
         }
 
@@ -84,7 +84,7 @@ public sealed class Trapper : Protective, ITrapper
             return;
 
         if (trigger.AmOwner)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TrapperActionsRPC.Trigger, trapped, trigger, isAttack);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, TrapperActionsRpc.Trigger, trapped, trigger, isAttack);
 
         TriggeredRoles.Add(trigger.GetRole().Type);
         AttackedSomeone = isAttack;
@@ -93,16 +93,16 @@ public sealed class Trapper : Protective, ITrapper
 
     public override void ReadRPC(RpcReader reader)
     {
-        var trapAction = reader.Read<TrapperActionsRPC>();
+        var trapAction = reader.Read<TrapperActionsRpc>();
 
         switch (trapAction)
         {
-            case TrapperActionsRPC.Place:
+            case TrapperActionsRpc.Place:
             {
                 Trapped.Add(reader.ReadByte());
                 break;
             }
-            case TrapperActionsRPC.Trigger:
+            case TrapperActionsRpc.Trigger:
             {
                 TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBool());
                 break;

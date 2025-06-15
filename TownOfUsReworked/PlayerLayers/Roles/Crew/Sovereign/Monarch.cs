@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Monarch)]
+[LayerHeaderOption(Layer.Monarch)]
 public sealed class Monarch : Sovereign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -28,11 +28,11 @@ public sealed class Monarch : Sovereign
     public readonly HashSet<byte> Knighted = [];
 
     protected override UColor MainColor => CustomColorManager.Monarch;
-    public override LayerEnum Type => LayerEnum.Monarch;
+    public override Layer Type => Layer.Monarch;
     public override string StartText => "Knight Those Who You Trust";
     public override string Description => $"- You can knight players\n- Knighted players will have their votes count {KnightVoteCount + 1} times\n- As long as a knight is alive,"
         + " you cannot be killed\n- You will know when a knight of yours dies";
-    public override DefenseEnum DefenseVal => Knighted.Any(x => !PlayerById(x).HasDied()) ? DefenseEnum.Basic : DefenseEnum.None;
+    public override Defense Defense => Knighted.Any(x => !PlayerById(x).HasDied()) ? Defense.Basic : Defense.None;
 
     public override void Init()
     {
@@ -52,7 +52,7 @@ public sealed class Monarch : Sovereign
         if (cooldown != CooldownType.Fail)
         {
             ToBeKnighted.Add(target.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
 
             if (target.Is<Sovereign>(out var rev) && !rev.Revealed)
                 CustomAchievementManager.UnlockAchievement("HiddenAlliance");

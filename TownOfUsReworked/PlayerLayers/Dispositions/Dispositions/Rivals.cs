@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Rivals)]
+[LayerHeaderOption(Layer.Rivals)]
 public sealed class Rivals : Paired
 {
     [ToggleOption]
@@ -13,7 +13,7 @@ public sealed class Rivals : Paired
 
     protected override UColor MainColor => CustomColorManager.Rivals;
     public override string Symbol => "α";
-    public override LayerEnum Type => LayerEnum.Rivals;
+    public override Layer Type => Layer.Rivals;
     public override string Description => Other.HasDied() ? "- Live to the final 2" : $"- Get {Other.name} killed";
     protected override bool RevealRole => RivalsRoles;
     protected override ChatChannel Channel => ChatChannel.Rivals;

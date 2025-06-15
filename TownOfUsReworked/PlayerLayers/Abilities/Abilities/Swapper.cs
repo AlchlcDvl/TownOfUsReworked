@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[LayerHeaderOption(LayerEnum.Swapper)]
+[LayerHeaderOption(Layer.Swapper)]
 public sealed class Swapper : Ability
 {
     [ToggleOption]
@@ -14,7 +14,7 @@ public sealed class Swapper : Ability
     public CustomMeeting SwapMenu;
 
     protected override UColor MainColor => CustomColorManager.Swapper;
-    public override LayerEnum Type => LayerEnum.Swapper;
+    public override Layer Type => Layer.Swapper;
     public override string Description => "- You can swap the votes against 2 players in meetings";
 
     public override void Init()
@@ -29,7 +29,7 @@ public sealed class Swapper : Ability
         SwapMenu.HideButtons();
 
         if (Swap1 && Swap2 && !Dead)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Swap1, Swap2);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, Swap1, Swap2);
     }
 
     public override void ReadRPC(RpcReader reader)

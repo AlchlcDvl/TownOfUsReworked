@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Plaguebearer)]
+[LayerHeaderOption(Layer.Plaguebearer)]
 public sealed class Plaguebearer : Harbinger<Pestilence>
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,11 +13,11 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
     private CustomButton InfectButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Plaguebearer;
-    public override LayerEnum Type => LayerEnum.Plaguebearer;
+    public override Layer Type => Layer.Plaguebearer;
     public override string StartText => "Spread Disease To Summon <#424242FF>Pestilence</color>";
     public override string Description => "- You can infect players\n- When all players are infected, you will turn into <#424242FF>Pestilence</color>\n- Infections can "
         + "spread via interaction between players" + CommonAbilities;
-    public override DefenseEnum DefenseVal => Infected.Count < GameData.Instance.PlayerCount / 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override Defense Defense => Infected.Count < GameData.Instance.PlayerCount / 2 ? Defense.Basic : Defense.None;
     public override bool CanVent => base.CanVent && PbVent;
 
     public override void Init()
@@ -49,7 +49,7 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
         else
             return;
 
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, id);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, id);
         Infected.Add(id);
     }
 

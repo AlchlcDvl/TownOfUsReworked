@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Amnesiac)]
+[LayerHeaderOption(Layer.Amnesiac)]
 public sealed class Amnesiac : Benign
 {
     [ToggleOption]
@@ -22,7 +22,7 @@ public sealed class Amnesiac : Benign
     private CustomButton RememberButton;
 
     protected override UColor MainColor => CustomColorManager.Amnesiac;
-    public override LayerEnum Type => LayerEnum.Amnesiac;
+    public override Layer Type => Layer.Amnesiac;
     public override string StartText => "You Forgor <i>:skull:</i>";
     public override string Description => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
         + " to their body") : "") + "\n- If there are less than 4 players alive, you will become a <#80FF00FF>Thief</color>";
@@ -55,7 +55,7 @@ public sealed class Amnesiac : Benign
     {
         var player = PlayerByBody(target);
         Spread(Player, player);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, player);
         Remember(player);
     }
 

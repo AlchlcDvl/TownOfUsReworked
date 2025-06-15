@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public sealed class Colorblind : Modifier
 {
     protected override UColor MainColor => CustomColorManager.Colorblind;
-    public override LayerEnum Type => LayerEnum.Colorblind;
+    public override Layer Type => Layer.Colorblind;
     public override string Description => "- You can't tell the difference between players";
 
     private bool AllToNormal;

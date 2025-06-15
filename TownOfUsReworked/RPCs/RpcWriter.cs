@@ -29,7 +29,7 @@ public sealed class RpcWriter : IDisposable
     /// <param name="rpc">The main RPC header enum value for this message.</param>
     /// <param name="withTypeCode">A flag indicating whether type codes should be used for initial data serialization.</param>
     /// <param name="data">Optional initial data to serialize into the buffer during initialization.</param>
-    public RpcWriter(CustomRPC rpc, bool withTypeCode, params object[] data)
+    public RpcWriter(ReworkedRpc rpc, bool withTypeCode, params object[] data)
     {
         Payload = ArrayPool<byte>.Shared.Rent(256);
         Position = 0;

@@ -24,7 +24,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// <summary>
     /// Gets the type for this layer.
     /// </summary>
-    public abstract LayerEnum Type { get; }
+    public abstract Layer Type { get; }
 
     /// <summary>
     /// Get a value indicating condition to check whether or not the layer's main color should be used (if not, its base color is used).
@@ -39,12 +39,12 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// <summary>
     /// Gets the attack value of the layer.
     /// </summary>
-    public virtual AttackEnum AttackVal => AttackEnum.None;
+    public virtual Attack Attack => Attack.None;
 
     /// <summary>
     /// Gets the defense value of the layer.
     /// </summary>
-    public virtual DefenseEnum DefenseVal => DefenseEnum.None;
+    public virtual Defense Defense => Defense.None;
 
     /// <summary>
     /// Gets a value indicating whether or not the player knows they have it.

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Medic)]
+[LayerHeaderOption(Layer.Medic)]
 public sealed class Medic : Protective, IShielder
 {
     [MultiSelectOption<ShieldOptions>(NoneValue = ShieldOptions.Nobody, AllValue = ShieldOptions.Everyone)]
@@ -18,7 +18,7 @@ public sealed class Medic : Protective, IShielder
     private CustomButton ShieldButton;
 
     protected override UColor MainColor => CustomColorManager.Medic;
-    public override LayerEnum Type => LayerEnum.Medic;
+    public override Layer Type => Layer.Medic;
     public override string StartText => "Shield A Player To Protect Them";
     public override string Description => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?
         "\n- If your target is attacked, you will be notified of it" : "");
@@ -38,7 +38,7 @@ public sealed class Medic : Protective, IShielder
         if (cooldown != CooldownType.Fail)
         {
             ShieldedPlayer = ShieldedPlayer ? null : target;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ShieldedPlayer?.PlayerId ?? 255);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, ShieldedPlayer?.PlayerId ?? 255);
         }
 
         ShieldButton.StartCooldown(cooldown);

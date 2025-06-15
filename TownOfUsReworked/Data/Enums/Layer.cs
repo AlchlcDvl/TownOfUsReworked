@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum LayerEnum : byte
+public enum Layer : byte
 {
     None,
 

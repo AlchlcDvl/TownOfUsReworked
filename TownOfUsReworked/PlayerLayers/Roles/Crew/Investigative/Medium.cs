@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // TODO: Implement seancing
-[LayerHeaderOption(LayerEnum.Medium)]
+[LayerHeaderOption(Layer.Medium)]
 public sealed class Medium : Investigative, IShaman
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -33,7 +33,7 @@ public sealed class Medium : Investigative, IShaman
     private readonly Dictionary<byte, PlayerArrow> MediateArrows = [];
 
     protected override UColor MainColor => CustomColorManager.Medium;
-    public override LayerEnum Type => LayerEnum.Medium;
+    public override Layer Type => Layer.Medium;
     public override string StartText => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
     public override string Description => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
         "players will be able to see you"));
@@ -112,7 +112,7 @@ public sealed class Medium : Investigative, IShaman
 
         MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
         MediatedPlayers.Add(dead.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, dead.PlayerId);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, dead.PlayerId);
     }
 
     public override void ReadRPC(RpcReader reader)

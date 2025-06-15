@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Poisoner)]
+[LayerHeaderOption(Layer.Poisoner)]
 public sealed class Poisoner : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -15,7 +15,7 @@ public sealed class Poisoner : SKilling
     private CustomPlayerMenu PoisonMenu;
 
     protected override UColor MainColor => CustomColorManager.Poisoner;
-    public override LayerEnum Type => LayerEnum.Poisoner;
+    public override Layer Type => Layer.Poisoner;
     public override string StartText => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
     public override string Description => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" + CommonAbilities;
 
@@ -36,7 +36,7 @@ public sealed class Poisoner : SKilling
 
     private void UnPoison()
     {
-        if (!PoisonedPlayer.HasDied() && CanAttack(AttackEnum.Basic, PoisonedPlayer.GetDefenseValue(Player)))
+        if (!PoisonedPlayer.HasDied() && CanAttack(Attack.Basic, PoisonedPlayer.GetDefenseValue(Player)))
             Player.MurderPlayer(PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
@@ -78,7 +78,7 @@ public sealed class Poisoner : SKilling
         if (cooldown != CooldownType.Fail)
         {
             PoisonedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, PoisonButton, PoisonedPlayer);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, PoisonButton, PoisonedPlayer);
             PoisonButton.Begin();
         }
         else
@@ -89,7 +89,7 @@ public sealed class Poisoner : SKilling
     {
         if (PoisonedPlayer)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, GlobalPoisonButton, PoisonedPlayer);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, GlobalPoisonButton, PoisonedPlayer);
             GlobalPoisonButton.Begin();
         }
         else

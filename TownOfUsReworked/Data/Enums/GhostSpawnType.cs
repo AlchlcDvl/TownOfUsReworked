@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum GhostSpawnType
+public enum GhostSpawnType : byte
 {
     AtMeeting,
     PosBeforeMeeting,

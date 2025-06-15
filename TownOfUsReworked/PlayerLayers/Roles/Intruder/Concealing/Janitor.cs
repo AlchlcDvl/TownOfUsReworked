@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Janitor)]
+[LayerHeaderOption(Layer.Janitor)]
 public sealed class Janitor : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -27,7 +27,7 @@ public sealed class Janitor : Concealing
     public DeadBodyHandler CurrentlyDragging;
 
     protected override UColor MainColor => CustomColorManager.Janitor;
-    public override LayerEnum Type => LayerEnum.Janitor;
+    public override Layer Type => Layer.Janitor;
     public override string StartText => "Sanitise The Ship, By Any Means Necessary";
     public override string Description => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n" +
         CommonAbilities;
@@ -48,7 +48,7 @@ public sealed class Janitor : Concealing
     private void Clean(DeadBody target)
     {
         Spread(Player, PlayerByBody(target));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.FadeBody, target);
         FadeBody(target);
         CleanButton.StartCooldown();
 
@@ -60,7 +60,7 @@ public sealed class Janitor : Concealing
     {
         target.GetComponent<DeadBodyHandler>().StartDrag(Player);
         Spread(Player, PlayerByBody(target));
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
     }
 
     public void Drop()
@@ -68,7 +68,7 @@ public sealed class Janitor : Concealing
         if (!CurrentlyDragging)
             return;
 
-        CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging.Body);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.Drop, CurrentlyDragging.Body);
         CurrentlyDragging.StopDrag();
         DragButton.StartCooldown();
     }

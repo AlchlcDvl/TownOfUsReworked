@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Arsonist)]
+[LayerHeaderOption(Layer.Arsonist)]
 public sealed class Arsonist : OKilling, IDouser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -35,12 +35,12 @@ public sealed class Arsonist : OKilling, IDouser
     public HashSet<byte> Doused { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Arsonist;
-    public override LayerEnum Type => LayerEnum.Arsonist;
+    public override Layer Type => Layer.Arsonist;
     public override string StartText => "PYROMANIAAAAAAAAAAAAAA";
     public override string Description => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with you will " +
         "get doused";
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
-    public override DefenseEnum DefenseVal => Doused.Count is 1 or 2 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override Attack Attack => Attack.Unstoppable;
+    public override Defense Defense => Doused.Count is 1 or 2 ? Defense.Basic : Defense.None;
     public override bool CanVent => base.CanVent && ArsoVent;
     protected override Faction ActualFaction => Faction.Arsonist;
 
@@ -75,7 +75,7 @@ public sealed class Arsonist : OKilling, IDouser
         {
             var player = PlayerById(id);
 
-            if (player.HasDied() || player.TryReversingDouses<Cryomaniac>() || !CanAttack(AttackVal, player.GetDefenseValue()))
+            if (player.HasDied() || player.TryReversingDouses<Cryomaniac>() || !CanAttack(Attack, player.GetDefenseValue()))
                 continue;
 
             Player.RpcMurderPlayer(player, DeathReasonEnum.Ignited, false);
@@ -85,7 +85,7 @@ public sealed class Arsonist : OKilling, IDouser
 
         if (IgnitionCremates)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Burn, disappear);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.Burn, disappear);
 
             foreach (var body in AllBodies())
             {
@@ -120,7 +120,7 @@ public sealed class Arsonist : OKilling, IDouser
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
     }
 
     private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(Faction) && Faction is not
@@ -128,16 +128,16 @@ public sealed class Arsonist : OKilling, IDouser
 
     public override void ReadRPC(RpcReader reader)
     {
-        var arsoAction = reader.Read<DouseActionsRPC>();
+        var arsoAction = reader.Read<DouseActionsRpc>();
 
         switch (arsoAction)
         {
-            case DouseActionsRPC.Douse:
+            case DouseActionsRpc.Douse:
             {
                 Doused.Add(reader.ReadByte());
                 break;
             }
-            case DouseActionsRPC.UnDouse:
+            case DouseActionsRpc.UnDouse:
             {
                 Doused.Remove(reader.ReadByte());
                 break;

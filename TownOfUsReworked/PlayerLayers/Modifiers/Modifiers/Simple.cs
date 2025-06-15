@@ -1,12 +1,12 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-public abstract class Simple(UColor color, LayerEnum type, string description) : Modifier
+public abstract class Simple(UColor color, Layer type, string description) : Modifier
 {
     protected override UColor MainColor => color;
-    public override LayerEnum Type => type;
+    public override Layer Type => type;
     public override string Description => description;
 }
 
-public sealed class Coward() : Simple(CustomColorManager.Coward, LayerEnum.Coward, "- You cannot report bodies");
+public sealed class Coward() : Simple(CustomColorManager.Coward, Layer.Coward, "- You cannot report bodies");
 
-public sealed class Shy() : Simple(CustomColorManager.Shy, LayerEnum.Shy, "- You cannot call meetings");
+public sealed class Shy() : Simple(CustomColorManager.Shy, Layer.Shy, "- You cannot call meetings");

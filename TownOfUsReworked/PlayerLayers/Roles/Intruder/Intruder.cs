@@ -4,8 +4,8 @@ public abstract class Intruder : Role, IPromoter
 {
     public bool IsUnderling { get; set; }
     public bool IsPromoted { get; set; }
-    public LayerEnum UnderlingType => LayerEnum.Mafioso;
-    public LayerEnum PromoterType => LayerEnum.Godfather;
+    public Layer UnderlingType => Layer.Mafioso;
+    public Layer PromoterType => Layer.Godfather;
     public float PromotionModifier { get; } = Godfather.GfPromotionCdDecrease;
 
     protected CustomButton KillButton;
@@ -16,7 +16,7 @@ public abstract class Intruder : Role, IPromoter
 
     protected override UColor MainColor => CustomColorManager.Intruder;
     protected override UColor LayerColor => CustomColorManager.Intruder;
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool AffectedByLights => false;
     public override bool CanVent
     {
@@ -71,7 +71,7 @@ public abstract class Intruder : Role, IPromoter
         IsUnderling = false;
         Promoter = null;
         Name = TranslationManager.Translate("Layer.Godfather");
-        Handler.History.Add((LayerEnum.Mafioso, Faction));
+        Handler.History.Add((Layer.Mafioso, Faction));
     }
 
     protected virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));

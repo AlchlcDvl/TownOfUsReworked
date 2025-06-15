@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[LayerHeaderOption(LayerEnum.Dwarf)]
+[LayerHeaderOption(Layer.Dwarf)]
 public sealed class Dwarf : Modifier
 {
     [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
@@ -15,7 +15,7 @@ public sealed class Dwarf : Modifier
     private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : ""));
 
     protected override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Dwarf;
-    public override LayerEnum Type => LayerEnum.Dwarf;
+    public override Layer Type => Layer.Dwarf;
     public override string Description => Useless ? "- Why" : $"- You are {Text}";
 
     public override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Smol ? (Sped ? "Gremlin" : "Dwarf") : "Flash"))}");

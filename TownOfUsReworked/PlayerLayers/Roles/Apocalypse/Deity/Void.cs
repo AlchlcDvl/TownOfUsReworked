@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Void)]
+[LayerHeaderOption(Layer.Void)]
 public sealed class Void : Deity
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -18,11 +18,11 @@ public sealed class Void : Deity
     public static readonly HashSet<byte> ToBeExtracted = [];
 
     protected override UColor MainColor => CustomColorManager.Void;
-    public override LayerEnum Type => LayerEnum.Void;
+    public override Layer Type => Layer.Void;
     public override string Description => "- Anyone who either you interact with or interacts with you will lose their role\n- Your victim's bodies cannot be reported" +
         CommonAbilities;
     public override bool CanVent => base.CanVent && VoidVent;
-    public override AttackEnum AttackVal => AttackEnum.Powerful;
+    public override Attack Attack => Attack.Powerful;
 
     public override void Init()
     {
@@ -42,7 +42,7 @@ public sealed class Void : Deity
         if (cooldown != CooldownType.Fail)
         {
             ToBeExtracted.Add(target.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
         }
 
         ExtractButton.StartCooldown(cooldown);

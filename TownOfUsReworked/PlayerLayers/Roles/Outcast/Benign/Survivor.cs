@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Survivor)]
+[LayerHeaderOption(Layer.Survivor)]
 public sealed class Survivor : Benign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -21,10 +21,10 @@ public sealed class Survivor : Benign
     public CustomButton VestButton;
 
     protected override UColor MainColor => CustomColorManager.Survivor;
-    public override LayerEnum Type => LayerEnum.Survivor;
+    public override Layer Type => Layer.Survivor;
     public override string StartText => "Do Whatever It Takes To Live";
     public override string Description => "- You can put on a vest, which gives you basic defense for a short duration of time";
-    public override DefenseEnum DefenseVal => VestButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
+    public override Defense Defense => VestButton.EffectActive ? Defense.Basic : Defense.None;
     public override bool CanVent => base.CanVent && SurvVent;
     public override bool CanSwitchVents => SurvSwitchVent;
 
@@ -38,7 +38,7 @@ public sealed class Survivor : Benign
 
     private void HitVest()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, VestButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, VestButton);
         VestButton.Begin();
     }
 }

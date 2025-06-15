@@ -6,15 +6,15 @@ public abstract class Syndicate : Role, IPromoter
     public Rebel Promoter;
     public bool IsUnderling { get; set; }
     public bool IsPromoted { get; set; }
-    public LayerEnum UnderlingType => LayerEnum.Sidekick;
-    public LayerEnum PromoterType => LayerEnum.Rebel;
+    public Layer UnderlingType => Layer.Sidekick;
+    public Layer PromoterType => Layer.Rebel;
     public float PromotionModifier { get; } = Rebel.RebPromotionCdDecrease;
     protected string CommonAbilities => "<#008000FF>" + (KillUsable() ? "- You can kill players directly" : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
     public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive);
 
     protected override UColor MainColor => CustomColorManager.Syndicate;
     protected override UColor LayerColor => CustomColorManager.Syndicate;
-    public override AttackEnum AttackVal => KillUsable() ? AttackEnum.Basic : AttackEnum.None;
+    public override Attack Attack => KillUsable() ? Attack.Basic : Attack.None;
     public override bool AffectedByLights => false;
     public override bool CanVent
     {
@@ -102,7 +102,7 @@ public abstract class Syndicate : Role, IPromoter
         IsUnderling = false;
         Promoter = null;
         Name = TranslationManager.Translate("Layer.Rebel");
-        Handler.History.Add((LayerEnum.Sidekick, Faction));
+        Handler.History.Add((Layer.Sidekick, Faction));
     }
 
     protected virtual void OnDriveReceivedLocal() {}
@@ -117,5 +117,5 @@ public abstract class Syndicate : Role, IPromoter
 
     private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
 
-    private bool KillUsable() => ((HoldsDrive && Alignment != Alignment.Killing) || Type is LayerEnum.Anarchist || IsPromoted) && !IsUnderling;
+    private bool KillUsable() => ((HoldsDrive && Alignment != Alignment.Killing) || Type is Layer.Anarchist || IsPromoted) && !IsUnderling;
 }

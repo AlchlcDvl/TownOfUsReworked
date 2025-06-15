@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Altruist)]
+[LayerHeaderOption(Layer.Altruist)]
 public sealed class Altruist : Protective, IReviver
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -32,7 +32,7 @@ public sealed class Altruist : Protective, IReviver
     private byte ParentId;
 
     protected override UColor MainColor => CustomColorManager.Altruist;
-    public override LayerEnum Type => LayerEnum.Altruist;
+    public override Layer Type => Layer.Altruist;
     public override string StartText => "Sacrifice Yourself To Save Another";
     public override string Description => $"- You can revive a dead body\n- Reviving a body takes {ReviveDur}s\n- If a meeting is called or you are killed during your revive, " +
         "the revive fails";
@@ -94,7 +94,7 @@ public sealed class Altruist : Protective, IReviver
     {
         ReviveButton.Uses += AltManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.FadeBody, target);
         FadeBody(target);
         ManaButton.StartCooldown();
     }

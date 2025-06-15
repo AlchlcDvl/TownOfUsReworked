@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum BomberActionsRPC : byte
+public enum BomberActionsRpc : byte
 {
     DropBomb,
     Explode

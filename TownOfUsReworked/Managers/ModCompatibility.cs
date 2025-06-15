@@ -310,7 +310,7 @@ public static class ModCompatibilityManager
 
     private static void TriggerPostfix(NetworkedPlayerInfo playerInfo, ref bool __state) => CanUsePatch.Postfix(playerInfo, ref __state);
 
-    private static void SetMapPostfix() => MapSettings.Map = MapEnum.LevelImpostor;
+    private static void SetMapPostfix() => MapSettings.Map = Data.Enums.Map.LevelImpostor;
 
     private static readonly string[] Unsupported = ["AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod", "MCI"];
     private static readonly string[] DevOnly = ["sinai-dev-UnityExplorer"];

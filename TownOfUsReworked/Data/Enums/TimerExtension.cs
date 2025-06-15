@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum TimerExtension
+public enum TimerExtension : byte
 {
     Kills,
     Tasks

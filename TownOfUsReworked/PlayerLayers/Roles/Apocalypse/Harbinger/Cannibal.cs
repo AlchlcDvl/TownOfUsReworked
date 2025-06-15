@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Cannibal)]
+[LayerHeaderOption(Layer.Cannibal)]
 public sealed class Cannibal : Harbinger<Gluttony>
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -23,11 +23,11 @@ public sealed class Cannibal : Harbinger<Gluttony>
     private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Cannibal;
-    public override LayerEnum Type => LayerEnum.Cannibal;
+    public override Layer Type => Layer.Cannibal;
     public override string StartText => "Eat The Bodies Of The Dead";
     public override string Description => "- You can consume a body, making it disappear" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" : "");
     public override bool CanVent => base.CanVent && CannibalVent;
-    public override DefenseEnum DefenseVal => EatNeed <= 2 ? DefenseEnum.None : DefenseEnum.Basic;
+    public override Defense Defense => EatNeed <= 2 ? Defense.None : Defense.Basic;
 
     public override void Init()
     {
@@ -71,7 +71,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
         EatButton.StartCooldown();
         EatNeed--;
         FadeBody(target);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
     }
 
     public override void ReadRPC(RpcReader reader)

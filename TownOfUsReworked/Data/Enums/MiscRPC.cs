@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum MiscRPC : byte
+public enum MiscRpc : byte
 {
     SetLayer,
     Catch,

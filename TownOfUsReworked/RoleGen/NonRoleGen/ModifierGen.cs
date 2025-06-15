@@ -4,8 +4,8 @@ namespace TownOfUsReworked.RoleGen;
 
 public sealed class ModifierGen : BaseGen
 {
-    private static readonly LayerEnum[] GlobalMod = [ LayerEnum.Dwarf, LayerEnum.Vip, LayerEnum.Giant, LayerEnum.Drunk, LayerEnum.Coward, LayerEnum.Volatile, LayerEnum.Astral,
-        LayerEnum.Indomitable, LayerEnum.Yeller, LayerEnum.Colorblind ];
+    private static readonly Layer[] GlobalMod = [ Layer.Dwarf, Layer.Vip, Layer.Giant, Layer.Drunk, Layer.Coward, Layer.Volatile, Layer.Astral,
+        Layer.Indomitable, Layer.Yeller, Layer.Colorblind ];
 
     public override void InitList()
     {
@@ -17,7 +17,7 @@ public sealed class ModifierGen : BaseGen
 
     private static void InitRlList()
     {
-        var modifiers = GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller);
+        var modifiers = GetValuesFromTo(Layer.Astral, Layer.Yeller);
 
         foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier && x.Num <= GameData.Instance.PlayerCount))
         {
@@ -39,7 +39,7 @@ public sealed class ModifierGen : BaseGen
 
     private static void InitRegList()
     {
-        foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Astral, LayerEnum.Yeller, GetSpawnItem))
+        foreach (var spawn in GetValuesFromToAndMorph(Layer.Astral, Layer.Yeller, GetSpawnItem))
         {
             if (spawn.IsActive())
                 AllModifiers.AddMany(spawn.Clone, spawn.Count);
@@ -56,7 +56,7 @@ public sealed class ModifierGen : BaseGen
         var playerList = AllPlayers().ToList();
         playerList.Shuffle();
         AllModifiers.Shuffle();
-        var invalid = new List<LayerEnum>();
+        var invalid = new List<Layer>();
 
         if (TownOfUsReworked.MciActive && AllModifiers.Any())
             Message("Modifiers in the game: " + Join(" ", AllModifiers.Select(ab => ab.ID)));
@@ -66,9 +66,9 @@ public sealed class ModifierGen : BaseGen
             var id = AllModifiers.TakeFirst().ID;
             var assigned = id switch
             {
-                LayerEnum.Bait => playerList.FirstOrDefault(x => x.GetRole() is not (Vigilante or Shifter or Thief or Altruist or Troll)),
-                LayerEnum.Diseased => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll)),
-                LayerEnum.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && !Democrat.DemocratButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() &&
+                Layer.Bait => playerList.FirstOrDefault(x => x.GetRole() is not (Vigilante or Shifter or Thief or Altruist or Troll)),
+                Layer.Diseased => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll)),
+                Layer.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && !Democrat.DemocratButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() &&
                     !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) ||
                     (x.Is<Politician>() && !Politician.PoliticianButton) || x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) || (!Monarch.MonarchButton && x.Is<Monarch>()) ||
                     (x.Is<Mayor>() && !Mayor.MayorButton))),

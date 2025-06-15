@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Rebel)]
+[LayerHeaderOption(Layer.Rebel)]
 public sealed class Rebel : SHead
 {
     [NumberOption(0.25f, 0.9f, 0.05f, Format.Multiplier)]
@@ -10,7 +10,7 @@ public sealed class Rebel : SHead
     private CustomButton SidekickButton;
 
     protected override UColor MainColor => CustomColorManager.Rebel;
-    public override LayerEnum Type => LayerEnum.Rebel;
+    public override Layer Type => Layer.Rebel;
     public override string StartText => "Promote Your Fellow <#008000FF>Syndicate</color> To Do Better";
     public override string Description => "- You can promote a fellow <#008000FF>Syndicate</color> into becoming your successor\n- Promoting a <#008000FF>" +
         "Syndicate</color> turns them into a <#979C9FFF>Sidekick</color>\n- If you die, the <#979C9FFF>Sidekick</color> become the new <#FFFCCEFF>Rebel</color>\n" +
@@ -32,7 +32,7 @@ public sealed class Rebel : SHead
             allow = Interact(Player, target) != CooldownType.Fail;
 
             if (allow)
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
         }
 
         if (!allow)

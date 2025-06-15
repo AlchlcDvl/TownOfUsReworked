@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Ambusher)]
+[LayerHeaderOption(Layer.Ambusher)]
 public sealed class Ambusher : IKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -16,7 +16,7 @@ public sealed class Ambusher : IKilling
     public CustomButton AmbushButton;
 
     protected override UColor MainColor => CustomColorManager.Ambusher;
-    public override LayerEnum Type => LayerEnum.Ambusher;
+    public override Layer Type => Layer.Ambusher;
     public override string StartText => "Spook The <#8CFFFFFF>Crew</color>";
     public override string Description => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
 
@@ -45,7 +45,7 @@ public sealed class Ambusher : IKilling
         if (cooldown != CooldownType.Fail)
         {
             AmbushedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, AmbushButton, AmbushedPlayer);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, AmbushButton, AmbushedPlayer);
             AmbushButton.Begin();
         }
         else

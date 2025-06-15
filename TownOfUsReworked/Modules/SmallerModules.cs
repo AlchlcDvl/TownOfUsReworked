@@ -22,7 +22,7 @@ public sealed class GitHubApiAsset
     public string URL { get; set; }
 }
 
-public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, LayerEnum Layer, string Symbol = null)
+public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, Layer Layer, string Symbol = null)
 {
     public string Name => TranslationManager.Translate($"Layer.{Layer}");
 }

@@ -2,5 +2,5 @@
 
 public interface IBugger : IPlayerLayer
 {
-    List<LayerEnum> BuggedPlayers { get; }
+    List<Layer> BuggedPlayers { get; }
 }

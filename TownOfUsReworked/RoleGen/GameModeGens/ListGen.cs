@@ -35,14 +35,14 @@ public sealed class ListGen : BaseRoleGen
 
         // In case if the rate limits and bans disallow the spawning of roles from the role list, vanilla Crewmate should spawn
         while (AllRoles.Count < GameData.Instance.PlayerCount)
-            AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
+            AllRoles.Add(GetSpawnItem(Layer.Crewmate));
     }
 
-    public static bool CannotAdd(LayerEnum id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryOption.IsBanned(id.CastToSlot()) || (id == LayerEnum.Anarchist &&
-        GameModeSettings.BanAnarchist) || (id == LayerEnum.Crewmate && GameModeSettings.BanCrewmate) || (id == LayerEnum.Impostor && GameModeSettings.BanImpostor) || (id == LayerEnum.Murderer &&
-        GameModeSettings.BanMurderer) || (id == LayerEnum.Cultist && GameModeSettings.BanCultist) || (id == LayerEnum.Zealot && GameModeSettings.BanZealot);
+    public static bool CannotAdd(Layer id, List<RoleOptionData> list) => list.Any(x => x.ID == id && x.Unique) || ListEntryOption.IsBanned(id.CastToSlot()) || (id == Layer.Anarchist &&
+        GameModeSettings.BanAnarchist) || (id == Layer.Crewmate && GameModeSettings.BanCrewmate) || (id == Layer.Impostor && GameModeSettings.BanImpostor) || (id == Layer.Murderer &&
+        GameModeSettings.BanMurderer) || (id == Layer.Cultist && GameModeSettings.BanCultist) || (id == Layer.Zealot && GameModeSettings.BanZealot);
 
-    public static LayerEnum[] GetBucket(ListSlot slot) => slot switch
+    public static Layer[] GetBucket(ListSlot slot) => slot switch
     {
         ListSlot.CrewInvest => CI,
         ListSlot.CrewSupport => CS,

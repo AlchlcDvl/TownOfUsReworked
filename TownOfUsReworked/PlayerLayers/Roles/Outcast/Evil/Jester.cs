@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Jester)]
+[LayerHeaderOption(Layer.Jester)]
 public sealed class Jester : Evil
 {
     [ToggleOption]
@@ -22,10 +22,10 @@ public sealed class Jester : Evil
     public bool CanHaunt => VotedOut && !HasHaunted && ToHaunt.Any() && !OutcastSettings.AvoidOutcastKingmakers;
 
     protected override UColor MainColor => CustomColorManager.Jester;
-    public override LayerEnum Type => LayerEnum.Jester;
+    public override Layer Type => Layer.Jester;
     public override string StartText => "It Was Jest A Prank Bro";
     public override string Description => VotedOut ? "- You can haunt those who voted for you" : "- None";
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => VotedOut;
     public override bool CanVent => base.CanVent && JesterVent;
     public override bool CanSwitchVents => JestSwitchVent;

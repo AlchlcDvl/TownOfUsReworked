@@ -294,7 +294,7 @@ public static class CustomColorManager
     public static readonly UColor What = FromHex("#6697FFFF");
     public static readonly UColor FirstShield = FromHex("#C2185BFF");
     public static readonly UColor AcceptedTeal = FromHex("#2CEAC6FF");
-    public static readonly UColor BlindVision = FromHex("#888888");
+    public static readonly UColor BlindVision = FromHex("#888888FF");
     public static readonly UColor Attack = FromHex("#E37C21FF");
     public static readonly UColor Defense = FromHex("#2B0538FF");
 

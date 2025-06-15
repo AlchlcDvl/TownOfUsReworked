@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Consort)]
+[LayerHeaderOption(Layer.Consort)]
 public sealed class Consort : ISupport, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -14,7 +14,7 @@ public sealed class Consort : ISupport, IBlocker
     private CustomPlayerMenu BlockMenu;
 
     protected override UColor MainColor => CustomColorManager.Consort;
-    public override LayerEnum Type => LayerEnum.Consort;
+    public override Layer Type => Layer.Consort;
     public override string StartText => "Roleblock The <#8CFFFFFF>Crew</color> From Progressing";
     public override string Description => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
         $"immune to blocks\n- If you block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
@@ -61,7 +61,7 @@ public sealed class Consort : ISupport, IBlocker
             BlockMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BlockButton, BlockTarget);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BlockButton, BlockTarget);
             BlockButton.Begin();
         }
     }

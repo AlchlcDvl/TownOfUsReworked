@@ -9,7 +9,7 @@ public sealed class Bug : Range
     private Dictionary<byte, float> Players { get; } = [];
 
     [HideFromIl2Cpp]
-    private Dictionary<byte, LayerEnum> Results { get; } = [];
+    private Dictionary<byte, Layer> Results { get; } = [];
 
     public override void Update()
     {

@@ -89,19 +89,19 @@ public abstract class BaseRoleGen : BaseGen
             Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Outcasts}, Apoc = {Apocalypse}");
     }
 
-    protected static LayerEnum GetRandomBaseEvil(Faction faction)
+    protected static Layer GetRandomBaseEvil(Faction faction)
     {
         if (faction is < Faction.Outcast and > Faction.Crew)
         {
             return faction switch
             {
-                Faction.Intruder => LayerEnum.Impostor,
-                Faction.Syndicate => LayerEnum.Anarchist,
-                _ => LayerEnum.Cultist,
+                Faction.Intruder => Layer.Impostor,
+                Faction.Syndicate => Layer.Anarchist,
+                _ => Layer.Cultist,
             };
         }
 
-        var choices = new List<LayerEnum>();
+        var choices = new List<Layer>();
         string values = faction switch
         {
             Faction.Illuminati => BadGuysSettings.IlluminatiMembers,
@@ -111,22 +111,22 @@ public abstract class BaseRoleGen : BaseGen
         };
 
         if (IsNullEmptyOrWhiteSpace(values))
-            return LayerEnum.Crewmate;
+            return Layer.Crewmate;
 
         if (values.Contains("Intruders"))
-            choices.Add(LayerEnum.Impostor);
+            choices.Add(Layer.Impostor);
 
         if (values.Contains("Apocalypse"))
-            choices.Add(LayerEnum.Cultist);
+            choices.Add(Layer.Cultist);
 
         if (values.Contains("Syndicate"))
-            choices.Add(LayerEnum.Anarchist);
+            choices.Add(Layer.Anarchist);
 
         if (values.Contains("Killers"))
-            choices.Add(LayerEnum.Murderer);
+            choices.Add(Layer.Murderer);
 
         if (values.Contains("Neophytes"))
-            choices.Add(LayerEnum.Zealot);
+            choices.Add(Layer.Zealot);
 
         return choices.Random();
     }

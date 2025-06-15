@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Sheriff)]
+[LayerHeaderOption(Layer.Sheriff)]
 public sealed class Sheriff : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -18,7 +18,7 @@ public sealed class Sheriff : Investigative
     private CustomButton InterrogateButton;
 
     protected override UColor MainColor => CustomColorManager.Sheriff;
-    public override LayerEnum Type => LayerEnum.Sheriff;
+    public override Layer Type => Layer.Sheriff;
     public override string StartText => "Reveal The Alignment Of Other Players";
     public override string Description => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
 

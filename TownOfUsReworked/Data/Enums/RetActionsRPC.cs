@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum RetActionsRPC : byte
+public enum RetActionsRpc : byte
 {
     Shield,
     Roleblock,

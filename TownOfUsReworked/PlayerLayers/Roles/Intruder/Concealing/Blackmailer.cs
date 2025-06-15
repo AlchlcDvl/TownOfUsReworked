@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Blackmailer)]
+[LayerHeaderOption(Layer.Blackmailer)]
 public sealed class Blackmailer : Concealing, IIntimidator
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -20,7 +20,7 @@ public sealed class Blackmailer : Concealing, IIntimidator
     public PlayerControl Target { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Blackmailer;
-    public override LayerEnum Type => LayerEnum.Blackmailer;
+    public override Layer Type => Layer.Blackmailer;
     public override string StartText => "You Know Their Secrets";
     public override string Description => "- You can silence players to ensure they cannot hear what others say\n" + (BmRevealed ? ("- Everyone will be alerted at the start " +
         "of the meeting that someone has been silenced ") : "") + (WhispersNotPrivateB ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
@@ -48,7 +48,7 @@ public sealed class Blackmailer : Concealing, IIntimidator
         if (cooldown != CooldownType.Fail)
         {
             Target = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, Target);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, Target);
 
             if (target.IsSilenced())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");

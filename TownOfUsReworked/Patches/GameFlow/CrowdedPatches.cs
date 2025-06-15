@@ -172,7 +172,7 @@ public static class CreateOptionsPickerPatches
     }
 
     [HarmonyPatch(nameof(CreateOptionsPicker.SetMap))]
-    public static void Prefix(int mapId) => SettingsPatches.SetMap((MapEnum)mapId);
+    public static void Prefix(int mapId) => SettingsPatches.SetMap((Map)mapId);
 }
 
 [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Start))]

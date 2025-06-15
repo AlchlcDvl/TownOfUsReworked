@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Dracula)]
+[LayerHeaderOption(Layer.Dracula)]
 public sealed class Dracula : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -21,11 +21,11 @@ public sealed class Dracula : Neophyte
     private bool HasConverted;
 
     protected override UColor MainColor => CustomColorManager.Dracula;
-    public override LayerEnum Type => LayerEnum.Dracula;
+    public override Layer Type => Layer.Dracula;
     public override string StartText => "Lead The <#7B8968FF>Undead</color> To Victory";
     public override string Description => "- You can bite a player in an attempt to convert them\n- If the target cannot be converted or the number of alive <#7B8968FF>Undead</color> " +
         $"exceeds {AliveVampCount}, you will kill them instead";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool CanVent => base.CanVent && DracVent;
     protected override Faction ActualFaction => Faction.Undead;
 

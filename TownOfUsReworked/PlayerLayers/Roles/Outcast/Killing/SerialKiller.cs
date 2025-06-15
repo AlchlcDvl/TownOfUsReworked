@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.SerialKiller)]
+[LayerHeaderOption(Layer.SerialKiller)]
 public sealed class SerialKiller : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -19,12 +19,12 @@ public sealed class SerialKiller : OKilling
     private CustomButton StabButton;
 
     protected override UColor MainColor => CustomColorManager.SerialKiller;
-    public override LayerEnum Type => LayerEnum.SerialKiller;
+    public override Layer Type => Layer.SerialKiller;
     public override string StartText => "You Like To Play With Knives";
     public override string Description => "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <#803333FF>Escort</color>," +
         " <#801780FF>Consort</color> or <#00FF00FF>Glitch</color> tries to block you, you will immediately kill them, regardless of your cooldown\n- You are immune to roleblocks";
-    public override AttackEnum AttackVal => AttackEnum.Powerful;
-    public override DefenseEnum DefenseVal => BloodlustButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
+    public override Attack Attack => Attack.Powerful;
+    public override Defense Defense => BloodlustButton.EffectActive ? Defense.Basic : Defense.None;
     public override bool RoleBlockImmune => true;
     public override bool CanVent => base.CanVent && (SkVentOptions == 0 || (BloodlustButton.EffectActive && (int)SkVentOptions == 1) || (!BloodlustButton.EffectActive && (int)SkVentOptions == 2));
     protected override Faction ActualFaction => Faction.SerialKiller;
@@ -41,7 +41,7 @@ public sealed class SerialKiller : OKilling
 
     private void Lust()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BloodlustButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BloodlustButton);
         BloodlustButton.Begin();
     }
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Allied)]
+[LayerHeaderOption(Layer.Allied)]
 public sealed class Allied : Disposition
 {
     [StringOption<AlliedFaction>]
@@ -40,7 +40,7 @@ public sealed class Allied : Disposition
         _ => CustomColorManager.Allied,
     };
     public override string Symbol => "ζ";
-    public override LayerEnum Type => LayerEnum.Allied;
+    public override Layer Type => Layer.Allied;
     public override string Description => Side == Faction.Outcast ? "- You are conflicted" : "";
 
     public override void Init() => Side = Faction.Outcast;

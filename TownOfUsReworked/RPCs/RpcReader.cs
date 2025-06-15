@@ -61,13 +61,13 @@ public sealed class RpcReader : IDisposable
             throw new ObjectDisposedException(nameof(RpcReader));
 
         if (readLength == 0)
-            throw new ArgumentException($"Must gather some byte data. Pos {Position} out of {DataSize}; {(CustomRPC)Payload[0]} {Payload[1]}");
+            throw new ArgumentException($"Must gather some byte data. Pos {Position} out of {DataSize}; {(ReworkedRpc)Payload[0]} {Payload[1]}");
 
         if ((Position + readLength) > DataSize)
-            throw new EndOfStreamException($"Tried to read more data than what was available. Pos {Position} out of {DataSize} with read length {readLength}; {(CustomRPC)Payload[0]} {Payload[1]}");
+            throw new EndOfStreamException($"Tried to read more data than what was available. Pos {Position} out of {DataSize} with read length {readLength}; {(ReworkedRpc)Payload[0]} {Payload[1]}");
 
         if (Position >= DataSize)
-            throw new EndOfStreamException($"No more data to read. Pos {Position} out of {DataSize}; {(CustomRPC)Payload[0]} {Payload[1]}");
+            throw new EndOfStreamException($"No more data to read. Pos {Position} out of {DataSize}; {(ReworkedRpc)Payload[0]} {Payload[1]}");
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public sealed class RpcReader : IDisposable
             return;
 
         if (BytesRemaining > 0)
-            Warning($"There were {BytesRemaining} bytes of unread data in the rpc {(CustomRPC)Payload[0]} {Payload[1]}");
+            Warning($"There were {BytesRemaining} bytes of unread data in the rpc {(ReworkedRpc)Payload[0]} {Payload[1]}");
 
         if (Payload is not null)
         {
@@ -401,7 +401,7 @@ public sealed class RpcReader : IDisposable
     public IPlayerLayer ReadLayer()
     {
         var player = ReadByte();
-        var type = Read<LayerEnum>();
+        var type = Read<Layer>();
         return PlayerLayer.AllLayers.Find(x => x.PlayerId == player && x.Type == type);
     }
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[LayerHeaderOption(LayerEnum.Drunk)]
+[LayerHeaderOption(Layer.Drunk)]
 public sealed class Drunk : Modifier
 {
     [ToggleOption]
@@ -17,7 +17,7 @@ public sealed class Drunk : Modifier
     private bool Exposed;
 
     protected override UColor MainColor => CustomColorManager.Drunk;
-    public override LayerEnum Type => LayerEnum.Drunk;
+    public override Layer Type => Layer.Drunk;
     public override string Description => DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
     public override bool Hidden => !DrunkKnows && !Exposed && !Dead;
 

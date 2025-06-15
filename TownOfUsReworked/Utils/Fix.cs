@@ -27,18 +27,18 @@ public static class FixUtils
     {
         Ship().RpcUpdateSystem((SystemTypes)130, 64);
         RepairOxygen();
-        CallRpc(CustomRPC.Misc, MiscRPC.SubmergedFixOxygen);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.SubmergedFixOxygen);
     }
 
     private static void FixLights(SwitchSystem lights)
     {
-        CallRpc(CustomRPC.Misc, MiscRPC.FixLights);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.FixLights);
         lights.ActualSwitches = lights.ExpectedSwitches;
     }
 
     private static void FixMixup(MushroomMixupSabotageSystem mixup)
     {
-        CallRpc(CustomRPC.Misc, MiscRPC.FixMixup);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.FixMixup);
         mixup.secondsForAutoHeal = 0.1f;
     }
 

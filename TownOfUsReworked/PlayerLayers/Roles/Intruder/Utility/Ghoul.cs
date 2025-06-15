@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Ghoul)]
+[LayerHeaderOption(Layer.Ghoul)]
 public sealed class Ghoul : IUtility, IGhosty
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,7 +13,7 @@ public sealed class Ghoul : IUtility, IGhosty
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Ghoul;
-    public override LayerEnum Type => LayerEnum.Ghoul;
+    public override Layer Type => Layer.Ghoul;
     public override string StartText => "BOO!";
     public override string Description => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next" +
         " meeting if you are not clicked";
@@ -35,7 +35,7 @@ public sealed class Ghoul : IUtility, IGhosty
 
     private void Mark(PlayerControl target)
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, MarkedPlayer);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, MarkedPlayer);
         MarkButton.StartCooldown();
     }
 

@@ -13,6 +13,6 @@ public sealed class VanillaGen : BaseRoleGen
             AllRoles.Add(GetSpawnItem(GetRandomBaseEvil(BadGuysSettings.MainBadGuys)));
 
         while (AllRoles.Count < GameData.Instance.PlayerCount)
-            AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
+            AllRoles.Add(GetSpawnItem(Layer.Crewmate));
     }
 }

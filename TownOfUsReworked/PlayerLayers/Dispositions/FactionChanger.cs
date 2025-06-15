@@ -63,7 +63,7 @@ public abstract class FactionChanger : Disposition
         var role = Player.GetRole();
         Betrayed = true;
 
-        if (role.Type != LayerEnum.Betrayer)
+        if (role.Type != Layer.Betrayer)
             new Betrayer { Objectives = role.Objectives }.RoleUpdate(role);
     }
 }

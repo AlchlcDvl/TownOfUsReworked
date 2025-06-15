@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Morphling)]
+[LayerHeaderOption(Layer.Morphling)]
 public sealed class Morphling : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -24,7 +24,7 @@ public sealed class Morphling : Deception
     private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Morphling;
-    public override LayerEnum Type => LayerEnum.Morphling;
+    public override Layer Type => Layer.Morphling;
     public override string StartText => "Fool The <#8CFFFFFF>Crew</color> With Your Appearances";
     public override string Description => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
     public override bool CanVent => MorphlingVent;
@@ -52,7 +52,7 @@ public sealed class Morphling : Deception
 
     private void HitMorph()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MorphButton, SampledPlayer);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, MorphButton, SampledPlayer);
         MorphButton.Begin();
         PopNotif("<b>You have morphed into " + SampledPlayer.name + "!</b>", Color);
     }

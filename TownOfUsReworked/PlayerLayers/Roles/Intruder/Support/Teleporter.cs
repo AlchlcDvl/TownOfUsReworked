@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Teleporter)]
+[LayerHeaderOption(Layer.Teleporter)]
 public sealed class Teleporter : ISupport, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -24,7 +24,7 @@ public sealed class Teleporter : ISupport, IMover
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Teleporter;
-    public override LayerEnum Type => LayerEnum.Teleporter;
+    public override Layer Type => Layer.Teleporter;
     public override string StartText => "X Marks The Spot";
     public override string Description => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
     public override bool CanVent => TeleVent;
@@ -52,7 +52,7 @@ public sealed class Teleporter : ISupport, IMover
 
     private void Teleport()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, TeleportPoint);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, TeleportPoint);
         Coroutines.Start(TeleportPlayer(TeleportPoint, this));
         TeleportButton.StartCooldown();
 

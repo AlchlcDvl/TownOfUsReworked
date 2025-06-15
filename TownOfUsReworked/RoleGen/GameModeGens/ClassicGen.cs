@@ -85,7 +85,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         filter.Filter(CrewRoles, GameModeSettings.IgnoreFactionCaps ? Crew : URandom.RandomRangeInt(minCrew, maxCrew + 1));
 
         while (CrewRoles.Count < Crew)
-            CrewRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
+            CrewRoles.Add(GetSpawnItem(Layer.Crewmate));
     }
 
     public override void InitIntList()
@@ -169,7 +169,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         filter.Filter(IntruderRoles, GameModeSettings.IgnoreFactionCaps ? Intruders : URandom.RandomRangeInt(minInt, maxInt + 1));
 
         while (IntruderRoles.Count < Intruders)
-            IntruderRoles.Add(GetSpawnItem(LayerEnum.Impostor));
+            IntruderRoles.Add(GetSpawnItem(Layer.Impostor));
     }
 
     public override void InitNeutList()
@@ -254,7 +254,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         filter.Filter(OutcastRoles, GameModeSettings.IgnoreFactionCaps ? Outcasts : URandom.RandomRangeInt(minNeut, maxNeut + 1));
 
         while (OutcastRoles.Count < Outcasts)
-            OutcastRoles.Add(GetSpawnItem(LayerEnum.Amnesiac));
+            OutcastRoles.Add(GetSpawnItem(Layer.Amnesiac));
     }
 
     public override void InitApocList()
@@ -293,7 +293,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         filter.Filter(ApocalypseRoles, GameModeSettings.IgnoreFactionCaps ? Apocalypse : URandom.RandomRangeInt(minApoc, maxApoc + 1));
 
         while (ApocalypseRoles.Count < Apocalypse)
-            ApocalypseRoles.Add(GetSpawnItem(LayerEnum.Cultist));
+            ApocalypseRoles.Add(GetSpawnItem(Layer.Cultist));
     }
 
     public override void InitSynList()
@@ -367,7 +367,7 @@ public sealed class ClassicGen : BaseClassicAllAnyGen
         filter.Filter(SyndicateRoles, GameModeSettings.IgnoreFactionCaps ? Syndicate : URandom.RandomRangeInt(minSyn, maxSyn + 1));
 
         while (SyndicateRoles.Count < Syndicate)
-            SyndicateRoles.Add(GetSpawnItem(LayerEnum.Anarchist));
+            SyndicateRoles.Add(GetSpawnItem(Layer.Anarchist));
     }
 
     public override void PreFilter()

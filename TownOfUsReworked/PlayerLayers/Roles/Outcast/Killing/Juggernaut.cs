@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Juggernaut)]
+[LayerHeaderOption(Layer.Juggernaut)]
 public sealed class Juggernaut : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -15,11 +15,11 @@ public sealed class Juggernaut : OKilling
     private CustomButton AssaultButton;
 
     protected override UColor MainColor => CustomColorManager.Juggernaut;
-    public override LayerEnum Type => LayerEnum.Juggernaut;
+    public override Layer Type => Layer.Juggernaut;
     public override string StartText => "Your Power Grows With Every Kill";
     public override string Description => "- With each kill, your kill cooldown decreases" + (KillCounts.GetValueOrDefault(PlayerId) >= 4 ? "\n- You can bypass all forms of protection" : "");
-    public override AttackEnum AttackVal => (AttackEnum)Mathf.Clamp(KillCounts.GetValueOrDefault(PlayerId), 1, 3);
-    public override DefenseEnum DefenseVal => KillCounts.GetValueOrDefault(PlayerId) >= 3 ? DefenseEnum.Basic : DefenseEnum.None;
+    public override Attack Attack => (Attack)Mathf.Clamp(KillCounts.GetValueOrDefault(PlayerId), 1, 3);
+    public override Defense Defense => KillCounts.GetValueOrDefault(PlayerId) >= 3 ? Defense.Basic : Defense.None;
     public override bool CanVent => base.CanVent && JuggVent;
     protected override Faction ActualFaction => Faction.Juggernaut;
 

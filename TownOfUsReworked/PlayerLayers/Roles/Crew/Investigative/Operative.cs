@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Operative)]
+[LayerHeaderOption(Layer.Operative)]
 public sealed class Operative : Investigative, IBugger
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -27,13 +27,13 @@ public sealed class Operative : Investigative, IBugger
     [ToggleOption]
     public static bool PreciseOperativeInfo = false;
 
-    public List<LayerEnum> BuggedPlayers { get; } = [];
+    public List<Layer> BuggedPlayers { get; } = [];
 
     private CustomButton BugButton;
     private readonly List<Bug> Bugs = [];
 
     protected override UColor MainColor => CustomColorManager.Operative;
-    public override LayerEnum Type => LayerEnum.Operative;
+    public override Layer Type => Layer.Operative;
     public override string StartText => "Detect Which Roles Are Here";
     public override string Description => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
         " meeting\n- You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
@@ -78,8 +78,8 @@ public sealed class Operative : Investigative, IBugger
         else if (BuggedPlayers.Count == 1)
         {
             var result = BuggedPlayers[0];
-            var aAn = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Operative or LayerEnum.Amnesiac or LayerEnum.Actor or LayerEnum.Arsonist or
-                LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
+            var aAn = result is Layer.Altruist or Layer.Engineer or Layer.Escort or Layer.Operative or Layer.Amnesiac or Layer.Actor or Layer.Arsonist or
+                Layer.Executioner or Layer.Ambusher or Layer.Enforcer or Layer.Impostor or Layer.Anarchist ? "n" : "";
             message = $"A{aAn} {result} triggered your bug.";
         }
         else if (PreciseOperativeInfo)

@@ -76,18 +76,18 @@ public abstract class Option(CustomOptionType type)
         (["IgnoreAlignmentCaps", "IgnoreFactionCaps", "IgnoreLayerCaps"], [Mode.Classic]),
         (["HunterCount", "HuntCd", "StartTime", "HunterVent", "HunterVision", "HuntedVision", "HunterSpeedModifier", "HuntedChat", "HunterFlashlight", "HuntedFlashlight", "HnSMode"], [
             Mode.HideAndSeek]),
-        (["RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle"], [MapEnum.Random]),
-        (["RandomMapSubmerged"], [MapEnum.Random, "SubLoaded"]),
-        (["RandomMapLevelImpostor"], [MapEnum.Random, "LiLoaded"]),
-        (["SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow"], [MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random,
-            MapEnum.MiraHq, MapEnum.LevelImpostor]),
-        (["LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown"], [MapEnum.Airship, MapEnum.Submerged, MapEnum.Random, MapEnum.Fungle,
-            MapEnum.LevelImpostor]),
-        (["BetterSkeld"], [MapEnum.Skeld, MapEnum.dlekS, MapEnum.Random]),
-        (["BetterMiraHq"], [MapEnum.MiraHq, MapEnum.Random]),
-        (["BetterPolus"], [MapEnum.Polus, MapEnum.Random]),
-        (["BetterAirship"], [MapEnum.Airship, MapEnum.Random]),
-        (["BetterFungle"], [MapEnum.Fungle, MapEnum.Random]),
+        (["RandomMapSkeld", "RandomMapMira", "RandomMapPolus", "RandomMapdlekS", "RandomMapAirship", "RandomMapFungle"], [Data.Enums.Map.Random]),
+        (["RandomMapSubmerged"], [Data.Enums.Map.Random, "SubLoaded"]),
+        (["RandomMapLevelImpostor"], [Data.Enums.Map.Random, "LiLoaded"]),
+        (["SmallMapHalfVision", "SmallMapDecreasedCooldown", "SmallMapIncreasedShortTasks", "SmallMapIncreasedLongTasks", "OxySlow"], [Data.Enums.Map.Skeld, Data.Enums.Map.dlekS, Data.Enums.Map.Random,
+            Data.Enums.Map.MiraHq, Data.Enums.Map.LevelImpostor]),
+        (["LargeMapDecreasedShortTasks", "LargeMapDecreasedLongTasks", "LargeMapIncreasedCooldown"], [Data.Enums.Map.Airship, Data.Enums.Map.Submerged, Data.Enums.Map.Random, Data.Enums.Map.Fungle,
+            Data.Enums.Map.LevelImpostor]),
+        (["BetterSkeld"], [Data.Enums.Map.Skeld, Data.Enums.Map.dlekS, Data.Enums.Map.Random]),
+        (["BetterMiraHq"], [Data.Enums.Map.MiraHq, Data.Enums.Map.Random]),
+        (["BetterPolus"], [Data.Enums.Map.Polus, Data.Enums.Map.Random]),
+        (["BetterAirship"], [Data.Enums.Map.Airship, Data.Enums.Map.Random]),
+        (["BetterFungle"], [Data.Enums.Map.Fungle, Data.Enums.Map.Random]),
         (["CrewSettings"], [Mode.Classic, Mode.AllAny, Mode.Vanilla, Mode.List]),
         (["CrewMax", "CrewMin", "OutcastMax", "OutcastMin", "IntruderMax", "IntruderMin", "SyndicateMax", "SyndicateMin"], [Mode.Classic, Mode.AllAny]),
         (["HowIsVigilanteNotified"], [VigiOptions.PostMeeting, VigiOptions.PreMeeting]),
@@ -138,11 +138,11 @@ public abstract class Option(CustomOptionType type)
 
     private bool IsActive(object option) => option switch
     {
-        MapEnum map => MapSettings.Map == map,
+        Map map => MapSettings.Map == map,
         Mode mode => GameModeSettings.GameMode == mode,
         VigiOptions vigiOptions => Vigilante.HowDoesVigilanteDie == vigiOptions,
         AirshipSpawnType spawnType => BetterAirship.SpawnType == spawnType,
-        LayerEnum layer => RoleGenManager.GetSpawnItem(layer).IsActive(),
+        Layer layer => RoleGenManager.GetSpawnItem(layer).IsActive(),
         DuringMeeting meetingTime => GameModifiers.DuringMeetings == meetingTime,
         string id => GetBoolValue(id),
         _ => true
@@ -271,7 +271,7 @@ public abstract class Option(CustomOptionType type)
         }
         else
         {
-            CallRpc(CustomRPC.Misc, MiscRPC.LoadPreset, presetName);
+            CallRpc(ReworkedRpc.Misc, MiscRpc.LoadPreset, presetName);
             SettingsPatches.CurrentPreset = presetName;
             LoadSettings(text);
             FlashText(tmp, UColor.green);
@@ -312,7 +312,7 @@ public abstract class Option(CustomOptionType type)
 
             if (name == "Map")
             {
-                SettingsPatches.SetMap(Enum.Parse<MapEnum>(value));
+                SettingsPatches.SetMap(Enum.Parse<Map>(value));
                 continue;
             }
 
@@ -342,7 +342,7 @@ public abstract class Option(CustomOptionType type)
         }
 
         SendOptionRPC(save: false);
-        CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.SyncMap, MapSettings.Map);
     }
 
     public static IEnumerable<T> GetOptions<T>() where T : Option => AllOptions.OfType<T>();

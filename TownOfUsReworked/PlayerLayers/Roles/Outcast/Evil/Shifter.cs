@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Shifter)]
+[LayerHeaderOption(Layer.Shifter)]
 public sealed class Shifter : Evil
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,7 +13,7 @@ public sealed class Shifter : Evil
     private CustomPlayerMenu ShifterMenu;
 
     protected override UColor MainColor => CustomColorManager.Shifter;
-    public override LayerEnum Type => LayerEnum.Shifter;
+    public override Layer Type => Layer.Shifter;
     public override string StartText => "Shift Around Roles";
     public override string Description => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";
     public override bool HasWon => Shifters.All(x => !Originals.Contains(x) && x.HasDied());
@@ -34,7 +34,7 @@ public sealed class Shifter : Evil
         if (cooldown != CooldownType.Fail)
         {
             var target = URandom.RandomRangeInt(0, 2) == 0 ? other : AllPlayers().Except(Exception).Random();
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
             Shift(target);
         }
         else

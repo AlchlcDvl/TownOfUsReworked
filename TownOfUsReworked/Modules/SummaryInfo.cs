@@ -36,8 +36,8 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 {
     public string PlayerName { get; set; }
 
-    public readonly List<(LayerEnum, Faction)> History = [];
-    public readonly List<LayerEnum> OtherLayers = [];
+    public readonly List<(Layer, Faction)> History = [];
+    public readonly List<Layer> OtherLayers = [];
 
     public bool IsGaTarget { get; set; }
     public bool IsExeTarget { get; set; }
@@ -114,12 +114,12 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
         var count = netData.ReadByte();
 
         while (count-- > 0)
-            History.Add((netData.Read<LayerEnum>(), netData.Read<Faction>()));
+            History.Add((netData.Read<Layer>(), netData.Read<Faction>()));
 
         count = 3;
 
         while (count-- > 0)
-            OtherLayers.Add(netData.Read<LayerEnum>());
+            OtherLayers.Add(netData.Read<Layer>());
 
         IsGaTarget = netData.ReadBool();
         IsExeTarget = netData.ReadBool();
@@ -166,7 +166,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
         foreach (var (role2, faction) in handler.History)
         {
-            if (role2 != LayerEnum.NoneRole)
+            if (role2 != Layer.NoneRole)
                 History.Add((role2, faction));
         }
 

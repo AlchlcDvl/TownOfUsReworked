@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Disguiser)]
+[LayerHeaderOption(Layer.Disguiser)]
 public sealed class Disguiser : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -28,7 +28,7 @@ public sealed class Disguiser : Deception
     private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Disguiser;
-    public override LayerEnum Type => LayerEnum.Disguiser;
+    public override Layer Type => Layer.Disguiser;
     public override string StartText => "Disguise The <#8CFFFFFF>Crew</color> To Frame Them";
     public override string Description => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
 
@@ -68,7 +68,7 @@ public sealed class Disguiser : Deception
         if (cooldown != CooldownType.Fail)
         {
             DisguisedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, DisguiseButton, MeasuredPlayer, DisguisedPlayer);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, DisguiseButton, MeasuredPlayer, DisguisedPlayer);
             DisguiseButton.Begin();
             PopNotif("<b>You have disguised " + target.name + " into " + MeasuredPlayer.name + "!</b>", Color);
         }

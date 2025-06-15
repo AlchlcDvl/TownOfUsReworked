@@ -8,7 +8,7 @@ public sealed class Bomb : Range
 
         foreach (var player in players)
         {
-            if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
+            if (CanAttack(Attack.Powerful, player.GetDefenseValue()))
                 Owner.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
         }
 

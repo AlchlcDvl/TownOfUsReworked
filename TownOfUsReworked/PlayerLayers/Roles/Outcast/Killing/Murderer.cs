@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Murderer)]
+[LayerHeaderOption(Layer.Murderer)]
 public sealed class Murderer : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -12,11 +12,11 @@ public sealed class Murderer : OKilling
     private CustomButton MurderButton;
 
     protected override UColor MainColor => CustomColorManager.Murderer;
-    public override LayerEnum Type => LayerEnum.Murderer;
+    public override Layer Type => Layer.Murderer;
     public override string StartText => "I Got Murder On My Mind";
     public override string Description => "- You can kill";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
-    public override DefenseEnum DefenseVal => DefenseEnum.Basic;
+    public override Attack Attack => Attack.Basic;
+    public override Defense Defense => Defense.Basic;
     public override bool CanVent => base.CanVent && MurdVent;
     protected override Faction ActualFaction => Faction.Murderer;
 

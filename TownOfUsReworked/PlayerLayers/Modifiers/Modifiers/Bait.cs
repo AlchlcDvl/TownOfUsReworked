@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[LayerHeaderOption(LayerEnum.Bait)]
+[LayerHeaderOption(Layer.Bait)]
 public sealed class Bait : Modifier
 {
     [ToggleOption]
@@ -13,7 +13,7 @@ public sealed class Bait : Modifier
     public static Number BaitMaxDelay = 1;
 
     protected override UColor MainColor => CustomColorManager.Bait;
-    public override LayerEnum Type => LayerEnum.Bait;
+    public override Layer Type => Layer.Bait;
     public override string Description => "- Killing you causes the killer to report your body, albeit with a slight delay";
     public override bool Hidden => !BaitKnows && !Dead;
 

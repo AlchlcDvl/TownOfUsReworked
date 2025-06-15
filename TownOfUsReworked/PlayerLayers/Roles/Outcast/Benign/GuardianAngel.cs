@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.GuardianAngel)]
+[LayerHeaderOption(Layer.GuardianAngel)]
 public sealed class GuardianAngel : Benign, ITargeter
 {
     [ToggleOption]
@@ -47,7 +47,7 @@ public sealed class GuardianAngel : Benign, ITargeter
     public bool Protecting;
 
     protected override UColor MainColor => CustomColorManager.GuardianAngel;
-    public override LayerEnum Type => LayerEnum.GuardianAngel;
+    public override Layer Type => Layer.GuardianAngel;
     public override string StartText => "Find Someone To Protect";
     public override string Description => !TargetPlayer ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a short while" +
         $"\n- If {TargetPlayer?.name} dies, you will become a <#DDDD00FF>Survivor</color>");
@@ -112,14 +112,14 @@ public sealed class GuardianAngel : Benign, ITargeter
     private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
-        CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, TargetPlayer);
     }
 
     private void TurnSurv() => new Survivor().RoleUpdate(this);
 
     private void HitProtect()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ProtectButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, ProtectButton);
         ProtectButton.Begin();
         GraveProtectButton.Uses--;
         TrulyDead = GraveProtectButton.Uses <= 0 && Dead;
@@ -127,7 +127,7 @@ public sealed class GuardianAngel : Benign, ITargeter
 
     private void HitGraveProtect()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, GraveProtectButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, GraveProtectButton);
         GraveProtectButton.Begin();
         ProtectButton.Uses--;
         TrulyDead = ProtectButton.Uses <= 0 && Dead;
@@ -150,7 +150,7 @@ public sealed class GuardianAngel : Benign, ITargeter
         {
             TargetPlayer = null;
             Rounds = 0;
-            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
+            CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
         }
         else
             Player.RpcSuicide();

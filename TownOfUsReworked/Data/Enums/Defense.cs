@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum DefenseEnum : byte
+public enum Defense : byte
 {
     None,
     Basic,

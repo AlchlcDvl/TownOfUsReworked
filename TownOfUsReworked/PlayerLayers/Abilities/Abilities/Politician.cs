@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[LayerHeaderOption(LayerEnum.Politician)]
+[LayerHeaderOption(Layer.Politician)]
 public sealed class Politician : Ability
 {
     [NumberOption(0, 10, 1)]
@@ -20,7 +20,7 @@ public sealed class Politician : Ability
     public bool CanKill => Player.CanKill();
 
     protected override UColor MainColor => CustomColorManager.Politician;
-    public override LayerEnum Type => LayerEnum.Politician;
+    public override Layer Type => Layer.Politician;
     public override string Description => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 
@@ -88,18 +88,18 @@ public sealed class Politician : Ability
 
     public override void ReadRPC(RpcReader reader)
     {
-        var polAction = reader.Read<PoliticianActionsRPC>();
+        var polAction = reader.Read<PoliticianActionsRpc>();
 
         switch(polAction)
         {
-            case PoliticianActionsRPC.Remove:
+            case PoliticianActionsRpc.Remove:
             {
                 ExtraVotes.Clear();
                 ExtraVotes.AddRange(reader.ReadValues<byte>());
                 VoteBank -= ExtraVotes.Count;
                 break;
             }
-            case PoliticianActionsRPC.Add:
+            case PoliticianActionsRpc.Add:
             {
                 VoteBank -= reader.ReadInt();
                 break;

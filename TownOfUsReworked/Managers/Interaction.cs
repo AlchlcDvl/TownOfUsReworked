@@ -50,7 +50,7 @@ public static class InteractionManager
         else if (Pestilence.Infected.TryGetValue(interactor.PlayerId, out count) && count >= Pestilence.MaxStacks)
             target.RpcMurderPlayer(interactor, DeathReasonEnum.Infected, false);
         else
-            CallRpc(CustomRPC.Action, ActionsRPC.Infect, targetId, Pestilence.Infected[targetId]);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.Infect, targetId, Pestilence.Infected[targetId]);
     }
 
     public static CooldownType Interact(PlayerControl source, PlayerControl target, bool isAttack = false, bool astral = false, bool bypass = false, bool delayed = false, DeathReasonEnum reason
@@ -82,7 +82,7 @@ public static class InteractionManager
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsConvertedFanatics);
-                    CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, fanatic, false, faction);
+                    CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, fanatic, false, faction);
                     fanatic.TurnFaction(faction);
                 }
                 else
@@ -192,7 +192,7 @@ public static class InteractionManager
 
         abilityUsed = false;
 
-        if (!CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
+        if (!CanAttack(Attack.Powerful, player.GetDefenseValue()))
         {
             abilityUsed = true;
             RpcBreakShield(player);
@@ -201,9 +201,9 @@ public static class InteractionManager
             bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
 
         BastionBomb(target, Bastion.BombRemovedOnKill);
-        CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.BastionBomb, target);
         return abilityUsed ? CooldownType.Reset : CooldownType.Fail;
     }
 
-    public static bool CanAttack(AttackEnum attack, DefenseEnum defense) => (int)attack > (int)defense;
+    public static bool CanAttack(Attack attack, Defense defense) => (int)attack > (int)defense;
 }

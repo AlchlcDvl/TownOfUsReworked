@@ -76,7 +76,7 @@ public sealed class LayerHandler : RoleBehaviour
     public bool Diseased { get; set; }
 
     public readonly List<Faction> FakeFactions = [];
-    public readonly List<(LayerEnum, Faction)> History = [];
+    public readonly List<(Layer, Faction)> History = [];
     public readonly Dictionary<byte, PlayerArrow> AllArrows = [];
     public readonly Dictionary<byte, PlayerArrow> DeadArrows = [];
 
@@ -191,7 +191,7 @@ public sealed class LayerHandler : RoleBehaviour
         {
             WinState = WinLose.TaskRunnerWins;
             Winner = true;
-            CallRpc(CustomRPC.Misc, MiscRPC.WinLose, WinState, Player);
+            CallRpc(ReworkedRpc.Misc, MiscRpc.WinLose, WinState, Player);
         }
 
         if (!CurrentRole.TasksDone)
@@ -332,7 +332,7 @@ public sealed class LayerHandler : RoleBehaviour
         Channels |= ChatChannel.Dead;
 
         if (!PlayerLayer.GetLayers<IReviver>().Any())
-            CurrentLayers.Do(x => x.TrulyDead |= x.Type != LayerEnum.GuardianAngel);
+            CurrentLayers.Do(x => x.TrulyDead |= x.Type != Layer.GuardianAngel);
     }
 
     public override bool DidWin(GameOverReason gameOverReason) => Winner;
@@ -399,7 +399,7 @@ public sealed class LayerHandler : RoleBehaviour
     public override bool CanUse(IUsable console)
     {
         // This is such a cheesy way to handle this omg
-        var isCrew = CurrentRole.Faction is Faction.Outcast or Faction.Crew || (CurrentRole.Faction == Faction.GameMode && CurrentRole.Type != LayerEnum.Hunter);
+        var isCrew = CurrentRole.Faction is Faction.Outcast or Faction.Crew || (CurrentRole.Faction == Faction.GameMode && CurrentRole.Type != Layer.Hunter);
         var role = IsDead ? (isCrew ? CrewmateGhost : ImpostorGhost) : (isCrew ? Crewmate : Impostor);
         role.Player = Player;
         var result = role.CanUse(console);

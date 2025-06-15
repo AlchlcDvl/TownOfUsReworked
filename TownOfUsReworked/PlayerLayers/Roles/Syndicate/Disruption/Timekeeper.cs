@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Timekeeper)]
+[LayerHeaderOption(Layer.Timekeeper)]
 public sealed class Timekeeper : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -21,7 +21,7 @@ public sealed class Timekeeper : Disruption
     public CustomButton TimeButton;
 
     protected override UColor MainColor => CustomColorManager.Timekeeper;
-    public override LayerEnum Type => LayerEnum.Timekeeper;
+    public override Layer Type => Layer.Timekeeper;
     public override string StartText => "Bend Time To Your Will";
     public override string Description => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
         CommonAbilities;

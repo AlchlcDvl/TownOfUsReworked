@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Hunted)]
+[LayerHeaderOption(Layer.Hunted)]
 public sealed class Hunted : HideAndSeek
 {
     [NumberOption(1f, 2f, 0.05f, Format.Multiplier)]
@@ -12,7 +12,7 @@ public sealed class Hunted : HideAndSeek
     [ToggleOption]
     public static bool HuntedChat = true;
 
-    public override LayerEnum Type => LayerEnum.Hunted;
+    public override Layer Type => Layer.Hunted;
     public override string StartText => "Run, Hide And Do Tasks";
     protected override UColor MainColor => CustomColorManager.Hunted;
 

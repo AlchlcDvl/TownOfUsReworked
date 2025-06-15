@@ -7,7 +7,7 @@ public static class FreeplayPatches
 
     public static readonly List<PlayerLayer> PreviouslySelected = [];
     private static readonly List<string> FolderNames = [];
-    public static readonly Dictionary<string, LayerEnum> RoleButtons = [];
+    public static readonly Dictionary<string, Layer> RoleButtons = [];
 
     private static TaskFolder CreateFolder(TaskAdderGame __instance, string name, TaskFolder parent)
     {
@@ -19,7 +19,7 @@ public static class FreeplayPatches
         return folder;
     }
 
-    private static void CreateRoleButton(TaskAdderGame __instance, TaskFolder folder, LayerEnum layer, ref float num, ref float num2, ref float num3)
+    private static void CreateRoleButton(TaskAdderGame __instance, TaskFolder folder, Layer layer, ref float num, ref float num2, ref float num3)
     {
         if (!LayerDictionary.TryGetValue(layer, out var entry))
             return;
@@ -143,9 +143,9 @@ public static class FreeplayPatches
             var layerEnum = Enum.TryParse<PlayerLayerEnum>(taskFolder.FolderName, out var h) ? h : PlayerLayerEnum.None;
             var range = layerEnum switch
             {
-                PlayerLayerEnum.Modifier => GetValuesFromTo(LayerEnum.Astral, LayerEnum.Yeller),
-                PlayerLayerEnum.Disposition => GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor),
-                PlayerLayerEnum.Ability => GetValuesFromTo(LayerEnum.ButtonBarry, LayerEnum.Underdog),
+                PlayerLayerEnum.Modifier => GetValuesFromTo(Layer.Astral, Layer.Yeller),
+                PlayerLayerEnum.Disposition => GetValuesFromTo(Layer.Allied, Layer.Traitor),
+                PlayerLayerEnum.Ability => GetValuesFromTo(Layer.ButtonBarry, Layer.Underdog),
                 _ => []
             };
 
@@ -153,19 +153,19 @@ public static class FreeplayPatches
             {
                 range = faction switch
                 {
-                    Faction.Crew => GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante),
-                    Faction.Outcast => GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer),
-                    Faction.Intruder => GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith),
-                    Faction.GameMode => GetValuesFromTo(LayerEnum.Hunter, LayerEnum.Runner),
-                    Faction.Apocalypse => GetValuesFromTo(LayerEnum.Cultist, LayerEnum.Void),
-                    Faction.Syndicate => GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper),
+                    Faction.Crew => GetValuesFromTo(Layer.Altruist, Layer.Vigilante),
+                    Faction.Outcast => GetValuesFromTo(Layer.Actor, Layer.Whisperer),
+                    Faction.Intruder => GetValuesFromTo(Layer.Ambusher, Layer.Wraith),
+                    Faction.GameMode => GetValuesFromTo(Layer.Hunter, Layer.Runner),
+                    Faction.Apocalypse => GetValuesFromTo(Layer.Cultist, Layer.Void),
+                    Faction.Syndicate => GetValuesFromTo(Layer.Anarchist, Layer.Warper),
                     _ => []
                 };
             }
 
             foreach (var layer in range)
             {
-                if (layer is LayerEnum.Phantom or LayerEnum.Ghoul or LayerEnum.Banshee or LayerEnum.Revealer or LayerEnum.Mafioso or LayerEnum.Sidekick)
+                if (layer is Layer.Phantom or Layer.Ghoul or Layer.Banshee or Layer.Revealer or Layer.Mafioso or Layer.Sidekick)
                     continue;
 
                 try

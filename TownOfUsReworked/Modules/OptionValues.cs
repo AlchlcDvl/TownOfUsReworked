@@ -261,15 +261,15 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
 }
 
 [Serializable]
-public struct RoleOptionData(byte chance, byte count, bool unique, bool active, LayerEnum layer) : INetSerializable, INetDeserializable, IEquatable<RoleOptionData>
+public struct RoleOptionData(byte chance, byte count, bool unique, bool active, Layer layer) : INetSerializable, INetDeserializable, IEquatable<RoleOptionData>
 {
-    public RoleOptionData() : this(0, 0, false, false, LayerEnum.None) {}
+    public RoleOptionData() : this(0, 0, false, false, Layer.None) {}
 
     public byte Chance { get; set; } = chance;
     public byte Count { get; set; } = count;
     public bool Unique { get; set; } = unique;
     public bool Active { get; set; } = active;
-    public LayerEnum ID { get; set; } = layer;
+    public Layer ID { get; set; } = layer;
 
     public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 
@@ -286,7 +286,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
         Count = reader.ReadByte();
         Unique = reader.ReadBool();
         Active = reader.ReadBool();
-        ID = (LayerEnum)reader.ReadByte();
+        ID = (Layer)reader.ReadByte();
     }
 
     public readonly bool Equals(RoleOptionData other) => other.Chance == Chance && other.Count == Count && other.Unique == Unique && other.Active == Active && other.ID == ID;
@@ -302,7 +302,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     public static RoleOptionData Parse(string input)
     {
         var parts = input.TrueSplit(',');
-        return new(byte.Parse(parts[0]), byte.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<LayerEnum>(parts[4]));
+        return new(byte.Parse(parts[0]), byte.Parse(parts[1]), bool.Parse(parts[2]), bool.Parse(parts[3]), Enum.Parse<Layer>(parts[4]));
     }
 }
 

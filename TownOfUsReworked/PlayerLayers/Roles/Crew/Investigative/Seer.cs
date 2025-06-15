@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Seer)]
+[LayerHeaderOption(Layer.Seer)]
 public sealed class Seer : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -12,7 +12,7 @@ public sealed class Seer : Investigative
     private CustomButton SeerButton;
 
     protected override UColor MainColor => CustomColorManager.Seer;
-    public override LayerEnum Type => LayerEnum.Seer;
+    public override Layer Type => Layer.Seer;
     public override string StartText => "You Can See People's Histories";
     public override string Description => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
         "<#FFCC80FF>Sheriff</color>";

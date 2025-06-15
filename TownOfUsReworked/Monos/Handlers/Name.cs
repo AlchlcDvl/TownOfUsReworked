@@ -190,7 +190,7 @@ public abstract class NameHandler : MonoBehaviour
 
         if (deadSeeEverything || amOwner)
         {
-            if (disp.Type != LayerEnum.NoneDisposition && !disp.Hidden)
+            if (disp.Type != Layer.NoneDisposition && !disp.Hidden)
                 name += $" {disp.ColoredSymbol}";
 
             if (!revealed)

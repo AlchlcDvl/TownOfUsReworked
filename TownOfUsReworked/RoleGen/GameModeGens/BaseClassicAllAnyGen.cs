@@ -11,11 +11,11 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (Crew == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante))
+        foreach (var layer in GetValuesFromTo(Layer.Altruist, Layer.Vigilante))
         {
             var spawn = GetSpawnItem(layer);
 
-            if (layer == LayerEnum.Revealer)
+            if (layer == Layer.Revealer)
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
@@ -35,7 +35,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
                     RoleGenManager.CrewProtectiveRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (CS.Contains(layer))
                     RoleGenManager.CrewSupportRoles.AddMany(spawn.Clone, spawn.Count);
-                else if (layer == LayerEnum.Crewmate)
+                else if (layer == Layer.Crewmate)
                     CrewRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
@@ -46,11 +46,11 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (Intruders == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not LayerEnum.Mafioso))
+        foreach (var layer in GetValuesFromTo(Layer.Ambusher, Layer.Wraith, x => x is not Layer.Mafioso))
         {
             var spawn = GetSpawnItem(layer);
 
-            if (layer == LayerEnum.Ghoul)
+            if (layer == Layer.Ghoul)
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
@@ -70,7 +70,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
                     RoleGenManager.IntruderKillingRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (IS.Contains(layer))
                     RoleGenManager.IntruderSupportRoles.AddMany(spawn.Clone, spawn.Count);
-                else if (layer == LayerEnum.Impostor)
+                else if (layer == Layer.Impostor)
                     IntruderRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
@@ -81,11 +81,11 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (Outcasts == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer, x => x != LayerEnum.Betrayer))
+        foreach (var layer in GetValuesFromTo(Layer.Actor, Layer.Whisperer, x => x != Layer.Betrayer))
         {
             var spawn = GetSpawnItem(layer);
 
-            if (layer == LayerEnum.Phantom)
+            if (layer == Layer.Phantom)
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
@@ -113,7 +113,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
             return;
 
         // TODO: Implement a ghost role for apoc
-        foreach (var layer in GetValuesFromTo(LayerEnum.Cannibal, LayerEnum.Void))
+        foreach (var layer in GetValuesFromTo(Layer.Cannibal, Layer.Void))
         {
             var spawn = GetSpawnItem(layer);
 
@@ -138,11 +138,11 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (Syndicate == 0)
             return;
 
-        foreach (var layer in GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not LayerEnum.Sidekick))
+        foreach (var layer in GetValuesFromTo(Layer.Anarchist, Layer.Warper, x => x is not Layer.Sidekick))
         {
             var spawn = GetSpawnItem(layer);
 
-            if (layer == LayerEnum.Banshee)
+            if (layer == Layer.Banshee)
             {
                 for (var j = 0; j < spawn.Count; j++)
                 {
@@ -160,7 +160,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
                     RoleGenManager.SyndicateKillingRoles.AddMany(spawn.Clone, spawn.Count);
                 else if (SSu.Contains(layer))
                     RoleGenManager.SyndicateSupportRoles.AddMany(spawn.Clone, spawn.Count);
-                else if (layer == LayerEnum.Anarchist)
+                else if (layer == Layer.Anarchist)
                     SyndicateRoles.AddMany(spawn.Clone, spawn.Count);
             }
         }
@@ -185,19 +185,19 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         else
             AllRoles.AddRanges(IntruderRoles, SyndicateRoles, ApocalypseRoles);
 
-        if (!AllRoles.Any(x => x.ID is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer))
-            AllRoles.AddMany(GetSpawnItem(LayerEnum.Seer).Clone, AllRoles.RemoveAll(x => x.ID == LayerEnum.Mystic));
+        if (!AllRoles.Any(x => x.ID is Layer.Dracula or Layer.Jackal or Layer.Necromancer or Layer.Whisperer))
+            AllRoles.AddMany(GetSpawnItem(Layer.Seer).Clone, AllRoles.RemoveAll(x => x.ID == Layer.Mystic));
 
-        if (AllRoles.Any(x => x.ID == LayerEnum.Cannibal) && AllRoles.Any(x => x.ID == LayerEnum.Janitor) && GameModifiers.JaniCanMutuallyExclusive)
+        if (AllRoles.Any(x => x.ID == Layer.Cannibal) && AllRoles.Any(x => x.ID == Layer.Janitor) && GameModifiers.JaniCanMutuallyExclusive)
         {
             var chance = URandom.RandomRangeInt(0, 2);
-            var value = chance == 0 ? OutcastRoles.Random(x => x.ID != LayerEnum.Cannibal, GetSpawnItem(LayerEnum.Amnesiac)) : IntruderRoles.Random(x => x.ID != LayerEnum.Janitor,
-                GetSpawnItem(LayerEnum.Impostor));
-            AllRoles.AddMany(value.Clone, AllRoles.RemoveAll(x => x.ID == (chance == 0 ? LayerEnum.Cannibal : LayerEnum.Janitor)));
+            var value = chance == 0 ? OutcastRoles.Random(x => x.ID != Layer.Cannibal, GetSpawnItem(Layer.Amnesiac)) : IntruderRoles.Random(x => x.ID != Layer.Janitor,
+                GetSpawnItem(Layer.Impostor));
+            AllRoles.AddMany(value.Clone, AllRoles.RemoveAll(x => x.ID == (chance == 0 ? Layer.Cannibal : Layer.Janitor)));
         }
 
-        if (GameData.Instance.PlayerCount <= 4 && AllRoles.Any(x => x.ID == LayerEnum.Amnesiac))
-            AllRoles.AddMany(GetSpawnItem(LayerEnum.Thief).Clone, AllRoles.RemoveAll(x => x.ID == LayerEnum.Amnesiac));
+        if (GameData.Instance.PlayerCount <= 4 && AllRoles.Any(x => x.ID == Layer.Amnesiac))
+            AllRoles.AddMany(GetSpawnItem(Layer.Thief).Clone, AllRoles.RemoveAll(x => x.ID == Layer.Amnesiac));
 
         OutcastRoles.Clear();
         CrewRoles.Clear();
@@ -208,7 +208,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         IlluminatiRoles.Clear();
 
         while (AllRoles.Count < GameData.Instance.PlayerCount)
-            AllRoles.Add(GetSpawnItem(LayerEnum.Crewmate));
+            AllRoles.Add(GetSpawnItem(Layer.Crewmate));
     }
 
     public override void PostAssignment()
@@ -218,7 +218,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
         if (!allPlayers.Any(x => x.GetRole() is Amnesiac or Thief or Godfather or Shifter or Guesser or Rebel or Executioner or GuardianAngel or BountyHunter or Mystic or Actor ||
             x.GetDisposition() is Traitor or Fanatic))
         {
-            allPlayers.Where(x => x.Is<Seer>()).Do(x => Gen(x, LayerEnum.Sheriff, PlayerLayerEnum.Role));
+            allPlayers.Where(x => x.Is<Seer>()).Do(x => Gen(x, Layer.Sheriff, PlayerLayerEnum.Role));
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum ThiefActionsRPC : byte
+public enum ThiefActionsRpc : byte
 {
     Steal,
     Guess

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Troll)]
+[LayerHeaderOption(Layer.Troll)]
 public sealed class Troll : Evil
 {
     [ToggleOption]
@@ -18,11 +18,11 @@ public sealed class Troll : Evil
     private CustomButton InteractButton;
 
     protected override UColor MainColor => CustomColorManager.Troll;
-    public override LayerEnum Type => LayerEnum.Troll;
+    public override Layer Type => Layer.Troll;
     public override string StartText => "Troll Everyone With Your Death";
     public override string Description => "- If you are killed, you will also kill your killer" + (CanInteract ? "\n- You can interact with players\n- Your interactions do nothing "
         + "except spread infection and possibly kill you via touch sensitive roles" : "");
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => Handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public override bool CanVent => base.CanVent && TrollVent;
     public override bool CanSwitchVents => TrollSwitchVent;

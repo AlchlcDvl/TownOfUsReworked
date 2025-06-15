@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Collider)]
+[LayerHeaderOption(Layer.Collider)]
 public sealed class Collider : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -32,7 +32,7 @@ public sealed class Collider : SKilling
     private float Range => CollideRange + (HoldsDrive ? CollideRangeIncrease : 0);
 
     protected override UColor MainColor => CustomColorManager.Collider;
-    public override LayerEnum Type => LayerEnum.Collider;
+    public override Layer Type => Layer.Collider;
     public override string StartText => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
     public override string Description => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die together" +
         $"{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : "")}\n{CommonAbilities}";
@@ -108,10 +108,10 @@ public sealed class Collider : SKilling
 
         if (GetDistance(Positive, Negative) <= Range)
         {
-            if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
+            if (CanAttack(Attack.Powerful, Negative.GetDefenseValue(Player)))
                 Player.RpcMurderPlayer(Negative, DeathReasonEnum.Collided, false);
 
-            if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
+            if (CanAttack(Attack.Powerful, Positive.GetDefenseValue(Player)))
                 Player.RpcMurderPlayer(Positive, DeathReasonEnum.Collided, false);
 
             Positive = null;
@@ -122,7 +122,7 @@ public sealed class Collider : SKilling
         {
             if (GetDistance(Player, Negative) <= Range)
             {
-                if (CanAttack(AttackEnum.Powerful, Negative.GetDefenseValue(Player)))
+                if (CanAttack(Attack.Powerful, Negative.GetDefenseValue(Player)))
                     Player.RpcMurderPlayer(Negative, DeathReasonEnum.Collided, false);
 
                 Negative = null;
@@ -131,7 +131,7 @@ public sealed class Collider : SKilling
 
             if (GetDistance(Player, Positive) <= Range)
             {
-                if (CanAttack(AttackEnum.Powerful, Positive.GetDefenseValue(Player)))
+                if (CanAttack(Attack.Powerful, Positive.GetDefenseValue(Player)))
                     Player.RpcMurderPlayer(Positive, DeathReasonEnum.Collided, false);
 
                 Positive = null;

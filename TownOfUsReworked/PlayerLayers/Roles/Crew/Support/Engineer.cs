@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // Buff with vent sealing
-[LayerHeaderOption(LayerEnum.Engineer)]
+[LayerHeaderOption(Layer.Engineer)]
 public sealed class Engineer : CSupport
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
@@ -13,7 +13,7 @@ public sealed class Engineer : CSupport
     private CustomButton FixButton;
 
     protected override UColor MainColor => CustomColorManager.Engineer;
-    public override LayerEnum Type => LayerEnum.Engineer;
+    public override Layer Type => Layer.Engineer;
     public override string StartText => "Just Fix It";
     public override string Description => "- You can fix sabotages at any time from anywhere\n- You can vent";
 

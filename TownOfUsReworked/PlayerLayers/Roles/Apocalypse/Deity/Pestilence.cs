@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Pestilence)]
+[LayerHeaderOption(Layer.Pestilence)]
 public sealed class Pestilence : Deity
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -15,7 +15,7 @@ public sealed class Pestilence : Deity
     private CustomButton ObliterateButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Pestilence;
-    public override LayerEnum Type => LayerEnum.Pestilence;
+    public override Layer Type => Layer.Pestilence;
     public override string Description => "- You can spread a deadly disease to other players" + CommonAbilities;
     public override bool CanVent => base.CanVent && PestVent;
 

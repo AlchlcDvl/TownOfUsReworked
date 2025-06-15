@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Crusader)]
+[LayerHeaderOption(Layer.Crusader)]
 public sealed class Crusader : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -19,7 +19,7 @@ public sealed class Crusader : SKilling
     public CustomButton CrusadeButton;
 
     protected override UColor MainColor => CustomColorManager.Crusader;
-    public override LayerEnum Type => LayerEnum.Crusader;
+    public override Layer Type => Layer.Crusader;
     public override string StartText => "Cleanse This Land Of The Unholy Filth";
     public override string Description => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
         $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {ChaosDriveCrusadeRadius}m radius" : "")}\n{CommonAbilities}";
@@ -49,7 +49,7 @@ public sealed class Crusader : SKilling
         if (cooldown != CooldownType.Fail)
         {
             CrusadedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, CrusadeButton, CrusadedPlayer);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, CrusadeButton, CrusadedPlayer);
             CrusadeButton.Begin();
         }
         else

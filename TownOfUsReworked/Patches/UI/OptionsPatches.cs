@@ -594,7 +594,7 @@ public static class SettingsPatches
                 return;
 
             SendOptionRPC(targetClientId: player.OwnerId);
-            var writer = CreateWriter(CustomRPC.Misc, MiscRPC.PlayerJoinSync, MapSettings.Map);
+            var writer = CreateWriter(ReworkedRpc.Misc, MiscRpc.PlayerJoinSync, MapSettings.Map);
             var cache = Summary is not null;
             writer.Write(value: cache);
 
@@ -669,7 +669,7 @@ public static class SettingsPatches
                     __instance.selectedButton = mapButton;
                     __instance.selectedButton.Button?.SelectButton(true);
                     __instance.SelectMap(thisVal);
-                    CallRpc(CustomRPC.Misc, MiscRPC.SyncMap, MapSettings.Map);
+                    CallRpc(ReworkedRpc.Misc, MiscRpc.SyncMap, MapSettings.Map);
                 });
 
                 if (k > 0)
@@ -701,7 +701,7 @@ public static class SettingsPatches
                 __instance.SelectMap(mapInfo);
             else
             {
-                SetMap((MapEnum)mapId);
+                SetMap((Map)mapId);
                 __instance.selectedMapId = mapId;
             }
 
@@ -711,7 +711,7 @@ public static class SettingsPatches
         [HarmonyPatch(nameof(GameOptionsMapPicker.SelectMap), typeof(MapIconByName))]
         public static bool Prefix(GameOptionsMapPicker __instance, MapIconByName mapInfo)
         {
-            SetMap((MapEnum)mapInfo.Name);
+            SetMap((Map)mapInfo.Name);
             __instance.selectedMapId = (int)mapInfo.Name;
 
             if (__instance.MapImage)
@@ -732,7 +732,7 @@ public static class SettingsPatches
     private static readonly string[] Maps = [ "The Skeld", "Mira HQ", "Polus", "ehT dlekS", "Airship", "Fungle", "Submerged", "Level Impostor", "Random" ];
     private static LobbyNotificationMessage MapChangeNotif;
 
-    public static void SetMap(MapEnum map)
+    public static void SetMap(Map map)
     {
         if (IsInGame() || !LocalPlayer || MapSettings.Map == map)
             return;

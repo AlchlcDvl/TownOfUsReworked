@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[LayerHeaderOption(LayerEnum.Giant)]
+[LayerHeaderOption(Layer.Giant)]
 public sealed class Giant : Modifier
 {
     [NumberOption(0.5f, 1f, 0.05f, Format.Multiplier)]
@@ -15,7 +15,7 @@ public sealed class Giant : Modifier
     private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : ""));
 
     protected override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Giant;
-    public override LayerEnum Type => LayerEnum.Giant;
+    public override Layer Type => Layer.Giant;
     public override string Description => Useless ? "- Why" : $"- You are {Text}";
 
     public override void Init() => Name = TranslationManager.Translate($"Layer.{(Useless ? "Useless" : (Chonk ? (Snail ? "Chonker" : "Giant") : "Sloth"))}");

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Framer)]
+[LayerHeaderOption(Layer.Framer)]
 public sealed class Framer : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -14,7 +14,7 @@ public sealed class Framer : Disruption
     public readonly HashSet<byte> Framed = [];
 
     protected override UColor MainColor => CustomColorManager.Framer;
-    public override LayerEnum Type => LayerEnum.Framer;
+    public override Layer Type => Layer.Framer;
     public override string StartText => "Make Everyone Suspicious";
     public override string Description => $"- You can frame a{(HoldsDrive ? $"ll players within a {ChaosDriveFrameRadius}m radius" : " player")}\n- Till you are dead, framed " +
         $"targets will die easily to killing roles and will have the wrong investigative results\n{CommonAbilities}";
@@ -41,7 +41,7 @@ public sealed class Framer : Disruption
             return;
 
         Framed.Add(player.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player.PlayerId);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, player.PlayerId);
     }
 
     private void Frame(PlayerControl target)

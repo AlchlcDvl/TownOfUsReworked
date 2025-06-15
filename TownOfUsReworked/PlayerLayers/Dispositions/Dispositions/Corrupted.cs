@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Corrupted)]
+[LayerHeaderOption(Layer.Corrupted)]
 public sealed class Corrupted : Disposition
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,9 +13,9 @@ public sealed class Corrupted : Disposition
 
     protected override UColor MainColor => CustomColorManager.Corrupted;
     public override string Symbol => "δ";
-    public override LayerEnum Type => LayerEnum.Corrupted;
+    public override Layer Type => Layer.Corrupted;
     public override string Description => "- Corrupt everyone";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool CanVent => CorruptedVent;
 
     public override void Init()

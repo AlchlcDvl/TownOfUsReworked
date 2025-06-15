@@ -10,6 +10,6 @@ public sealed class TaskRaceGen : BaseRoleGen
     public override void InitList()
     {
         while (AllRoles.Count < GameData.Instance.PlayerCount)
-            AllRoles.Add(GetSpawnItem(LayerEnum.Runner));
+            AllRoles.Add(GetSpawnItem(Layer.Runner));
     }
 }

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Detective)]
+[LayerHeaderOption(Layer.Detective)]
 public sealed class Detective : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -21,7 +21,7 @@ public sealed class Detective : Investigative
     private CustomButton ExamineButton;
 
     protected override UColor MainColor => CustomColorManager.Detective;
-    public override LayerEnum Type => LayerEnum.Detective;
+    public override Layer Type => Layer.Detective;
     public override string StartText => "Examine Players For <#AA0000FF>Blood</color>";
     public override string Description => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";

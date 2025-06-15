@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Mayor)]
+[LayerHeaderOption(Layer.Mayor)]
 public sealed class Mayor : Sovereign
 {
     [NumberOption(1, 10, 1)]
@@ -19,7 +19,7 @@ public sealed class Mayor : Sovereign
     private CustomButton RevealButton;
 
     protected override UColor MainColor => CustomColorManager.Mayor;
-    public override LayerEnum Type => LayerEnum.Mayor;
+    public override Layer Type => Layer.Mayor;
     public override string StartText => "Commit Voter Fraud!";
     public override string Description => $"-Your votes count {MayorVoteCount + 1} times but you cannot be protected";
 
@@ -33,7 +33,7 @@ public sealed class Mayor : Sovereign
 
     private void Reveal()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.PublicReveal, Player);
         PublicReveal(Player);
 
         if (!MayorDirectSpawn && MeetingPatches.MeetingCount <= 3)

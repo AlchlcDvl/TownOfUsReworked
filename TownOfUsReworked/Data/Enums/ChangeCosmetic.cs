@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Data.Enums;
 
 [Flags]
-public enum ChangeCosmetics
+public enum ChangeCosmetics : byte
 {
     None = 0,
     Color = 1 << 0,

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Miner)]
+[LayerHeaderOption(Layer.Miner)]
 public sealed class Miner : ISupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,7 +13,7 @@ public sealed class Miner : ISupport
     private readonly List<Vent> Vents = [];
 
     protected override UColor MainColor => CustomColorManager.Miner;
-    public override LayerEnum Type => LayerEnum.Miner;
+    public override Layer Type => Layer.Miner;
     public override string StartText => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
         "From The Top, Make It Drop, Boom, That's A Vent";
     public override string Description => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
@@ -37,7 +37,7 @@ public sealed class Miner : ISupport
 
     private void Mine()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, (Vector2)Player.transform.position);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, (Vector2)Player.transform.position);
         Vents.Add(SpawnVent(Vents, Player.transform.position, Player.transform.position.z));
         MineButton.StartCooldown();
     }

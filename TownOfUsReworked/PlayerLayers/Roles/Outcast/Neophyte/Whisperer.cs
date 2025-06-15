@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Whisperer)]
+[LayerHeaderOption(Layer.Whisperer)]
 public sealed class Whisperer : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -36,11 +36,11 @@ public sealed class Whisperer : Neophyte
     public readonly Dictionary<byte, byte> PlayerConversion = [];
 
     protected override UColor MainColor => CustomColorManager.Whisperer;
-    public override LayerEnum Type => LayerEnum.Whisperer;
+    public override Layer Type => Layer.Whisperer;
     public override string StartText => "PSST";
     public override string Description => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <#F995FCFF>Cult</color>";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool CanVent => base.CanVent && WhispVent;
     protected override Faction ActualFaction => Faction.Cult;
 
@@ -87,7 +87,7 @@ public sealed class Whisperer : Neophyte
         Members.Do(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
         WhisperButton.StartCooldown();
-        using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, (byte)PlayerConversion.Count);
+        using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.LayerAction, this, (byte)PlayerConversion.Count);
 
         if (writer is null)
             return;

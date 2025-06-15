@@ -4,7 +4,7 @@ public abstract class Role : PlayerLayer
 {
     protected override UColor MainColor => CustomColorManager.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
-    public override LayerEnum Type => LayerEnum.NoneRole;
+    public override Layer Type => Layer.NoneRole;
     protected override UColor LayerColor => FactionColor;
     protected override bool UseMainColor => false;
 
@@ -42,10 +42,10 @@ public abstract class Role : PlayerLayer
         if (GameModeSettings.GameMode is Mode.HideAndSeek or Mode.TaskRace)
             return;
 
-        if (RoleGenManager.GetSpawnItem(LayerEnum.Enforcer).IsActive())
+        if (RoleGenManager.GetSpawnItem(Layer.Enforcer).IsActive())
             BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
 
-        if (RoleGenManager.GetSpawnItem(LayerEnum.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
+        if (RoleGenManager.GetSpawnItem(Layer.BountyHunter).IsActive() && BountyHunter.BountyHunterCanPickTargets)
             PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
     }
 
@@ -141,7 +141,7 @@ public abstract class Role : PlayerLayer
         if (!Requesting || BountyTimer <= 2)
             return;
 
-        CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, Player);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.PlaceHit, Player, Player);
         Requestor.GetLayer<BountyHunter>().TentativeTarget = Player;
         Requesting = false;
         Requestor = null;
@@ -153,14 +153,14 @@ public abstract class Role : PlayerLayer
         Requestor.GetLayer<BountyHunter>().TentativeTarget = target;
         Requesting = false;
         Requestor = null;
-        CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, target);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.PlaceHit, Player, target);
     }
 
     private void BombKill(PlayerControl target)
     {
         var success = Interact(Player, target, true) != CooldownType.Fail;
         GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).Do(x => x.BombSuccessful = success);
-        CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ForceKill, Player, success);
     }
 
     public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Deinitialised);

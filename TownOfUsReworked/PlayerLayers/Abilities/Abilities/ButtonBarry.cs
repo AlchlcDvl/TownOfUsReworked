@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-[LayerHeaderOption(LayerEnum.ButtonBarry)]
+[LayerHeaderOption(Layer.ButtonBarry)]
 public sealed class ButtonBarry : Ability
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -10,7 +10,7 @@ public sealed class ButtonBarry : Ability
     private CustomButton ButtonButton;
 
     protected override UColor MainColor => CustomColorManager.ButtonBarry;
-    public override LayerEnum Type => LayerEnum.ButtonBarry;
+    public override Layer Type => Layer.ButtonBarry;
     public override string Description => "- You can call a button from anywhere";
 
     public override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,

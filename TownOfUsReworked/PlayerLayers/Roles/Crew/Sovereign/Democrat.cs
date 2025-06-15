@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Democrat)]
+[LayerHeaderOption(Layer.Democrat)]
 public sealed class Democrat : Sovereign
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -19,7 +19,7 @@ public sealed class Democrat : Sovereign
     private bool RoundOne;
 
     protected override UColor MainColor => CustomColorManager.Democrat;
-    public override LayerEnum Type => LayerEnum.Democrat;
+    public override Layer Type => Layer.Democrat;
     public override string StartText => "Start A Campaign To Get Elected!";
     public override string Description => "- You can plead your cause to players, campaigning them for their vote\n- When everyone is campaigned, you can reveal yourself to be the " +
         "<#704FA8FF>Mayor</color>";
@@ -43,7 +43,7 @@ public sealed class Democrat : Sovereign
 
     private void Reveal()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.PublicReveal, Player);
         PublicReveal(Player);
     }
 
@@ -54,7 +54,7 @@ public sealed class Democrat : Sovereign
         if (cooldown != CooldownType.Fail)
         {
             Campaigned.Add(target.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target.PlayerId);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target.PlayerId);
         }
 
         CampaignButton.StartCooldown(cooldown);

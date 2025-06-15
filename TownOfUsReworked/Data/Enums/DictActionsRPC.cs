@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum DictActionsRPC : byte
+public enum DictActionsRpc : byte
 {
     Tribunal,
     SelectToEject

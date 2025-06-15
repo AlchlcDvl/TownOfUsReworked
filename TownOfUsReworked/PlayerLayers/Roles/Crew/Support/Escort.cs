@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Escort)]
+[LayerHeaderOption(Layer.Escort)]
 public sealed class Escort : CSupport, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,7 +13,7 @@ public sealed class Escort : CSupport, IBlocker
     private CustomButton BlockButton;
 
     protected override UColor MainColor => CustomColorManager.Escort;
-    public override LayerEnum Type => LayerEnum.Escort;
+    public override Layer Type => Layer.Escort;
     public override string StartText => "Roleblock Players From Harming The <#8CFFFFFF>Crew</color>";
     public override string Description => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune " +
         "to blocks\n- If you attempt to block a <#336EFFFF>Serial Killer</color>, they will be forced to kill you";
@@ -48,7 +48,7 @@ public sealed class Escort : CSupport, IBlocker
         if (cooldown != CooldownType.Fail)
         {
             BlockTarget = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BlockButton, BlockTarget);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BlockButton, BlockTarget);
             BlockButton.Begin();
         }
         else

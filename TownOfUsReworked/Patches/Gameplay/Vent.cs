@@ -114,12 +114,12 @@ public static class VentPatches
         if (NoPlayers() || !LocalPlayer.CanVent() || LocalBlocked())
             return false;
 
-        if (!vent.IsBombed() || LocalPlayer.Is<IGhosty>() || !CanAttack(AttackEnum.Powerful, LocalPlayer.GetDefenseValue()))
+        if (!vent.IsBombed() || LocalPlayer.Is<IGhosty>() || !CanAttack(Attack.Powerful, LocalPlayer.GetDefenseValue()))
             return true;
 
         LocalPlayer.RpcSuicide();
         BastionBomb(vent, Bastion.BombRemovedOnKill);
-        CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.BastionBomb, vent);
         return false;
     }
 

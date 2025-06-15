@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Coroner)]
+[LayerHeaderOption(Layer.Coroner)]
 public sealed class Coroner : Investigative, IExaminer
 {
     [NumberOption(0f, 2f, 0.05f, Format.Time)]
@@ -29,7 +29,7 @@ public sealed class Coroner : Investigative, IExaminer
     private readonly Dictionary<byte, PositionalArrow> BodyArrows = [];
 
     protected override UColor MainColor => CustomColorManager.Coroner;
-    public override LayerEnum Type => LayerEnum.Coroner;
+    public override Layer Type => Layer.Coroner;
     public override string StartText => "Examine The Dead For Information";
     public override string Description => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
         "when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.BountyHunter)]
+[LayerHeaderOption(Layer.BountyHunter)]
 public sealed class BountyHunter : Evil, ITargeter
 {
     [ToggleOption]
@@ -44,12 +44,12 @@ public sealed class BountyHunter : Evil, ITargeter
     private int Rounds;
 
     protected override UColor MainColor => CustomColorManager.BountyHunter;
-    public override LayerEnum Type => LayerEnum.BountyHunter;
+    public override Layer Type => Layer.BountyHunter;
     public override string StartText => "Find And Kill Your Target";
     public override string Description => !TargetPlayer ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- Upon " +
         "finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you will" +
         " become a <#678D36FF>Troll</color>");
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => TargetKilled;
     public override bool CanVent => base.CanVent && BhVent;
     protected override WinLose EndState => WinLose.BountyHunterWins;
@@ -203,7 +203,7 @@ public sealed class BountyHunter : Evil, ITargeter
             {
                 TargetPlayer = null;
                 Rounds = 0;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
             }
             else
                 Player.RpcSuicide();
@@ -224,7 +224,7 @@ public sealed class BountyHunter : Evil, ITargeter
         var role = RequestingPlayer.GetRole();
         role.Requesting = true;
         role.Requestor = Player;
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, RequestingPlayer);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, RequestingPlayer);
     }
 
     public override void ReadRPC(RpcReader reader)

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Phantom)]
+[LayerHeaderOption(Layer.Phantom)]
 public sealed class Phantom : Proselyte, IGhosty
 {
     [NumberOption(1, 10, 1)]
@@ -13,7 +13,7 @@ public sealed class Phantom : Proselyte, IGhosty
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Phantom;
-    public override LayerEnum Type => LayerEnum.Phantom;
+    public override Layer Type => Layer.Phantom;
     public override string StartText => "Peek-A-Boo!";
     public override string Description => "- You end the game upon finishing your objective";
     public override bool HasWon => TasksDone;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Enforcer)]
+[LayerHeaderOption(Layer.Enforcer)]
 public sealed class Enforcer : IKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -20,7 +20,7 @@ public sealed class Enforcer : IKilling
     public bool BombSuccessful { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Enforcer;
-    public override LayerEnum Type => LayerEnum.Enforcer;
+    public override Layer Type => Layer.Enforcer;
     public override string StartText => "Force The <#8CFFFFFF>Crew</color> To Do Your Bidding";
     public override string Description => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
         $"{EnforceDur}s, the bomb will detonate and kill everyone within a {EnforceRadius}m radius\n{CommonAbilities}";
@@ -58,7 +58,7 @@ public sealed class Enforcer : IKilling
     {
         foreach (var player in GetClosestPlayers(centre, EnforceRadius))
         {
-            if (CanAttack(AttackEnum.Powerful, player.GetDefenseValue()))
+            if (CanAttack(Attack.Powerful, player.GetDefenseValue()))
                 enf.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
         }
 
@@ -72,7 +72,7 @@ public sealed class Enforcer : IKilling
         if (cooldown != CooldownType.Fail)
         {
             BombedPlayer = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, BombButton, BombedPlayer);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, BombButton, BombedPlayer);
             BombButton.Begin();
         }
         else

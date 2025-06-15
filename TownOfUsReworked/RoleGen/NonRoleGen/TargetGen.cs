@@ -6,7 +6,7 @@ public sealed class TargetGen : BaseGen
 {
     public override void Assign()
     {
-        if (GetSpawnItem(LayerEnum.Allied).IsActive())
+        if (GetSpawnItem(Layer.Allied).IsActive())
         {
             foreach (var ally in PlayerLayer.GetLayers<Allied>())
             {
@@ -23,13 +23,13 @@ public sealed class TargetGen : BaseGen
 
                 var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());
                 ally.Side = faction;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ally, faction);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, ally, faction);
             }
 
             Message("Allied Factions Set");
         }
 
-        if (GetSpawnItem(LayerEnum.Lovers).IsActive())
+        if (GetSpawnItem(Layer.Lovers).IsActive())
         {
             var lovers = PlayerLayer.GetLayers<Lovers>().ToList();
             lovers.Shuffle();
@@ -48,7 +48,7 @@ public sealed class TargetGen : BaseGen
 
                 lover.Other = other.Player;
                 other.Other = lover.Player;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, lover, other);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, lover, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
@@ -58,7 +58,7 @@ public sealed class TargetGen : BaseGen
             Success("Lovers Set");
         }
 
-        if (GetSpawnItem(LayerEnum.Rivals).IsActive())
+        if (GetSpawnItem(Layer.Rivals).IsActive())
         {
             var rivals = PlayerLayer.GetLayers<Rivals>().ToList();
             rivals.Shuffle();
@@ -77,7 +77,7 @@ public sealed class TargetGen : BaseGen
 
                 rival.Other = other.Player;
                 other.Other = rival.Player;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, rival, other);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, rival, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
@@ -87,7 +87,7 @@ public sealed class TargetGen : BaseGen
             Success("Rivals Set");
         }
 
-        if (GetSpawnItem(LayerEnum.Linked).IsActive())
+        if (GetSpawnItem(Layer.Linked).IsActive())
         {
             var linked = PlayerLayer.GetLayers<Linked>().ToList();
             linked.Shuffle();
@@ -106,7 +106,7 @@ public sealed class TargetGen : BaseGen
 
                 link.Other = other.Player;
                 other.Other = link.Player;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, link, other);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, link, other);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Linked = {link.PlayerName} & {other.PlayerName}");
@@ -116,7 +116,7 @@ public sealed class TargetGen : BaseGen
             Success("Linked Set");
         }
 
-        if (GetSpawnItem(LayerEnum.Mafia).IsActive())
+        if (GetSpawnItem(Layer.Mafia).IsActive())
         {
             var mafia = PlayerLayer.GetLayers<Mafia>();
 
@@ -126,7 +126,7 @@ public sealed class TargetGen : BaseGen
             Success("Mafia Set");
         }
 
-        if (!Executioner.ExecutionerCanPickTargets && GetSpawnItem(LayerEnum.Executioner).IsActive())
+        if (!Executioner.ExecutionerCanPickTargets && GetSpawnItem(Layer.Executioner).IsActive())
         {
             foreach (var exe in PlayerLayer.GetLayers<Executioner>())
             {
@@ -135,7 +135,7 @@ public sealed class TargetGen : BaseGen
                 if (!exe.TargetPlayer)
                     continue;
 
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, exe, exe.TargetPlayer);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, exe, exe.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Exe Target = {exe.TargetPlayer.name}");
@@ -144,7 +144,7 @@ public sealed class TargetGen : BaseGen
             Success("Exe Targets Set");
         }
 
-        if (!Guesser.GuesserCanPickTargets && GetSpawnItem(LayerEnum.Guesser).IsActive())
+        if (!Guesser.GuesserCanPickTargets && GetSpawnItem(Layer.Guesser).IsActive())
         {
             foreach (var guess in PlayerLayer.GetLayers<Guesser>())
             {
@@ -154,7 +154,7 @@ public sealed class TargetGen : BaseGen
                 if (!guess.TargetPlayer)
                     continue;
 
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, guess, guess.TargetPlayer);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, guess, guess.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"Guess Target = {guess.TargetPlayer.name}");
@@ -163,7 +163,7 @@ public sealed class TargetGen : BaseGen
             Success("Guess Targets Set");
         }
 
-        if (!GuardianAngel.GuardianAngelCanPickTargets && GetSpawnItem(LayerEnum.GuardianAngel).IsActive())
+        if (!GuardianAngel.GuardianAngelCanPickTargets && GetSpawnItem(Layer.GuardianAngel).IsActive())
         {
             foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
             {
@@ -172,7 +172,7 @@ public sealed class TargetGen : BaseGen
                 if (!ga.TargetPlayer)
                     continue;
 
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, ga, ga.TargetPlayer);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, ga, ga.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"GA Target = {ga.TargetPlayer.name}");
@@ -181,7 +181,7 @@ public sealed class TargetGen : BaseGen
             Success("GA Target Set");
         }
 
-        if (!BountyHunter.BountyHunterCanPickTargets && GetSpawnItem(LayerEnum.BountyHunter).IsActive())
+        if (!BountyHunter.BountyHunterCanPickTargets && GetSpawnItem(Layer.BountyHunter).IsActive())
         {
             foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
             {
@@ -190,7 +190,7 @@ public sealed class TargetGen : BaseGen
                 if (!bh.TargetPlayer)
                     continue;
 
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, bh, bh.TargetPlayer);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, bh, bh.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
                     Message($"BH Target = {bh.TargetPlayer.name}");
@@ -199,12 +199,12 @@ public sealed class TargetGen : BaseGen
             Success("BH Targets Set");
         }
 
-        if (!Actor.ActorCanPickRole && GetSpawnItem(LayerEnum.Actor).IsActive())
+        if (!Actor.ActorCanPickRole && GetSpawnItem(Layer.Actor).IsActive())
         {
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
                 act.FillRoles(AllPlayers().Random(x => x != act.Player));
-                CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, act, act.PretendRoles);
+                CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, act, act.PretendRoles);
 
                 if (TownOfUsReworked.MciActive && act.PretendRoles.Count > 0)
                     Message($"Act Targets = {act.PretendListString()}");
@@ -213,7 +213,7 @@ public sealed class TargetGen : BaseGen
             Success("Act Variables Set");
         }
 
-        if (GetSpawnItem(LayerEnum.Jackal).IsActive())
+        if (GetSpawnItem(Layer.Jackal).IsActive())
         {
             foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
             {

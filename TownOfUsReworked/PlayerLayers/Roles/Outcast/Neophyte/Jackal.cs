@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Jackal)]
+[LayerHeaderOption(Layer.Jackal)]
 public sealed class Jackal : Neophyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -21,12 +21,12 @@ public sealed class Jackal : Neophyte
     private bool AllRecruitsDead => Recruit1 && Recruit1.HasDied() && Recruit2 && Recruit2.HasDied() && Recruit3 && Recruit3.HasDied();
 
     protected override UColor MainColor => CustomColorManager.Jackal;
-    public override LayerEnum Type => LayerEnum.Jackal;
+    public override Layer Type => Layer.Jackal;
     public override string StartText => "Gain A Majority";
     public override string Description => "- You start off with 2 recruits. 1 of them is always <#8CFFFFFF>Crew</color>\nand the other is either a <#008000FF>" +
         "Syndicate</color>, <#FF1919FF>Intruder</color> or a <#B3B3B3FF>Outcast</color> <#1D7CF2FF>Killer</color>\n- When both recruits die, you can recruit a third" +
         " member into the <#575657FF>Cabal</color>";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool CanVent => base.CanVent && JackalVent;
     protected override Faction ActualFaction => Faction.Cabal;
 

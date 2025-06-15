@@ -4,9 +4,9 @@ namespace TownOfUsReworked.RoleGen;
 
 public sealed class DispositionGen : BaseGen
 {
-    private static readonly LayerEnum[] LoverRival = [ LayerEnum.Lovers, LayerEnum.Rivals ];
-    private static readonly LayerEnum[] CrewDisp = [ LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor ];
-    private static readonly LayerEnum[] OutcastDisp = [ LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked ];
+    private static readonly Layer[] LoverRival = [ Layer.Lovers, Layer.Rivals ];
+    private static readonly Layer[] CrewDisp = [ Layer.Corrupted, Layer.Fanatic, Layer.Traitor ];
+    private static readonly Layer[] OutcastDisp = [ Layer.Taskmaster, Layer.Overlord, Layer.Linked ];
 
     public override void InitList()
     {
@@ -18,7 +18,7 @@ public sealed class DispositionGen : BaseGen
 
     private static void InitRlList()
     {
-        var dispositions = GetValuesFromTo(LayerEnum.Allied, LayerEnum.Traitor);
+        var dispositions = GetValuesFromTo(Layer.Allied, Layer.Traitor);
 
         foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Disposition && x.Num <= GameData.Instance.PlayerCount))
         {
@@ -40,7 +40,7 @@ public sealed class DispositionGen : BaseGen
 
     private static void InitRegList()
     {
-        foreach (var spawn in GetValuesFromToAndMorph(LayerEnum.Allied, LayerEnum.Traitor, GetSpawnItem))
+        foreach (var spawn in GetValuesFromToAndMorph(Layer.Allied, Layer.Traitor, GetSpawnItem))
         {
             if (spawn.IsActive())
                 AllDispositions.AddMany(spawn.Clone, spawn.Count);
@@ -57,7 +57,7 @@ public sealed class DispositionGen : BaseGen
         var playerList = AllPlayers().ToList();
         playerList.Shuffle();
         AllDispositions.Shuffle();
-        var invalid = new List<LayerEnum>();
+        var invalid = new List<Layer>();
 
         if (TownOfUsReworked.MciActive && AllDispositions.Any())
             Message("Dispositions in the game: " + Join(" ", AllDispositions.Select(ab => ab.ID)));
@@ -67,9 +67,9 @@ public sealed class DispositionGen : BaseGen
             var id = AllDispositions.TakeFirst().ID;
             var assigned = id switch
             {
-                LayerEnum.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),
-                LayerEnum.Defector => playerList.FirstOrDefault(x => x.GetFaction() is not (Faction.Crew or Faction.Outcast)),
-                LayerEnum.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Outcast)),
+                Layer.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),
+                Layer.Defector => playerList.FirstOrDefault(x => x.GetFaction() is not (Faction.Crew or Faction.Outcast)),
+                Layer.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Outcast)),
                 _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester or Shifter)),
                 _ when CrewDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),
                 _ when OutcastDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Outcast)),

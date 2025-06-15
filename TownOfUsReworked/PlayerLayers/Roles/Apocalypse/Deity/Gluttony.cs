@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // TODO: Finish this
-[LayerHeaderOption(LayerEnum.Gluttony)]
+[LayerHeaderOption(Layer.Gluttony)]
 public sealed class Gluttony : Deity
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -20,10 +20,10 @@ public sealed class Gluttony : Deity
     private CustomButton ConsumeButton { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Gluttony;
-    public override LayerEnum Type => LayerEnum.Gluttony;
+    public override Layer Type => Layer.Gluttony;
     public override string Description => "- You can initiate an insatiable hunger into people, causing them to be unable to use their abilities" + CommonAbilities;
     public override bool CanVent => base.CanVent && GlutVent;
-    public override AttackEnum AttackVal => AttackEnum.Powerful;
+    public override Attack Attack => Attack.Powerful;
 
     public override void Init()
     {

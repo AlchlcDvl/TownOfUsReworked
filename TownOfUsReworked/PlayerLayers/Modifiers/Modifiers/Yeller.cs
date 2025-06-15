@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 public sealed class Yeller : Modifier
 {
     protected override UColor MainColor => CustomColorManager.Yeller;
-    public override LayerEnum Type => LayerEnum.Yeller;
+    public override Layer Type => Layer.Yeller;
     public override string Description => "- Everyone knows where you are";
 
     private PlayerArrow Arrow;

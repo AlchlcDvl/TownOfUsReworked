@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Wraith)]
+[LayerHeaderOption(Layer.Wraith)]
 public sealed class Wraith : Deception
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -16,7 +16,7 @@ public sealed class Wraith : Deception
     private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Wraith;
-    public override LayerEnum Type => LayerEnum.Wraith;
+    public override Layer Type => Layer.Wraith;
     public override string StartText => "Sneaky Sneaky";
     public override string Description => $"- You can turn invisible\n{CommonAbilities}";
     public override bool CanVent => WraithVent;
@@ -36,7 +36,7 @@ public sealed class Wraith : Deception
 
     private void HitInvis()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, InvisButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, InvisButton);
         InvisButton.Begin();
     }
 

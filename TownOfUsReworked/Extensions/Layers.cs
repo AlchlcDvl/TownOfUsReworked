@@ -18,7 +18,7 @@ public static class LayerExtensions
 
     public static bool Is<T>(this PlayerControl player) where T : IPlayerLayer => player.Is<T>(out _);
 
-    public static bool Is(this PlayerControl player, LayerEnum type) => player.GetLayers().Any(x => x.Type == type);
+    public static bool Is(this PlayerControl player, Layer type) => player.GetLayers().Any(x => x.Type == type);
 
     public static bool Is(this PlayerControl player, Faction faction)
     {
@@ -161,7 +161,7 @@ public static class LayerExtensions
 
             result = true;
             douser.Doused.Remove(player.PlayerId);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, douser, DouseActionsRPC.UnDouse, player.PlayerId);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, douser, DouseActionsRpc.UnDouse, player.PlayerId);
         }
 
         return result;
@@ -369,7 +369,7 @@ public static class LayerExtensions
             roleName += $"{role.ColorString}{role}</color>";
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
             alignment += $"{role.FactionColorString}{role.Faction}({AlignmentColorString}{role.Alignment}</color>)</color>";
-            attdef += $"{info.Max(x => x.AttackVal)}</color>/{DefenseColorString}{info.Max(x => x.DefenseVal)}</color>";
+            attdef += $"{info.Max(x => x.Attack)}</color>/{DefenseColorString}{info.Max(x => x.Defense)}</color>";
         }
         else
         {
@@ -382,7 +382,7 @@ public static class LayerExtensions
         alignment += "</b></color>";
         attdef += "</b>";
 
-        if (info[3] && !disposition.Hidden && disposition.Type != LayerEnum.NoneDisposition)
+        if (info[3] && !disposition.Hidden && disposition.Type != Layer.NoneDisposition)
         {
             objectives += $"\n{disposition.ColorString}{disposition.Description}</color>";
             dispositionName += $"{disposition.ColorString}{disposition.Name} {disposition.Symbol}</color>";
@@ -392,14 +392,14 @@ public static class LayerExtensions
 
         dispositionName += "</b></color>";
 
-        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.NoneAbility)
+        if (info[2] && !ability.Hidden && ability.Type != Layer.NoneAbility)
             abilityName += $"{ability.ColorString}{ability.Name}</color>";
         else
             abilityName += "None";
 
         abilityName += "</b></color>";
 
-        if (info[1] && !modifier.Hidden && modifier.Type != LayerEnum.NoneModifier)
+        if (info[1] && !modifier.Hidden && modifier.Type != Layer.NoneModifier)
             modifierName += $"{modifier.ColorString}{modifier.Name}</color>";
         else
             modifierName += "None";
@@ -416,13 +416,13 @@ public static class LayerExtensions
 
         var desc2 = ability.Description;
 
-        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.NoneAbility && desc2 is not ("" or "- None"))
+        if (info[2] && !ability.Hidden && ability.Type != Layer.NoneAbility && desc2 is not ("" or "- None"))
             abilities += $"\n{ability.ColorString}{desc2}</color>";
 
         abilities = abilities == $"{AbilitiesColorString}Abilities:" ? "" : $"\n{abilities}</color>";
         var desc3 = modifier.Description;
 
-        if (info[1] && !modifier.Hidden && modifier.Type != LayerEnum.NoneModifier && desc3 is not ("" or "- None"))
+        if (info[1] && !modifier.Hidden && modifier.Type != Layer.NoneModifier && desc3 is not ("" or "- None"))
             attributes += $"\n{modifier.ColorString}{desc3}</color>";
 
         if (player.IsGuessTarget() && Guesser.GuessTargetKnows)
@@ -488,17 +488,17 @@ public static class LayerExtensions
 
     public static bool IsBombed(this Vent vent) => PlayerLayer.GetLayers<IVentBomber>().Any(x => x.BombedIDs.Contains(vent.Id));
 
-    public static PlayerLayerEnum GetLayerType(this LayerEnum layer) => layer switch
+    public static PlayerLayerEnum GetLayerType(this Layer layer) => layer switch
     {
-        LayerEnum.None => PlayerLayerEnum.None,
-        < LayerEnum.NoneRole => PlayerLayerEnum.Role,
-        < LayerEnum.NoneModifier => PlayerLayerEnum.Modifier,
-        < LayerEnum.NoneDisposition => PlayerLayerEnum.Disposition,
-        < LayerEnum.NoneAbility => PlayerLayerEnum.Ability,
+        Layer.None => PlayerLayerEnum.None,
+        < Layer.NoneRole => PlayerLayerEnum.Role,
+        < Layer.NoneModifier => PlayerLayerEnum.Modifier,
+        < Layer.NoneDisposition => PlayerLayerEnum.Disposition,
+        < Layer.NoneAbility => PlayerLayerEnum.Ability,
         _ => PlayerLayerEnum.None
     };
 
-    public static AttackEnum GetAttackValue(this PlayerControl player, PlayerControl target = null, AttackEnum? overrideAtt = null)
+    public static Attack GetAttackValue(this PlayerControl player, PlayerControl target = null, Attack? overrideAtt = null)
     {
         if (overrideAtt.HasValue)
             return overrideAtt.Value;
@@ -508,7 +508,7 @@ public static class LayerExtensions
         foreach (var layer in player.GetLayers())
         {
             if (attack < 2)
-                attack += (int)layer.AttackVal;
+                attack += (int)layer.Attack;
         }
 
         if ((player.IsAmbushed() || player.IsCrusaded() || player.GetRole().Bombed) && attack < 1)
@@ -518,16 +518,16 @@ public static class LayerExtensions
             attack = 0;
 
         attack = Mathf.Clamp(attack, 0, 3);
-        return (AttackEnum)attack;
+        return (Attack)attack;
     }
 
-    public static DefenseEnum GetDefenseValue(this PlayerControl player, PlayerControl source = null, DefenseEnum? overrideDef = null)
+    public static Defense GetDefenseValue(this PlayerControl player, PlayerControl source = null, Defense? overrideDef = null)
     {
         if (overrideDef.HasValue)
             return overrideDef.Value;
 
         var defense = 0;
-        player.GetLayers().Do(x => defense += (int)x.DefenseVal);
+        player.GetLayers().Do(x => defense += (int)x.Defense);
 
         if ((player.IsShielded() || player.IsAmbushed() || player.IsCrusaded() || player.IsProtected()) && defense < 2)
             defense = 2;
@@ -542,7 +542,7 @@ public static class LayerExtensions
             defense = 3;
 
         defense = Mathf.Clamp(defense, 0, 3);
-        return (DefenseEnum)defense;
+        return (Defense)defense;
     }
 
     private static IEnumerable<PlayerLayer> GetLayersFromList(this PlayerControl player) => PlayerLayer.AllLayers.Where(x => x.Player == player).OrderBy(x => (int)x.LayerType);
@@ -607,7 +607,7 @@ public static class LayerExtensions
 
         Syndicate.DriveHolder = chosen?.Player;
         Syndicate.SyndicateHasChaosDrive = chosen;
-        CallRpc(CustomRPC.Misc, MiscRPC.ChaosDrive, chosen?.PlayerId ?? 255);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.ChaosDrive, chosen?.PlayerId ?? 255);
     }
 
     public static void ConvertPlayer(byte target, byte convert, bool skip)
@@ -671,7 +671,7 @@ public static class LayerExtensions
     public static void RpcConvert(byte target, byte convert, bool condition = false)
     {
         ConvertPlayer(target, convert, condition);
-        CallRpc(CustomRPC.Action, ActionsRPC.Convert, convert, target, condition);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.Convert, convert, target, condition);
     }
 
     public static bool IsConvertible(this Faction originalFaction) => originalFaction is < Faction.Outcast or Faction.Pandorica or (> Faction.GameMode and < Faction.Mafia);

@@ -6,7 +6,7 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.CmdCheckColor)), HarmonyPrefix]
     public static bool CmdCheckColorPrefix(PlayerControl __instance, byte bodyColor)
     {
-        CallRpc(CustomRPC.Vanilla, VanillaRPC.SetColor, __instance, bodyColor);
+        CallRpc(ReworkedRpc.Vanilla, VanillaRpc.SetColor, __instance, bodyColor);
         __instance.SetColor(bodyColor);
         return false;
     }
@@ -176,7 +176,7 @@ public static class PlayerControlPatches
                 WinState = IsCustomHnS() ? WinLose.HuntedWin : WinLose.CrewWins;
                 var winners = AllPlayers().Where(x => x.Is<Hunted>() || x.Is(Faction.Crew));
                 winners.Do(x => LayerHandler.Handlers[x.PlayerId].Winner = true);
-                CallRpc(CustomRPC.Misc, [ MiscRPC.WinLose, WinState, .. winners ]);
+                CallRpc(ReworkedRpc.Misc, [ MiscRpc.WinLose, WinState, .. winners ]);
             }
             else
                 CheckEndGame.CheckPlayerWins();

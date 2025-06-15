@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Glitch)]
+[LayerHeaderOption(Layer.Glitch)]
 public sealed class Glitch : OKilling, IBlocker
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -31,12 +31,12 @@ public sealed class Glitch : OKilling, IBlocker
     public PlayerControl BlockTarget => HackTarget;
 
     protected override UColor MainColor => CustomColorManager.Glitch;
-    public override LayerEnum Type => LayerEnum.Glitch;
+    public override Layer Type => Layer.Glitch;
     public override string StartText => "foreach var PlayerControl Glitch.MurderPlayer";
     public override string Description => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
         "short while\n- You are immune to blocks\n- If you hack a <#336EFFFF>Serial Killer</color> they will be forced to kill you";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
-    public override DefenseEnum DefenseVal => HackButton.EffectActive ? DefenseEnum.Powerful : DefenseEnum.None;
+    public override Attack Attack => Attack.Basic;
+    public override Defense Defense => HackButton.EffectActive ? Defense.Powerful : Defense.None;
     public override bool RoleBlockImmune => true;
     public override bool CanVent => base.CanVent && GlitchVent;
     protected override Faction ActualFaction => Faction.Glitch;
@@ -86,7 +86,7 @@ public sealed class Glitch : OKilling, IBlocker
         if (cooldown != CooldownType.Fail)
         {
             HackTarget = target;
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, HackButton, GlitchActionsRPC.Hack, HackTarget);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, HackButton, GlitchActionsRPC.Hack, HackTarget);
             HackButton.Begin();
             Play("Hack");
         }
@@ -100,7 +100,7 @@ public sealed class Glitch : OKilling, IBlocker
     {
         if (MimicTarget)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, MimicButton, GlitchActionsRPC.Mimic, MimicTarget);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, MimicButton, GlitchActionsRPC.Mimic, MimicTarget);
             MimicButton.Begin();
         }
         else

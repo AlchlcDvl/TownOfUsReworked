@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Concealer)]
+[LayerHeaderOption(Layer.Concealer)]
 public sealed class Concealer : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -18,7 +18,7 @@ public sealed class Concealer : Disruption
     private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Concealer;
-    public override LayerEnum Type => LayerEnum.Concealer;
+    public override Layer Type => Layer.Concealer;
     public override string StartText => "Turn The <#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override string Description => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
 
@@ -65,7 +65,7 @@ public sealed class Concealer : Disruption
     {
         if (HoldsDrive || ConcealedPlayer)
         {
-            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConcealButton);
+            using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.ButtonAction, ConcealButton);
 
             if (writer is not null)
             {

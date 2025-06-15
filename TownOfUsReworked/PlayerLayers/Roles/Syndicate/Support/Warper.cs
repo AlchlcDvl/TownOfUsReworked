@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Warper)]
+[LayerHeaderOption(Layer.Warper)]
 public sealed class Warper : SSupport, IMover
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -17,7 +17,7 @@ public sealed class Warper : SSupport, IMover
     public bool Moving { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Warper;
-    public override LayerEnum Type => LayerEnum.Warper;
+    public override Layer Type => Layer.Warper;
     public override string StartText => "Warp The <#8CFFFFFF>Crew</color> Away From Each Other";
     public override string Description => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
@@ -187,7 +187,7 @@ public sealed class Warper : SSupport, IMover
         if (HoldsDrive)
         {
             var coords = GenerateWarpCoordinates();
-            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.All);
+            using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.LayerAction, this, WarpActionsRPC.All);
 
             if (writer is not null)
             {
@@ -209,7 +209,7 @@ public sealed class Warper : SSupport, IMover
             WarpMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, WarpActionsRPC.Single, WarpMenu.Selected[0], WarpMenu.Selected[1]);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, WarpActionsRPC.Single, WarpMenu.Selected[0], WarpMenu.Selected[1]);
             Coroutines.Start(WarpPlayers(PlayerById(WarpMenu.Selected[0]), PlayerById(WarpMenu.Selected[1]), this));
             WarpMenu.Selected.Clear();
             WarpButton.StartCooldown();

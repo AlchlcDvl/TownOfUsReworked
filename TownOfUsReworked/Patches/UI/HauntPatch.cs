@@ -43,13 +43,13 @@ public static class HauntPatches
         if (handler.CurrentRole)
             objectiveString += handler.CurrentRole.Name;
 
-        if (handler.CurrentDisposition && handler.CurrentDisposition.Type != LayerEnum.NoneDisposition)
+        if (handler.CurrentDisposition && handler.CurrentDisposition.Type != Layer.NoneDisposition)
             objectiveString += $" {handler.CurrentDisposition.ColoredSymbol}";
 
-        if (handler.CurrentModifier && handler.CurrentModifier.Type != LayerEnum.NoneModifier)
+        if (handler.CurrentModifier && handler.CurrentModifier.Type != Layer.NoneModifier)
             otherString += $" {handler.CurrentModifier.Name}";
 
-        if (handler.CurrentAbility && handler.CurrentAbility.Type != LayerEnum.NoneAbility)
+        if (handler.CurrentAbility && handler.CurrentAbility.Type != Layer.NoneAbility)
             otherString += $" {handler.CurrentAbility.Name}";
 
         if (otherString.Length != 0)

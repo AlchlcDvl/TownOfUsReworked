@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Necromancer)]
+[LayerHeaderOption(Layer.Necromancer)]
 public sealed class Necromancer : Neophyte, IReviver
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -54,11 +54,11 @@ public sealed class Necromancer : Neophyte, IReviver
     private CustomButton ManaButton;
 
     protected override UColor MainColor => CustomColorManager.Necromancer;
-    public override LayerEnum Type => LayerEnum.Necromancer;
+    public override Layer Type => Layer.Necromancer;
     public override string StartText => "Resurrect The Dead Into Doing Your Bidding";
     public override string Description => "- You can resurrect a dead body and bring them into the <#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool CanVent => base.CanVent && NecroVent;
     protected override Faction ActualFaction => Faction.Reanimated;
 
@@ -118,7 +118,7 @@ public sealed class Necromancer : Neophyte, IReviver
         {
             ParentId = target.ParentId;
             Spread(Player, player);
-            CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, ResurrectButton, ParentId);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, ResurrectButton, ParentId);
             ResurrectButton.Begin();
             Flash(Color, ResurrectDur);
 
@@ -149,7 +149,7 @@ public sealed class Necromancer : Neophyte, IReviver
     {
         ResurrectButton.Uses += NecroManaGainedPerBody;
         Spread(Player, PlayerByBody(target));
-        CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, target);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.FadeBody, target);
         FadeBody(target);
         ManaButton.StartCooldown();
     }

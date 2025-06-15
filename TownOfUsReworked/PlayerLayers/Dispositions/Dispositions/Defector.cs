@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Defector)]
+[LayerHeaderOption(Layer.Defector)]
 public sealed class Defector : Disposition
 {
     [ToggleOption]
@@ -18,7 +18,7 @@ public sealed class Defector : Disposition
 
     protected override UColor MainColor => CustomColorManager.Defector;
     public override string Symbol => "ε";
-    public override LayerEnum Type => LayerEnum.Defector;
+    public override Layer Type => Layer.Defector;
     public override string Description => "- Be the last one of your faction to switch sides";
     public override bool Hidden => !DefectorKnows && !Turned;
 
@@ -30,7 +30,7 @@ public sealed class Defector : Disposition
             return;
 
         var faction = GetFactionChoice();
-        CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, faction);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this, faction);
         TurnSides(faction);
     }
 

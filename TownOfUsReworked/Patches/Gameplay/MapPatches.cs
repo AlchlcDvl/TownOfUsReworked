@@ -47,7 +47,7 @@ public static class MapPatches
             catch { }
 
             SetDefaults();
-            CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap);
+            CallRpc(ReworkedRpc.Misc, MiscRpc.SetSettings, CurrentMap);
             AdjustSettings(true);
             // __instance.ShipLoadingAsyncHandle seems to be having an issue when setting its value; I wonder what's up with that
             var async = __instance.ShipPrefabs._items[CurrentMap].InstantiateAsync();
@@ -107,24 +107,24 @@ public static class MapPatches
 
     private static byte GetSelectedMap()
     {
-        if (MapSettings.Map < MapEnum.Random)
+        if (MapSettings.Map < Data.Enums.Map.Random)
             return (byte)MapSettings.Map;
 
-        var randoms = new Dictionary<MapEnum, int>
+        var randoms = new Dictionary<Map, int>
         {
-            { MapEnum.Skeld, MapSettings.RandomMapSkeld },
-            { MapEnum.MiraHq, MapSettings.RandomMapMira },
-            { MapEnum.Polus, MapSettings.RandomMapPolus },
-            { MapEnum.dlekS, MapSettings.RandomMapdlekS },
-            { MapEnum.Airship, MapSettings.RandomMapAirship },
-            { MapEnum.Fungle, MapSettings.RandomMapFungle }
+            { Data.Enums.Map.Skeld, MapSettings.RandomMapSkeld },
+            { Data.Enums.Map.MiraHq, MapSettings.RandomMapMira },
+            { Data.Enums.Map.Polus, MapSettings.RandomMapPolus },
+            { Data.Enums.Map.dlekS, MapSettings.RandomMapdlekS },
+            { Data.Enums.Map.Airship, MapSettings.RandomMapAirship },
+            { Data.Enums.Map.Fungle, MapSettings.RandomMapFungle }
         };
 
         if (SubLoaded)
-            randoms.Add(MapEnum.Submerged, MapSettings.RandomMapSubmerged);
+            randoms.Add(Data.Enums.Map.Submerged, MapSettings.RandomMapSubmerged);
 
         if (LiLoaded)
-            randoms.Add(MapEnum.LevelImpostor, MapSettings.RandomMapLevelImpostor);
+            randoms.Add(Data.Enums.Map.LevelImpostor, MapSettings.RandomMapLevelImpostor);
 
         var maxWeight = randoms.Values.Sum();
 

@@ -2,14 +2,14 @@
 
 namespace TownOfUsReworked.Options.Settings;
 
-public sealed class LayerOption(string hexCode, LayerEnum layer, bool noParts = false, byte min = 1, byte max = 15, byte change = 1) : Option<RoleOptionData>(CustomOptionType.Layer)
+public sealed class LayerOption(string hexCode, Layer layer, bool noParts = false, byte min = 1, byte max = 15, byte change = 1) : Option<RoleOptionData>(CustomOptionType.Layer)
 {
     private byte Max { get; } = max;
     private byte Min { get; } = min;
     private UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
     private bool NoParts { get; } = noParts;
     private string HexCode { get; } = hexCode;
-    public LayerEnum Layer { get; } = layer;
+    public Layer Layer { get; } = layer;
     private byte Change { get; } = change;
     public bool HideDivider { get; set; }
     private byte CachedCount { get; set; }

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-[LayerHeaderOption(LayerEnum.Diseased)]
+[LayerHeaderOption(Layer.Diseased)]
 public sealed class Diseased : Modifier
 {
     [ToggleOption]
@@ -10,7 +10,7 @@ public sealed class Diseased : Modifier
     public static Number DiseasedMultiplier = 3;
 
     protected override UColor MainColor => CustomColorManager.Diseased;
-    public override LayerEnum Type => LayerEnum.Diseased;
+    public override Layer Type => Layer.Diseased;
     public override string Description => $"- Your killer's cooldown increases by {DiseasedMultiplier} times";
     public override bool Hidden => !DiseasedKnows && !Dead;
 

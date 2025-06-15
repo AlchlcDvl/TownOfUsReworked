@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum TrapperActionsRPC : byte
+public enum TrapperActionsRpc : byte
 {
     Place,
     Trigger

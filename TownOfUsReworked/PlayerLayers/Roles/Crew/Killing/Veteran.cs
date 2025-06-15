@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Veteran)]
+[LayerHeaderOption(Layer.Veteran)]
 public sealed class Veteran : CKilling, IAlerter
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
@@ -15,11 +15,11 @@ public sealed class Veteran : CKilling, IAlerter
     public CustomButton AlertButton { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Veteran;
-    public override LayerEnum Type => LayerEnum.Veteran;
+    public override Layer Type => Layer.Veteran;
     public override string StartText => "Alert To Kill Anyone Who Dares To Touch You";
     public override string Description => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
-    public override DefenseEnum DefenseVal => AlertButton.EffectActive ? DefenseEnum.Basic : DefenseEnum.None;
-    public override AttackEnum AttackVal => AlertButton.EffectActive ? AttackEnum.Powerful : AttackEnum.None;
+    public override Defense Defense => AlertButton.EffectActive ? Defense.Basic : Defense.None;
+    public override Attack Attack => AlertButton.EffectActive ? Attack.Powerful : Attack.None;
 
     public override void Init()
     {

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Consigliere)]
+[LayerHeaderOption(Layer.Consigliere)]
 public sealed class Consigliere : ISupport
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,7 +13,7 @@ public sealed class Consigliere : ISupport
     private CustomButton InvestigateButton;
 
     protected override UColor MainColor => CustomColorManager.Consigliere;
-    public override LayerEnum Type => LayerEnum.Consigliere;
+    public override Layer Type => Layer.Consigliere;
     public override string StartText => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
     public override string Description => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}{(Player.Is<Assassin>() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "")}\n{CommonAbilities}";
 

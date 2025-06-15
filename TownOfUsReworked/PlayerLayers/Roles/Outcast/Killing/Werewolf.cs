@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Werewolf)]
+[LayerHeaderOption(Layer.Werewolf)]
 public sealed class Werewolf : OKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -17,11 +17,11 @@ public sealed class Werewolf : OKilling
     public int Rounds;
 
     protected override UColor MainColor => CustomColorManager.Werewolf;
-    public override LayerEnum Type => LayerEnum.Werewolf;
+    public override Layer Type => Layer.Werewolf;
     public override string StartText => "AWOOOOOOOOOO";
     public override string Description => $"- You kill everyone within {GameOptions.InteractionDistance}m";
-    public override AttackEnum AttackVal => AttackEnum.Powerful;
-    public override DefenseEnum DefenseVal => CanMaul ? DefenseEnum.None : DefenseEnum.Basic;
+    public override Attack Attack => Attack.Powerful;
+    public override Defense Defense => CanMaul ? Defense.None : Defense.Basic;
     public override bool CanVent => base.CanVent && (WerewolfVent == 0 || (CanMaul && (int)WerewolfVent == 1) || (!CanMaul && (int)WerewolfVent == 2));
     protected override Faction ActualFaction => Faction.Werewolf;
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Dictator)]
+[LayerHeaderOption(Layer.Dictator)]
 public sealed class Dictator : Sovereign
 {
     [ToggleOption]
@@ -19,7 +19,7 @@ public sealed class Dictator : Sovereign
     public CustomMeeting DictMenu;
 
     protected override UColor MainColor => CustomColorManager.Dictator;
-    public override LayerEnum Type => LayerEnum.Dictator;
+    public override Layer Type => Layer.Dictator;
     public override string StartText => "You Have The Final Say";
     public override string Description => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
 
@@ -36,7 +36,7 @@ public sealed class Dictator : Sovereign
     {
         if (!Revealed && !GetLayers<Dictator>().Any(x => !x.TrulyDead && x.Revealed))
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.PublicReveal, Player);
             PublicReveal(Player);
         }
         else
@@ -46,7 +46,7 @@ public sealed class Dictator : Sovereign
     public override void OnReveal()
     {
         if (Local)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DictActionsRPC.Tribunal);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, DictActionsRpc.Tribunal);
 
         Tribunal = true;
     }
@@ -56,7 +56,7 @@ public sealed class Dictator : Sovereign
         DictMenu.HideButtons();
 
         if (ToBeEjected && !Dead)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, DictActionsRPC.SelectToEject, ToBeEjected);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, DictActionsRpc.SelectToEject, ToBeEjected);
     }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -91,17 +91,17 @@ public sealed class Dictator : Sovereign
 
     public override void ReadRPC(RpcReader reader)
     {
-        var dictAction = reader.Read<DictActionsRPC>();
+        var dictAction = reader.Read<DictActionsRpc>();
 
         switch (dictAction)
         {
-            case DictActionsRPC.Tribunal:
+            case DictActionsRpc.Tribunal:
             {
                 Flash(Color);
                 Tribunal = true;
                 break;
             }
-            case DictActionsRPC.SelectToEject:
+            case DictActionsRpc.SelectToEject:
             {
                 ToBeEjected = reader.ReadPlayer();
                 break;

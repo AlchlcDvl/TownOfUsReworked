@@ -31,9 +31,9 @@ public abstract class Info(string id, UColor color, bool footer = false)
     protected virtual void Debug() {}
 }
 
-public abstract class LayerInfo(LayerEnum layer, bool footer = false, UColor color = default) : Info($"{layer}", color == default ? LayerDictionary[layer].Color : color, footer);
+public abstract class LayerInfo(Layer layer, bool footer = false, UColor color = default) : Info($"{layer}", color == default ? LayerDictionary[layer].Color : color, footer);
 
-public sealed class RoleInfo(LayerEnum role, Alignment alignmentEnum, Faction faction, bool footer = false, UColor color = default) : LayerInfo(role, footer, color)
+public sealed class RoleInfo(Layer role, Alignment alignmentEnum, Faction faction, bool footer = false, UColor color = default) : LayerInfo(role, footer, color)
 {
     private string Alignment { get; } = $"Wiki.Alignment.{alignmentEnum}";
     private string WinCon { get; } = TranslationManager.IdExists($"Wiki.{faction}.WinCon") ? $"Wiki.{faction}.WinCon" : $"Wiki.{role}.WinCon";
@@ -118,14 +118,14 @@ public sealed class AlignmentInfo(Alignment alignmentEnum, bool footer = false) 
     }
 }
 
-public abstract class ApplicableLayer(LayerEnum layer, bool footer = false, UColor color = default) : LayerInfo(layer, footer, color)
+public abstract class ApplicableLayer(Layer layer, bool footer = false, UColor color = default) : LayerInfo(layer, footer, color)
 {
     protected string AppliesTo { get; } = $"Wiki.{layer}.AppliesTo";
 
     protected override void Debug() => TranslationManager.DebugId(AppliesTo);
 }
 
-public sealed class ModifierInfo(LayerEnum modifier, bool footer = false, UColor color = default) : ApplicableLayer(modifier, footer, color)
+public sealed class ModifierInfo(Layer modifier, bool footer = false, UColor color = default) : ApplicableLayer(modifier, footer, color)
 {
     public override string WikiEntry()
     {
@@ -137,7 +137,7 @@ public sealed class ModifierInfo(LayerEnum modifier, bool footer = false, UColor
     }
 }
 
-public sealed class DispositionInfo(LayerEnum disposition, string symbol, bool footer = false, UColor color = default) : ApplicableLayer(disposition, footer, color)
+public sealed class DispositionInfo(Layer disposition, string symbol, bool footer = false, UColor color = default) : ApplicableLayer(disposition, footer, color)
 {
     private string WinCon { get; } = $"Wiki.{disposition}.WinCon";
     private string Symbol { get; } = symbol;
@@ -160,7 +160,7 @@ public sealed class DispositionInfo(LayerEnum disposition, string symbol, bool f
     }
 }
 
-public sealed class AbilityInfo(LayerEnum ability, bool footer = false, UColor color = default) : ApplicableLayer(ability, footer, color)
+public sealed class AbilityInfo(Layer ability, bool footer = false, UColor color = default) : ApplicableLayer(ability, footer, color)
 {
     public override string WikiEntry()
     {

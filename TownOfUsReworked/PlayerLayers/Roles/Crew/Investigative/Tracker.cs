@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Tracker)]
+[LayerHeaderOption(Layer.Tracker)]
 public sealed class Tracker : Investigative
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
@@ -19,7 +19,7 @@ public sealed class Tracker : Investigative
     private CustomButton TrackButton;
 
     protected override UColor MainColor => CustomColorManager.Tracker;
-    public override LayerEnum Type => LayerEnum.Tracker;
+    public override Layer Type => Layer.Tracker;
     public override string StartText => "Track Everyone's Movements";
     public override string Description => "- You can track players which creates arrows that update every now and then with the target's position";
 

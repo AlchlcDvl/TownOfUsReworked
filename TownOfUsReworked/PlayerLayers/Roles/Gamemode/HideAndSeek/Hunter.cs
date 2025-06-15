@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Hunter)]
+[LayerHeaderOption(Layer.Hunter)]
 public sealed class Hunter : HideAndSeek
 {
     [NumberOption(1, 13, 1)]
@@ -24,7 +24,7 @@ public sealed class Hunter : HideAndSeek
     [ToggleOption]
     public static bool HunterFlashlight = false;
 
-    public override LayerEnum Type => LayerEnum.Hunter;
+    public override Layer Type => Layer.Hunter;
     public override string StartText => "Hunt Them All Down";
     protected override UColor MainColor => CustomColorManager.Hunter;
     public override bool CanVent => HunterVent;
@@ -80,7 +80,7 @@ public sealed class Hunter : HideAndSeek
             }
             case HnSMode.Infection:
             {
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+                CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
                 TurnHunter(target);
 
                 if (AmongUsClient.Instance.AmHost)

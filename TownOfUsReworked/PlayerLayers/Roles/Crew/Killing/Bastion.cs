@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Bastion)]
+[LayerHeaderOption(Layer.Bastion)]
 public sealed class Bastion : CKilling, IVentBomber
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
@@ -16,10 +16,10 @@ public sealed class Bastion : CKilling, IVentBomber
     public List<int> BombedIDs { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Bastion;
-    public override LayerEnum Type => LayerEnum.Bastion;
+    public override Layer Type => Layer.Bastion;
     public override string StartText => "Place Traps To Deter Venters";
     public override string Description => "- You can place traps in vents, which trigger and kill whenever someone uses the vent the trap is in";
-    public override AttackEnum AttackVal => AttackEnum.Powerful;
+    public override Attack Attack => Attack.Powerful;
 
     public override void Init()
     {
@@ -45,7 +45,7 @@ public sealed class Bastion : CKilling, IVentBomber
         if (cooldown != CooldownType.Fail)
         {
             BombedIDs.Add(target.Id);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, target);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, target);
         }
 
         BombButton.StartCooldown(cooldown);

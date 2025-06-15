@@ -1,6 +1,6 @@
 // namespace TownOfUsReworked.Data.Enums;
 
-// public enum TestRPC
+// public enum TestRPC : byte
 // {
 //     Argless,
 //     Args

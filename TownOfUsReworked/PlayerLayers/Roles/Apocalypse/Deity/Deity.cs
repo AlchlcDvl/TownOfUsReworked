@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Deity : Apocalypse
 {
-    public override DefenseEnum DefenseVal => DefenseEnum.Invincible;
+    public override Defense Defense => Defense.Invincible;
     public override bool AffectedByLights => false;
     public override Alignment Alignment => Alignment.Deity;
 

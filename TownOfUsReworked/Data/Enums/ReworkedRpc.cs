@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Data.Enums;
 
-public enum CustomRPC : byte
+public enum ReworkedRpc : byte
 {
     Action,
     Misc,

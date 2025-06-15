@@ -1,8 +1,8 @@
 namespace TownOfUsReworked.Options.Settings;
 
-public sealed class LayerHeaderOption(LayerEnum layer) : SpecialHeader(MultiMenu.LayerSubOptions, CustomOptionType.LayerHeader)
+public sealed class LayerHeaderOption(Layer layer) : SpecialHeader(MultiMenu.LayerSubOptions, CustomOptionType.LayerHeader)
 {
-    public LayerEnum Layer { get; } = layer;
+    public Layer Layer { get; } = layer;
     private LayerOption LinkedOption { get; set; }
 
     public override void OptionCreated()

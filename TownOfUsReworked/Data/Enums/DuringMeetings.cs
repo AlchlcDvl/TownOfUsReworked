@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Data.Enums;
 
-public enum DuringMeeting
+public enum DuringMeeting : byte
 {
     Never,
     Always,

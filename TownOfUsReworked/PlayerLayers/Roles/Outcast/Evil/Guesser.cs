@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Guesser)]
+[LayerHeaderOption(Layer.Guesser)]
 public sealed class Guesser : Evil, IGuesser, ITargeter
 {
     [ToggleOption]
@@ -43,11 +43,11 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
     private CustomButton TargetButton;
 
     protected override UColor MainColor => CustomColorManager.Guesser;
-    public override LayerEnum Type => LayerEnum.Guesser;
+    public override Layer Type => Layer.Guesser;
     public override string StartText => "Guess What Someone Might Be";
     public override string Description => !TargetPlayer ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles without penalties" :
         $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an <#00ACC2FF>Actor</color>");
-    public override AttackEnum AttackVal => AttackEnum.Unstoppable;
+    public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => TargetGuessed;
     public override bool CanVent => base.CanVent && GuessVent;
     public override bool CanSwitchVents => GuessSwitchVent;
@@ -95,19 +95,19 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
     private void SelectTarget(PlayerControl target)
     {
         TargetPlayer = target;
-        CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, TargetPlayer);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, TargetPlayer);
     }
 
     private void SetLists()
     {
         GuessingMenu.Mapping.Clear();
 
-        GuessingMenu.Mapping.Add(LayerEnum.Crewmate);
+        GuessingMenu.Mapping.Add(Layer.Crewmate);
 
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
         {
-            foreach (var layer in GetValuesFromTo(LayerEnum.Altruist, LayerEnum.Vigilante, x => x is not (LayerEnum.Revealer or LayerEnum.Crewmate) && !RoleGenManager.CI.Contains(x)))
+            foreach (var layer in GetValuesFromTo(Layer.Altruist, Layer.Vigilante, x => x is not (Layer.Revealer or Layer.Crewmate) && !RoleGenManager.CI.Contains(x)))
             {
                 if (RoleGenManager.GetSpawnItem(layer).IsActive())
                     GuessingMenu.Mapping.Add(layer);
@@ -116,64 +116,64 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
 
         if (IntruderSettings.IntruderCount > 0)
         {
-            GuessingMenu.Mapping.Add(LayerEnum.Impostor);
+            GuessingMenu.Mapping.Add(Layer.Impostor);
 
             if (IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or LayerEnum.Impostor))
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Ambusher, Layer.Wraith, x => x is not (Layer.Ghoul or Layer.Mafioso or Layer.Impostor))
                     .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                if (GuessingMenu.Mapping.Contains(LayerEnum.Godfather))
-                    GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
+                if (GuessingMenu.Mapping.Contains(Layer.Godfather))
+                    GuessingMenu.Mapping.Add(Layer.Mafioso);
             }
         }
 
         if (SyndicateSettings.SyndicateCount > 0)
         {
-            GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
+            GuessingMenu.Mapping.Add(Layer.Anarchist);
 
             if (SyndicateSettings.SyndicateMax > 0 && SyndicateSettings.SyndicateMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee))
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Anarchist, Layer.Warper, x => x is not (Layer.Anarchist or Layer.Sidekick or Layer.Banshee))
                     .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                if (GuessingMenu.Mapping.Contains(LayerEnum.Rebel))
-                    GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
+                if (GuessingMenu.Mapping.Contains(Layer.Rebel))
+                    GuessingMenu.Mapping.Add(Layer.Sidekick);
             }
         }
 
         if (SyndicateSettings.SyndicateCount > 0)
         {
-            GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
+            GuessingMenu.Mapping.Add(Layer.Anarchist);
 
             if (SyndicateSettings.SyndicateMax > 0 && SyndicateSettings.SyndicateMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee))
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Anarchist, Layer.Warper, x => x is not (Layer.Anarchist or Layer.Sidekick or Layer.Banshee))
                     .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                if (GuessingMenu.Mapping.Contains(LayerEnum.Rebel))
-                    GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
+                if (GuessingMenu.Mapping.Contains(Layer.Rebel))
+                    GuessingMenu.Mapping.Add(Layer.Sidekick);
             }
         }
 
         if (ApocalypseSettings.ApocalypseCount > 0)
         {
-            GuessingMenu.Mapping.Add(LayerEnum.Cultist);
+            GuessingMenu.Mapping.Add(Layer.Cultist);
 
             if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Cannibal, LayerEnum.Void, x => x != LayerEnum.Cultist && !RoleGenManager.AD.Contains(x))
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Cannibal, Layer.Void, x => x != Layer.Cultist && !RoleGenManager.AD.Contains(x))
                     .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
             }
         }
 
         if (OutcastSettings.OutcastMax > 0 && OutcastSettings.OutcastMin > 0)
         {
-            foreach (var layer in GetValuesFromTo(LayerEnum.Actor, LayerEnum.Whisperer, x => x is not LayerEnum.Phantom))
+            foreach (var layer in GetValuesFromTo(Layer.Actor, Layer.Whisperer, x => x is not Layer.Phantom))
             {
-                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == LayerEnum.Survivor && GuessingMenu.Mapping.Contains(LayerEnum.GuardianAngel)) || (layer == LayerEnum.Thief &&
-                    GuessingMenu.Mapping.Contains(LayerEnum.Amnesiac)) || (layer == LayerEnum.Troll && GuessingMenu.Mapping.Contains(LayerEnum.BountyHunter)) || (layer == LayerEnum.Actor &&
-                    GuessingMenu.Mapping.Contains(LayerEnum.Guesser)) || (layer == LayerEnum.Jester && GuessingMenu.Mapping.Contains(LayerEnum.Executioner)))
+                if (RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == Layer.Survivor && GuessingMenu.Mapping.Contains(Layer.GuardianAngel)) || (layer == Layer.Thief &&
+                    GuessingMenu.Mapping.Contains(Layer.Amnesiac)) || (layer == Layer.Troll && GuessingMenu.Mapping.Contains(Layer.BountyHunter)) || (layer == Layer.Actor &&
+                    GuessingMenu.Mapping.Contains(Layer.Guesser)) || (layer == Layer.Jester && GuessingMenu.Mapping.Contains(Layer.Executioner)))
                 {
                     GuessingMenu.Mapping.Add(layer);
                 }
@@ -181,7 +181,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         }
     }
 
-    private void GuessPlayer(ShapeshifterPanel panel, PlayerControl player, LayerEnum guess)
+    private void GuessPlayer(ShapeshifterPanel panel, PlayerControl player, Layer guess)
     {
         if (Dead || Meeting().state == MeetingHud.VoteStates.Discussion || !panel || RemainingGuesses <= 0)
             return;
@@ -230,7 +230,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         {
             TargetPlayer = null;
             Rounds = 0;
-            CallRpc(CustomRPC.Misc, MiscRPC.SetTarget, this, 255);
+            CallRpc(ReworkedRpc.Misc, MiscRpc.SetTarget, this, 255);
         }
         else
             Player.RpcSuicide();
@@ -312,13 +312,13 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
 
     public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update();
 
-    private void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void RpcMurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, player, guess, guessTarget);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, player, guess, guessTarget);
     }
 
-    private void MurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void MurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         Spread(Player, guessTarget);
         var guessString = LayerDictionary[guess].Name;
@@ -327,7 +327,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         {
             TargetGuessed = true;
 
-            if (CanAttack(AttackVal, player.GetDefenseValue(Player)))
+            if (CanAttack(Attack, player.GetDefenseValue(Player)))
             {
                 MarkMeetingDead(player, Player);
 
@@ -342,7 +342,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
             else if (DeadSeeEverything())
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guessString}!");
-            else if (CanAttack(AttackVal, player.GetDefenseValue(Player)))
+            else if (CanAttack(Attack, player.GetDefenseValue(Player)))
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
         }
         else if (Player == player)
@@ -369,5 +369,5 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         GuessingMenu.Close();
     }
 
-    public override void ReadRPC(RpcReader reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
+    public override void ReadRPC(RpcReader reader) => MurderPlayer(reader.ReadPlayer(), reader.Read<Layer>(), reader.ReadPlayer());
 }

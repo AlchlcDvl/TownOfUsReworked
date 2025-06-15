@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Taskmaster)]
+[LayerHeaderOption(Layer.Taskmaster)]
 public sealed class Taskmaster : Disposition
 {
     [NumberOption(1, 5, 1)]
@@ -8,7 +8,7 @@ public sealed class Taskmaster : Disposition
 
     protected override UColor MainColor => CustomColorManager.Taskmaster;
     public override string Symbol => "µ";
-    public override LayerEnum Type => LayerEnum.Taskmaster;
+    public override Layer Type => Layer.Taskmaster;
     public override string Description => "- Finish your tasks before the game ends";
 
     public override void UponTaskComplete(uint taskId)

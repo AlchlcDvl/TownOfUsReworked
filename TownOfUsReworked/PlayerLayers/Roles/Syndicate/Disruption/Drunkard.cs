@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Drunkard)]
+[LayerHeaderOption(Layer.Drunkard)]
 public sealed class Drunkard : Disruption
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -17,7 +17,7 @@ public sealed class Drunkard : Disruption
     private CustomPlayerMenu ConfuseMenu;
 
     protected override UColor MainColor => CustomColorManager.Drunkard;
-    public override LayerEnum Type => LayerEnum.Drunkard;
+    public override Layer Type => Layer.Drunkard;
     public override string StartText => "<i>Burp</i>";
     public override string Description => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
 
@@ -52,7 +52,7 @@ public sealed class Drunkard : Disruption
     {
         if (HoldsDrive || ConfusedPlayer)
         {
-            using var writer = CreateWriter(CustomRPC.Action, ActionsRPC.ButtonAction, ConfusedPlayer);
+            using var writer = CreateWriter(ReworkedRpc.Action, ActionsRpc.ButtonAction, ConfusedPlayer);
 
             if (writer is not null)
             {

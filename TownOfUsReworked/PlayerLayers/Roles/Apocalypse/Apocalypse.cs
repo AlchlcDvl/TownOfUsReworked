@@ -2,11 +2,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public abstract class Apocalypse : Role
 {
-    public static readonly Dictionary<LayerEnum, LayerEnum> HarbingerToDeityMap = new()
+    public static readonly Dictionary<Layer, Layer> HarbingerToDeityMap = new()
     {
-        [LayerEnum.Cultist] = LayerEnum.Void,
-        [LayerEnum.Cannibal] = LayerEnum.Gluttony,
-        [LayerEnum.Plaguebearer] = LayerEnum.Pestilence
+        [Layer.Cultist] = Layer.Void,
+        [Layer.Cannibal] = Layer.Gluttony,
+        [Layer.Plaguebearer] = Layer.Pestilence
     };
 
     protected override UColor MainColor => CustomColorManager.Apocalypse;

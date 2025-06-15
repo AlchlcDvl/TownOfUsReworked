@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Dispositions;
 
-[LayerHeaderOption(LayerEnum.Traitor)]
+[LayerHeaderOption(Layer.Traitor)]
 public sealed class Traitor : FactionChanger
 {
     [ToggleOption]
@@ -11,7 +11,7 @@ public sealed class Traitor : FactionChanger
 
     protected override UColor MainColor => CustomColorManager.Traitor;
     public override string Symbol => "♣";
-    public override LayerEnum Type => LayerEnum.Traitor;
+    public override Layer Type => Layer.Traitor;
     public override string Description => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";
     public override bool Hidden => !TraitorKnows && !Turned && !Dead;
     public override bool SnitchReveals => Snitch.SnitchSeesTraitor;
@@ -24,7 +24,7 @@ public sealed class Traitor : FactionChanger
             return;
 
         var faction = GetFactionChoice();
-        CallRpc(CustomRPC.Misc, MiscRPC.ChangeRoles, this, false, faction);
+        CallRpc(ReworkedRpc.Misc, MiscRpc.ChangeRoles, this, false, faction);
         TurnFaction(faction);
     }
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Camouflager)]
+[LayerHeaderOption(Layer.Camouflager)]
 public sealed class Camouflager : Concealing
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -13,7 +13,7 @@ public sealed class Camouflager : Concealing
     private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Camouflager;
-    public override LayerEnum Type => LayerEnum.Camouflager;
+    public override Layer Type => Layer.Camouflager;
     public override string StartText => "Hinder The <#8CFFFFFF>Crew</color>'s Recognition";
     public override string Description => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey " +
         $"with fluctuating names and no cosmetics\n{CommonAbilities}";
@@ -35,7 +35,7 @@ public sealed class Camouflager : Concealing
 
     private void HitCamouflage()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.ButtonAction, CamouflageButton);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.ButtonAction, CamouflageButton);
         CamouflageButton.Begin();
     }
 

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Chameleon)]
+[LayerHeaderOption(Layer.Chameleon)]
 public sealed class Chameleon : CSupport
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
@@ -16,7 +16,7 @@ public sealed class Chameleon : CSupport
     private bool ClickedAgain;
 
     protected override UColor MainColor => CustomColorManager.Chameleon;
-    public override LayerEnum Type => LayerEnum.Chameleon;
+    public override Layer Type => Layer.Chameleon;
     public override string StartText => "Go Invisible To Stalk Players";
     public override string Description => "- You can turn invisible";
 

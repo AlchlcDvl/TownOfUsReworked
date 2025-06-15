@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Betrayer)]
+[LayerHeaderOption(Layer.Betrayer)]
 public sealed class Betrayer : Proselyte
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -12,10 +12,10 @@ public sealed class Betrayer : Proselyte
     private CustomButton KillButton;
 
     protected override UColor MainColor => CustomColorManager.Betrayer;
-    public override LayerEnum Type => LayerEnum.Betrayer;
+    public override Layer Type => Layer.Betrayer;
     public override string StartText => "Those Backs Are Ripe For Some Stabbing";
     public override string Description => "- You can kill";
-    public override AttackEnum AttackVal => AttackEnum.Basic;
+    public override Attack Attack => Attack.Basic;
     public override bool CanVent => base.CanVent && BetrayerVent;
 
     public override void Init()

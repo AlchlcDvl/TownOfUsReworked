@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Bomber)]
+[LayerHeaderOption(Layer.Bomber)]
 public sealed class Bomber : SKilling
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -35,7 +35,7 @@ public sealed class Bomber : SKilling
     private readonly List<Bomb> Bombs = [];
 
     protected override UColor MainColor => CustomColorManager.Bomber;
-    public override LayerEnum Type => LayerEnum.Bomber;
+    public override Layer Type => Layer.Bomber;
     public override string StartText => "Make People Go Boom";
     public override string Description => $"- You can place bombs which can be detonated at any time to kill anyone within a {BombRange}m radius\n{CommonAbilities}";
 
@@ -82,7 +82,7 @@ public sealed class Bomber : SKilling
             DetonateButton.StartCooldown();
 
         if (ShowBomb)
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BomberActionsRPC.DropBomb);
+            CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, BomberActionsRpc.DropBomb);
     }
 
     private void Detonate()
@@ -94,7 +94,7 @@ public sealed class Bomber : SKilling
         if (BombCooldownsLinked)
             BombButton.StartCooldown();
 
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, BomberActionsRPC.Explode);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, BomberActionsRpc.Explode);
         Play("Bomb");
     }
 
@@ -102,18 +102,18 @@ public sealed class Bomber : SKilling
 
     public override void ReadRPC(RpcReader reader)
     {
-        var bombAction = reader.Read<BomberActionsRPC>();
+        var bombAction = reader.Read<BomberActionsRpc>();
 
         switch (bombAction)
         {
-            case BomberActionsRPC.DropBomb:
+            case BomberActionsRpc.DropBomb:
             {
                 if (Player.IsBuddyWith(LocalPlayer, Faction) && !LocalPlayer.IsOtherRival(Player))
                     Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
 
                 break;
             }
-            case BomberActionsRPC.Explode:
+            case BomberActionsRpc.Explode:
             {
                 if (BombAlert)
                     Play("Bomb");

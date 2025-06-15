@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Cultist)]
+[LayerHeaderOption(Layer.Cultist)]
 public sealed class Cultist : Harbinger<Void>
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -11,11 +11,11 @@ public sealed class Cultist : Harbinger<Void>
 
     private CustomButton SacrificeButton { get; set; }
 
-    public override LayerEnum Type => LayerEnum.Cultist;
+    public override Layer Type => Layer.Cultist;
     public override string StartText => "Spread The Words Of Your Lord";
     public override string Description => "<#99007FFF>- You can kill players</color>" + CommonAbilities;
-    public override AttackEnum AttackVal => AttackEnum.Basic;
-    public override DefenseEnum DefenseVal => GetLayers<Apocalypse>().Count() > 1 ? DefenseEnum.None : DefenseEnum.Basic;
+    public override Attack Attack => Attack.Basic;
+    public override Defense Defense => GetLayers<Apocalypse>().Count() > 1 ? Defense.None : Defense.Basic;
     public override bool CanVent => base.CanVent && CultVent;
 
     public override void Init()

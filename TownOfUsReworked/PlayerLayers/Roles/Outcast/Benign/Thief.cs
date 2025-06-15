@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-[LayerHeaderOption(LayerEnum.Thief)]
+[LayerHeaderOption(Layer.Thief)]
 public sealed class Thief : Benign, IGuesser
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
@@ -20,10 +20,10 @@ public sealed class Thief : Benign, IGuesser
     public CustomGuessingMenu GuessingMenu { get; private set; }
 
     protected override UColor MainColor => CustomColorManager.Thief;
-    public override LayerEnum Type => LayerEnum.Thief;
+    public override Layer Type => Layer.Thief;
     public override string StartText => "Steal From The Killers";
     public override string Description => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
-    public override AttackEnum AttackVal => AttackEnum.Powerful;
+    public override Attack Attack => Attack.Powerful;
     public override bool CanVent => base.CanVent && ThiefVent;
 
     public override void Init()
@@ -42,56 +42,56 @@ public sealed class Thief : Benign, IGuesser
 
         // Adds all the roles that have a non-zero chance of being in the game
         if (CrewSettings.CrewMax > 0 && CrewSettings.CrewMin > 0)
-            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Bastion, LayerEnum.Veteran, LayerEnum.Vigilante }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
+            GuessingMenu.Mapping.AddRange(new[] { Layer.Bastion, Layer.Veteran, Layer.Vigilante }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
         if (IntruderSettings.IntruderCount > 0)
         {
-            GuessingMenu.Mapping.Add(LayerEnum.Impostor);
+            GuessingMenu.Mapping.Add(Layer.Impostor);
 
             if (IntruderSettings.IntruderMax > 0 && IntruderSettings.IntruderMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Ambusher, LayerEnum.Wraith, x => x is not (LayerEnum.Ghoul or LayerEnum.Mafioso or LayerEnum.Impostor))
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Ambusher, Layer.Wraith, x => x is not (Layer.Ghoul or Layer.Mafioso or Layer.Impostor))
                     .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                if (GuessingMenu.Mapping.Contains(LayerEnum.Godfather))
-                    GuessingMenu.Mapping.Add(LayerEnum.Mafioso);
+                if (GuessingMenu.Mapping.Contains(Layer.Godfather))
+                    GuessingMenu.Mapping.Add(Layer.Mafioso);
             }
         }
 
         if (SyndicateSettings.SyndicateCount > 0)
         {
-            GuessingMenu.Mapping.Add(LayerEnum.Anarchist);
+            GuessingMenu.Mapping.Add(Layer.Anarchist);
 
             if (SyndicateSettings.SyndicateMax > 0 && SyndicateSettings.SyndicateMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Anarchist, LayerEnum.Warper, x => x is not (LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Banshee))
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Anarchist, Layer.Warper, x => x is not (Layer.Anarchist or Layer.Sidekick or Layer.Banshee))
                     .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
 
-                if (GuessingMenu.Mapping.Contains(LayerEnum.Rebel))
-                    GuessingMenu.Mapping.Add(LayerEnum.Sidekick);
+                if (GuessingMenu.Mapping.Contains(Layer.Rebel))
+                    GuessingMenu.Mapping.Add(Layer.Sidekick);
             }
         }
 
         if (ApocalypseSettings.ApocalypseCount > 0)
         {
-            GuessingMenu.Mapping.Add(LayerEnum.Cultist);
+            GuessingMenu.Mapping.Add(Layer.Cultist);
 
             if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(LayerEnum.Cannibal, LayerEnum.Void, x => x != LayerEnum.Cultist && !RoleGenManager.AD.Contains(x))
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Cannibal, Layer.Void, x => x != Layer.Cultist && !RoleGenManager.AD.Contains(x))
                     .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
             }
         }
 
         if (OutcastSettings.OutcastMax > 0 && OutcastSettings.OutcastMin > 0)
         {
-            GuessingMenu.Mapping.AddRange(new[] { LayerEnum.Arsonist, LayerEnum.Glitch, LayerEnum.SerialKiller, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.Cryomaniac, LayerEnum.Jackal,
-                LayerEnum.Werewolf, LayerEnum.BountyHunter, LayerEnum.Dracula, LayerEnum.Whisperer, LayerEnum.Zealot, LayerEnum.Necromancer }.Where(layer =>
+            GuessingMenu.Mapping.AddRange(new[] { Layer.Arsonist, Layer.Glitch, Layer.SerialKiller, Layer.Juggernaut, Layer.Murderer, Layer.Cryomaniac, Layer.Jackal,
+                Layer.Werewolf, Layer.BountyHunter, Layer.Dracula, Layer.Whisperer, Layer.Zealot, Layer.Necromancer }.Where(layer =>
                 RoleGenManager.GetSpawnItem(layer).IsActive()));
         }
     }
 
-    private void GuessPlayer(ShapeshifterPanel panel, PlayerControl player, LayerEnum guess)
+    private void GuessPlayer(ShapeshifterPanel panel, PlayerControl player, Layer guess)
     {
         if (Dead || Meeting().state == MeetingHud.VoteStates.Discussion || !panel)
             return;
@@ -134,18 +134,18 @@ public sealed class Thief : Benign, IGuesser
 
     public override void ReadRPC(RpcReader reader)
     {
-        var thiefAction = reader.Read<ThiefActionsRPC>();
+        var thiefAction = reader.Read<ThiefActionsRpc>();
 
         switch (thiefAction)
         {
-            case ThiefActionsRPC.Steal:
+            case ThiefActionsRpc.Steal:
             {
                 Steal(reader.ReadPlayer());
                 break;
             }
-            case ThiefActionsRPC.Guess:
+            case ThiefActionsRpc.Guess:
             {
-                MurderPlayer(reader.ReadPlayer(), reader.Read<LayerEnum>(), reader.ReadPlayer());
+                MurderPlayer(reader.ReadPlayer(), reader.Read<Layer>(), reader.ReadPlayer());
                 break;
             }
             default:
@@ -171,7 +171,7 @@ public sealed class Thief : Benign, IGuesser
                 if (target.GetRole() is OKilling or IPromoter or Neophyte or Harbinger or Betrayer or CKilling)
                 {
                     Player.RpcMurderPlayer(target);
-                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Steal, target);
+                    CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, ThiefActionsRpc.Steal, target);
                 }
                 else
                 {
@@ -289,13 +289,13 @@ public sealed class Thief : Benign, IGuesser
 
     public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update();
 
-    private void RpcMurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void RpcMurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction, this, ThiefActionsRPC.Guess, player, guess, guessTarget);
+        CallRpc(ReworkedRpc.Action, ActionsRpc.LayerAction, this, ThiefActionsRpc.Guess, player, guess, guessTarget);
     }
 
-    private void MurderPlayer(PlayerControl player, LayerEnum guess, PlayerControl guessTarget)
+    private void MurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         Spread(Player, guessTarget);
         var guessString = LayerDictionary[guess].Name;
@@ -311,7 +311,7 @@ public sealed class Thief : Benign, IGuesser
             return;
         }
 
-        if (CanAttack(AttackVal, player.GetDefenseValue(Player)) || player == Player)
+        if (CanAttack(Attack, player.GetDefenseValue(Player)) || player == Player)
         {
             MarkMeetingDead(player, Player);
 
@@ -331,7 +331,7 @@ public sealed class Thief : Benign, IGuesser
         else
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
 
-        if (Player != player && CanAttack(AttackVal, player.GetDefenseValue(Player)))
+        if (Player != player && CanAttack(Attack, player.GetDefenseValue(Player)))
             Steal(player);
     }
 
