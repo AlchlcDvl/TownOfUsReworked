@@ -3,7 +3,7 @@
 namespace TownOfUsReworked.Managers;
 
 // FIXME: Submerged messes with the body reporting, causing the report button to be entirely unusable, might have to make a custom report button for that ngl
-// TODO: Modify Submerged lights behaviour
+    // Delayed for now because Submerged is not yet updated to the latest version
 
 /// <summary>
 /// Master class to help with mod compatibility with Submerged and LevelImpostor.
@@ -17,6 +17,11 @@ public static class ModCompatibilityManager
     /// </summary>
     public static void Initialise()
     {
+        var injector = new EnumInjector<ShipStatus.MapType>(true, true);
+
+        SubmergedMapType = injector.InjectAndReturn("Submerged", 6);
+        // LiMapType = Injector.InjectAndReturn("LevelImpostor", 7);
+
         SubLoaded = InitializeSubmerged();
         LiLoaded = InitializeLevelImpostor();
 
@@ -24,12 +29,10 @@ public static class ModCompatibilityManager
     }
 
     private const string SmGuid = "Submerged";
-    private const ShipStatus.MapType SubmergedMapType = (ShipStatus.MapType)6;
+    private static ShipStatus.MapType SubmergedMapType;
 
-    public static SemanticVersioning.Version SubVersion { get; private set; }
+    public static SemVer SubVersion { get; private set; }
     public static bool SubLoaded { get; private set; }
-    private static BasePlugin SubPlugin { get; set; }
-    private static Assembly SubAssembly { get; set; }
     private static Dictionary<string, Type> SubTypes { get; set; }
 
     private static MethodInfo RpcRequestChangeFloorMethod;
@@ -54,6 +57,19 @@ public static class ModCompatibilityManager
     private static Type SpawnInStateType;
     private static FieldInfo CurrentStateField;
 
+    private static readonly float[] Segments =
+    [
+        0.2f, // Off
+        0.3f, 0.15f, // Off
+        0.35f, 0.2f, // Off
+        0.8f, 0.1f, // Off,
+        0.2f, 0.1f, 0.1f
+    ];
+    private static readonly float SegmentSum = Segments.Sum();
+    private static float LightTimer;
+    private static AudioSource PowerDownSound;
+    private static AudioSource PowerUpSound;
+
     public static bool IsSubmerged() => SubLoaded && Ship() && Ship().Type == SubmergedMapType && MapPatches.CurrentMap == 6;
 
     private static bool InitializeSubmerged()
@@ -65,12 +81,10 @@ public static class ModCompatibilityManager
 
         try
         {
-            SubPlugin = subPlugin.Instance as BasePlugin;
             SubVersion = subPlugin.Metadata.Version;
             Message(SubVersion);
 
-            SubAssembly = SubPlugin!.GetType().Assembly;
-            SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly).TryToDictionary(x => x.Name, x => x);
+            SubTypes = AccessTools.GetTypesFromAssembly(subPlugin.Instance.GetType().Assembly).TryToDictionary(x => x.Name, x => x);
 
             var submarineStatusType = SubTypes["SubmarineStatus"];
             SubmergedInstanceField = AccessTools.Field(submarineStatusType, "instance");
@@ -113,13 +127,20 @@ public static class ModCompatibilityManager
 
             var hasMapGetter = AccessTools.PropertyGetter(SubTypes["CustomPlayerData"], "HasMap");
 
+            var lightPatch = AccessTools.Method(SubTypes["SubmarineStatusPatches"], "CalculateLightRadiusPatch");
+
+            var awakePatch = AccessTools.Method(SubTypes["SubmarineStatus"], "Awake");
+
             var compatType = typeof(ModCompatibilityManager);
 
-            TownOfUsReworked.ModInstance.Harmony.Patch(submergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(SetPostmortals.Postfix))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(getReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(startMethod, new(AccessTools.Method(compatType, nameof(SpawnPatch))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(CanUsePatch.Prefix))), new(AccessTools.Method(compatType, nameof(CanUsePatch.Postfix))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(hasMapGetter, new(AccessTools.Method(compatType, nameof(HasMapPatch))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(submergedExileWrapUpMethod, null, new(AccessTools.Method(compatType, nameof(SetPostmortals.Postfix))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(getReadyPlayerAmountMethod, new(AccessTools.Method(compatType, nameof(ReadyPlayerAmount))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(startMethod, new(AccessTools.Method(compatType, nameof(SpawnPatch))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(CanUsePatch.Prefix))), new(AccessTools.Method(compatType,
+                nameof(CanUsePatch.Postfix))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(hasMapGetter, new(AccessTools.Method(compatType, nameof(HasMapPatch))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(lightPatch, new(AccessTools.Method(compatType, nameof(SubmergedLightsPatch))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(awakePatch, null, new(AccessTools.Method(compatType, nameof(AwakePatch))));
 
             Success("Submerged compatibility finished");
             return true;
@@ -260,13 +281,55 @@ public static class ModCompatibilityManager
         return false;
     }
 
-    public const string LiGuid = "com.DigiWorm.LevelImposter";
-    // private const ShipStatus.MapType LiMapType = (ShipStatus.MapType)7;
+    private static bool SubmergedLightsPatch() => false;
 
-    private static SemanticVersioning.Version LiVersion { get; set; }
+    private static void AwakePatch(dynamic __instance)
+    {
+        AddAsset("PowerUp", __instance.minigameProperties.audioClips[2]);
+        AddAsset("PowerDown", __instance.minigameProperties.audioClips[1]);
+    }
+
+    // TODO: Test this when Submerged updates
+    public static float GetLightModifier()
+    {
+        if (LightTimer > SegmentSum - 0.4f && !PowerDownSound)
+            PowerDownSound = Play("PowerDown");
+
+        if (LightTimer < SegmentSum)
+        {
+            var lightsOn = true;
+            var currentSum = 0f;
+
+            foreach (var time in Segments)
+            {
+                if (LightTimer > currentSum)
+                {
+                    lightsOn = !lightsOn;
+                    currentSum += time;
+                }
+                else
+                    return lightsOn ? 1 : 0;
+            }
+        }
+
+        if (LightTimer < SegmentSum + 2.50f)
+            return 0;
+
+        if (!PowerUpSound)
+            PowerUpSound = Play("PowerUp");
+
+        if (LightTimer < SegmentSum + 3.75f)
+            return 0;
+
+        var adjustedAmount = LightTimer - SegmentSum - 3.75f;
+        return Mathf.Lerp(0, 1f, Mathf.Clamp01(adjustedAmount));
+    }
+
+    public const string LiGuid = "com.DigiWorm.LevelImposter";
+    // private static ShipStatus.MapType LiMapType;
+
+    private static SemVer LiVersion { get; set; }
     public static bool LiLoaded { get; private set; }
-    private static BasePlugin LiPlugin { get; set; }
-    private static Assembly LiAssembly { get; set; }
     private static Dictionary<string, Type> LiTypes { get; set; }
 
     // public static bool IsLevelImpostor() => LiLoaded && Ship() && Ship().Type == LiMapType && MapPatches.CurrentMap == 7;
@@ -280,12 +343,10 @@ public static class ModCompatibilityManager
 
         try
         {
-            LiPlugin = liPlugin.Instance as BasePlugin;
             LiVersion = liPlugin.Metadata.Version;
             Message(LiVersion);
 
-            LiAssembly = LiPlugin!.GetType().Assembly;
-            LiTypes = AccessTools.GetTypesFromAssembly(LiAssembly).TryToDictionary(x => x.Name, x => x);
+            LiTypes = AccessTools.GetTypesFromAssembly(liPlugin.Instance.GetType().Assembly).TryToDictionary(x => x.Name, x => x);
 
             var canUseMethod = AccessTools.Method(LiTypes["TriggerConsole"], "CanUse");
 
@@ -293,8 +354,8 @@ public static class ModCompatibilityManager
 
             var compatType = typeof(ModCompatibilityManager);
 
-            TownOfUsReworked.ModInstance.Harmony.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(TriggerPrefix))), new(AccessTools.Method(compatType, nameof(TriggerPostfix))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(setMapMethod, null, new(AccessTools.Method(compatType, nameof(SetMapPostfix))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(canUseMethod, new(AccessTools.Method(compatType, nameof(TriggerPrefix))), new(AccessTools.Method(compatType, nameof(TriggerPostfix))));
+            TownOfUsReworked.ModInstance.HarmonyInstance.Patch(setMapMethod, null, new(AccessTools.Method(compatType, nameof(SetMapPostfix))));
 
             Success("LevelImposter compatibility finished");
             return true;

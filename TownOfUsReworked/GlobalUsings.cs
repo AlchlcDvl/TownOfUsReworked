@@ -21,7 +21,6 @@ global using Reactor.Utilities;
 global using Reactor.Networking;
 global using Reactor.Utilities.Extensions;
 global using Reactor.Networking.Attributes;
-global using Reactor.Networking.Serialization;
 
 global using TownOfUsReworked.Data;
 global using TownOfUsReworked.RPCs;
@@ -89,6 +88,8 @@ global using Hazel;
 global using Twitch;
 global using InnerNet;
 global using HarmonyLib;
+
+global using SemVer = SemanticVersioning.Version;
 
 global using IObject = Il2CppSystem.Object;
 global using ISystem = Il2CppSystem.Collections.Generic;

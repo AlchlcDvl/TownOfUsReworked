@@ -41,7 +41,7 @@ public static class CustomStatsManager
     private static readonly ValueMap<StringNames, Faction> FactionMap = [];
     private static readonly ValueMap<StringNames, Layer> LayerMap = [];
 
-    private static readonly EnumInjector<StatID> Injector = new();
+    private static readonly EnumInjector<StatID> Injector = new(true, true);
 
     public static void Setup()
     {

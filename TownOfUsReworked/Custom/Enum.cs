@@ -35,14 +35,15 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     public readonly T MaxPossibleValue;
     // public readonly T MinPossibleValue;
 
-    public EnumInjector(bool il2Cpp = true)
+    public EnumInjector(bool il2Cpp = true, bool alreadyIl2Cpp = false)
     {
         Lock = new();
         Type = typeof(T);
-        Il2Cpp = il2Cpp;
 
-        if (Il2Cpp)
+        if (il2Cpp && !alreadyIl2Cpp)
             EnumInjector.RegisterEnumInIl2Cpp<T>();
+
+        Il2Cpp = il2Cpp || alreadyIl2Cpp;
 
         var underlying = Enum.GetUnderlyingType(Type);
         AllValues = [.. Enum.GetValues<T>().OrderBy(x => x)];
@@ -157,18 +158,18 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     //         return false;
     //     }
     // }
-    //
+
     // private IEnumerable<T> InjectAndReturn(string[] values, bool[] decrements = null)
     // {
     //     lock (Lock)
     //     {
     //         decrements ??= new bool[values.Length];
-    //
+
     //         if (decrements.Length != values.Length)
     //             Array.Resize(ref decrements, values.Length);
-    //
+
     //         var valuesToAdd = new Dictionary<string, object>();
-    //
+
     //         foreach (var (value, decrement) in (values, decrements).Zip())
     //         {
     //             if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
@@ -176,28 +177,29 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     //                 Warning($"{value} has already been injected, skipping injection... {Diagnostic(decrement)}");
     //                 continue;
     //             }
-    //
+
     //             if ((MinReached && decrement) || (MaxReached && !decrement))
     //             {
     //                 Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(decrement)}");
     //                 continue;
     //             }
-    //
+
     //             var index = decrement ? --First : ++Last;
     //             MinReached = First == Min;
     //             MaxReached = Last == Max;
-    //
+
     //             if (IndexedValues.ContainsKey(index))
     //             {
     //                 Warning($"{index} is already injected, skipping injection... {Diagnostic(decrement)}");
     //                 continue;
     //             }
-    //
+
     //             valuesToAdd.Add(value, (object)index);
     //         }
-    //
-    //         EnumInjector.InjectEnumValues<T>(valuesToAdd);
-    //
+
+    //         if (Il2Cpp)
+    //             EnumInjector.InjectEnumValues<T>(valuesToAdd);
+
     //         foreach (var (value, index) in valuesToAdd)
     //         {
     //             var result = (T)Enum.ToObject(Type, index);
@@ -263,9 +265,9 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     //     {
     //         if (indices.Length != values.Length)
     //             throw new InvalidOperationException($"Not all string names have a corresponding index. {Diagnostic(null)}");
-    //
+
     //         var valuesToAdd = new Dictionary<string, object>();
-    //
+
     //         foreach (var (value, index) in (values, indices).Zip())
     //         {
     //             if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
@@ -273,24 +275,25 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     //                 Warning($"{value} has already been injected, skipping injection... {Diagnostic(index)}");
     //                 continue;
     //             }
-    //
+
     //             if (IndexedValues.ContainsKey(index))
     //             {
     //                 Warning($"{index} is already injected, skipping injection... {Diagnostic(index)}");
     //                 continue;
     //             }
-    //
+
     //             if (index < Min || index > Max)
     //             {
     //                 Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(index)}");
     //                 continue;
     //             }
-    //
+
     //             valuesToAdd.Add(value, (object)index);
     //         }
-    //
-    //         EnumInjector.InjectEnumValues<T>(valuesToAdd);
-    //
+
+    //         if (Il2Cpp)
+    //             EnumInjector.InjectEnumValues<T>(valuesToAdd);
+
     //         foreach (var (value, index) in valuesToAdd)
     //         {
     //             var result = (T)Enum.ToObject(Type, index);

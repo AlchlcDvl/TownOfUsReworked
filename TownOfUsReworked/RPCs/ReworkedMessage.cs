@@ -12,7 +12,7 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// <summary>
     /// Value injector to ensure seamless integration with the base game.
     /// </summary>
-    private static readonly EnumInjector<RpcCalls> Injector = new(false);
+    private static readonly EnumInjector<RpcCalls> Injector = new(true, true);
 
     /// <summary>
     /// The custom injected enum value that indicates it's a modded rpc.

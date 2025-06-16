@@ -11,15 +11,6 @@ public static class CalculateLightRadiusPatch
             return false;
         }
 
-        if (!LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
-        {
-            __result = 1f;
-            return false;
-        }
-
-        if (IsSubmerged()) // Custom implementation
-            return false;
-
         if (Lobby() || player.IsDead)
         {
             __result = __instance.MaxLightRadius;
@@ -31,6 +22,12 @@ public static class CalculateLightRadiusPatch
             var hns = TownOfUsReworked.HnsOptions;
             var isImp = player.IsImpostor();
             __result = __instance.MaxLightRadius * (hns.useFlashlight ? (isImp ? hns.ImpostorFlashlightSize : hns.CrewmateFlashlightSize) : (isImp ? hns.ImpostorLightMod : hns.CrewLightMod));
+            return false;
+        }
+
+        if (!LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+        {
+            __result = 1f;
             return false;
         }
 
@@ -46,11 +43,11 @@ public static class CalculateLightRadiusPatch
                 Faction.Crew => CrewSettings.CrewVision,
                 Faction.Intruder => IntruderSettings.IntruderVision,
                 Faction.Syndicate => SyndicateSettings.SyndicateVision,
-                Faction.Outcast => OutcastSettings.OutcastVision,
                 Faction.Apocalypse => ApocalypseSettings.ApocalypseVision,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVision,
                 Faction.Pandorica => PandoricaSettings.PandoricaVision,
                 Faction.Compliance => ComplianceSettings.ComplianceVision,
+                Faction.Outcast or (> Faction.GameMode and <= Faction.Undead) => OutcastSettings.OutcastVision,
                 Faction.GameMode => role switch
                 {
                     Runner => Runner.RunnerVision,
@@ -72,6 +69,9 @@ public static class CalculateLightRadiusPatch
 
         if (affectedByLights && __instance.Systems.TryGetValue(SystemTypes.Electrical, out var system) && system.TryCast<SwitchSystem>(out var lights))
             baseT = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, lights.Level);
+
+        if (IsSubmerged())
+            baseT *= GetLightModifier();
 
         __result = baseT * t;
         return false;

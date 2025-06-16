@@ -200,7 +200,7 @@ public static class UpdateManager
             // Accounts for a broken version + checks the Submerged version
             case "Submerged" when SubLoaded:
             {
-                SubmergedUpdate = SubVersion is null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(data.Tag.Replace("v", ""))) < 0;
+                SubmergedUpdate = SubVersion is null || SubVersion.CompareTo(SemVer.Parse(data.Tag.Replace("v", ""))) < 0;
                 break;
             }
         }

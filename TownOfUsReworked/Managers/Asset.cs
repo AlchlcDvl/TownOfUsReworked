@@ -41,19 +41,21 @@ public static class AssetManager
 
     public static Material GetMaterial(string path) => Get<Material>(path);
 
-    public static void Play(string path, bool loop = false, float volume = 1f, float pitch = float.NaN) => Play(GetAudio(path), loop, volume, pitch);
+    public static AudioSource Play(string path, bool loop = false, float volume = 1f, float pitch = float.NaN) => Play(GetAudio(path), loop, volume, pitch);
 
-    public static void Play(AudioClip audio, bool loop = false, float volume = 1f, float pitch = float.NaN)
+    public static AudioSource Play(AudioClip audio, bool loop = false, float volume = 1f, float pitch = float.NaN)
     {
         Stop(audio);
 
         if (!Constants.ShouldPlaySfx())
-            return;
+            return null;
 
         var source = SoundManager.Instance.PlaySound(audio, loop, volume);
 
         if (!float.IsNaN(pitch))
             source.pitch = pitch;
+
+        return source;
     }
 
     private static void Stop(AudioClip audio)

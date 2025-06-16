@@ -26,7 +26,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 64;
+    private const int DevBuild = 65;
 
     public const string Resources = "TownOfUsReworked.Resources.";
 
@@ -77,7 +77,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static TownOfUsReworked ModInstance { get; private set; }
 
-    public readonly Harmony Harmony = new(Id);
+    public readonly Harmony HarmonyInstance = new(Id);
 
     private static string ModHash { get; set; }
 
@@ -109,7 +109,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public override bool Unload()
     {
         ModInstance = null;
-        Harmony.UnpatchSelf();
+        HarmonyInstance.UnpatchSelf();
         Fatal($"Mod Unloaded - {this}");
         return true;
     }
@@ -161,7 +161,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         ModHash = BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(Path.Combine(ModsFolder, "Reworked.dll")))).Replace("-", "").ToLowerInvariant();
 
         SetUpConfigs();
-        Harmony.PatchAll();
+        HarmonyInstance.PatchAll();
         AddressablesPatch.Initialize();
         Application.add_logMessageReceived((Application.LogCallback)RedirectLoggerPatch2.UnityLog);
         IL2CPPChainloader.Instance.Finished += Initialise;
