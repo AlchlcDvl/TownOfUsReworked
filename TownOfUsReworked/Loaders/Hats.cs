@@ -5,7 +5,7 @@ public sealed class HatLoader : BaseCosmeticLoader<HatViewData, HatData, CustomH
     protected override string DirectoryInfo => TownOfUsReworked.Hats;
     protected override string Manifest => "Hats";
 
-    protected override CosmeticsLayer.CosmeticKind CosmeticType => CosmeticsLayer.CosmeticKind.HAT;
+    protected override CosmeticKind CosmeticType => CosmeticKind.HAT;
 
     protected override void LoadData(CustomHat item, string path, HatViewData viewData, PreviewViewData preview, HatData data)
     {

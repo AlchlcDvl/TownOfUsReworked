@@ -18,8 +18,7 @@ public static class ChatPatches
         UpdateBubbles(__instance);
         UpdateChatTimer(__instance);
 
-        __instance.freeChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : UColor.white;
-        __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : UColor.white;
+        __instance.freeChatField.background.color = __instance.quickChatField.background.color = ClientOptions.UseDarkTheme ? new Color32(40, 40, 40, 255) : UColor.white;
 
         var text = __instance.freeChatField.Text;
 
@@ -83,12 +82,10 @@ public static class ChatPatches
 
                 if (role)
                 {
-                    var teammate = LocalPlayer.IsBuddyWith(player, LocalPlayer.GetFaction());
-
                     if (player.AmOwner)
                         chat.NameText.color = role.Color;
-                    else if (teammate)
-                        chat.NameText.color = GameModifiers.FactionSeeRoles ? role.Color : role.FactionColor;
+                    else if (LocalPlayer.IsBuddyWith(player, LocalPlayer.GetFaction()))
+                        chat.NameText.color = LocalPlayer.KnowsRoleOf(player) ? role.Color : role.FactionColor;
                     else
                         chat.NameText.color = UColor.white;
                 }
@@ -145,30 +142,26 @@ public static class ChatPatches
 
     public static readonly HashSet<byte> Ignored = [];
 
-    [HarmonyPatch(nameof(ChatController.AddChat)), HarmonyPrefix]
-    public static bool AddChatPrefix(ChatController __instance, PlayerControl sourcePlayer, string chatText)
+    [HarmonyPatch(nameof(ChatController.AddChat))]
+    public static bool Prefix(ChatController __instance, PlayerControl sourcePlayer)
     {
         if (Ignored.Contains(sourcePlayer.PlayerId) || LocalPlayer.IsSilenced())
             return false;
 
-        if ((ChatHistory.Count == 0 || ChatHistory[^1].Contains(chatText)) && !chatText.StartsWith("/"))
-            ChatHistory.Add($"{sourcePlayer.name}: {chatText}");
-
-        if (__instance != Chat() || IsLobby() || !LocalPlayer || sourcePlayer.AmOwner || !LayerHandler.Handlers.ContainsKey(LocalPlayer.PlayerId) ||
-            !LayerHandler.Handlers.TryGetValue(sourcePlayer.PlayerId, out var sourceHandler))
-        {
+        if (__instance != Chat() || IsLobby() || !LocalPlayer || sourcePlayer.AmOwner || !LayerHandler.Handlers.TryGetValue(sourcePlayer.PlayerId, out var sourceHandler))
             return true;
-        }
-
-        var shouldSeeMessage = (Lovers.LoversChat && sourcePlayer.IsOtherLover(LocalPlayer) && sourceHandler.Channels.HasFlag(ChatChannel.Lovers)) || (Rivals.RivalsChat &&
-            sourcePlayer.IsOtherRival(LocalPlayer) && sourceHandler.Channels.HasFlag(ChatChannel.Rivals)) || (Linked.LinkedChat && sourcePlayer.IsOtherLink(LocalPlayer) &&
-            sourceHandler.Channels.HasFlag(ChatChannel.Linked)) || (Mafia.MafiaChat && sourcePlayer.Is<Mafia>() && LocalPlayer.Is<Mafia>() &&
-            sourceHandler.Channels.HasFlag(ChatChannel.Mafia)) || (sourcePlayer.HasDied() && LocalPlayer.HasDied() && sourceHandler.Channels.HasFlag(ChatChannel.Dead));
 
         if (Time.time - MeetingPatches.MeetingStartTime < 1f)
-            return shouldSeeMessage;
+            return LocalPlayer.Is<Teamed>(out var teamed) && teamed.RoleCondition(sourcePlayer) && sourceHandler.Channels.HasFlag(teamed.Channel);
 
         return Meeting() && sourceHandler.Channels.HasFlag(ChatChannel.Meeting);
+    }
+
+    [HarmonyPatch(nameof(ChatController.AddChat))]
+    public static void Postfix(PlayerControl sourcePlayer, string chatText, ref bool __runOriginal)
+    {
+        if (__runOriginal && !chatText.StartsWith("/"))
+            ChatHistory.Add($"{sourcePlayer.name}: {chatText}");
     }
 
     private static readonly Dictionary<byte, SpriteRenderer> Notifs = [];

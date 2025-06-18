@@ -5,7 +5,7 @@
 //     protected override string DirectoryInfo => TownOfUsReworked.Skins;
 //     protected override string Manifest => "Skins";
 
-//     protected override CosmeticsLayer.CosmeticKind CosmeticType => CosmeticsLayer.CosmeticKind.SKIN;
+//     protected override CosmeticKind CosmeticType => CosmeticKind.SKIN;
 
 //     protected override void LoadData(CustomSkin item, string path, SkinViewData viewData, PreviewViewData preview, SkinData data)
 //     {

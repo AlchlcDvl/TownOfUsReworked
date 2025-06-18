@@ -298,7 +298,7 @@ public static class CollectionExtensions
 
     public static IEnumerable<T> Except<T>(this IEnumerable<T> source, Func<T, bool> func) => source.Where(x => !func(x));
 
-    public static IEnumerable<T> Except<T>(this IEnumerable<T> source, params T[] excluded) => source.Except(excluded);
+    public static IEnumerable<T> Except<T>(this IEnumerable<T> source, params T[] excluded) => source.Where(x => !excluded.Contains(x));
 
     /* These methods are unused at the moment, so they've been commented until needed
 

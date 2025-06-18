@@ -304,10 +304,7 @@ public static class LayerExtensions
 
         return player.GetDisposition() switch
         {
-            Lovers => Lovers.LoversChat,
-            Rivals => Rivals.RivalsChat,
-            Linked => Linked.LinkedChat,
-            Mafia => Mafia.MafiaChat,
+            Teamed teamed => teamed.CanChat,
             _ => player.Is<Hunted>() && Hunted.HuntedChat
         };
     }
@@ -320,15 +317,11 @@ public static class LayerExtensions
         if (!LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
             return player.IsImpostor();
 
-        var role = handler.CurrentRole;
-        var intruderFlag = handler.CurrentFaction is Faction.Intruder or Faction.Illuminati or Faction.Pandorica && role is Intruder { IsPromoted: false };
-        var syndicateFlag = handler.CurrentFaction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is Syndicate { IsPromoted: false, HoldsDrive: false };
-        var apocalypseFlag = handler.CurrentFaction is Faction.Apocalypse or Faction.Illuminati or Faction.Pandorica && role is { Alignment: Alignment.Harbinger };
-        var changerFlag = player.GetDisposition() is FactionChanger { SheriffSwap: true, Turned: true };
-        var sherFlag = role is Outcast { SheriffSeesAsEvil: true };
-        var framedFlag = player.IsFramed();
-        var compFlag = handler.CurrentFaction == Faction.Compliance;
-        return intruderFlag || syndicateFlag || apocalypseFlag || changerFlag || sherFlag || framedFlag || compFlag;
+        if (player.IsFramed() || (player.GetDisposition() is FactionChanger { SheriffSwap: true, Turned: true }))
+            return true;
+
+        return handler.CurrentFaction.IsFactionedEvil() && handler.CurrentRole is not (IPromoter { IsPromoted: false } or Syndicate { HoldsDrive: false } or { Alignment: Alignment.Harbinger } or
+            Outcast { SheriffSeesAsEvil: true });
     }
 
     public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) ? lovers.Other : null;
@@ -691,10 +684,15 @@ public static class LayerExtensions
 
     public static bool KnowsRoleOf(this PlayerControl player, PlayerControl refPlayer)
     {
-        if (!player.Is<Teamed>(out var teamed))
+        if (!LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
             return false;
 
-        return teamed.RoleCondition(refPlayer) || teamed.RoleCondition(LayerHandler.Handlers[refPlayer.PlayerId]);
+        var neo = player.GetNeophyte();
+
+        if (refPlayer.Is(handler.CurrentFaction) && (handler.CurrentFaction.IsFactionedEvil(true) || (neo && neo == refPlayer.GetNeophyte())))
+            return GameModifiers.FactionSeeRoles;
+
+        return player.Is<Teamed>(out var teamed) && teamed.RoleCondition(refPlayer);
     }
 
     public static void PublicReveal(PlayerControl player)

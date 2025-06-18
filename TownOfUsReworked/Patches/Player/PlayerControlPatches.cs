@@ -287,6 +287,7 @@ public static class PlayerControlPatches
 
                 var data = new RpcReader(reader.ReadBytesAndSize());
                 HandleRpc(data, targetClientId);
+                data.Dispose(); // Ensuring that the reader somehow doesn't get disposed mid-reading (it did that before for some reason)
                 break;
             }
             default:
@@ -300,35 +301,16 @@ public static class PlayerControlPatches
     public static bool CmdReportDeadBodyPrefix(PlayerControl __instance, NetworkedPlayerInfo target)
     {
         if (TownOfUsReworked.MciActive || AmongUsClient.Instance.AmHost)
-            __instance.ReportDeadBody(target);
+            ReportDeadBody(__instance, target);
         else
             CallLateTargetedRpc(GameData.Instance.GetHost().OwnerId, VanillaRpc.Report, __instance, target?.PlayerId ?? 255);
 
         return false;
     }
 
-    [HarmonyPatch(nameof(PlayerControl.ReportDeadBody)), HarmonyPrefix]
-    public static bool ReportDeadBodyPrefix(PlayerControl __instance, NetworkedPlayerInfo target)
-    {
-		if (AmongUsClient.Instance.IsGameOver || MeetingHud.Instance)
-			return false;
-
-		if (!target && PlayerControl.LocalPlayer.myTasks.Any(PlayerTask.TaskIsEmergency))
-			return false;
-
-		if (__instance.Data.IsDead)
-			return false;
-
-		MeetingRoomManager.Instance.AssignSelf(__instance, target);
-
-		if (!AmongUsClient.Instance.AmHost || GameManager.Instance.CheckTaskCompletion())
-			return false;
-
-		__instance.logger.Debug(target ? $"Reporting dead body {target.PlayerId}" : "Calling emergency meeting");
-		HUD().OpenMeetingRoom(__instance);
-		__instance.RpcStartMeeting(target);
-        return false;
-    }
+    // Reimplementing this method because for some reason it doesn't work without being rewritten on the C# side
+    [HarmonyPatch(nameof(PlayerControl.ReportDeadBody)), HarmonyReversePatch]
+    private static void ReportDeadBody(PlayerControl instance, NetworkedPlayerInfo target) => throw new NotSupportedException();
 }
 
 [HarmonyPatch(typeof(NetworkedPlayerInfo))]

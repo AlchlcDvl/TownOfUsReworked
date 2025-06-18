@@ -5,7 +5,7 @@ public sealed class VisorLoader : BaseCosmeticLoader<VisorViewData, VisorData, C
     protected override string DirectoryInfo => TownOfUsReworked.Visors;
     protected override string Manifest => "Visors";
 
-    protected override CosmeticsLayer.CosmeticKind CosmeticType => CosmeticsLayer.CosmeticKind.VISOR;
+    protected override CosmeticKind CosmeticType => CosmeticKind.VISOR;
 
     protected override void LoadData(CustomVisor item, string path, VisorViewData viewData, PreviewViewData preview, VisorData data)
     {

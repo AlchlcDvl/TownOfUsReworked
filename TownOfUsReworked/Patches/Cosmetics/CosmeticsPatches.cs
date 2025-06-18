@@ -137,9 +137,9 @@ public static class CosmeticTabPatches
         __instance.PlayerPreview.gameObject.SetActive(true);
 
         if (__instance.HasLocalPlayer())
-            __instance.PlayerPreview.UpdateFromLocalPlayer(PlayerMaterial.MaskType.None);
+            __instance.PlayerPreview.UpdateFromLocalPlayer(MaskType.None);
         else
-            __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+            __instance.PlayerPreview.UpdateFromDataManager(MaskType.None);
 
         __instance.scroller.Inner.DestroyChildren();
         __instance.ColorChips = new();
@@ -215,7 +215,7 @@ public static class CosmeticTabPatches
 
             if (!isNameplate)
             {
-                colorChip.Inner.SetMaskType(PlayerMaterial.MaskType.SimpleUI);
+                colorChip.Inner.SetMaskType(MaskType.SimpleUI);
                 colorChip.Inner.transform.localPosition = cosmetic.ChipOffset;
             }
 

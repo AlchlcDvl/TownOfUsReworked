@@ -18,12 +18,16 @@ public sealed class Mafia : Teamed
     public override string Description => "- Eliminate anyone who opposes the Mafia";
     public override bool CanVent => MafVent;
     protected override bool RevealRole => MafiaRoles;
-    protected override ChatChannel Channel => ChatChannel.Mafia;
+    public override ChatChannel Channel => ChatChannel.Mafia;
+    public override bool CanChat => MafiaChat;
+
+    public static readonly HashSet<byte> Mafias = [];
 
     public override void Init()
     {
         base.Init();
         Handler.CurrentFaction = Faction.Mafia;
+        Mafias.Add(PlayerId);
     }
 
     protected override void CheckWin(HashSet<byte> winnerIds)
@@ -35,5 +39,5 @@ public sealed class Mafia : Teamed
         winnerIds.Add(PlayerId);
     }
 
-    public override bool RoleCondition(LayerHandler handler) => handler.CurrentDisposition is Mafia;
+    public override bool RoleCondition(PlayerControl player) => Mafias.Contains(player.PlayerId);
 }

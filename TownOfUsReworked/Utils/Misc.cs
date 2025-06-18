@@ -783,7 +783,7 @@ public static class MiscUtils
         path = path.ReplaceAll("", ".png", ".wav", ".txt", ".mat", ".json", ".anim", ".shader");
 #if ANDROID
         path = path.Replace(".bundle_android", "");
-#else
+#elif PC
         path = path.Replace(".bundle_pc", "");
 #endif
         path = path.TrueSplit('/')[^1];

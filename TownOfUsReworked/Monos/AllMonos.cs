@@ -50,7 +50,6 @@ public static class AllMonos
 
         // Misc
         ClassInjector.RegisterTypeInIl2Cpp<CustomKillAnimationPlayer>();
-        // ClassInjector.RegisterTypeInIl2Cpp<ReworkedMessage>();
     }
 
     /// <summary>
@@ -69,8 +68,8 @@ public static class AllMonos
         LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.TryCast<CrewmateGhostRole>()?.HauntMenu;
 
         var prefab = new GameObject("LayerHandler").DontDestroy().AddComponent<LayerHandler>();
-        prefab.Role = prefab.DefaultGhostRole = (RoleTypes)100;
-        prefab.TeamType = (RoleTeamTypes)5;
+        prefab.Role = prefab.DefaultGhostRole = new EnumInjector<RoleTypes>(true, true).InjectAndReturn("ReworkedLayer");
+        prefab.TeamType = new EnumInjector<RoleTeamTypes>(true, true).InjectAndReturn("ReworkedTeam");
         prefab.CanBeKilled = true;
         prefab.CanUseKillButton = false;
         prefab.CanVent = false;

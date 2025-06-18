@@ -22,7 +22,8 @@ public sealed class Lovers : Paired
     public override Layer Type => Layer.Lovers;
     public override string Description => $"- Live to the final 3 with {Other.name}";
     protected override bool RevealRole => LoversRoles;
-    protected override ChatChannel Channel => ChatChannel.Lovers;
+    public override ChatChannel Channel => ChatChannel.Lovers;
+    public override bool CanChat => LoversChat;
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer)
     {

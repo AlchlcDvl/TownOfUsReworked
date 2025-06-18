@@ -24,7 +24,7 @@ public static class PlayerControlExtensions
         if (layer.hat)
             layer.hat.SetHat(hatId, color);
 
-        layer.OnCosmeticSet?.Invoke(hatId, -2, CosmeticsLayer.CosmeticKind.HAT);
+        layer.OnCosmeticSet?.Invoke(hatId, -2, CosmeticKind.HAT);
     }
 
     private static void SetHat(this HatParent parent, string hatId, ColorPair color)
@@ -85,8 +85,9 @@ public static class PlayerControlExtensions
                 viewData = ch.ViewData;
         }
 
-        UpdateMaterial(viewData && __instance.IsLoaded && viewData.MatchPlayerColor, __instance.matProperties, __instance.FrontLayer, colorVal);
-        UpdateMaterial(viewData && __instance.IsLoaded && viewData.MatchPlayerColor, __instance.matProperties, __instance.BackLayer, colorVal);
+        var loaded = viewData && __instance.IsLoaded && viewData.MatchPlayerColor;
+        UpdateMaterial(loaded, __instance.matProperties, __instance.FrontLayer, colorVal);
+        UpdateMaterial(loaded, __instance.matProperties, __instance.BackLayer, colorVal);
     }
 
     public static void RawSetVisor(this PlayerControl player, string visorId, ColorPair color) => player.cosmetics.SetVisor(visorId, color);
@@ -96,7 +97,7 @@ public static class PlayerControlExtensions
         if (layer.visor)
             layer.visor.SetVisor(visorId, color);
 
-        layer.OnCosmeticSet?.Invoke(visorId, -2, CosmeticsLayer.CosmeticKind.VISOR);
+        layer.OnCosmeticSet?.Invoke(visorId, -2, CosmeticKind.VISOR);
     }
 
     private static void SetVisor(this VisorLayer visor, string visorId, ColorPair color)
@@ -196,7 +197,7 @@ public static class PlayerControlExtensions
 
             layer.data = skinData;
             layer.SetSkin(skinView, color, isLeft);
-            cosmeticsLayer.OnCosmeticSet?.Invoke(skinData.ProdId, -2, CosmeticsLayer.CosmeticKind.SKIN);
+            cosmeticsLayer.OnCosmeticSet?.Invoke(skinData.ProdId, -2, CosmeticKind.SKIN);
             onLoaded?.Invoke();
         }));
 
@@ -215,13 +216,13 @@ public static class PlayerControlExtensions
 
     private static void UpdateMaterial(bool loaded, PlayerMaterial.Properties matProperties, SpriteRenderer rend, object colorVal)
     {
-        rend.sharedMaterial = matProperties.MaskType is PlayerMaterial.MaskType.ComplexUI or PlayerMaterial.MaskType.ScrollingUI
+        rend.sharedMaterial = matProperties.MaskType is MaskType.ComplexUI or MaskType.ScrollingUI
             ? (loaded ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial)
             : (loaded ? HatManager.Instance.PlayerMaterial : HatManager.Instance.DefaultShader);
         rend.maskInteraction = matProperties.MaskType switch
         {
-            PlayerMaterial.MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
-            PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
+            MaskType.SimpleUI => SpriteMaskInteraction.VisibleInsideMask,
+            MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
             _ => SpriteMaskInteraction.None
         };
         rend.material.SetInt(PlayerMaterial.MaskLayer, matProperties.MaskLayer);
@@ -273,7 +274,7 @@ public static class PlayerControlExtensions
         layer.currentPet.SetIdle();
         layer.currentPet.Visible = layer.visible;
         onComplete?.Invoke();
-        layer.OnCosmeticSet?.Invoke(petBehaviour.Data.ProdId, -2, CosmeticsLayer.CosmeticKind.PET);
+        layer.OnCosmeticSet?.Invoke(petBehaviour.Data.ProdId, -2, CosmeticKind.PET);
     }
 
     private static void InstantiatePetCopy(this CosmeticsLayer layer, PetBehaviour petBehaviour, ColorPair color)

@@ -19,6 +19,8 @@ public static class AssetManager
 // #endif
     };
 
+    private const string Resources = "TownOfUsReworked.Resources.";
+
     public static void LoadPortalFrames()
     {
         if (PortalAnimation != null)
@@ -85,7 +87,7 @@ public static class AssetManager
         return !texture.LoadImage(data, !GetReadable(name)) ? null : texture;
     }
 
-    private static Sprite LoadSprite(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceSprite(path) : LoadDiskSprite(path);
+    private static Sprite LoadSprite(string path) => path.StartsWith(Resources) ? LoadResourceSprite(path) : LoadDiskSprite(path);
 
     private static Sprite LoadDiskSprite(string path) => LoadSprite(LoadDiskTexture(path), path.SanitisePath());
 
@@ -242,7 +244,7 @@ public static class AssetManager
 
     private static bool GetReadable(string name) => name is "Cursor";
 
-    private static AudioClip LoadAudio(string path) => path.StartsWith(TownOfUsReworked.Resources) ? LoadResourceAudio(path) : LoadDiskAudio(path);
+    private static AudioClip LoadAudio(string path) => path.StartsWith(Resources) ? LoadResourceAudio(path) : LoadDiskAudio(path);
 
     private static AudioClip LoadResourceAudio(string path) => LoadAudio(path.SanitisePath(), TownOfUsReworked.Core.GetManifestResourceStream(path)!.ReadFully());
 

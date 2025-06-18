@@ -14,5 +14,6 @@ public sealed class Linked : Paired
     public override Layer Type => Layer.Linked;
     public override string Description => $"- Help {Other.name} win";
     protected override bool RevealRole => LinkedRoles;
-    protected override ChatChannel Channel => ChatChannel.Linked;
+    public override ChatChannel Channel => ChatChannel.Linked;
+    public override bool CanChat => LinkedChat;
 }

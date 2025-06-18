@@ -19,9 +19,9 @@
         <Platforms>Android;AnyCPU</Platforms>
         <Configurations>Debug;Release</Configurations>
         <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
-        <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
-        <DefineConstants Condition="'$(Platform)' == 'AnyCPU'">PC</DefineConstants>
-        <DefineConstants Condition="'$(Platform)' == 'Android'">ANDROID</DefineConstants>
+        <!-- <Optimize>true</Optimize> -->
+        <DefineConstants>PC</DefineConstants>
+        <!-- <DefineConstants>ANDROID</DefineConstants> -->
     </PropertyGroup>
 
     <ItemGroup>
@@ -36,8 +36,8 @@
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
 
-        <PackageReference Condition="'$(Platform)' == 'Android'" Include="AmongUs.GameLibs.Android" Version="2025.3.28" PrivateAssets="all" />
-        <PackageReference Condition="'$(Platform)' == 'AnyCPU'" Include="AmongUs.GameLibs.Steam" Version="2025.4.15" PrivateAssets="all" />
+        <!-- <PackageReference Include="AmongUs.GameLibs.Android" Version="2025.3.28" PrivateAssets="all" /> --> <!-- Android Version -->
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.4.15" PrivateAssets="all" /> <!-- PC Version -->
 
         <EmbeddedResource Include="Resources\*" />
     </ItemGroup>

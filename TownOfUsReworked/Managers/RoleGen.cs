@@ -562,6 +562,8 @@ public static class RoleGenManager
         BetterAirship.SpawnPoints.Clear();
 
         // BaseStatus.AllStatuses.Clear();
+
+        Mafia.Mafias.Clear();
     }
 
     public static void ResetEverything()

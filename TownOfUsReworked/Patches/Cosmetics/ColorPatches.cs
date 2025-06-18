@@ -107,7 +107,7 @@ public static class PlayerTabPatches
     //     if (VisorsActive && __instance.AvailableColors.Remove(__instance.currentColor))
     //     {
     //         ReworkedDataManager.VisorColorId = __instance.currentColor;
-    //         __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+    //         __instance.PlayerPreview.UpdateFromDataManager(MaskType.None);
     //         return false;
     //     }
 
@@ -123,7 +123,7 @@ public static class PlayerTabPatches
     //     __instance.UpdateAvailableColors();
     //     __instance.currentColor = colorId;
     //     PlayerCustomizationMenu.Instance.SetItemName(Palette.GetColorName(colorId));
-    //     __instance.PlayerPreview.UpdateFromDataManager(PlayerMaterial.MaskType.None);
+    //     __instance.PlayerPreview.UpdateFromDataManager(MaskType.None);
     //     return false;
     // }
 }

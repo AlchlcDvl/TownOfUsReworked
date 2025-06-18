@@ -1,7 +1,8 @@
 global using AmongUs.Data;
 global using AmongUs.GameOptions;
-global using TaskInfo = NetworkedPlayerInfo.TaskInfo;
+global using MaskType = PlayerMaterial.MaskType;
 global using TBMode = AmongUs.GameOptions.TaskBarMode;
+global using CosmeticKind = CosmeticsLayer.CosmeticKind;
 global using PlayerOutfit = NetworkedPlayerInfo.PlayerOutfit;
 
 global using BepInEx;
@@ -10,17 +11,17 @@ global using BepInEx.Configuration;
 global using BepInEx.Unity.IL2CPP.Utils;
 global using BepInEx.Unity.IL2CPP.Utils.Collections;
 
-global using Il2CppInterop.Runtime;
-global using Il2CppInterop.Runtime.Injection;
-global using Il2CppInterop.Runtime.Attributes;
-global using Il2CppInterop.Runtime.InteropTypes;
-global using Il2CppInterop.Runtime.InteropTypes.Arrays;
-
 global using Reactor;
 global using Reactor.Utilities;
 global using Reactor.Networking;
 global using Reactor.Utilities.Extensions;
 global using Reactor.Networking.Attributes;
+
+global using Il2CppInterop.Runtime;
+global using Il2CppInterop.Runtime.Injection;
+global using Il2CppInterop.Runtime.Attributes;
+global using Il2CppInterop.Runtime.InteropTypes;
+global using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 global using TownOfUsReworked.Data;
 global using TownOfUsReworked.RPCs;

@@ -40,8 +40,12 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// <param name="msg">The network writer to serialise the data to.</param>
     public override void SerializeRpcValues(MessageWriter msg)
     {
-        msg.Write(true); // Flag for a late message, because AU currently does not have implementations of a targeted late rpc
-        msg.WritePacked(TargetClientId); // Target client id
+        var flag = TargetClientId != -1;
+        msg.Write(flag); // Flag for a late message, because AU currently does not have implementations of a targeted late rpc
+
+        if (flag)
+            msg.WritePacked(TargetClientId); // Target client id
+
         msg.WriteBytesAndSize(Payload); // Actual rpc stuff
     }
 }

@@ -31,9 +31,9 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
         panel.PlayerIcon.ToggleName(false);
         panel.GetComponentsInChildren<SpriteRenderer>().Do(x => x.material.SetInt(PlayerMaterial.MaskLayer, index + 2));
         panel.PlayerIcon.SetMaskLayer(index + 2);
-        panel.PlayerIcon.cosmetics.SetMaskType(PlayerMaterial.MaskType.ComplexUI);
-        panel.PlayerIcon.Hands.Do(x => x.sharedMaterial = CosmeticsLayer.GetBodyMaterial(PlayerMaterial.MaskType.ComplexUI));
-        panel.PlayerIcon.OtherBodySprites.Do(x => x.sharedMaterial = CosmeticsLayer.GetBodyMaterial(PlayerMaterial.MaskType.ComplexUI));
+        panel.PlayerIcon.cosmetics.SetMaskType(MaskType.ComplexUI);
+        panel.PlayerIcon.Hands.Do(x => x.sharedMaterial = CosmeticsLayer.GetBodyMaterial(MaskType.ComplexUI));
+        panel.PlayerIcon.OtherBodySprites.Do(x => x.sharedMaterial = CosmeticsLayer.GetBodyMaterial(MaskType.ComplexUI));
         var dictEntry = LayerDictionary[layer];
         PlayerMaterial.SetColors(dictEntry.Color, panel.PlayerIcon.cosmetics.currentBodySprite.BodySprite);
         panel.LevelNumberText.transform.parent.gameObject.SetActive(false);

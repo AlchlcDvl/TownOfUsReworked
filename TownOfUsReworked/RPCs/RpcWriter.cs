@@ -26,7 +26,7 @@ public sealed class RpcWriter : IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="RpcWriter"/> class for writing byte data.
     /// </summary>
-    /// <param name="rpc">The main RPC header enum value for this message.</param>
+    /// <param name="rpc">The sub RPC header enum value for this message.</param>
     /// <param name="withTypeCode">A flag indicating whether type codes should be used for initial data serialization.</param>
     /// <param name="data">Optional initial data to serialize into the buffer during initialization.</param>
     public RpcWriter(Enum rpc, bool withTypeCode, params object[] data)
@@ -40,12 +40,10 @@ public sealed class RpcWriter : IDisposable
             VanillaRpc => ReworkedRpc.Vanilla,
             // TestRpc => ReworkedRpc.Test,
             ReworkedRpc => throw new InvalidOperationException("Can't use ReworkedRpc in this context"),
-            _ => throw new InvalidDataException($"Unknown Rpc Enum {rpc.GetType().Name} is being used")
+            _ => throw new InvalidDataException($"Unknown enum {rpc.GetType().Name} is being used")
         };
         Payload[Position++] = (byte)header;
-
-        foreach (var b in GetBytes(rpc, withTypeCode))
-            Payload[Position++] = b;
+        Payload[Position++] = (byte)Convert.ChangeType(rpc, typeof(byte)); // This is always byte and known so no blind deserialisation until here
 
         foreach (var b in data.SelectMany(x => GetBytes(x, withTypeCode)))
             Payload[Position++] = b;

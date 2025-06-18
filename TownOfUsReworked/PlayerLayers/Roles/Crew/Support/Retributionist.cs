@@ -597,8 +597,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool SherException(PlayerControl player) => (Handler.CurrentFaction.IsFactionedEvil(true) && player.Is(Handler.CurrentFaction) && GameModifiers.FactionSeeRoles) ||
-        Player.KnowsRoleOf(player);
+    private bool SherException(PlayerControl player) => Player.KnowsRoleOf(player);
 
     private bool SherUsable() => IsSher;
 

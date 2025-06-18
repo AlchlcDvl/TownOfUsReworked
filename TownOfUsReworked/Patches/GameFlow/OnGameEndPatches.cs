@@ -113,7 +113,7 @@ public static class OnGameEndPatches
                 else
                     poolablePlayer.SetFlipX(i % 2 == 0);
 
-                poolablePlayer.UpdateFromPlayerOutfit(cachedPlayerData2.Outfit, PlayerMaterial.MaskType.None, cachedPlayerData2.IsDead, true);
+                poolablePlayer.UpdateFromPlayerOutfit(cachedPlayerData2.Outfit, MaskType.None, cachedPlayerData2.IsDead, true);
                 poolablePlayer.ToggleName(true);
                 var role = Winners[cachedPlayerData2.PlayerName].First();
                 poolablePlayer.SetName($"<size=75%>{role}</size>\n<size=90%>{cachedPlayerData2.PlayerName}</size>", vector.Inv(), role.Color, -15f);
