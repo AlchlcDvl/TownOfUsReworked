@@ -27,7 +27,6 @@ public sealed class Medium : Investigative, IShaman
 
     private CustomButton MediateButton;
     // private CustomButton SeanceButton;
-    // public bool HasSeanced;
 
     public HashSet<byte> MediatedPlayers { get; } = [];
     private readonly Dictionary<byte, PlayerArrow> MediateArrows = [];
@@ -112,7 +111,7 @@ public sealed class Medium : Investigative, IShaman
 
         MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
         MediatedPlayers.Add(dead.PlayerId);
-        CallRpc(ActionsRpc.LayerAction, this, dead.PlayerId);
+        PerformRpcAction(dead.PlayerId);
     }
 
     public override void ReadRPC(RpcReader reader)

@@ -74,7 +74,7 @@ public static class CheckEndGame
         if (hexer.Player.HasDied())
             return;
 
-        var faction = hexer.Faction;
+        var faction = hexer.Handler.CurrentFaction;
         Func<PlayerControl, bool> factionCheck = faction switch
         {
             Faction.Outcast => hexer.Handler.CurrentDisposition switch
@@ -113,9 +113,9 @@ public static class CheckEndGame
                 Defector => WinLose.DefectorWins,
                 _ => WinLose.NobodyWins
             },
-            _ => WinLose.NobodyWins
+            _ => WinLoseGroupMappings.TryGetValue(hexer.Handler.CurrentFaction, out var winLose) ? winLose : WinLose.SoloWin
         };
-        CallRpc(MiscRpc.WinLose, [WinState, .. players.Where(factionCheck)]);
+        CallRpc(MiscRpc.WinLose, [WinState, .. players.Where(factionCheck).Except(hexer.Player), hexer.PlayerId]);
     }
 
     private static void CheckFactionWin(HashSet<byte> winnerIds)
@@ -130,7 +130,7 @@ public static class CheckEndGame
     }
 
     private static readonly Faction[] FactionsToKill = [ .. Enum.GetValues<Faction>().Except([ Faction.None, Faction.Outcast, Faction.GameMode ]) ];
-    private static readonly Dictionary<Enum, WinLose> WinLoseGroupMappings = FactionsToKill.Cast<Enum>()
+    private static readonly Dictionary<Faction, WinLose> WinLoseGroupMappings = FactionsToKill
         .ToDictionary(
             x => x,
             x => Enum.GetValues<WinLose>().FirstOrDefault(y => y.ToString().StartsWith(x.ToString())));

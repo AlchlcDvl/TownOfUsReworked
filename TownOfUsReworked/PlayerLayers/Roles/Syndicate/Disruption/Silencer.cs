@@ -48,7 +48,7 @@ public sealed class Silencer : Disruption, IIntimidator
         if (cooldown != CooldownType.Fail)
         {
             Target = target;
-            CallRpc(ActionsRpc.LayerAction, this, Target);
+            PerformRpcAction(Target);
 
             if (target.IsBlackmailed())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");
@@ -57,7 +57,7 @@ public sealed class Silencer : Disruption, IIntimidator
         SilenceButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == Target || (!SilenceMates && Player.IsBuddyWith(player, Faction));
+    private bool Exception1(PlayerControl player) => player == Target || (!SilenceMates && Player.IsBuddyWith(player, Handler.CurrentFaction));
 
     public override void ReadRPC(RpcReader reader) => Target = reader.ReadPlayer();
 }

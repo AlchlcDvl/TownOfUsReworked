@@ -209,7 +209,7 @@ public sealed class Warper : SSupport, IMover
             WarpMenu.Open();
         else
         {
-            CallRpc(ActionsRpc.LayerAction, this, WarpActionsRPC.Single, WarpMenu.Selected[0], WarpMenu.Selected[1]);
+            PerformRpcAction(WarpActionsRPC.Single, WarpMenu.Selected[0], WarpMenu.Selected[1]);
             Coroutines.Start(WarpPlayers(PlayerById(WarpMenu.Selected[0]), PlayerById(WarpMenu.Selected[1]), this));
             WarpMenu.Selected.Clear();
             WarpButton.StartCooldown();

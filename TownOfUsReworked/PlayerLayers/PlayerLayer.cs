@@ -415,6 +415,12 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
         CheckWin(winnerIds);
     }
 
+    /// <summary>
+    /// Performs a networked action associated with the layer.
+    /// </summary>
+    /// <param name="args">Additional data to be communicated with the players.</param>
+    public void PerformRpcAction(params object[] args) => CallRpc(ActionsRpc.LayerAction, [this, .. args]);
+
     /// <inheritdoc/>
     public bool Equals(PlayerLayer other) => other && other!.Player == Player && Type == other.Type;
 

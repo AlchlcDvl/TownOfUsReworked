@@ -69,7 +69,7 @@ public sealed class Poisoner : SKilling
         Message("Removed a target");
     }
 
-    private bool Exception1(PlayerControl player) => player == PoisonedPlayer || Player.IsBuddyWith(player, Faction);
+    private bool Exception1(PlayerControl player) => player == PoisonedPlayer || Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private void HitPoison(PlayerControl target)
     {

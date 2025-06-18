@@ -7,7 +7,7 @@ public abstract class OKilling : Outcast
     {
         get
         {
-            var part = Faction switch
+            var part = Handler.CurrentFaction switch
             {
                 Faction.Compliance => ComplianceSettings.ComplianceVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
@@ -23,6 +23,7 @@ public abstract class OKilling : Outcast
             : (OutcastKillingSettings.WinSolo
                 ? Faction.Outcast : ActualFaction));
     public override Alignment Alignment => Alignment.Killing;
+    public override bool SheriffSeesAsEvil => Sheriff.NeutKillingRed;
 
     protected abstract Faction ActualFaction { get; }
 }

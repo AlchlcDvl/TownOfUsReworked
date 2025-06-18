@@ -68,7 +68,7 @@ public sealed class Drunkard : Disruption
             ConfuseMenu.Open();
     }
 
-    private bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (ConfuseImmunity && Player.IsBuddyWith(player, Faction));
+    private bool Exception1(PlayerControl player) => player == ConfusedPlayer || player == Player || (ConfuseImmunity && Player.IsBuddyWith(player, Handler.CurrentFaction));
 
     private string Label() => ConfusedPlayer || HoldsDrive ? "CONFUSE" : "SET TARGET";
 

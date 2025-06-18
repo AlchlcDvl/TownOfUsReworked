@@ -16,10 +16,9 @@ public abstract class Role : PlayerLayer
     public virtual bool AffectedByLights => true;
     public virtual bool CanSwitchVents => true;
 
-    public Faction Faction => Handler.CurrentFaction;
     public UColor FactionColor { get; set; }
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
-    public virtual string FactionName => $"{Faction}";
+    public virtual string FactionName => $"{Handler.CurrentFaction}";
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
@@ -49,28 +48,6 @@ public abstract class Role : PlayerLayer
             PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
     }
 
-    public void UpdateButtons()
-    {
-        try
-        {
-            var hud = HUD();
-
-            hud.SabotageButton.graphic.sprite = GetSprite($"{Faction}Sabotage");
-            hud.SabotageButton.graphic.SetCooldownNormalizedUvs();
-
-            hud.ImpostorVentButton.graphic.sprite = GetSprite($"{Faction}Vent");
-            hud.ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
-
-            hud.ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
-            hud.UseButton.buttonLabelText.SetOutlineColor(FactionColor);
-            hud.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
-            hud.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
-            hud.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-
-            Player.GetButtons().Do(x => x.UpdateSprite());
-        } catch {}
-    }
-
     public virtual List<PlayerControl> Team()
     {
         var team = new List<PlayerControl>() { Player };
@@ -89,7 +66,7 @@ public abstract class Role : PlayerLayer
             }
         }
 
-        if (Faction == Faction.Cabal && Alignment != Alignment.Neophyte)
+        if (Handler.CurrentFaction == Faction.Cabal && Alignment != Alignment.Neophyte)
         {
             var jackal = Player.GetJackal();
             team.Add(jackal.Player);
@@ -98,8 +75,6 @@ public abstract class Role : PlayerLayer
 
         return team;
     }
-
-    public override void OnIntroEnd() => UpdateButtons();
 
     private bool BombUsable() => Bombed;
 
@@ -124,14 +99,12 @@ public abstract class Role : PlayerLayer
             ButtonUtils.Reset();
             Player.RegenTask();
             Flash(Color);
-            UpdateButtons();
         }
 
         if (LocalPlayer.Is<Seer>(out var seer))
             Flash(seer.Color);
 
-        if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
-            handler.SetUpLayers(inherit);
+        Handler.SetUpLayers(inherit);
     }
 
     public override void UpdateMap(MapBehaviour __instance) => __instance.ColorControl.SetColor(Color);
@@ -163,5 +136,7 @@ public abstract class Role : PlayerLayer
         CallRpc(ActionsRpc.ForceKill, Player, success);
     }
 
-    public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Faction == faction && !x.Deinitialised);
+    public static IEnumerable<Role> GetRoles(Faction faction) => GetLayers<Role>().Where(x => x.Handler.CurrentFaction == faction && !x.Deinitialised);
+
+    public static IEnumerable<Role> GetBaseFactionRoles(Faction faction) => GetLayers<Role>().Where(x => x.BaseFaction == faction && !x.Deinitialised);
 }

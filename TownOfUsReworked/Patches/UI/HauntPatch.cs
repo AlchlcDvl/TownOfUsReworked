@@ -88,8 +88,8 @@ public static class FilterInlinePatch
         var role = pc.GetRole();
         __result = __instance.__4__this.filterMode switch
         {
-            HauntMenuMinigame.HauntFilters.Impostor => role.Faction is not (Faction.Crew or Faction.Outcast or Faction.GameMode) || role is Hunter or OKilling or Neophyte or Betrayer,
-            HauntMenuMinigame.HauntFilters.Crewmate => role.Faction is Faction.Crew || role.Alignment is Alignment.Benign or Alignment.Evil or Alignment.Proselyte || role is Hunted,
+            HauntMenuMinigame.HauntFilters.Impostor => role.Handler.CurrentFaction.IsFactionedEvil() || role is Hunter,
+            HauntMenuMinigame.HauntFilters.Crewmate => role.Handler.CurrentFaction is Faction.Crew || role.Alignment is Alignment.Benign or Alignment.Evil or Alignment.Proselyte || role is Hunted,
             HauntMenuMinigame.HauntFilters.Ghost => !role.Alive,
             _ => true
         };

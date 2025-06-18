@@ -53,7 +53,7 @@ public sealed class Grenadier : Concealing
             ActiveTask().Close();
     }
 
-    private bool ShouldPlayerBeDimmed(PlayerControl player) => Meeting() || player.HasDied() || Player.IsBuddyWith(player, Faction) || player == Player;
+    private bool ShouldPlayerBeDimmed(PlayerControl player) => Meeting() || player.HasDied() || Player.IsBuddyWith(player, Handler.CurrentFaction) || player == Player;
 
     private void UnFlash() => FlashedPlayers.Clear();
 

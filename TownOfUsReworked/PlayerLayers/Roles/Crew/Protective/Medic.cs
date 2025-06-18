@@ -38,7 +38,7 @@ public sealed class Medic : Protective, IShielder
         if (cooldown != CooldownType.Fail)
         {
             ShieldedPlayer = ShieldedPlayer ? null : target;
-            CallRpc(ActionsRpc.LayerAction, this, ShieldedPlayer?.PlayerId ?? 255);
+            PerformRpcAction(ShieldedPlayer?.PlayerId ?? 255);
         }
 
         ShieldButton.StartCooldown(cooldown);

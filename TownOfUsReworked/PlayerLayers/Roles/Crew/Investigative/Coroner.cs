@@ -52,7 +52,7 @@ public sealed class Coroner : Investigative, IExaminer
 
         var role = handler.CurrentRole;
         color = role.Color;
-        name += $"\n{(CoronerReportRole ? role : role.Faction)}";
+        name += $"\n{(CoronerReportRole ? role : handler.CurrentFaction)}";
         revealed = true;
     }
 

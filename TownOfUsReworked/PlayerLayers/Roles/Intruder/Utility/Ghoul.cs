@@ -35,15 +35,15 @@ public sealed class Ghoul : IUtility, IGhosty
 
     private void Mark(PlayerControl target)
     {
-        CallRpc(ActionsRpc.LayerAction, this, MarkedPlayer);
+        PerformRpcAction(MarkedPlayer);
         MarkButton.StartCooldown();
     }
 
     private bool Usable() => !Caught && !MarkedPlayer;
 
-    private bool Exception1(PlayerControl player) => player == MarkedPlayer || Player.IsBuddyWith(player, Faction);
+    private bool Exception1(PlayerControl player) => player == MarkedPlayer || Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     public override void ReadRPC(RpcReader reader) => MarkedPlayer = reader.ReadPlayer();
 
-    public bool CanBeClicked(PlayerControl clicker) => !clicker.Is(Faction);
+    public bool CanBeClicked(PlayerControl clicker) => !clicker.IsBuddyWith(Player, Handler.CurrentFaction);
 }

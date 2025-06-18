@@ -23,10 +23,6 @@ public static class MiscUtils
     //     _ => m?.TryGetComponent<SpriteRenderer>(out var rend) == true ? rend : m?.GetComponentInChildren<SpriteRenderer>()
     // };
 
-    public static bool IsImpostor(this NetworkedPlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
-
-    public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.IsImpostor() == true;
-
     public static float MultiLerp(float[] values, float t)
     {
         if (values.Length < 2)
@@ -190,13 +186,13 @@ public static class MiscUtils
                 swapper.Swap1 = null;
                 swapper.Swap2 = null;
                 swapper.SwapMenu.HideButtons();
-                CallRpc(ActionsRpc.LayerAction, swapper, 255, 255);
+                swapper.PerformRpcAction(255, 255);
             }
             else if (target.Is<Dictator>(out var dict))
             {
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected = null;
-                CallRpc(ActionsRpc.LayerAction, dict, DictActionsRpc.SelectToEject, 255);
+                dict.PerformRpcAction(DictActionsRpc.SelectToEject, 255);
             }
             else if (target.Is<Retributionist>(out var ret))
                 ret.RetMenu.HideButtons();
@@ -223,7 +219,7 @@ public static class MiscUtils
                         swapper.Swap2 = null;
 
                     swapper.SwapMenu.Actives[target.PlayerId] = false;
-                    CallRpc(ActionsRpc.LayerAction, swapper, 255, 255);
+                    swapper.PerformRpcAction(255, 255);
                 }
 
                 swapper.SwapMenu.HideSingle(target.PlayerId);
@@ -234,7 +230,7 @@ public static class MiscUtils
                 {
                     dict.ToBeEjected = null;
                     dict.DictMenu.Actives.Keys.Do(x => dict.DictMenu.Actives[x] = false);
-                    CallRpc(ActionsRpc.LayerAction, dict, DictActionsRpc.SelectToEject, dict.ToBeEjected);
+                    dict.PerformRpcAction(DictActionsRpc.SelectToEject, dict.ToBeEjected);
                 }
 
                 dict.DictMenu.HideSingle(target.PlayerId);
@@ -277,7 +273,7 @@ public static class MiscUtils
             {
                 var votesRegained = pol.ExtraVotes.RemoveAll(x => x == target.PlayerId);
                 pol.VoteBank += votesRegained;
-                CallRpc(ActionsRpc.LayerAction, pol, PoliticianActionsRpc.Add, votesRegained);
+                pol.PerformRpcAction(PoliticianActionsRpc.Add, votesRegained);
             }
         }
 

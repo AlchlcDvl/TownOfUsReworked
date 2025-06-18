@@ -274,7 +274,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
             return;
 
         Revived = PlayerByVoteArea(Selected);
-        CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Revive, Selected);
+        PerformRpcAction(RetActionsRpc.Revive, Selected);
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -562,7 +562,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
         MediateArrows.Add(dead.PlayerId, new(Player, PlayerById(dead.PlayerId), Color, skipBody: true));
         MediatedPlayers.Add(dead.PlayerId);
-        CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Mediate, dead.PlayerId);
+        PerformRpcAction(RetActionsRpc.Mediate, dead.PlayerId);
     }
 
     private bool MedUsable() => IsMed;
@@ -597,7 +597,8 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool SherException(PlayerControl player) => (Faction.IsFactionedEvil(true) && player.Is(Faction) && GameModifiers.FactionSeeRoles) || Player.KnowsRoleOf(player);
+    private bool SherException(PlayerControl player) => (Handler.CurrentFaction.IsFactionedEvil(true) && player.Is(Handler.CurrentFaction) && GameModifiers.FactionSeeRoles) ||
+        Player.KnowsRoleOf(player);
 
     private bool SherUsable() => IsSher;
 
@@ -626,7 +627,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
     private void Shoot(PlayerControl target) => ShootButton.StartCooldown(Interact(Player, target, true));
 
-    private bool VigiException(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool VigiException(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool VigUsable() => IsVig;
 
@@ -715,7 +716,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         if (cooldown != CooldownType.Fail)
         {
             ShieldedPlayer = ShieldedPlayer ? null : target;
-            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Shield, ShieldedPlayer?.PlayerId ?? 255);
+            PerformRpcAction(RetActionsRpc.Shield, ShieldedPlayer?.PlayerId ?? 255);
         }
 
         ShieldButton.StartCooldown(cooldown);
@@ -766,12 +767,12 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash((!target.Is(Faction) && !target.Is(Faction.Crew)) || target.IsFramed() ? UColor.red : UColor.green);
+            Flash((!target.Is(Handler.CurrentFaction) && !target.Is(Faction.Crew)) || target.IsFramed() ? UColor.red : UColor.green);
 
         RevealButton.StartCooldown(cooldown);
     }
 
-    private bool MysticException(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool MysticException(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool MysUsable() => IsMys;
 
@@ -870,7 +871,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         }
         else
         {
-            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Transport, TransportMenu.Selected[0], TransportMenu.Selected[1]);
+            PerformRpcAction(RetActionsRpc.Transport, TransportMenu.Selected[0], TransportMenu.Selected[1]);
             Coroutines.Start(Transporter.TransportPlayers(PlayerById(TransportMenu.Selected[0]), PlayerById(TransportMenu.Selected[1]), this));
             TransportMenu.Selected.Clear();
             TransportButton.StartCooldown();
@@ -891,7 +892,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
         if (cooldown != CooldownType.Fail)
         {
             BombedIDs.Add(target.Id);
-            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Bomb, target);
+            PerformRpcAction(RetActionsRpc.Bomb, target);
         }
 
         BombButton.StartCooldown(cooldown);
@@ -928,7 +929,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Place, target.PlayerId);
+            PerformRpcAction(RetActionsRpc.Place, target.PlayerId);
             Trapped.Add(target.PlayerId);
         }
 
@@ -943,7 +944,7 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
             return;
 
         if (trigger.AmOwner)
-            CallRpc(ActionsRpc.LayerAction, this, RetActionsRpc.Trigger, trapped, trigger, isAttack);
+            PerformRpcAction(RetActionsRpc.Trigger, trapped, trigger, isAttack);
 
         TriggeredRoles.Add(trigger.GetRole().Type);
         AttackedSomeone = isAttack;

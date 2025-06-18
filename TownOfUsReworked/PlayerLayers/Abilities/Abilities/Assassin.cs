@@ -281,7 +281,7 @@ public abstract class Assassin : Ability, IGuesser
     private void RpcMurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(ActionsRpc.LayerAction, this, player, guess, guessTarget);
+        PerformRpcAction(player, guess, guessTarget);
     }
 
     private void MurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)

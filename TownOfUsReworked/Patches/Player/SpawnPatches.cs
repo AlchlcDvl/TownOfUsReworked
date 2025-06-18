@@ -77,7 +77,7 @@ public static class SpawnPatches
         ButtonUtils.Reset(intro ? CooldownType.Start : CooldownType.Meeting);
         RandomSpawn(intro, meeting);
         var role = LocalPlayer.GetRole();
-        role.UpdateButtons();
+        role.Handler.UpdateButtons();
         LocalPlayer.RegenTask();
         var hud = HUD();
 

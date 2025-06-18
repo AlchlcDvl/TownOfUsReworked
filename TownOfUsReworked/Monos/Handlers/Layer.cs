@@ -56,7 +56,7 @@ public sealed class LayerHandler : RoleBehaviour
             };
 
             if (Local)
-                CurrentRole.UpdateButtons();
+                UpdateButtons();
 
             if (field != Faction.None)
             {
@@ -311,6 +311,32 @@ public sealed class LayerHandler : RoleBehaviour
             Positions.Clear();
     }
 
+    public void UpdateButtons()
+    {
+        try
+        {
+            var hud = HUD();
+
+            hud.SabotageButton.graphic.sprite = GetSprite($"{CurrentFaction}Sabotage");
+            hud.SabotageButton.graphic.SetCooldownNormalizedUvs();
+
+            hud.ImpostorVentButton.graphic.sprite = GetSprite($"{CurrentFaction}Vent");
+            hud.ImpostorVentButton.graphic.SetCooldownNormalizedUvs();
+
+            hud.ReportButton.buttonLabelText.SetOutlineColor(CurrentRole.FactionColor);
+            hud.UseButton.buttonLabelText.SetOutlineColor(CurrentRole.FactionColor);
+            hud.PetButton.buttonLabelText.SetOutlineColor(CurrentRole.FactionColor);
+            hud.ImpostorVentButton.buttonLabelText.SetOutlineColor(CurrentRole.FactionColor);
+            hud.SabotageButton.buttonLabelText.SetOutlineColor(CurrentRole.FactionColor);
+
+            foreach (var button in Buttons)
+            {
+                button.SetActive();
+                button.UpdateSprite();
+            }
+        } catch {}
+    }
+
     private void DestroyArrowD(byte targetPlayerId)
     {
         if (DeadArrows.Remove(targetPlayerId, out var arrow))
@@ -356,7 +382,7 @@ public sealed class LayerHandler : RoleBehaviour
         InitializeAbilityButton();
 
         if (player.AmOwner && !TutorialManager.InstanceExists && !TownOfUsReworked.MciActive)
-            CustomStatsManager.IncrementStat(CurrentRole.Faction);
+            CustomStatsManager.IncrementStat(CurrentFaction);
     }
 
     public override void OnMeetingStart()
@@ -399,7 +425,7 @@ public sealed class LayerHandler : RoleBehaviour
     public override bool CanUse(IUsable console)
     {
         // This is such a cheesy way to handle this omg
-        var isCrew = CurrentRole.Faction is Faction.Outcast or Faction.Crew || (CurrentRole.Faction == Faction.GameMode && CurrentRole.Type != Layer.Hunter);
+        var isCrew = CurrentFaction is Faction.Outcast or Faction.Crew || (CurrentFaction == Faction.GameMode && CurrentRole.Type != Layer.Hunter);
         var role = IsDead ? (isCrew ? CrewmateGhost : ImpostorGhost) : (isCrew ? Crewmate : Impostor);
         role.Player = Player;
         var result = role.CanUse(console);

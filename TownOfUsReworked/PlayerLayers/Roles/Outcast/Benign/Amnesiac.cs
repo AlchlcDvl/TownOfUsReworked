@@ -55,7 +55,7 @@ public sealed class Amnesiac : Benign
     {
         var player = PlayerByBody(target);
         Spread(Player, player);
-        CallRpc(ActionsRpc.LayerAction, this, player);
+        PerformRpcAction(player);
         Remember(player);
     }
 
@@ -160,7 +160,7 @@ public sealed class Amnesiac : Benign
             Amnesiac or _ => new Amnesiac(),
         };
 
-        newRole.RoleUpdate(this, player, Faction == Faction.Outcast);
+        newRole.RoleUpdate(this, player, Handler.CurrentFaction == Faction.Outcast);
 
         switch (role)
         {

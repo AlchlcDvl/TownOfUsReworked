@@ -3,6 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Evil : Outcast
 {
     public override Alignment Alignment => Alignment.Evil;
+    public override bool SheriffSeesAsEvil => Sheriff.NeutEvilRed;
 
     protected override void CheckWin(HashSet<byte> winnerIds)
     {

@@ -42,13 +42,13 @@ public sealed class Void : Deity
         if (cooldown != CooldownType.Fail)
         {
             ToBeExtracted.Add(target.PlayerId);
-            CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
+            PerformRpcAction(target.PlayerId);
         }
 
         ExtractButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     public override void ReadRPC(RpcReader reader) => ToBeExtracted.Add(reader.ReadByte());
 }

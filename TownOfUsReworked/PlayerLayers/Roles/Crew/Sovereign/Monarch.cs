@@ -52,7 +52,7 @@ public sealed class Monarch : Sovereign
         if (cooldown != CooldownType.Fail)
         {
             ToBeKnighted.Add(target.PlayerId);
-            CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
+            PerformRpcAction(target.PlayerId);
 
             if (target.Is<Sovereign>(out var rev) && !rev.Revealed)
                 CustomAchievementManager.UnlockAchievement("HiddenAlliance");

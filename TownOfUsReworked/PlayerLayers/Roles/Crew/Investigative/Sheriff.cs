@@ -7,6 +7,9 @@ public sealed class Sheriff : Investigative
     public static Number InterrogateCd = 25;
 
     [ToggleOption]
+    public static bool NeutBenRed = false;
+
+    [ToggleOption]
     public static bool NeutEvilRed = false;
 
     [ToggleOption]
@@ -39,5 +42,5 @@ public sealed class Sheriff : Investigative
         InterrogateButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => (Faction.IsFactionedEvil(true) && player.Is(Faction)) || Player.KnowsRoleOf(player);
+    private bool Exception(PlayerControl player) => (Handler.CurrentFaction.IsFactionedEvil(true) && player.Is(Handler.CurrentFaction)) || Player.KnowsRoleOf(player);
 }

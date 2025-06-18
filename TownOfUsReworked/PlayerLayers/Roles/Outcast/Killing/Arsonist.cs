@@ -120,11 +120,10 @@ public sealed class Arsonist : OKilling, IDouser
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
+        PerformRpcAction(target.PlayerId);
     }
 
-    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(Faction) && Faction is not
-        (Faction.Crew or Faction.Outcast)) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || player.IsBuddyWith(Player, Handler.CurrentFaction);
 
     public override void ReadRPC(RpcReader reader)
     {

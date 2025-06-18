@@ -60,7 +60,7 @@ public sealed class Janitor : Concealing
     {
         target.GetComponent<DeadBodyHandler>().StartDrag(Player);
         Spread(Player, PlayerByBody(target));
-        CallRpc(ActionsRpc.LayerAction, this, target);
+        PerformRpcAction(target);
     }
 
     public void Drop()
@@ -83,7 +83,7 @@ public sealed class Janitor : Concealing
 
     private bool Usable2() => DeadBodyHandler.Dragging.Contains(PlayerId);
 
-    private float Difference() => Last(Faction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
+    private float Difference() => Last(Handler.CurrentFaction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
     public override void ReadRPC(RpcReader reader) => reader.ReadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
 

@@ -118,8 +118,8 @@ public sealed class Thief : Benign, IGuesser
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player.AmOwner) || (player.Is(Faction)
-            && Faction is not (Faction.Crew or Faction.Outcast)) || Player.IsLinkedTo(player);
+        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || Dead || (player == Player && player.AmOwner) ||
+            player.IsBuddyWith(Player, Handler.CurrentFaction);
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -156,7 +156,7 @@ public sealed class Thief : Benign, IGuesser
         }
     }
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private void Steal(PlayerControl target)
     {
@@ -171,7 +171,7 @@ public sealed class Thief : Benign, IGuesser
                 if (target.GetRole() is OKilling or IPromoter or Neophyte or Harbinger or Betrayer or CKilling)
                 {
                     Player.RpcMurderPlayer(target);
-                    CallRpc(ActionsRpc.LayerAction, this, ThiefActionsRpc.Steal, target);
+                    PerformRpcAction(ThiefActionsRpc.Steal, target);
                 }
                 else
                 {
@@ -250,7 +250,7 @@ public sealed class Thief : Benign, IGuesser
             Thief or _ => new Thief()
         };
 
-        newRole.RoleUpdate(this, player, Faction == Faction.Outcast);
+        newRole.RoleUpdate(this, player, Handler.CurrentFaction == Faction.Outcast);
 
         if (ThiefSteals)
             new Thief().RoleUpdate(role, target);
@@ -258,7 +258,7 @@ public sealed class Thief : Benign, IGuesser
         var local = LayerHandler.Handlers[LocalPlayer.PlayerId];
         var faction = local.CurrentFaction;
 
-        if (faction != Faction.Crew || (faction == Faction.Outcast && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
+        if (faction.IsFactionedEvil() || (faction == Faction.Outcast && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
         {
             var neut = faction == Faction.Outcast;
 
@@ -292,7 +292,7 @@ public sealed class Thief : Benign, IGuesser
     private void RpcMurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(ActionsRpc.LayerAction, this, ThiefActionsRpc.Guess, player, guess, guessTarget);
+        PerformRpcAction(ThiefActionsRpc.Guess, player, guess, guessTarget);
     }
 
     private void MurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)

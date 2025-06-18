@@ -324,7 +324,7 @@ public static class RoleGenManager
         Layer.Tunneler => VentingOptions.WhoCanVent == WhoCanVentOptions.Default && CrewSettings.CrewVent == CrewVenting.Never,
         Layer.Lovers => GameData.Instance.PlayerCount > 4,
         Layer.Rivals => GameData.Instance.PlayerCount > 3,
-        Layer.Linked => Role.GetRoles(Faction.Outcast).Count() > 1 && GameData.Instance.PlayerCount > 4,
+        Layer.Linked => Role.GetBaseFactionRoles(Faction.Outcast).Count() > 1 && GameData.Instance.PlayerCount > 4,
         Layer.Democrat => !Mayor.MayorDirectSpawn,
         Layer.Mayor => Mayor.MayorDirectSpawn,
         Layer.Allied => !BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.OrderOfCompliance,

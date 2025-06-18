@@ -25,11 +25,11 @@ public sealed class Cultist : Harbinger<Void>
             new Cooldown(SacrificeCd));
     }
 
-    private string GetSpriteName() => $"{Faction}Kill";
+    private string GetSpriteName() => $"{Handler.CurrentFaction}Kill";
 
     private void Sacrifice(PlayerControl target) => SacrificeButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     protected override bool CanTransform() => KillCounts.TryGetValue(PlayerId, out var count) && count >= 3;
 }

@@ -41,7 +41,7 @@ public sealed class Juggernaut : OKilling
         AssaultButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private float Difference() => -(AssaultBonus * KillCounts.GetValueOrDefault(PlayerId));
 }

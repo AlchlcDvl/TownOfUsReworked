@@ -7,7 +7,7 @@ public abstract class Neophyte : Outcast
     {
         get
         {
-            var part = Faction switch
+            var part = Handler.CurrentFaction switch
             {
                 Faction.Compliance => ComplianceSettings.ComplianceVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
@@ -21,6 +21,7 @@ public abstract class Neophyte : Outcast
         : (BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes
             ? Faction.Compliance : ActualFaction);
     public override Alignment Alignment => Alignment.Neophyte;
+    public override bool SheriffSeesAsEvil => Sheriff.NeutNeophyteRed;
 
     protected abstract Faction ActualFaction { get; }
 

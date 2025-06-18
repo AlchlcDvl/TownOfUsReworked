@@ -333,7 +333,7 @@ public sealed class AppearanceHandler : MonoBehaviour
 
         if (PlayerLayer.GetLayers<Timekeeper>().TryFinding([HideFromIl2Cpp] (x) => x.TimeButton.EffectActive, out var tk))
         {
-            if ((tk.Faction is not (Faction.Crew or Faction.Outcast) && !Player.Is(tk.Faction)) || (!tk.HoldsDrive && !Timekeeper.TimeFreezeImmunity) || (tk.HoldsDrive &&
+            if ((tk.Handler.CurrentFaction.IsFactionedEvil() && !Player.Is(tk.Handler.CurrentFaction)) || (!tk.HoldsDrive && !Timekeeper.TimeFreezeImmunity) || (tk.HoldsDrive &&
                 !Timekeeper.TimeRewindImmunity))
             {
                 result = 0f;

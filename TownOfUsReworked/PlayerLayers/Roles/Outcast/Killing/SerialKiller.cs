@@ -43,7 +43,7 @@ public sealed class SerialKiller : OKilling
 
     private void Stab(PlayerControl target) => StabButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool Usable() => BloodlustButton.EffectActive;
 

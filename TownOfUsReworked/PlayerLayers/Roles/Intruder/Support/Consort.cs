@@ -63,7 +63,7 @@ public sealed class Consort : ISupport, IBlocker
             BlockButton.TriggerRpcAndBegin(BlockTarget);
     }
 
-    private bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || Player.IsBuddyWith(player, Faction);
+    private bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private string Label() => BlockTarget ? "ROLEBLOCK" : "SET TARGET";
 

@@ -39,7 +39,7 @@ public sealed class Banshee : SUtility, IGhosty
     {
         foreach (var player in AllPlayers())
         {
-            if (!player.HasDied() && !Player.IsBuddyWith(player, Faction))
+            if (!player.HasDied() && !Player.IsBuddyWith(player, Handler.CurrentFaction))
                 Blocked.Add(player.PlayerId);
         }
     }
@@ -56,5 +56,5 @@ public sealed class Banshee : SUtility, IGhosty
 
     private bool EndEffect() => Caught;
 
-    public bool CanBeClicked(PlayerControl clicker) => !clicker.Is(Faction);
+    public bool CanBeClicked(PlayerControl clicker) => !clicker.IsBuddyWith(Player, Handler.CurrentFaction);
 }

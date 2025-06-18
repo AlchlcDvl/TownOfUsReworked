@@ -46,7 +46,7 @@ public sealed class Dictator : Sovereign
     public override void OnReveal()
     {
         if (Local)
-            CallRpc(ActionsRpc.LayerAction, this, DictActionsRpc.Tribunal);
+            PerformRpcAction(DictActionsRpc.Tribunal);
 
         Tribunal = true;
     }
@@ -56,7 +56,7 @@ public sealed class Dictator : Sovereign
         DictMenu.HideButtons();
 
         if (ToBeEjected && !Dead)
-            CallRpc(ActionsRpc.LayerAction, this, DictActionsRpc.SelectToEject, ToBeEjected);
+            PerformRpcAction(DictActionsRpc.SelectToEject, ToBeEjected);
     }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)

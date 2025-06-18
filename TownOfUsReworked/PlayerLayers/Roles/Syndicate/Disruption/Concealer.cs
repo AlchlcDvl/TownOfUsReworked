@@ -35,7 +35,7 @@ public sealed class Concealer : Disruption
 
     private void Conceal()
     {
-        var isBuddy = Player.IsBuddyWith(LocalPlayer, Faction);
+        var isBuddy = Player.IsBuddyWith(LocalPlayer, Handler.CurrentFaction);
 
         if (HoldsDrive)
             AllPlayers().Do(x => Invis(x, ConcealDur, EndEffect, isBuddy));
@@ -81,7 +81,7 @@ public sealed class Concealer : Disruption
             ConcealMenu.Open();
     }
 
-    private bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (!ConcealMates && Player.IsBuddyWith(player, Faction));
+    private bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (!ConcealMates && Player.IsBuddyWith(player, Handler.CurrentFaction));
 
     private string Label() => ConcealedPlayer || HoldsDrive ? "CONCEAL" : "SET TARGET";
 

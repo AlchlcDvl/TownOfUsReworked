@@ -114,7 +114,8 @@ public sealed class Shapeshifter : Disruption
 
     private bool Exception2(PlayerControl player) => player == ShapeshiftPlayer1 || CommonException(player);
 
-    private bool CommonException(PlayerControl player) => (player == Player && !ShapeshiftSelf) || (player.Data.IsDead && !BodyByPlayer(player)) || (!ShapeshiftMates && Player.IsBuddyWith(player, Faction));
+    private bool CommonException(PlayerControl player) => (player == Player && !ShapeshiftSelf) || (player.Data.IsDead && !BodyByPlayer(player)) || (!ShapeshiftMates &&
+        Player.IsBuddyWith(player, Handler.CurrentFaction));
 
     public override void UpdateHud(HudManager __instance)
     {

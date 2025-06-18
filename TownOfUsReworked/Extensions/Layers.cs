@@ -14,6 +14,10 @@ public static class LayerExtensions
     private static readonly string AttackColorString = $"<#{CustomColorManager.Attack.ToHtmlStringRGBA()}>";
     private static readonly string DefenseColorString = $"<#{CustomColorManager.Defense.ToHtmlStringRGBA()}>";
 
+    public static bool IsImpostor(this NetworkedPlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
+
+    public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.IsImpostor() == true;
+
     public static bool Is<T>(this PlayerControl player, out T layer) where T : IPlayerLayer => (layer = player.GetLayer<T>()) is not null;
 
     public static bool Is<T>(this PlayerControl player) where T : IPlayerLayer => player.Is<T>(out _);
@@ -50,7 +54,7 @@ public static class LayerExtensions
     public static bool Is(this PlayerControl player, Faction faction, Alignment alignment)
     {
         var role = player.GetRole();
-        return role?.Faction == faction && role?.Alignment == alignment;
+        return role?.Handler?.CurrentFaction == faction && role?.Alignment == alignment;
     }
 
     public static Faction GetFaction(this PlayerControl player)
@@ -100,18 +104,19 @@ public static class LayerExtensions
         if (TaskOptions.AllCanDoTasks)
             return true;
 
-        if (!player.Is<Role>(out var role))
+        if (!LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
             return !player.Data.IsImpostor();
 
-        var crewFlag = role.Faction == Faction.Crew;
-        var outcastFlag = role.Faction == Faction.Outcast;
-        var factionFlag = role.Faction.IsAny(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse, Faction.Compliance);
+        var faction = handler.CurrentFaction;
+        var crewFlag = faction == Faction.Crew;
+        var outcastFlag = faction == Faction.Outcast;
+        var factionFlag = faction.IsAny(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse, Faction.Compliance);
 
-        var phantomFlag = role is Phantom;
+        var phantomFlag = handler.CurrentRole is Phantom;
 
         var taskmasterFlag = player.Is<Taskmaster>();
 
-        var gmFlag = role is Runner or Hunted;
+        var gmFlag = handler.CurrentRole is Runner or Hunted;
 
         var flag1 = outcastFlag && (taskmasterFlag || phantomFlag);
         var flag2 = factionFlag && taskmasterFlag;
@@ -161,7 +166,7 @@ public static class LayerExtensions
 
             result = true;
             douser.Doused.Remove(player.PlayerId);
-            CallRpc(ActionsRpc.LayerAction, douser, DouseActionsRpc.UnDouse, player.PlayerId);
+            douser.PerformRpcAction(DouseActionsRpc.UnDouse, player.PlayerId);
         }
 
         return result;
@@ -263,14 +268,14 @@ public static class LayerExtensions
         if (playerInfo.IsDead)
             return player.Is<IGhosty>(out var ghost) && !ghost.Caught;
 
-        if (!player.Is<Role>(out var playerRole))
+        if (!LayerHandler.Handlers.TryGetValue(playerInfo.PlayerId, out var handler))
             return playerInfo.IsImpostor();
 
         var miscFactionFlag = false;
 
-        if (playerRole.Alignment != Alignment.Neophyte)
+        if (handler.CurrentRole.Alignment != Alignment.Neophyte)
         {
-            miscFactionFlag = playerRole.Faction switch
+            miscFactionFlag = handler.CurrentFaction switch
             {
                 Faction.Undead => Dracula.UndeadVent,
                 Faction.Cabal => Jackal.RecruitVent,
@@ -281,7 +286,7 @@ public static class LayerExtensions
             };
         }
 
-        return player.GetLayers().Any(x => x.CanVent) || miscFactionFlag;
+        return handler.CurrentLayers.Any(x => x.CanVent) || miscFactionFlag;
     }
 
     public static bool CanChat(this PlayerControl player)
@@ -312,17 +317,18 @@ public static class LayerExtensions
 
     public static bool SeemsEvil(this PlayerControl player)
     {
-        var role = player.GetRole();
-        var intruderFlag = role.Faction is Faction.Intruder or Faction.Illuminati or Faction.Pandorica && role is Intruder { IsPromoted: false };
-        var syndicateFlag = role.Faction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is Syndicate { IsPromoted: false, HoldsDrive: false };
-        var apocalypseFlag = role.Faction is Faction.Apocalypse or Faction.Illuminati or Faction.Pandorica && role is { Alignment: Alignment.Harbinger };
+        if (!LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+            return player.IsImpostor();
+
+        var role = handler.CurrentRole;
+        var intruderFlag = handler.CurrentFaction is Faction.Intruder or Faction.Illuminati or Faction.Pandorica && role is Intruder { IsPromoted: false };
+        var syndicateFlag = handler.CurrentFaction is Faction.Syndicate or Faction.Illuminati or Faction.Pandorica && role is Syndicate { IsPromoted: false, HoldsDrive: false };
+        var apocalypseFlag = handler.CurrentFaction is Faction.Apocalypse or Faction.Illuminati or Faction.Pandorica && role is { Alignment: Alignment.Harbinger };
         var changerFlag = player.GetDisposition() is FactionChanger { SheriffSwap: true, Turned: true };
-        var nkFlag = role.Alignment is Alignment.Killing && Sheriff.NeutKillingRed;
-        var neFlag = role.Alignment is Alignment.Evil && Sheriff.NeutEvilRed;
-        var nnFlag = role.Alignment is Alignment.Neophyte && Sheriff.NeutNeophyteRed;
+        var sherFlag = role is Outcast { SheriffSeesAsEvil: true };
         var framedFlag = player.IsFramed();
-        var compFlag = role.Faction == Faction.Compliance;
-        return intruderFlag || syndicateFlag || apocalypseFlag || changerFlag || nkFlag || neFlag || nnFlag || framedFlag || compFlag;
+        var compFlag = handler.CurrentFaction == Faction.Compliance;
+        return intruderFlag || syndicateFlag || apocalypseFlag || changerFlag || sherFlag || framedFlag || compFlag;
     }
 
     public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) ? lovers.Other : null;
@@ -368,7 +374,7 @@ public static class LayerExtensions
         {
             roleName += $"{role.ColorString}{role}</color>";
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
-            alignment += $"{role.FactionColorString}{role.Faction}({AlignmentColorString}{role.Alignment}</color>)</color>";
+            alignment += $"{role.FactionColorString}{role.Handler.CurrentFaction}({AlignmentColorString}{role.Alignment}</color>)</color>";
             attdef += $"{info.Max(x => x.Attack)}</color>/{DefenseColorString}{info.Max(x => x.Defense)}</color>";
         }
         else
@@ -437,7 +443,7 @@ public static class LayerExtensions
         if (player.IsBhTarget() && BountyHunter.BhTargetKnows)
             attributes += "\n<#B51E39FF>- There is a bounty on your head Θ</color>";
 
-        if (role is Syndicate { HoldsDrive: true, Faction: Faction.Syndicate or Faction.Pandorica or Faction.Illuminati })
+        if (role is Syndicate { HoldsDrive: true, Handler.CurrentFaction: Faction.Syndicate or Faction.Pandorica or Faction.Illuminati })
             attributes += "\n<#008000FF>- You have the power of the Chaos Drive Δ</color>";
 
         if (!player.CanDoTasks())
@@ -580,7 +586,7 @@ public static class LayerExtensions
         if (SyndicateSettings.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost)
             return;
 
-        var all = PlayerLayer.GetLayers<Syndicate>().Where(x => x is { Faction: Faction.Syndicate or Faction.Pandorica or Faction.Illuminati, Alive: true });
+        var all = PlayerLayer.GetLayers<Syndicate>().Where(x => x is { Handler.CurrentFaction: Faction.Syndicate or Faction.Pandorica or Faction.Illuminati, Alive: true });
 
         if (!all.Any())
             return;
@@ -616,9 +622,9 @@ public static class LayerExtensions
         var converter = PlayerById(convert);
         var role1 = converted.GetRole();
         var role2 = converter.GetRole();
-        var sub = role2.Faction;
-        var convertible = role1.Faction.IsConvertible();
-        var converts = convertible || role1.Faction == sub;
+        var sub = role2.Handler.CurrentFaction;
+        var convertible = role1.Handler.CurrentFaction.IsConvertible();
+        var converts = convertible || role1.Handler.CurrentFaction == sub;
         var comp = BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers == ComplianceType.Neophytes;
 
         if (skip || RoleGenManager.Convertible <= 0 || RoleGenManager.Pure == converted || !converts || (comp && convertible))

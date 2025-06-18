@@ -81,7 +81,7 @@ public sealed class Enforcer : IKilling
             KillButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == BombedPlayer || Player.IsBuddyWith(player, Faction);
+    private bool Exception1(PlayerControl player) => player == BombedPlayer || Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool EndEffect() => (BombedPlayer && BombedPlayer.HasDied()) || Dead || BombSuccessful;
 

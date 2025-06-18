@@ -32,7 +32,7 @@ public sealed class Rebel : SHead
             allow = Interact(Player, target) != CooldownType.Fail;
 
             if (allow)
-                CallRpc(ActionsRpc.LayerAction, this, target);
+                PerformRpcAction(target);
         }
 
         if (!allow)
@@ -44,10 +44,10 @@ public sealed class Rebel : SHead
         role.IsPromoted = false;
         role.Promoter = this;
         role.Name = TranslationManager.Translate("Layer.Sidekick");
-        role.Handler.History.Add((role.Type, role.Faction));
+        role.Handler.History.Add((role.Type, role.Handler.CurrentFaction));
     }
 
-    private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsUnderling || !player.Is(Faction);
+    private bool Exception1(PlayerControl player) => !player.Is<Syndicate>(out var syn) || syn.IsPromoted || syn.IsUnderling || !player.Is(Handler.CurrentFaction);
 
     public override void ReadRPC(RpcReader reader) => Sidekick(reader.ReadPlayer());
 

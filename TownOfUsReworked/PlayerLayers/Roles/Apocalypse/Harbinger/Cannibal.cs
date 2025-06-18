@@ -71,7 +71,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
         EatButton.StartCooldown();
         EatNeed--;
         FadeBody(target);
-        CallRpc(ActionsRpc.LayerAction, this, target);
+        PerformRpcAction(target);
     }
 
     public override void ReadRPC(RpcReader reader)

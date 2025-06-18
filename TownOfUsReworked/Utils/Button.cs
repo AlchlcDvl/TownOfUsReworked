@@ -27,8 +27,7 @@ public static class ButtonUtils
     public static void EnableButtons(this PlayerControl player)
     {
         var hud = HUD();
-        player.GetButtons().Do(x => x.SetActive());
-        player.GetRole()?.UpdateButtons();
+        LayerHandler.Handlers[player.PlayerId].UpdateButtons();
         hud.UseButton.ToggleVisible(true);
         hud.PetButton.ToggleVisible(true);
         var inGame = IsInGame();

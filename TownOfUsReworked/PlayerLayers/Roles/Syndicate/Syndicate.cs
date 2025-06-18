@@ -20,7 +20,7 @@ public abstract class Syndicate : Role, IPromoter
     {
         get
         {
-            var part = Faction switch
+            var part = Handler.CurrentFaction switch
             {
                 Faction.Pandorica => PandoricaSettings.PandoricaVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
@@ -76,12 +76,12 @@ public abstract class Syndicate : Role, IPromoter
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
     }
 
-    private string GetSpriteName() => $"{Faction}Kill";
+    private string GetSpriteName() => $"{Handler.CurrentFaction}Kill";
 
     public override List<PlayerControl> Team()
     {
         var team = base.Team();
-        team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
+        team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Handler.CurrentFaction)));
         return team;
     }
 
@@ -102,7 +102,7 @@ public abstract class Syndicate : Role, IPromoter
         IsUnderling = false;
         Promoter = null;
         Name = TranslationManager.Translate("Layer.Rebel");
-        Handler.History.Add((Layer.Sidekick, Faction));
+        Handler.History.Add((Layer.Sidekick, Handler.CurrentFaction));
     }
 
     protected virtual void OnDriveReceivedLocal() {}
@@ -115,7 +115,7 @@ public abstract class Syndicate : Role, IPromoter
 
     private void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool KillUsable() => ((HoldsDrive && Alignment != Alignment.Killing) || Type is Layer.Anarchist || IsPromoted) && !IsUnderling;
 }

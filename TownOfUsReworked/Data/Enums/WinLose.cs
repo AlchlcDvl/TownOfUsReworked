@@ -51,5 +51,7 @@ public enum WinLose : byte
     TaskRunnerWins,
 
     HunterWins,
-    HuntedWin
+    HuntedWin,
+
+    SoloWin
 }

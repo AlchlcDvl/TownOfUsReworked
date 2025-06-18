@@ -123,7 +123,7 @@ public static class PlayerControlPatches
             return true;
 
         var size = __instance.lightSource.viewDistance;
-        var flashlights = role.Faction switch
+        var flashlights = role.Handler.CurrentFaction switch
         {
             Faction.Crew => CrewSettings.CrewFlashlight,
             Faction.Intruder => IntruderSettings.IntruderFlashlight,

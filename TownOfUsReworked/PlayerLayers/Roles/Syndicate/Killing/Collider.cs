@@ -95,7 +95,7 @@ public sealed class Collider : SKilling
             PositiveButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Player.IsBuddyWith(player, Faction) || player == Negative || player == Positive;
+    private bool Exception1(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction) || player == Negative || player == Positive;
 
     private bool Usable() => HoldsDrive;
 

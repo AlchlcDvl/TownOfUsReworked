@@ -41,7 +41,7 @@ public sealed class Framer : Disruption
             return;
 
         Framed.Add(player.PlayerId);
-        CallRpc(ActionsRpc.LayerAction, this, player.PlayerId);
+        PerformRpcAction(player.PlayerId);
     }
 
     private void Frame(PlayerControl target)
@@ -60,7 +60,7 @@ public sealed class Framer : Disruption
         RadialFrameButton.StartCooldown();
     }
 
-    private bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || Player.IsBuddyWith(player, Faction);
+    private bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool Usable1() => !HoldsDrive;
 

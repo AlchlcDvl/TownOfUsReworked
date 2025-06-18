@@ -66,7 +66,7 @@ public sealed class Cryomaniac : OKilling, IDouser
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(ActionsRpc.LayerAction, this, DouseActionsRpc.Douse, target.PlayerId);
+        PerformRpcAction(DouseActionsRpc.Douse, target.PlayerId);
     }
 
     public override void BeforeMeeting()
@@ -88,8 +88,7 @@ public sealed class Cryomaniac : OKilling, IDouser
         FreezeUsed = false;
     }
 
-    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(Faction) && Faction is not
-        (Faction.Crew or Faction.Outcast)) || Player.IsLinkedTo(player);
+    private bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || player.IsBuddyWith(Player, Handler.CurrentFaction);
 
     private void Douse(PlayerControl target)
     {

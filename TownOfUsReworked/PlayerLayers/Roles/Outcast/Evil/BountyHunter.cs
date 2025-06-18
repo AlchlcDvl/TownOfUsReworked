@@ -224,7 +224,7 @@ public sealed class BountyHunter : Evil, ITargeter
         var role = RequestingPlayer.GetRole();
         role.Requesting = true;
         role.Requestor = Player;
-        CallRpc(ActionsRpc.LayerAction, this, RequestingPlayer);
+        PerformRpcAction(RequestingPlayer);
     }
 
     public override void ReadRPC(RpcReader reader)

@@ -15,7 +15,7 @@ public abstract class Apocalypse : Role
     {
         get
         {
-            var part = Faction switch
+            var part = Handler.CurrentFaction switch
             {
                 Faction.Pandorica => PandoricaSettings.PandoricaVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
@@ -37,7 +37,7 @@ public abstract class Apocalypse : Role
         var team = base.Team();
 
         if (Player.Is<Allied>() && !Player.Is(Faction.Crew))
-            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
+            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Handler.CurrentFaction)));
 
         return team;
     }

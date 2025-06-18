@@ -32,7 +32,7 @@ public sealed class Godfather : Intruder
             allow = Interact(Player, target) != CooldownType.Fail;
 
             if (allow)
-                CallRpc(ActionsRpc.LayerAction, this, target);
+                PerformRpcAction(target);
         }
 
         if (!allow)
@@ -44,10 +44,10 @@ public sealed class Godfather : Intruder
         role.IsPromoted = false;
         role.Promoter = this;
         role.Name = TranslationManager.Translate("Layer.Mafioso");
-        role.Handler.History.Add((role.Type, role.Faction));
+        role.Handler.History.Add((role.Type, role.Handler.CurrentFaction));
     }
 
-    private bool Exception1(PlayerControl player) => !player.Is<Intruder>(out var intruder) || intruder.IsUnderling || intruder.IsPromoted || !player.Is(Faction);
+    private bool Exception1(PlayerControl player) => !player.Is<Intruder>(out var intruder) || intruder.IsUnderling || intruder.IsPromoted || !player.Is(Handler.CurrentFaction);
 
     private bool Usable() => !HasDeclared;
 

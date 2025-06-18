@@ -59,16 +59,16 @@ public sealed class Vigilante : CKilling
             Run("<#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool Usable() => KeepKilling && !RoundOne;
 
     private void Shoot(PlayerControl target)
     {
         var targetRole = target.GetRole();
-        var toKill = targetRole.Alignment is Alignment.Neophyte or Alignment.Proselyte || targetRole.Faction.IsFactionedEvil() || targetRole is Troll || target.IsFramed() || Player.IsFramed() ||
-            (targetRole.Alignment == Alignment.Evil && OutcastEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.Is<Corrupted>() || (targetRole.Alignment == Alignment.Benign &&
-            OutcastBenignSettings.VigilanteKillsBenigns);
+        var toKill = targetRole.Alignment is Alignment.Neophyte or Alignment.Proselyte || targetRole.Handler.CurrentFaction.IsFactionedEvil() || targetRole is Troll || target.IsFramed() ||
+            Player.IsFramed() || (targetRole.Alignment == Alignment.Evil && OutcastEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.Is<Corrupted>() || (targetRole.Alignment ==
+            Alignment.Benign && OutcastBenignSettings.VigilanteKillsBenigns);
         var cooldown = Interact(Player, target, toKill);
 
         if (cooldown != CooldownType.Fail)

@@ -67,7 +67,7 @@ public sealed class Trapper : Protective, ITrapper
 
         if (cooldown != CooldownType.Fail)
         {
-            CallRpc(ActionsRpc.LayerAction, this, TrapperActionsRpc.Place, target.PlayerId);
+            PerformRpcAction(TrapperActionsRpc.Place, target.PlayerId);
             Trapped.Add(target.PlayerId);
         }
 
@@ -84,7 +84,7 @@ public sealed class Trapper : Protective, ITrapper
             return;
 
         if (trigger.AmOwner)
-            CallRpc(ActionsRpc.LayerAction, this, TrapperActionsRpc.Trigger, trapped, trigger, isAttack);
+            PerformRpcAction(TrapperActionsRpc.Trigger, trapped, trigger, isAttack);
 
         TriggeredRoles.Add(trigger.GetRole().Type);
         AttackedSomeone = isAttack;

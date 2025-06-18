@@ -22,7 +22,7 @@ public abstract class Intruder : Role, IPromoter
     {
         get
         {
-            var part = Faction switch
+            var part = Handler.CurrentFaction switch
             {
                 Faction.Pandorica => PandoricaSettings.PandoricaVent,
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVent,
@@ -51,12 +51,12 @@ public abstract class Intruder : Role, IPromoter
             (PlayerBodyExclusion)Exception, FactionColor, (UsableFunc)KillUsable);
     }
 
-    private string GetKillSprite() => $"{Faction}Kill";
+    private string GetKillSprite() => $"{Handler.CurrentFaction}Kill";
 
     public override List<PlayerControl> Team()
     {
         var team = base.Team();
-        team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
+        team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Handler.CurrentFaction)));
         return team;
     }
 
@@ -71,12 +71,12 @@ public abstract class Intruder : Role, IPromoter
         IsUnderling = false;
         Promoter = null;
         Name = TranslationManager.Translate("Layer.Godfather");
-        Handler.History.Add((Layer.Mafioso, Faction));
+        Handler.History.Add((Layer.Mafioso, Handler.CurrentFaction));
     }
 
     protected virtual void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     private bool KillUsable() => !IsUnderling;
 }

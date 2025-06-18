@@ -34,7 +34,7 @@ public sealed class Shifter : Evil
         if (cooldown != CooldownType.Fail)
         {
             var target = URandom.RandomRangeInt(0, 2) == 0 ? other : AllPlayers().Except(Exception).Random();
-            CallRpc(ActionsRpc.LayerAction, this, target);
+            PerformRpcAction(target);
             Shift(target);
         }
         else
@@ -49,7 +49,7 @@ public sealed class Shifter : Evil
         // TODO: Finish this
     }
 
-    private bool Exception(PlayerControl player) => player.HasDied() || Player.IsBuddyWith(player, Faction) || player == Player;
+    private bool Exception(PlayerControl player) => player.HasDied() || Player.IsBuddyWith(player, Handler.CurrentFaction) || player == Player;
 
     public override void ReadRPC(RpcReader reader) => Shift(reader.ReadPlayer());
 }

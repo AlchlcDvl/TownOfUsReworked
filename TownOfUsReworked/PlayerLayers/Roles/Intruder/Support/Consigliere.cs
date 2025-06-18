@@ -41,7 +41,8 @@ public sealed class Consigliere : ISupport
         InvestigateButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (Faction.IsFactionedEvil(true) && player.Is(Faction)) || Player.KnowsRoleOf(player);
+    private bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || (Handler.CurrentFaction.IsFactionedEvil(true) && player.Is(Handler.CurrentFaction)) ||
+        Player.KnowsRoleOf(player);
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
     {

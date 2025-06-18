@@ -76,7 +76,7 @@ public sealed class Crusader : SKilling
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (!CrusadeMates && Player.IsBuddyWith(player, Faction));
+    public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (!CrusadeMates && Player.IsBuddyWith(player, Handler.CurrentFaction));
 
     private bool EndEffect() => (CrusadedPlayer && CrusadedPlayer.HasDied()) || Dead;
 

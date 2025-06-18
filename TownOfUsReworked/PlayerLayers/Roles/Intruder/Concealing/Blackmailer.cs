@@ -48,7 +48,7 @@ public sealed class Blackmailer : Concealing, IIntimidator
         if (cooldown != CooldownType.Fail)
         {
             Target = target;
-            CallRpc(ActionsRpc.LayerAction, this, Target);
+            PerformRpcAction(Target);
 
             if (target.IsSilenced())
                 CustomAchievementManager.UnlockAchievement("EerieSilence");
@@ -57,7 +57,7 @@ public sealed class Blackmailer : Concealing, IIntimidator
         BlackmailButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => player == Target || (!BlackmailMates && Player.IsBuddyWith(player, Faction));
+    private bool Exception1(PlayerControl player) => player == Target || (!BlackmailMates && Player.IsBuddyWith(player, Handler.CurrentFaction));
 
     public override void ReadRPC(RpcReader reader) => Target = reader.ReadPlayer();
 }

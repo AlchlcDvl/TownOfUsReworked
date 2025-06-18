@@ -15,8 +15,9 @@ public sealed class Spellslinger : SHead
     protected override UColor MainColor => CustomColorManager.Spellslinger;
     public override Layer Type => Layer.Spellslinger;
     public override string StartText => "Place the <#8CFFFFFF>Crew</color> Under A Curse";
-    public override string Description => $"- You can spellbind players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
-        $"{FactionColorString}{Faction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
+    public override string Description => $"- You can spellbind players\n- When all non-{FactionColorString}{Handler.CurrentFaction}</color> players are spelled the game ends in a " +
+        $"{FactionColorString}{Handler.CurrentFaction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n" +
+        CommonAbilities;
 
     public override void Init()
     {
@@ -39,7 +40,7 @@ public sealed class Spellslinger : SHead
         if (cooldown != CooldownType.Fail)
         {
             Spelled.Add(target.PlayerId);
-            CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
+            PerformRpcAction(target.PlayerId);
 
             if (AmongUsClient.Instance.AmHost)
                 CheckEndGame.CheckSpellWin(this);
@@ -48,7 +49,7 @@ public sealed class Spellslinger : SHead
         SpellButton.StartCooldown(cooldown);
     }
 
-    private bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || Player.IsBuddyWith(player, Faction);
+    private bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || Player.IsBuddyWith(player, Handler.CurrentFaction);
 
     public override void ReadRPC(RpcReader reader)
     {

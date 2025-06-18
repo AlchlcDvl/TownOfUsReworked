@@ -8,4 +8,6 @@ public interface IPlayerLayer
     bool Disconnected { get; }
 
     void ReadRPC(RpcReader reader);
+
+    void PerformRpcAction(params object[] args);
 }

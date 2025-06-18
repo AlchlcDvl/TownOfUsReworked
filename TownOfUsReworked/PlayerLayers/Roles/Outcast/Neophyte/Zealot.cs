@@ -38,7 +38,7 @@ public sealed class Zealot : Neophyte
         if (cooldown != CooldownType.Fail)
         {
             RpcConvert(target.PlayerId, Player.PlayerId);
-            HasConverted = target.Is(Faction);
+            HasConverted = target.Is(Handler.CurrentFaction);
         }
 
         PreachButton.StartCooldown(cooldown);
@@ -46,5 +46,5 @@ public sealed class Zealot : Neophyte
 
     private bool Usable() => !HasConverted;
 
-    private bool Exception(PlayerControl player) => Members.Contains(player.PlayerId) || player.Is(Faction);
+    private bool Exception(PlayerControl player) => Members.Contains(player.PlayerId) || player.Is(Handler.CurrentFaction);
 }

@@ -10,12 +10,14 @@ public abstract class Outcast : Role
     public override string FactionName => "Outcast";
     public override Faction BaseFaction => Faction.Outcast;
 
+    public abstract bool SheriffSeesAsEvil { get; }
+
     public override List<PlayerControl> Team()
     {
         var team = base.Team();
 
         if (Player.Is<Allied>() && !Player.Is(Faction.Crew))
-            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Faction)));
+            team.AddRange(AllPlayers().Where(x => x != Player && x.Is(Handler.CurrentFaction)));
 
         return team;
     }

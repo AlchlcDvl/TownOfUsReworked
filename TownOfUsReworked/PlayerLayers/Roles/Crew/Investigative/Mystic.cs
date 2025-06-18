@@ -6,7 +6,7 @@ public sealed class Mystic : Investigative
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number RevealCd = 25;
 
-    private bool ConvertedDead => !AllPlayers().Any(x => !x.HasDied() && !x.Is(Faction.Crew) && !x.Is(Faction));
+    private bool ConvertedDead => !AllPlayers().Any(x => !x.HasDied() && !x.Is(Faction.Crew) && !x.Is(Handler.CurrentFaction));
     private CustomButton RevealButton;
 
     protected override UColor MainColor => CustomColorManager.Mystic;
@@ -37,10 +37,10 @@ public sealed class Mystic : Investigative
         var cooldown = Interact(Player, target);
 
         if (cooldown != CooldownType.Fail)
-            Flash((!target.Is(Faction) && !target.Is(Faction.Crew)) || target.IsFramed() ? UColor.red : UColor.green);
+            Flash((!target.Is(Handler.CurrentFaction) && !target.Is(Faction.Crew)) || target.IsFramed() ? UColor.red : UColor.green);
 
         RevealButton.StartCooldown(cooldown);
     }
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 }

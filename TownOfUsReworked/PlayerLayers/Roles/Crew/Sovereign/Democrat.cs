@@ -54,7 +54,7 @@ public sealed class Democrat : Sovereign
         if (cooldown != CooldownType.Fail)
         {
             Campaigned.Add(target.PlayerId);
-            CallRpc(ActionsRpc.LayerAction, this, target.PlayerId);
+            PerformRpcAction(target.PlayerId);
         }
 
         CampaignButton.StartCooldown(cooldown);

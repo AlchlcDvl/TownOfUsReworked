@@ -205,7 +205,7 @@ public sealed class Transporter : CSupport, IMover
         }
         else
         {
-            CallRpc(ActionsRpc.LayerAction, this, TransportMenu.Selected[0], TransportMenu.Selected[1]);
+            PerformRpcAction(TransportMenu.Selected[0], TransportMenu.Selected[1]);
             Coroutines.Start(TransportPlayers(PlayerById(TransportMenu.Selected[0]), PlayerById(TransportMenu.Selected[1]), this));
             TransportMenu.Selected.Clear();
             TransportButton.StartCooldown();

@@ -82,7 +82,7 @@ public sealed class Bomber : SKilling
             DetonateButton.StartCooldown();
 
         if (ShowBomb)
-            CallRpc(ActionsRpc.LayerAction, this, BomberActionsRpc.DropBomb);
+            PerformRpcAction(BomberActionsRpc.DropBomb);
     }
 
     private void Detonate()
@@ -94,7 +94,7 @@ public sealed class Bomber : SKilling
         if (BombCooldownsLinked)
             BombButton.StartCooldown();
 
-        CallRpc(ActionsRpc.LayerAction, this, BomberActionsRpc.Explode);
+        PerformRpcAction(BomberActionsRpc.Explode);
         Play("Bomb");
     }
 
@@ -108,7 +108,7 @@ public sealed class Bomber : SKilling
         {
             case BomberActionsRpc.DropBomb:
             {
-                if (Player.IsBuddyWith(LocalPlayer, Faction) && !LocalPlayer.IsOtherRival(Player))
+                if (Player.IsBuddyWith(LocalPlayer, Handler.CurrentFaction) && !LocalPlayer.IsOtherRival(Player))
                     Bombs.Add(Bomb.CreateBomb(Player, HoldsDrive));
 
                 break;

@@ -28,5 +28,5 @@ public sealed class Betrayer : Proselyte
 
     private void Kill(PlayerControl target) => KillButton.StartCooldown(Interact(Player, target, true));
 
-    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Faction);
+    private bool Exception(PlayerControl player) => Player.IsBuddyWith(player, Handler.CurrentFaction);
 }

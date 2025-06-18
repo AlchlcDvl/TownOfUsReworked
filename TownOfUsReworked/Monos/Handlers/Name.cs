@@ -17,9 +17,9 @@ public abstract class NameHandler : MonoBehaviour
         var localRole = localHandler.CurrentRole;
         var localDisp = localHandler.CurrentDisposition;
         var removeFromConsig = false;
-        var isFactionedEvil = role.Faction.IsFactionedEvil(true);
-        var localIsFactionedEvil = localRole.Faction.IsFactionedEvil(true);
-        var same = role.Faction == localRole.Faction;
+        var isFactionedEvil = playerHandler.CurrentFaction.IsFactionedEvil(true);
+        var localIsFactionedEvil = localHandler.CurrentFaction.IsFactionedEvil(true);
+        var same = playerHandler.CurrentFaction == localHandler.CurrentFaction;
 
         if (player.CanDoTasks() && (deadSeeEverything || IsCustomHnS() || IsTaskRace()) && !amOwner)
             name += role.TasksDone ? "✔" : $" ({role.TasksCompleted}/{role.TotalTasks})";
@@ -42,8 +42,8 @@ public abstract class NameHandler : MonoBehaviour
             localRole.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
             localDisp.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
 
-            if (playerHandler.CurrentAbility is Snitch snitch && (localRole.Faction.IsFactionedEvil() || (localRole.Faction == Faction.Outcast && Snitch.SnitchSeesOutcasts)) && (role.TasksDone ||
-                role.TasksLeft <= Snitch.SnitchTasksRemaining))
+            if (playerHandler.CurrentAbility is Snitch snitch && (localHandler.CurrentFaction.IsFactionedEvil() || (localHandler.CurrentFaction == Faction.Outcast && Snitch.SnitchSeesOutcasts)) &&
+                (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
             {
                 color = snitch.Color;
                 name += (name.Contains('\n') ? " " : "\n") + snitch.Name;
@@ -163,9 +163,10 @@ public abstract class NameHandler : MonoBehaviour
                 name += " <#424242FF>米</color>";
         }
 
-        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught && localRole.Faction == x.Faction))
+        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught && localHandler.CurrentFaction == x.Handler.CurrentFaction))
         {
-            if (isFactionedEvil || (role.Faction == Faction.Outcast && Revealer.RevealerRevealsOutcasts) || (role.Faction == Faction.Crew && Revealer.RevealerRevealsCrew))
+            if (isFactionedEvil || (playerHandler.CurrentFaction == Faction.Outcast && Revealer.RevealerRevealsOutcasts) || (playerHandler.CurrentFaction == Faction.Crew &&
+                Revealer.RevealerRevealsCrew))
             {
                 if (Revealer.RevealerRevealsRoles)
                 {

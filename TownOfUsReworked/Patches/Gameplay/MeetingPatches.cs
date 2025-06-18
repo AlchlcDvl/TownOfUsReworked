@@ -329,7 +329,7 @@ public static class MeetingPatches
             }
 
             __instance.RpcVotingComplete(array, exiled, tie);
-            PlayerLayer.GetLayers<Politician>().Do(x => CallRpc(ActionsRpc.LayerAction, x, PoliticianActionsRpc.Remove, x.ExtraVotes.ToArray()));
+            PlayerLayer.GetLayers<Politician>().Do(x => x.PerformRpcAction(PoliticianActionsRpc.Remove, x.ExtraVotes.ToArray()));
         }
 
         return false;

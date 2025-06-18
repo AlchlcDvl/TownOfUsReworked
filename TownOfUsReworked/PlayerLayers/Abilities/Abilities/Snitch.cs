@@ -68,14 +68,14 @@ public sealed class Snitch : Ability
 
         if (SnitchSeesRoles)
         {
-            if ((role.Faction != Faction.Outcast || !SnitchSeesOutcasts) && (role.Faction != Faction.Crew || !SnitchSeesCrew))
+            if ((handler.CurrentFaction != Faction.Outcast || !SnitchSeesOutcasts) && (handler.CurrentFaction != Faction.Crew || !SnitchSeesCrew))
                 return;
 
             color = role.Color;
             name += $"\n{role.Name}";
             revealed = true;
         }
-        else if (role.Faction.IsFactionedEvil() || (role.Faction == Faction.Outcast && SnitchSeesOutcasts) || (role.Faction == Faction.Crew && SnitchSeesCrew))
+        else if (handler.CurrentFaction.IsFactionedEvil() || (handler.CurrentFaction == Faction.Outcast && SnitchSeesOutcasts) || (role.Handler.CurrentFaction == Faction.Crew && SnitchSeesCrew))
         {
             if (handler.CurrentDisposition is FactionChanger { SnitchReveals: false })
             {

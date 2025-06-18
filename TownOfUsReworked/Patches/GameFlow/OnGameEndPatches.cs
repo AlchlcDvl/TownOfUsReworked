@@ -176,6 +176,7 @@ public static class OnGameEndPatches
                     WinLose.ComplianceWins => ("The Compliance Wins", "IntruderWin", CustomColorManager.Compliance),
                     WinLose.ShifterWins => ("Shifter Wins", "IntruderWin", CustomColorManager.Shifter),
                     WinLose.OutcastsWin => ("Outcasts Win", "IntruderWin", CustomColorManager.Outcast),
+                    WinLose.SoloWin => ("Only One Victor", "IntruderWin", CustomColorManager.AcceptedTeal),
                     WinLose.EveryoneWins => ("Everyone Wins", "IntruderWin", CustomColorManager.Stalemate),
                     _ => ("Stalemate", "Stalemate", CustomColorManager.Stalemate)
                 };

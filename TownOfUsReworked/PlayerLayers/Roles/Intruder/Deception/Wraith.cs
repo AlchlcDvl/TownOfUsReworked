@@ -28,7 +28,7 @@ public sealed class Wraith : Deception
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }
 
-    private void Invis() => MiscUtils.Invis(Player, InvisDur, EndEffect, Player.IsBuddyWith(LocalPlayer, Faction));
+    private void Invis() => MiscUtils.Invis(Player, InvisDur, EndEffect, Player.IsBuddyWith(LocalPlayer, Handler.CurrentFaction));
 
     private void UnInvis() => ClickedAgain = false;
 
