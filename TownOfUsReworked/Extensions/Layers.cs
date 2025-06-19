@@ -320,8 +320,8 @@ public static class LayerExtensions
         if (player.IsFramed() || (player.GetDisposition() is FactionChanger { SheriffSwap: true, Turned: true }))
             return true;
 
-        return handler.CurrentFaction.IsFactionedEvil() && handler.CurrentRole is not (IPromoter { IsPromoted: false } or Syndicate { HoldsDrive: false } or { Alignment: Alignment.Harbinger } or
-            Outcast { SheriffSeesAsEvil: true });
+        return handler.CurrentFaction.IsFactionedEvil() && handler.CurrentRole is not (IPromoter { IsPromoted: true } or Syndicate { HoldsDrive: true } or { Alignment: Alignment.Deity } or
+            Outcast { SheriffSeesAsEvil: false });
     }
 
     public static PlayerControl GetOtherLover(this PlayerControl player) => player.Is<Lovers>(out var lovers) ? lovers.Other : null;

@@ -3,9 +3,8 @@
 public enum ActionsRpc : byte
 {
     Drop,
-    BaitReport,
     Convert,
-    BypassKill,
+    CustomKill,
     FadeBody,
     ForceKill,
     SetUninteractable,

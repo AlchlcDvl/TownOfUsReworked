@@ -10,17 +10,17 @@ public sealed class RpcReader : IDisposable
     /// <summary>
     /// A list of bytes written to be sent for an RPC. This is the internal buffer.
     /// </summary>
-    private byte[] Payload { get; set; }
+    private byte[] Payload;
 
     /// <summary>
     /// Gets or sets a flag value that indicates whether or not the writer has been disposed of.
     /// </summary>
-    private bool Disposed { get; set; }
+    private bool Disposed;
 
     /// <summary>
     /// Gets or sets the current pointer position in the data stream.
     /// </summary>
-    private int Position { get; set; }
+    private int Position;
 
     /// <summary>
     /// Gets the size of the networked payload.

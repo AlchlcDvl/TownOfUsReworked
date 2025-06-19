@@ -147,7 +147,7 @@ public static class MiscUtils
     public static void RpcMurderPlayer(this PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
         killer.MurderPlayer(target, reason, lunge);
-        CallRpc(ActionsRpc.BypassKill, killer, target, reason, lunge);
+        CallRpc(ActionsRpc.CustomKill, killer, target, reason, lunge);
     }
 
     public static void Suicide(this PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Suicide) => self.MurderPlayer(self, reason, false);
@@ -1021,7 +1021,10 @@ public static class MiscUtils
             player.AdjustLighting();
             AllPlayers().Do(x => x.cosmetics.ToggleNameVisible(GameManager.Instance.LogicOptions.GetShowCrewmateNames()));
             player.RpcSetScanner(false);
-            hud.KillOverlay.ShowKillAnimation(killer.Data, player.Data);
+
+            if (reason != DeathReason.Exile)
+                hud.KillOverlay.ShowKillAnimation(killer.Data, player.Data);
+
             player.NameText().GetComponent<MeshRenderer>().material.SetInt(Mask, 0);
             var tracker = hud.roomTracker.text;
             var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";

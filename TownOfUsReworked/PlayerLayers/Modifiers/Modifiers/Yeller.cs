@@ -28,7 +28,7 @@ public sealed class Yeller : Modifier
 
     public override void EnteringLayer()
     {
-        if (!Local && Arrow == null)
+        if (!Local && Arrow is null)
             Arrow = new(LocalPlayer, Player, Color);
     }
 }

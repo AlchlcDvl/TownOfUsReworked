@@ -1,3 +1,5 @@
+using TownOfUsReworked.Patches.Player;
+
 namespace TownOfUsReworked.Managers;
 
 /// <summary>
@@ -106,7 +108,7 @@ public static class RpcManager
     /// Closes and sends the rpc.
     /// </summary>
     /// <param name="writer">The network writer to close and send.</param>
-    public static void CloseRpc(this MessageWriter writer)
+    public static void Send(this MessageWriter writer)
     {
         if (writer is null)
             Failure("RPC writer was null");
@@ -130,6 +132,11 @@ public static class RpcManager
         if (TownOfUsReworked.MciActive || !LocalPlayer || GameData.Instance.PlayerCount <= 1)
             return;
 
+        if (targetClientId == -1)
+            GameStartManagerPatches.PlayersReady.Keys.Do(x => GameStartManagerPatches.PlayersReady[x] = false);
+        else
+            GameStartManagerPatches.PlayersReady[AllPlayers().Find(x => x.OwnerId == targetClientId).PlayerId] = false;
+
         var options = setting is not null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
         var split = options.Chunk(100);
         Info($"Sending options split to {split.Count()} sets to {targetClientId}");
@@ -146,7 +153,7 @@ public static class RpcManager
                 option.WriteValueRpc(writer);
             }
 
-            writer.Send(targetClientId);
+            writer.SendLate(targetClientId);
         }
     }
 
@@ -180,6 +187,16 @@ public static class RpcManager
         Option.SaveSettings("LastUsed");
         SettingsPatches.OnValueChanged();
         SettingsPatches.OnValueChangedView();
+        Coroutines.Start(TrySendReadyState());
+    }
+
+    private static IEnumerator TrySendReadyState()
+    {
+        while (!LocalPlayer)
+            yield return null;
+
+        GameStartManagerPatches.PlayersReady[LocalPlayer.PlayerId] = true;
+        CallRpc(MiscRpc.SetPlayerReady, LocalPlayer);
     }
 
     /// <summary>
@@ -220,17 +237,13 @@ public static class RpcManager
     /// Centralized handler for all things networking within the mod.
     /// </summary>
     /// <param name="reader">The instance of <see cref="RpcReader"/> containing byte data.</param>
-    /// <param name="targetClientId">The id of the client that's supposed to read from the rpc. If the value is <c>-1</c>, then everyone reads from the message.</param>
-    public static void HandleRpc(RpcReader reader, int targetClientId)
+    public static void HandleRpc(RpcReader reader)
     {
         if (reader?.DataSize is null or 0)
         {
             Warning("Received no data");
             return;
         }
-
-        if (targetClientId != -1 && LocalPlayer.OwnerId != targetClientId)
-            return;
 
         if (TownOfUsReworked.DebugMode)
             Message($"Received rpc with {reader.DataSize} bytes");
@@ -416,7 +429,7 @@ public static class RpcManager
                     }
                     case MiscRpc.EndRoleGen:
                     {
-                        AllPlayers().Do(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
+                        AllPlayers().Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
                         SetPostmortals.Revealers = reader.ReadByte();
                         SetPostmortals.Phantoms = reader.ReadByte();
                         SetPostmortals.Banshees = reader.ReadByte();
@@ -509,6 +522,11 @@ public static class RpcManager
 
                         return;
                     }
+                    case MiscRpc.SetPlayerReady:
+                    {
+                        GameStartManagerPatches.PlayersReady[reader.ReadByte()] = true;
+                        return;
+                    }
                     default:
                     {
                         Failure($"Received unknown misc RPC - {misc}");
@@ -534,7 +552,7 @@ public static class RpcManager
                     }
                     case VanillaRpc.Report:
                     {
-                        reader.ReadPlayer().ReportDeadBody(GameData.Instance.GetPlayerById(reader.ReadByte()));
+                        PlayerControlPatches.ReportDeadBody(reader.ReadPlayer(), GameData.Instance.GetPlayerById(reader.ReadByte()));
                         return;
                     }
                     default:
@@ -560,7 +578,7 @@ public static class RpcManager
                         ConvertPlayer(reader.ReadByte(), reader.ReadByte(), reader.ReadBool());
                         return;
                     }
-                    case ActionsRpc.BypassKill:
+                    case ActionsRpc.CustomKill:
                     {
                         reader.ReadPlayer().MurderPlayer(reader.ReadPlayer(), reader.Read<DeathReasonEnum>(), reader.ReadBool());
                         return;
@@ -595,11 +613,6 @@ public static class RpcManager
 
                         return;
                     }
-                    case ActionsRpc.BaitReport:
-                    {
-                        reader.ReadPlayer().ReportDeadBody(reader.ReadPlayer().Data);
-                        return;
-                    }
                     case ActionsRpc.Drop:
                     {
                         reader.ReadBody().GetComponent<DeadBodyHandler>().StopDrag();
@@ -607,11 +620,11 @@ public static class RpcManager
                     }
                     case ActionsRpc.Burn:
                     {
-                        var disappear = reader.ReadValues<byte>();
+                        var bodies = AllBodies();
 
-                        foreach (var body in AllBodies())
+                        foreach (var id in reader.ReadValues<byte>())
                         {
-                            if (disappear.Contains(body.ParentId))
+                            if (bodies.TryFinding(x => x.ParentId == id, out var body))
                                 Ash.CreateAsh(body);
                         }
 

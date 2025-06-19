@@ -125,6 +125,8 @@ public static class DisconnectHandler
             Debugging.Instance.ControllingFigure = 0;
         }
 
+        GameStartManagerPatches.PlayersReady.Remove(player.PlayerId);
+
         if (IsLobby())
             return;
 
@@ -508,7 +510,7 @@ public static class OverlayKillAnimationPatches
 
         foreach (var spriteAnim in __instance.GetComponentsInChildren<SpriteAnim>())
         {
-            if (spriteAnim.GetComponent<PetBehaviour>() != null)
+            if (spriteAnim.GetComponent<PetBehaviour>())
                 __instance.petObjects.Add(spriteAnim.gameObject);
         }
 

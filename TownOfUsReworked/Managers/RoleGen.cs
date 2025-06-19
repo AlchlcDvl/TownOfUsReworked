@@ -427,7 +427,7 @@ public static class RoleGenManager
 
             foreach (var player in allPlayers)
             {
-                RoleManager.Instance.SetRole(player, (RoleTypes)100);
+                RoleManager.Instance.SetRole(player, LayerHandler.Type);
 
                 var role = player.GetRoleFromList();
                 var mod = player.GetModifierFromList();
@@ -476,7 +476,7 @@ public static class RoleGenManager
         }
         else
         {
-            allPlayers.Do(x => RoleManager.Instance.SetRole(x, (RoleTypes)100));
+            allPlayers.Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
             CallRpc(MiscRpc.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
                 BetterAirship.SpawnPoints);
         }
@@ -564,6 +564,8 @@ public static class RoleGenManager
         // BaseStatus.AllStatuses.Clear();
 
         Mafia.Mafias.Clear();
+
+        GameStartManagerPatches.PlayersReady.Clear();
     }
 
     public static void ResetEverything()

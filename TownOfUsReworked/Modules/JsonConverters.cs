@@ -6,7 +6,7 @@ public sealed class Vector2JsonConverter : JsonConverter<Vector2>
     {
         var vector = reader.GetString();
 
-        if (vector == null)
+        if (vector is null)
             return default;
 
         var parts = vector.TrueSplit(',');

@@ -64,20 +64,20 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static bool DebugMode => IsDev || ClientOptions.DebugModeOn;
 
     // A bunch of config stuff to ensure value persistence
-    public static ConfigEntry<string> Ip { get; private set; }
-    public static ConfigEntry<ushort> Port { get; private set; }
+    public static ConfigEntry<string> Ip;
+    public static ConfigEntry<ushort> Port;
 
-    public static ConfigEntry<bool> BlockBaseGameLogger { get; private set; }
-    public static ConfigEntry<bool> RedirectLogger { get; private set; }
-    public static ConfigEntry<bool> LogFromUnity { get; private set; }
-    public static ConfigEntry<bool> Persistence { get; private set; }
-    public static ConfigEntry<bool> SameVote { get; private set; }
+    public static ConfigEntry<bool> BlockBaseGameLogger;
+    public static ConfigEntry<bool> RedirectLogger;
+    public static ConfigEntry<bool> LogFromUnity;
+    public static ConfigEntry<bool> Persistence;
+    public static ConfigEntry<bool> SameVote;
 
-    public static TownOfUsReworked ModInstance { get; private set; }
+    public static TownOfUsReworked ModInstance;
 
     public readonly Harmony HarmonyInstance = new(Id);
 
-    private static string ModHash { get; set; }
+    private static string ModHash;
 
     public override void Load()
     {

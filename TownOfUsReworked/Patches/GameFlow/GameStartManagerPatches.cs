@@ -9,7 +9,6 @@ public static class GameStartManagerPatches
     [HarmonyPatch(nameof(GameStartManager.Start)), HarmonyPostfix]
     public static void StartPostfix(GameStartManager __instance)
     {
-        // Lobby size requirements
         __instance.MinPlayers = 1;
 
         if (!__instance.AllMapIcons.Any(x => x.Name == MapNames.Dleks))
@@ -51,6 +50,8 @@ public static class GameStartManagerPatches
         CancelStartButton.OverrideOnClickListeners(__instance.ResetStartState);
     }
 
+    public static readonly Dictionary<byte, bool> PlayersReady = [];
+
     // Let's agree that Il2Cpp sucks alright?
     [HarmonyPatch(nameof(GameStartManager.Update)), HarmonyPrefix]
     public static bool UpdatePrefix(GameStartManager __instance)
@@ -82,18 +83,19 @@ public static class GameStartManagerPatches
         {
             __instance.LastPlayerCount = GameData.Instance.PlayerCount;
 
-            var text = "<#FF0000FF>";
+            var text = "FF00";
 
             if (__instance.LastPlayerCount > __instance.MinPlayers)
-                text = "<#00FF00FF>";
+                text = "00FF";
             else if (__instance.LastPlayerCount == __instance.MinPlayers)
-                text = "<#FFFF00FF>";
+                text = "FFFF";
 
-            __instance.PlayerCounter.text = $"{text}{__instance.LastPlayerCount}/{GameOptions.LobbySize.Value}";
-            __instance.StartButton.SetButtonEnableState(__instance.LastPlayerCount >= __instance.MinPlayers);
-            __instance.StartButtonGlyph?.SetColor(__instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear);
+            __instance.PlayerCounter.text = $"<#{text}00FF>{__instance.LastPlayerCount}/{GameOptions.LobbySize.Value}";
+            var startable = __instance.LastPlayerCount >= __instance.MinPlayers && PlayersReady.Values.All(x => x);
+            __instance.StartButton.SetButtonEnableState(startable);
+            __instance.StartButtonGlyph?.SetColor(startable ? Palette.EnabledColor : Palette.DisabledClear);
 
-            if (__instance.LastPlayerCount >= __instance.MinPlayers)
+            if (startable)
             {
                 __instance.StartButton.ChangeButtonText(TranslationController.Instance.GetString(StringNames.StartLabel));
                 __instance.GameStartTextClient.text = TranslationController.Instance.GetString(StringNames.WaitingForHost);

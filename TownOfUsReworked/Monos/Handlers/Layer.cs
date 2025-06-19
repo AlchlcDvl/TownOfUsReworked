@@ -3,6 +3,7 @@ namespace TownOfUsReworked.Monos;
 public sealed class LayerHandler : RoleBehaviour
 {
     public static readonly Dictionary<byte, LayerHandler> Handlers = [];
+    public static RoleTypes Type;
 
     public override bool IsDead => Player.HasDied();
     public override bool IsAffectedByComms => false;

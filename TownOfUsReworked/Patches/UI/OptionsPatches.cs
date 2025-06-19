@@ -580,6 +580,8 @@ public static class SettingsPatches
             OnValueChanged();
             OnValueChangedView();
 
+            GameStartManagerPatches.PlayersReady[player.PlayerId] = TownOfUsReworked.MciActive || player.PlayerId == 0;
+
             if (player.AmOwner)
             {
                 if (SentOnce || ClientOptions.NoWelcome)
@@ -607,7 +609,7 @@ public static class SettingsPatches
             if (cache)
                 writer.Write(CachedFirstDead);
 
-            writer.Send(player.OwnerId);
+            writer.SendLate(player.OwnerId);
         }
     }
 

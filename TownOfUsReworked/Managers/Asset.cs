@@ -23,7 +23,7 @@ public static class AssetManager
 
     public static void LoadPortalFrames()
     {
-        if (PortalAnimation != null)
+        if (PortalAnimation is not null)
             return;
 
         PortalAnimation = [.. Bundles[AssetToBundle["portal"]].LoadAssetWithSubAssets("Portal", Il2CppType.Of<Sprite>()).ToArray().Select(x => x.TryCast<Sprite>()).Where(x => x)];

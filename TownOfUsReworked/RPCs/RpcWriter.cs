@@ -11,17 +11,17 @@ public sealed class RpcWriter : IDisposable
     /// <summary>
     /// A list of bytes written to be sent for an RPC. This is the internal buffer.
     /// </summary>
-    private byte[] Payload { get; set; }
+    private byte[] Payload;
 
     /// <summary>
     /// Gets or sets a flag value that indicates whether or not the writer has been disposed of.
     /// </summary>
-    private bool Disposed { get; set; }
+    private bool Disposed;
 
     /// <summary>
     /// Gets or sets the current pointer position in the data stream.
     /// </summary>
-    private int Position { get; set; }
+    private int Position;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RpcWriter"/> class for writing byte data.
@@ -65,7 +65,7 @@ public sealed class RpcWriter : IDisposable
         if (Disposed)
             throw new ObjectDisposedException(nameof(RpcWriter));
 
-        if (value == null)
+        if (value is null)
             throw new ArgumentNullException(nameof(value), "Cannot serialize a null value.");
     }
 
@@ -75,28 +75,27 @@ public sealed class RpcWriter : IDisposable
     /// <param name="targetClientId">The player to be sent the RPC to, or <c>-1</c> for everyone.</param>
     public void Send(int targetClientId = -1)
     {
-        if (TownOfUsReworked.MciActive || !LocalPlayer)
-            return;
-
-        var writer = CreateMessageWriter(targetClientId);
-        writer.Write(false); // False because Among Us immediate RPCs can be targeted, so the reader knows whether or not the client id should be read
-        writer.WriteBytesAndSize(Payload[..Position]);
-        writer.CloseRpc();
+        if (!TownOfUsReworked.MciActive && LocalPlayer)
+            RpcHandler.SendImmediateMessage(ToMessage(targetClientId));
     }
 
     /// <summary>
     /// Sends the written data to everyone, or optionally to only one player, as a late message.<br/>
-    /// Late messages are queued and processed later.
+    /// Late messages are queued and processed a little later.
     /// </summary>
     /// <inheritdoc cref="Send(int)"/>
     public void SendLate(int targetClientId = -1)
     {
-        if (TownOfUsReworked.MciActive || !LocalPlayer)
-            return;
-
-        var message = new ReworkedMessage(targetClientId, Payload[..Position]);
-        AmongUsClient.Instance.LateBroadcastReliableMessage(message.Cast<IGameDataMessage>());
+        if (!TownOfUsReworked.MciActive && LocalPlayer)
+            Rpc.Instance.QueueLateMessage(ToMessage(targetClientId));
     }
+
+    /// <summary>
+    /// Converts the writer into a message to be sent.
+    /// </summary>
+    /// <param name="targetClientId">The player to be sent the RPC to, or <c>-1</c> for everyone.</param>
+    /// <returns>A message instance representing the writer.</returns>
+    private ReworkedMessage ToMessage(int targetClientId = -1) => new(targetClientId, Payload[..Position]);
 
     /// <summary>
     /// Writes the bytes of a single value to the internal buffer.
@@ -326,7 +325,7 @@ public sealed class RpcWriter : IDisposable
             if (!allSameType)
                 continue;
 
-            if (obj == null)
+            if (obj is null)
             {
                 allSameType = false;
                 continue;
@@ -348,7 +347,7 @@ public sealed class RpcWriter : IDisposable
 
         yield return (byte)(allSameType ? 1 : 0);
 
-        if (allSameType && commonType != null)
+        if (allSameType && commonType is not null)
             yield return commonType.GetIdFromType();
 
         foreach (var b in elements.SelectMany(obj => GetBytes(obj, !allSameType)))

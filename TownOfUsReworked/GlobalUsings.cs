@@ -63,6 +63,7 @@ global using static TownOfUsReworked.Utils.InteractionManager;
 global using static TownOfUsReworked.Extensions.LayerExtensions;
 global using static TownOfUsReworked.Managers.ModCompatibilityManager;
 global using Hud = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.HudHandler>;
+global using Rpc = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.RpcHandler>;
 global using Colors = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.ColorHandler>;
 global using Client = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.ClientHandler>;
 global using Debugging = TownOfUsReworked.Monos.HandlerSingleton<TownOfUsReworked.Monos.DebuggerHandler>;

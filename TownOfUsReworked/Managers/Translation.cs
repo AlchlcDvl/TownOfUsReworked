@@ -8,7 +8,7 @@ public static class TranslationManager
     private static readonly Dictionary<StringNames, HashSet<StringNames>> CustomToCustom = []; // Used to map multiple custom ids to the same one
     private static readonly Dictionary<string, (string Key, Func<string> Value)[]> ReplacementsMap = [];
     private static readonly List<string> MissingIds = [];
-    private static readonly EnumInjector<StringNames> Injector = new(true, true);
+    private static readonly EnumInjector<StringNames> Injector = new(false, true);
     private static readonly List<string> ComplexIds = [];
 
     private static string Translate(string id, (string Key, string Value)[] toReplace, string language)

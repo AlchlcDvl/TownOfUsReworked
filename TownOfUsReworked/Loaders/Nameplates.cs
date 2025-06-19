@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Loaders;
 
 public sealed class NameplateLoader : BaseCosmeticLoader<NamePlateViewData, NamePlateData, CustomNameplate>
 {
-    private static EnumInjector<CosmeticKind> Injector = new(true, true);
+    private static EnumInjector<CosmeticKind> Injector = new(false, true);
 
     public static CosmeticKind Nameplate = Injector.InjectAndReturn("NAMEPLATE");
 

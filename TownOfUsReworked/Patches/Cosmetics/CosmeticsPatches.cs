@@ -219,7 +219,7 @@ public static class CosmeticTabPatches
                 colorChip.Inner.transform.localPosition = cosmetic.ChipOffset;
             }
 
-            if (setPreview != null)
+            if (setPreview is not null)
                 setPreview(colorChip, cosmetic, __instance);
             else
                 cosmetic.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);

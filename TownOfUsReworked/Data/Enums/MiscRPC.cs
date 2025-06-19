@@ -29,5 +29,6 @@ public enum MiscRpc : byte
     PlayerJoinSync,
     // SetStatus,
     Stat,
+    SetPlayerReady,
     WinLose
 }

@@ -2,7 +2,7 @@
 
 public static class CustomPlayerOutfitType
 {
-    private static readonly EnumInjector<PlayerOutfitType> Injector = new(true, true);
+    private static readonly EnumInjector<PlayerOutfitType> Injector = new(false, true);
 
     public const PlayerOutfitType Default = PlayerOutfitType.Default;
     // public const PlayerOutfitType Shapeshifted = PlayerOutfitType.Shapeshifted;

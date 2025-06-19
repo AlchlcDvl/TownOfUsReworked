@@ -33,6 +33,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<PlayerControlHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<DebuggerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<GameTimerHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<RpcHandler>();
 
         // Behaviours
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -68,8 +69,8 @@ public static class AllMonos
         LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.TryCast<CrewmateGhostRole>()?.HauntMenu;
 
         var prefab = new GameObject("LayerHandler").DontDestroy().AddComponent<LayerHandler>();
-        prefab.Role = prefab.DefaultGhostRole = new EnumInjector<RoleTypes>(true, true).InjectAndReturn("ReworkedLayer");
-        prefab.TeamType = new EnumInjector<RoleTeamTypes>(true, true).InjectAndReturn("ReworkedTeam");
+        LayerHandler.Type = prefab.Role = prefab.DefaultGhostRole = new EnumInjector<RoleTypes>(false, true).InjectAndReturn("ReworkedLayer");
+        prefab.TeamType = new EnumInjector<RoleTeamTypes>(false, true).InjectAndReturn("ReworkedTeam");
         prefab.CanBeKilled = true;
         prefab.CanUseKillButton = false;
         prefab.CanVent = false;
@@ -83,6 +84,7 @@ public static class AllMonos
         RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.AddItem(prefab).ToArray();
 
         Hud.AddInstance();
+        Rpc.AddInstance();
         Colors.AddInstance();
         Client.AddInstance();
         Debugging.AddInstance();

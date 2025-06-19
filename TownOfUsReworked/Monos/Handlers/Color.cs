@@ -15,7 +15,7 @@ public sealed class ColorHandler : MonoBehaviour
     public void Update() => IdToRendHandler.SetColors();
 }
 
-public class RendHandler<T>(Action<Renderer, T> setColor)
+public sealed class RendHandler<T>(Action<Renderer, T> setColor)
 {
     private readonly List<(Renderer Rend, T Color)> Rends = [];
     private Action<Renderer, T> SetColor { get; } = setColor;

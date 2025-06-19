@@ -6,16 +6,16 @@ namespace TownOfUsReworked.Custom;
 public class CustomArrow : IDisposable
 {
     public PlayerControl Owner { get; }
-    protected ArrowBehaviour Arrow { get; private set; }
-    protected Func<Vector3> Target { get; init; }
-    private SpriteRenderer Render { get; set; }
-    private GameObject ArrowObj { get; set; }
+    protected ArrowBehaviour Arrow;
+    protected Func<Vector3> Target;
+    private SpriteRenderer Render;
+    private GameObject ArrowObj;
     private float Interval { get; }
-    private SpriteRenderer Point { get; set; }
-    private UColor ArrowColor { get; set; }
-    private bool Disabled { get; set; }
-    private float ArrowTime { get; set; }
-    private bool Disposed { get; set; }
+    private SpriteRenderer Point;
+    private UColor ArrowColor;
+    private bool Disabled;
+    private float ArrowTime;
+    private bool Disposed;
 
     public static readonly List<CustomArrow> AllArrows = [];
 

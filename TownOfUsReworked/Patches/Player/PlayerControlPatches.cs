@@ -87,7 +87,6 @@ public static class PlayerControlPatches
         return false;
     }
 
-    [HarmonyPatch(nameof(PlayerControl.ReportDeadBody))]
     [HarmonyPatch(nameof(PlayerControl.ReportClosest))]
     public static bool Prefix()
     {
@@ -103,6 +102,15 @@ public static class PlayerControlPatches
             BlockExposed = true;
 
         return !blocked;
+    }
+
+    [HarmonyPatch(nameof(PlayerControl.ReportDeadBody)), HarmonyPrefix]
+    public static bool ReportDeadBodyPrefix(PlayerControl __instance, NetworkedPlayerInfo target)
+    {
+        if (Prefix())
+            ReportDeadBody(__instance, target);
+
+        return false;
     }
 
     [HarmonyPatch(nameof(PlayerControl.CheckUseZipline)), HarmonyPrefix]
@@ -280,14 +288,8 @@ public static class PlayerControlPatches
             }
             case CustomRPCCallID:
             {
-                var targetClientId = -1;
-
-                if (reader.ReadBoolean())
-                    targetClientId = reader.ReadPackedInt32();
-
-                var data = new RpcReader(reader.ReadBytesAndSize());
-                HandleRpc(data, targetClientId);
-                data.Dispose(); // Ensuring that the reader somehow doesn't get disposed mid-reading (it did that before for some reason)
+                using var data = new RpcReader(reader.ReadBytesAndSize());
+                HandleRpc(data);
                 break;
             }
             default:
@@ -310,7 +312,7 @@ public static class PlayerControlPatches
 
     // Reimplementing this method because for some reason it doesn't work without being rewritten on the C# side
     [HarmonyPatch(nameof(PlayerControl.ReportDeadBody)), HarmonyReversePatch]
-    private static void ReportDeadBody(PlayerControl instance, NetworkedPlayerInfo target) => throw new NotSupportedException();
+    public static void ReportDeadBody(PlayerControl instance, NetworkedPlayerInfo target) => throw new NotSupportedException();
 }
 
 [HarmonyPatch(typeof(NetworkedPlayerInfo))]

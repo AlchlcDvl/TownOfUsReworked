@@ -110,7 +110,7 @@ public sealed class GameTimerHandler : MonoBehaviour
 
     private void StopChunkCoroutine()
     {
-        if (ChunkCoroutine == null)
+        if (ChunkCoroutine is null)
             return;
 
         StopCoroutine(ChunkCoroutine);

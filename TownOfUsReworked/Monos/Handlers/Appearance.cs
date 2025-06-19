@@ -170,10 +170,10 @@ public sealed class AppearanceHandler : MonoBehaviour
     [HideFromIl2Cpp]
     private void ChangeTo(CustomOutfit formerOutfit, CustomOutfit newOutfit, PlayerOutfitType type)
     {
-        if (formerOutfit == null)
+        if (formerOutfit is null)
             throw new ArgumentNullException(nameof(formerOutfit));
 
-        if (newOutfit == null)
+        if (newOutfit is null)
             throw new ArgumentNullException(nameof(newOutfit));
 
         this.StartCoroutine(CoChangeTo(formerOutfit, newOutfit, type));

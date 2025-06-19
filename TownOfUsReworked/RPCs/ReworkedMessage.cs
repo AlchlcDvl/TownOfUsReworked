@@ -12,7 +12,7 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// <summary>
     /// Value injector to ensure seamless integration with the base game.
     /// </summary>
-    private static readonly EnumInjector<RpcCalls> Injector = new(true, true);
+    private static readonly EnumInjector<RpcCalls> Injector = new(false, true);
 
     /// <summary>
     /// The custom injected enum value that indicates it's a modded rpc.
@@ -22,7 +22,7 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// <summary>
     /// The id of the client that the message targets.
     /// </summary>
-    private readonly int TargetClientId = targetClientId;
+    public readonly int TargetClientId = targetClientId;
 
     /// <summary>
     /// The byte data to be networked.
@@ -38,14 +38,5 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// Serializes the rpc values to the game's message writer.
     /// </summary>
     /// <param name="msg">The network writer to serialise the data to.</param>
-    public override void SerializeRpcValues(MessageWriter msg)
-    {
-        var flag = TargetClientId != -1;
-        msg.Write(flag); // Flag for a late message, because AU currently does not have implementations of a targeted late rpc
-
-        if (flag)
-            msg.WritePacked(TargetClientId); // Target client id
-
-        msg.WriteBytesAndSize(Payload); // Actual rpc stuff
-    }
+    public override void SerializeRpcValues(MessageWriter msg) => msg.WriteBytesAndSize(Payload);
 }

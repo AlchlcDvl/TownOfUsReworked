@@ -87,7 +87,7 @@ public static class UpdateManager
         var data = JsonSerializer.Deserialize<VersionData[]>(json);
         var relevant = data.FirstOrDefault(x => x.ModVersions.Contains(TownOfUsReworked.VersionS));
 
-        if (relevant == null)
+        if (relevant is null)
             yield break;
 
         var auVer = ConstantsPatch.OriginalGetBroadcastVersion();

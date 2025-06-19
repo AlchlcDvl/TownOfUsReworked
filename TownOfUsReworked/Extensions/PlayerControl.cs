@@ -56,7 +56,7 @@ public static class PlayerControlExtensions
         parent.matProperties = props;
         parent.viewAsset = HatLoader.CustomCosmeticRegistry.ContainsKey(parent.Hat.ProductId) ? null : parent.Hat.CreateAddressableAsset();
 
-        if (parent.viewAsset != null)
+        if (parent.viewAsset is not null)
         {
             parent.viewAsset.LoadAsync((Action)(() =>
             {
@@ -118,7 +118,7 @@ public static class PlayerControlExtensions
         visor.visorData = data;
         visor.viewAsset = VisorLoader.CustomCosmeticRegistry.ContainsKey(data.ProductId) ? null : visor.visorData.CreateAddressableAsset();
 
-        if (visor.viewAsset != null)
+        if (visor.viewAsset is not null)
         {
             visor.viewAsset.LoadAsync((Action)(() =>
             {

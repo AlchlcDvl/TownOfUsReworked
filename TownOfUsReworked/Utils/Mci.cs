@@ -52,6 +52,8 @@ public static class MciUtils
         }, 1, "", "robotmodeactivate");
 
         AmongUsClient.Instance.GetOrCreateClient(sampleC);
+        Clients.Add(sampleId, sampleC);
+
         yield return AmongUsClient.Instance.CreatePlayer(sampleC);
 
         var colorId = CustomColorManager.AllColors.Keys.Random();
@@ -65,7 +67,6 @@ public static class MciUtils
 
         sampleC.Character.isDummy = true;
 
-        Clients.Add(sampleId, sampleC);
         PlayerClientIDs.Add(sampleC.Character.PlayerId, sampleId);
 
         sampleC.Character.MyPhysics.ResetAnimState();
