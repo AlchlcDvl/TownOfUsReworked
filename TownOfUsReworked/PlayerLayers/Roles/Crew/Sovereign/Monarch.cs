@@ -36,7 +36,6 @@ public sealed class Monarch : Sovereign
 
     public override void Init()
     {
-        base.Init();
         Knighted.Clear();
         ToBeKnighted.Clear();
         KnightingButton ??= new(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Knight, new Cooldown(KnightingCd), KnightCount,

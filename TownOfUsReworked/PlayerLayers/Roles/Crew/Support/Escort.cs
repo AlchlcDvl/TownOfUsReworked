@@ -21,7 +21,6 @@ public sealed class Escort : CSupport, IBlocker
 
     public override void Init()
     {
-        base.Init();
         BlockTarget = null;
         BlockButton ??= new(this, "ROLEBLOCK", new SpriteName("EscortRoleblock"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Roleblock, (EffectEndVoid)UnBlock,
             new Cooldown(EscortCd), new Duration(EscortDur), (EndFunc)EndEffect, (EffectStartVoid)BlockStart);

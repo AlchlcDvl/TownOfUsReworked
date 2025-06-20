@@ -31,7 +31,6 @@ public sealed class Cannibal : Harbinger<Gluttony>
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")} to bring forth <#A7C596FF>Gluttony</color>";
         BodyArrows.Clear();
         EatNeed = Mathf.Min(BodiesNeeded, GameData.Instance.PlayerCount / 2);

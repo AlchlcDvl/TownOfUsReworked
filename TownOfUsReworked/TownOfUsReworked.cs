@@ -26,7 +26,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public const bool IsDev = true;
     public const bool IsStream = true;
-    private const int DevBuild = 67;
+    private const int DevBuild = 68;
 
     private static readonly string DataPath = Path.GetDirectoryName(Application.dataPath);
     private static readonly string PersistentDataPath = Path.GetDirectoryName(Application.persistentDataPath);

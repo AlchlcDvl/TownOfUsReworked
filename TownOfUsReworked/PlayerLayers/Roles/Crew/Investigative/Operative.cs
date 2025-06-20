@@ -40,7 +40,6 @@ public sealed class Operative : Investigative, IBugger
 
     public override void Init()
     {
-        base.Init();
         BuggedPlayers.Clear();
         Bugs.Clear();
         BugButton ??= new(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)PlaceBug, new Cooldown(BugCd), MaxBugs,

@@ -30,7 +30,6 @@ public sealed class Survivor : Benign
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Live to the end of the game";
         VestButton ??= new(this, new SpriteName("Vest"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitVest, new Cooldown(VestCd), "VEST", new Duration(VestDur),
             MaxVests);

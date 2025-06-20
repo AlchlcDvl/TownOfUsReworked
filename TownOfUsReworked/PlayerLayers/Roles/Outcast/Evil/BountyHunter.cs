@@ -56,7 +56,6 @@ public sealed class BountyHunter : Evil, ITargeter
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         TargetPlayer = null;
         GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
@@ -77,7 +76,7 @@ public sealed class BountyHunter : Evil, ITargeter
             Rounds++;
     }
 
-    private bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.GetRole().Requesting;
+    private bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || LayerHandler.Handlers[player.PlayerId].Requesting;
 
     private void TurnTroll() => new Troll().RoleUpdate(this);
 
@@ -193,7 +192,7 @@ public sealed class BountyHunter : Evil, ITargeter
 
     private bool Usable2() => TargetPlayer && CanHunt;
 
-    private bool Usable3() => Requesting;
+    private bool Usable3() => Handler.Requesting;
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -221,9 +220,7 @@ public sealed class BountyHunter : Evil, ITargeter
     private void Request(PlayerControl target)
     {
         RequestingPlayer = target;
-        var role = RequestingPlayer.GetRole();
-        role.Requesting = true;
-        role.Requestor = Player;
+        LayerHandler.Handlers[target.PlayerId].Requestor = this;
         PerformRpcAction(RequestingPlayer);
     }
 
@@ -231,9 +228,7 @@ public sealed class BountyHunter : Evil, ITargeter
     {
         var request = reader.ReadPlayer();
         RequestingPlayer = request;
-        var role = request.GetRole();
-        role.Requesting = true;
-        role.Requestor = Player;
+        LayerHandler.Handlers[request.PlayerId].Requestor = this;
     }
 
     private void Guess(PlayerControl target)

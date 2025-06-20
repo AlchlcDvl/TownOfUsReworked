@@ -46,13 +46,11 @@ public sealed class Arsonist : OKilling, IDouser
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Burn anyone who can oppose you";
         Doused.Clear();
         DouseButton ??= new(this, new SpriteName("ArsoDouse"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
-        IgniteButton ??= new(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Ignite, new Cooldown(IgniteCd), "IGNITE",
-            (UsableFunc)Doused.Any);
+        IgniteButton ??= new(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Ignite, new Cooldown(IgniteCd), "IGNITE", (UsableFunc)Doused.Any);
     }
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)
@@ -85,7 +83,7 @@ public sealed class Arsonist : OKilling, IDouser
 
         if (IgnitionCremates)
         {
-            CallRpc(ActionsRpc.Burn, disappear);
+            CallRpc(ActionsRpc.Burn, [..disappear]);
 
             foreach (var body in AllBodies())
             {

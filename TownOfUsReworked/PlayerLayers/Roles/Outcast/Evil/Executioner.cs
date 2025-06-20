@@ -55,7 +55,6 @@ public sealed class Executioner : Evil, ITargeter
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (!TargetPlayer ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
         ToDoom.Clear();
 

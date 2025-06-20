@@ -28,6 +28,9 @@ public enum Faction : byte
     Defector,
     Betrayer,
 
+    // Special 2
+    Shifter,
+
     // Disposition
     Mafia,
 

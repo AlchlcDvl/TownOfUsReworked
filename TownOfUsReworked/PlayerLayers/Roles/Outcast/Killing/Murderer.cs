@@ -22,7 +22,6 @@ public sealed class Murderer : OKilling
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Murder anyone who can oppose you";
         MurderButton ??= new(this, new SpriteName("Murder"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Murder, new Cooldown(MurderCd), "MURDER",
             (PlayerBodyExclusion)Exception);

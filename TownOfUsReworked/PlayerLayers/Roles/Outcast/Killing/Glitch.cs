@@ -43,7 +43,6 @@ public sealed class Glitch : OKilling, IBlocker
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Neutralise anyone who can oppose you";
         MimicMenu = new(Player, Click, Color, Exception3);
         NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",

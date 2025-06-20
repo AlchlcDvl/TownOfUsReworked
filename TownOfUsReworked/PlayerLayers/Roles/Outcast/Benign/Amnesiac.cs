@@ -31,7 +31,6 @@ public sealed class Amnesiac : Benign
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows.Clear();
         RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");

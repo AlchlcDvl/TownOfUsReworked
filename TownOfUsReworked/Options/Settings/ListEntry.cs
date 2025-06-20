@@ -81,7 +81,6 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
     // What the hell is this? What am I even doing man...
     // Future AD: kill me
-    // TODO: Account for the member options properly here
     private static IEnumerable<ListSlot> GetPossibleValues(ListEntryOption self)
     {
         var opposite = GetOptions<ListEntryOption>().Where(x => !Equals(x, self) && x.IsBan != self.IsBan && x.EntryType == self.EntryType);
@@ -162,6 +161,11 @@ public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int n
 
                     if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Neophytes)
                         yield return ListSlot.IlluminatiNeo;
+                    else
+                        yield return ListSlot.OutcastNeo;
+
+                    if (BadGuysSettings.IlluminatiMembers != IlluminatiType.Killers)
+                        yield return ListSlot.OutcastKill;
 
                     yield return ListSlot.PowerIlluminati;
                     yield return ListSlot.RegularIlluminati;

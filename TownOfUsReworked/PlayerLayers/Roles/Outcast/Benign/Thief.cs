@@ -28,7 +28,6 @@ public sealed class Thief : Benign, IGuesser
 
     public override void Init()
     {
-        base.Init();
         StealButton ??= new(this, new SpriteName("Steal"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Steal, new Cooldown(StealCd), "STEAL", (PlayerBodyExclusion)Exception);
         GuessingMenu = new(Player, GuessPlayer);
 

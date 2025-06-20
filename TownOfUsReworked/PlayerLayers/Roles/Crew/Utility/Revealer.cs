@@ -29,7 +29,7 @@ public sealed class Revealer : CUtility, IGhosty
 
     public bool Caught { get; set; }
     public bool Revealed { get; private set; }
-    public Role FormerRole { get; init; }
+    public Role FormerRole;
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Revealer;
@@ -39,7 +39,6 @@ public sealed class Revealer : CUtility, IGhosty
 
     public override void Init()
     {
-        base.Init();
         RemoveTasks(Player);
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }
@@ -81,4 +80,6 @@ public sealed class Revealer : CUtility, IGhosty
 
         return TasksLeft <= RevealerTasksRemainingClicked;
     }
+
+    public override void UponRoleChanged(Role former) => FormerRole = former;
 }

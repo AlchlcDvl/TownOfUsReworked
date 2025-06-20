@@ -46,7 +46,9 @@ public abstract class Intruder : Role, IPromoter
 
     public override void Init()
     {
-        base.Init();
+        if (this is Ghoul)
+            return;
+
         KillButton ??= new(this, (SpriteFunc)GetKillSprite, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor, (UsableFunc)KillUsable);
     }

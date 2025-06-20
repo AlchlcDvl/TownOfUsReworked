@@ -41,7 +41,7 @@ public sealed class Enforcer : IKilling
             return;
 
         Flash(Color);
-        BombedPlayer.GetRole().Bombed = true;
+        LayerHandler.Handlers[BombedPlayer.PlayerId].Bombed = true;
     }
 
     private void UnBoom()
@@ -49,7 +49,7 @@ public sealed class Enforcer : IKilling
         if (!BombSuccessful)
             Explode(BombedPlayer, Player);
 
-        BombedPlayer.GetRole().Bombed = false;
+        LayerHandler.Handlers[BombedPlayer.PlayerId].Bombed = false;
         BombedPlayer = null;
         BombSuccessful = false;
     }

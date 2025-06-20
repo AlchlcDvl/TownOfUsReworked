@@ -30,7 +30,6 @@ public sealed class Troll : Evil
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => HasWon ? "- You have successfully trolled someone" : "- Get killed";
         InteractButton ??= new(this, new SpriteName("Interact"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
             (UsableFunc)Usable);

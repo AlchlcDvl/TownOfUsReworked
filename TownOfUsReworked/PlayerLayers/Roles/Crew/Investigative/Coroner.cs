@@ -36,7 +36,6 @@ public sealed class Coroner : Investigative, IExaminer
 
     public override void Init()
     {
-        base.Init();
         BodyArrows.Clear();
         Reported.Clear();
         ReferenceBodies.Clear();

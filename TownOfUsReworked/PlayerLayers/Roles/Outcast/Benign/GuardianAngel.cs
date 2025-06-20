@@ -56,7 +56,6 @@ public sealed class GuardianAngel : Benign, ITargeter
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         TargetPlayer = null;
         ProtectButton ??= new(this, new SpriteName("Protect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",

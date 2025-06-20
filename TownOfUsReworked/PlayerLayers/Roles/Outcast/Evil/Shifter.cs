@@ -17,14 +17,14 @@ public sealed class Shifter : Evil
     public override string StartText => "Shift Around Roles";
     public override string Description => "- You can steal another player's role\n- Shifting with a non-<#8CFFFFFF>Crew</color> or a framed player will cause you to kill yourself";
     public override bool HasWon => Shifters.All(x => !Originals.Contains(x) && x.HasDied());
+    public override Faction BaseFaction => Faction.Shifter;
     protected override WinLose EndState => WinLose.ShifterWins;
 
     public override void Init()
     {
-        base.Init();
         ShifterMenu = new(Player, ClickShift, Color, Exception);
         ShiftButton ??= new(this, "SHIFT", new SpriteName("Shift"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)ShifterMenu.Open, new Cooldown(ShiftCd));
-        Originals.Add(Player);
+        Objectives = () => "- Kill off everyone who has the Shifter role, excluding those who were originally Shifter";
     }
 
     private void ClickShift(PlayerControl other)
@@ -47,6 +47,8 @@ public sealed class Shifter : Evil
         var player = Player;
 
         // TODO: Finish this
+        Shifters.Remove(Player);
+        Shifters.Add(other);
     }
 
     private bool Exception(PlayerControl player) => player.HasDied() || Player.IsBuddyWith(player, Handler.CurrentFaction) || player == Player;

@@ -35,7 +35,6 @@ public sealed class Hunter : HideAndSeek
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Hunt the others down before they finish their tasks";
         HuntButton ??= new(this, "HUNT", new SpriteName("HunterKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(HuntCd), (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);

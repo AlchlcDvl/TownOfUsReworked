@@ -25,7 +25,6 @@ public sealed class Juggernaut : OKilling
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Assault anyone who can oppose you";
         AssaultButton ??= new(this, new SpriteName("Assault"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception, "ASSAULT");

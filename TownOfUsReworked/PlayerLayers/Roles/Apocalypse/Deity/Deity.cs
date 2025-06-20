@@ -8,8 +8,6 @@ public abstract class Deity : Apocalypse
 
     public override void Init()
     {
-        base.Init();
-
         if (ApocalypseSettings.PlayersAlerted)
             Flash(Color);
     }

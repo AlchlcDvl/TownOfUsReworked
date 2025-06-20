@@ -101,23 +101,12 @@ public sealed class LayerHandler : RoleBehaviour
     // private static bool PlayerIsLeft;
     // public CustomButton CallButton { get; set; }
 
-    [HideFromIl2Cpp]
-    public Role CurrentRole { get; set; }
-
-    [HideFromIl2Cpp]
-    public Ability CurrentAbility { get; set; }
-
-    [HideFromIl2Cpp]
-    public Modifier CurrentModifier { get; set; }
-
-    [HideFromIl2Cpp]
-    public Disposition CurrentDisposition { get; set; }
-
-    [HideFromIl2Cpp]
-    public IEnumerable<PlayerLayer> CurrentLayers { get; set; }
-
-    [HideFromIl2Cpp]
-    public IEnumerable<CustomButton> Buttons { get; set; }
+    public Role CurrentRole;
+    public Ability CurrentAbility;
+    public Modifier CurrentModifier;
+    public Disposition CurrentDisposition;
+    public IEnumerable<PlayerLayer> CurrentLayers;
+    public IEnumerable<CustomButton> Buttons;
 
     public static RoleBehaviour Crewmate;
     public static RoleBehaviour Impostor;
@@ -125,6 +114,33 @@ public sealed class LayerHandler : RoleBehaviour
     public static RoleBehaviour ImpostorGhost;
 
     public static Minigame HauntMenu;
+
+    public bool Bombed;
+    private CustomButton BombKillButton;
+
+    public bool Requesting => Requestor;
+    public BountyHunter Requestor;
+    private CustomButton PlaceHitButton;
+    private int BountyTimer;
+
+    private bool BombUsable() => Bombed;
+
+    private bool RequestUsable() => Requesting;
+
+    private void PlaceHit(PlayerControl target)
+    {
+        target = Requestor.Player.IsLinkedTo(target) ? Player : target;
+        Requestor.TentativeTarget = target;
+        Requestor = null;
+        CallRpc(ActionsRpc.PlaceHit, Player, target);
+    }
+
+    private void BombKill(PlayerControl target)
+    {
+        var success = Interact(Player, target, true) != CooldownType.Fail;
+        PlayerLayer.GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).Do(x => x.BombSuccessful = success);
+        CallRpc(ActionsRpc.ForceKill, Player, success);
+    }
 
     [HideFromIl2Cpp]
     public T GetLayer<T>() where T : IPlayerLayer => CurrentLayers.OfType<T>().FirstOrDefault();
@@ -220,6 +236,13 @@ public sealed class LayerHandler : RoleBehaviour
         CurrentAbility.BeforeMeeting();
         CurrentModifier.BeforeMeeting();
         CurrentDisposition.BeforeMeeting();
+
+        if (!Requesting || BountyTimer <= 2)
+            return;
+
+        CallRpc(ActionsRpc.PlaceHit, Player, Player);
+        Requestor.TentativeTarget = Player;
+        Requestor = null;
     }
 
     public void OnIntroEnd()
@@ -237,6 +260,9 @@ public sealed class LayerHandler : RoleBehaviour
         CurrentAbility.OnMeetingEnd(__instance);
         CurrentModifier.OnMeetingEnd(__instance);
         CurrentDisposition.OnMeetingEnd(__instance);
+
+        if (Requesting)
+            BountyTimer++;
     }
 
     public void ResetButtons() => Buttons = Player.GetButtonsFromList();
@@ -288,6 +314,21 @@ public sealed class LayerHandler : RoleBehaviour
             CurrentFaction = CurrentRole.BaseFaction;
 
         CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Init());
+
+        // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
+        // {
+        //     CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
+        //         (ConditionFunc)CallCondition);
+        // }
+
+        if (GameModeSettings.GameMode is not (Mode.HideAndSeek or Mode.TaskRace))
+        {
+            if (RoleGenManager.GetSpawnItem(Layer.Enforcer).IsActive())
+                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+
+            if (BountyHunter.BountyHunterCanPickTargets && RoleGenManager.GetSpawnItem(Layer.BountyHunter).IsActive())
+                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
+        }
 
         ResetButtons();
     }

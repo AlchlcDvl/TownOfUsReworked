@@ -71,9 +71,11 @@ public abstract class Syndicate : Role, IPromoter
 
     public override void Init()
     {
-        base.Init();
-        KillButton ??= new(this, (SpriteFunc)GetSpriteName, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL",
-            (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable, FactionColor);
+        if (this is Banshee)
+            return;
+
+        KillButton ??= new(this, (SpriteFunc)GetSpriteName, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL", FactionColor,
+            (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable);
     }
 
     private string GetSpriteName() => $"{Handler.CurrentFaction}Kill";

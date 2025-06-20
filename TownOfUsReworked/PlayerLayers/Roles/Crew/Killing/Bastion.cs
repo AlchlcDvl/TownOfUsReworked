@@ -23,7 +23,6 @@ public sealed class Bastion : CKilling, IVentBomber
 
     public override void Init()
     {
-        base.Init();
         BombedIDs.Clear();
         BombButton ??= new(this, "PLACE BOMB", new SpriteName($"{SpriteName}VentBomb"), AbilityTypes.Vent, KeybindType.ActionSecondary, (OnClickVent)Bomb, new Cooldown(BastionCd), MaxBombs,
             (VentExclusion)Exception);

@@ -20,7 +20,6 @@ public sealed class Betrayer : Proselyte
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
         KillButton ??= new(this, new SpriteName("BetrayerKill"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(BetrayCd), "BACKSTAB",
             (PlayerBodyExclusion)Exception);

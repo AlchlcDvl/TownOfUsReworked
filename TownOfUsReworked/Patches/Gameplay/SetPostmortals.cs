@@ -81,10 +81,10 @@ public static class SetPostmortals
 
     public static void BeginPostmortals(PlayerControl player, bool ejection)
     {
-        SetRevealers(player, ejection);
-        SetPhantoms(player, ejection);
-        SetBanshees(player, ejection);
-        SetGhouls(player, ejection);
+        SetGhosties<Revealer>(player, ejection, WillBeRevealers, Revealers, player.Is<Crew>());
+        SetGhosties<Phantom>(player, ejection, WillBePhantoms, Phantoms, player.Is<Outcast>() && !IsExcludedOutcast(player));
+        SetGhosties<Banshee>(player, ejection, WillBeBanshees, Banshees, player.Is<Syndicate>());
+        SetGhosties<Ghoul>(player, ejection, WillBeGhouls, Ghouls, player.Is<Intruder>());
     }
 
     private static void JesterWin(PlayerControl player)
@@ -130,182 +130,57 @@ public static class SetPostmortals
     public static readonly HashSet<byte> WillBeRevealers = [];
     public static byte Revealers;
 
-    private static void SetRevealers(PlayerControl dead, bool ejection)
-    {
-        if (Revealers == 0)
-            return;
-
-        TryAddRevealer(dead);
-        var remove = new List<byte>();
-
-        foreach (var revId in WillBeRevealers)
-        {
-            var rev = PlayerById(revId);
-
-            if (!rev.HasDied())
-            {
-                remove.Add(revId);
-                continue;
-            }
-
-            if (!ejection)
-                continue;
-
-            if (!rev.Is<Revealer>(out var revealer))
-            {
-                var former = rev.GetRole();
-                (revealer = new() { FormerRole = former }).RoleUpdate(former);
-                ((IGhosty)revealer).OnStart();
-            }
-
-            rev.GetComponent<PassiveButton>().OverrideOnClickListeners(rev.OnClick);
-
-            if (rev.AmOwner && !revealer.Caught)
-                SetStartingPos(rev);
-        }
-
-        WillBeRevealers.RemoveAll(remove.Contains);
-    }
-
-    private static void TryAddRevealer(PlayerControl dead)
-    {
-        if (dead.HasDied() && dead && !WillBeRevealers.Contains(dead.PlayerId) && WillBeRevealers.Count < Revealers && dead.Is<Crew>())
-            WillBeRevealers.Add(dead.PlayerId);
-    }
-
     public static readonly HashSet<byte> WillBePhantoms = [];
     public static byte Phantoms;
-
-    private static void SetPhantoms(PlayerControl dead, bool ejection)
-    {
-        if (Phantoms == 0)
-            return;
-
-        TryAddPhantom(dead);
-        var remove = new List<byte>();
-
-        foreach (var phanId in WillBePhantoms)
-        {
-            var phan = PlayerById(phanId);
-
-            if (!phan.HasDied())
-            {
-                remove.Add(phanId);
-                continue;
-            }
-
-            if (!ejection)
-                continue;
-
-            if (!phan.Is<Phantom>(out var phantom))
-            {
-                (phantom = new()).RoleUpdate(phan.GetRole());
-                ((IGhosty)phantom).OnStart();
-            }
-
-            phan.GetComponent<PassiveButton>().OverrideOnClickListeners(phan.OnClick);
-
-            if (phan.AmOwner && !phantom.Caught)
-                SetStartingPos(phan);
-        }
-
-        WillBePhantoms.RemoveAll(remove.Contains);
-    }
-
-    private static void TryAddPhantom(PlayerControl dead)
-    {
-        if (dead.HasDied() && dead && !WillBePhantoms.Contains(dead.PlayerId) && WillBePhantoms.Count < Phantoms && dead.Is<Outcast>() && !IsExcludedOutcast(dead))
-            WillBePhantoms.Add(dead.PlayerId);
-    }
 
     public static readonly HashSet<byte> WillBeBanshees = [];
     public static byte Banshees;
 
-    private static void SetBanshees(PlayerControl dead, bool ejection)
-    {
-        if (Banshees == 0)
-            return;
-
-        TryAddBanshee(dead);
-        var remove = new List<byte>();
-
-        foreach (var banId in WillBeBanshees)
-        {
-            var ban = PlayerById(banId);
-
-            if (!ban.HasDied())
-            {
-                remove.Add(banId);
-                continue;
-            }
-
-            if (!ejection)
-                continue;
-
-            if (!ban.Is<Banshee>(out var banshee))
-            {
-                (banshee = new()).RoleUpdate(ban.GetRole());
-                ((IGhosty)banshee).OnStart();
-            }
-
-            ban.GetComponent<PassiveButton>().OverrideOnClickListeners(ban.OnClick);
-
-            if (ban.AmOwner && !banshee.Caught)
-                SetStartingPos(ban);
-        }
-
-        WillBeBanshees.RemoveAll(remove.Contains);
-    }
-
-    private static void TryAddBanshee(PlayerControl dead)
-    {
-        if (dead.HasDied() && dead && !WillBeBanshees.Contains(dead.PlayerId) && WillBeBanshees.Count < Banshees && dead.Is<Syndicate>())
-            WillBeBanshees.Add(dead.PlayerId);
-    }
-
     public static readonly HashSet<byte> WillBeGhouls = [];
     public static byte Ghouls;
 
-    private static void SetGhouls(PlayerControl dead, bool ejection)
+    private static void TryAddPostmortal(PlayerControl dead, HashSet<byte> set, byte count, bool condition)
     {
-        if (Ghouls == 0)
+        if (dead.HasDied() && dead && !set.Contains(dead.PlayerId) && set.Count < count && condition)
+            set.Add(dead.PlayerId);
+    }
+
+    private static void SetGhosties<T>(PlayerControl dead, bool ejection, HashSet<byte> set, byte count, bool condition) where T : Role, IGhosty
+    {
+        if (count == 0)
             return;
 
-        TryAddGhoul(dead);
+        TryAddPostmortal(dead, set, count, condition);
         var remove = new List<byte>();
 
-        foreach (var ghoulId in WillBeGhouls)
+        foreach (var id in set)
         {
-            var ghoul = PlayerById(ghoulId);
+            var dead2 = PlayerById(id);
 
-            if (!ghoul.HasDied())
+            if (!dead2.HasDied() || !dead2)
             {
-                remove.Add(ghoulId);
+                remove.Add(id);
                 continue;
             }
 
             if (!ejection)
                 continue;
 
-            if (!ghoul.Is<Ghoul>(out var gho))
+            if (!dead2.Is<T>(out var ghosty))
             {
-                (gho = new()).RoleUpdate(ghoul.GetRole());
-                ((IGhosty)gho).OnStart();
+                ghosty = Activator.CreateInstance<T>();
+                var former = dead2.GetRole();
+                ghosty.RoleUpdate(former);
+                ghosty.OnStart();
             }
 
-            ghoul.GetComponent<PassiveButton>().OverrideOnClickListeners(ghoul.OnClick);
+            dead2.GetComponent<PassiveButton>().OverrideOnClickListeners(dead2.OnClick);
 
-            if (ghoul.AmOwner && !gho.Caught)
-                SetStartingPos(ghoul);
+            if (dead2.AmOwner && !ghosty.Caught)
+                SetStartingPos(dead2);
         }
 
-        WillBeGhouls.RemoveAll(remove.Contains);
-    }
-
-    private static void TryAddGhoul(PlayerControl dead)
-    {
-        if (dead.HasDied() && dead && !WillBeGhouls.Contains(dead.PlayerId) && WillBeGhouls.Count < Ghouls && dead.Is<Intruder>())
-            WillBeGhouls.Add(dead.PlayerId);
+        set.RemoveAll(remove.Contains);
     }
 
     public static void RemoveFromPostmortals(PlayerControl player)

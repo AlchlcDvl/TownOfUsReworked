@@ -5,7 +5,6 @@ public sealed class Retributionist : CSupport, IShielder, IVentBomber, ITrapper,
 {
     public override void Init()
     {
-        base.Init();
         BodyArrows.Clear();
         MediatedPlayers.Clear();
         Bugs.Clear();

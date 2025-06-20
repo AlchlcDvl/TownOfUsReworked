@@ -15,11 +15,7 @@ public sealed class Runner : GameMode
     public override string FactionName => "Task Race";
     public override Alignment Alignment => Alignment.TaskRace;
 
-    public override void Init()
-    {
-        base.Init();
-        Objectives = () => "- Finish your tasks before the others";
-    }
+    public override void Init() => Objectives = () => "- Finish your tasks before the others";
 
     public override void UponTaskComplete(uint taskId)
     {

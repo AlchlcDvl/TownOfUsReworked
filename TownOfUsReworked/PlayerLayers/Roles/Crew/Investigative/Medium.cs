@@ -39,7 +39,6 @@ public sealed class Medium : Investigative, IShaman
 
     public override void Init()
     {
-        base.Init();
         MediatedPlayers.Clear();
         MediateArrows.Clear();
         MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));

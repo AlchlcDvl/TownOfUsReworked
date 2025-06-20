@@ -622,8 +622,10 @@ public static class RpcManager
                     {
                         var bodies = AllBodies();
 
-                        foreach (var id in reader.ReadValues<byte>())
+                        while (reader.BytesRemaining > 0)
                         {
+                            var id = reader.ReadByte();
+
                             if (bodies.TryFinding(x => x.ParentId == id, out var body))
                                 Ash.CreateAsh(body);
                         }
@@ -632,10 +634,12 @@ public static class RpcManager
                     }
                     case ActionsRpc.PlaceHit:
                     {
-                        var requestor = reader.ReadPlayer().GetRole();
-                        requestor.Requestor.GetLayer<BountyHunter>().TentativeTarget = reader.ReadPlayer();
-                        requestor.Requesting = false;
-                        requestor.Requestor = null;
+                        if (LayerHandler.Handlers.TryGetValue(reader.ReadByte(), out var handler))
+                        {
+                            handler.Requestor.TentativeTarget = reader.ReadPlayer();
+                            handler.Requestor = null;
+                        }
+
                         return;
                     }
                     case ActionsRpc.ButtonAction:

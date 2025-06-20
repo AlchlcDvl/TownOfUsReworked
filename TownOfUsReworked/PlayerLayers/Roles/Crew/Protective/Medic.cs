@@ -25,7 +25,6 @@ public sealed class Medic : Protective, IShielder
 
     public override void Init()
     {
-        base.Init();
         ShieldedPlayer = null;
         ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);

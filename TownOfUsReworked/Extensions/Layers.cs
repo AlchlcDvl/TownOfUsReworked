@@ -133,14 +133,6 @@ public static class LayerExtensions
 
     public static bool IsGuessTarget(this PlayerControl player) => PlayerLayer.GetLayers<Guesser>(true).Any(x => x.TargetPlayer == player);
 
-    public static Jackal GetJackal(this PlayerControl player) => PlayerLayer.GetLayers<Jackal>().Find(role => role.Members.Contains(player.PlayerId));
-
-    // public static Necromancer GetNecromancer(this PlayerControl player) => PlayerLayer.GetLayers<Necromancer>().Find(role => role.Members.Contains(player.PlayerId));
-
-    // public static Dracula GetDracula(this PlayerControl player) => PlayerLayer.GetLayers<Dracula>().Find(role => role.Members.Contains(player.PlayerId));
-
-    // public static Whisperer GetWhisperer(this PlayerControl player) => PlayerLayer.GetLayers<Whisperer>().Find(role => role.Members.Contains(player.PlayerId));
-
     public static Neophyte GetNeophyte(this PlayerControl player) => PlayerLayer.GetLayers<Neophyte>().Find(role => role.Members.Contains(player.PlayerId));
 
     public static bool IsShielded(this PlayerControl player) => PlayerLayer.GetLayers<IShielder>().Any(role => player == role.ShieldedPlayer);
@@ -510,7 +502,7 @@ public static class LayerExtensions
                 attack += (int)layer.Attack;
         }
 
-        if ((player.IsAmbushed() || player.IsCrusaded() || player.GetRole().Bombed) && attack < 1)
+        if ((player.IsAmbushed() || player.IsCrusaded() || LayerHandler.Handlers[player.PlayerId].Bombed) && attack < 1)
             attack = 1;
 
         if (target && player.IsLinkedTo(target))

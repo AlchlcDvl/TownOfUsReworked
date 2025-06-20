@@ -32,7 +32,6 @@ public sealed class Trapper : Protective, ITrapper
 
     public override void Init()
     {
-        base.Init();
         Trapped.Clear();
         TriggeredRoles.Clear();
         BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuilding, new Cooldown(BuildCd), MaxTraps,

@@ -31,7 +31,6 @@ public sealed class SerialKiller : OKilling
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Stab anyone who can oppose you";
         BloodlustButton ??= new(this, new SpriteName("Bloodlust"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Lust, new Cooldown(BloodlustCd), (EndFunc)EndEffect,
             new Duration(BloodlustDur), "BLOODLUST");

@@ -25,12 +25,8 @@ public sealed class Sheriff : Investigative
     public override string StartText => "Reveal The Alignment Of Other Players";
     public override string Description => "- You can reveal alignments of other players relative to the <#8CFFFFFF>Crew</color>";
 
-    public override void Init()
-    {
-        base.Init();
-        InterrogateButton ??= new(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interrogate, new Cooldown(InterrogateCd),
-            (PlayerBodyExclusion)Exception);
-    }
+    public override void Init() => InterrogateButton ??= new(this, "INTERROGATE", new SpriteName("Interrogate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interrogate,
+        new Cooldown(InterrogateCd), (PlayerBodyExclusion)Exception);
 
     private void Interrogate(PlayerControl target)
     {

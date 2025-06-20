@@ -22,7 +22,6 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
 
     public override void Init()
     {
-        base.Init();
         Infected.Clear();
         Infected.Add(PlayerId);
         InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",

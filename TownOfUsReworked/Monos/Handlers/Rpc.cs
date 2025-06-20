@@ -12,7 +12,7 @@ public sealed class RpcHandler : MonoBehaviour
 
     public void FixedUpdate()
     {
-        if (!AmongUsClient.Instance || TownOfUsReworked.MciActive)
+        if (!AmongUsClient.Instance || TownOfUsReworked.MciActive || !LateMessages.Any())
             return;
 
         Timer += Time.fixedDeltaTime;

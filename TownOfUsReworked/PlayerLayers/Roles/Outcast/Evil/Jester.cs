@@ -33,7 +33,6 @@ public sealed class Jester : Evil
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
         ToHaunt.Clear();
 

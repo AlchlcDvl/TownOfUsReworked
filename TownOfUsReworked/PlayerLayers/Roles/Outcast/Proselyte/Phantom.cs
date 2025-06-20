@@ -21,7 +21,6 @@ public sealed class Phantom : Proselyte, IGhosty
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Finish your tasks without getting clicked";
         RemoveTasks(Player);
         Player.gameObject.layer = LayerMask.NameToLayer("Players");

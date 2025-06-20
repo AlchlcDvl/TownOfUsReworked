@@ -55,7 +55,6 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
 
     public override void Init()
     {
-        base.Init();
         RemainingGuesses = MaxGuesses == 0 ? 10000 : MaxGuesses;
         Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer.name} was" : (!TargetPlayer ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));

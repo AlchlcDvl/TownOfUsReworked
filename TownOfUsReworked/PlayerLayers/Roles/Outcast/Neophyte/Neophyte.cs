@@ -29,7 +29,6 @@ public abstract class Neophyte : Outcast
 
     public override void Init()
     {
-        base.Init();
         Members.Clear();
         Members.Add(PlayerId);
     }

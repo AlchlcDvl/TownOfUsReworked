@@ -27,7 +27,6 @@ public sealed class Werewolf : OKilling
 
     public override void Init()
     {
-        base.Init();
         Objectives = () => "- Maul anyone who can oppose you";
         MaulButton ??= new(this, new SpriteName("Maul"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Maul, new Cooldown(MaulCd), "MAUL", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception, (ConditionFunc)Condition);
