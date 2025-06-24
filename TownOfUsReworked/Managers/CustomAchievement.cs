@@ -71,7 +71,7 @@ public static class CustomAchievementManager
 
         foreach (var map in Enum.GetValues<Map>())
         {
-            if (map == Data.Enums.Map.Random)
+            if (map == Map.Random)
                 continue;
 
             AllAchievements.Add(new($"MapWins.{map}", eog: true));

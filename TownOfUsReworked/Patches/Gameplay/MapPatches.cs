@@ -107,24 +107,24 @@ public static class MapPatches
 
     private static byte GetSelectedMap()
     {
-        if (MapSettings.Map < Data.Enums.Map.Random)
+        if (MapSettings.Map < Map.Random)
             return (byte)MapSettings.Map;
 
         var randoms = new Dictionary<Map, int>
         {
-            { Data.Enums.Map.Skeld, MapSettings.RandomMapSkeld },
-            { Data.Enums.Map.MiraHq, MapSettings.RandomMapMira },
-            { Data.Enums.Map.Polus, MapSettings.RandomMapPolus },
-            { Data.Enums.Map.dlekS, MapSettings.RandomMapdlekS },
-            { Data.Enums.Map.Airship, MapSettings.RandomMapAirship },
-            { Data.Enums.Map.Fungle, MapSettings.RandomMapFungle }
+            { Map.Skeld, MapSettings.RandomMapSkeld },
+            { Map.MiraHq, MapSettings.RandomMapMira },
+            { Map.Polus, MapSettings.RandomMapPolus },
+            { Map.dlekS, MapSettings.RandomMapdlekS },
+            { Map.Airship, MapSettings.RandomMapAirship },
+            { Map.Fungle, MapSettings.RandomMapFungle }
         };
 
         if (SubLoaded)
-            randoms.Add(Data.Enums.Map.Submerged, MapSettings.RandomMapSubmerged);
+            randoms.Add(Map.Submerged, MapSettings.RandomMapSubmerged);
 
         if (LiLoaded)
-            randoms.Add(Data.Enums.Map.LevelImpostor, MapSettings.RandomMapLevelImpostor);
+            randoms.Add(Map.LevelImpostor, MapSettings.RandomMapLevelImpostor);
 
         var maxWeight = randoms.Values.Sum();
 

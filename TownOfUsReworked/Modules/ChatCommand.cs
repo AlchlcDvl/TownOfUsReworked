@@ -270,8 +270,14 @@ public sealed class ChatCommand : IDisposable
 
     private static void Summary()
     {
-        var data = new RpcReader(File.ReadAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary")));
-        var summary = data.Read<SummaryInfo>().Generate();
+        if (References.Summary == null)
+        {
+            using var data = new RpcReader(File.ReadAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary")));
+            References.Summary = new();
+            References.Summary.FromBytes(data);
+        }
+
+        var summary = References.Summary?.Generate();
 
         if (IsNullEmptyOrWhiteSpace(summary))
             Run("<#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");

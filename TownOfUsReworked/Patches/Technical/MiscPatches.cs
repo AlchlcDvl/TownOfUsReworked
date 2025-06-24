@@ -696,6 +696,7 @@ public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
     [HarmonyPatch(typeof(NotificationPopper), nameof(NotificationPopper.ShiftMessages))]
     [HarmonyPatch(typeof(NameHandler), nameof(NameHandler.UpdateGameName))] // Patching my own code...that's a first
     [HarmonyPatch(typeof(PlayerControlHandler), nameof(PlayerControlHandler.Update))] // Patching my own code...again...that's a second
+    [HarmonyPatch(typeof(PlayerControlExtensions), nameof(PlayerControlExtensions.UpdateMaterial), typeof(bool), typeof(MatProperties), typeof(SpriteRenderer), typeof(object))] // Well this is concerning
     public static Exception Finalizer() => null; // My first use of a finalizer ong
 }
 

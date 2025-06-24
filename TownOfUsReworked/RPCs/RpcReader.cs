@@ -143,6 +143,7 @@ public sealed class RpcReader : IDisposable
         _ when type == typeof(CustomButton) => ReadButton(),
         _ when type == typeof(Vector2) => ReadVector2(),
         _ when type == typeof(Type) => ReadType(),
+        _ when type == typeof(Color32) => ReadColor32(),
         _ when type == typeof(Enum) => ReadEnum(ReadType()),
         _ when type == typeof(IEnumerable) => ReadValues(),
         _ when type.IsEnum => ReadEnum(type),
@@ -470,4 +471,11 @@ public sealed class RpcReader : IDisposable
         obj!.FromBytes(this);
         return obj;
     }
+
+    /// <summary>
+    /// Reads a Color32 value from the data.
+    /// </summary>
+    /// <returns>The deserialised Color32 value.</returns>
+    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    public Color32 ReadColor32() => new(ReadByte(), ReadByte(), ReadByte(), ReadByte());
 }

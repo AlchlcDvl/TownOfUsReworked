@@ -47,7 +47,6 @@ public static class CalculateLightRadiusPatch
                 Faction.Illuminati => IlluminatiSettings.IlluminatiVision,
                 Faction.Pandorica => PandoricaSettings.PandoricaVision,
                 Faction.Compliance => ComplianceSettings.ComplianceVision,
-                Faction.Outcast or (> Faction.GameMode and <= Faction.Undead) => OutcastSettings.OutcastVision,
                 Faction.GameMode => role switch
                 {
                     Runner => Runner.RunnerVision,
@@ -55,6 +54,7 @@ public static class CalculateLightRadiusPatch
                     Hunter hunter => hunter.Starting ? 0.001f : Hunter.HunterVision,
                     _ => 1f
                 },
+                _ when handler.CurrentFaction.IsOutcast() => OutcastSettings.OutcastVision,
                 _ => 1f
             };
         }

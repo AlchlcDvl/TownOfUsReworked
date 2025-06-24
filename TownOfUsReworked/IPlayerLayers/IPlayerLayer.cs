@@ -6,6 +6,7 @@ public interface IPlayerLayer
     bool Local { get; }
     UColor Color { get; }
     bool Disconnected { get; }
+    Layer Type { get; }
 
     void ReadRPC(RpcReader reader);
 

@@ -79,14 +79,6 @@ public static class SetPostmortals
         PlayerLayer.GetLayers<Retributionist>().Do(x => x.OnRoleSelected());
     }
 
-    public static void BeginPostmortals(PlayerControl player, bool ejection)
-    {
-        SetGhosties<Revealer>(player, ejection, WillBeRevealers, Revealers, player.Is<Crew>());
-        SetGhosties<Phantom>(player, ejection, WillBePhantoms, Phantoms, player.Is<Outcast>() && !IsExcludedOutcast(player));
-        SetGhosties<Banshee>(player, ejection, WillBeBanshees, Banshees, player.Is<Syndicate>());
-        SetGhosties<Ghoul>(player, ejection, WillBeGhouls, Ghouls, player.Is<Intruder>());
-    }
-
     private static void JesterWin(PlayerControl player)
     {
         if (player.Is<Jester>(out var jest))
@@ -138,6 +130,14 @@ public static class SetPostmortals
 
     public static readonly HashSet<byte> WillBeGhouls = [];
     public static byte Ghouls;
+
+    public static void BeginPostmortals(PlayerControl player, bool ejection)
+    {
+        SetGhosties<Revealer>(player, ejection, WillBeRevealers, Revealers, player.Is<Crew>());
+        SetGhosties<Phantom>(player, ejection, WillBePhantoms, Phantoms, player.Is<Outcast>() && !IsExcludedOutcast(player));
+        SetGhosties<Banshee>(player, ejection, WillBeBanshees, Banshees, player.Is<Syndicate>());
+        SetGhosties<Ghoul>(player, ejection, WillBeGhouls, Ghouls, player.Is<Intruder>());
+    }
 
     private static void TryAddPostmortal(PlayerControl dead, HashSet<byte> set, byte count, bool condition)
     {

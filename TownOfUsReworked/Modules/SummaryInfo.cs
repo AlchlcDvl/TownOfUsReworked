@@ -14,7 +14,11 @@ public sealed class SummaryInfo : INetSerializable, INetDeserializable, IDisposa
         var count = netData.ReadByte();
 
         while (count-- > 0)
-            Modules.Add(netData.Read<SummaryInfoModule>());
+        {
+            var module = new SummaryInfoModule();
+            module.FromBytes(netData);
+            Modules.Add(module);
+        }
     }
 
     public string Generate()
@@ -54,6 +58,12 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
     public string KilledBy { get; set; }
 
     public bool Disconnected { get; set; }
+
+    public int ColorId { get; set; }
+    public string HatId { get; set; }
+    public string SkinId { get; set; }
+    public string VisorId { get; set; }
+    public Color32 Color { get; set; }
 
     public readonly IEnumerable<byte> GetBytes()
     {
@@ -100,10 +110,28 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
         yield return (byte)DeathReason;
 
-        if (DeathReason == DeathReasonEnum.Alive)
+        if (DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Suicide or DeathReasonEnum.Ejected or DeathReasonEnum.Misfire or DeathReasonEnum.Escaped))
+        {
+            foreach (var val in RpcWriter.GetBytes(KilledBy))
+                yield return val;
+        }
+
+        foreach (var val in RpcWriter.GetBytes(HatId))
+            yield return val;
+
+        foreach (var val in RpcWriter.GetBytes(SkinId))
+            yield return val;
+
+        foreach (var val in RpcWriter.GetBytes(VisorId))
+            yield return val;
+
+        foreach (var val in RpcWriter.GetBytes(ColorId))
+            yield return val;
+
+        if (ColorId != -2)
             yield break;
 
-        foreach (var val in RpcWriter.GetBytes(KilledBy))
+        foreach (var val in RpcWriter.GetBytes(Color))
             yield return val;
     }
 
@@ -142,13 +170,24 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
         Disconnected = netData.ReadBool();
 
-        if (Disconnected)
-            return;
+        if (!Disconnected)
+        {
+            DeathReason = netData.Read<DeathReasonEnum>();
 
-        DeathReason = netData.Read<DeathReasonEnum>();
+            if (DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Suicide or DeathReasonEnum.Ejected or DeathReasonEnum.Misfire or DeathReasonEnum.Escaped))
+                KilledBy = netData.ReadString();
+        }
 
-        if (DeathReason != DeathReasonEnum.Alive)
-            KilledBy = netData.ReadString();
+        HatId = netData.ReadString();
+        SkinId = netData.ReadString();
+        VisorId = netData.ReadString();
+        ColorId = netData.ReadInt();
+        Color = ColorId switch
+        {
+            -2 => netData.ReadColor32(),
+            -1 => UColor.white,
+            _ => ColorId.GetColor(false)
+        };
     }
 
     public void PopulateFromPlayer(PlayerControl player, bool disconnected)
@@ -197,13 +236,20 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
         Disconnected = disconnected;
 
-        if (Disconnected)
-            return;
+        if (!Disconnected)
+        {
+            DeathReason = handler.DeathReason;
 
-        DeathReason = handler.DeathReason;
+            if (handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(handler.KilledBy))
+                KilledBy = handler.KilledBy;
+        }
 
-        if (handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Suicide or DeathReasonEnum.Escaped) && !IsNullEmptyOrWhiteSpace(handler.KilledBy))
-            KilledBy = handler.KilledBy;
+        var appearance = player.GetComponent<AppearanceHandler>();
+        HatId = appearance.Default.HatId;
+        SkinId = appearance.Default.SkinId;
+        VisorId = appearance.Default.VisorId;
+        ColorId = appearance.Default.ColorId;
+        Color = appearance.Default.Color;
     }
 
     public readonly (string FullSummary, string Summary) Summarise()

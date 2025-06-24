@@ -23,7 +23,7 @@ public static class References
     public static MeetingHud Meeting() => MeetingHud.Instance;
     public static ExileController Ejection() => ExileController.Instance;
     public static ShipStatus Ship() => ShipStatus.Instance;
-    public static MapBehaviour Map() => MapBehaviour.Instance;
+    public static MapBehaviour Minimap() => MapBehaviour.Instance;
     public static Minigame ActiveTask() => Minigame.Instance;
     public static LobbyBehaviour Lobby() => LobbyBehaviour.Instance;
     public static ChatController Chat() => HUD()?.Chat;
@@ -37,6 +37,9 @@ public static class References
         get;
         set
         {
+            if (field == value)
+                return;
+
             field = value;
 
             if (!value)
@@ -339,18 +342,21 @@ public static class References
         { Layer.Taskmaster, new(typeof(Taskmaster), CustomColorManager.Taskmaster, Layer.Taskmaster, "µ") },
         { Layer.Traitor, new(typeof(Traitor), CustomColorManager.Traitor, Layer.Traitor, "♣") },
         { Layer.Assassin, new(typeof(Assassin), CustomColorManager.Assassin, Layer.Assassin) },
-        { Layer.Bullseye, new(typeof(Bullseye), CustomColorManager.Crew, Layer.Bullseye) },
+        { Layer.Bullseye, new(typeof(Assassin), CustomColorManager.Crew, Layer.Bullseye) },
         { Layer.ButtonBarry, new(typeof(ButtonBarry), CustomColorManager.ButtonBarry, Layer.ButtonBarry) },
-        { Layer.Hitman, new(typeof(Hitman), CustomColorManager.Intruder, Layer.Hitman) },
+        { Layer.Deadshot, new(typeof(Assassin), CustomColorManager.Illuminati, Layer.Deadshot) },
+        { Layer.Hitman, new(typeof(Assassin), CustomColorManager.Intruder, Layer.Hitman) },
         { Layer.Insider, new(typeof(Insider), CustomColorManager.Insider, Layer.Insider) },
-        { Layer.Multitasker, new(typeof(Multitasker), CustomColorManager.Multitasker, Layer.Multitasker) },
+        { Layer.Marksman, new(typeof(Assassin), CustomColorManager.Compliance, Layer.Marksman) },
+        { Layer.Multitasker, new(typeof(Multitasker), CustomColorManager.Compliance, Layer.Multitasker) },
         { Layer.Ninja, new(typeof(Ninja), CustomColorManager.Ninja, Layer.Ninja) },
         { Layer.Politician, new(typeof(Politician), CustomColorManager.Politician, Layer.Politician) },
         { Layer.Radar, new(typeof(Radar), CustomColorManager.Radar, Layer.Radar) },
-        { Layer.Ritualist, new(typeof(Ritualist), CustomColorManager.Apocalypse, Layer.Ritualist) },
+        { Layer.Ranger, new(typeof(Assassin), CustomColorManager.Pandorica, Layer.Ranger) },
+        { Layer.Ritualist, new(typeof(Assassin), CustomColorManager.Apocalypse, Layer.Ritualist) },
         { Layer.Ruthless, new(typeof(Ruthless), CustomColorManager.Ruthless, Layer.Ruthless) },
-        { Layer.Slayer, new(typeof(Slayer), CustomColorManager.Outcast, Layer.Slayer) },
-        { Layer.Sniper, new(typeof(Sniper), CustomColorManager.Syndicate, Layer.Sniper) },
+        { Layer.Slayer, new(typeof(Assassin), CustomColorManager.Outcast, Layer.Slayer) },
+        { Layer.Sniper, new(typeof(Assassin), CustomColorManager.Syndicate, Layer.Sniper) },
         { Layer.Snitch, new(typeof(Snitch), CustomColorManager.Snitch, Layer.Snitch) },
         { Layer.Swapper, new(typeof(Swapper), CustomColorManager.Swapper, Layer.Swapper) },
         { Layer.Tiebreaker, new(typeof(Tiebreaker), CustomColorManager.Tiebreaker, Layer.Tiebreaker) },
@@ -367,6 +373,7 @@ public static class References
         { Faction.Outcast, new(Faction.Outcast, CustomColorManager.Outcast) },
         { Faction.Pandorica, new(Faction.Pandorica, CustomColorManager.Pandorica) },
         { Faction.Compliance, new(Faction.Compliance, CustomColorManager.Compliance) },
+        { Faction.Illuminati, new(Faction.Illuminati, CustomColorManager.Illuminati) },
         { Faction.GameMode, new(Faction.GameMode, CustomColorManager.GameMode) },
         { Faction.Arsonist, new(Faction.Arsonist, CustomColorManager.Arsonist) },
         { Faction.Cryomaniac, new(Faction.Cryomaniac, CustomColorManager.Cryomaniac) },
@@ -375,6 +382,10 @@ public static class References
         { Faction.Murderer, new(Faction.Murderer, CustomColorManager.Murderer) },
         { Faction.SerialKiller, new(Faction.SerialKiller, CustomColorManager.SerialKiller) },
         { Faction.Werewolf, new(Faction.Werewolf, CustomColorManager.Werewolf) },
+        { Faction.Defector, new(Faction.Defector, CustomColorManager.Defector) },
+        { Faction.Betrayer, new(Faction.Betrayer, CustomColorManager.Betrayer) },
+        { Faction.Mafia, new(Faction.Mafia, CustomColorManager.Mafia) },
+        { Faction.Shifter, new(Faction.Shifter, CustomColorManager.Shifter) },
         { Faction.Cabal, new(Faction.Cabal, CustomColorManager.Cabal) },
         { Faction.Cult, new(Faction.Cult, CustomColorManager.Cult) },
         { Faction.Followers, new(Faction.Followers, CustomColorManager.Followers) },

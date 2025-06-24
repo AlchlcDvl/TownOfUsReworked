@@ -256,11 +256,10 @@ public sealed class Thief : Benign, IGuesser
 
         var local = LayerHandler.Handlers[LocalPlayer.PlayerId];
         var faction = local.CurrentFaction;
+        var neut = faction.IsOutcast();
 
-        if (faction.IsFactionedEvil() || (faction == Faction.Outcast && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
+        if (faction.IsFactionedEvil() || (faction.IsOutcast() && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
         {
-            var neut = faction == Faction.Outcast;
-
             if (!neut || Snitch.SnitchSeesOutcasts)
             {
                 foreach (var snitch in GetLayers<Snitch>())

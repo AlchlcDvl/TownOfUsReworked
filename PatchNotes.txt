@@ -1,6 +1,6 @@
 ﻿New!
 - New Roles: Democrat [Crew (Sovereign)], Cultist [Apocalypse (Harbinger)], Void [Apocalypse (Deity)], Gluttony [Apocalypse (Deity)], Zealot [Outcast (Neophyte)]
-- New Ability: Ritualist (Apocalypse Assassin)
+- New Abilities: Ritualist (Apocalypse Assassin), Marksman (Compliance Assassin), Ranger (Pandorica Assassin), Deadshot (Illuminati Assassin)
 - New Factions: Pandorica, Compliance, Illuminati, Apocalypse
 - New Special Game Modifiers: Pandorica Opens, Order of Compliance, Illuminati Unleashed
 - Mega Addition: The mod now has its own custom stats and achievements
@@ -48,7 +48,7 @@ Changes!
 - Change: Assets are now stored in "%APPDATA%\..\LocalLow\Innersloth\Among Us" instead of the game folder to ensure persistence between version updates
 - Change: The end game summary will now only show the initial and the final role of a player. To view the full role history of a player, use the /summary command
 - Change: Syndicate (Power) roles are now Syndicate (Head) instead
-- Change: Dimmed the blinded color from 
+- Change: Dimmed the blinded color from
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Nerf: Engineer can no longer vent (you now need the Tunneler ability to do so as a crewmate)
 - Nerf: Button Barry will now only fix critical sabotages, leaving lights and comms unaffected

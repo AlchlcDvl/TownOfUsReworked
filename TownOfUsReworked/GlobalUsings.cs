@@ -2,6 +2,7 @@ global using AmongUs.Data;
 global using AmongUs.GameOptions;
 global using MaskType = PlayerMaterial.MaskType;
 global using TBMode = AmongUs.GameOptions.TaskBarMode;
+global using MatProperties = PlayerMaterial.Properties;
 global using CosmeticKind = CosmeticsLayer.CosmeticKind;
 global using PlayerOutfit = NetworkedPlayerInfo.PlayerOutfit;
 

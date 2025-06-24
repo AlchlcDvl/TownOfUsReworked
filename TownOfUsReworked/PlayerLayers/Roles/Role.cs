@@ -72,7 +72,7 @@ public abstract class Role : PlayerLayer
         if (LocalPlayer.Is<Seer>(out var seer))
             Flash(seer.Color);
 
-        Handler.SetUpLayers(inherit);
+        Handler.SetUpLayers(inherit, PlayerLayerEnum.Role);
         UponRoleChanged(former);
     }
 

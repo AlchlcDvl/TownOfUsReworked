@@ -300,6 +300,32 @@ public static class CollectionExtensions
 
     public static IEnumerable<T> Except<T>(this IEnumerable<T> source, params T[] excluded) => source.Where(x => !excluded.Contains(x));
 
+    public static void WhileIndexed<T>(this List<T> source, Action<T> action, Func<bool> predicate)
+    {
+        var i = 0;
+
+        while (predicate())
+            action(source[i++]);
+    }
+
+    public static Dictionary<int, List<T>> SplitBy<T>(this IEnumerable<T> list, Func<T, int> predicate)
+    {
+        var result = new Dictionary<int, List<T>>();
+
+        foreach (var item in list)
+        {
+            var index = predicate(item);
+
+            if (!result.TryGetValue(index, out var value))
+                result[index] = value = [];
+
+            value.Add(item);
+        }
+
+        result.Values.Do(x => x.Shuffle());
+        return result;
+    }
+
     /* These methods are unused at the moment, so they've been commented until needed
 
     public static T TakeFirst<T>(this HashSet<T> set)
@@ -510,24 +536,6 @@ public static class CollectionExtensions
         if (temp.Any())
             result.Add(temp);
 
-        return result;
-    }
-
-    public static Dictionary<int, List<T>> SplitAndGetIndices<T>(this List<T> list, Func<T, int> predicate)
-    {
-        var result = new Dictionary<int, List<T>>();
-
-        foreach (var item in list)
-        {
-            var index = predicate(item);
-
-            if (!result.ContainsKey(index))
-                result[index] = [];
-
-            result[index].Add(item);
-        }
-
-        result.Values.Do(x => x.Shuffle());
         return result;
     }
 

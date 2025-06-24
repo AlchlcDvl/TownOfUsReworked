@@ -429,14 +429,19 @@ public static class RpcManager
                     }
                     case MiscRpc.EndRoleGen:
                     {
-                        AllPlayers().Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
+                        var allPlayers = AllPlayers();
+                        allPlayers.Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
                         SetPostmortals.Revealers = reader.ReadByte();
                         SetPostmortals.Phantoms = reader.ReadByte();
                         SetPostmortals.Banshees = reader.ReadByte();
                         SetPostmortals.Ghouls = reader.ReadByte();
                         RoleGenManager.Pure = reader.ReadPlayer();
                         RoleGenManager.Convertible = reader.ReadByte();
-                        BetterAirship.SpawnPoints.AddRange(reader.ReadValues<byte>());
+
+                        while (reader.BytesRemaining > 0)
+                            BetterAirship.SpawnPoints.Add(reader.ReadByte());
+
+                        Shifter.Originals.AddRange(allPlayers.Where(x => x.Is<Shifter>()));
                         AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
                         return;
                     }

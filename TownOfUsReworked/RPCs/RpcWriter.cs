@@ -192,6 +192,7 @@ public sealed class RpcWriter : IDisposable
         PlayerVoteArea i => GetBytes(i),
         Vent i => GetBytes(i),
         Vector2 i => GetBytes(i),
+        Color32 i => GetBytes(i),
 
         // Custom types
         INetSerializable i => i.GetBytes(),
@@ -293,6 +294,14 @@ public sealed class RpcWriter : IDisposable
 
         foreach (var b in GetBytes(Convert.ChangeType(value, Enum.GetUnderlyingType(type)), false))
             yield return b;
+    }
+
+    public static IEnumerable<byte> GetBytes(Color32 value)
+    {
+        yield return value.r;
+        yield return value.g;
+        yield return value.b;
+        yield return value.a;
     }
 
     private static IEnumerable<byte> GetBytes(IEnumerable values, bool withTypeCode)

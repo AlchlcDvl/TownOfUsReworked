@@ -206,7 +206,7 @@ public static class AssetManager
 
     private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
     {
-        var asset = assetBundle.LoadAsset<T>(name)?.DontUnload();
+        var asset = assetBundle.LoadAsset<T>(name)?.DontDestroy();
         AddAsset(name, asset);
         AssetToBundle.Remove(name);
 

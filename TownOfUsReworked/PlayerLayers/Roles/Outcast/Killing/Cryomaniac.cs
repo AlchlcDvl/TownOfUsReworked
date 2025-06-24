@@ -23,8 +23,7 @@ public sealed class Cryomaniac : OKilling, IDouser
     private CustomButton KillButton;
     public bool FreezeUsed;
     public HashSet<byte> Doused { get; } = [];
-    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Outcast) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
-        or Alignment.Neophyte) && x != Player) && CryoLastKillerBoost;
+    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && Player.IsBuddyWith(x, Handler.CurrentFaction) && x != Player) && CryoLastKillerBoost;
 
     protected override UColor MainColor => CustomColorManager.Cryomaniac;
     public override Layer Type => Layer.Cryomaniac;

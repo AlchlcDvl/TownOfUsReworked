@@ -38,6 +38,9 @@ public sealed class AppearanceHandler : MonoBehaviour
     [HideFromIl2Cpp]
     public CustomOutfit Current { get; set; }
 
+    [HideFromIl2Cpp]
+    public CustomOutfit Default { get; set; }
+
     public readonly Dictionary<PlayerOutfitType, CustomOutfit> Outfits = [];
 
     private PlayerControl Player { get; set; }
@@ -54,9 +57,6 @@ public sealed class AppearanceHandler : MonoBehaviour
 
     [HideFromIl2Cpp]
     private Action ConcurrentAction { get; set; } = BlankVoid;
-
-    [HideFromIl2Cpp]
-    private CustomOutfit Default { get; set; }
 
     private readonly Queue<(CustomOutfit, PlayerOutfitType, float, Func<bool>, Action)> QueuedOutfits = [];
 

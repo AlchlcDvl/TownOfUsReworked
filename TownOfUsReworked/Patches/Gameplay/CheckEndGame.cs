@@ -45,22 +45,32 @@ public static class CheckEndGame
             EndGame();
     }
 
+    private static readonly List<Action<HashSet<byte>>> GameEndChecks =
+    [
+        _ => DetectStalemate(),
+        CheckFactionWin,
+        x => PlayerLayer.GetLayers<Role>().Do(y => y.GameEnd(x)),
+        x => PlayerLayer.GetLayers<Disposition>().Do(y => y.GameEnd(x))
+    ];
+
     public static void CheckPlayerWins()
     {
         // Only run the subsequent checks if and only if no previous condition as been fulfilled
         var winnerIds = new HashSet<byte>();
 
-        if (WinState == WinLose.None)
-            DetectStalemate();
+        GameEndChecks.WhileIndexed(x => x(winnerIds), () => WinState == WinLose.None);
 
-        if (WinState == WinLose.None)
-            CheckFactionWin(winnerIds);
+        // if (WinState == WinLose.None)
+        //     DetectStalemate();
 
-        if (WinState == WinLose.None)
-            PlayerLayer.GetLayers<Role>().Do(x => x.GameEnd(winnerIds));
+        // if (WinState == WinLose.None)
+        //     CheckFactionWin(winnerIds);
 
-        if (WinState == WinLose.None)
-            PlayerLayer.GetLayers<Disposition>().Do(x => x.GameEnd(winnerIds));
+        // if (WinState == WinLose.None)
+        //     PlayerLayer.GetLayers<Role>().Do(x => x.GameEnd(winnerIds));
+
+        // if (WinState == WinLose.None)
+        //     PlayerLayer.GetLayers<Disposition>().Do(x => x.GameEnd(winnerIds));
 
         if (WinState == WinLose.None)
             return;
@@ -106,16 +116,29 @@ public static class CheckEndGame
             Faction.Reanimated => WinLose.ReanimatedWins,
             Faction.Cult => WinLose.CultWins,
             Faction.Followers => WinLose.FollowersWin,
+            Faction.Arsonist => WinLose.ArsonistWins,
+            Faction.Cryomaniac => WinLose.CryomaniacWins,
+            Faction.Glitch => WinLose.GlitchWins,
+            Faction.Juggernaut => WinLose.JuggernautWins,
+            Faction.Murderer => WinLose.MurdererWins,
+            Faction.SerialKiller => WinLose.SerialKillerWins,
+            Faction.Werewolf => WinLose.WerewolfWins,
+            Faction.Defector => WinLose.DefectorWins,
+            Faction.Betrayer => WinLose.BetrayerWins,
+            Faction.Shifter => WinLose.ShifterWins,
+            Faction.Mafia => WinLose.MafiaWins,
             Faction.Outcast => hexer.Player.GetDisposition() switch
             {
-                Mafia => WinLose.MafiaWins,
                 Lovers => WinLose.LoveWins,
-                Defector => WinLose.DefectorWins,
-                _ => WinLose.NobodyWins
+                _ => WinLose.SoloWin
             },
             _ => WinLoseGroupMappings.TryGetValue(hexer.Handler.CurrentFaction, out var winLose) ? winLose : WinLose.SoloWin
         };
-        CallRpc(MiscRpc.WinLose, [WinState, .. players.Where(factionCheck).Except(hexer.Player), hexer.PlayerId]);
+
+        if (WinState == WinLose.SoloWin)
+            CallRpc(MiscRpc.WinLose, WinState, hexer.PlayerId);
+        else
+            CallRpc(MiscRpc.WinLose, [WinState, .. players.Where(factionCheck).Except(hexer.Player), hexer.PlayerId]);
     }
 
     private static void CheckFactionWin(HashSet<byte> winnerIds)
@@ -129,7 +152,7 @@ public static class CheckEndGame
         winnerIds.AddRange(AllPlayers().Where(x => x.Is(winner)).Select(x => x.PlayerId));
     }
 
-    private static readonly Faction[] FactionsToKill = [ .. Enum.GetValues<Faction>().Except([ Faction.None, Faction.Outcast, Faction.GameMode ]) ];
+    private static readonly Faction[] FactionsToKill = [ .. Enum.GetValues<Faction>().Except([Faction.None, Faction.Outcast, Faction.GameMode, Faction.Shifter]) ];
     private static readonly Dictionary<Faction, WinLose> WinLoseGroupMappings = FactionsToKill
         .ToDictionary(
             x => x,
@@ -139,14 +162,13 @@ public static class CheckEndGame
     {
         switch (faction)
         {
-            case Faction.Compliance when !BadGuysSettings.OrderOfCompliance:
-            case Faction.Pandorica when !BadGuysSettings.PandoricaOpens:
+            case Faction.Compliance when BadGuysSettings.IlluminatiUnleashed || !BadGuysSettings.OrderOfCompliance:
+            case Faction.Pandorica when BadGuysSettings.IlluminatiUnleashed || !BadGuysSettings.PandoricaOpens:
             case Faction.Illuminati when !BadGuysSettings.IlluminatiUnleashed:
                 return false;
         }
 
-        var toKill = FactionsToKill.Except([ faction ]);
-
+        var toKill = FactionsToKill.Except([faction]);
         return AllPlayers().Where(player => !player.HasDied()).All(player => !toKill.Any(player.Is) && (!player.Is(Faction.Outcast)));
     }
 

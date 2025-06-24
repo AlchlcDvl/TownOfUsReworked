@@ -214,7 +214,7 @@ public static class PlayerControlExtensions
     public static void UpdateMaterial(this SkinLayer __instance, object colorVal) => UpdateMaterial(__instance.skin && __instance.IsLoaded && __instance.skin.MatchPlayerColor,
         __instance.matProperties, __instance.layer, colorVal);
 
-    private static void UpdateMaterial(bool loaded, PlayerMaterial.Properties matProperties, SpriteRenderer rend, object colorVal)
+    private static void UpdateMaterial(bool loaded, MatProperties matProperties, SpriteRenderer rend, object colorVal)
     {
         rend.sharedMaterial = matProperties.MaskType is MaskType.ComplexUI or MaskType.ScrollingUI
             ? (loaded ? HatManager.Instance.MaskedPlayerMaterial : HatManager.Instance.MaskedMaterial)

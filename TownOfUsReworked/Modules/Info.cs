@@ -85,6 +85,7 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
     Faction.Defector => CustomColorManager.Defector,
     Faction.Betrayer => CustomColorManager.Betrayer,
     Faction.Mafia => CustomColorManager.Mafia,
+    Faction.Shifter => CustomColorManager.Mafia,
     Faction.Cabal => CustomColorManager.Cabal,
     Faction.Cult => CustomColorManager.Cult,
     Faction.Followers => CustomColorManager.Followers,

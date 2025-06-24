@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.IPlayerLayers;
 
-public interface ITargeter
+public interface ITargeter : IPlayerLayer
 {
-    PlayerControl TargetPlayer { set; }
+    PlayerControl TargetPlayer { get; set; }
 }

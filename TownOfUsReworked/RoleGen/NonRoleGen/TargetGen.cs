@@ -4,6 +4,14 @@ namespace TownOfUsReworked.RoleGen;
 
 public sealed class TargetGen : BaseGen
 {
+    private static readonly List<(Layer, Func<PlayerControl, bool>, Func<bool>)> Targeting =
+    [
+        (Layer.Executioner, x => x.Is(Alignment.Sovereign), () => Executioner.ExecutionerCanPickTargets),
+        (Layer.Guesser, x => x.Is<Evil>() || x.Is(Alignment.Investigative) || x.Is<Indomitable>(), () => Guesser.GuesserCanPickTargets),
+        (Layer.GuardianAngel, x => x.Is<Evil>(), () => GuardianAngel.GuardianAngelCanPickTargets),
+        (Layer.BountyHunter, _ => false, () => BountyHunter.BountyHunterCanPickTargets),
+    ];
+
     public override void Assign()
     {
         if (GetSpawnItem(Layer.Allied).IsActive())
@@ -14,7 +22,15 @@ public sealed class TargetGen : BaseGen
 
                 if (BadGuysSettings.PandoricaOpens)
                 {
-                    factions.RemoveAll(Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
+                    if (BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse)
+                        factions.Remove(Faction.Apocalypse);
+
+                    if (BadGuysSettings.PandoricaMembers == PandoricaType.Syndicate)
+                        factions.Remove(Faction.Syndicate);
+
+                    if (BadGuysSettings.PandoricaMembers == PandoricaType.Intruders)
+                        factions.Remove(Faction.Intruder);
+
                     factions.Add(Faction.Pandorica);
                 }
 
@@ -24,96 +40,49 @@ public sealed class TargetGen : BaseGen
                 var faction = Allied.AlliedFaction == AlliedFaction.Random ? factions.Random() : factions.Find(x => x.ToString() == Allied.AlliedFaction.ToString());
                 ally.Side = faction;
                 CallRpc(MiscRpc.SetTarget, ally, faction);
+
+                if (TownOfUsReworked.MciActive)
+                    Message($"Ally = {ally.PlayerName} & {faction}");
             }
 
             Message("Allied Factions Set");
         }
 
-        if (GetSpawnItem(Layer.Lovers).IsActive())
+        if (GetSpawnItem(Layer.Lovers).IsActive() || GetSpawnItem(Layer.Linked).IsActive() || GetSpawnItem(Layer.Rivals).IsActive())
         {
-            var lovers = PlayerLayer.GetLayers<Lovers>().ToList();
-            lovers.Shuffle();
-
-            for (var i = 0; i < lovers.Count - 1; i += 2)
+            var allPaired = PlayerLayer.GetLayers<Paired>().SplitBy(x => x switch
             {
-                var lover = lovers[i];
+                Lovers => 0,
+                Linked => 1,
+                _ => 3
+            });
+            allPaired.Values.Do(x => x.Shuffle());
 
-                if (lover.Other)
-                    continue;
-
-                var other = lovers[i + 1];
-
-                if (!other || other.Other)
-                    continue;
-
-                lover.Other = other.Player;
-                other.Other = lover.Player;
-                CallRpc(MiscRpc.SetTarget, lover, other);
-
-                if (TownOfUsReworked.MciActive)
-                    Message($"Lovers = {lover.PlayerName} & {other.PlayerName}");
-            }
-
-            lovers.Where(lover => !lover.Other).Do(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
-            Success("Lovers Set");
-        }
-
-        if (GetSpawnItem(Layer.Rivals).IsActive())
-        {
-            var rivals = PlayerLayer.GetLayers<Rivals>().ToList();
-            rivals.Shuffle();
-
-            for (var i = 0; i < rivals.Count - 1; i += 2)
+            foreach (var list in allPaired.Values)
             {
-                var rival = rivals[i];
+                for (var i = 0; i < list.Count - 1; i++)
+                {
+                    var paired = list[i];
 
-                if (rival.Other)
-                    continue;
+                    if (paired.Other)
+                        continue;
 
-                var other = rivals[i + 1];
+                    var other = list[i + 1];
 
-                if (!other || other.Other)
-                    continue;
+                    if (!other || other.Other)
+                        continue;
 
-                rival.Other = other.Player;
-                other.Other = rival.Player;
-                CallRpc(MiscRpc.SetTarget, rival, other);
+                    paired.Other = other.Player;
+                    other.Other = paired.Player;
+                    CallRpc(MiscRpc.SetTarget, paired, other);
 
-                if (TownOfUsReworked.MciActive)
-                    Message($"Rivals = {rival.PlayerName} & {other.PlayerName}");
+                    if (TownOfUsReworked.MciActive)
+                        Message($"{list[0].Type} = {paired.PlayerName} & {other.PlayerName}");
+                }
+
+                list.Where(lover => !lover.Other).Do(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
+                Success($"{list[0].Type} Set");
             }
-
-            rivals.Where(rival => !rival.Other).Do(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
-            Success("Rivals Set");
-        }
-
-        if (GetSpawnItem(Layer.Linked).IsActive())
-        {
-            var linked = PlayerLayer.GetLayers<Linked>().ToList();
-            linked.Shuffle();
-
-            for (var i = 0; i < linked.Count - 1; i += 2)
-            {
-                var link = linked[i];
-
-                if (link.Other)
-                    continue;
-
-                var other = linked[i + 1];
-
-                if (!other || other.Other)
-                    continue;
-
-                link.Other = other.Player;
-                other.Other = link.Player;
-                CallRpc(MiscRpc.SetTarget, link, other);
-
-                if (TownOfUsReworked.MciActive)
-                    Message($"Linked = {link.PlayerName} & {other.PlayerName}");
-            }
-
-            linked.Where(link => !link.Other).Do(x => NullLayer(x.Player, PlayerLayerEnum.Disposition));
-            Success("Linked Set");
         }
 
         if (GetSpawnItem(Layer.Mafia).IsActive())
@@ -126,84 +95,35 @@ public sealed class TargetGen : BaseGen
             Success("Mafia Set");
         }
 
-        if (!Executioner.ExecutionerCanPickTargets && GetSpawnItem(Layer.Executioner).IsActive())
-        {
-            foreach (var exe in PlayerLayer.GetLayers<Executioner>())
-            {
-                exe.TargetPlayer = AllPlayers().Random(x => x != exe.Player && !x.IsLinkedTo(exe.Player) && !x.Is(Alignment.Sovereign));
+        var targeters = PlayerLayer.GetLayers<ITargeter>();
+        var allPlayers = AllPlayers();
 
-                if (!exe.TargetPlayer)
+        foreach (var (type, playerCheck, settingCheck) in Targeting)
+        {
+            if (!settingCheck() || !GetSpawnItem(type).IsActive())
+                continue;
+
+            foreach (var targeter in targeters.Where(x => x.Type == type))
+            {
+                targeter.TargetPlayer = allPlayers.Random(x => x != targeter.Player && !x.IsLinkedTo(targeter.Player) && !playerCheck(x));
+
+                if (!targeter.TargetPlayer)
                     continue;
 
-                CallRpc(MiscRpc.SetTarget, exe, exe.TargetPlayer);
+                CallRpc(MiscRpc.SetTarget, targeter, targeter.TargetPlayer);
 
                 if (TownOfUsReworked.MciActive)
-                    Message($"Exe Target = {exe.TargetPlayer.name}");
+                    Message($"{type} Target = {targeter.TargetPlayer.name}");
             }
 
-            Success("Exe Targets Set");
-        }
-
-        if (!Guesser.GuesserCanPickTargets && GetSpawnItem(Layer.Guesser).IsActive())
-        {
-            foreach (var guess in PlayerLayer.GetLayers<Guesser>())
-            {
-                guess.TargetPlayer = AllPlayers().Random(x => x != guess.Player && !x.IsLinkedTo(guess.Player) && !x.Is(Alignment.Evil) && !x.Is(Alignment.Investigative) &&
-                    !x.Is<Indomitable>());
-
-                if (!guess.TargetPlayer)
-                    continue;
-
-                CallRpc(MiscRpc.SetTarget, guess, guess.TargetPlayer);
-
-                if (TownOfUsReworked.MciActive)
-                    Message($"Guess Target = {guess.TargetPlayer.name}");
-            }
-
-            Success("Guess Targets Set");
-        }
-
-        if (!GuardianAngel.GuardianAngelCanPickTargets && GetSpawnItem(Layer.GuardianAngel).IsActive())
-        {
-            foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
-            {
-                ga.TargetPlayer = AllPlayers().Random(x => x != ga.Player && !x.IsLinkedTo(ga.Player) && !x.Is(Alignment.Evil));
-
-                if (!ga.TargetPlayer)
-                    continue;
-
-                CallRpc(MiscRpc.SetTarget, ga, ga.TargetPlayer);
-
-                if (TownOfUsReworked.MciActive)
-                    Message($"GA Target = {ga.TargetPlayer.name}");
-            }
-
-            Success("GA Target Set");
-        }
-
-        if (!BountyHunter.BountyHunterCanPickTargets && GetSpawnItem(Layer.BountyHunter).IsActive())
-        {
-            foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
-            {
-                bh.TargetPlayer = AllPlayers().Random(x => x != bh.Player && !bh.Player.IsLinkedTo(x));
-
-                if (!bh.TargetPlayer)
-                    continue;
-
-                CallRpc(MiscRpc.SetTarget, bh, bh.TargetPlayer);
-
-                if (TownOfUsReworked.MciActive)
-                    Message($"BH Target = {bh.TargetPlayer.name}");
-            }
-
-            Success("BH Targets Set");
+            Success($"{type} Targets Set");
         }
 
         if (!Actor.ActorCanPickRole && GetSpawnItem(Layer.Actor).IsActive())
         {
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
-                act.FillRoles(AllPlayers().Random(x => x != act.Player));
+                act.FillRoles(allPlayers.Random(x => x != act.Player));
                 CallRpc(MiscRpc.SetTarget, act, act.PretendRoles);
 
                 if (TownOfUsReworked.MciActive && act.PretendRoles.Count > 0)
@@ -217,11 +137,11 @@ public sealed class TargetGen : BaseGen
         {
             foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
             {
-                jackal.Recruit1 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible());
+                jackal.Recruit1 = allPlayers.Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible());
 
                 if (jackal.Recruit1)
                 {
-                    jackal.Recruit2 = AllPlayers().Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible() &&
+                    jackal.Recruit2 = allPlayers.Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible() &&
                         (jackal.Recruit1.GetFaction() != x.GetFaction() || (jackal.Recruit1.GetFaction().IsOk() == x.GetFaction().IsOk() && x.GetRole().Type != jackal.Recruit1.GetRole().Type)));
                 }
 

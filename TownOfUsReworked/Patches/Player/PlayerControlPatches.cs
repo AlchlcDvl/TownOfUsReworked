@@ -122,23 +122,18 @@ public static class PlayerControlPatches
     [HarmonyPatch(nameof(PlayerControl.AdjustLighting)), HarmonyPrefix]
     public static bool AdjustLightingPrefix(PlayerControl __instance)
     {
-        if (!__instance.AmOwner || !Ship())
-            return true;
-
-        var role = __instance.GetRole();
-
-        if (!role)
+        if (!__instance.AmOwner || !Ship() || !LayerHandler.Handlers.TryGetValue(__instance.PlayerId, out var handler))
             return true;
 
         var size = __instance.lightSource.viewDistance;
-        var flashlights = role.Handler.CurrentFaction switch
+        var flashlights = handler.CurrentFaction switch
         {
             Faction.Crew => CrewSettings.CrewFlashlight,
             Faction.Intruder => IntruderSettings.IntruderFlashlight,
             Faction.Syndicate => SyndicateSettings.SyndicateFlashlight,
             Faction.Apocalypse => ApocalypseSettings.ApocalypseFlashlight,
-            Faction.Outcast => OutcastSettings.OutcastFlashlight,
-            _ => role switch
+            _ when handler.CurrentFaction.IsOutcast() => OutcastSettings.OutcastFlashlight,
+            _ => handler.CurrentRole switch
             {
                 Hunted => Hunted.HuntedFlashlight,
                 Hunter => Hunter.HunterFlashlight,

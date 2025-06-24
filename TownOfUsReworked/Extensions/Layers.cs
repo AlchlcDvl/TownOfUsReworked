@@ -26,7 +26,8 @@ public static class LayerExtensions
 
     public static bool Is(this PlayerControl player, Faction faction)
     {
-        var handler = player.GetRole().Handler;
+        var role = player.GetRole();
+        var handler = role.Handler;
         var part = BadGuysSettings.IlluminatiUnleashed switch
         {
             true => faction switch
@@ -44,10 +45,14 @@ public static class LayerExtensions
                 _ => false
             }
         };
+
+        if (!handler)
+            return role.BaseFaction == faction;
+
         return handler.CurrentFaction == faction || handler.FakeFactions.Contains(faction) || part;
     }
 
-    // private static bool Is(this PlayerControl player, params Faction[] factions) => factions.ContainsAny(player.GetFactions());
+    public static bool Is(this PlayerControl player, params Faction[] factions) => factions.ContainsAny(player.GetFactions());
 
     public static bool Is(this PlayerControl player, Alignment alignment) => player.GetRole()?.Alignment == alignment;
 
@@ -65,19 +70,22 @@ public static class LayerExtensions
         if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
             return handler.CurrentFaction;
 
+        if (player.Is<Role>(out var role))
+            return role.BaseFaction;
+
         return player.IsImpostor() ? Faction.Intruder : Faction.Crew;
     }
 
-    // public static Faction[] GetFactions(this PlayerControl player)
-    // {
-    //     if (!player)
-    //         return [Faction.None];
+    public static Faction[] GetFactions(this PlayerControl player)
+    {
+        if (!player)
+            return [Faction.None];
 
-    //     if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
-    //         return [handler.CurrentFaction, .. handler.FakeFactions];
+        if (LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler))
+            return [handler.CurrentFaction, .. handler.FakeFactions];
 
-    //     return [player.IsImpostor() ? Faction.Intruder : Faction.Crew];
-    // }
+        return [player.IsImpostor() ? Faction.Intruder : Faction.Crew];
+    }
 
     public static Alignment GetAlignment(this PlayerControl player)
     {
@@ -109,12 +117,12 @@ public static class LayerExtensions
 
         var faction = handler.CurrentFaction;
         var crewFlag = faction == Faction.Crew;
-        var outcastFlag = faction == Faction.Outcast;
+        var outcastFlag = faction.IsOutcast();
         var factionFlag = faction.IsAny(Faction.Intruder, Faction.Syndicate, Faction.Pandorica, Faction.Illuminati, Faction.Apocalypse, Faction.Compliance);
 
         var phantomFlag = handler.CurrentRole is Phantom;
 
-        var taskmasterFlag = player.Is<Taskmaster>();
+        var taskmasterFlag = handler.CurrentDisposition is Taskmaster;
 
         var gmFlag = handler.CurrentRole is Runner or Hunted;
 
@@ -655,7 +663,7 @@ public static class LayerExtensions
         else if (LocalPlayer.Is<Mystic>())
             Flash(CustomColorManager.Mystic);
 
-        if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.Other.GetFaction().IsConvertible())
+        if (Lovers.ConvertLovers && converted.Is<Lovers>(out var lovers) && lovers.Other && lovers.Other.GetFaction().IsConvertible())
             ConvertPlayer(lovers.Other.PlayerId, convert, false);
     }
 
@@ -737,4 +745,6 @@ public static class LayerExtensions
                 role2.BombedIDs.Remove(vent.Id);
         }
     }
+
+    public static bool IsOutcast(this Faction faction) => faction is Faction.Outcast or > Faction.GameMode;
 }

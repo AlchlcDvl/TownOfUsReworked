@@ -78,7 +78,7 @@ public static class InteractionManager
             {
                 if (bypass)
                     source.RpcMurderPlayer(target, reason, lunge);
-                else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction is not (Faction.Crew or Faction.Outcast or Faction.GameMode))
+                else if (target.Is<Fanatic>(out var fanatic) && !fanatic.Turned && faction.IsFactionedEvil())
                 {
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsHitImmune);
                     CustomStatsManager.IncrementStat(CustomStatsManager.StatsConvertedFanatics);

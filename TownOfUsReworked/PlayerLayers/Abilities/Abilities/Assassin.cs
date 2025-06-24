@@ -1,32 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-public sealed class Bullseye : Assassin
-{
-    public override Layer Type => Layer.Bullseye;
-}
-
-public sealed class Hitman : Assassin
-{
-    public override Layer Type => Layer.Hitman;
-}
-
-public sealed class Slayer : Assassin
-{
-    public override Layer Type => Layer.Slayer;
-}
-
-public sealed class Sniper : Assassin
-{
-    public override Layer Type => Layer.Sniper;
-}
-
-public sealed class Ritualist : Assassin
-{
-    public override Layer Type => Layer.Ritualist;
-}
-
 [LayerHeaderOption(Layer.Assassin)]
-public abstract class Assassin : Ability, IGuesser
+public sealed class Assassin : Ability, IGuesser
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number AssassinKills = 0;
@@ -70,6 +45,17 @@ public abstract class Assassin : Ability, IGuesser
     protected override UColor MainColor => CustomColorManager.Assassin;
     public override string Description => "- You can guess players mid-meetings";
     public override Attack Attack => Attack.Powerful;
+    public override Layer Type => Handler?.CurrentFaction switch
+    {
+        Faction.Crew => Layer.Bullseye,
+        Faction.Intruder => Layer.Hitman,
+        Faction.Syndicate => Layer.Sniper,
+        Faction.Pandorica => Layer.Ranger,
+        Faction.Compliance => Layer.Marksman,
+        Faction.Illuminati => Layer.Deadshot,
+        _ when Handler && Handler.CurrentFaction.IsOutcast() => Layer.Sniper,
+        _ => Layer.Assassin
+    };
 
     public override void Init()
     {
@@ -119,7 +105,7 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (IntruderSettings.IntruderCount > 0 && !Player.Is(Faction.Intruder))
+        if (IntruderSettings.IntruderCount > 0 && !Player.Is(Faction.Intruder, Faction.Pandorica, Faction.Illuminati))
         {
             GuessingMenu.Mapping.Add(Layer.Impostor);
 
@@ -133,7 +119,7 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (SyndicateSettings.SyndicateCount > 0 && !Player.Is(Faction.Syndicate))
+        if (SyndicateSettings.SyndicateCount > 0 && !Player.Is(Faction.Syndicate, Faction.Pandorica, Faction.Illuminati))
         {
             GuessingMenu.Mapping.Add(Layer.Anarchist);
 
@@ -147,32 +133,30 @@ public abstract class Assassin : Ability, IGuesser
             }
         }
 
-        if (ApocalypseSettings.ApocalypseCount > 0 && !Player.Is(Faction.Apocalypse))
+        if (ApocalypseSettings.ApocalypseCount > 0 && !Player.Is(Faction.Apocalypse, Faction.Pandorica, Faction.Illuminati))
         {
             GuessingMenu.Mapping.Add(Layer.Cultist);
 
             if (ApocalypseSettings.ApocalypseMax > 0 && ApocalypseSettings.ApocalypseMin > 0)
             {
-                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Cannibal, Layer.Void, x => x != Layer.Cultist && !RoleGenManager.AD.Contains(x))
-                    .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive()));
+                GuessingMenu.Mapping.AddRange(GetValuesFromTo(Layer.Cannibal, Layer.Void, x => x != Layer.Cultist && !RoleGenManager.AD.Contains(x)).Where(layer =>
+                    RoleGenManager.GetSpawnItem(layer).IsActive()));
             }
 
             if (AssassinGuessApoc)
                 GuessingMenu.Mapping.AddRange(GuessingMenu.Mapping.WhereSelect<Layer, Layer>(Apocalypse.HarbingerToDeityMap.TryGetValue));
         }
 
-        if (OutcastSettings.OutcastMax > 0 && OutcastSettings.OutcastMin > 0 && !Player.Is(Faction.Outcast))
+        if (OutcastSettings.OutcastMax > 0 && OutcastSettings.OutcastMin > 0)
         {
-            GuessingMenu.Mapping.AddRange(new[] { Layer.Arsonist, Layer.Glitch, Layer.SerialKiller, Layer.Juggernaut, Layer.Murderer, Layer.Cryomaniac, Layer.Werewolf,
-                Layer.Dracula, Layer.Jackal, Layer.Necromancer, Layer.Whisperer, Layer.Zealot } .Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() &&
-                    !Player.Is(layer)));
+            GuessingMenu.Mapping.AddRange(new[] { Layer.Arsonist, Layer.Cryomaniac, Layer.Glitch, Layer.SerialKiller, Layer.Juggernaut, Layer.Murderer, Layer.Werewolf,
+                Layer.Dracula, Layer.Jackal, Layer.Necromancer, Layer.Whisperer, Layer.Zealot }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() && !Player.Is(layer)));
 
             // Add certain Outcast roles if enabled
             if (AssassinGuessOutcastBenign)
             {
-                GuessingMenu.Mapping.AddRange(new[] { Layer.Amnesiac, Layer.GuardianAngel, Layer.Survivor, Layer.Thief }.Where(layer =>
-                    RoleGenManager.GetSpawnItem(layer).IsActive() || (layer == Layer.Survivor && GuessingMenu.Mapping.Contains(Layer.GuardianAngel)) || (layer  == Layer.Thief &&
-                    GuessingMenu.Mapping.Contains(Layer.Amnesiac))));
+                GuessingMenu.Mapping.AddRange(new[] { Layer.Amnesiac, Layer.GuardianAngel, Layer.Survivor, Layer.Thief }.Where(layer => RoleGenManager.GetSpawnItem(layer).IsActive() || (layer ==
+                    Layer.Survivor && GuessingMenu.Mapping.Contains(Layer.GuardianAngel)) || (layer  == Layer.Thief && GuessingMenu.Mapping.Contains(Layer.Amnesiac))));
             }
 
             if (AssassinGuessOutcastEvil)
@@ -266,16 +250,14 @@ public abstract class Assassin : Ability, IGuesser
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.HasDied() || Dead || Player.IsLinkedTo(player) || voteArea.NameText.text.Contains('\n') || (player == Player && Local) || (Player.GetFaction() == player.GetFaction() &&
-            Player.GetFaction().IsFactionedEvil(true)) || RemainingKills <= 0;
+        return player.HasDied() || Dead || Player.IsLinkedTo(player) || voteArea.NameText.text.Contains('\n') || (player == Player && Local) || Player.IsBuddyWith(player, Player.GetFaction()) ||
+            RemainingKills <= 0;
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
     {
-        if (__instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
-            return;
-
-        GuessingMenu.Open(PlayerByVoteArea(voteArea));
+        if (__instance.state != MeetingHud.VoteStates.Discussion && !IsExempt(voteArea))
+            GuessingMenu.Open(PlayerByVoteArea(voteArea));
     }
 
     private void RpcMurderPlayer(PlayerControl player, Layer guess, PlayerControl guessTarget)
@@ -319,7 +301,7 @@ public abstract class Assassin : Ability, IGuesser
                 Flash(Color);
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
             }
-            else if ((Player.GetFaction() == LocalPlayer.GetFaction() && (Player.GetFaction() is not (Faction.Crew or Faction.Outcast))) || DeadSeeEverything())
+            else if (Player.IsBuddyWith(LocalPlayer, Player.GetFaction()) || DeadSeeEverything())
                 Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and lost a life!");
 
             return;
@@ -338,7 +320,7 @@ public abstract class Assassin : Ability, IGuesser
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"You guessed {guessTarget.name} as {guessString}!" : $"You incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else if (Player != player && player.AmOwner)
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessString}!");
-        else if ((Player.GetFaction() == LocalPlayer.GetFaction() && Player.GetFaction().IsFactionedEvil(true)) || DeadSeeEverything())
+        else if (Player.IsBuddyWith(LocalPlayer, Player.GetFaction()) || DeadSeeEverything())
             Run("<#EC1C45FF>∮ Assassination ∮</color>", Player != player ? $"{Player.name} guessed {guessTarget.name} as {guessString}!" : $"{Player.name} incorrectly guessed {guessTarget.name} as {guessString} and died!");
         else
             Run("<#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");

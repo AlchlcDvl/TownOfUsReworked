@@ -200,7 +200,7 @@ public static class CustomStatsManager
 
     private static uint GetMapWins(Map map)
     {
-        if (map == Data.Enums.Map.Random)
+        if (map == Map.Random)
             return 0;
 
         if (!MapWins.TryGetValue(map, out var val))

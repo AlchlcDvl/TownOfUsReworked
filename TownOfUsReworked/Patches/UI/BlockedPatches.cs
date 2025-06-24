@@ -146,7 +146,7 @@ public static class Blocked
             __instance.ImpostorVentButton.SetEnabled();
 
         __instance.ImpostorVentButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "VENT";
-        __instance.ImpostorVentButton.ToggleVisible((LocalPlayer.CanVent() || LocalPlayer.inVent) && !(Map() && Map().IsOpen) && !ActiveTask());
+        __instance.ImpostorVentButton.ToggleVisible((LocalPlayer.CanVent() || LocalPlayer.inVent) && !(Minimap() && Minimap().IsOpen) && !ActiveTask());
         var cannotUse = LocalPlayer.CannotUse();
         var closestDead = handler.CurrentModifier is Shy ? null : LocalPlayer.GetClosestBody(maxDistance: LocalPlayer.lightSource.viewDistance);
 
@@ -177,7 +177,7 @@ public static class Blocked
             __instance.SabotageButton.SetEnabled();
 
         __instance.SabotageButton.buttonLabelText.text = BlockExposed ? "BLOCKED" : "SABOTAGE";
-        __instance.SabotageButton.ToggleVisible(LocalPlayer.CanSabotage() && !(Map() && Map().IsOpen) && !ActiveTask());
+        __instance.SabotageButton.ToggleVisible(LocalPlayer.CanSabotage() && !(Minimap() && Minimap().IsOpen) && !ActiveTask());
         __instance.AbilityButton.ToggleVisible((IsHnS() ? !LocalPlayer.IsImpostor() : (!LocalPlayer.Is<IGhosty>(out var ghost) || ghost.Caught)) && LocalPlayer.HasDied());
         __instance.FullScreen.enabled = true;
         __instance.FullScreen.gameObject.SetActive(true);

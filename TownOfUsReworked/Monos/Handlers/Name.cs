@@ -42,7 +42,7 @@ public abstract class NameHandler : MonoBehaviour
             localRole.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
             localDisp.UpdatePlayerName(playerHandler, player, meeting, ref name, ref color, ref revealed, ref removeFromConsig);
 
-            if (playerHandler.CurrentAbility is Snitch snitch && (localHandler.CurrentFaction.IsFactionedEvil() || (localHandler.CurrentFaction == Faction.Outcast && Snitch.SnitchSeesOutcasts)) &&
+            if (playerHandler.CurrentAbility is Snitch snitch && (localHandler.CurrentFaction.IsFactionedEvil() || (localHandler.CurrentFaction.IsOutcast() && Snitch.SnitchSeesOutcasts)) &&
                 (role.TasksDone || role.TasksLeft <= Snitch.SnitchTasksRemaining))
             {
                 color = snitch.Color;
@@ -163,30 +163,27 @@ public abstract class NameHandler : MonoBehaviour
                 name += " <#424242FF>米</color>";
         }
 
-        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught && localHandler.CurrentFaction == x.Handler.CurrentFaction))
+        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.TasksDone && !x.Caught && localHandler.CurrentFaction == x.Handler.CurrentFaction) && (isFactionedEvil || (playerHandler.CurrentFaction ==
+            Faction.Crew && Revealer.RevealerRevealsCrew) || (playerHandler.CurrentFaction.IsOutcast() && Revealer.RevealerRevealsOutcasts)))
         {
-            if (isFactionedEvil || (playerHandler.CurrentFaction == Faction.Outcast && Revealer.RevealerRevealsOutcasts) || (playerHandler.CurrentFaction == Faction.Crew &&
-                Revealer.RevealerRevealsCrew))
+            if (Revealer.RevealerRevealsRoles)
             {
-                if (Revealer.RevealerRevealsRoles)
-                {
-                    color = role.Color;
-                    name += $"\n{role}";
-                    revealed = true;
-                }
-                else if (disp is not FactionChanger { RevealerReveals: false })
-                {
-                    color = role.FactionColor;
-                    name += $"\n{role.FactionName}";
-                }
-                else
-                {
-                    color = CustomColorManager.Crew;
-                    name += "\nCrew";
-                }
-
+                color = role.Color;
+                name += $"\n{role}";
                 revealed = true;
             }
+            else if (disp is not FactionChanger { RevealerReveals: false })
+            {
+                color = role.FactionColor;
+                name += $"\n{role.FactionName}";
+            }
+            else
+            {
+                color = CustomColorManager.Crew;
+                name += "\nCrew";
+            }
+
+            revealed = true;
         }
 
         if (deadSeeEverything || amOwner)

@@ -30,8 +30,7 @@ public sealed class Arsonist : OKilling, IDouser
     private CustomButton IgniteButton;
     private CustomButton DouseButton;
 
-    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && (x.GetFaction() is not (Faction.Crew or Faction.Outcast) || x.GetAlignment() is Alignment.Killing or Alignment.Proselyte
-        or Alignment.Neophyte) && x != Player) && ArsoLastKillerBoost;
+    private bool LastKiller => !AllPlayers().Any(x => !x.HasDied() && Player.IsBuddyWith(x, Handler.CurrentFaction) && x != Player) && ArsoLastKillerBoost;
     public HashSet<byte> Doused { get; } = [];
 
     protected override UColor MainColor => CustomColorManager.Arsonist;

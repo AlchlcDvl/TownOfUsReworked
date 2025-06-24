@@ -218,6 +218,9 @@ public static class TaskOptions
 
     [ToggleOption]
     public static bool AllCanDoTasks = false;
+
+    [ToggleOption]
+    public static bool TasksIncreaseUses = false;
 }
 
 [HeaderOption(MultiMenu.Main)]
@@ -1137,11 +1140,17 @@ public static class Abilities
     [LayerOption("#E600FFFF", Layer.ButtonBarry)]
     public static RoleOptionData ButtonBarry;
 
+    [LayerOption("#A39389FF", Layer.Deadshot)]
+    public static RoleOptionData Deadshot;
+
     [LayerOption("#FF1919FF", Layer.Hitman)]
     public static RoleOptionData Hitman;
 
     [LayerOption("#26FCFBFF", Layer.Insider)]
     public static RoleOptionData Insider;
+
+    [LayerOption("#5A27CCFF", Layer.Marksman)]
+    public static RoleOptionData Marksman;
 
     [LayerOption("#FF804DFF", Layer.Multitasker)]
     public static RoleOptionData Multitasker;
@@ -1154,6 +1163,9 @@ public static class Abilities
 
     [LayerOption("#FF0080FF", Layer.Radar)]
     public static RoleOptionData Radar;
+
+    [LayerOption("#ECFF45FF", Layer.Ranger)]
+    public static RoleOptionData Ranger;
 
     [LayerOption("#99007FFF", Layer.Ritualist)]
     public static RoleOptionData Ritualist;

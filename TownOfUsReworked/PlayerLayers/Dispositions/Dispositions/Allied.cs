@@ -27,7 +27,7 @@ public sealed class Allied : Disposition
     {
         get;
         set => Handler.CurrentFaction = field = value;
-    }
+    } = Faction.Outcast;
 
     protected override UColor MainColor => Side switch
     {
@@ -42,6 +42,4 @@ public sealed class Allied : Disposition
     public override string Symbol => "ζ";
     public override Layer Type => Layer.Allied;
     public override string Description => Side == Faction.Outcast ? "- You are conflicted" : "";
-
-    public override void Init() => Side = Faction.Outcast;
 }

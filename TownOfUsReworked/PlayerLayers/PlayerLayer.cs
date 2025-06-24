@@ -405,6 +405,12 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     public virtual void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig) {}
 
     /// <summary>
+    /// Invokes an event when a layer has been changed, excluding one of its own type (aka a role change will trigger for modifiers, abilities and dispositions but not the new role itself).
+    /// </summary>
+    /// <param name="changedLayer">The type of the layer that was changed.</param>
+    public virtual void OnLayerChanged(PlayerLayerEnum changedLayer) {}
+
+    /// <summary>
     /// Checks and ends the game as needed.
     /// </summary>
     public void GameEnd(HashSet<byte> winnerIds)

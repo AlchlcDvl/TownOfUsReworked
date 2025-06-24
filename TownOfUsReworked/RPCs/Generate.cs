@@ -16,7 +16,7 @@ public static partial class Generate
             TypeIdMap[id++] = type;
 
         // Base game types (ideally this array also never changes, unless I want to start serialising another base game type)
-        var gameTypes = new[] { typeof(PlayerControl), typeof(DeadBody), typeof(Vent), typeof(PlayerVoteArea), typeof(Vector2) };
+        var gameTypes = new[] { typeof(PlayerControl), typeof(DeadBody), typeof(Vent), typeof(PlayerVoteArea), typeof(Vector2), typeof(Color32) };
 
         foreach (var type in gameTypes)
             TypeIdMap[id++] = type;

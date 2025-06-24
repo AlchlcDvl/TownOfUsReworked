@@ -309,27 +309,33 @@ public static class RoleGenManager
         _ => Option.GetOptions<LayerOption>().TryFinding(x => x.Layer == id, out var result) ? result.Value : new(0, 0, false, false, id)
     };
 
-    public static bool IsValid(this Layer layer, int? relatedCount = null) => layer switch
+    public static bool IsValid(this Layer layer, int? relatedCount = null, bool forSettings = false) => layer switch
     {
         Layer.Bastion => VentingOptions.WhoCanVent != WhoCanVentOptions.NoOne,
-        Layer.Mystic => new[] { Layer.Necromancer, Layer.Dracula, Layer.Jackal, Layer.Whisperer }.Any(x => GetSpawnItem(x).IsActive()),
+        Layer.Mystic => new[] { Layer.Necromancer, Layer.Dracula, Layer.Jackal, Layer.Whisperer, Layer.Zealot }.Any(x => GetSpawnItem(x).IsActive()),
         Layer.Seer => new[] { Layer.BountyHunter, Layer.Godfather, Layer.Rebel, Layer.Plaguebearer, Layer.Mystic, Layer.Traitor, Layer.Amnesiac, Layer.Thief,
             Layer.Executioner, Layer.GuardianAngel, Layer.Guesser, Layer.Fanatic }.Any(x => GetSpawnItem(x).IsActive()),
         Layer.Amnesiac or Layer.GuardianAngel or Layer.Survivor or Layer.Thief => !OutcastSettings.AvoidOutcastKingmakers,
         Layer.Jackal => GameData.Instance.PlayerCount > 6,
-        Layer.Actor => new[] { Layer.Bullseye, Layer.Slayer, Layer.Sniper, Layer.Hitman }.Any(x => GetSpawnItem(x).IsActive()),
-        Layer.Miner => VentingOptions.WhoCanVent != WhoCanVentOptions.NoOne && (Miner.MinerSpawnOnMira || MapPatches.CurrentMap != 2),
-        Layer.Godfather or Layer.Rebel => relatedCount >= 3 || TownOfUsReworked.MciActive,
+        Layer.Actor => new[] { Layer.Bullseye, Layer.Slayer, Layer.Sniper, Layer.Hitman, Layer.Ranger, Layer.Marksman, Layer.Deadshot }.Any(x => GetSpawnItem(x).IsActive()),
+        Layer.Miner => VentingOptions.WhoCanVent != WhoCanVentOptions.NoOne && (Miner.MinerSpawnOnMira || (forSettings ? MapSettings.Map != Map.MiraHq : MapPatches.CurrentMap != 2)),
+        Layer.Godfather or Layer.Rebel => relatedCount is null or >= 3 || TownOfUsReworked.MciActive || forSettings,
         Layer.Insider => VotingOptions.AnonymousVoting != AnonVotes.Disabled,
         Layer.Tunneler => VentingOptions.WhoCanVent == WhoCanVentOptions.Default && CrewSettings.CrewVent == CrewVenting.Never,
         Layer.Lovers => GameData.Instance.PlayerCount > 4,
         Layer.Rivals => GameData.Instance.PlayerCount > 3,
-        Layer.Linked => Role.GetBaseFactionRoles(Faction.Outcast).Count() > 1 && GameData.Instance.PlayerCount > 4,
-        Layer.Democrat => !Mayor.MayorDirectSpawn,
-        Layer.Mayor => Mayor.MayorDirectSpawn,
-        Layer.Allied => !BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.OrderOfCompliance,
-        _ when AH.Contains(layer) => !ApocalypseSettings.DirectSpawn,
-        _ when AD.Contains(layer) => ApocalypseSettings.DirectSpawn,
+        Layer.Linked => (forSettings || Role.GetBaseFactionRoles(Faction.Outcast).Count() > 1) && GameData.Instance.PlayerCount > 4,
+        Layer.Democrat => !Mayor.MayorDirectSpawn || forSettings,
+        Layer.Mayor => Mayor.MayorDirectSpawn || forSettings,
+        Layer.Deadshot => BadGuysSettings.IlluminatiUnleashed,
+        Layer.Marksman => !BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.OrderOfCompliance,
+        Layer.Ranger => !BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.PandoricaOpens,
+        Layer.Sniper or Layer.Hitman => !BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.PandoricaOpens,
+        Layer.Slayer => !BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.OrderOfCompliance,
+        Layer.Allied => (!BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.OrderOfCompliance) || (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers !=
+            IlluminatiType.Killers) || (!BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers != ComplianceType.Killers),
+        _ when AH.Contains(layer) => !ApocalypseSettings.DirectSpawn || forSettings,
+        _ when AD.Contains(layer) => ApocalypseSettings.DirectSpawn || forSettings,
         _ => true
     };
 
@@ -412,10 +418,23 @@ public static class RoleGenManager
 
         gen.PostAssignment();
 
+        allPlayers.Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
+
         Convertible = (byte)allPlayers.Count(x => x.GetFaction().IsConvertible() && x != Pure);
 
         if (MapPatches.CurrentMap == 4)
             BetterAirship.SpawnPoints.AddRange(Spawns.GetRandomRange(3));
+
+        if (!TownOfUsReworked.MciActive)
+        {
+            CallRpc(MiscRpc.EndRoleGen, [SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
+                ..BetterAirship.SpawnPoints]);
+        }
+
+        Shifter.Originals.AddRange(allPlayers.Where(x => x.Is<Shifter>()));
+
+        if (SyndicateSettings.AssignOnGameStart)
+            AssignChaosDrive();
 
         if (TownOfUsReworked.MciActive)
         {
@@ -427,13 +446,11 @@ public static class RoleGenManager
 
             foreach (var player in allPlayers)
             {
-                RoleManager.Instance.SetRole(player, LayerHandler.Type);
-
                 var role = player.GetRoleFromList();
                 var mod = player.GetModifierFromList();
                 var ab = player.GetAbilityFromList();
                 var disp = player.GetDispositionFromList();
-                var name = player.name;
+                var name = player.Data.PlayerName;
                 var roleStr = role.ToString();
                 var dispStr = disp.ToString();
                 var modStr = mod.ToString();
@@ -474,15 +491,6 @@ public static class RoleGenManager
                 Message($"| {name.PadCenter(maxName)} | {roleStr.PadCenter(maxRole)} | {dispStr.PadCenter(maxDisp)} | {modStr.PadCenter(maxMod)} | {abStr.PadCenter(maxAb)} |");
             }
         }
-        else
-        {
-            allPlayers.Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
-            CallRpc(MiscRpc.EndRoleGen, SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
-                BetterAirship.SpawnPoints);
-        }
-
-        if (SyndicateSettings.AssignOnGameStart)
-            AssignChaosDrive();
 
         ClearGens();
         Success("Gen Ended");
@@ -566,6 +574,9 @@ public static class RoleGenManager
         Mafia.Mafias.Clear();
 
         GameStartManagerPatches.PlayersReady.Clear();
+
+        Shifter.Shifters.Clear();
+        Shifter.Originals.Clear();
     }
 
     public static void ResetEverything()

@@ -36,7 +36,7 @@ public sealed class Defector : Disposition
 
     protected override void CheckWin(HashSet<byte> winnerIds)
     {
-        if (Side != Faction.Outcast || AllPlayers().Any(x => !x.HasDied() && !x.Is<Defector>() && !x.Is(Faction.Outcast)))
+        if (Side != Faction.Defector || AllPlayers().Any(x => !x.HasDied() && !x.Is<Defector>() && !x.Is(Faction.Defector)))
             return;
 
         WinState = WinLose.DefectorWins;
@@ -51,7 +51,7 @@ public sealed class Defector : Disposition
         {
             case DefectorFaction.Outcast:
             {
-                factions.Add(Faction.Outcast);
+                factions.Add(Faction.Defector);
                 break;
             }
             case DefectorFaction.OpposingEvil:
@@ -61,12 +61,12 @@ public sealed class Defector : Disposition
             }
             case DefectorFaction.Random:
             {
-                factions.Add(Faction.Crew, Faction.Outcast, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
+                factions.Add(Faction.Crew, Faction.Defector, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
                 break;
             }
             case DefectorFaction.NonCrew:
             {
-                factions.Add(Faction.Outcast, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
+                factions.Add(Faction.Defector, Faction.Intruder, Faction.Syndicate, Faction.Apocalypse);
                 break;
             }
             case DefectorFaction.NonOutcast:
@@ -76,7 +76,7 @@ public sealed class Defector : Disposition
             }
             case DefectorFaction.NonFaction:
             {
-                factions.Add(Faction.Crew, Faction.Outcast);
+                factions.Add(Faction.Crew, Faction.Defector);
                 break;
             }
             default:
@@ -90,8 +90,8 @@ public sealed class Defector : Disposition
         {
             factions.Add(Faction.Illuminati);
 
-            if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Killers || BadGuysSettings.IlluminatiMembers == IlluminatiType.Neophytes)
-                factions.Remove(Faction.Outcast);
+            if (BadGuysSettings.IlluminatiMembers.ContainsAny(IlluminatiType.Killers, IlluminatiType.Neophytes))
+                factions.Remove(Faction.Defector);
 
             if (BadGuysSettings.IlluminatiMembers == IlluminatiType.Intruders)
                 factions.Remove(Faction.Intruder);
@@ -109,7 +109,7 @@ public sealed class Defector : Disposition
                 factions.Add(Faction.Compliance);
 
                 if (BadGuysSettings.ComplianceMembers == ComplianceType.Killers)
-                    factions.Remove(Faction.Outcast);
+                    factions.Remove(Faction.Defector);
             }
 
             if (BadGuysSettings.PandoricaOpens)
@@ -161,7 +161,7 @@ public sealed class Defector : Disposition
         Turned = true;
         Side = faction;
 
-        if (faction == Faction.Outcast)
+        if (faction == Faction.Defector)
             Handler.CurrentRole.Objectives = () => "- Be the last one standing";
 
         if (Local)

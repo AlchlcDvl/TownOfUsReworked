@@ -15,11 +15,10 @@ public static partial class Generate
         // I thought to myself on the toilet, What if I just used a class for the headers instead of another property?
         // Then I don't need to add a random getter setter. I don't have to make the string arrays too because I can just get the declared properties and use their names as the array...
             // and then this genius thing was born
-        var assassin = typeof(Assassin);
         AccessTools.GetTypesFromAssembly(TownOfUsReworked.Core)
             // For some reason the attribute is being inherited by the assassin classes, even though I've stated that it shouldn't in the attribute usage
             // Future AD here: this is probably from the fact that Assassin itself is an abstract class
-            .Where(x => !assassin.IsAssignableFrom(x) || x == assassin)
+            // Future Future AD here: I got rid of the derived classes, no more problem!
             .Do(y => y.GetCustomAttribute<BaseHeaderOptionAttribute>()?.SetTypeAndOptions(y));
 
         Option.SortedOptions.AddRange(Option.GetOptions<BaseHeaderOption>().OrderBy(x => x.Order)); // Sorting for headers

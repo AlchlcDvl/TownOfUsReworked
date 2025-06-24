@@ -747,8 +747,8 @@ public sealed class ClientHandler : MonoBehaviour
         if (Zooming && skip != SkipEnum.Zooming)
             ClickZoom();
 
-        if (MapBehaviourPatches.MapActive && Map() && skip != SkipEnum.Map)
-            Map().Close();
+        if (MapBehaviourPatches.MapActive && Minimap() && skip != SkipEnum.Map)
+            Minimap().Close();
 
         if (ActiveTask() && skip != SkipEnum.Task)
             ActiveTask().Close();

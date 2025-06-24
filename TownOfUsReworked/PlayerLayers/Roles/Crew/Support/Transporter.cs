@@ -168,7 +168,7 @@ public sealed class Transporter : CSupport, IMover
                 ActiveTask().Close();
 
             if (MapBehaviourPatches.MapActive)
-                Map().Close();
+                Minimap().Close();
         }
 
         References.Moving.RemoveAll(x => x == transport1.PlayerId || x == transport2.PlayerId);

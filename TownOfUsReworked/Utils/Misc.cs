@@ -830,7 +830,7 @@ public static class MiscUtils
                 ActiveTask().Close();
 
             if (MapBehaviourPatches.MapActive)
-                Map().Close();
+                Minimap().Close();
 
             if (IsSubmerged())
             {
@@ -1038,7 +1038,7 @@ public static class MiscUtils
                 ActiveTask().Close();
 
             if (MapBehaviourPatches.MapActive)
-                Map().Close();
+                Minimap().Close();
 
             if (!TutorialManager.InstanceExists)
             {

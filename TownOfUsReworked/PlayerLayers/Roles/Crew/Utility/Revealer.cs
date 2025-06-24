@@ -55,7 +55,7 @@ public sealed class Revealer : CUtility, IGhosty
         {
             if (Local)
                 Flash(Color);
-            else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is
+            else if (LocalPlayer.GetFaction().IsFactionedEvil() || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is
                 OKilling or Neophyte) && RevealerRevealsOutcasts))
             {
                 Revealed = true;
@@ -63,7 +63,7 @@ public sealed class Revealer : CUtility, IGhosty
                 LayerHandler.Handlers[LocalPlayer.PlayerId].DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
             }
         }
-        else if (LocalPlayer.GetFaction() is not (Faction.Crew or Faction.Outcast) || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is OKilling
+        else if (LocalPlayer.GetFaction().IsFactionedEvil() || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is OKilling
             or Neophyte) && RevealerRevealsOutcasts))
         {
             Flash(Color);
@@ -72,13 +72,18 @@ public sealed class Revealer : CUtility, IGhosty
 
     public bool CanBeClicked(PlayerControl clicker)
     {
-        if ((RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(clicker.GetFaction() is not (Faction.Crew or Faction.Outcast))) || (clicker.Is(Faction.Crew) && RevealerCanBeClickedBy ==
+        var done = TasksLeft <= RevealerTasksRemainingClicked;
+
+        if (RevealerCanBeClickedBy == RevealerCanBeClickedBy.Everyone)
+            return done;
+
+        if ((RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !clicker.GetFaction().IsFactionedEvil()) || (clicker.Is(Faction.Crew) && RevealerCanBeClickedBy ==
             RevealerCanBeClickedBy.NonCrew))
         {
             return false;
         }
 
-        return TasksLeft <= RevealerTasksRemainingClicked;
+        return done;
     }
 
     public override void UponRoleChanged(Role former) => FormerRole = former;

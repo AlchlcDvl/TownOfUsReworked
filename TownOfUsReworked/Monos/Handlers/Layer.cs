@@ -21,7 +21,6 @@ public sealed class LayerHandler : RoleBehaviour
                 Faction.Intruder => CustomColorManager.Intruder,
                 Faction.Crew => CustomColorManager.Crew,
                 Faction.Syndicate => CustomColorManager.Syndicate,
-                Faction.Outcast => CustomColorManager.Outcast,
                 Faction.Pandorica => CustomColorManager.Pandorica,
                 Faction.Compliance => CustomColorManager.Compliance,
                 Faction.Illuminati => CustomColorManager.Illuminati,
@@ -37,6 +36,7 @@ public sealed class LayerHandler : RoleBehaviour
                     Alignment.TaskRace => CustomColorManager.TaskRace,
                     _ => CustomColorManager.Faction
                 },
+                _ when value.IsOutcast() => CustomColorManager.Outcast,
                 _ => CustomColorManager.Faction
             };
             CurrentRole.Objectives = value switch
@@ -66,6 +66,9 @@ public sealed class LayerHandler : RoleBehaviour
             }
 
             field = value;
+
+            if (CurrentAbility is Assassin)
+                CurrentAbility.Name = TranslationManager.Translate($"Layer.{CurrentAbility.Type}");
         }
     }
 
@@ -211,7 +214,7 @@ public sealed class LayerHandler : RoleBehaviour
             CallRpc(MiscRpc.WinLose, WinState, Player);
         }
 
-        if (!CurrentRole.TasksDone)
+        if (!TaskOptions.TasksIncreaseUses)
             return;
 
         foreach (var button in Buttons.Where(x => x.HasUses))
@@ -268,7 +271,7 @@ public sealed class LayerHandler : RoleBehaviour
     public void ResetButtons() => Buttons = Player.GetButtonsFromList();
 
     [HideFromIl2Cpp]
-    public void SetUpLayers(bool inherit)
+    public void SetUpLayers(bool inherit, PlayerLayerEnum changedLayer)
     {
         Handlers[Player.PlayerId] = this;
 
@@ -313,21 +316,29 @@ public sealed class LayerHandler : RoleBehaviour
         if (CurrentFaction == Faction.None || inherit)
             CurrentFaction = CurrentRole.BaseFaction;
 
-        CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Init());
-
-        // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
-        // {
-        //     CallButton ??= new(this, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
-        //         (ConditionFunc)CallCondition);
-        // }
-
-        if (GameModeSettings.GameMode is not (Mode.HideAndSeek or Mode.TaskRace))
+        if (changedLayer == PlayerLayerEnum.None)
         {
-            if (RoleGenManager.GetSpawnItem(Layer.Enforcer).IsActive())
-                BombKillButton ??= new(this, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+            CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Init());
 
-            if (BountyHunter.BountyHunterCanPickTargets && RoleGenManager.GetSpawnItem(Layer.BountyHunter).IsActive())
-                PlaceHitButton ??= new(this, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
+            // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
+            // {
+            //     CallButton ??= new(CurrentRole, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
+            //         (ConditionFunc)CallCondition);
+            // }
+
+            if (GameModeSettings.GameMode is not (Mode.HideAndSeek or Mode.TaskRace))
+            {
+                if (RoleGenManager.GetSpawnItem(Layer.Enforcer).IsActive())
+                    BombKillButton ??= new(CurrentRole, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+
+                if (BountyHunter.BountyHunterCanPickTargets && RoleGenManager.GetSpawnItem(Layer.BountyHunter).IsActive())
+                    PlaceHitButton ??= new(CurrentRole, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
+            }
+        }
+        else
+        {
+            CurrentLayers.Find(x => x.LayerType == changedLayer)?.Init();
+            CurrentLayers.Where(x => x.LayerType != changedLayer).Do(x => x.OnLayerChanged(changedLayer));
         }
 
         ResetButtons();
@@ -417,14 +428,14 @@ public sealed class LayerHandler : RoleBehaviour
     {
         Player = player;
 
-        SetUpLayers(true);
+        SetUpLayers(true, PlayerLayerEnum.None);
 
         IntroSound = GetAudio($"{CurrentRole}Intro", false) ?? GetAudio($"{(CurrentRole is Intruder or Syndicate or Apocalypse ? "Impostor" : "Crewmate")}Intro");
 
         InitializeAbilityButton();
 
         if (player.AmOwner && !TutorialManager.InstanceExists && !TownOfUsReworked.MciActive)
-            CustomStatsManager.IncrementStat(CurrentFaction);
+            CustomStatsManager.IncrementStat(CurrentFaction.IsOutcast() ? Faction.Outcast : CurrentFaction);
     }
 
     public override void OnMeetingStart()
@@ -467,7 +478,7 @@ public sealed class LayerHandler : RoleBehaviour
     public override bool CanUse(IUsable console)
     {
         // This is such a cheesy way to handle this omg
-        var isCrew = CurrentFaction is Faction.Outcast or Faction.Crew || (CurrentFaction == Faction.GameMode && CurrentRole.Type != Layer.Hunter);
+        var isCrew = CurrentFaction == Faction.Crew || CurrentFaction.IsOutcast() || (CurrentFaction == Faction.GameMode && CurrentRole.Type != Layer.Hunter);
         var role = IsDead ? (isCrew ? CrewmateGhost : ImpostorGhost) : (isCrew ? Crewmate : Impostor);
         role.Player = Player;
         var result = role.CanUse(console);

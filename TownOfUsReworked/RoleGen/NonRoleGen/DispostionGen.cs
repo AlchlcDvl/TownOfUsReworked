@@ -68,11 +68,11 @@ public sealed class DispositionGen : BaseGen
             var assigned = id switch
             {
                 Layer.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),
-                Layer.Defector => playerList.FirstOrDefault(x => x.GetFaction() is not (Faction.Crew or Faction.Outcast)),
-                Layer.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.Is(Faction.Outcast)),
-                _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester or Shifter)),
+                Layer.Defector => playerList.FirstOrDefault(x => x.GetFaction().IsFactionedEvil()),
+                Layer.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.GetFaction().IsOutcast()),
+                _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester)),
                 _ when CrewDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),
-                _ when OutcastDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Outcast)),
+                _ when OutcastDisp.Contains(id) => playerList.FirstOrDefault(x => x.GetFaction().IsOutcast()),
                 _ => null
             };
 

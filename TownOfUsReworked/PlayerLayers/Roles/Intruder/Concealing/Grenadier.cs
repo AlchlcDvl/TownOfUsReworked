@@ -47,7 +47,7 @@ public sealed class Grenadier : Concealing
             return;
 
         if (MapBehaviourPatches.MapActive)
-            Map().Close();
+            Minimap().Close();
 
         if (ActiveTask())
             ActiveTask().Close();

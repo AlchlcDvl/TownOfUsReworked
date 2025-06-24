@@ -40,10 +40,10 @@ public sealed class DeadPlayer(byte killer, byte player)
                         Faction.Intruder => "\nThe killer is an Intruder!",
                         Faction.Syndicate => "\nThe killer is from the Syndicate!",
                         Faction.Apocalypse => "\nThe killer is a follower of the Apocalypse!",
-                        Faction.Outcast or (> Faction.GameMode and <= Faction.Undead) => "\nThe killer is an Outcast!",
                         Faction.Pandorica => "\nThe killer is from the Pandorica!",
                         Faction.Compliance => "\nThe killer is from the Compliance!",
                         Faction.Illuminati => "\nThe killer is from the Illuminati!",
+                        _ when killerRole.Handler.CurrentFaction.IsOutcast() => "\nThe killer is an Outcast!",
                         _ => ""
                     };
                 }

@@ -161,6 +161,9 @@ public sealed class Amnesiac : Benign
 
         newRole.RoleUpdate(this, player, Handler.CurrentFaction == Faction.Outcast);
 
+        if (newRole.Local)
+            Play(newRole.Handler.IntroSound);
+
         switch (role)
         {
             case Neophyte neophyte when newRole is Neophyte neophyte1:
@@ -194,11 +197,10 @@ public sealed class Amnesiac : Benign
 
         var local = LayerHandler.Handlers[LocalPlayer.PlayerId];
         var faction = local.CurrentFaction;
+        var neut = faction.IsOutcast();
 
-        if (faction != Faction.Crew || (faction == Faction.Outcast && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
+        if (faction != Faction.Crew || (neut && (Snitch.SnitchSeesOutcasts || Revealer.RevealerRevealsOutcasts)))
         {
-            var neut = faction == Faction.Outcast;
-
             if (!neut || Snitch.SnitchSeesOutcasts)
             {
                 foreach (var snitch in GetLayers<Snitch>())

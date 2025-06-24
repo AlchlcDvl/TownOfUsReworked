@@ -40,6 +40,8 @@ public sealed class LayerOption(string hexCode, Layer layer, bool noParts = fals
     public static Vector3 Right;
     public static Vector3 Diff;
 
+    protected override bool Visible() => Layer.IsValid(forSettings: true);
+
     public override void OptionCreated()
     {
         base.OptionCreated();
