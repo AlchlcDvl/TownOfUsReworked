@@ -243,7 +243,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
             TurnAct();
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void LocalOnMeetingStart(MeetingHud __instance)
     {
         if (TargetPlayer.HasDied() || Dead)
             return;

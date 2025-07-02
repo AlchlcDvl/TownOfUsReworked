@@ -36,7 +36,7 @@
         <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.12.11" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" PrivateAssets="all" />
 
-        <!-- <PackageReference Include="AmongUs.GameLibs.Android" Version="2025.3.28" PrivateAssets="all" /> --> <!-- Android Version -->
+        <!-- <PackageReference Include="AmongUs.GameLibs.Android" Version="2025.6.10" PrivateAssets="all" /> --> <!-- Android Version -->
         <PackageReference Include="AmongUs.GameLibs.Steam" Version="2025.4.15" PrivateAssets="all" /> <!-- PC Version -->
 
         <EmbeddedResource Include="Resources\*" />

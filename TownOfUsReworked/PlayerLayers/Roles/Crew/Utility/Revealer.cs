@@ -29,7 +29,7 @@ public sealed class Revealer : CUtility, IGhosty
 
     public bool Caught { get; set; }
     public bool Revealed { get; private set; }
-    public Role FormerRole;
+    public Crew FormerRole;
     public Vector3 LastPosition { get; set; }
 
     protected override UColor MainColor => CustomColorManager.Revealer;
@@ -51,23 +51,22 @@ public sealed class Revealer : CUtility, IGhosty
 
     public override void UponTaskComplete(uint taskId)
     {
+        var isEvil = LocalPlayer.GetFaction().IsFactionedEvil() || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is OKilling or Neophyte) &&
+            RevealerRevealsOutcasts);
+
         if (TasksLeft == RevealerTasksRemainingAlert && !Caught)
         {
             if (Local)
                 Flash(Color);
-            else if (LocalPlayer.GetFaction().IsFactionedEvil() || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is
-                OKilling or Neophyte) && RevealerRevealsOutcasts))
+            else if (isEvil)
             {
                 Revealed = true;
                 Flash(Color);
                 LayerHandler.Handlers[LocalPlayer.PlayerId].DeadArrows.Add(PlayerId, new(LocalPlayer, Player, Color));
             }
         }
-        else if (LocalPlayer.GetFaction().IsFactionedEvil() || ((LocalPlayer.GetAlignment() is Alignment.Neophyte or Alignment.Proselyte || LocalPlayer.GetRole() is OKilling
-            or Neophyte) && RevealerRevealsOutcasts))
-        {
+        else if (isEvil)
             Flash(Color);
-        }
     }
 
     public bool CanBeClicked(PlayerControl clicker)
@@ -86,5 +85,5 @@ public sealed class Revealer : CUtility, IGhosty
         return done;
     }
 
-    public override void UponRoleChanged(Role former) => FormerRole = former;
+    public override void UponRoleChanged(Role former) => FormerRole = (Crew)former;
 }

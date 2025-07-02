@@ -334,6 +334,8 @@ public static class RoleGenManager
         Layer.Slayer => !BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.OrderOfCompliance,
         Layer.Allied => (!BadGuysSettings.IlluminatiUnleashed && !BadGuysSettings.OrderOfCompliance) || (BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.IlluminatiMembers !=
             IlluminatiType.Killers) || (!BadGuysSettings.IlluminatiUnleashed && BadGuysSettings.OrderOfCompliance && BadGuysSettings.ComplianceMembers != ComplianceType.Killers),
+        Layer.Runner => GameModeSettings.GameMode == Mode.TaskRace,
+        Layer.Hunter or Layer.Hunted => GameModeSettings.GameMode == Mode.HideAndSeek,
         _ when AH.Contains(layer) => !ApocalypseSettings.DirectSpawn || forSettings,
         _ when AD.Contains(layer) => ApocalypseSettings.DirectSpawn || forSettings,
         _ => true
@@ -385,6 +387,9 @@ public static class RoleGenManager
         gen.InitCrewList();
         gen.PreFilter();
         gen.Filter();
+
+        Retributionist.Exists = AllRoles.Any(x => x.ID == Layer.Retributionist);
+
         gen.Assign();
 
         var allPlayers = AllPlayers();
@@ -427,7 +432,7 @@ public static class RoleGenManager
 
         if (!TownOfUsReworked.MciActive)
         {
-            CallRpc(MiscRpc.EndRoleGen, [SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible,
+            CallRpc(MiscRpc.EndRoleGen, [SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible, Retributionist.Exists,
                 ..BetterAirship.SpawnPoints]);
         }
 
@@ -577,6 +582,8 @@ public static class RoleGenManager
 
         Shifter.Shifters.Clear();
         Shifter.Originals.Clear();
+
+        Retributionist.Exists = false;
     }
 
     public static void ResetEverything()

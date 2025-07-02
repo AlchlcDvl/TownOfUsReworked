@@ -100,7 +100,7 @@ public sealed class Altruist : Protective, IReviver
 
     private bool Usable() => ReviveButton.UsesCount != ReviveButton.Max;
 
-    public override void OnMeetingStart(MeetingHud __instance) => ReviveButton.Uses += PassiveAltManaGain;
+    public override void LocalOnMeetingStart(MeetingHud __instance) => ReviveButton.Uses += PassiveAltManaGain;
 
     public override void ReadRPC(RpcReader reader)
     {

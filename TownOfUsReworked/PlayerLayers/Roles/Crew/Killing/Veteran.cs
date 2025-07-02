@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Veteran)]
-public sealed class Veteran : CKilling, IAlerter
+public sealed class Veteran : CKilling
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxAlerts = 5;

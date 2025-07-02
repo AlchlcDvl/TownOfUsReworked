@@ -304,7 +304,7 @@ public static class CollectionExtensions
     {
         var i = 0;
 
-        while (predicate())
+        while (predicate() && i < source.Count)
             action(source[i++]);
     }
 

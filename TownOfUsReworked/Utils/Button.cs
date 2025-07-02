@@ -14,9 +14,11 @@ public static class ButtonUtils
         hud.AbilityButton.ToggleVisible(false);
     }
 
-    public static IEnumerable<CustomButton> GetButtonsFromList(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player);
+    public static IEnumerable<CustomButton> GetButtonsFromList(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player || (x.Owner is Crew crew &&
+        crew.MimickedBy?.Player == player));
 
-    public static IEnumerable<CustomButton> GetButtons(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler) ? handler.Buttons : player.GetButtonsFromList();
+    public static IEnumerable<CustomButton> GetButtons(this PlayerControl player) => LayerHandler.Handlers.TryGetValue(player.PlayerId, out var handler)
+        ? handler.Buttons : player.GetButtonsFromList();
 
     public static void ResetButtons(this PlayerControl player)
     {
@@ -32,13 +34,14 @@ public static class ButtonUtils
         hud.PetButton.ToggleVisible(true);
         var inGame = IsInGame();
         hud.SabotageButton.ToggleVisible(player.CanSabotage() && inGame);
-        hud.ReportButton.ToggleVisible(!player.Is<Coward>() && !Meeting() && !player.HasDied() && inGame);
         hud.ImpostorVentButton.ToggleVisible(player.CanVent() && inGame);
+        var died = player.HasDied();
+        hud.ReportButton.ToggleVisible(!player.Is<Coward>() && !Meeting() && !died && inGame);
 
         if (IsHnS())
-            hud.AbilityButton.ToggleVisible(!LocalPlayer.IsImpostor() && inGame);
+            hud.AbilityButton.ToggleVisible(!player.IsImpostor() && inGame);
         else
-            hud.AbilityButton.ToggleVisible(!Meeting() && (!LocalPlayer.Is<IGhosty>(out var ghost) || ghost.Caught) && inGame && LocalPlayer.HasDied());
+            hud.AbilityButton.ToggleVisible(!Meeting() && (!player.Is<IGhosty>(out var ghost) || ghost.Caught) && inGame && died);
     }
 
     public static void DisableAllButtons()

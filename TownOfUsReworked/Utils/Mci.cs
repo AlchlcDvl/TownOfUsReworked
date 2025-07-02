@@ -158,7 +158,7 @@ public static class MciUtils
         {
             if (Meeting())
             {
-                PlayerLayer.LocalLayers().Do(x => x.OnMeetingStart(Meeting()));
+                PlayerLayer.LocalLayers().Do(x => x.LocalOnMeetingStart(Meeting()));
 
                 if (newPlayer.Data.IsDead)
                     Meeting().SetForegroundForDead();

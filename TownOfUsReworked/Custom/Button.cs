@@ -5,64 +5,68 @@ public sealed class CustomButton : IDisposable, INetSerializable
     public static readonly List<CustomButton> AllButtons = [];
 
     // Params, required
-    public PlayerLayer Owner { get; }
-    public AbilityTypes Type { get; }
-    private string Keybind { get; }
+    public readonly PlayerLayer Owner;
+    public readonly AbilityTypes Type;
+    private readonly string Keybind;
 
     // Params, optional (but still mostly required)
-    private string ButtonSprite { get; } = "Placeholder";
-    private SpriteFunc SpriteFunc { get; } = BlankButtonSprite;
-    private OnClickTargetless DoClickTargetless { get; } = BlankVoid;
-    private OnClickBody DoClickBody { get; } = BlankVoid;
-    private OnClickPlayer DoClickPlayer { get; } = BlankVoid;
-    private OnClickVent DoClickVent { get; } = BlankVoid;
-    private OnClickConsole DoClickConsole { get; } = BlankVoid;
-    private EffectVoid Effect { get; } = BlankVoid;
-    private EffectStartVoid OnEffectStart { get; } = BlankVoid;
-    private EffectEndVoid OnEffectEnd { get; } = BlankVoid;
-    private DelayStartVoid OnDelayStart { get; } = BlankVoid;
-    private DelayEndVoid OnDelayEnd { get; } = BlankVoid;
-    private DelayVoid ActionDelay { get; } = BlankVoid;
-    private OtherDelayStartVoid OnOtherDelayStart { get; } = BlankVoid;
-    private OtherDelayEndVoid OnOtherDelayEnd { get; } = BlankVoid;
-    private OtherDelayVoid ActionOtherDelay { get; } = BlankVoid;
-    public ClickedAgainVoid OnClickedAgain { get; } = BlankVoid;
-    private EndFunc End { get; } = BlankFalse;
-    private DifferenceFunc Difference { get; } = BlankZero;
-    private MultiplierFunc Multiplier { get; } = BlankOne;
-    private UsableFunc IsUsable { get; } = BlankTrue;
-    private ConditionFunc Condition { get; } = BlankTrue;
-    private PlayerBodyExclusion PlayerBodyException { get; } = BlankFalse;
-    private VentExclusion VentException { get; } = BlankFalse;
-    private ConsoleExclusion ConsoleException { get; } = BlankFalse;
-    private LabelFunc ButtonLabelFunc { get; } = BlankButtonLabel;
-    private string ButtonLabel { get; } = "ABILITY";
-    private float Cooldown { get; } = 1f;
-    private bool CanClickAgain { get; } = true;
-    private bool IsManual { get; }
-    private UColor TextColor { get; }
-    private bool PostDeath { get; }
-    private float Duration { get; }
-    private float Delay { get; }
-    private float OtherDelay { get; }
-    private int UseDecrement { get; } = 1;
-    public ushort ID { get; }
-    private ManualUpdateVoid ManualUpdate { get; }
+    private readonly string ButtonSprite = "Placeholder";
+    private readonly SpriteFunc SpriteFunc = BlankButtonSprite;
+    private readonly OnClickTargetless DoClickTargetless = BlankVoid;
+    private readonly OnClickBody DoClickBody = BlankVoid;
+    private readonly OnClickPlayer DoClickPlayer = BlankVoid;
+    private readonly OnClickVent DoClickVent = BlankVoid;
+    private readonly OnClickConsole DoClickConsole = BlankVoid;
+    private readonly Action Effect = BlankVoid;
+    private readonly Action OnEffectStart = BlankVoid;
+    private readonly Action OnEffectEnd = BlankVoid;
+    private readonly Action UnEffect = BlankVoid;
+    private readonly Action OnDelayStart = BlankVoid;
+    private readonly Action OnDelayEnd = BlankVoid;
+    private readonly Action ActionDelay = BlankVoid;
+    private readonly Action UnDelay = BlankVoid;
+    private readonly Action OnOtherDelayStart = BlankVoid;
+    private readonly Action OnOtherDelayEnd = BlankVoid;
+    private readonly Action ActionOtherDelay = BlankVoid;
+    private readonly Action UnOtherDelay = BlankVoid;
+    private readonly Action OnClickedAgain = BlankVoid;
+    private readonly EndFunc End = BlankFalse;
+    private readonly DifferenceFunc Difference = BlankZero;
+    private readonly MultiplierFunc Multiplier = BlankOne;
+    private readonly UsableFunc IsUsable = BlankTrue;
+    private readonly ConditionFunc Condition = BlankTrue;
+    private readonly PlayerBodyExclusion PlayerBodyException = BlankFalse;
+    private readonly VentExclusion VentException = BlankFalse;
+    private readonly ConsoleExclusion ConsoleException = BlankFalse;
+    private readonly LabelFunc ButtonLabelFunc = BlankButtonLabel;
+    private readonly string ButtonLabel = "ABILITY";
+    private readonly float Cooldown = 1f;
+    private readonly bool CanClickAgain = true;
+    private readonly bool IsManual;
+    private readonly UColor TextColor;
+    private readonly bool PostDeath;
+    private readonly float Duration;
+    private readonly float Delay;
+    private readonly float OtherDelay;
+    private readonly int UseDecrement = 1;
+    public readonly  ushort ID;
+    private readonly ManualUpdateVoid ManualUpdate;
 
     // Other things
     public ActionButton Base { get; private set; }
-    private bool EffectEnabled { get; set; }
-    private bool DelayEnabled { get; set; }
-    private bool OtherDelayEnabled { get; set; }
     public MonoBehaviour Target { get; private set; }
-    public bool ClickedAgain { get; set; }
-    private GameObject Block { get; set; }
     public bool Disabled { get; private set; }
-    private float EffectTime { get; set; }
-    public float DelayTime { get; set; }
-    private float OtherDelayTime { get; set; }
-    public float CooldownTime { get; set; }
-    private bool Disposed { get; set; }
+    private bool EffectEnabled;
+    private bool DelayEnabled;
+    private bool OtherDelayEnabled;
+    private bool ClickedAgain;
+    private GameObject Block;
+    private float EffectTime;
+    public float DelayTime;
+    public float OtherDelayTime;
+    public float CooldownTime;
+    private bool Disposed;
+    private ButtonState CurrentPhase;
 
     // Read-onlys (onlies?)
     private bool HasEffect => Duration > 0f;
@@ -182,47 +186,47 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 }
                 case EffectVoid effect:
                 {
-                    Effect = effect;
+                    Effect = new(effect);
                     break;
                 }
                 case EffectStartVoid onEffect:
                 {
-                    OnEffectStart = onEffect;
+                    OnEffectStart = new(onEffect);
                     break;
                 }
                 case EffectEndVoid offEffect:
                 {
-                    OnEffectEnd = offEffect;
+                    OnEffectEnd = new(offEffect);
                     break;
                 }
                 case DelayStartVoid onDelay:
                 {
-                    OnDelayStart = onDelay;
+                    OnDelayStart = new(onDelay);
                     break;
                 }
                 case DelayEndVoid offDelay:
                 {
-                    OnDelayEnd = offDelay;
+                    OnDelayEnd = new(offDelay);
                     break;
                 }
                 case DelayVoid delay:
                 {
-                    ActionDelay = delay;
+                    ActionDelay = new(delay);
                     break;
                 }
                 case OtherDelayStartVoid onOtherDelay:
                 {
-                    OnOtherDelayStart = onOtherDelay;
+                    OnOtherDelayStart = new(onOtherDelay);
                     break;
                 }
                 case OtherDelayEndVoid offOtherDelay:
                 {
-                    OnOtherDelayEnd = offOtherDelay;
+                    OnOtherDelayEnd = new(offOtherDelay);
                     break;
                 }
                 case OtherDelayVoid otherDelay:
                 {
-                    ActionOtherDelay = otherDelay;
+                    ActionOtherDelay = new(otherDelay);
                     break;
                 }
                 case EndFunc end:
@@ -327,7 +331,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 }
                 case ClickedAgainVoid clickedAgainVoid:
                 {
-                    OnClickedAgain = clickedAgainVoid;
+                    OnClickedAgain = new(clickedAgainVoid);
                     break;
                 }
                 case null:
@@ -342,6 +346,10 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 }
             }
         }
+
+        UnEffect = ButtonUnEffect;
+        UnDelay = ButtonUnDelay;
+        UnOtherDelay = ButtonUnOtherDelay;
 
         CooldownTime = EffectTime = DelayTime = 0f;
         ID = (ushort)AllButtons.Count;
@@ -400,14 +408,25 @@ public sealed class CustomButton : IDisposable, INetSerializable
         _ => !obj
     };
 
-    public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f) => CooldownTime = type switch
+    public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f)
     {
-        CooldownType.Start => GameOptions.EnableInitialCds ? GameOptions.InitialCooldowns : MaxCooldown(),
-        CooldownType.Meeting => GameOptions.EnableMeetingCds ? GameOptions.MeetingCooldowns : MaxCooldown(),
-        CooldownType.Fail => GameOptions.EnableFailCds ? GameOptions.FailCooldowns : MaxCooldown(),
-        CooldownType.Custom => cooldown,
-        _ => MaxCooldown()
-    };
+        var max = MaxCooldown();
+        CooldownTime = type switch
+        {
+            CooldownType.Start => GameOptions.EnableInitialCds ? GameOptions.InitialCooldowns : max,
+            CooldownType.Meeting => GameOptions.EnableMeetingCds ? GameOptions.MeetingCooldowns : max,
+            CooldownType.Fail => GameOptions.EnableFailCds ? GameOptions.FailCooldowns : max,
+            CooldownType.Custom => cooldown,
+            _ => max
+        };
+        CurrentPhase = CooldownTime <= 0f ? ButtonState.None : ButtonState.Cooldown;
+    }
+
+    public void AfterClickedAgain()
+    {
+        ClickedAgain = true;
+        OnClickedAgain();
+    }
 
     public void Clicked()
     {
@@ -453,8 +472,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             }
             else if (EffectActive && CanClickAgain)
             {
-                ClickedAgain = true;
-                OnClickedAgain();
+                AfterClickedAgain();
                 CallRpc(ActionsRpc.Cancel, this);
             }
         }
@@ -462,15 +480,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         DisableTarget();
     }
 
-    public void Begin()
-    {
-        if (HasDelay)
-            ButtonDelay();
-        else if (HasEffect)
-            ButtonEffect();
-        else if (HasOtherDelay)
-            ButtonOtherDelay();
-    }
+    public void Begin() => AdvanceToNextPhase(ButtonState.Pressed);
 
     public void TriggerRpcAndBegin(params object[] args)
     {
@@ -478,91 +488,91 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Begin();
     }
 
-    private void ButtonEffect()
+    private void HandleTimedPhase(ref bool enabled, ref float time, float maxTime, Action onPhaseStart, Action duringPhase, Action onPhaseEnd, ButtonState phase)
     {
-        if (!EffectEnabled)
+        if (!enabled)
         {
-            OnEffectStart();
-            EffectTime = Duration;
-            EffectEnabled = true;
+            onPhaseStart();
+            time = maxTime;
+            enabled = true;
             UpdateSprite();
+            CurrentPhase = phase;
+            return;
         }
 
-        EffectTime -= Time.deltaTime;
-        Effect();
+        time -= Time.deltaTime;
+        duringPhase();
 
         if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
-            EffectTime = 0f;
+            time = 0f;
+
+        if (time <= 0f)
+            onPhaseEnd();
     }
 
-    private void ButtonUnEffect()
+    private void HandleTimedPhaseEnd(ref bool enabled, Action onPhaseEnd, ButtonState phase)
     {
-        OnEffectEnd();
-        EffectEnabled = false;
+        onPhaseEnd();
+        enabled = false;
         ClickedAgain = false;
         UpdateSprite();
-
-        if (HasOtherDelay)
-            ButtonOtherDelay();
-        else
-            StartCooldown();
+        AdvanceToNextPhase(phase);
     }
 
-    private void ButtonDelay()
+    private void AdvanceToNextPhase(ButtonState currentPhase)
     {
-        if (!DelayEnabled)
+        switch (currentPhase)
         {
-            OnDelayStart();
-            DelayTime = Delay;
-            DelayEnabled = true;
-            UpdateSprite();
+            case ButtonState.Pressed:
+            {
+                if (HasDelay)
+                    ButtonDelay();
+                else if (HasEffect)
+                    ButtonEffect();
+                else if (HasOtherDelay)
+                    ButtonOtherDelay();
+
+                break;
+            }
+            case ButtonState.Delay:
+            {
+                if (HasEffect)
+                    ButtonEffect();
+                else if (HasOtherDelay)
+                    ButtonOtherDelay();
+                else
+                    StartCooldown();
+
+                break;
+            }
+            case ButtonState.Effect:
+            {
+                if (HasOtherDelay)
+                    ButtonOtherDelay();
+                else
+                    StartCooldown();
+
+                break;
+            }
+            case ButtonState.OtherDelay:
+            {
+                StartCooldown();
+                break;
+            }
         }
-
-        DelayTime -= Time.deltaTime;
-        ActionDelay();
-
-        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
-            DelayTime = 0f;
     }
 
-    private void ButtonUnDelay()
-    {
-        OnDelayEnd();
-        DelayEnabled = false;
-        UpdateSprite();
+    private void ButtonEffect() => HandleTimedPhase(ref EffectEnabled, ref EffectTime, Duration, OnEffectStart, Effect, UnEffect, ButtonState.Effect);
 
-        if (HasEffect)
-            ButtonEffect();
-        else if (HasOtherDelay)
-            ButtonOtherDelay();
-        else
-            StartCooldown();
-    }
+    private void ButtonUnEffect() => HandleTimedPhaseEnd(ref EffectEnabled, OnEffectEnd, ButtonState.Effect);
 
-    private void ButtonOtherDelay()
-    {
-        if (!OtherDelayEnabled)
-        {
-            OnOtherDelayStart();
-            OtherDelayTime = OtherDelay;
-            OtherDelayEnabled = true;
-            UpdateSprite();
-        }
+    private void ButtonDelay() => HandleTimedPhase(ref DelayEnabled, ref DelayTime, Delay, OnDelayStart, ActionDelay, UnDelay, ButtonState.Delay);
 
-        OtherDelayTime -= Time.deltaTime;
-        ActionOtherDelay();
+    private void ButtonUnDelay() => HandleTimedPhaseEnd(ref DelayEnabled, OnDelayEnd, ButtonState.Delay);
 
-        if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
-            OtherDelayTime = 0f;
-    }
+    private void ButtonOtherDelay() => HandleTimedPhase(ref OtherDelayEnabled, ref OtherDelayTime, OtherDelay, OnOtherDelayStart, ActionOtherDelay, UnOtherDelay, ButtonState.OtherDelay);
 
-    private void ButtonUnOtherDelay()
-    {
-        OnOtherDelayEnd();
-        OtherDelayEnabled = false;
-        StartCooldown();
-        UpdateSprite();
-    }
+    private void ButtonUnOtherDelay() => HandleTimedPhaseEnd(ref OtherDelayEnabled, OnOtherDelayEnd, ButtonState.OtherDelay);
 
     private void Timer()
     {
@@ -571,6 +581,9 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
         if (!Owner.Player.inVent || VentingOptions.CooldownInVent)
             CooldownTime = Mathf.Clamp(CooldownTime - Time.deltaTime, 0f, MaxCooldown());
+
+        if (CooldownTime <= 0f)
+            CurrentPhase = ButtonState.None;
     }
 
     private void SetOutline(MonoBehaviour prevMono, MonoBehaviour newMono) // Something that Innersloth changed borked this code, and I honestly couldn't be bothered to fix it because it's a shader issue
@@ -657,10 +670,10 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base.graphic.SetCooldownNormalizedUvs();
     }
 
-    public bool Usable() => ToggleVisibility.Visible && (!HasUses || UsesCount > 0 || EffectActive || DelayActive) && Owner && Owner.Dead == PostDeath && !Ejection() && Owner.Local && !Meeting() &&
-        !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && !MapBehaviourPatches.MapActive && IsUsable();
+    public bool Usable() => ToggleVisibility.Visible && !MapBehaviourPatches.MapActive && (!HasUses || UsesCount > 0 || (byte)CurrentPhase is not 0 or 1 or 5) && Owner && Owner.Dead == PostDeath &&
+        !Ejection() && Owner.Local && !Meeting() && !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && IsUsable();
 
-    public bool Clickable() => Base && !Disabled && !EffectActive && !DelayActive && Usable() && Condition() && !Owner.Player.CannotUse() && Targeting && !CooldownActive && (!HasUses || Uses >=
+    public bool Clickable() => Base && !Disabled && CurrentPhase == 0 && Usable() && Condition() && !Owner.Player.CannotUse() && Targeting && !CooldownActive && (!HasUses || Uses >=
         UseDecrement) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();
 
     private void SetTarget()
@@ -699,18 +712,12 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     public void Timers()
     {
-        if (DelayActive)
+        if (DelayActive || DelayEnabled)
             ButtonDelay();
-        else if (DelayEnabled)
-            ButtonUnDelay();
-        else if (EffectActive)
+        else if (EffectActive || EffectEnabled)
             ButtonEffect();
-        else if (EffectEnabled)
-            ButtonUnEffect();
-        else if (OtherDelayActive)
+        else if (OtherDelayActive || OtherDelayEnabled)
             ButtonOtherDelay();
-        else if (OtherDelayEnabled)
-            ButtonUnOtherDelay();
         else if (CooldownActive)
             Timer();
     }

@@ -42,7 +42,7 @@ public sealed class Amnesiac : Benign
             arrow.Destroy();
     }
 
-    protected override void ClearArrows()
+    public override void ClearArrows()
     {
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();

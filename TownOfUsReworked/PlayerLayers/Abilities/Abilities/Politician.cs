@@ -30,7 +30,7 @@ public sealed class Politician : Ability
         ExtraVotes.Clear();
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void LocalOnMeetingStart(MeetingHud __instance)
     {
         if (CanKill || !Abstain)
             return;
@@ -113,6 +113,19 @@ public sealed class Politician : Ability
     }
 
     public override void OnKill(PlayerControl victim) => VoteBank++;
+
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        DestroyAbstain();
+
+        if (VoteBank < 0)
+            VoteBank = 0;
+
+        VotedOnce = false;
+
+        if (!CanKill)
+            VoteBank++;
+    }
 
     private void UpdateButton(MeetingHud __instance)
     {

@@ -6,15 +6,15 @@ public sealed class Seer : Investigative
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number SeerCd = 25;
 
-    private static bool ChangedDead => !GetLayers<Role>().Any(x => !x.Alive && (x.Handler.History.Any() || x is Amnesiac or Thief or Actor or Godfather or Guesser or Rebel or Mystic or Executioner
-        or GuardianAngel or BountyHunter || x.Handler.CurrentDisposition is Traitor or Fanatic));
+    private static bool ChangedDead => !GetLayers<Role>().Any(x => !x.Alive && (x.Handler.History.Any() || x is Amnesiac or Thief or Actor or Godfather or Rebel or ITargeter ||
+        x.Handler.CurrentDisposition is FactionChanger));
 
     private CustomButton SeerButton;
 
     protected override UColor MainColor => CustomColorManager.Seer;
     public override Layer Type => Layer.Seer;
     public override string StartText => "You Can See People's Histories";
-    public override string Description => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
+    public override string Description => "- You can investigate players to see if their roles have changed\n- If all relevant players whose roles changed have died, you will become a " +
         "<#FFCC80FF>Sheriff</color>";
 
     public override void Init() => SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(SeerCd));

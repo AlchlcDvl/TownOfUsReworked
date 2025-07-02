@@ -64,7 +64,7 @@ public static class CustomColorManager
 
     public static UColor Alternate(this UColor color, float val = 0.2f) => color.IsDark() ? color.Light(val) : color.Shadow(val);
 
-    public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
+    // public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
 
     private static bool IsDark(this UColor color) => (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f) < 0.5f;
 
@@ -110,8 +110,8 @@ public static class CustomColorManager
     public static readonly UColor Role = FromHex("#FFD700FF");
     public static readonly UColor Modifier = FromHex("#7F7F7FFF");
     public static readonly UColor Ability = FromHex("#FF9900FF");
-    // public static readonly UColor Layer = FromHex("#2684C1FF");
     public static readonly UColor Disposition = FromHex("#DD585BFF");
+    // public static readonly UColor Layer = FromHex("#2684C1FF");
 
     // Faction Colors
     public static readonly UColor Crew = FromHex("#8CFFFFFF");

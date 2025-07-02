@@ -38,7 +38,13 @@ public sealed class Swapper : Ability
         Swap2 = reader.ReadVoteArea();
     }
 
-    public override void OnMeetingStart(MeetingHud __instance) => SwapMenu.GenButtons(__instance);
+    public override void LocalOnMeetingStart(MeetingHud __instance) => SwapMenu.GenButtons(__instance);
+
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        Swap1 = null;
+        Swap2 = null;
+    }
 
     public override void UpdateMeeting(MeetingHud __instance) => SwapMenu.Update();
 

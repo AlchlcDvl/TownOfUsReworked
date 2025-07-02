@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Trapper)]
-public sealed class Trapper : Protective, ITrapper
+public sealed class Trapper : Protective
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTraps = 5;
@@ -114,7 +114,7 @@ public sealed class Trapper : Protective, ITrapper
         }
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void LocalOnMeetingStart(MeetingHud __instance)
     {
         var message = "";
 

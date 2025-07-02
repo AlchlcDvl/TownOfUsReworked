@@ -70,7 +70,7 @@ public sealed class DispositionGen : BaseGen
                 Layer.Mafia when playerList.Count > 1 => playerList.FirstOrDefault(),
                 Layer.Defector => playerList.FirstOrDefault(x => x.GetFaction().IsFactionedEvil()),
                 Layer.Allied => playerList.FirstOrDefault(x => x.Is(Alignment.Killing) && x.GetFaction().IsOutcast()),
-                _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Altruist or Troll or Actor or Jester)),
+                _ when LoverRival.Contains(id) && playerList.Count > 1 => playerList.FirstOrDefault(x => x.GetRole() is not (Troll or Actor or Jester)),
                 _ when CrewDisp.Contains(id) => playerList.FirstOrDefault(x => x.Is(Faction.Crew)),
                 _ when OutcastDisp.Contains(id) => playerList.FirstOrDefault(x => x.GetFaction().IsOutcast()),
                 _ => null

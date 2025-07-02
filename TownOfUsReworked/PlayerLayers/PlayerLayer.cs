@@ -74,7 +74,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// <summary>
     /// Gets or sets the handler for this layer.
     /// </summary>
-    public LayerHandler Handler { get; set; }
+    public virtual LayerHandler Handler { get; set; }
 
     /// <summary>
     /// Gets or sets the player.
@@ -89,7 +89,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// <summary>
     /// Gets a value indicating whether or not the player is dead.
     /// </summary>
-    public bool Dead => Data?.IsDead ?? true;
+    public virtual bool Dead => Data?.IsDead ?? true;
 
     /// <summary>
     /// Gets a value indicating whether or not the player has disconnected.
@@ -104,7 +104,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// <summary>
     /// Gets a value indicating whether or not the player is the local player.
     /// </summary>
-    public bool Local => Player?.AmOwner ?? false;
+    public virtual bool Local => Player?.AmOwner ?? false;
 
     /// <summary>
     /// Gets the color of the layer.
@@ -323,6 +323,12 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// Performs an action once a meeting begins (called in <see cref="MeetingHud.Start"/>). Runs locally.
     /// </summary>
     /// <param name="__instance">The meeting to handle.</param>
+    public virtual void LocalOnMeetingStart(MeetingHud __instance) {}
+
+    /// <summary>
+    /// Performs an action once a meeting begins (called in <see cref="MeetingHud.Start"/>). Runs for everyone.
+    /// </summary>
+    /// <param name="__instance">The meeting to handle.</param>
     public virtual void OnMeetingStart(MeetingHud __instance) {}
 
     /// <summary>
@@ -370,7 +376,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// <summary>
     /// Clears all arrows contained by this layer. Runs for everyone.
     /// </summary>
-    protected virtual void ClearArrows() {}
+    public virtual void ClearArrows() {}
 
     /// <summary>
     /// Checks if this layer has achieved their win. Runs for the host.
@@ -415,7 +421,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// </summary>
     public void GameEnd(HashSet<byte> winnerIds)
     {
-        if (!Player || !Player.Data || Disconnected || LayerType is PlayerLayerEnum.Ability or PlayerLayerEnum.Modifier || Deinitialised)
+        if (!Player || !Player.Data || Disconnected || Deinitialised)
             return;
 
         CheckWin(winnerIds);

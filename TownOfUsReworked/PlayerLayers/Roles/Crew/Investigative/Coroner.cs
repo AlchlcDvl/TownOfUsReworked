@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Coroner)]
-public sealed class Coroner : Investigative, IExaminer
+public sealed class Coroner : Investigative
 {
     [NumberOption(0f, 2f, 0.05f, Format.Time)]
     public static Number CoronerArrowDur = 0.1f;
@@ -61,7 +61,7 @@ public sealed class Coroner : Investigative, IExaminer
             arrow.Destroy();
     }
 
-    protected override void ClearArrows()
+    public override void ClearArrows()
     {
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();

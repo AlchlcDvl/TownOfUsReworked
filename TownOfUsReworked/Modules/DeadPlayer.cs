@@ -12,7 +12,7 @@ public sealed class DeadPlayer(byte killer, byte player)
 
     public string ParseBodyReport(PlayerControl reporter)
     {
-        if (!reporter.Is<IExaminer>())
+        if (!reporter.Is<Coroner>())
             return "";
 
         var report = $"{Body.name}'s Report:";

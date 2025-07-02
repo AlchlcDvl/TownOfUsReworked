@@ -7,6 +7,7 @@ public interface IPlayerLayer
     UColor Color { get; }
     bool Disconnected { get; }
     Layer Type { get; }
+    bool Dead { get; }
 
     void ReadRPC(RpcReader reader);
 

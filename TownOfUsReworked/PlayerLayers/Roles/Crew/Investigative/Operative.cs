@@ -1,7 +1,7 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Operative)]
-public sealed class Operative : Investigative, IBugger
+public sealed class Operative : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number BugCd = 25;
@@ -63,7 +63,7 @@ public sealed class Operative : Investigative, IBugger
         Bugs.Clear();
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void LocalOnMeetingStart(MeetingHud __instance)
     {
         if (Dead)
             return;

@@ -73,5 +73,5 @@ public sealed class Monarch : Sovereign
 
     private bool Usable() => !RoundOne;
 
-    public override void OnMeetingStart(MeetingHud __instance) => Knighted.RemoveAll(x => PlayerById(x).HasDied());
+    public override void LocalOnMeetingStart(MeetingHud __instance) => Knighted.RemoveAll(x => PlayerById(x).HasDied());
 }

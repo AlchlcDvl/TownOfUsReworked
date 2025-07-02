@@ -155,7 +155,7 @@ public sealed class Necromancer : Neophyte, IReviver
 
     private bool Usable() => ResurrectButton.UsesCount != ResurrectButton.Max;
 
-    public override void OnMeetingStart(MeetingHud __instance) => ResurrectButton.Uses += PassiveNecroManaGain;
+    public override void LocalOnMeetingStart(MeetingHud __instance) => ResurrectButton.Uses += PassiveNecroManaGain;
 
     private float Difference2() => SacrificeCdIncreases ? (KillCounts.GetValueOrDefault(PlayerId, 0) * SacrificeCdIncrease) : 0;
 

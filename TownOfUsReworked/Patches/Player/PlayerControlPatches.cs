@@ -238,7 +238,7 @@ public static class PlayerControlPatches
 
         if (__instance.HasDied() && LocalPlayer.HasDied() && !__instance.AmOwner)
             value = !ClientOptions.HideOtherGhosts;
-        else if (LocalPlayer.Is<IShaman>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId) && !__instance.AmOwner)
+        else if (LocalPlayer.Is<Medium>(out var med) && med.MediatedPlayers.Contains(__instance.PlayerId) && !__instance.AmOwner)
             value = true;
     }
 

@@ -16,7 +16,7 @@ public sealed class AlignmentHeaderOption(ListSlot alignment = ListSlot.None) : 
             > ListSlot.OutcastPros and <= ListSlot.OutcastNeo => CustomColorManager.Outcast,
             >= ListSlot.SyndicateKill and <= ListSlot.SyndicateUtil => CustomColorManager.Syndicate,
             ListSlot.OutcastBen or ListSlot.OutcastEvil => CustomColorManager.Stalemate,
-            ListSlot.OutcastPros => CustomColorManager.Stalemate.Deepen(),
+            ListSlot.OutcastPros => CustomColorManager.Stalemate.Alternate(0.1f),
             ListSlot.ApocDeity or ListSlot.ApocHarb => CustomColorManager.Apocalypse,
             ListSlot.Modifiers => CustomColorManager.Modifier,
             ListSlot.Abilities => CustomColorManager.Ability,

@@ -441,14 +441,19 @@ public sealed class LayerHandler : RoleBehaviour
     public override void OnMeetingStart()
     {
         Channels |= ChatChannel.Meeting;
+        var meeting = Meeting();
+        CurrentRole.OnMeetingStart(meeting);
+        CurrentAbility.OnMeetingStart(meeting);
+        CurrentModifier.OnMeetingStart(meeting);
+        CurrentDisposition.OnMeetingStart(meeting);
 
         if (!Local)
             return;
 
-        CurrentRole.OnMeetingStart(Meeting());
-        CurrentAbility.OnMeetingStart(Meeting());
-        CurrentModifier.OnMeetingStart(Meeting());
-        CurrentDisposition.OnMeetingStart(Meeting());
+        CurrentRole.LocalOnMeetingStart(meeting);
+        CurrentAbility.LocalOnMeetingStart(meeting);
+        CurrentModifier.LocalOnMeetingStart(meeting);
+        CurrentDisposition.LocalOnMeetingStart(meeting);
     }
 
     public override void OnVotingComplete()
@@ -456,10 +461,11 @@ public sealed class LayerHandler : RoleBehaviour
         if (!Local)
             return;
 
-        CurrentRole.VoteComplete(Meeting());
-        CurrentAbility.VoteComplete(Meeting());
-        CurrentModifier.VoteComplete(Meeting());
-        CurrentDisposition.VoteComplete(Meeting());
+        var meeting = Meeting();
+        CurrentRole.VoteComplete(meeting);
+        CurrentAbility.VoteComplete(meeting);
+        CurrentModifier.VoteComplete(meeting);
+        CurrentDisposition.VoteComplete(meeting);
     }
 
     public override void Deinitialize(PlayerControl targetPlayer)

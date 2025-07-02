@@ -76,7 +76,6 @@ public static class SetPostmortals
         }
 
         AllBodies().Do(x => x?.gameObject?.Destroy());
-        PlayerLayer.GetLayers<Retributionist>().Do(x => x.OnRoleSelected());
     }
 
     private static void JesterWin(PlayerControl player)
@@ -133,19 +132,19 @@ public static class SetPostmortals
 
     public static void BeginPostmortals(PlayerControl player, bool ejection)
     {
-        SetGhosties<Revealer>(player, ejection, WillBeRevealers, Revealers, player.Is<Crew>());
-        SetGhosties<Phantom>(player, ejection, WillBePhantoms, Phantoms, player.Is<Outcast>() && !IsExcludedOutcast(player));
-        SetGhosties<Banshee>(player, ejection, WillBeBanshees, Banshees, player.Is<Syndicate>());
-        SetGhosties<Ghoul>(player, ejection, WillBeGhouls, Ghouls, player.Is<Intruder>());
+        SetGhosties<Revealer>(player, ejection, WillBeRevealers, Revealers, player.Is<Crew>);
+        SetGhosties<Phantom>(player, ejection, WillBePhantoms, Phantoms, () => player.Is<Outcast>() && !IsExcludedOutcast(player));
+        SetGhosties<Banshee>(player, ejection, WillBeBanshees, Banshees, player.Is<Syndicate>);
+        SetGhosties<Ghoul>(player, ejection, WillBeGhouls, Ghouls, player.Is<Intruder>);
     }
 
-    private static void TryAddPostmortal(PlayerControl dead, HashSet<byte> set, byte count, bool condition)
+    private static void TryAddPostmortal(PlayerControl dead, HashSet<byte> set, byte count, Func<bool> condition)
     {
-        if (dead.HasDied() && dead && !set.Contains(dead.PlayerId) && set.Count < count && condition)
+        if (dead.HasDied() && dead && !set.Contains(dead.PlayerId) && set.Count < count && condition())
             set.Add(dead.PlayerId);
     }
 
-    private static void SetGhosties<T>(PlayerControl dead, bool ejection, HashSet<byte> set, byte count, bool condition) where T : Role, IGhosty
+    private static void SetGhosties<T>(PlayerControl dead, bool ejection, HashSet<byte> set, byte count, Func<bool> condition) where T : Role, IGhosty
     {
         if (count == 0)
             return;

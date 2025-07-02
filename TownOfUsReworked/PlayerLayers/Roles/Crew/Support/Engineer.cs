@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-// Buff with vent sealing
+// TODO: Buff with vent sealing
 [LayerHeaderOption(Layer.Engineer)]
 public sealed class Engineer : CSupport
 {

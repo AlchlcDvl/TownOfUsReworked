@@ -23,7 +23,7 @@ public sealed class Stalker : SSupport
             (PlayerBodyExclusion)Exception1);
     }
 
-    protected override void ClearArrows()
+    public override void ClearArrows()
     {
         StalkerArrows.Values.DestroyAll();
         StalkerArrows.Clear();

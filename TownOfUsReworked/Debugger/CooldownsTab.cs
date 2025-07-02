@@ -13,16 +13,19 @@ public sealed class CooldownsTab : BaseTab
         }
 
         if (GUILayout.Button("Cancel Cooldowns"))
-            LocalPlayer.GetButtons().Do(x => x.CooldownTime = 0f);
+            LocalPlayer.GetButtons().Do(x => x.StartCooldown(CooldownType.Custom));
 
         if (GUILayout.Button("Cancel Delays"))
             LocalPlayer.GetButtons().Do(x => x.DelayTime = 0f);
+
+        if (GUILayout.Button("Cancel Other Delays"))
+            LocalPlayer.GetButtons().Do(x => x.OtherDelayTime = 0f);
 
         if (GUILayout.Button("Click Buttons"))
             LocalPlayer.GetButtons().Do(x => x.Clicked());
 
         if (GUILayout.Button("Cancel Effects"))
-            LocalPlayer.GetButtons().Do(x => x.ClickedAgain = true);
+            LocalPlayer.GetButtons().Do(x => x.AfterClickedAgain());
 
         if (GUILayout.Button("Reset Full Cooldown"))
             LocalPlayer.GetButtons().Do(x => x.StartCooldown());

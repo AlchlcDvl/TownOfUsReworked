@@ -97,10 +97,7 @@ public static class AdminPatch
     public static bool Prefix(MapCountOverlay __instance)
     {
         var role = LocalPlayer.GetRole();
-        var isOp = role is Operative || DeadSeeEverything();
-
-        if (!isOp)
-            isOp = role is Retributionist { IsOp: true };
+        var isOp = role is Operative || DeadSeeEverything() || (role is Retributionist ret && ret.RevivedRole is Operative);
 
         __instance.timer += Time.deltaTime;
 

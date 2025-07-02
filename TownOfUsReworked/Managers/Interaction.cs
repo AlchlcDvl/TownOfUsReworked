@@ -12,7 +12,7 @@ public static class InteractionManager
         if (target.IsAmbushed(out var amb) && !amb.Exception1(player))
             return true;
 
-        if (target.GetRole() is SerialKiller sk && sk.BloodlustButton.EffectActive && player.GetRole() is IBlocker && !harmful)
+        if (target.Is<SerialKiller>(out var sk) && sk.BloodlustButton.EffectActive && player.Is<IBlocker>() && !harmful)
             return true;
 
         return target.IsCrusaded(out var crus) && !crus.Exception1(player);
@@ -20,8 +20,8 @@ public static class InteractionManager
 
     private static void Trigger(PlayerControl player, PlayerControl target, bool harmful, out PlayerControl trapper)
     {
-        trapper = harmful ? PlayerLayer.GetLayers<ITrapper>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player : null;
-        PlayerLayer.GetLayers<ITrapper>().Do(x => x.TriggerTrap(target, player, harmful));
+        trapper = harmful ? PlayerLayer.GetLayers<Trapper>().FirstOrDefault(x => x.Trapped.Contains(target.PlayerId))?.Player : null;
+        PlayerLayer.GetLayers<Trapper>().Do(x => x.TriggerTrap(target, player, harmful));
     }
 
     public static void Spread(PlayerControl interactor, PlayerControl target)
@@ -197,7 +197,7 @@ public static class InteractionManager
             abilityUsed = true;
             RpcBreakShield(player);
         }
-        else if (PlayerLayer.GetLayers<IVentBomber>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
+        else if (PlayerLayer.GetLayers<Bastion>().TryFinding(x => x.BombedIDs.Contains(target.Id), out var bastion))
             bastion.Player.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
 
         BastionBomb(target, Bastion.BombRemovedOnKill);

@@ -43,7 +43,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
             arrow.Destroy();
     }
 
-    protected override void ClearArrows()
+    public override void ClearArrows()
     {
         BodyArrows.Values.DestroyAll();
         BodyArrows.Clear();

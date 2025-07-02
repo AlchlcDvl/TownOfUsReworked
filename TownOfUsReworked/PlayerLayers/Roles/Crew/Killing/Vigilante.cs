@@ -4,9 +4,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public sealed class Vigilante : CKilling
 {
     [ToggleOption]
-    private static bool MisfireKillsInno = true;
-
-    [ToggleOption]
     private static bool VigiKillAgain = true;
 
     [ToggleOption]
@@ -52,7 +49,7 @@ public sealed class Vigilante : CKilling
             Player.RpcSuicide();
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void LocalOnMeetingStart(MeetingHud __instance)
     {
         if (KilledInno && HowIsVigilanteNotified == VigiNotif.Message && HowDoesVigilanteDie != VigiOptions.Immediate)
             Run("<#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
@@ -65,33 +62,32 @@ public sealed class Vigilante : CKilling
     private void Shoot(PlayerControl target)
     {
         var targetRole = target.GetRole();
-        var toKill = targetRole.Alignment is Alignment.Neophyte or Alignment.Proselyte || targetRole.Handler.CurrentFaction.IsFactionedEvil() || targetRole is Troll || target.IsFramed() ||
-            Player.IsFramed() || (targetRole.Alignment == Alignment.Evil && OutcastEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.Is<Corrupted>() || (targetRole.Alignment ==
-            Alignment.Benign && OutcastBenignSettings.VigilanteKillsBenigns);
+        var toKill = targetRole.Alignment is Alignment.Neophyte or Alignment.Proselyte || targetRole.Handler.CurrentFaction.IsFactionedEvil() || targetRole is Troll or OKilling ||
+            (targetRole.Alignment == Alignment.Evil && OutcastEvilSettings.VigilanteKillsEvils) || Player.Is<Corrupted>() || target.Is<Corrupted>() || (targetRole is Crew &&
+            targetRole.Handler.CurrentFaction == Faction.Crew && Player.Is(Faction.Crew) && (target.IsFramed() || Player.IsFramed())) || (targetRole.Alignment == Alignment.Benign &&
+            OutcastBenignSettings.VigilanteKillsBenigns);
         var cooldown = Interact(Player, target, toKill);
 
         if (cooldown != CooldownType.Fail)
-        {
-            if (toKill && !Player.IsFramed() && !target.IsFramed())
-                KilledInno = false;
-            else
-            {
-                if (MisfireKillsInno)
-                    Player.RpcMurderPlayer(target);
-
-                if (Local && HowIsVigilanteNotified == VigiNotif.Flash && HowDoesVigilanteDie != VigiOptions.Immediate)
-                    Flash(Color);
-
-                KeepKilling = VigiKillAgain;
-                KilledInno = true;
-
-                if (HowDoesVigilanteDie == VigiOptions.Immediate)
-                    Player.RpcSuicide();
-            }
-
             Play("Shoot");
-        }
 
         ShootButton.StartCooldown(cooldown);
+    }
+
+    public override void OnKill(PlayerControl victim)
+    {
+        if (!Player.IsFramed() && !victim.IsFramed())
+            KilledInno = false;
+        else
+        {
+            if (Local && HowIsVigilanteNotified == VigiNotif.Flash && HowDoesVigilanteDie != VigiOptions.Immediate)
+                Flash(Color);
+
+            KeepKilling = VigiKillAgain;
+            KilledInno = true;
+
+            if (HowDoesVigilanteDie == VigiOptions.Immediate)
+                Player.Suicide();
+        }
     }
 }

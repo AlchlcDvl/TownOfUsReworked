@@ -3,7 +3,7 @@
 public sealed class Bug : Range
 {
     [HideFromIl2Cpp]
-    private IBugger OwnerBugger { get; set; }
+    private Operative OwnerBugger { get; set; }
 
     [HideFromIl2Cpp]
     private Dictionary<byte, float> Players { get; } = [];
@@ -54,7 +54,7 @@ public sealed class Bug : Range
         var gameObject = CreateRange(CustomColorManager.Operative, Operative.BugRange, "Bug");
         var bug = gameObject.AddComponent<Bug>();
         bug.Owner = owner;
-        bug.OwnerBugger = owner.GetLayer<IBugger>();
+        bug.OwnerBugger = owner.GetLayer<Operative>();
         bug.Size = Operative.BugRange;
         var position = owner.GetTruePosition();
         gameObject.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);

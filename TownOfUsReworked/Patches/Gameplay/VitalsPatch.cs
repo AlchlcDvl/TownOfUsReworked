@@ -8,10 +8,7 @@ public static class VitalsPatch
     {
         __instance.BatteryText.gameObject.SetActive(false);
         var role = LocalPlayer.GetRole();
-        var isOp = role is Operative || DeadSeeEverything();
-
-        if (!isOp)
-            isOp = role is Retributionist { IsOp: true };
+        var isOp = role is Operative || DeadSeeEverything() || (role is Retributionist ret && ret.RevivedRole is Operative);
 
         if (!isOp)
             return;

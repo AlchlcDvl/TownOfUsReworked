@@ -385,11 +385,6 @@ public static class RpcManager
                         SettingsPatches.SetMap(reader.Read<Map>());
                         return;
                     }
-                    case MiscRpc.Notify:
-                    {
-                        ChatPatches.Notify(reader.ReadByte());
-                        return;
-                    }
                     case MiscRpc.SetSettings:
                     {
                         MapPatches.CurrentMap = reader.ReadByte();
@@ -415,11 +410,6 @@ public static class RpcManager
                         BodyLocations[reader.ReadByte()] = reader.ReadString();
                         return;
                     }
-                    case MiscRpc.MoveBody:
-                    {
-                        reader.ReadBody().transform.position = reader.ReadVector2();
-                        return;
-                    }
                     case MiscRpc.LoadPreset:
                     {
                         var preset = reader.ReadString();
@@ -429,18 +419,19 @@ public static class RpcManager
                     }
                     case MiscRpc.EndRoleGen:
                     {
-                        var allPlayers = AllPlayers();
-                        allPlayers.Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
                         SetPostmortals.Revealers = reader.ReadByte();
                         SetPostmortals.Phantoms = reader.ReadByte();
                         SetPostmortals.Banshees = reader.ReadByte();
                         SetPostmortals.Ghouls = reader.ReadByte();
                         RoleGenManager.Pure = reader.ReadPlayer();
                         RoleGenManager.Convertible = reader.ReadByte();
+                        Retributionist.Exists = reader.ReadBool();
 
                         while (reader.BytesRemaining > 0)
                             BetterAirship.SpawnPoints.Add(reader.ReadByte());
 
+                        var allPlayers = AllPlayers();
+                        allPlayers.Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
                         Shifter.Originals.AddRange(allPlayers.Where(x => x.Is<Shifter>()));
                         AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
                         return;
@@ -659,9 +650,7 @@ public static class RpcManager
                     }
                     case ActionsRpc.Cancel:
                     {
-                        var button = reader.ReadButton();
-                        button.ClickedAgain = true;
-                        button.OnClickedAgain();
+                        reader.ReadButton().AfterClickedAgain();
                         return;
                     }
                     case ActionsRpc.PublicReveal:

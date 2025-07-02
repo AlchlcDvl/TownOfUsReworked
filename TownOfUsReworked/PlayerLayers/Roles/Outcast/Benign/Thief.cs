@@ -129,7 +129,7 @@ public sealed class Thief : Benign, IGuesser
         GuessingMenu.Open(PlayerByVoteArea(voteArea));
     }
 
-    public override void OnMeetingStart(MeetingHud __instance) => GuessMenu.GenButtons(__instance, ThiefCanGuess);
+    public override void LocalOnMeetingStart(MeetingHud __instance) => GuessMenu.GenButtons(__instance, ThiefCanGuess);
 
     public override void ReadRPC(RpcReader reader)
     {

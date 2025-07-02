@@ -47,30 +47,17 @@ public static class CheckEndGame
 
     private static readonly List<Action<HashSet<byte>>> GameEndChecks =
     [
-        _ => DetectStalemate(),
-        CheckFactionWin,
+        x => PlayerLayer.GetLayers<Disposition>().Do(y => y.GameEnd(x)),
         x => PlayerLayer.GetLayers<Role>().Do(y => y.GameEnd(x)),
-        x => PlayerLayer.GetLayers<Disposition>().Do(y => y.GameEnd(x))
+        CheckFactionWin,
+        _ => DetectStalemate()
     ];
 
     public static void CheckPlayerWins()
     {
-        // Only run the subsequent checks if and only if no previous condition as been fulfilled
+        // Only run the subsequent checks if and only if no previous condition has been fulfilled
         var winnerIds = new HashSet<byte>();
-
         GameEndChecks.WhileIndexed(x => x(winnerIds), () => WinState == WinLose.None);
-
-        // if (WinState == WinLose.None)
-        //     DetectStalemate();
-
-        // if (WinState == WinLose.None)
-        //     CheckFactionWin(winnerIds);
-
-        // if (WinState == WinLose.None)
-        //     PlayerLayer.GetLayers<Role>().Do(x => x.GameEnd(winnerIds));
-
-        // if (WinState == WinLose.None)
-        //     PlayerLayer.GetLayers<Disposition>().Do(x => x.GameEnd(winnerIds));
 
         if (WinState == WinLose.None)
             return;
@@ -99,7 +86,7 @@ public static class CheckEndGame
 
         var players = AllPlayers();
 
-        if (hexer.Spelled.Count != players.Count(plr => !plr.HasDied() && !factionCheck(plr)))
+        if (hexer.Spelled.Select(x => PlayerById(x)).Count(plr => !plr.HasDied() && !factionCheck(plr)) != players.Count(plr => !plr.HasDied() && !factionCheck(plr)))
             return;
 
         WinState = faction switch

@@ -340,7 +340,7 @@ public sealed class AppearanceHandler : MonoBehaviour
             }
         }
 
-        if (Player.Is<ITrapper>(out var trap))
+        if (Player.Is<Trapper>(out var trap))
             result *= trap.Building ? 0f : 1f;
 
         if (Ship()?.Systems?.TryGetValue(SystemTypes.LifeSupp, out var life) == true)

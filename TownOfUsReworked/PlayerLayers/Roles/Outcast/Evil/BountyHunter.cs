@@ -80,7 +80,7 @@ public sealed class BountyHunter : Evil, ITargeter
 
     private void TurnTroll() => new Troll().RoleUpdate(this);
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void LocalOnMeetingStart(MeetingHud __instance)
     {
         if (!TargetPlayer && TentativeTarget && !Assigned)
         {

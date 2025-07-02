@@ -76,7 +76,13 @@ public sealed class Dictator : Sovereign
             DictMenu.Actives[prev.PlayerId] = false;
     }
 
-    public override void OnMeetingStart(MeetingHud __instance) => DictMenu.GenButtons(__instance, Tribunal && !Dead);
+    public override void LocalOnMeetingStart(MeetingHud __instance) => DictMenu.GenButtons(__instance, Tribunal && !Dead);
+
+    public override void OnMeetingStart(MeetingHud __instance)
+    {
+        ToBeEjected = null;
+        Tribunal = false;
+    }
 
     private bool IsExempt(PlayerVoteArea voteArea)
     {

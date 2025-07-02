@@ -92,6 +92,6 @@ public sealed class Janitor : Concealing
         base.Kill(target);
 
         if (JaniCooldownsLinked)
-            CleanButton.StartCooldown(CooldownType.Custom, KillButton.CooldownTime);
+            CleanButton.StartCooldown();
     }
 }

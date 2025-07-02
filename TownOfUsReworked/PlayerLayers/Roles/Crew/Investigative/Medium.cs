@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 // TODO: Implement seancing
 [LayerHeaderOption(Layer.Medium)]
-public sealed class Medium : Investigative, IShaman
+public sealed class Medium : Investigative
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     public static Number MediateCd = 25;
@@ -51,7 +51,7 @@ public sealed class Medium : Investigative, IShaman
     // private void Seance() { /*Currently blank, gonna work on this later*/ }
     // Can you believe this guy? Over a year and this mofo still hasn't worked on it :skull:
 
-    protected override void ClearArrows()
+    public override void ClearArrows()
     {
         MediateArrows.Values.DestroyAll();
         MediateArrows.Clear();

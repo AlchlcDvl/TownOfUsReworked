@@ -44,7 +44,7 @@ public sealed class Tracker : Investigative
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 
-    protected override void ClearArrows()
+    public override void ClearArrows()
     {
         TrackerArrows.Values.DestroyAll();
         TrackerArrows.Clear();

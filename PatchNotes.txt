@@ -26,6 +26,7 @@ Changes!
 - Overhaul: Mayor is now a second stage role for the new Democrat role
 - Overhaul: Shifter is back to being an outcast role, finally with a win condition and an interesting mechanic*
 - Rework: Mafioso, Sidekick, Promoted Godfather and Promoted Rebel have been completely recoded, Mafiosos and Sidekicks can now use their original abilities, but lose the ability to kill unless they can promote (for future patch notes, bug fixes will only refer to the base roles and not Godfather-x or Rebel-y)
+- Rework: Retributionist has been fully recoded and now inherits the faults of Crew roles (such as Vigi misfire, future patch notes will just truncate Retributionist-z roles to just z role)
 - Rework: Dictator no longer ejects 3 players at a time; instead, they only pick a single player to eject and have gained ability charges to compensate
 - Rework: Altruist and Necromancer now need to gain mana from bodies (thereby cleaning them) to be able to revive players
 - Rework: Plaguebearer (and Pestilence) is now in its own Apocalypse faction, expect this faction to be filled in the next few updates
@@ -48,7 +49,7 @@ Changes!
 - Change: Assets are now stored in "%APPDATA%\..\LocalLow\Innersloth\Among Us" instead of the game folder to ensure persistence between version updates
 - Change: The end game summary will now only show the initial and the final role of a player. To view the full role history of a player, use the /summary command
 - Change: Syndicate (Power) roles are now Syndicate (Head) instead
-- Change: Dimmed the blinded color from
+- Change: Dimmed the blinded color from Grenadiers
 - Nerf: Serial Killers will now only kill roleblockers when they are in blood lust mode; however, they will still be roleblock immune the entire game
 - Nerf: Engineer can no longer vent (you now need the Tunneler ability to do so as a crewmate)
 - Nerf: Button Barry will now only fix critical sabotages, leaving lights and comms unaffected
@@ -77,7 +78,6 @@ Fixes!
 - Critical: Greatly improved the stutter and FPS issues
 - Critical: Fixed a lot of options not being used as they should
 - Vanilla: Fixed the vanilla bug with being stuck in certain locations when trying to vent
-- Role: Fixed Retributionist-Altruist revives not being networked between players
 - Role: Fixed Spellslingers not ending the game when they successfully spell bind everyone
 - Role: Fixed Rebel-Framer frames not actually functioning the way they should
 - Role: Fixed some inconsistencies for Poisoner and Rebel-Poisoner

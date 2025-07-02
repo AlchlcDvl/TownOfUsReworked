@@ -215,10 +215,7 @@ public abstract class BaseClassicAllAnyGen : BaseRoleGen
     {
         var allPlayers = AllPlayers();
 
-        if (!allPlayers.Any(x => x.GetRole() is Amnesiac or Thief or Godfather or Shifter or Guesser or Rebel or Executioner or GuardianAngel or BountyHunter or Mystic or Actor ||
-            x.GetDisposition() is Traitor or Fanatic))
-        {
+        if (!allPlayers.Any(x => x.GetRole() is Amnesiac or Thief or Godfather or Rebel or Shifter or ITargeter or Actor || x.GetDisposition() is Traitor or Fanatic))
             allPlayers.Where(x => x.Is<Seer>()).Do(x => Gen(x, Layer.Sheriff, PlayerLayerEnum.Role));
-        }
     }
 }

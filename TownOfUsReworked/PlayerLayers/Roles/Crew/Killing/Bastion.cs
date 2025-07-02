@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Bastion)]
-public sealed class Bastion : CKilling, IVentBomber
+public sealed class Bastion : CKilling
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxBombs = 5;

@@ -64,7 +64,7 @@ public sealed class Assassin : Ability, IGuesser
         Lives = AssassinChance ? AssassinChances : 0;
     }
 
-    public override void OnMeetingStart(MeetingHud __instance) => GuessMenu.GenButtons(__instance, RemainingKills > 0);
+    public override void LocalOnMeetingStart(MeetingHud __instance) => GuessMenu.GenButtons(__instance, RemainingKills > 0);
 
     public override void UpdateMeeting(MeetingHud __instance) => GuessMenu.Update();
 

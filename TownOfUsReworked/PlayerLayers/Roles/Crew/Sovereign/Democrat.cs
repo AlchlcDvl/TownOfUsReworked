@@ -69,5 +69,5 @@ public sealed class Democrat : Sovereign
 
     public override void ReadRPC(RpcReader reader) => Campaigned.Add(reader.ReadByte());
 
-    public override void OnMeetingStart(MeetingHud __instance) => Campaigned.RemoveAll(x => PlayerById(x).HasDied());
+    public override void LocalOnMeetingStart(MeetingHud __instance) => Campaigned.RemoveAll(x => PlayerById(x).HasDied());
 }

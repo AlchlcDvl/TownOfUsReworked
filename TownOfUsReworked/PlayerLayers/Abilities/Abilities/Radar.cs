@@ -10,7 +10,7 @@ public sealed class Radar : Ability
 
     public override void Init() => RadarArrow = new(Player, Color, Target);
 
-    protected override void ClearArrows() => RadarArrow?.Destroy();
+    public override void ClearArrows() => RadarArrow?.Destroy();
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 

@@ -160,8 +160,11 @@ public static class ChatPatches
     [HarmonyPatch(nameof(ChatController.AddChat))]
     public static void Postfix(PlayerControl sourcePlayer, string chatText, ref bool __runOriginal)
     {
-        if (__runOriginal && !chatText.StartsWith("/"))
-            ChatHistory.Add($"{sourcePlayer.name}: {chatText}");
+        if (!__runOriginal || chatText.StartsWith("/"))
+            return;
+
+        ChatHistory.Add($"{sourcePlayer.name}: {chatText}");
+        Notify(sourcePlayer.PlayerId);
     }
 
     private static readonly Dictionary<byte, SpriteRenderer> Notifs = [];
@@ -195,11 +198,6 @@ public static class ChatPatches
         {
             chatHandled = true;
             Run("<#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
-        }
-        else if (!LocalPlayer.HasDied() && !IsNullEmptyOrWhiteSpace(text))
-        {
-            Notify(LocalPlayer.PlayerId);
-            CallRpc(MiscRpc.Notify, LocalPlayer.PlayerId);
         }
 
         if (!chatHandled)
@@ -236,7 +234,7 @@ public static class ChatPatches
         return false;
     }
 
-    public static void Notify(byte targetPlayerId)
+    private static void Notify(byte targetPlayerId)
     {
         if (!Meeting() || Notifs.ContainsKey(targetPlayerId))
             return;

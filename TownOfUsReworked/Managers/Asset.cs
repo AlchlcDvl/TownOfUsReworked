@@ -10,13 +10,7 @@ public static class AssetManager
     private static readonly Dictionary<Type, (string, Func<string, UObject>)> AssetTypeExtensions = new()
     {
         [typeof(Sprite)] = ("png", LoadSprite),
-        // [typeof(Texture2D)] = ("png", LoadTexture),
-        [typeof(AudioClip)] = ("wav", LoadAudio),
-// #if ANDROID
-//         [typeof(AssetBundle)] = ("bundle_android", LoadBundle),
-// #else
-//         [typeof(AssetBundle)] = ("bundle_pc", LoadBundle),
-// #endif
+        [typeof(AudioClip)] = ("wav", LoadAudio)
     };
 
     private const string Resources = "TownOfUsReworked.Resources.";
@@ -206,7 +200,7 @@ public static class AssetManager
 
     private static T LoadAsset<T>(AssetBundle assetBundle, string name) where T : UObject
     {
-        var asset = assetBundle.LoadAsset<T>(name)?.DontDestroy();
+        var asset = assetBundle.LoadAsset<T>(name);
         AddAsset(name, asset);
         AssetToBundle.Remove(name);
 
