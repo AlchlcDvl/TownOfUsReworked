@@ -35,9 +35,10 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private readonly MultiplierFunc Multiplier = BlankOne;
     private readonly UsableFunc IsUsable = BlankTrue;
     private readonly ConditionFunc Condition = BlankTrue;
-    private readonly PlayerBodyExclusion PlayerBodyException = BlankFalse;
-    private readonly VentExclusion VentException = BlankFalse;
-    private readonly ConsoleExclusion ConsoleException = BlankFalse;
+    private readonly Func<PlayerControl, bool> PlayerFilter = BlankFalse;
+    private readonly Func<Vent, bool> VentFilter = BlankFalse;
+    private readonly Func<Console, bool> ConsoleFilter = BlankFalse;
+    private readonly Func<DeadBody, bool> BodyFilter = BlankFalse;
     private readonly LabelFunc ButtonLabelFunc = BlankButtonLabel;
     private readonly string ButtonLabel = "ABILITY";
     private readonly float Cooldown = 1f;
@@ -60,12 +61,13 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private bool DelayEnabled;
     private bool OtherDelayEnabled;
     private bool ClickedAgain;
-    private GameObject Block;
+    public GameObject Block;
     private float EffectTime;
     public float DelayTime;
     public float OtherDelayTime;
     public float CooldownTime;
     private bool Disposed;
+    private bool AlreadyDisabled;
     private ButtonState CurrentPhase;
 
     // Read-onlys (onlies?)
@@ -79,6 +81,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private bool CooldownActive => CooldownTime > 0f;
     private bool Targeting => Target || Type.HasFlag(AbilityTypes.Targetless);
     private bool Local => Owner.Local || TownOfUsReworked.MciActive;
+    private readonly List<(AbilityTypes, Func<MonoBehaviour>)> TargetFinders;
 
     // Special
     public int Max = -1;
@@ -286,17 +289,18 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 }
                 case PlayerBodyExclusion playerBody:
                 {
-                    PlayerBodyException = playerBody;
+                    PlayerFilter = x => !playerBody(x);
+                    BodyFilter = x => !PlayerFilter(PlayerByBody(x));
                     break;
                 }
                 case VentExclusion vent:
                 {
-                    VentException = vent;
+                    VentFilter = x => !vent(x);
                     break;
                 }
                 case ConsoleExclusion console:
                 {
-                    ConsoleException = console;
+                    ConsoleFilter = x => !console(x);
                     break;
                 }
                 case string label:
@@ -350,6 +354,13 @@ public sealed class CustomButton : IDisposable, INetSerializable
         UnEffect = ButtonUnEffect;
         UnDelay = ButtonUnDelay;
         UnOtherDelay = ButtonUnOtherDelay;
+        TargetFinders =
+        [
+            (AbilityTypes.Console, () => Owner.Player.GetClosestConsole(predicate: ConsoleFilter)),
+            (AbilityTypes.Player, () => Owner.Player.GetClosestPlayer(predicate: PlayerFilter)),
+            (AbilityTypes.Body, () => Owner.Player.GetClosestBody(predicate: BodyFilter)),
+            (AbilityTypes.Vent, () => Owner.Player.GetClosestVent(predicate: VentFilter)),
+        ];
 
         CooldownTime = EffectTime = DelayTime = 0f;
         ID = (ushort)AllButtons.Count;
@@ -398,15 +409,6 @@ public sealed class CustomButton : IDisposable, INetSerializable
     }
 
     public override string ToString() => ID.ToString();
-
-    private bool Exception(MonoBehaviour obj) => obj switch
-    {
-        PlayerControl player => PlayerBodyException(player),
-        DeadBody body => PlayerBodyException(PlayerByBody(body)),
-        Vent vent => VentException(vent),
-        Console console => ConsoleException(console),
-        _ => !obj
-    };
 
     public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f)
     {
@@ -670,8 +672,8 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base.graphic.SetCooldownNormalizedUvs();
     }
 
-    public bool Usable() => ToggleVisibility.Visible && !MapBehaviourPatches.MapActive && (!HasUses || UsesCount > 0 || (byte)CurrentPhase is not 0 or 1 or 5) && Owner && Owner.Dead == PostDeath &&
-        !Ejection() && Owner.Local && !Meeting() && !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && IsUsable();
+    public bool Usable() => ToggleVisibility.Visible && !MapBehaviourPatches.MapActive && (!HasUses || UsesCount > 0 || (byte)CurrentPhase is not (0 or 1 or 5)) && Owner && Owner.Dead ==
+        PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && IsUsable();
 
     public bool Clickable() => Base && !Disabled && CurrentPhase == 0 && Usable() && Condition() && !Owner.Player.CannotUse() && Targeting && !CooldownActive && (!HasUses || Uses >=
         UseDecrement) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();
@@ -683,31 +685,40 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
         var monos = new List<MonoBehaviour>();
 
-        if (Type.HasFlag(AbilityTypes.Console))
-            monos.Add(Owner.Player.GetClosestConsole());
+        foreach (var (type, finder) in TargetFinders)
+        {
+            if (!Type.HasFlag(type))
+                continue;
 
-        if (Type.HasFlag(AbilityTypes.Player))
-            monos.Add(Owner.Player.GetClosestPlayer());
+            var target = finder();
 
-        if (Type.HasFlag(AbilityTypes.Body))
-            monos.Add(Owner.Player.GetClosestBody());
-
-        if (Type.HasFlag(AbilityTypes.Vent))
-            monos.Add(Owner.Player.GetClosestVent());
-
-        monos.RemoveAll(Exception);
+            if (target)
+                monos.Add(target);
+        }
 
         var previous = Target;
-        Target = Owner.Player.GetClosestMono(monos);
+        var pos = Owner.Player.GetTruePosition();
+        Target = monos.Count switch
+        {
+            0 => null,
+            1 => monos[0],
+            _ => monos.OrderBy(x => (pos - x.GetPos()).sqrMagnitude).FirstOrDefault()
+        };
         SetOutline(previous, Target);
     }
 
     private void EnableDisable()
     {
-        if (EffectActive || DelayActive || OtherDelayActive || Clickable())
+        if (AlreadyDisabled && (EffectActive || DelayActive || OtherDelayActive || Clickable()))
+        {
             Base.SetEnabled();
-        else
+            AlreadyDisabled = false;
+        }
+        else if (!AlreadyDisabled)
+        {
             Base.SetDisabled();
+            AlreadyDisabled = true;
+        }
     }
 
     public void Timers()
@@ -728,7 +739,6 @@ public sealed class CustomButton : IDisposable, INetSerializable
             return;
 
         Base.buttonLabelText.SetText(Label());
-        Block.SetActive(Base.isActiveAndEnabled && BlockExposed);
 
         if (!Base.isCoolingDown && !Disabled && PostDeath == Owner.Dead)
             SetTarget();

@@ -89,11 +89,11 @@ public static class PerformKill
 [HarmonyPatch(typeof(HudManager))]
 public static class Blocked
 {
-    private static GameObject UseBlock;
-    private static GameObject PetBlock;
-    private static GameObject SaboBlock;
-    private static GameObject VentBlock;
-    private static GameObject ReportBlock;
+    public static GameObject UseBlock;
+    public static GameObject PetBlock;
+    public static GameObject SaboBlock;
+    public static GameObject VentBlock;
+    public static GameObject ReportBlock;
 
     public static GameObject BlockPrefab;
 
@@ -133,12 +133,6 @@ public static class Blocked
             handler.UpdateHud(__instance);
         else
             return;
-
-        UseBlock.SetActive(BlockExposed);
-        PetBlock.SetActive(BlockExposed);
-        SaboBlock.SetActive(BlockExposed);
-        VentBlock.SetActive(BlockExposed);
-        ReportBlock.SetActive(BlockExposed);
 
         if (!__instance.ImpostorVentButton.currentTarget || BlockExposed)
             __instance.ImpostorVentButton.SetDisabled();

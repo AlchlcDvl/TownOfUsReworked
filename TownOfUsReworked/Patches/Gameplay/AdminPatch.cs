@@ -96,16 +96,16 @@ public static class AdminPatch
     [HarmonyPatch(nameof(MapCountOverlay.Update))]
     public static bool Prefix(MapCountOverlay __instance)
     {
-        var role = LocalPlayer.GetRole();
-        var isOp = role is Operative || DeadSeeEverything() || (role is Retributionist ret && ret.RevivedRole is Operative);
-
         __instance.timer += Time.deltaTime;
 
         if (__instance.timer < 0.1f)
             return false;
 
+        var role = LocalPlayer.GetRole();
+        var isOp = role is Operative || DeadSeeEverything() || (role is Retributionist { RevivedRole: Operative });
+
         __instance.timer = 0f;
-        var sabotaged = PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(role.Player);
+        var sabotaged = PlayerTask.PlayerHasTaskOfType<IHudOverrideTask>(LocalPlayer);
 
         if (sabotaged != __instance.isSab)
             SetSabotaged(__instance, sabotaged, role);

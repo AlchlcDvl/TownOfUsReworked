@@ -299,9 +299,6 @@ public static class MiscUtils
             GameManager.Instance.RpcEndGame((GameOverReason)9, false);
     }
 
-    public static IEnumerable<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => AllPlayers().Where(x => Vector2.Distance(truePosition,
-        x.GetTruePosition()) <= radius && (!x.Data.IsDead || includeDead));
-
     public static IEnumerable<PlayerControl> GetClosestPlayers(PlayerControl player, float radius, Func<PlayerControl, bool> filter = null, bool includeDead = false)
     {
         var result = AllPlayers().Where(x => Vector2.Distance(player.GetTruePosition(), x.GetTruePosition()) <= radius && (!x.Data.IsDead || includeDead) && x != player);
@@ -385,9 +382,8 @@ public static class MiscUtils
             4 => ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>().IsActive,
             5 => ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>().IsActive,
             6 when SubLoaded => HasTask(RetrieveOxygenMask),
-            7 when LiLoaded => ((ship.Systems.TryGetValue(SystemTypes.Reactor, out var system1) && system1.Cast<ReactorSystemType>().IsActive) ||
-                (ship.Systems.TryGetValue(SystemTypes.Laboratory, out system1) && system1.Cast<ReactorSystemType>().IsActive) || (ship.Systems.TryGetValue(SystemTypes.Laboratory, out
-                    system1) && system1.Cast<LifeSuppSystemType>().IsActive)),
+            7 when LiLoaded => (ship.Systems.TryGetValue(SystemTypes.Reactor, out var system1) && system1.Cast<ReactorSystemType>().IsActive) || (ship.Systems.TryGetValue(SystemTypes.Laboratory,
+                out system1) && system1.Cast<ReactorSystemType>().IsActive) || (ship.Systems.TryGetValue(SystemTypes.Laboratory, out system1) && system1.Cast<LifeSuppSystemType>().IsActive),
             _ => false
         };
 
@@ -420,124 +416,86 @@ public static class MiscUtils
         return coordinates;
     }
 
-    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false,
-        Func<PlayerControl, bool> predicate = null, bool includeDead = false) => predicate is not null ? GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls,
-            x => x != refPlayer && predicate(x), includeDead) : GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls, x => x
-            != refPlayer, includeDead);
-
-    private static PlayerControl GetClosestPlayer(Vector2 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
-        bool> predicate = null, bool includeDead = false)
+    public static Vector2 GetPos(this MonoBehaviour mono) => mono switch
     {
-        var closestDistance = float.MaxValue;
-        PlayerControl closestPlayer = null;
-        allPlayers ??= AllPlayers();
+        PlayerControl plr => plr.GetTruePosition(),
+        DeadBody body => body.TruePosition,
+        _ => mono.transform.position
+    };
 
-        if (float.IsNaN(maxDistance))
-            maxDistance = GameOptions.InteractionDistance;
+    public static IEnumerable<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => AllPlayers().Where(x => Vector2.Distance(truePosition,
+        x.GetTruePosition()) <= radius && (!x.HasDied() || includeDead));
 
-        if (maxDistance > LocalPlayer.lightSource.ViewDistance)
-            maxDistance = LocalPlayer.lightSource.ViewDistance;
+    private static readonly Func<PlayerControl, Vector2> GetPlayerPosition = player => player.GetTruePosition();
+    private static readonly Func<Vent, Vector2> GetVentPosition = vent => vent.transform.position;
+    private static readonly Func<DeadBody, Vector2> GetBodyPosition = body => body.TruePosition;
+    private static readonly Func<Console, Vector2> GetConsolePosition = console => console.transform.position;
 
-        if (predicate is not null)
-            allPlayers = allPlayers.Where(predicate);
+    private static T GetClosestGeneric<T>(Vector2 searchPosition, IEnumerable<T> itemsToSearch, float maxDistanceParam, bool ignoreWalls, Func<T, bool> userPredicate, Func<T, Vector2>
+        getTargetPosition, float defaultMax, Func<T, bool> excludeItemEarly = null, T refItem = null) where T : MonoBehaviour
+    {
+        T closest = null;
 
-        foreach (var player in allPlayers)
+        var precalculatedMaxSqrDistance = float.IsNaN(maxDistanceParam) ? defaultMax : maxDistanceParam;
+        precalculatedMaxSqrDistance *= precalculatedMaxSqrDistance;
+
+        var viewDistanceSqr = LocalPlayer.lightSource.ViewDistance * LocalPlayer.lightSource.ViewDistance;
+
+        if (precalculatedMaxSqrDistance > viewDistanceSqr)
+            precalculatedMaxSqrDistance = viewDistanceSqr;
+
+        if (userPredicate is not null)
+            itemsToSearch = itemsToSearch.Where(userPredicate);
+
+        var closestSqrDistance = precalculatedMaxSqrDistance;
+
+        foreach (var item in itemsToSearch)
         {
-            if ((player.Data.IsDead && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !VentingOptions.VentTargeting) ||
-                player.walkingToVent || player.isKilling)
-            {
-                continue;
-            }
-
-            var truePos = player.GetTruePosition();
-            var vector = truePos - position;
-
-            if (vector.magnitude > closestDistance || vector.magnitude > maxDistance)
+            if (!item || (excludeItemEarly is not null && excludeItemEarly(item)) || item == refItem)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            var targetPos = getTargetPosition(item);
+            var vector = targetPos - searchPosition;
+            var currentSqrMagnitude = vector.sqrMagnitude;
+
+            if (currentSqrMagnitude > closestSqrDistance)
                 continue;
 
-            closestPlayer = player;
-            closestDistance = vector.magnitude;
+            if (!ignoreWalls && PhysicsHelpers.AnyNonTriggersBetween(searchPosition, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask))
+                continue;
+
+            closest = item;
+            closestSqrDistance = currentSqrMagnitude;
         }
 
-        return closestPlayer;
+        return closest;
     }
+
+    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false,
+        Func<PlayerControl, bool> predicate = null, bool includeDead = false) => GetClosestPlayer(refPlayer.GetTruePosition(), allPlayers, maxDistance, ignoreWalls, predicate, includeDead,
+        refPlayer);
+
+    private static PlayerControl GetClosestPlayer(Vector2 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<PlayerControl,
+        bool> predicate = null, bool includeDead = false, PlayerControl refPlayer = null) => GetClosestGeneric(position, allPlayers ?? AllPlayers(), maxDistance, ignoreWalls, predicate,
+            GetPlayerPosition, GameOptions.InteractionDistance, player => (player.HasDied() && !includeDead) || !player.Collider.enabled || player.onLadder || player.inMovingPlat ||
+                (player.inVent && !VentingOptions.VentTargeting) || player.walkingToVent || player.isKilling, refPlayer);
 
     public static Vent GetClosestVent(this PlayerControl refPlayer, IEnumerable<Vent> allVents = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Vent, bool> predicate =
         null) => GetClosestVent(refPlayer.GetTruePosition(), allVents, maxDistance, ignoreWalls, predicate);
 
     private static Vent GetClosestVent(Vector2 position, IEnumerable<Vent> allVents = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Vent, bool> predicate = null)
     {
-        var closestDistance = float.MaxValue;
-        Vent closestVent = null;
-        allVents ??= AllMapVents();
-
-        if (float.IsNaN(maxDistance))
-            maxDistance = AllMapVents().First().UsableDistance;
-
-        if (maxDistance > LocalPlayer.lightSource.ViewDistance)
-            maxDistance = LocalPlayer.lightSource.ViewDistance;
-
-        if (predicate is not null)
-            allVents = allVents.Where(predicate);
-
-        foreach (var vent in allVents)
-        {
-            var vector = (Vector2)vent.transform.position - position;
-
-            if (vector.magnitude > maxDistance || vector.magnitude > closestDistance)
-                continue;
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
-                continue;
-
-            closestVent = vent;
-            closestDistance = vector.magnitude;
-        }
-
-        return closestVent;
+        allVents ??= AllVents();
+        return GetClosestGeneric(position, allVents, maxDistance, ignoreWalls, predicate, GetVentPosition, allVents.First().UsableDistance);
     }
 
     public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool>
         predicate = null) => GetClosestBody(refPlayer.GetTruePosition(), allBodies, maxDistance, ignoreWalls, predicate);
 
-    private static DeadBody GetClosestBody(Vector2 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool> predicate =
-        null)
-    {
-        var closestDistance = float.MaxValue;
-        DeadBody closestBody = null;
-        allBodies ??= AllBodies();
+    private static readonly Func<DeadBody, bool> SkipCleanedBody = body => Cleaned.Any(x => x == body.ParentId);
 
-        if (float.IsNaN(maxDistance))
-            maxDistance = GameOptions.InteractionDistance;
-
-        if (maxDistance > LocalPlayer.lightSource.ViewDistance)
-            maxDistance = LocalPlayer.lightSource.ViewDistance;
-
-        if (predicate is not null)
-            allBodies = allBodies.Where(predicate);
-
-        foreach (var body in allBodies)
-        {
-            if (Cleaned.Any(x => x == body.ParentId))
-                continue;
-
-            var vector = body.TruePosition - position;
-
-            if (vector.magnitude > maxDistance || vector.magnitude > closestDistance)
-                continue;
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
-                continue;
-
-            closestBody = body;
-            closestDistance = vector.magnitude;
-        }
-
-        return closestBody;
-    }
+    private static DeadBody GetClosestBody(Vector2 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<DeadBody, bool> predicate = null)
+        => GetClosestGeneric(position, allBodies ?? AllBodies(), maxDistance, ignoreWalls, predicate, GetBodyPosition, GameOptions.InteractionDistance, SkipCleanedBody);
 
     public static Console GetClosestConsole(this PlayerControl refPlayer, IEnumerable<Console> allConsoles = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Console, bool>
         predicate = null) => GetClosestConsole(refPlayer.GetTruePosition(), allConsoles, maxDistance, ignoreWalls, predicate);
@@ -545,82 +503,8 @@ public static class MiscUtils
     private static Console GetClosestConsole(Vector2 position, IEnumerable<Console> allConsoles = null, float maxDistance = float.NaN, bool ignoreWalls = false, Func<Console, bool> predicate =
         null)
     {
-        var closestDistance = float.MaxValue;
-        Console closestConsole = null;
         allConsoles ??= AllConsoles();
-
-        if (predicate is not null)
-            allConsoles = allConsoles.Where(predicate);
-
-        foreach (var console in allConsoles)
-        {
-            var vector = (Vector2)console.transform.position - position;
-            var tempMaxDistance = maxDistance;
-
-            if (float.IsNaN(tempMaxDistance))
-                tempMaxDistance = console.UsableDistance;
-
-            if (tempMaxDistance > LocalPlayer.lightSource.ViewDistance)
-                tempMaxDistance = LocalPlayer.lightSource.ViewDistance;
-
-            if (vector.magnitude > tempMaxDistance || vector.magnitude > closestDistance)
-                continue;
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
-                continue;
-
-            closestConsole = console;
-            closestDistance = vector.magnitude;
-        }
-
-        return closestConsole;
-    }
-
-    public static MonoBehaviour GetClosestMono(this PlayerControl player, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour,
-        bool> predicate = null) => GetClosestMono(player.GetTruePosition(), allMonos, trueMaxDistance, ignoreWalls, predicate);
-
-    public static MonoBehaviour GetClosestMono(Vector2 position, IEnumerable<MonoBehaviour> allMonos, float trueMaxDistance = float.NaN, bool ignoreWalls = false, Func<MonoBehaviour, bool>
-        predicate = null)
-    {
-        var closestDistance = float.MaxValue;
-        MonoBehaviour closestMono = null;
-
-        if (predicate is not null)
-            allMonos = allMonos.Where(predicate);
-
-        foreach (var mono in allMonos)
-        {
-            if (!mono)
-                continue;
-
-            var vector = (Vector2)mono.transform.position - position;
-            var maxDistance = trueMaxDistance;
-
-            if (float.IsNaN(maxDistance))
-            {
-                maxDistance = mono switch
-                {
-                    PlayerControl or DeadBody => GameOptions.InteractionDistance,
-                    Console console => console.UsableDistance,
-                    Vent vent => vent.UsableDistance,
-                    _ => 1f,
-                };
-            }
-
-            if (maxDistance > LocalPlayer.lightSource.ViewDistance)
-                maxDistance = LocalPlayer.lightSource.ViewDistance;
-
-            if (vector.magnitude > maxDistance || vector.magnitude > closestDistance)
-                continue;
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, vector.magnitude, Constants.ShipAndObjectsMask) && !ignoreWalls)
-                continue;
-
-            closestMono = mono;
-            closestDistance = vector.magnitude;
-        }
-
-        return closestMono;
+        return GetClosestGeneric(position, allConsoles, maxDistance, ignoreWalls, predicate, GetConsolePosition, allConsoles.First().UsableDistance);
     }
 
     public static void RemoveTasks(PlayerControl player)
@@ -642,7 +526,7 @@ public static class MiscUtils
             switch (normalPlayerTask.TaskType)
             {
                 case TaskTypes.UploadData:
-                case TaskTypes.EmptyGarbage or TaskTypes.EmptyChute when (MapPatches.CurrentMap is 0 or 3 or 4 or 7):
+                case TaskTypes.EmptyGarbage or TaskTypes.EmptyChute when MapPatches.CurrentMap is 0 or 3 or 4 or 7:
                 {
                     normalPlayerTask.taskStep = 1;
                     break;

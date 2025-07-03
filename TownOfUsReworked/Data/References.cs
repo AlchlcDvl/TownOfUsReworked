@@ -59,6 +59,13 @@ public static class References
             else
                 CameraEffectHandler.RemoveEffect("GlitchedMaterial");
 
+            LocalPlayer.GetButtons().Do(x => x.Block.SetActive(value));
+            Blocked.UseBlock.SetActive(value);
+            Blocked.PetBlock.SetActive(value);
+            Blocked.SaboBlock.SetActive(value);
+            Blocked.VentBlock.SetActive(value);
+            Blocked.ReportBlock.SetActive(value);
+
             field = value;
         }
     }

@@ -14,5 +14,14 @@ public sealed class Radar : Ability
 
     public override void OnDeath(DeathReasonEnum reason, PlayerControl killer) => ClearArrows();
 
-    private Vector3 Target() => (Dead ? Player : GetClosestMono(Player.GetTruePosition(), [ .. AllBodies(), .. AllPlayers() ], float.MaxValue, true, x => x != Player)).transform.position;
+    private Vector3 Target()
+    {
+        if (Dead)
+            return Player.transform.position;
+
+        var monos = new List<MonoBehaviour>(AllPlayers());
+        monos.AddRange(AllBodies());
+        var pos = Player.GetTruePosition();
+        return monos.OrderBy(x => (pos - (Vector2)x.transform.position).sqrMagnitude).First().transform.position;
+    }
 }

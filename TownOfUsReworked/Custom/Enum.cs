@@ -66,9 +66,7 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
         }
 
         lock (ThreadLock)
-        {
             Injectors[Type] = this;
-        }
     }
 
     public override string ToString(Enum value)

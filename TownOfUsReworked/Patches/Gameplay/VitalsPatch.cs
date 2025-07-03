@@ -7,10 +7,8 @@ public static class VitalsPatch
     public static void UpdatePostfix(VitalsMinigame __instance)
     {
         __instance.BatteryText.gameObject.SetActive(false);
-        var role = LocalPlayer.GetRole();
-        var isOp = role is Operative || DeadSeeEverything() || (role is Retributionist ret && ret.RevivedRole is Operative);
 
-        if (!isOp)
+        if (!(LocalPlayer.Is<Operative>() || DeadSeeEverything()))
             return;
 
         for (var i = 0; i < __instance.vitals.Count; i++)
