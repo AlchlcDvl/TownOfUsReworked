@@ -18,7 +18,7 @@ public sealed class ColorHandler : MonoBehaviour
 public sealed class RendHandler<T>(Action<Renderer, T> setColor)
 {
     private readonly List<(Renderer Rend, T Color)> Rends = [];
-    private Action<Renderer, T> SetColor { get; } = setColor;
+    private readonly Action<Renderer, T> SetColor = setColor;
 
     public void SetRend(Renderer rend, T color)
     {

@@ -16,7 +16,7 @@ public abstract class CustomAddressable
 {
     public static readonly Dictionary<string, CustomAddressable> CustomAddressables = [];
 
-    public AssetReference Ref { get; }
+    public readonly AssetReference Ref;
 
     protected CustomAddressable(string guid)
     {

@@ -2,14 +2,14 @@ namespace TownOfUsReworked.Modules;
 
 public sealed class ChatCommand : IDisposable
 {
-    private string[] Aliases { get; }
-    private string[] Parameters { get; }
-    private string Description { get; }
-    private bool Disposed { get; set; }
+    private readonly string[] Aliases;
+    private readonly string[] Parameters;
+    private readonly string Description;
+    private bool Disposed;
 
-    private ExecuteArgsCommand ExecuteArgs { get; }
-    private ExecuteArglessCommand ExecuteArgless { get; }
-    private ExecuteArgsMessageCommand ExecuteArgsMessage { get; }
+    private readonly ExecuteArgsCommand ExecuteArgs;
+    private readonly ExecuteArglessCommand ExecuteArgless;
+    private readonly ExecuteArgsMessageCommand ExecuteArgsMessage;
 
     private delegate void ExecuteArglessCommand();
     private delegate void ExecuteArgsCommand(string[] args);

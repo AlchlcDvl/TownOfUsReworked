@@ -28,7 +28,7 @@ public sealed class Medium : Investigative
     private CustomButton MediateButton;
     // private CustomButton SeanceButton;
 
-    public HashSet<byte> MediatedPlayers { get; } = [];
+    public readonly HashSet<byte> MediatedPlayers = [];
     private readonly Dictionary<byte, PlayerArrow> MediateArrows = [];
 
     protected override UColor MainColor => CustomColorManager.Medium;

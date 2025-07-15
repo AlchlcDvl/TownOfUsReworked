@@ -16,11 +16,11 @@ public abstract class Role : PlayerLayer
     public virtual bool AffectedByLights => true;
     public virtual bool CanSwitchVents => true;
 
-    public UColor FactionColor { get; set; }
+    public UColor FactionColor;
     public string FactionColorString => $"<#{FactionColor.ToHtmlStringRGBA()}>";
     public virtual string FactionName => $"{Handler.CurrentFaction}";
 
-    public Func<string> Objectives { get; set; } = () => "- None";
+    public Func<string> Objectives = () => "- None";
 
     public virtual List<PlayerControl> Team()
     {

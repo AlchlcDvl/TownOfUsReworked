@@ -2,14 +2,10 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class PlayerControlHandler : NameHandler
 {
-    private TextMeshPro Name { get; set; }
-    private TextMeshPro Color { get; set; }
-
-    [HideFromIl2Cpp]
-    private AppearanceHandler Appearance { get; set; }
-
-    // [HideFromIl2Cpp]
-    // private StatusHandler Status { get; set; }
+    private TextMeshPro Name;
+    private TextMeshPro Color;
+    private AppearanceHandler Appearance;
+    // private StatusHandler Status;
 
     public void Awake()
     {

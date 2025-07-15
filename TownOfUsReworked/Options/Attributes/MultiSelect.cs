@@ -7,7 +7,7 @@ public sealed class MultiSelectOptionAttribute<T>(params T[] ignore) : OptionAtt
     public T NoneValue { get; init; } = Injector.MaxPossibleValue;
     public T AllValue { get; init; } = Injector.MaxPossibleValue;
     public int LeastSelected { get; init; }
-    private T[] Ignore { get; } = ignore;
+    private readonly T[] Ignore = ignore;
 
     protected override MultiSelectOption<T> SetUpOption() => new(NoneValue.Equals(Injector.MaxPossibleValue) ? null : NoneValue, AllValue.Equals(Injector.MaxPossibleValue) ? null : NoneValue,
         Ignore)

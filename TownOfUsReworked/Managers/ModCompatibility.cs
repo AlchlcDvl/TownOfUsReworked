@@ -33,7 +33,7 @@ public static class ModCompatibilityManager
 
     public static SemVer SubVersion { get; private set; }
     public static bool SubLoaded { get; private set; }
-    private static Dictionary<string, Type> SubTypes { get; set; }
+    private static Dictionary<string, Type> SubTypes;
 
     private static MethodInfo RpcRequestChangeFloorMethod;
     private static MethodInfo RegisterFloorOverrideMethod;
@@ -330,7 +330,7 @@ public static class ModCompatibilityManager
 
     private static SemVer LiVersion { get; set; }
     public static bool LiLoaded { get; private set; }
-    private static Dictionary<string, Type> LiTypes { get; set; }
+    private static Dictionary<string, Type> LiTypes;
 
     // public static bool IsLevelImpostor() => LiLoaded && Ship() && Ship().Type == LiMapType && MapPatches.CurrentMap == 7;
 

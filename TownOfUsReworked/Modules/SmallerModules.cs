@@ -7,38 +7,38 @@ public record struct PointInTime(Vector3 Position);
 public sealed class GitHubApiObject
 {
     [JsonPropertyName("tag_name")]
-    public string Tag { get; set; }
+    public string Tag;
 
     [JsonPropertyName("body")]
-    public string Description { get; set; }
+    public string Description;
 
     [JsonPropertyName("assets")]
-    public GitHubApiAsset[] Assets { get; set; }
+    public GitHubApiAsset[] Assets;
 }
 
 public sealed class GitHubApiAsset
 {
     [JsonPropertyName("browser_download_url")]
-    public string URL { get; set; }
+    public string URL;
 }
 
 public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, Layer Layer, string Symbol = null)
 {
-    public string Name => TranslationManager.Translate($"Layer.{Layer}");
+    public readonly string Name = TranslationManager.Translate($"Layer.{Layer}");
 }
 
 public readonly record struct FactionDictionaryEntry(Faction Faction, UColor Color)
 {
-    public string Name => TranslationManager.Translate($"Faction.{Faction}");
+    public readonly string Name = TranslationManager.Translate($"Faction.{Faction}");
 }
 
 public sealed class Achievement(string name, bool unlocked = false, bool hidden = false, bool eog = false, string icon = "Placeholder")
 {
-    public string Name { get; } = name;
-    public string Icon { get; } = icon;
-    public bool Hidden { get; } = hidden;
-    public bool EndOfGame { get; } = eog;
-    public bool Unlocked { get; set; } = unlocked;
+    public readonly string Name = name;
+    public readonly string Icon = icon;
+    public readonly bool Hidden = hidden;
+    public readonly bool EndOfGame = eog;
+    public bool Unlocked = unlocked;
 
     public bool IsId(string id) => id.IsAny($"Achievement.{Name}.Title", $"Achievement.{Name}.Description");
 }
@@ -46,7 +46,7 @@ public sealed class Achievement(string name, bool unlocked = false, bool hidden 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]
 public sealed class SortedAttribute(int order) : Attribute
 {
-    public int Order { get; } = order;
+    public readonly int Order = order;
 }
 
 public delegate bool WhereSelectFilter<in T1, T2>(T1 param, out T2 value);
@@ -71,8 +71,8 @@ public delegate bool WhereSelectFilter<in T1, T2>(T1 param, out T2 value);
 /// <param name="color2">The second color.</param>
 public readonly struct ColorPair(UColor color1, UColor color2)
 {
-    public UColor Color1 { get; } = color1;
-    public UColor Color2 { get; } = color2;
+    public readonly UColor Color1 = color1;
+    public readonly UColor Color2 = color2;
 
     // public UColor Lerp(float t) => UColor.Lerp(Color1, Color2, t);
 
@@ -83,8 +83,8 @@ public sealed class VersionData
 {
     [JsonPropertyName("gameVers")]
     // ReSharper disable once CollectionNeverUpdated.Global
-    public Dictionary<int, string> GameVersions { get; set; }
+    public Dictionary<int, string> GameVersions;
 
     [JsonPropertyName("modVers")]
-    public string[] ModVersions { get; set; }
+    public string[] ModVersions;
 }

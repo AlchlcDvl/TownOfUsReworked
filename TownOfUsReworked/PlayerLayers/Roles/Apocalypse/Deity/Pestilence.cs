@@ -12,7 +12,7 @@ public sealed class Pestilence : Deity
     [ToggleOption]
     private static bool PestVent = true;
 
-    private CustomButton ObliterateButton { get; set; }
+    private CustomButton ObliterateButton;
 
     protected override UColor MainColor => CustomColorManager.Pestilence;
     public override Layer Type => Layer.Pestilence;

@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Options.Settings;
 
 public sealed class ListEntryOption(PlayerLayerEnum entryType, bool isBan, int num) : BaseMultiSelectOption<ListSlot>(CustomOptionType.Entry, ListSlot.Any, ListSlot.None, [ListSlot.None])
 {
-    public PlayerLayerEnum EntryType { get; } = entryType;
-    public bool IsBan { get; } = isBan;
-    public int Num { get; } = num + 1;
+    public readonly PlayerLayerEnum EntryType = entryType;
+    public readonly bool IsBan = isBan;
+    public readonly int Num = num + 1;
 
     public override void PostLoadSetup()
     {

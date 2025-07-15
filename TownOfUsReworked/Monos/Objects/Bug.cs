@@ -2,14 +2,9 @@
 
 public sealed class Bug : Range
 {
-    [HideFromIl2Cpp]
-    private Operative OwnerBugger { get; set; }
-
-    [HideFromIl2Cpp]
-    private Dictionary<byte, float> Players { get; } = [];
-
-    [HideFromIl2Cpp]
-    private Dictionary<byte, Layer> Results { get; } = [];
+    private Operative OwnerBugger;
+    private readonly Dictionary<byte, float> Players = [];
+    private readonly Dictionary<byte, Layer> Results = [];
 
     public override void Update()
     {

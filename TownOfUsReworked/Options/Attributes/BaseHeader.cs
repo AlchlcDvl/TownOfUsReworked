@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Options.Attributes;
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public abstract class BaseHeaderOptionAttribute(MultiMenu menu) : OptionAttribute<BaseHeaderOption>
 {
-    protected MultiMenu Menu { get; } = menu;
+    protected readonly MultiMenu Menu = menu;
     public bool IsOpen { get; init; }
     public bool ClientOnly { get; init; }
 

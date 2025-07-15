@@ -1,24 +1,18 @@
 namespace TownOfUsReworked.Modules;
 
 // Taken from Submerged going open source recently
-public readonly struct KillAnimFrame
+public readonly struct KillAnimFrame(int index, float time, int length, Vector2 offset)
 {
-    public int Animation { get; private init; }
-    public float Time { get; private init; }
-    public int Length { get; private init; }
-    public Vector2 Offset { get; private init; }
+    public readonly int Animation = index;
+    public readonly float Time = time;
+    public readonly int Length = length;
+    public readonly Vector2 Offset = offset;
 
     // public static string Serialize(KillAnimFrame frame) => $"{frame.Animation},{frame.Time},{frame.Length},{frame.Offset.x},{frame.Offset.y}";
 
     public static KillAnimFrame Deserialize(string dataString)
     {
         var data = dataString.TrueSplit(',');
-        return new()
-        {
-            Animation = int.Parse(data[0]),
-            Time = float.Parse(data[1]),
-            Length = int.Parse(data[2]),
-            Offset = new(float.Parse(data[3]), float.Parse(data[4]))
-        };
+        return new(int.Parse(data[0]), float.Parse(data[1]), int.Parse(data[2]), new(float.Parse(data[3]), float.Parse(data[4])));
     }
 }

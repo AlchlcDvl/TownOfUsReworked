@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class VoteAreaHandler : NameHandler
 {
-    private PlayerVoteArea VoteArea { get; set; }
+    private PlayerVoteArea VoteArea;
 
     public void Awake()
     {

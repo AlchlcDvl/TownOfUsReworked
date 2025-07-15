@@ -5,13 +5,13 @@ namespace TownOfUsReworked.Options.Settings;
 public sealed class ReworkedNumberOption(float min, float max, float increment, Format format = Format.None, bool allowHalf = true, bool zeroIsInf = false, string customFormat = null, float
     defaultValue = 0f) : Option<Number>(CustomOptionType.Number, defaultValue)
 {
-    private float Min { get; } = min;
-    private float Max { get; } = max;
-    private float Increment { get; } = increment;
-    private Format Format { get; } = format;
-    private bool AllowHalf { get; set; } = allowHalf;
-    private bool ZeroIsInfinity { get; } = zeroIsInf;
-    private string CustomFormat { get; } = customFormat;
+    private readonly float Min = min;
+    private readonly float Max = max;
+    private readonly float Increment = increment;
+    private readonly Format Format = format;
+    private readonly bool AllowHalf = allowHalf && increment != 1;
+    private readonly bool ZeroIsInfinity = zeroIsInf;
+    private readonly string CustomFormat = customFormat;
 
     private void Change(bool incrementing) => Set(CycleFloat(Max, Min, Value, incrementing, Increment / (Input.GetKeyInt(KeyCode.LeftShift) && AllowHalf ? 2f : 1f)));
 
@@ -56,12 +56,6 @@ public sealed class ReworkedNumberOption(float min, float max, float increment, 
             Format.Custom when CustomFormat is not null => string.Format(CustomFormat, val),
             _ => $"{val}"
         };
-    }
-
-    public override void PostLoadSetup()
-    {
-        base.PostLoadSetup();
-        AllowHalf &= Increment != 1;
     }
 
     public override void Update() => Setting.Cast<NumberOption>().ValueText.text = FormatValue();

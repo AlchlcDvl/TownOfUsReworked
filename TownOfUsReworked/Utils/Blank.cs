@@ -6,23 +6,13 @@ public static class BlankUtils
 
     public static void BlankVoid(object _) {}
 
-    public static void BlankVoid(OptionBehaviour _) {}
-
     public static bool BlankTrue() => true;
 
     public static bool BlankFalse() => false;
 
-    public static bool BlankFalse(Vent _) => false;
+    public static bool BlankFalse(object _) => false;
 
-    public static bool BlankFalse(Console _) => false;
-
-    public static bool BlankFalse(DeadBody _) => false;
-
-    public static bool BlankFalse(PlayerControl _) => false;
-
-    public static bool BlankFalse(PlayerVoteArea _) => false;
-
-    public static bool BlankFalse(PlayerControl _, out bool shouldClose) => shouldClose = false;
+    public static bool BlankFalse(PlayerControl _, out bool __) => __ = false;
 
     public static float BlankOne() => 1f;
 
@@ -31,6 +21,4 @@ public static class BlankUtils
     public static string BlankButtonLabel() => "ABILITY";
 
     public static string BlankButtonSprite() => "Placeholder";
-
-    // public static float BlankFloat() => 1f;
 }

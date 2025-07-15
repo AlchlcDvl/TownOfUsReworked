@@ -3,11 +3,11 @@ namespace TownOfUsReworked.Options.Settings;
 public abstract class SpecialHeader(MultiMenu menu, CustomOptionType type) : BaseHeaderOption(menu, type)
 {
     public PassiveButton Button { get; set; }
-    private GameObject Collapse { get; set; }
-    private GameObject Info { get; set; }
-    protected GameObject Desc { get; set; }
-    private TextMeshPro ButtonText { get; set; }
-    protected SpriteRenderer Label { get; set; }
+    private GameObject Collapse;
+    private GameObject Info;
+    protected GameObject Desc { get; private set; }
+    private TextMeshPro ButtonText;
+    protected SpriteRenderer Label { get; private set; }
 
     public static Sprite OgLabel;
     public static Vector3 OgPosition;

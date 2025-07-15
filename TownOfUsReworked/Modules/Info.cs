@@ -2,10 +2,10 @@ namespace TownOfUsReworked.Modules;
 
 public abstract class Info(string id, UColor color, bool footer = false)
 {
-    public string ID { get; } = $"Wiki.{id}";
-    public UColor Color { get; } = color;
-    public bool Footer { get; } = footer;
-    protected string DescID { get; } = $"Wiki.{id}.Description";
+    public readonly string ID = $"Wiki.{id}";
+    public readonly UColor Color = color;
+    public readonly bool Footer = footer;
+    protected readonly string DescID = $"Wiki.{id}.Description";
 
     public static readonly List<Info> AllInfos = [];
     private static readonly List<LayerInfo> AllLayerInfo = [];
@@ -35,11 +35,11 @@ public abstract class LayerInfo(Layer layer, bool footer = false, UColor color =
 
 public sealed class RoleInfo(Layer role, Alignment alignmentEnum, Faction faction, bool footer = false, UColor color = default) : LayerInfo(role, footer, color)
 {
-    private string Alignment { get; } = $"Wiki.Alignment.{alignmentEnum}";
-    private string WinCon { get; } = TranslationManager.IdExists($"Wiki.{faction}.WinCon") ? $"Wiki.{faction}.WinCon" : $"Wiki.{role}.WinCon";
-    private string Quote { get; } = $"Wiki.{role}.Quote";
-    private string Attack { get; } = TranslationManager.IdExists($"Wiki.{role}.Attack") ? $"Wiki.{role}.Attack" : "Wiki.Attack.None";
-    private string Defense { get; } = TranslationManager.IdExists($"Wiki.{role}.Defense") ? $"Wiki.{role}.Defense" : "Wiki.Defense.None";
+    private readonly string Alignment = $"Wiki.Alignment.{alignmentEnum}";
+    private readonly string WinCon = TranslationManager.IdExists($"Wiki.{faction}.WinCon") ? $"Wiki.{faction}.WinCon" : $"Wiki.{role}.WinCon";
+    private readonly string Quote = $"Wiki.{role}.Quote";
+    private readonly string Attack = TranslationManager.IdExists($"Wiki.{role}.Attack") ? $"Wiki.{role}.Attack" : "Wiki.Attack.None";
+    private readonly string Defense = TranslationManager.IdExists($"Wiki.{role}.Defense") ? $"Wiki.{role}.Defense" : "Wiki.Defense.None";
 
     public override string WikiEntry()
     {
@@ -94,7 +94,7 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
     _ => CustomColorManager.Faction
 }, footer)
 {
-    private string WinCon { get; } = $"Wiki.{faction}.WinCon";
+    private readonly string WinCon = $"Wiki.{faction}.WinCon";
 
     public override string WikiEntry()
     {
@@ -121,7 +121,7 @@ public sealed class AlignmentInfo(Alignment alignmentEnum, bool footer = false) 
 
 public abstract class ApplicableLayer(Layer layer, bool footer = false, UColor color = default) : LayerInfo(layer, footer, color)
 {
-    protected string AppliesTo { get; } = $"Wiki.{layer}.AppliesTo";
+    protected readonly string AppliesTo = $"Wiki.{layer}.AppliesTo";
 
     protected override void Debug() => TranslationManager.DebugId(AppliesTo);
 }
@@ -140,8 +140,8 @@ public sealed class ModifierInfo(Layer modifier, bool footer = false, UColor col
 
 public sealed class DispositionInfo(Layer disposition, string symbol, bool footer = false, UColor color = default) : ApplicableLayer(disposition, footer, color)
 {
-    private string WinCon { get; } = $"Wiki.{disposition}.WinCon";
-    private string Symbol { get; } = symbol;
+    private readonly string WinCon = $"Wiki.{disposition}.WinCon";
+    private readonly string Symbol = symbol;
 
     public override string WikiEntry()
     {
@@ -175,8 +175,8 @@ public sealed class AbilityInfo(Layer ability, bool footer = false, UColor color
 
 public sealed class OtherInfo(string id, UColor color, string otherNotes = "", bool footer = false) : Info(id, color, footer)
 {
-    private string OtherNotes { get; } = otherNotes?.Length is null or 0 ? "" : $"Wiki.{otherNotes}.Notes";
-    private bool NotesExist { get; } = otherNotes?.Length is not (null or 0);
+    private readonly string OtherNotes = otherNotes?.Length is null or 0 ? "" : $"Wiki.{otherNotes}.Notes";
+    private readonly bool NotesExist = otherNotes?.Length is not (null or 0);
 
     public override string WikiEntry()
     {
@@ -219,7 +219,7 @@ public sealed class GameModeInfo(Mode mode, bool footer = false) : Info($"{mode}
 
 public sealed class SymbolInfo(string id, string symbol, UColor color, bool footer = false) : Info(id, color, footer)
 {
-    public string Symbol { get; } = symbol;
+    public readonly string Symbol = symbol;
 
     public override string WikiEntry()
     {

@@ -4,10 +4,10 @@ public sealed class DeadBodyHandler : NameHandler
 {
     public static readonly List<byte> Dragging = [];
 
-    public DeadBody Body { get; set; }
+    public DeadBody Body { get; private set; }
 
-    private SpriteRenderer Rend { get; set; }
-    private PlayerControl Dragger { get; set; }
+    private SpriteRenderer Rend;
+    private PlayerControl Dragger;
 
     public void Awake()
     {

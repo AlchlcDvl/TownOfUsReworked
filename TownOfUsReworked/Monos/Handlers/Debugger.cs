@@ -5,11 +5,8 @@ namespace TownOfUsReworked.Monos;
 // Based off of Reactor.Debugger but merged with MCI and added some functions and changes of my own for testing
 public sealed class DebuggerHandler : MonoBehaviour
 {
-    [HideFromIl2Cpp]
-    public DragWindow TestWindow { get; }
-
-    [HideFromIl2Cpp]
-    public BaseTab[] Tabs { get; } =
+    public readonly DragWindow TestWindow;
+    public readonly BaseTab[] Tabs =
     [
         new TestingTab(),
         new GameTab(),
@@ -20,7 +17,7 @@ public sealed class DebuggerHandler : MonoBehaviour
     public BaseTab SelectedTab { get; set; }
 
     // [HideFromIl2Cpp]
-    // public MiscTab MiscTab { get; } = new();
+    // public readonly MiscTab MiscTab = new();
 
     public byte ControllingFigure { get; set; }
 

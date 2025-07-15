@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class StatsHandler : MonoBehaviour
 {
-    private StatsPopup Popup { get; set; }
-    private int I { get; set; }
-    private bool ViewingAchievements { get; set; }
+    private StatsPopup Popup;
+    private int I;
+    private bool ViewingAchievements;
 
     public void Awake()
     {

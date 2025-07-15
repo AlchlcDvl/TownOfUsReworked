@@ -5,8 +5,8 @@ namespace TownOfUsReworked.Managers;
 // Adapted from LevelImpostor
 public static class LogManager
 {
-    public static ManualLogSource Log { get; set; }
-    public static DiskLogListener DiskLog { get; set; }
+    public static ManualLogSource Log;
+    public static DiskLogListener DiskLog;
     public static string SavedLogs { get; private set; } = "";
 
     private static void LogSomething(object message, Enum type, ManualLogSource log = null)

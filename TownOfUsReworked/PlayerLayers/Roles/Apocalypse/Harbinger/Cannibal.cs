@@ -18,9 +18,9 @@ public sealed class Cannibal : Harbinger<Gluttony>
     [ToggleOption]
     private static bool CannibalVent = false;
 
-    private CustomButton EatButton { get; set; }
-    private int EatNeed { get; set; }
-    private Dictionary<byte, PositionalArrow> BodyArrows { get; } = [];
+    private CustomButton EatButton;
+    private int EatNeed;
+    private readonly Dictionary<byte, PositionalArrow> BodyArrows = [];
 
     protected override UColor MainColor => CustomColorManager.Cannibal;
     public override Layer Type => Layer.Cannibal;

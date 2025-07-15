@@ -41,7 +41,7 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
     public Action<T> OnChanged { get; init; }
     public Func<T, T, T> ModifyValue { get; init; }
 
-    protected Type TargetType { get; } = typeof(T);
+    protected readonly Type TargetType = typeof(T);
 
     public static implicit operator T(Option<T> opt) => opt.Value;
 

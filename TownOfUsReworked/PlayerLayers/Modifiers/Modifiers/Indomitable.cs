@@ -6,7 +6,7 @@ public sealed class Indomitable : Modifier
     [ToggleOption]
     private static bool IndomitableKnows = true;
 
-    public bool AttemptedGuess { get; set; }
+    public bool AttemptedGuess;
 
     protected override UColor MainColor => CustomColorManager.Indomitable;
     public override Layer Type => Layer.Indomitable;

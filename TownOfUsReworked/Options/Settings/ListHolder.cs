@@ -4,8 +4,8 @@ public sealed class ListHolderOption(PlayerLayerEnum entryType, bool isBan) : He
 {
     public static readonly Dictionary<string, string> CachedValues = [];
 
-    private PlayerLayerEnum EntryType { get; } = entryType;
-    private bool IsBan { get; } = isBan;
+    private readonly PlayerLayerEnum EntryType = entryType;
+    private readonly bool IsBan = isBan;
 
     public override void PostLoadSetup()
     {

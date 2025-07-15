@@ -14,7 +14,7 @@ public sealed class Politician : Ability
     public bool VotedOnce;
     public PlayerVoteArea Abstain;
 
-    public List<byte> ExtraVotes { get; } = [];
+    public readonly List<byte> ExtraVotes = [];
 
     public bool CanVote => VoteBank > 0 && !SelfVote;
     public bool CanKill => Player.CanKill();

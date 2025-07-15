@@ -13,7 +13,7 @@ public sealed class Bastion : CKilling
     public static bool BombRemovedOnKill = true;
 
     private CustomButton BombButton;
-    public List<int> BombedIDs { get; } = [];
+    public readonly List<int> BombedIDs = [];
 
     protected override UColor MainColor => CustomColorManager.Bastion;
     public override Layer Type => Layer.Bastion;

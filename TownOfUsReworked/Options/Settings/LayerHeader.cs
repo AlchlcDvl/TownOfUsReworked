@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Options.Settings;
 
 public sealed class LayerHeaderOption(Layer layer) : SpecialHeader(MultiMenu.LayerSubOptions, CustomOptionType.LayerHeader)
 {
-    public Layer Layer { get; } = layer;
-    private LayerOption LinkedOption { get; set; }
+    public readonly Layer Layer = layer;
+    private LayerOption LinkedOption;
 
     public override void OptionCreated()
     {

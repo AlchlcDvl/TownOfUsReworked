@@ -27,10 +27,10 @@ public static class References
     public static Minigame ActiveTask() => Minigame.Instance;
     public static LobbyBehaviour Lobby() => LobbyBehaviour.Instance;
     public static ChatController Chat() => HUD()?.Chat;
-    public static string FirstDead { get; set; }
-    public static string CachedFirstDead { get; set; }
-    public static string MostRecentKiller { get; set; }
-    public static WinLose WinState { get; set; } = WinLose.None;
+    public static string FirstDead;
+    public static string CachedFirstDead;
+    public static string MostRecentKiller;
+    public static WinLose WinState = WinLose.None;
     public static SummaryInfo Summary;
     public static bool HiddenBlock
     {

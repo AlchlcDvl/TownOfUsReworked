@@ -2,11 +2,11 @@ namespace TownOfUsReworked.Modules;
 
 public sealed class DeadPlayer(byte killer, byte player)
 {
-    public byte KillerId { get; } = killer;
-    public byte PlayerId { get; } = player;
-    private float KillTime { get; } = Time.time;
-    private PlayerControl Killer { get; } = PlayerById(killer);
-    private PlayerControl Body { get; } = PlayerById(player);
+    public readonly byte KillerId = killer;
+    public readonly byte PlayerId = player;
+    private readonly float KillTime = Time.time;
+    private readonly PlayerControl Killer = PlayerById(killer);
+    private readonly PlayerControl Body = PlayerById(player);
 
     public float KillAge => Time.time - KillTime;
 

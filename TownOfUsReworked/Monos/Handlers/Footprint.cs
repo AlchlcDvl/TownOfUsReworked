@@ -2,9 +2,9 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class FootprintHandler : MonoBehaviour
 {
-    private PlayerControl Player { get; set; }
-    private bool IsEven { get; set; }
-    private float Time2 { get; set; }
+    private PlayerControl Player;
+    private bool IsEven;
+    private float Time2;
 
     public void Awake()
     {

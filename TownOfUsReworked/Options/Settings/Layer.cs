@@ -4,36 +4,36 @@ namespace TownOfUsReworked.Options.Settings;
 
 public sealed class LayerOption(string hexCode, Layer layer, bool noParts = false, byte min = 1, byte max = 15, byte change = 1) : Option<RoleOptionData>(CustomOptionType.Layer)
 {
-    private byte Max { get; } = max;
-    private byte Min { get; } = min;
-    private UColor LayerColor { get; } = CustomColorManager.FromHex(hexCode);
-    private bool NoParts { get; } = noParts;
-    private string HexCode { get; } = hexCode;
-    public Layer Layer { get; } = layer;
-    private byte Change { get; } = change;
-    public bool HideDivider { get; set; }
-    private byte CachedCount { get; set; }
-    private byte CachedChance { get; set; }
-    private GameObject Unique { get; set; }
-    private GameObject Active1 { get; set; }
-    private GameObject Divider { get; set; }
-    private GameObject Chance { get; set; }
-    private GameObject Count { get; set; }
-    private GameObject Cog { get; set; }
-    private SpriteRenderer UniqueCheck { get; set; }
-    private SpriteRenderer ActiveCheck { get; set; }
-    private Mode SavedMode { get; set; }
-    private PassiveButton Button { get; set; }
-    private TextMeshPro CenterTitle { get; set; }
-    private TextMeshPro LeftTitle { get; set; }
-    private SpriteRenderer CenterBackground { get; set; }
-    private GameObject LeftBox { get; set; }
-    private GameObject CenterBox { get; set; }
-    private GameObject RightBox { get; set; }
-    private GameObject RightCheck { get; set; }
-    private GameObject RightCross { get; set; }
-    private GameObject CenterCheck { get; set; }
-    private GameObject CenterCross { get; set; }
+    private readonly byte Max = max;
+    private readonly byte Min = min;
+    private readonly UColor LayerColor = CustomColorManager.FromHex(hexCode);
+    private readonly bool NoParts = noParts;
+    private readonly string HexCode = hexCode;
+    public readonly Layer Layer = layer;
+    private readonly byte Change = change;
+    public bool HideDivider;
+    private byte CachedCount;
+    private byte CachedChance;
+    private GameObject Unique;
+    private GameObject Active1;
+    private GameObject Divider;
+    private GameObject Chance;
+    private GameObject Count;
+    private GameObject Cog;
+    private SpriteRenderer UniqueCheck;
+    private SpriteRenderer ActiveCheck;
+    private Mode SavedMode;
+    private PassiveButton Button;
+    private TextMeshPro CenterTitle;
+    private TextMeshPro LeftTitle;
+    private SpriteRenderer CenterBackground;
+    private GameObject LeftBox;
+    private GameObject CenterBox;
+    private GameObject RightBox;
+    private GameObject RightCheck;
+    private GameObject RightCross;
+    private GameObject CenterCheck;
+    private GameObject CenterCross;
     public LayerHeaderOption GroupHeader { get; private set; }
 
     public static Vector3 Left;

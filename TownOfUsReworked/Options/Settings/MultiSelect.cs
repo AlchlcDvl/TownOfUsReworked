@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Options.Settings;
 public sealed class MultiSelectOption<T>(T? none, T? all, T[] ignore = null, T[] include = null, MultiSelectValue<T> defaultValue = null) : BaseMultiSelectOption<T>(CustomOptionType.MultiSelect,
     all, none, defaultValue) where T : struct, Enum
 {
-    private IEnumerable<T> Values { get; } = (include ?? Enum.GetValues<T>()).Except(ignore ?? []);
-    private Type InnerType { get; } = typeof(T);
+    private readonly IEnumerable<T> Values = (include ?? Enum.GetValues<T>()).Except(ignore ?? []);
+    private readonly Type InnerType = typeof(T);
 
     public override void Debug()
     {

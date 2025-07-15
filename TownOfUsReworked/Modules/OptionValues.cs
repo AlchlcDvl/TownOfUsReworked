@@ -32,7 +32,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// <inheritdoc/>
     public bool IsReadOnly => false;
 
-    private bool Disposed { get; set; }
+    private bool Disposed;
 
     ~MultiSelectValue() => InternalDispose();
 
@@ -265,11 +265,11 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
 {
     public RoleOptionData() : this(0, 0, false, false, Layer.None) {}
 
-    public byte Chance { get; set; } = chance;
-    public byte Count { get; set; } = count;
-    public bool Unique { get; set; } = unique;
-    public bool Active { get; set; } = active;
-    public Layer ID { get; set; } = layer;
+    public byte Chance = chance;
+    public byte Count = count;
+    public bool Unique = unique;
+    public bool Active = active;
+    public Layer ID = layer;
 
     public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Options.Settings;
 
 public abstract class BaseHeaderOption(MultiMenu menu, CustomOptionType type) : Option<bool>(type)
 {
-    public MultiMenu Menu { get; } = menu;
+    public readonly MultiMenu Menu = menu;
     public int Order { get; private set; }
     public readonly List<Option> GroupMembers = [];
 

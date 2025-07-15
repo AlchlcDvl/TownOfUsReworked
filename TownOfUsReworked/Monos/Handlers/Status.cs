@@ -6,10 +6,8 @@
 // {
 //     public static readonly Dictionary<byte, StatusHandler> Handlers = [];
 
-//     private PlayerControl Player { get; set; }
-
-//     [HideFromIl2Cpp]
-//     private List<BaseStatus> Statuses { get; } = [];
+//     private PlayerControl Player;
+//     private readonly List<BaseStatus> Statuses = [];
 
 //     public void Awake() => Player = GetComponent<PlayerControl>();
 

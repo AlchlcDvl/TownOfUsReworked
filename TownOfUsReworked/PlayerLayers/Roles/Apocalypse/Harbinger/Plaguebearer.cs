@@ -9,8 +9,8 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
     [ToggleOption]
     private static bool PbVent = false;
 
-    public HashSet<byte> Infected { get; } = [];
-    private CustomButton InfectButton { get; set; }
+    public readonly HashSet<byte> Infected = [];
+    private CustomButton InfectButton;
 
     protected override UColor MainColor => CustomColorManager.Plaguebearer;
     public override Layer Type => Layer.Plaguebearer;

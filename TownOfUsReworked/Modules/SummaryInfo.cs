@@ -38,32 +38,32 @@ public sealed class SummaryInfo : INetSerializable, INetDeserializable, IDisposa
 [Serializable]
 public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 {
-    public string PlayerName { get; set; }
+    public string PlayerName;
 
     public readonly List<(Layer, Faction)> History = [];
     public readonly List<Layer> OtherLayers = [];
 
-    public bool IsGaTarget { get; set; }
-    public bool IsExeTarget { get; set; }
-    public bool IsBhTarget { get; set; }
-    public bool IsGuessTarget { get; set; }
-    public bool IsDriveHolder { get; set; }
+    public bool IsGaTarget;
+    public bool IsExeTarget;
+    public bool IsBhTarget;
+    public bool IsGuessTarget;
+    public bool IsDriveHolder;
 
-    public bool CanDoTasks { get; set; }
-    public bool TasksDone { get; set; }
-    public byte CompletedTasks { get; set; }
-    public byte TotalTasks { get; set; }
+    public bool CanDoTasks;
+    public bool TasksDone;
+    public byte CompletedTasks;
+    public byte TotalTasks;
 
-    public DeathReasonEnum DeathReason { get; set; }
-    public string KilledBy { get; set; }
+    public DeathReasonEnum DeathReason;
+    public string KilledBy;
 
-    public bool Disconnected { get; set; }
+    public bool Disconnected;
 
-    public int ColorId { get; set; }
-    public string HatId { get; set; }
-    public string SkinId { get; set; }
-    public string VisorId { get; set; }
-    public Color32 Color { get; set; }
+    public int ColorId;
+    public string HatId;
+    public string SkinId;
+    public string VisorId;
+    public Color32 Color;
 
     public readonly IEnumerable<byte> GetBytes()
     {

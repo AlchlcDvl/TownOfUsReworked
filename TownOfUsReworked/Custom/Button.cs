@@ -486,7 +486,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     public void TriggerRpcAndBegin(params object[] args)
     {
-        CallRpc(ActionsRpc.ButtonAction, [this, .. args]);
+        CallRpc(ActionsRpc.ButtonAction, [this, ..args]);
         Begin();
     }
 

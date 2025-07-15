@@ -9,7 +9,7 @@ public sealed class Cultist : Harbinger<Void>
     [ToggleOption]
     private static bool CultVent = false;
 
-    private CustomButton SacrificeButton { get; set; }
+    private CustomButton SacrificeButton;
 
     public override Layer Type => Layer.Cultist;
     public override string StartText => "Spread The Words Of Your Lord";

@@ -10,13 +10,13 @@ namespace TownOfUsReworked.Modules;
 public abstract class CustomCosmetic : Asset
 {
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name;
 
     [JsonPropertyName("stream")]
-    public bool StreamOnly { get; set; }
+    public bool StreamOnly;
 
     [JsonPropertyName("test")]
-    public bool TestOnly { get; set; }
+    public bool TestOnly;
 }
 
 public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
@@ -24,16 +24,16 @@ public abstract class CustomCosmetic<TView, TData> : CustomCosmetic
     where TData : CosmeticData
 {
     [JsonPropertyName("artist")]
-    public string Artist { get; set; }
+    public string Artist;
 
     [JsonPropertyName("mainHash")]
-    public string MainHash { get; set; }
+    public string MainHash;
 
     [JsonIgnore]
-    public TView ViewData { get; set; }
+    public TView ViewData;
 
     [JsonIgnore]
-    public TData CosmeticData { get; set; }
+    public TData CosmeticData;
 
     [JsonIgnore]
     public string MainID => ID; // For reflection purposes
@@ -46,25 +46,25 @@ public abstract class AdaptiveCosmetic<TView, TData> : CustomCosmetic<TView, TDa
     where TData : CosmeticData
 {
     [JsonPropertyName("adaptive")]
-    public bool Adaptive { get; set; }
+    public bool Adaptive;
 
     [JsonPropertyName("chipOffset"), JsonConverter(typeof(Vector2JsonConverter))]
-    public Vector2 ChipOffset { get; set; }
+    public Vector2 ChipOffset;
 
     [JsonPropertyName("noLongMode")]
-    public bool NoLongMode { get; set; }
+    public bool NoLongMode;
 }
 
 // public sealed class CustomSkin : AdaptiveCosmetic<SkinViewData, SkinData>
 // {
 //     [JsonPropertyName("previewHash")]
-//     public string PreviewHash { get; set; }
+//     public string PreviewHash;
 
 //     [JsonPropertyName("baseSkin")]
-//     public string BaseSkin { get; set; }
+//     public string BaseSkin;
 
 //    [JsonIgnore]
-//    public bool AnimsInitialised { get; set; }
+//    public bool AnimsInitialised;
 // }
 
 public abstract class TopCosmetic<TView, TData> : AdaptiveCosmetic<TView, TData>
@@ -72,58 +72,58 @@ public abstract class TopCosmetic<TView, TData> : AdaptiveCosmetic<TView, TData>
     where TData : CosmeticData
 {
     [JsonPropertyName("flipId")]
-    public string FlipID { get; set; }
+    public string FlipID;
 
     [JsonPropertyName("climbId")]
-    public string ClimbID { get; set; }
+    public string ClimbID;
 
     [JsonPropertyName("floorId")]
-    public string FloorID { get; set; }
+    public string FloorID;
 
     [JsonPropertyName("flipHash")]
-    public string FlipHash { get; set; }
+    public string FlipHash;
 
     [JsonPropertyName("climbHash")]
-    public string ClimbHash { get; set; }
+    public string ClimbHash;
 
     [JsonPropertyName("floorHash")]
-    public string FloorHash { get; set; }
+    public string FloorHash;
 
     [JsonPropertyName("behind")]
-    public bool Behind { get; set; }
+    public bool Behind;
 }
 
 public sealed class CustomHat : TopCosmetic<HatViewData, HatData>
 {
     [JsonPropertyName("backId")]
-    public string BackID { get; set; }
+    public string BackID;
 
     [JsonPropertyName("backFlipId")]
-    public string BackFlipID { get; set; }
+    public string BackFlipID;
 
     [JsonPropertyName("climbFlipId")]
-    public string ClimbFlipID { get; set; }
+    public string ClimbFlipID;
 
     [JsonPropertyName("floorFlipId")]
-    public string FloorFlipID { get; set; }
+    public string FloorFlipID;
 
     [JsonPropertyName("backHash")]
-    public string BackHash { get; set; }
+    public string BackHash;
 
     [JsonPropertyName("backFlipHash")]
-    public string BackFlipHash { get; set; }
+    public string BackFlipHash;
 
     [JsonPropertyName("climbFlipHash")]
-    public string ClimbFlipHash { get; set; }
+    public string ClimbFlipHash;
 
     [JsonPropertyName("floorFlipHash")]
-    public string FloorFlipHash { get; set; }
+    public string FloorFlipHash;
 
     [JsonPropertyName("noBounce")]
-    public bool NoBounce { get; set; } = true;
+    public bool NoBounce = true;
 
     [JsonPropertyName("blocksVisors")]
-    public bool BlocksVisors { get; set; }
+    public bool BlocksVisors;
 }
 
 public sealed class CustomVisor : TopCosmetic<VisorViewData, VisorData>; // Simplifying the definition again
@@ -131,47 +131,47 @@ public sealed class CustomVisor : TopCosmetic<VisorViewData, VisorData>; // Simp
 public sealed class CustomColor : CustomCosmetic // There's no view or regular data for this, so we don't need to specify them
 {
     [JsonPropertyName("stringId")]
-    public StringNames StringID { get; set; }
+    public StringNames StringID;
 
     [JsonPropertyName("default")]
-    public bool Default { get; set; }
+    public bool Default;
 
     // Reserved for future use; do not remove
     // [JsonPropertyName("contrasting")]
-    // public bool Contrasting { get; set; }
+    // public bool Contrasting;
 
     [JsonPropertyName("lighter")]
-    public bool Lighter { get; set; }
+    public bool Lighter;
 
     [JsonPropertyName("cyclic")]
-    public bool Cyclic { get; set; }
+    public bool Cyclic;
 
     [JsonPropertyName("mainColorValues")]
-    public string[] MainColorValues { get; set; }
+    public string[] MainColorValues;
 
     [JsonPropertyName("shadowColorValues")]
-    public string[] ShadowColorValues { get; set; }
+    public string[] ShadowColorValues;
 
     [JsonPropertyName("timeSpeed")]
-    private float TimeSpeed { get; } = 1f;
+    private float TimeSpeed = 1f;
 
     [JsonIgnore]
     public bool Changing => MainColorValues?.Length is > 1 || ShadowColorValues?.Length is > 1;
 
     [JsonIgnore]
-    public int ColorID { get; set; }
+    public int ColorID;
 
     [JsonIgnore]
-    public UColor[] MainColors { get; set; }
+    public UColor[] MainColors;
 
     [JsonIgnore]
-    public UColor[] ShadowColors { get; set; }
+    public UColor[] ShadowColors;
 
     [JsonIgnore]
-    private UColor MainColor { get; set; }
+    private UColor MainColor;
 
     [JsonIgnore]
-    private UColor ShadowColor { get; set; }
+    private UColor ShadowColor;
 
     public UColor GetMainColor() => MainColor = MainColorValues?.Length is null or 0 ? ShadowColor.Light() : LerpColors(TimeSpeed, MainColors, Cyclic);
 

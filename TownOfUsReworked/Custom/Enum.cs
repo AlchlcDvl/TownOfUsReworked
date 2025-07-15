@@ -20,6 +20,7 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     private readonly List<T> InjectedValues;
     private readonly ValueMap<string, T> NamedValues;
     private readonly ValueMap<dynamic, T> IndexedValues;
+    // private readonly ValueMap<string, dynamic> PairedValues;
 
     private readonly object Lock;
     private readonly Type Type;
@@ -58,6 +59,7 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
         InjectedValues = [];
         IndexedValues = [];
         NamedValues = [];
+        // PairedValues = [];
 
         foreach (var value in AllValues)
         {
@@ -85,6 +87,7 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
     {
         NamedValues[value] = result;
         IndexedValues[index] = result;
+        // PairedValues[value] = index;
 
         var index1 = AllValues.BinarySearch(result);
 

@@ -16,8 +16,8 @@ public sealed class Gluttony : Deity
     [ToggleOption]
     private static bool GlutVent = true;
 
-    private CustomButton HungerButton { get; set; }
-    private CustomButton ConsumeButton { get; set; }
+    private CustomButton HungerButton;
+    private CustomButton ConsumeButton;
 
     protected override UColor MainColor => CustomColorManager.Gluttony;
     public override Layer Type => Layer.Gluttony;

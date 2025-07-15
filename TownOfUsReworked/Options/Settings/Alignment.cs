@@ -2,20 +2,20 @@ namespace TownOfUsReworked.Options.Settings;
 
 public sealed class AlignmentOption(ListSlot alignment, bool noParts = false) : BaseHeaderOption(MultiMenu.Layer, CustomOptionType.Alignment)
 {
-    public ListSlot Alignment { get; } = alignment;
-    private bool NoParts { get; } = noParts;
+    public readonly ListSlot Alignment = alignment;
+    private readonly bool NoParts = noParts;
     public AlignmentHeaderOption GroupHeader { get; private set; }
-    private TextMeshPro Left { get; set; }
-    private TextMeshPro Right { get; set; }
-    private TextMeshPro Center { get; set; }
-    private GameObject Single { get; set; }
-    private TextMeshPro ButtonText { get; set; }
-    private PassiveButton Button { get; set; }
-    private Mode SavedMode { get; set; }
-    private GameObject Cog { get; set; }
-    private Transform PlsMnsBtn { get; set; }
+    private TextMeshPro Left;
+    private TextMeshPro Right;
+    private TextMeshPro Center;
+    private GameObject Single;
+    private TextMeshPro ButtonText;
+    private PassiveButton Button;
+    private Mode SavedMode;
+    private GameObject Cog;
+    private Transform PlsMnsBtn;
 
-    private static Vector3 DefaultPos { get; set; } = Vector3.zero;
+    private static Vector3 DefaultPos = Vector3.zero;
 
     public override void OptionCreated()
     {

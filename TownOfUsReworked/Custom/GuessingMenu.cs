@@ -2,11 +2,11 @@ namespace TownOfUsReworked.Custom;
 
 public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : CustomMenu(owner, MenuType.Guessing)
 {
-    private RoleSelect Click { get; } = click;
-    private PlayerControl Selected { get; set; }
-    public ShapeshifterPanel SelectedPanel { get; set; }
+    private readonly RoleSelect Click = click;
+    private PlayerControl Selected;
+    public ShapeshifterPanel SelectedPanel;
 
-    public HashSet<Layer> Mapping { get; } = [];
+    public readonly HashSet<Layer> Mapping = [];
 
     private void Clicked(ShapeshifterPanel selectedPanel, PlayerControl player, Layer role)
     {

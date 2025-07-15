@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Options.Settings;
 
 public sealed class AlignmentHeaderOption(ListSlot alignment = ListSlot.None) : SpecialHeader(MultiMenu.AlignmentSubOptions, CustomOptionType.AlignmentHeader)
 {
-    public ListSlot Alignment { get; } = alignment;
-    private AlignmentOption LinkedOption { get; set; }
+    public readonly ListSlot Alignment = alignment;
+    private AlignmentOption LinkedOption;
 
     public override void OptionCreated()
     {

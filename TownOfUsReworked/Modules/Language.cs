@@ -5,15 +5,15 @@ namespace TownOfUsReworked.Modules;
 public sealed class Language : Asset
 {
     [JsonPropertyName("isBlank")]
-    public bool IsBlank { get; set; } // I need this here to stop the translator from spamming errors for intentionally blank translations
+    public bool IsBlank; // I need this here to stop the translator from spamming errors for intentionally blank translations
 
     [JsonPropertyName("ids")]
     // ReSharper disable once InconsistentNaming
-    public string[] IDs { get; set; } // For when I want multiple IDs to point to the same thing, but I'm too lazy to add their own entries to the JSON
+    public string[] IDs; // For when I want multiple IDs to point to the same thing, but I'm too lazy to add their own entries to the JSON
 
     [JsonPropertyName("values")]
     // ReSharper disable once CollectionNeverUpdated.Global
-    public Dictionary<string, string> Values { get; set; }
+    public Dictionary<string, string> Values;
 
     public string this[string lang]
     {

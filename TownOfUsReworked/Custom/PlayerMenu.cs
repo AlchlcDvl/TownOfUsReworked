@@ -2,14 +2,14 @@ namespace TownOfUsReworked.Custom;
 
 public sealed class CustomPlayerMenu : CustomMenu
 {
-    public List<byte> Selected { get; } = [];
-    private PlayerSelect Click { get; }
-    private PlayerMultiSelect MultiClick { get; }
-    private PlayerBodyExclusion Exception { get; }
-    private PlayerMenuType SelectType { get; }
-    private int MaxSelected { get; }
-    private UColor SelectionColor { get; }
-    private Dictionary<byte, ShapeshifterPanel> PlayerToPanel { get; } = [];
+    public readonly List<byte> Selected = [];
+    private readonly PlayerSelect Click;
+    private readonly PlayerMultiSelect MultiClick;
+    private readonly PlayerBodyExclusion Exception;
+    private readonly PlayerMenuType SelectType;
+    private readonly int MaxSelected;
+    private readonly UColor SelectionColor;
+    private readonly Dictionary<byte, ShapeshifterPanel> PlayerToPanel = [];
 
     private CustomPlayerMenu(PlayerControl owner, PlayerMenuType type, PlayerBodyExclusion exception, UColor selectionColor) : base(owner, MenuType.Player)
     {

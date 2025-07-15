@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Custom;
 
 public sealed class PlayerArrow : CustomArrow
 {
-    private PlayerControl TargetPlayer { get; }
-    private bool SkipBody { get; }
+    private readonly PlayerControl TargetPlayer;
+    private readonly bool SkipBody;
 
     public PlayerArrow(PlayerControl owner, PlayerControl target, UColor color, float interval = 0f, bool skipBody = false) : base(owner, color, null, interval)
     {

@@ -2,8 +2,8 @@ namespace TownOfUsReworked.Options.Settings;
 
 public sealed class StringOption<T>(T[] ignore = null, T[] include = null, T defaultValue = default) : Option<T>(CustomOptionType.String, defaultValue), IStringOption where T : struct, Enum
 {
-    private T[] Values { get; } = [.. (include ?? Enum.GetValues<T>()).Except(ignore ?? [])];
-    private int Index { get; set; }
+    private readonly T[] Values = [.. (include ?? Enum.GetValues<T>()).Except(ignore ?? [])];
+    private int Index;
 
     private void Change(bool incrementing)
     {

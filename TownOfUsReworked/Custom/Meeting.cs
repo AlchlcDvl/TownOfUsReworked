@@ -2,23 +2,23 @@ namespace TownOfUsReworked.Custom;
 
 public sealed class CustomMeeting : IDisposable
 {
-    private PlayerControl Owner { get; }
-    private OnClick Click { get; }
-    private Action Parallel { get; }
-    private Exemption IsExempt { get; }
-    private string ActiveSprite { get; }
-    private string DisabledSprite { get; }
-    private MeetingTypes Type { get; }
-    private Vector3 Position { get; }
-    public Dictionary<byte, bool> Actives { get; }
-    private Dictionary<byte, GameObject> Buttons { get; }
-    private Dictionary<byte, SpriteRenderer> ButtonSprites { get; }
-    private bool Disposed { get; set; }
+    private readonly PlayerControl Owner;
+    private readonly OnClick Click;
+    private readonly Action Parallel;
+    private readonly Exemption IsExempt;
+    private readonly string ActiveSprite;
+    private readonly string DisabledSprite;
+    private readonly MeetingTypes Type;
+    private readonly Vector3 Position;
+    public readonly Dictionary<byte, bool> Actives;
+    private readonly Dictionary<byte, GameObject> Buttons;
+    private readonly Dictionary<byte, SpriteRenderer> ButtonSprites;
+    private bool Disposed;
 
     public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
     public delegate bool Exemption(PlayerVoteArea voteArea);
 
-    private static Vector3 BasePosition { get; } = new(-0.95f, 0.03f, -1.3f);
+    private static readonly Vector3 BasePosition = new(-0.95f, 0.03f, -1.3f);
 
     public static readonly List<CustomMeeting> AllCustomMeetings = [];
 

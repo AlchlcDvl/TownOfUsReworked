@@ -36,10 +36,10 @@ public sealed class AppearanceHandler : MonoBehaviour
     }
 
     [HideFromIl2Cpp]
-    public CustomOutfit Current { get; set; }
+    public CustomOutfit Current { get; private set; }
 
     [HideFromIl2Cpp]
-    public CustomOutfit Default { get; set; }
+    public CustomOutfit Default { get; private set; }
 
     public readonly Dictionary<PlayerOutfitType, CustomOutfit> Outfits = [];
 

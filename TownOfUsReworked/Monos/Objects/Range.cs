@@ -5,8 +5,8 @@ public abstract class Range : MonoBehaviour
     public static readonly List<GameObject> AllItems = [];
     protected static int Number { get; private set; }
 
-    public PlayerControl Owner { get; set; }
-    public float Size { get; set; }
+    public PlayerControl Owner;
+    public float Size;
 
     public virtual void Update() => transform.Rotate(Vector3.forward * (10 * Time.deltaTime));
 

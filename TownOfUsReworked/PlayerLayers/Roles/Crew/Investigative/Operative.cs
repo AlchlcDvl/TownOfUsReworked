@@ -27,7 +27,7 @@ public sealed class Operative : Investigative
     [ToggleOption]
     public static bool PreciseOperativeInfo = false;
 
-    public List<Layer> BuggedPlayers { get; } = [];
+    public readonly List<Layer> BuggedPlayers = [];
 
     private CustomButton BugButton;
     private readonly List<Bug> Bugs = [];

@@ -36,7 +36,7 @@ public sealed class Assassin : Ability, IGuesser
     [ToggleOption]
     private static bool AssassinGuessAbilities = false;
 
-    public static int RemainingKills { get; set; }
+    public static int RemainingKills;
 
     public CustomMeeting GuessMenu { get; private set; }
     public CustomGuessingMenu GuessingMenu { get; private set; }

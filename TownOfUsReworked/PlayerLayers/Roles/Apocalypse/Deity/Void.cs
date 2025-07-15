@@ -12,8 +12,8 @@ public sealed class Void : Deity
     [ToggleOption]
     private static bool VoidVent = true;
 
-    private CustomButton ExtractButton { get; set; }
-    private CustomButton BanishButton { get; set; }
+    private CustomButton ExtractButton;
+    private CustomButton BanishButton;
 
     public static readonly HashSet<byte> ToBeExtracted = [];
 

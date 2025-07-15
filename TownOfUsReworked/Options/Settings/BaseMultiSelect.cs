@@ -3,9 +3,9 @@ namespace TownOfUsReworked.Options.Settings;
 public abstract class BaseMultiSelectOption<T>(CustomOptionType type, T? allValue, T? noneValue, MultiSelectValue<T> defaultValue = null) : Option<MultiSelectValue<T>>(type, defaultValue),
     IMultiSelectOption where T : struct, Enum
 {
-    protected ValueMap<BlankBehaviour, T> Buttons { get; } = [];
-    private T? NoneValue { get; } = noneValue;
-    private T? AllValue { get; } = allValue;
+    protected readonly ValueMap<BlankBehaviour, T> Buttons = [];
+    private readonly T? NoneValue = noneValue;
+    private readonly T? AllValue = allValue;
     public int LeastSelected { get; init; }
     public IEnumerable<BlankBehaviour> Options => Buttons.Keys;
 

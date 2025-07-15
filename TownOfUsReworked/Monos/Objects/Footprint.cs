@@ -4,9 +4,9 @@ public sealed class Footprint : MonoBehaviour
 {
     public PlayerControl Player { get; set; }
     public bool IsEven { get; set; }
-    private UColor Color { get; set; }
-    private SpriteRenderer Sprite { get; set; }
-    private float Time2 { get; set; }
+    private UColor Color;
+    private SpriteRenderer Sprite;
+    private float Time2;
 
     private static bool Grey => Detective.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (Hud.Instance.IsCamoed && Detective.AnonymousFootPrint ==
         FootprintVisibility.OnlyWhenCamouflaged);
