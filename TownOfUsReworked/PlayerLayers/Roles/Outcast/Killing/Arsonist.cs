@@ -47,9 +47,9 @@ public sealed class Arsonist : OKilling, IDouser
     {
         Objectives = () => "- Burn anyone who can oppose you";
         Doused.Clear();
-        DouseButton ??= new(this, new SpriteName("ArsoDouse"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
+        DouseButton ??= new(this, new SpriteName("ArsoDouse"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(ArsoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
-        IgniteButton ??= new(this, new SpriteName("Ignite"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Ignite, new Cooldown(IgniteCd), "IGNITE", (UsableFunc)Doused.Any);
+        IgniteButton ??= new(this, new SpriteName("Ignite"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Ignite, new Cooldown(IgniteCd), "IGNITE", (UsableFunc)Doused.Any);
     }
 
     public override void UpdatePlayerName(LayerHandler handler, PlayerControl player, bool meeting, ref string name, ref UColor color, ref bool revealed, ref bool removeFromConsig)

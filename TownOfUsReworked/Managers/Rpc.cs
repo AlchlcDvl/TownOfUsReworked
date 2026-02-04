@@ -433,6 +433,12 @@ public static class RpcManager
                         var allPlayers = AllPlayers();
                         allPlayers.Do(x => RoleManager.Instance.SetRole(x, LayerHandler.Type));
                         Shifter.Originals.AddRange(allPlayers.Where(x => x.Is<Shifter>()));
+
+                        if (BetterSabotages.OxySlow)
+                            ISpeedModifier.AllModifiers.Add(new OxySabSpeedModifier());
+
+                        ISpeedModifier.AllModifiers.Add(new BodyDraggingModifier());
+
                         AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
                         return;
                     }

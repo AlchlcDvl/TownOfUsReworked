@@ -12,7 +12,7 @@ public sealed class Giant : Modifier
     private static bool Chonk => GiantScale > 1;
     private static bool Snail => GiantSpeed < 1;
     private static bool Useless => !Chonk && !Snail;
-    private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : ""));
+    private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : string.Empty));
 
     protected override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Giant;
     public override Layer Type => Layer.Giant;

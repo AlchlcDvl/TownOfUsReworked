@@ -15,13 +15,13 @@ public sealed class Consigliere : ISupport
     protected override UColor MainColor => CustomColorManager.Consigliere;
     public override Layer Type => Layer.Consigliere;
     public override string StartText => "See The <#8CFFFFFF>Crew</color> For Who They Really Are";
-    public override string Description => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}{(Player.Is<Assassin>() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "")}\n{CommonAbilities}";
+    public override string Description => $"- You can reveal a player's {(ConsigInfo == ConsigInfo.Role ? "role" : "faction")}{(Player.Is<Assassin>() && ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : string.Empty)}\n{CommonAbilities}";
 
     public override void Init()
     {
         base.Init();
         Investigated.Clear();
-        InvestigateButton ??= new(this, new SpriteName("Investigate"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
+        InvestigateButton ??= new(this, new SpriteName("Investigate"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Investigate, new Cooldown(InvestigateCd), "INVESTIGATE",
             (PlayerBodyExclusion)Exception1);
     }
 

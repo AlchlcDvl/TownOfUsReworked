@@ -81,9 +81,6 @@ dotnet_naming_symbols.any_async_methods.required_modifiers = async
 dotnet_naming_style.end_in_async.required_suffix = Async
 dotnet_naming_style.end_in_async.capitalization = pascal_case
 
-# IDE0130: Namespace does not match folder structure
-dotnet_diagnostic.IDE0130.severity = none
-
 [*.cs]
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
@@ -162,6 +159,9 @@ dotnet_diagnostic.RCS1047.severity = none
 
 # RCS1194: Implement exception constructors
 dotnet_diagnostic.RCS1194.severity = none
+
+# IDE0130: Namespace does not match folder structure
+dotnet_diagnostic.IDE0130.severity = none
 
 # Dotnet code style settings:
 [*.{json}]

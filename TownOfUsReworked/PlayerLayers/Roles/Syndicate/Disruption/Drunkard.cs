@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Drunkard)]
-public sealed class Drunkard : Disruption
+public sealed class Drunkard : Disruption, ISpeedModifier
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number ConfuseCd = 25;
@@ -26,7 +26,7 @@ public sealed class Drunkard : Disruption
         base.Init();
         ConfuseMenu = new(Player, Click, Color, Exception1);
         ConfusedPlayer = null;
-        ConfuseButton ??= new(this, new SpriteName("Confuse"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
+        ConfuseButton ??= new(this, new SpriteName("Confuse"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConfuse, new Cooldown(ConfuseCd), (LabelFunc)Label,
             new Duration(ConfuseDur), (EffectStartVoid)StartConfusion, (EffectEndVoid)UnConfuse, (EndFunc)EndEffect);
     }
 
@@ -89,5 +89,11 @@ public sealed class Drunkard : Disruption
     {
         if (!HoldsDrive)
             ConfusedPlayer = reader.ReadPlayer();
+    }
+
+    public void ModifySpeed(PlayerControl player, ref float result)
+    {
+        if (ConfuseButton.EffectActive && (HoldsDrive || (ConfusedPlayer == player && !HoldsDrive)))
+            result *= -1;
     }
 }

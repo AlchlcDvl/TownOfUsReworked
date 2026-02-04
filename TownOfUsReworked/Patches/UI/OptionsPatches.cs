@@ -76,7 +76,7 @@ public static class SettingsPatches
                 ButtonPrefab.buttonText.transform.localScale = new(1.4f, 0.9f, 1f);
                 ButtonPrefab.buttonText.alignment = TextAlignmentOptions.Center;
                 ButtonPrefab.buttonText.GetComponent<TextTranslatorTMP>().Destroy();
-                ButtonPrefab.buttonText.text = "";
+                ButtonPrefab.buttonText.text = string.Empty;
                 ButtonPrefab.gameObject.SetActive(false);
             }
 
@@ -1059,7 +1059,7 @@ public static class SettingsPatches
                 HeaderViewPrefab.transform.GetChild(1).gameObject.SetActive(false);
 
                 var button = UObject.Instantiate(__instance.rolesTabButton, HeaderViewPrefab.transform);
-                button.buttonText.text = "";
+                button.buttonText.text = string.Empty;
                 button.name = "TitleButton";
                 button.SelectButton(false);
                 button.transform.localPosition = new(-0.75f, -0.05f, 0f);

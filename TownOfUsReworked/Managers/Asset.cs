@@ -27,7 +27,7 @@ public static class AssetManager
 
     public static AudioClip GetAudio(string path, bool placeholder = true) => Get<AudioClip>(path) ?? (placeholder ? Get<AudioClip>("Placeholder") : null);
 
-    public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting() ? "Meeting" : "") + "Placeholder");
+    public static Sprite GetSprite(string path) => Get<Sprite>(path) ?? Get<Sprite>((Meeting() ? "Meeting" : string.Empty) + "Placeholder");
 
     public static TMP_FontAsset GetFont(string path) => Get<TMP_FontAsset>(path) ?? Get<TMP_FontAsset>("Placeholder");
 
@@ -106,11 +106,11 @@ public static class AssetManager
     {
         try
         {
-            File.WriteAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName), (overrideText ? "" : ReadDiskText(fileName, diskLocation)) + textToSave);
+            File.WriteAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName), (overrideText ? string.Empty : ReadDiskText(fileName, diskLocation)) + textToSave);
         }
         catch
         {
-            Failure($"Unable to save text to {fileName}{(diskLocation is not null ? $" in {diskLocation}" : "")}");
+            Failure($"Unable to save text to {fileName}{(diskLocation is not null ? $" in {diskLocation}" : string.Empty)}");
         }
     }
 
@@ -122,8 +122,8 @@ public static class AssetManager
         }
         catch
         {
-            Failure($"Error reading {fileName}{(diskLocation is not null ? $" from {diskLocation}" : "")}");
-            return "";
+            Failure($"Error reading {fileName}{(diskLocation is not null ? $" from {diskLocation}" : string.Empty)}");
+            return string.Empty;
         }
     }
 

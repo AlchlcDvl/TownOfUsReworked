@@ -7,7 +7,7 @@ public sealed class Retributionist : CSupport
     protected override UColor MainColor => RevivedRole?.Color ?? CustomColorManager.Retributionist;
     public override Layer Type => Layer.Retributionist;
     public override string StartText => "Mimic the Dead";
-    public override string Description => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description}" : "");
+    public override string Description => "- You can mimic the abilities of dead <#8CFFFFFF>Crew</color>" + (RevivedRole ? $"\n{RevivedRole.Description}" : string.Empty);
     public override Attack Attack => RevivedRole switch
     {
         Bastion or Veteran { AlertButton.EffectActive: true } => Attack.Powerful,

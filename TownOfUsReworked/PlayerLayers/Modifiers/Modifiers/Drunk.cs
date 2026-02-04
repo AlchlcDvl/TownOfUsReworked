@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 [LayerHeaderOption(Layer.Drunk)]
-public sealed class Drunk : Modifier
+public sealed class Drunk : Modifier, ISpeedModifier
 {
     [ToggleOption]
     private static bool DrunkControlsSwap = false;
@@ -40,5 +40,11 @@ public sealed class Drunk : Modifier
         Time -= DrunkInterval;
         Modify *= -1;
         Exposed = true;
+    }
+
+    public void ModifySpeed(PlayerControl player, ref float result)
+    {
+        if (PlayerId == player.PlayerId)
+            result *= Modify;
     }
 }

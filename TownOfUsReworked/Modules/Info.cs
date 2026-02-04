@@ -15,14 +15,16 @@ public abstract class Info(string id, UColor color, bool footer = false)
         AllLayerInfo.AddRanges(AllInfo.AllRoles, AllInfo.AllModifiers, AllInfo.AllAbilities, AllInfo.AllDispositions);
         AllInfos.AddRanges(AllLayerInfo, AllInfo.AllFactions, AllInfo.AllModes, AllInfo.AllOthers, AllInfo.AllSymbols);
 
-        if (TownOfUsReworked.IsDev)
+        if (!TownOfUsReworked.IsDev)
+#pragma warning disable CS0162 // Unreachable code detected
+            return;
+#pragma warning restore CS0162 // Unreachable code detected
+
+        foreach (var info in AllInfos)
         {
-            foreach (var info in AllInfos)
-            {
-                TranslationManager.DebugId(info.ID);
-                TranslationManager.DebugId(info.DescID);
-                info.Debug();
-            }
+            TranslationManager.DebugId(info.ID);
+            TranslationManager.DebugId(info.DescID);
+            info.Debug();
         }
     }
 
@@ -43,7 +45,7 @@ public sealed class RoleInfo(Layer role, Alignment alignmentEnum, Faction factio
 
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"\n{TranslationManager.Translate("Wiki.Alignment")}: {TranslationManager.Translate(Alignment)}";
         result += $"\n{TranslationManager.Translate("Wiki.Attack")}: {TranslationManager.Translate(Attack)}";
@@ -98,7 +100,7 @@ public sealed class FactionInfo(Faction faction, bool footer = false) : Info($"{
 
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"{TranslationManager.Translate("Wiki.Objectives")}: {TranslationManager.Translate(WinCon)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
@@ -112,7 +114,7 @@ public sealed class AlignmentInfo(Alignment alignmentEnum, bool footer = false) 
 {
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
         return result;
@@ -130,7 +132,7 @@ public sealed class ModifierInfo(Layer modifier, bool footer = false, UColor col
 {
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"{TranslationManager.Translate("Wiki.AppliesTo")}: {TranslationManager.Translate(AppliesTo)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
@@ -145,7 +147,7 @@ public sealed class DispositionInfo(Layer disposition, string symbol, bool foote
 
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"\n{TranslationManager.Translate("Wiki.Symbol")}: {Symbol}";
         result += $"{TranslationManager.Translate("Wiki.AppliesTo")}: {TranslationManager.Translate(AppliesTo)}";
@@ -165,7 +167,7 @@ public sealed class AbilityInfo(Layer ability, bool footer = false, UColor color
 {
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"{TranslationManager.Translate("Wiki.AppliesTo")}: {TranslationManager.Translate(AppliesTo)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
@@ -175,12 +177,12 @@ public sealed class AbilityInfo(Layer ability, bool footer = false, UColor color
 
 public sealed class OtherInfo(string id, UColor color, string otherNotes = "", bool footer = false) : Info(id, color, footer)
 {
-    private readonly string OtherNotes = otherNotes?.Length is null or 0 ? "" : $"Wiki.{otherNotes}.Notes";
+    private readonly string OtherNotes = otherNotes?.Length is null or 0 ? string.Empty : $"Wiki.{otherNotes}.Notes";
     private readonly bool NotesExist = otherNotes?.Length is not (null or 0);
 
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
 
@@ -210,7 +212,7 @@ public sealed class GameModeInfo(Mode mode, bool footer = false) : Info($"{mode}
 {
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";
         return result;
@@ -223,7 +225,7 @@ public sealed class SymbolInfo(string id, string symbol, UColor color, bool foot
 
     public override string WikiEntry()
     {
-        var result = "";
+        var result = string.Empty;
         result += $"{TranslationManager.Translate("Wiki.Name")}: {TranslationManager.Translate(ID)}";
         result += $"\n{TranslationManager.Translate("Wiki.Symbol")}: {Symbol}";
         result += $"\n{WrapText($"{TranslationManager.Translate("Wiki.Description")}: {TranslationManager.Translate(DescID)}")}";

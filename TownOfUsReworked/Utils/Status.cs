@@ -50,12 +50,12 @@
 //         var type = data.ReadType();
 //         var player = data.ReadPlayer();
 //         var count = data.ReadUShort();
-//         var args = new List<object>();
+//         var args = new object[count];
 
-//         while (count-- > 0)
-//             args.Add(data.Read());
+//         for (var i = 0; i < count; i++)
+//             args[i] = data.Read();
 
-//         var status = (BaseStatus)Activator.CreateInstance(type, [.. args]);
+//         var status = (BaseStatus)Activator.CreateInstance(type, args);
 //         status?.Start(player);
 //         return status;
 //     }
@@ -64,12 +64,12 @@
 //     {
 //         var player = data.ReadPlayer();
 //         var count = data.ReadUShort();
-//         var args = new List<object>();
+//         var args = new object[count];
 
-//         while (count-- > 0)
-//             args.Add(data.Read());
+//         for (var i = 0; i < count; i++)
+//             args[i] = data.Read();
 
-//         var status = CreateInstance<T>([.. args]);
+//         var status = CreateInstance<T>(args);
 //         status.Start(player);
 //         return status;
 //     }

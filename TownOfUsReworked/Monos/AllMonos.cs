@@ -81,7 +81,7 @@ public static class AllMonos
         prefab.TasksCountTowardProgress = false;
         prefab.Ability = LayerHandler.CrewmateGhost.Ability;
 
-        RoleManager.Instance.AllRoles = RoleManager.Instance.AllRoles.AddItem(prefab).ToArray();
+        RoleManager.Instance.AllRoles.Add(prefab);
 
         Hud.AddInstance();
         Rpc.AddInstance();

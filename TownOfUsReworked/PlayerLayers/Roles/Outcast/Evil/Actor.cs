@@ -43,7 +43,7 @@ public sealed class Actor : Evil
     {
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (!Targeted ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your target roles\n" +
             $"- Your target roles are {PretendListString()}"));
-        PretendButton ??= new(this, new SpriteName("Pretend"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)PickRole, "PRETEND", (UsableFunc)Usable);
+        PretendButton ??= new(this, new SpriteName("Pretend"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)PickRole, "PRETEND", (UsableFunc)Usable);
         PretendRoles.Clear();
     }
 
@@ -55,7 +55,7 @@ public sealed class Actor : Evil
 
     public string PretendListString()
     {
-        var text = "";
+        var text = string.Empty;
 
         foreach (var (i, target) in PretendRoles.Indexed())
             text += i == PretendRoles.Count ? $"and {LayerDictionary[target].Name}" : $"{LayerDictionary[target].Name}, ";

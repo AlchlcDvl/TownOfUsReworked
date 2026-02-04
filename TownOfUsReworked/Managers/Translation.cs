@@ -49,7 +49,7 @@ public static class TranslationManager
 
     private static StringNames AddNextName(string id, StringNames vanillaName = StringNames.None, StringNames customName = StringNames.None, (string Key, Func<string> Value)[] replacements = null)
     {
-        var value = Injector.InjectAndReturn(id.Replace(".", ""), true); // Inject and find the translations
+        var value = Injector.InjectAndReturn(id.Replace(".", string.Empty), true); // Inject and find the translations
         CustomStringNames[value] = id; // Add the id to the dictionary
 
         // If the custom value overrides translations of a vanilla one, add it to the dictionary for later remapping

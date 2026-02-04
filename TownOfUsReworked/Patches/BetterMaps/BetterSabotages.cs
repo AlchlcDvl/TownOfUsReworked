@@ -18,6 +18,9 @@ public static class BetterSabotages
     [ToggleOption]
     public static bool OxySlow = true;
 
+    [NumberOption(0, 80, 5, Format.Percent)]
+    public static Number LowestOxySpeed = 25;
+
     [NumberOption(0, 100, 5, Format.Percent)]
     private static Number ReactorShake = 30;
 

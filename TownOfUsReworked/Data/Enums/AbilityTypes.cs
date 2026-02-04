@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Data.Enums;
 
 [Flags]
-public enum AbilityTypes : byte
+public enum ReworkedAbilityTypes : byte
 {
     None = 0,
     Targetless = 1 << 0,

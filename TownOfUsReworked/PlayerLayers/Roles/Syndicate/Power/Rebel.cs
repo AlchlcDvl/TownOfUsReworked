@@ -19,7 +19,7 @@ public sealed class Rebel : SHead
     public override void Init()
     {
         base.Init();
-        SidekickButton ??= new(this, new SpriteName("Sidekick"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
+        SidekickButton ??= new(this, new SpriteName("Sidekick"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Sidekick, (PlayerBodyExclusion)Exception1, "SIDEKICK",
             (UsableFunc)Usable);
     }
 

@@ -21,15 +21,15 @@ public sealed class BundleAsset : Asset
 {
 #if ANDROID
     [JsonPropertyName("andHash")]
-#else
-    [JsonPropertyName("pcHash")]
-#endif
     public string Hash;
 
-#if ANDROID
     [JsonPropertyName("pcHash")]
-#else
-    [JsonPropertyName("andHash")]
-#endif
     public string OtherHash;
+#else
+    [JsonPropertyName("pcHash")]
+    public string Hash;
+
+    [JsonPropertyName("andHash")]
+    public string OtherHash;
+#endif
 }

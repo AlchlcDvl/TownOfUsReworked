@@ -16,7 +16,7 @@ public static class RedirectLoggerPatch1
         if (!TownOfUsReworked.RedirectLogger.Value)
             return true;
 
-        var finalMessage = "";
+        var finalMessage = string.Empty;
 
         if (__instance.category != Logger.Category.None)
             finalMessage += $"[{__instance.category}] ";

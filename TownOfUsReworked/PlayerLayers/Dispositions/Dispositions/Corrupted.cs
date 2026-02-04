@@ -20,7 +20,7 @@ public sealed class Corrupted : Disposition
 
     public override void Init()
     {
-        CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)Corrupt, new Cooldown(CorruptCd));
+        CorruptButton ??= new(this, "CORRUPT", new SpriteName("Corrupt"), ReworkedAbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)Corrupt, new Cooldown(CorruptCd));
         Handler.CurrentFaction = Faction.Outcast;
     }
 

@@ -29,7 +29,7 @@ public sealed class Cryomaniac : OKilling, IDouser
     public override Layer Type => Layer.Cryomaniac;
     public override string StartText => "Who Likes Ice Cream?";
     public override string Description => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
-        $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
+        $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : string.Empty)}";
     public override Attack Attack => Attack.Unstoppable;
     public override Defense Defense => Doused.Count is 1 or 2 ? Defense.Basic : Defense.None;
     public override bool CanVent => base.CanVent && CryoVent;
@@ -39,14 +39,14 @@ public sealed class Cryomaniac : OKilling, IDouser
     {
         Objectives = () => "- Freeze anyone who can oppose you";
         Doused.Clear();
-        DouseButton ??= new(this, new SpriteName("CryoDouse"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(CryoDouseCd), "DOUSE",
+        DouseButton ??= new(this, new SpriteName("CryoDouse"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Douse, new Cooldown(CryoDouseCd), "DOUSE",
             (PlayerBodyExclusion)Exception);
-        FreezeButton ??= new(this, new SpriteName("Freeze"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);
+        FreezeButton ??= new(this, new SpriteName("Freeze"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)FreezeUnFreeze, (LabelFunc)Label, (UsableFunc)Doused.Any);
 
         if (!CryoLastKillerBoost)
             return;
 
-        KillButton ??= new(this, new SpriteName("CryoKill"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
+        KillButton ??= new(this, new SpriteName("CryoKill"), ReworkedAbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Kill, new Cooldown(VaporiseCd), "VAPORISE", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);
     }
 
@@ -100,7 +100,7 @@ public sealed class Cryomaniac : OKilling, IDouser
 
     private void FreezeUnFreeze() => FreezeUsed = !FreezeUsed;
 
-    private string Label() => (FreezeUsed ? "UN" : "") + "FREEZE";
+    private string Label() => (FreezeUsed ? "UN" : string.Empty) + "FREEZE";
 
     private bool Usable() => LastKiller;
 

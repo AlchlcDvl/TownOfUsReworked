@@ -22,7 +22,7 @@ public sealed class ReworkedToggleOption(bool defaultValue = false) : Option<boo
     public override void ViewUpdate()
     {
         var viewSettingsInfoPanel = ViewSetting.Cast<ViewSettingsInfoPanel>();
-        viewSettingsInfoPanel.settingText.text = "";
+        viewSettingsInfoPanel.settingText.text = string.Empty;
         viewSettingsInfoPanel.checkMark.gameObject.SetActive(Value);
         viewSettingsInfoPanel.checkMarkOff.gameObject.SetActive(!Value);
     }

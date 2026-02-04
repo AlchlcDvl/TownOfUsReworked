@@ -13,7 +13,7 @@ public sealed class DeadPlayer(byte killer, byte player)
     public string ParseBodyReport(PlayerControl reporter)
     {
         if (!reporter.Is<Coroner>())
-            return "";
+            return string.Empty;
 
         var report = $"{Body.name}'s Report:";
 
@@ -44,7 +44,7 @@ public sealed class DeadPlayer(byte killer, byte player)
                         Faction.Compliance => "\nThe killer is from the Compliance!",
                         Faction.Illuminati => "\nThe killer is from the Illuminati!",
                         _ when killerRole.Handler.CurrentFaction.IsOutcast() => "\nThe killer is an Outcast!",
-                        _ => ""
+                        _ => string.Empty
                     };
                 }
 

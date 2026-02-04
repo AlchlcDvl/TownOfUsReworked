@@ -18,7 +18,7 @@ public sealed class Cultist : Harbinger<Void>
     public override Defense Defense => GetLayers<Apocalypse>().Count() > 1 ? Defense.None : Defense.Basic;
     public override bool CanVent => base.CanVent && CultVent;
 
-    public override void Init() => SacrificeButton ??= new(this, (SpriteFunc)GetSpriteName, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Sacrifice, new Cooldown(SacrificeCd),
+    public override void Init() => SacrificeButton ??= new(this, (SpriteFunc)GetSpriteName, ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Sacrifice, new Cooldown(SacrificeCd),
         (PlayerBodyExclusion)Exception, "SACRIFICE");
 
     private string GetSpriteName() => $"{Handler.CurrentFaction}Kill";

@@ -25,7 +25,7 @@ public sealed class Consort : ISupport, IBlocker
         base.Init();
         BlockMenu = new(Player, Click, Color, Exception1);
         BlockTarget = null;
-        BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
+        BlockButton ??= new(this, new SpriteName("ConsortRoleblock"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Roleblock, new Cooldown(ConsortCd), (LabelFunc)Label,
             new Duration(ConsortDur), (EffectEndVoid)UnBlock, (EffectStartVoid)BlockStart, (EndFunc)EndEffect);
     }
 

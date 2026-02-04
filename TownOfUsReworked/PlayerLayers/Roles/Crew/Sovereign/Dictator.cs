@@ -25,7 +25,7 @@ public sealed class Dictator : Sovereign
 
     public override void Init()
     {
-        RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, MaxTribunals);
+        RevealButton ??= new(this, "REVEAL", new SpriteName("DictReveal"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Reveal, (UsableFunc)Usable, MaxTribunals);
         DictMenu = new(Player, "DictActive", "DictDisabled", SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 

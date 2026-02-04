@@ -31,7 +31,7 @@ public sealed class Grenadier : Concealing
     {
         base.Init();
         FlashedPlayers.Clear();
-        FlashButton ??= new(this, new SpriteName("Flash"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
+        FlashButton ??= new(this, new SpriteName("Flash"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitFlash, new Cooldown(FlashCd), (EffectStartVoid)StartFlash,
             "FLASH", new Duration(FlashDur), (EffectVoid)Flash, (EffectEndVoid)UnFlash, (ConditionFunc)Condition, new CanClickAgain(false));
     }
 

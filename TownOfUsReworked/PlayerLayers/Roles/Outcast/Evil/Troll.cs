@@ -21,7 +21,7 @@ public sealed class Troll : Evil
     public override Layer Type => Layer.Troll;
     public override string StartText => "Troll Everyone With Your Death";
     public override string Description => "- If you are killed, you will also kill your killer" + (CanInteract ? "\n- You can interact with players\n- Your interactions do nothing "
-        + "except spread infection and possibly kill you via touch sensitive roles" : "");
+        + "except spread infection and possibly kill you via touch sensitive roles" : string.Empty);
     public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => Handler.DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Ejected or DeathReasonEnum.Guessed or DeathReasonEnum.Revived);
     public override bool CanVent => base.CanVent && TrollVent;
@@ -31,7 +31,7 @@ public sealed class Troll : Evil
     public override void Init()
     {
         Objectives = () => HasWon ? "- You have successfully trolled someone" : "- Get killed";
-        InteractButton ??= new(this, new SpriteName("Interact"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
+        InteractButton ??= new(this, new SpriteName("Interact"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Interact, new Cooldown(InteractCd), "INTERACT",
             (UsableFunc)Usable);
     }
 

@@ -1,24 +1,26 @@
 namespace TownOfUsReworked.Custom;
 
+public delegate bool PlayerMultiSelect(PlayerControl player, out bool shouldClose);
+
 public sealed class CustomPlayerMenu : CustomMenu
 {
     public readonly List<byte> Selected = [];
-    private readonly PlayerSelect Click;
+    private readonly Action<PlayerControl> Click;
     private readonly PlayerMultiSelect MultiClick;
-    private readonly PlayerBodyExclusion Exception;
+    private readonly Func<PlayerControl, bool> Exception;
     private readonly PlayerMenuType SelectType;
     private readonly int MaxSelected;
     private readonly UColor SelectionColor;
     private readonly Dictionary<byte, ShapeshifterPanel> PlayerToPanel = [];
 
-    private CustomPlayerMenu(PlayerControl owner, PlayerMenuType type, PlayerBodyExclusion exception, UColor selectionColor) : base(owner, MenuType.Player)
+    private CustomPlayerMenu(PlayerControl owner, PlayerMenuType type, Func<PlayerControl, bool> exception, UColor selectionColor) : base(owner, MenuType.Player)
     {
         Exception = exception ?? BlankFalse;
         SelectionColor = selectionColor;
         SelectType = type;
     }
 
-    public CustomPlayerMenu(PlayerControl owner, PlayerMultiSelect multiClick, UColor selectionColor, PlayerBodyExclusion exception = null, int max = 2) : this(owner, PlayerMenuType.MultiSelect,
+    public CustomPlayerMenu(PlayerControl owner, PlayerMultiSelect multiClick, UColor selectionColor, Func<PlayerControl, bool> exception = null, int max = 2) : this(owner, PlayerMenuType.MultiSelect,
         exception, selectionColor)
     {
         Click = BlankVoid;
@@ -26,7 +28,7 @@ public sealed class CustomPlayerMenu : CustomMenu
         MaxSelected = max;
     }
 
-    public CustomPlayerMenu(PlayerControl owner, PlayerSelect click, UColor selectionColor, PlayerBodyExclusion exception = null) : this(owner, PlayerMenuType.Single, exception, selectionColor)
+    public CustomPlayerMenu(PlayerControl owner, Action<PlayerControl> click, UColor selectionColor, Func<PlayerControl, bool> exception = null) : this(owner, PlayerMenuType.Single, exception, selectionColor)
     {
         Click = click ?? BlankVoid;
         MultiClick = BlankFalse;
@@ -63,6 +65,7 @@ public sealed class CustomPlayerMenu : CustomMenu
         __instance.potentialVictims = new();
         var list2 = new ISystem.List<UiElement>();
         var targets = Targets();
+        PlayerToPanel.Clear();
 
         for (var i = 0; i < targets.Length; i++)
         {
@@ -83,5 +86,12 @@ public sealed class CustomPlayerMenu : CustomMenu
         }
 
         return list2;
+    }
+
+    protected override void InternalDispose()
+    {
+        PlayerToPanel.Clear();
+        Selected.Clear();
+        base.InternalDispose();
     }
 }

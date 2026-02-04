@@ -58,14 +58,14 @@ public sealed class BountyHunter : Evil, ITargeter
     {
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (!TargetPlayer ? "- Recieve a bounty" : "- Find and kill your target");
         TargetPlayer = null;
-        GuessButton ??= new(this, new SpriteName("BHGuess"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
+        GuessButton ??= new(this, new SpriteName("BHGuess"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Guess, new Cooldown(GuessCd), (UsableFunc)Usable1, "GUESS",
             BountyHunterGuesses);
-        HuntButton ??= new(this, new SpriteName("Hunt"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BhHuntCd), "HUNT", (UsableFunc)Usable2);
+        HuntButton ??= new(this, new SpriteName("Hunt"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Hunt, new Cooldown(BhHuntCd), "HUNT", (UsableFunc)Usable2);
         Letters.Clear();
 
         if (BountyHunterCanPickTargets || !TargetPlayer)
         {
-            RequestButton ??= new(this, new SpriteName("Request"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
+            RequestButton ??= new(this, new SpriteName("Request"), ReworkedAbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Request, (PlayerBodyExclusion)Exception, "REQUEST HIT",
                 (UsableFunc)Usable3);
         }
     }
@@ -96,7 +96,7 @@ public sealed class BountyHunter : Evil, ITargeter
             return;
 
         var targetName = TargetPlayer.name;
-        var something = "";
+        var something = string.Empty;
 
         if (!LettersExhausted)
         {

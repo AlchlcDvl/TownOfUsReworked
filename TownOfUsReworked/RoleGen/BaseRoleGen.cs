@@ -107,7 +107,7 @@ public abstract class BaseRoleGen : BaseGen
             Faction.Illuminati => BadGuysSettings.IlluminatiMembers,
             Faction.Compliance => BadGuysSettings.ComplianceMembers,
             Faction.Pandorica => BadGuysSettings.PandoricaMembers,
-            _ => "",
+            _ => string.Empty,
         };
 
         if (IsNullEmptyOrWhiteSpace(values))

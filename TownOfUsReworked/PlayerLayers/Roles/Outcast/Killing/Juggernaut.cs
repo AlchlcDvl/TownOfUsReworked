@@ -17,7 +17,7 @@ public sealed class Juggernaut : OKilling
     protected override UColor MainColor => CustomColorManager.Juggernaut;
     public override Layer Type => Layer.Juggernaut;
     public override string StartText => "Your Power Grows With Every Kill";
-    public override string Description => "- With each kill, your kill cooldown decreases" + (KillCounts.GetValueOrDefault(PlayerId) >= 4 ? "\n- You can bypass all forms of protection" : "");
+    public override string Description => "- With each kill, your kill cooldown decreases" + (KillCounts.GetValueOrDefault(PlayerId) >= 4 ? "\n- You can bypass all forms of protection" : string.Empty);
     public override Attack Attack => (Attack)Mathf.Clamp(KillCounts.GetValueOrDefault(PlayerId), 1, 3);
     public override Defense Defense => KillCounts.GetValueOrDefault(PlayerId) >= 3 ? Defense.Basic : Defense.None;
     public override bool CanVent => base.CanVent && JuggVent;
@@ -26,7 +26,7 @@ public sealed class Juggernaut : OKilling
     public override void Init()
     {
         Objectives = () => "- Assault anyone who can oppose you";
-        AssaultButton ??= new(this, new SpriteName("Assault"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
+        AssaultButton ??= new(this, new SpriteName("Assault"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Assault, new Cooldown(AssaultCd), (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception, "ASSAULT");
     }
 

@@ -9,7 +9,7 @@ public abstract class Syndicate : Role, IPromoter
     public Layer UnderlingType => Layer.Sidekick;
     public Layer PromoterType => Layer.Rebel;
     public float PromotionModifier { get; } = Rebel.RebPromotionCdDecrease;
-    protected string CommonAbilities => "<#008000FF>" + (KillUsable() ? "- You can kill players directly" : "") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : "") + "</color>";
+    protected string CommonAbilities => "<#008000FF>" + (KillUsable() ? "- You can kill players directly" : string.Empty) + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <#8CFFFFFF>Crew</color>" : string.Empty) + "</color>";
     public bool HoldsDrive => Player == DriveHolder || (SyndicateSettings.GlobalDrive && SyndicateHasChaosDrive);
 
     protected override UColor MainColor => CustomColorManager.Syndicate;
@@ -74,7 +74,7 @@ public abstract class Syndicate : Role, IPromoter
         if (this is Banshee)
             return;
 
-        KillButton ??= new(this, (SpriteFunc)GetSpriteName, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL", FactionColor,
+        KillButton ??= new(this, (SpriteFunc)GetSpriteName, ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(SyndicateSettings.CdKillCd), "KILL", FactionColor,
             (PlayerBodyExclusion)Exception, (UsableFunc)KillUsable);
     }
 

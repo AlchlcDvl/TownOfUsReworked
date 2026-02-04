@@ -58,19 +58,19 @@ public sealed class GuardianAngel : Benign, ITargeter
     {
         Objectives = () => !TargetPlayer ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         TargetPlayer = null;
-        ProtectButton ??= new(this, new SpriteName("Protect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",
+        ProtectButton ??= new(this, new SpriteName("Protect"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitProtect, new Cooldown(ProtectCd), "PROTECT",
             new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect, (EffectStartVoid)ProtectStart, (EffectEndVoid)ProtectEnd);
 
         if (ProtectBeyondTheGrave)
         {
-            GraveProtectButton ??= new(this, new SpriteName("GraveProtect"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGraveProtect, new PostDeath(true),
+            GraveProtectButton ??= new(this, new SpriteName("GraveProtect"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGraveProtect, new PostDeath(true),
                 "PROTECT", new Cooldown(ProtectCd), new Duration(ProtectDur), MaxProtects, (UsableFunc)Usable1, (EndFunc)EndEffect, (EffectStartVoid)ProtectStart, (EffectEndVoid)ProtectEnd);
         }
 
         Rounds = 0;
 
         if (GuardianAngelCanPickTargets || !TargetPlayer)
-            TargetButton ??= new(this, new SpriteName("GATarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
+            TargetButton ??= new(this, new SpriteName("GATarget"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, "WATCH", (UsableFunc)Usable2);
     }
 
     public override void Reset(bool meeting, bool start)

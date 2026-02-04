@@ -23,13 +23,13 @@ public sealed class Blackmailer : Concealing, IIntimidator
     public override Layer Type => Layer.Blackmailer;
     public override string StartText => "You Know Their Secrets";
     public override string Description => "- You can silence players to ensure they cannot hear what others say\n" + (BmRevealed ? ("- Everyone will be alerted at the start " +
-        "of the meeting that someone has been silenced ") : "") + (WhispersNotPrivateB ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
+        "of the meeting that someone has been silenced ") : string.Empty) + (WhispersNotPrivateB ? "\n- You can read whispers during meetings" : string.Empty) + $"\n{CommonAbilities}";
 
     public override void Init()
     {
         base.Init();
         Target = null;
-        BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd),
+        BlackmailButton ??= new(this, "BLACKMAIL", new SpriteName("Blackmail"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Blackmail, new Cooldown(BlackmailCd),
             (PlayerBodyExclusion)Exception1);
     }
 

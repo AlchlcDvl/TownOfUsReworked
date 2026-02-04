@@ -1,9 +1,10 @@
 namespace TownOfUsReworked.Custom;
 
-public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : CustomMenu(owner, MenuType.Guessing)
+public sealed class CustomGuessingMenu(PlayerControl owner, Action<ShapeshifterPanel, PlayerControl, Layer> click) : CustomMenu(owner, MenuType.Guessing)
 {
-    private readonly RoleSelect Click = click;
+    private readonly Action<ShapeshifterPanel, PlayerControl, Layer> Click = click;
     private PlayerControl Selected;
+
     public ShapeshifterPanel SelectedPanel;
 
     public readonly HashSet<Layer> Mapping = [];
@@ -39,7 +40,7 @@ public sealed class CustomGuessingMenu(PlayerControl owner, RoleSelect click) : 
         panel.LevelNumberText.transform.parent.gameObject.SetActive(false);
         panel.NameText.text = layer == Layer.Miner && MapPatches.CurrentMap == 5 ? TranslationManager.Translate("Layer.Herbalist") : dictEntry.Name;
         panel.NameText.color = dictEntry.Color;
-        panel.name = $"Guess{panel.NameText.text.Replace(" ", "")}";
+        panel.name = $"Guess{panel.NameText.text.Replace(" ", string.Empty)}";
 
         if (panel == SelectedPanel)
             panel.Background.color = dictEntry.Color.Alternate(0.4f);

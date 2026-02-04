@@ -49,7 +49,7 @@ public static class MciUtils
             Platform = Platforms.StandaloneWin10,
 #endif
             PlatformName = "Bot"
-        }, 1, "", "robotmodeactivate");
+        }, 1, string.Empty, "robotmodeactivate");
 
         AmongUsClient.Instance.GetOrCreateClient(sampleC);
         Clients.Add(sampleId, sampleC);

@@ -21,12 +21,12 @@ public sealed class Medic : Protective
     public override Layer Type => Layer.Medic;
     public override string StartText => "Shield A Player To Protect Them";
     public override string Description => "- You can shield a player to give them Powerful defense" + (WhoGetsNotification.ContainsAny(ShieldOptions.Medic, ShieldOptions.Everyone) ?
-        "\n- If your target is attacked, you will be notified of it" : "");
+        "\n- If your target is attacked, you will be notified of it" : string.Empty);
 
     public override void Init()
     {
         ShieldedPlayer = null;
-        ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
+        ShieldButton ??= new(this, "SHIELD", new SpriteName("Shield"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Protect, (PlayerBodyExclusion)Exception,
             (UsableFunc)Usable);
     }
 

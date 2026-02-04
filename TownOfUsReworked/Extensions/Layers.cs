@@ -364,7 +364,7 @@ public static class LayerExtensions
         var info = player.GetLayers().ToList();
 
         if (info.Count != 4)
-            return "";
+            return string.Empty;
 
         var role = (info[0] as Role)!;
         var modifier = (info[1] as Modifier)!;
@@ -436,7 +436,7 @@ public static class LayerExtensions
         if (info[2] && !ability.Hidden && ability.Type != Layer.NoneAbility && desc2 is not ("" or "- None"))
             abilities += $"\n{ability.ColorString}{desc2}</color>";
 
-        abilities = abilities == $"{AbilitiesColorString}Abilities:" ? "" : $"\n{abilities}</color>";
+        abilities = abilities == $"{AbilitiesColorString}Abilities:" ? string.Empty : $"\n{abilities}</color>";
         var desc3 = modifier.Description;
 
         if (info[1] && !modifier.Hidden && modifier.Type != Layer.NoneModifier && desc3 is not ("" or "- None"))
@@ -463,7 +463,7 @@ public static class LayerExtensions
         if (player.Data.IsDead)
             attributes += "\n<#FF1919FF>- You are dead</color>";
 
-        attributes = attributes == $"{AttributesColorString}Attributes:" ? "" : $"\n{attributes}</color>";
+        attributes = attributes == $"{AttributesColorString}Attributes:" ? string.Empty : $"\n{attributes}</color>";
         return $"{roleName}\n{attdef}\n{alignment}\n{dispositionName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
     }
 
@@ -498,7 +498,7 @@ public static class LayerExtensions
             _ when ability is Politician => ("Politician", Politician.PoliticianButton),
             _ when IsTaskRace() || IsCustomHnS() => ("GameMode", false),
             _ when player.Is<Shy>() => ("Shy", false),
-            _ => ("", player.RemainingEmergencies > 0)
+            _ => (string.Empty, player.RemainingEmergencies > 0)
         };
         return result;
     }

@@ -19,7 +19,7 @@ public static class ShowTeamPatch
         __instance.__4__this.TeamTitle.color = role.FactionColor;
         __instance.__4__this.TeamTitle.outlineColor = UColor.black;
         __instance.__4__this.BackgroundBar.material.color = role.FactionColor;
-        __instance.__4__this.ImpostorText.text = "";
+        __instance.__4__this.ImpostorText.text = string.Empty;
     }
 }
 
@@ -39,8 +39,8 @@ public static class ShowRolePatch
 
         var handler = LayerHandler.Handlers[LocalPlayer.PlayerId];
 
-        var statusString = "";
-        var status = "";
+        var statusString = string.Empty;
+        var status = string.Empty;
 
         if (!handler.CurrentModifier.Hidden)
             status += $" {handler.CurrentModifier.ColorString}{handler.CurrentModifier.Name}</color>";

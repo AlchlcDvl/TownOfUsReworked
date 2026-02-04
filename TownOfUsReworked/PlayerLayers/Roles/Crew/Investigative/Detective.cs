@@ -26,7 +26,7 @@ public sealed class Detective : Investigative
     public override string Description => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
 
-    public override void Init() => ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Examine,
+    public override void Init() => ExamineButton ??= new(this, "EXAMINE", new SpriteName("Examine"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Examine,
         new Cooldown(ExamineCd));
 
     private void Examine(PlayerControl target)

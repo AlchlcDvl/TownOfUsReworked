@@ -9,7 +9,7 @@ public abstract class AssetLoader
     protected abstract string Manifest { get; }
     protected abstract string DirectoryInfo { get; }
 
-    protected virtual string FileExtension => "";
+    protected virtual string FileExtension => string.Empty;
     protected virtual bool Downloading => false;
     protected virtual bool HasStreamAssets => false;
     protected virtual string Debug => Manifest;
@@ -36,7 +36,7 @@ public abstract class AssetLoader
 
     private IEnumerator DownloadFile(string fileName)
     {
-        var trueName = fileName + (IsNullEmptyOrWhiteSpace(FileExtension) ? "" : $".{FileExtension}");
+        var trueName = fileName + (IsNullEmptyOrWhiteSpace(FileExtension) ? string.Empty : $".{FileExtension}");
         yield return CoDownloadItem($"{RepositoryUrl}/{Manifest}/{trueName.Replace(" ", "%20")}", Path.Combine(DirectoryInfo, trueName));
     }
 
@@ -57,6 +57,6 @@ public abstract class AssetLoader
 
     protected static bool ShouldDownload(string file, string hash, HashAlgorithm hasher) => IsNullEmptyOrWhiteSpace(hash) || !File.Exists(file) || GenerateHash(file, hasher) != hash;
 
-    protected static string GenerateHash(string file, HashAlgorithm hasher) => File.Exists(file) ? BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(file))).Replace("-", "")
+    protected static string GenerateHash(string file, HashAlgorithm hasher) => File.Exists(file) ? BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(file))).Replace("-", string.Empty)
         .ToLowerInvariant() : null;
 }

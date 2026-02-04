@@ -28,7 +28,7 @@ public static partial class Generate
             foreach (var (index, opt) in opts.Indexed())
             {
                 // Fixing up accidental duped IDs, this ensures that every ID is unique (I hope)
-                var toAdd = index == 0 ? "" : $"{index}";
+                var toAdd = index == 0 ? string.Empty : $"{index}";
                 opt.ID += toAdd;
                 opt.Name += toAdd;
 

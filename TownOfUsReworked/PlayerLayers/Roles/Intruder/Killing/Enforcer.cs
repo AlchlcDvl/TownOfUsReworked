@@ -29,7 +29,7 @@ public sealed class Enforcer : IKilling
     {
         base.Init();
         BombedPlayer = null;
-        BombButton ??= new(this, new SpriteName("Enforce"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),
+        BombButton ??= new(this, new SpriteName("Enforce"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Bomb, new Cooldown(EnforceCd), "SET BOMB", new Duration(EnforceDur),
             (EffectStartVoid)BoomStart, (EffectStartVoid)UnBoom, new Delay(EnforceDelay), (PlayerBodyExclusion)Exception1, new CanClickAgain(false), (EndFunc)EndEffect);
     }
 

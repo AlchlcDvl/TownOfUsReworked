@@ -24,7 +24,7 @@ public sealed class Wraith : Deception
     public override void Init()
     {
         base.Init();
-        InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitInvis, new Cooldown(InvisCd), (EffectStartVoid)Invis,
+        InvisButton ??= new(this, "INVISIBILITY", new SpriteName("Invis"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitInvis, new Cooldown(InvisCd), (EffectStartVoid)Invis,
             new Duration(InvisDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }
 

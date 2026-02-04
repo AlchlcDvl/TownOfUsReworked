@@ -97,7 +97,7 @@ public static class MainMenuPatches
 
         Coroutines.Start(PerformTimedAction(0.1f, _ =>
         {
-            button.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
+            button.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText(string.Empty);
             pos.AdjustPosition();
         }));
     }

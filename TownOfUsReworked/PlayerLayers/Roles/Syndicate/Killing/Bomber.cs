@@ -43,9 +43,9 @@ public sealed class Bomber : SKilling
     {
         base.Init();
         Bombs.Clear();
-        BombButton ??= new(this, new SpriteName("Plant"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB",
+        BombButton ??= new(this, new SpriteName("Plant"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Place, new Cooldown(BombCd), "PLACE BOMB",
             (ConditionFunc)Condition);
-        DetonateButton ??= new(this, new SpriteName("Detonate"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,
+        DetonateButton ??= new(this, new SpriteName("Detonate"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Detonate, new Cooldown(DetonateCd), (UsableFunc)Bombs.Any,
             "DETONATE");
     }
 

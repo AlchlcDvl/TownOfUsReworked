@@ -12,7 +12,7 @@ public abstract class Intruder : Role, IPromoter
     public Godfather Promoter;
 
     protected string CommonAbilities => $"<#{FactionColor.ToHtmlStringRGBA()}>- You can kill players</color>" + (Player.CanSabotage() ?
-        "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "");
+        "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : string.Empty);
 
     protected override UColor MainColor => CustomColorManager.Intruder;
     protected override UColor LayerColor => CustomColorManager.Intruder;
@@ -49,7 +49,7 @@ public abstract class Intruder : Role, IPromoter
         if (this is Ghoul)
             return;
 
-        KillButton ??= new(this, (SpriteFunc)GetKillSprite, AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
+        KillButton ??= new(this, (SpriteFunc)GetKillSprite, ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Kill, new Cooldown(IntruderSettings.IntKillCd), "KILL",
             (PlayerBodyExclusion)Exception, FactionColor, (UsableFunc)KillUsable);
     }
 

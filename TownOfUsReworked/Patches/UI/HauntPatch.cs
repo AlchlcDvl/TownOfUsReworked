@@ -16,8 +16,8 @@ public static class HauntPatches
         else
         {
             __instance.HauntTarget = null;
-            __instance.NameText.text = "";
-            __instance.FilterText.text = "";
+            __instance.NameText.text = string.Empty;
+            __instance.FilterText.text = string.Empty;
             __instance.HauntingText.enabled = false;
         }
 
@@ -32,13 +32,13 @@ public static class HauntPatches
 
         if (!DeadSeeEverything())
         {
-            __instance.FilterText.text = "";
+            __instance.FilterText.text = string.Empty;
             return false;
         }
 
         var handler = LayerHandler.Handlers[__instance.HauntTarget.PlayerId];
-        var objectiveString = "";
-        var otherString = "";
+        var objectiveString = string.Empty;
+        var otherString = string.Empty;
 
         if (handler.CurrentRole)
             objectiveString += handler.CurrentRole.Name;

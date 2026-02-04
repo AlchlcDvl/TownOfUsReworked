@@ -26,7 +26,7 @@ public sealed class Warper : SSupport, IMover
     {
         base.Init();
         WarpMenu = new(Player, Click, Color, Exception1);
-        WarpButton ??= new(this, new SpriteName("Warp"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
+        WarpButton ??= new(this, new SpriteName("Warp"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Warp, new Cooldown(WarpCd), (LabelFunc)Label);
     }
 
     private static IEnumerator WarpPlayers(PlayerControl player1, PlayerControl player2, IMover warper)

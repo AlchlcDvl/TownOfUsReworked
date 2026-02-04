@@ -28,9 +28,9 @@ public sealed class Gluttony : Deity
     public override void Init()
     {
         base.Init();
-        ConsumeButton ??= new(this, new SpriteName("Consume"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Consume, "CONSUME", new Cooldown(ConsumeCd),
+        ConsumeButton ??= new(this, new SpriteName("Consume"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Consume, "CONSUME", new Cooldown(ConsumeCd),
             (PlayerBodyExclusion)Exception);
-        HungerButton ??= new(this, new SpriteName("Hunger"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)CauseHunger, "HUNGER", new Cooldown(HungerCd),
+        HungerButton ??= new(this, new SpriteName("Hunger"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)CauseHunger, "HUNGER", new Cooldown(HungerCd),
             new Duration(HungerDur));
     }
 

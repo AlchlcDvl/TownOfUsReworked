@@ -24,7 +24,7 @@ public sealed class Pestilence : Deity
     public override void Init()
     {
         base.Init();
-        ObliterateButton ??= new(this, new SpriteName("Obliterate"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",
+        ObliterateButton ??= new(this, new SpriteName("Obliterate"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Obliterate, (PlayerBodyExclusion)Exception, "OBLITERATE",
             new Cooldown(ObliterateCd));
         AllPlayers().Where(x => !x.Is<Apocalypse>()).Do(x => Infected[x.PlayerId] = 1);
     }

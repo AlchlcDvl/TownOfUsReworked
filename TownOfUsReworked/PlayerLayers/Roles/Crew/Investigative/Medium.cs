@@ -34,15 +34,15 @@ public sealed class Medium : Investigative
     protected override UColor MainColor => CustomColorManager.Medium;
     public override Layer Type => Layer.Medium;
     public override string StartText => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
-    public override string Description => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? "" : ("\n- When mediating, dead " +
+    public override string Description => "- You can mediate which makes ghosts visible to you" + (ShowMediumToDead == ShowMediumToDead.Never ? string.Empty : ("\n- When mediating, dead " +
         "players will be able to see you"));
 
     public override void Init()
     {
         MediatedPlayers.Clear();
         MediateArrows.Clear();
-        MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));
-        // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), MaxSeances,
+        MediateButton ??= new(this, "MEDIATE", new SpriteName("Mediate"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Mediate, new Cooldown(MediateCd));
+        // SeanceButton ??= new(this, "SEANCE", new SpriteName("Seance"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Seance, new Cooldown(SeanceCd), MaxSeances,
         //     new PostDeath(true));
     }
 

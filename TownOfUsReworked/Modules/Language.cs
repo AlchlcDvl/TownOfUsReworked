@@ -20,7 +20,7 @@ public sealed class Language : Asset
         get
         {
             if (IsBlank)
-                return "";
+                return string.Empty;
 
             if ((!Values.TryGetValue(lang, out var result) || IsNullEmptyOrWhiteSpace(result)) && lang != "english")
                 result = Values.GetValueOrDefault("english");
@@ -35,8 +35,8 @@ public sealed class Language : Asset
     //         return ID;
     //     else if (IDs is not null)
     //     {
-    //         var result = "";
-    //         IDs.ForEach(x => result += $"{x} ");
+    //         var result = string.Empty;
+    //         IDs.Do(x => result += $"{x} ");
     //         return result.Trim();
     //     }
 

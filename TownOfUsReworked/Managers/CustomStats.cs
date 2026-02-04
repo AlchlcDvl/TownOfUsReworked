@@ -112,7 +112,6 @@ public static class CustomStatsManager
             StatsHitImmune,
             StatsConvertedFanatics,
             StringNames.StatsTimesPettedPet,
-            .. MapMap.Keys,
             .. LayerMap.Keys
         ];
 

@@ -20,7 +20,7 @@ public sealed class Godfather : Intruder
     public override void Init()
     {
         base.Init();
-        DeclareButton ??= new(this, new SpriteName("Promote"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
+        DeclareButton ??= new(this, new SpriteName("Promote"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Declare, (PlayerBodyExclusion)Exception1, "PROMOTE", (UsableFunc)Usable);
     }
 
     private void Declare(PlayerControl target)

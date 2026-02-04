@@ -56,7 +56,7 @@ public sealed class StatsHandler : MonoBehaviour
     private static void AppendStat(IStringBuilder str, StringNames stat, IObject value)
     {
         var text = TranslationController.Instance.GetString(stat).Trim();
-        str.Append("<align=left>" + text + (text.Contains(':') ? "" : ":") + "<line-height=0>");
+        str.Append("<align=left>" + text + (text.Contains(':') ? string.Empty : ":") + "<line-height=0>");
         str.AppendLine();
         str.Append("<align=right>" + value?.ToString() + "<line-height=1em>");
         str.AppendLine();

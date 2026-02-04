@@ -21,4 +21,6 @@ public static class BlankUtils
     public static string BlankButtonLabel() => "ABILITY";
 
     public static string BlankButtonSprite() => "Placeholder";
+
+    public static UColor? BlankNullColor() => null;
 }

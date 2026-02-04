@@ -65,7 +65,7 @@ public static class UpdateSplashPatch
 
         yield return PerformTimedAction(0.5f, p => TMP.color = UColor.white.SetAlpha(1 - p));
 
-        SetText("");
+        SetText(string.Empty);
 
         yield return PerformTimedAction(1f, p => Rend.color = UColor.white.SetAlpha(1 - p));
 

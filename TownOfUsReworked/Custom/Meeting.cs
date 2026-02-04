@@ -25,7 +25,7 @@ public sealed class CustomMeeting : IDisposable
     public CustomMeeting(PlayerControl owner, string active, string disabled, OnClick click, Exemption isExempt = null, Vector3? position = null) : this(owner, active, disabled,
         MeetingTypes.Toggle, click, isExempt, null, position) {}
 
-    public CustomMeeting(PlayerControl owner, string sprite, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = null) : this(owner, sprite, "",
+    public CustomMeeting(PlayerControl owner, string sprite, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = null) : this(owner, sprite, string.Empty,
         MeetingTypes.Click, click, isExempt, parallel, position) {}
 
     private CustomMeeting(PlayerControl owner, string active, string disabled, MeetingTypes type, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = null)

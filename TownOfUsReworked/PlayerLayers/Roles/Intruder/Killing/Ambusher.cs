@@ -24,7 +24,7 @@ public sealed class Ambusher : IKilling
     {
         base.Init();
         AmbushedPlayer = null;
-        AmbushButton ??= new(this, new SpriteName("Ambush"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
+        AmbushButton ??= new(this, new SpriteName("Ambush"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Ambush, new Cooldown(AmbushCd), (EndFunc)EndEffect, "AMBUSH",
             new Duration(AmbushDur), (EffectEndVoid)UnAmbush, (PlayerBodyExclusion)Exception1);
     }
 

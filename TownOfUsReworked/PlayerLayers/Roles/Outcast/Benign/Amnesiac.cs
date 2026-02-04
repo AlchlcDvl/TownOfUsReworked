@@ -25,7 +25,7 @@ public sealed class Amnesiac : Benign
     public override Layer Type => Layer.Amnesiac;
     public override string StartText => "You Forgor <i>:skull:</i>";
     public override string Description => "- You can copy over a player's role should you find their body" + (RememberArrows ? ("\n- When someone dies, you get an arrow pointing"
-        + " to their body") : "") + "\n- If there are less than 4 players alive, you will become a <#80FF00FF>Thief</color>";
+        + " to their body") : string.Empty) + "\n- If there are less than 4 players alive, you will become a <#80FF00FF>Thief</color>";
     public override bool CanVent => base.CanVent && AmneVent;
     public override bool CanSwitchVents => AmneSwitchVent;
 
@@ -33,7 +33,7 @@ public sealed class Amnesiac : Benign
     {
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows.Clear();
-        RememberButton ??= new(this, new SpriteName("Remember"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");
+        RememberButton ??= new(this, new SpriteName("Remember"), ReworkedAbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Remember, "REMEMBER");
     }
 
     private void DestroyArrow(byte targetPlayerId)

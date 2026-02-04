@@ -26,7 +26,7 @@ public sealed class Tracker : Investigative
     public override void Init()
     {
         TrackerArrows.Clear();
-        TrackButton ??= new(this, "TRACK", new SpriteName("Track"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
+        TrackButton ??= new(this, "TRACK", new SpriteName("Track"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Track, new Cooldown(TrackCd), MaxTracks,
             (PlayerBodyExclusion)Exception);
     }
 

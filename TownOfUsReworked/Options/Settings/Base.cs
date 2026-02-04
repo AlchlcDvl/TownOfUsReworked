@@ -17,7 +17,7 @@ public abstract class Option(CustomOptionType type)
     public KeyValuePair<byte, byte> RpcId { get; protected set; }
     public BaseHeaderOption Header { get; set; }
 
-    protected static string LastChangedSetting = "";
+    protected static string LastChangedSetting = string.Empty;
     protected static LobbyNotificationMessage LastSettingNotif;
 
     // Apparently, setting the parents in the attributes doesn't seem to work
@@ -110,7 +110,7 @@ public abstract class Option(CustomOptionType type)
         AllOptions.Add(this);
     }
 
-    protected virtual string FormatValue() => "";
+    protected virtual string FormatValue() => string.Empty;
 
     public virtual void Update() {}
 
@@ -231,7 +231,7 @@ public abstract class Option(CustomOptionType type)
             filePath = Path.Combine(TownOfUsReworked.Options, fileName);
         }
 
-        SaveSettings(fileName.Replace(".txt", ""));
+        SaveSettings(fileName.Replace(".txt", string.Empty));
     }
 
     public static void SaveSettings(string fileName)
@@ -302,7 +302,7 @@ public abstract class Option(CustomOptionType type)
             }
             catch
             {
-                value = "";
+                value = string.Empty;
             }
 
             if (name == "Map")

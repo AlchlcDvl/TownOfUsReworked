@@ -7,18 +7,18 @@ public sealed class BundleLoader : AssetLoader<BundleAsset>
     protected override string DirectoryInfo => TownOfUsReworked.Bundles;
     protected override string Manifest => "Bundles";
     protected override bool Downloading => true;
-    protected override string FileExtension =>
+    protected override string FileExtension => "bundle_" +
 #if ANDROID
-        "bundle_android";
+        "android";
 #else
-        "bundle_pc";
+        "pc";
 #endif
 
-    private const string OtherFileExtension =
+    private const string OtherFileExtension = "bundle_" +
 #if ANDROID
-        "bundle_pc";
+        "pc";
 #else
-        "bundle_android";
+        "android";
 #endif
 
     protected override IEnumerable<string> GenerateDownloadList(BundleAsset[] response, HashAlgorithm hasher) => response.Where(x => !x.IsCustom && ShouldDownload(Path.Combine(DirectoryInfo,

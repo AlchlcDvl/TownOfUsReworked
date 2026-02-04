@@ -45,7 +45,7 @@ public sealed class Executioner : Evil, ITargeter
     protected override UColor MainColor => CustomColorManager.Executioner;
     public override Layer Type => Layer.Executioner;
     public override string StartText => "Find Someone To Eject";
-    public override string Description => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : "") +
+    public override string Description => TargetPlayer ? ((TargetVotedOut ? $"- You can doom those who voted for {TargetPlayer?.name}\n" : string.Empty) +
         $"- If {TargetPlayer?.name} dies, you will become a <#F7B3DAFF>Jester</color>") : "- You can select a player to eject";
     public override Attack Attack => Attack.Unstoppable;
     public override bool HasWon => TargetVotedOut;
@@ -59,13 +59,13 @@ public sealed class Executioner : Evil, ITargeter
         ToDoom.Clear();
 
         if (!OutcastSettings.AvoidOutcastKingmakers)
-            DoomButton ??= new(this, new SpriteName("Doom"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Doom, (PlayerBodyExclusion)Exception1, "DOOM", (UsableFunc)Usable1);
+            DoomButton ??= new(this, new SpriteName("Doom"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Doom, (PlayerBodyExclusion)Exception1, "DOOM", (UsableFunc)Usable1);
 
         Rounds = 0;
 
         if (ExecutionerCanPickTargets || !TargetPlayer)
         {
-            TargetButton ??= new(this, new SpriteName("ExeTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
+            TargetButton ??= new(this, new SpriteName("ExeTarget"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception2, "TORMENT",
                 (UsableFunc)Usable2);
         }
     }

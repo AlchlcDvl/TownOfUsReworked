@@ -42,7 +42,7 @@ public static class ChatPatches
                 SuggestionText.text = $"{text} UNKNOWN COMMAND";
         }
         else
-            SuggestionText.text = "";
+            SuggestionText.text = string.Empty;
 
         return false;
     }
@@ -110,7 +110,7 @@ public static class ChatPatches
         if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.X))
         {
             ClipboardHelper.PutClipboardString(__instance.freeChatField.textArea.text);
-            __instance.freeChatField.textArea.SetText("");
+            __instance.freeChatField.textArea.SetText(string.Empty);
         }
 
         if (Input.GetKeyDown(KeyCode.UpArrow) && ChatHistory.Any())
@@ -121,7 +121,7 @@ public static class ChatPatches
                 __instance.freeChatField.textArea.SetText(ChatHistory[CurrentHistorySelection]);
             else
             {
-                __instance.freeChatField.textArea.SetText("");
+                __instance.freeChatField.textArea.SetText(string.Empty);
                 CurrentHistorySelection = ChatHistory.Count - 1;
             }
         }
@@ -135,7 +135,7 @@ public static class ChatPatches
             __instance.freeChatField.textArea.SetText(ChatHistory[CurrentHistorySelection]);
         else if (CurrentHistorySelection == ChatHistory.Count)
         {
-            __instance.freeChatField.textArea.SetText("");
+            __instance.freeChatField.textArea.SetText(string.Empty);
             CurrentHistorySelection = 0;
         }
     }
@@ -152,9 +152,9 @@ public static class ChatPatches
             return true;
 
         if (Time.time - MeetingPatches.MeetingStartTime < 1f)
-            return LocalPlayer.Is<Teamed>(out var teamed) && teamed.RoleCondition(sourcePlayer) && sourceHandler.Channels.HasFlag(teamed.Channel);
+            return LocalPlayer.Is<Teamed>(out var teamed) && teamed.RoleCondition(sourcePlayer) && sourceHandler.Channels.HasFlagFast(teamed.Channel);
 
-        return Meeting() && sourceHandler.Channels.HasFlag(ChatChannel.Meeting);
+        return Meeting() && sourceHandler.Channels.HasFlagFast(ChatChannel.Meeting);
     }
 
     [HarmonyPatch(nameof(ChatController.AddChat))]
@@ -321,7 +321,7 @@ public static class OverrideCharCountPatch
     {
         if (GameOptions.ChatCharacterLimit == 0)
         {
-            __instance.charCountText.text = "";
+            __instance.charCountText.text = string.Empty;
             return false;
         }
 

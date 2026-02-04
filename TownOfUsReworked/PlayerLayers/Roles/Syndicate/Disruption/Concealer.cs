@@ -27,7 +27,7 @@ public sealed class Concealer : Disruption
         base.Init();
         ConcealMenu = new(Player, Click, Color, Exception1);
         ConcealedPlayer = null;
-        ConcealButton ??= new(this, new SpriteName("Conceal"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(ConcealCd), (EffectStartVoid)Conceal,
+        ConcealButton ??= new(this, new SpriteName("Conceal"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitConceal, new Cooldown(ConcealCd), (EffectStartVoid)Conceal,
             (LabelFunc)Label, new Duration(ConcealDur), (EffectEndVoid)UnConceal, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
     }
 

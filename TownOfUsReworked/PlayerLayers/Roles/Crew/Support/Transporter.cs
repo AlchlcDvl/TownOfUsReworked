@@ -26,7 +26,7 @@ public sealed class Transporter : CSupport, IMover
 
     public override void Init()
     {
-        TransportButton ??= new(this, new SpriteName("Transport"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, MaxTransports, new Cooldown(TransportCd),
+        TransportButton ??= new(this, new SpriteName("Transport"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Transport, MaxTransports, new Cooldown(TransportCd),
             (LabelFunc)Label);
         TransportMenu = new(Player, Click, Color, Exception);
     }

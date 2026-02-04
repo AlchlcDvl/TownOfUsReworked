@@ -21,7 +21,7 @@ public sealed class Veteran : CKilling
     public override Defense Defense => AlertButton.EffectActive ? Defense.Basic : Defense.None;
     public override Attack Attack => AlertButton.EffectActive ? Attack.Powerful : Attack.None;
 
-    public override void Init() => AlertButton ??= new(this, "ALERT", new SpriteName("Alert"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Alert, new Cooldown(AlertCd),
+    public override void Init() => AlertButton ??= new(this, "ALERT", new SpriteName("Alert"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Alert, new Cooldown(AlertCd),
         MaxAlerts, (EndFunc)EndEffect, new Duration(AlertDur));
 
     private void Alert()

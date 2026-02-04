@@ -33,9 +33,9 @@ public sealed class Teleporter : ISupport, IMover
     {
         base.Init();
         TeleportPoint = Vector2.zero;
-        MarkButton ??= new(this, new SpriteName("Mark"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mark, new Cooldown(TeleMarkCd), "MARK POSITION",
+        MarkButton ??= new(this, new SpriteName("Mark"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mark, new Cooldown(TeleMarkCd), "MARK POSITION",
             (ConditionFunc)Condition1);
-        TeleportButton ??= new(this, new SpriteName("Teleport"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Teleport, new Cooldown(TeleportCd), "TELEPORT",
+        TeleportButton ??= new(this, new SpriteName("Teleport"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Teleport, new Cooldown(TeleportCd), "TELEPORT",
             (UsableFunc)Usable, (ConditionFunc)Condition2);
     }
 

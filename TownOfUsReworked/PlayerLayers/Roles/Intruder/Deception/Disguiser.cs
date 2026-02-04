@@ -35,9 +35,9 @@ public sealed class Disguiser : Deception
     public override void Init()
     {
         base.Init();
-        MeasureButton ??= new(this, new SpriteName("Measure"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
+        MeasureButton ??= new(this, new SpriteName("Measure"), ReworkedAbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Measure, new Cooldown(MeasureCd), "MEASURE",
             (PlayerBodyExclusion)Exception2);
-        DisguiseButton ??= new(this, new SpriteName("Disguise"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
+        DisguiseButton ??= new(this, new SpriteName("Disguise"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)HitDisguise, new Cooldown(DisguiseCd), (EffectEndVoid)UnDisguise,
             new Duration(DisguiseDur), (EffectStartVoid)Disguise, new Delay(DisguiseDelay), (PlayerBodyExclusion)Exception1, (UsableFunc)Usable, (EndFunc)EndEffect, "DISGUISE",
             (ClickedAgainVoid)OnClickedAgain);
         DisguisedPlayer = null;

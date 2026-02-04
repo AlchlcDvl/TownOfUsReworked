@@ -39,8 +39,8 @@ public sealed class Altruist : Protective, IReviver
 
     public override void Init()
     {
-        ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), AbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(AltManaCd), (UsableFunc)Usable);
-        ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
+        ManaButton ??= new(this, "GAIN MANA", new SpriteName("AltManaGain"), ReworkedAbilityTypes.Body, KeybindType.Tertiary, (OnClickBody)GainMana, new Cooldown(AltManaCd), (UsableFunc)Usable);
+        ReviveButton ??= new(this, "REVIVE", new SpriteName("Revive"), ReworkedAbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Revive, new Cooldown(ReviveCd), (EffectEndVoid)UponEnd,
             MaxAltMana, new Duration(ReviveDur), (EndFunc)EndEffect, new CanClickAgain(false), new UsesDecrement(AltManaCost));
         ReviveButton.UsesCount = 0;
     }

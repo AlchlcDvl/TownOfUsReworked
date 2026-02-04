@@ -2,7 +2,7 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class DeadBodyHandler : NameHandler
 {
-    public static readonly List<byte> Dragging = [];
+    public static readonly HashSet<byte> Dragging = [];
 
     public DeadBody Body { get; private set; }
 

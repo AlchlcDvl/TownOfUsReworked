@@ -10,7 +10,7 @@ public abstract class NameHandler : MonoBehaviour
         var player = playerHandler.Player;
         var meeting = (bool)Meeting();
         var local = localHandler.Player;
-        var name = "";
+        var name = string.Empty;
         var color = UColor.white;
         var role = playerHandler.CurrentRole;
         var disp = playerHandler.CurrentDisposition;

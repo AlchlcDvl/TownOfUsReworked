@@ -6,52 +6,57 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     // Params, required
     public readonly PlayerLayer Owner;
-    public readonly AbilityTypes Type;
+    public readonly ReworkedAbilityTypes Type;
     private readonly string Keybind;
 
     // Params, optional (but still mostly required)
-    private readonly string ButtonSprite = "Placeholder";
-    private readonly SpriteFunc SpriteFunc = BlankButtonSprite;
-    private readonly OnClickTargetless DoClickTargetless = BlankVoid;
-    private readonly OnClickBody DoClickBody = BlankVoid;
-    private readonly OnClickPlayer DoClickPlayer = BlankVoid;
-    private readonly OnClickVent DoClickVent = BlankVoid;
-    private readonly OnClickConsole DoClickConsole = BlankVoid;
-    private readonly Action Effect = BlankVoid;
-    private readonly Action OnEffectStart = BlankVoid;
-    private readonly Action OnEffectEnd = BlankVoid;
-    private readonly Action UnEffect = BlankVoid;
-    private readonly Action OnDelayStart = BlankVoid;
-    private readonly Action OnDelayEnd = BlankVoid;
-    private readonly Action ActionDelay = BlankVoid;
-    private readonly Action UnDelay = BlankVoid;
-    private readonly Action OnOtherDelayStart = BlankVoid;
-    private readonly Action OnOtherDelayEnd = BlankVoid;
-    private readonly Action ActionOtherDelay = BlankVoid;
-    private readonly Action UnOtherDelay = BlankVoid;
-    private readonly Action OnClickedAgain = BlankVoid;
-    private readonly EndFunc End = BlankFalse;
-    private readonly DifferenceFunc Difference = BlankZero;
-    private readonly MultiplierFunc Multiplier = BlankOne;
-    private readonly UsableFunc IsUsable = BlankTrue;
-    private readonly ConditionFunc Condition = BlankTrue;
-    private readonly Func<PlayerControl, bool> PlayerFilter = BlankFalse;
-    private readonly Func<Vent, bool> VentFilter = BlankFalse;
-    private readonly Func<Console, bool> ConsoleFilter = BlankFalse;
-    private readonly Func<DeadBody, bool> BodyFilter = BlankFalse;
-    private readonly LabelFunc ButtonLabelFunc = BlankButtonLabel;
-    private readonly string ButtonLabel = "ABILITY";
-    private readonly float Cooldown = 1f;
-    private readonly bool CanClickAgain = true;
+    private readonly string ButtonSprite;
+    private readonly Func<string> SpriteFunc;
+    private readonly Action DoClickTargetless;
+    private readonly Action<DeadBody> DoClickBody;
+    private readonly Action<PlayerControl> DoClickPlayer;
+    private readonly Action<Vent> DoClickVent;
+    private readonly Action<Console> DoClickConsole;
+    private readonly Action Effect;
+    private readonly Action OnEffectStart;
+    private readonly Action OnEffectEnd;
+    private readonly Action OnDelayStart;
+    private readonly Action OnDelayEnd;
+    private readonly Action ActionDelay;
+    private readonly Action OnOtherDelayStart;
+    private readonly Action OnOtherDelayEnd;
+    private readonly Action ActionOtherDelay;
+    private readonly Action OnClickedAgain;
+    private readonly Func<bool> End;
+    private readonly Func<float> Difference;
+    private readonly Func<float> Multiplier;
+    private readonly Func<bool> IsUsable;
+    private readonly Func<bool> Condition;
+    private readonly Func<PlayerControl, bool> PlayerFilter;
+    private readonly Func<Vent, bool> VentFilter;
+    private readonly Func<Console, bool> ConsoleFilter;
+    private readonly Func<DeadBody, bool> BodyFilter;
+    private readonly Func<string> ButtonLabelFunc;
+    private readonly string ButtonLabel;
+    private readonly float Cooldown;
+    private readonly bool CanClickAgain;
     private readonly bool IsManual;
     private readonly UColor TextColor;
+    private readonly Func<UColor?> TextColorFunc;
     private readonly bool PostDeath;
     private readonly float Duration;
     private readonly float Delay;
     private readonly float OtherDelay;
-    private readonly int UseDecrement = 1;
-    public readonly  ushort ID;
-    private readonly ManualUpdateVoid ManualUpdate;
+    private readonly int UseDecrement;
+    private readonly Action ManualUpdate;
+    private readonly Action CachedEffectStart;
+    private readonly Action CachedEffectEnd;
+    private readonly Action CachedDelayStart;
+    private readonly Action CachedDelayEnd;
+    private readonly Action CachedOtherDelayStart;
+    private readonly Action CachedOtherDelayEnd;
+
+    public readonly ushort ID;
 
     // Other things
     public ActionButton Base { get; private set; }
@@ -79,9 +84,9 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private bool DelayActive => DelayTime > 0f;
     private bool OtherDelayActive => OtherDelayTime > 0f;
     private bool CooldownActive => CooldownTime > 0f;
-    private bool Targeting => Target || Type.HasFlag(AbilityTypes.Targetless);
+    private bool Targeting => Target || Type.HasFlagFast(ReworkedAbilityTypes.Targetless);
     private bool Local => Owner.Local || TownOfUsReworked.MciActive;
-    private readonly List<(AbilityTypes, Func<MonoBehaviour>)> TargetFinders;
+    private readonly List<(ReworkedAbilityTypes, Func<MonoBehaviour>)> TargetFinders;
 
     // Special
     public int Max = -1;
@@ -119,247 +124,77 @@ public sealed class CustomButton : IDisposable, INetSerializable
         }
     }
 
-    // I know this constructor is cursed, but the alternative was 40+ constructors that accepted different param types in weird orders
-    public CustomButton(params object[] properties)
+    public CustomButton(CustomButtonBuilder builder)
     {
-        foreach (var prop in properties)
-        {
-            switch (prop)
-            {
-                case PlayerLayer layer:
-                {
-                    Owner = layer;
-                    TextColor = layer.Color;
-                    break;
-                }
-                case LabelFunc labelFunc:
-                {
-                    ButtonLabelFunc = labelFunc;
-                    break;
-                }
-                case SpriteName sprite:
-                {
-                    ButtonSprite = sprite.Value;
-                    break;
-                }
-                case SpriteFunc spriteFunc:
-                {
-                    SpriteFunc = spriteFunc;
-                    break;
-                }
-                case AbilityTypes type:
-                {
-                    Type = type;
-                    break;
-                }
-                case KeybindType keybind:
-                {
-                    Keybind = $"{keybind}";
-                    break;
-                }
-                case PostDeath postDeath:
-                {
-                    PostDeath = postDeath.Value;
-                    break;
-                }
-                case OnClickTargetless onClickTargetless:
-                {
-                    DoClickTargetless = onClickTargetless;
-                    break;
-                }
-                case OnClickBody onClickBody:
-                {
-                    DoClickBody = onClickBody;
-                    break;
-                }
-                case OnClickPlayer onClickPlayer:
-                {
-                    DoClickPlayer = onClickPlayer;
-                    break;
-                }
-                case OnClickVent onClickVent:
-                {
-                    DoClickVent = onClickVent;
-                    break;
-                }
-                case OnClickConsole onClickConsole:
-                {
-                    DoClickConsole = onClickConsole;
-                    break;
-                }
-                case EffectVoid effect:
-                {
-                    Effect = new(effect);
-                    break;
-                }
-                case EffectStartVoid onEffect:
-                {
-                    OnEffectStart = new(onEffect);
-                    break;
-                }
-                case EffectEndVoid offEffect:
-                {
-                    OnEffectEnd = new(offEffect);
-                    break;
-                }
-                case DelayStartVoid onDelay:
-                {
-                    OnDelayStart = new(onDelay);
-                    break;
-                }
-                case DelayEndVoid offDelay:
-                {
-                    OnDelayEnd = new(offDelay);
-                    break;
-                }
-                case DelayVoid delay:
-                {
-                    ActionDelay = new(delay);
-                    break;
-                }
-                case OtherDelayStartVoid onOtherDelay:
-                {
-                    OnOtherDelayStart = new(onOtherDelay);
-                    break;
-                }
-                case OtherDelayEndVoid offOtherDelay:
-                {
-                    OnOtherDelayEnd = new(offOtherDelay);
-                    break;
-                }
-                case OtherDelayVoid otherDelay:
-                {
-                    ActionOtherDelay = new(otherDelay);
-                    break;
-                }
-                case EndFunc end:
-                {
-                    End = end;
-                    break;
-                }
-                case Cooldown cooldown:
-                {
-                    Cooldown = cooldown.Value;
-                    break;
-                }
-                case DifferenceFunc difference:
-                {
-                    Difference = difference;
-                    break;
-                }
-                case MultiplierFunc multiplier:
-                {
-                    Multiplier = multiplier;
-                    break;
-                }
-                case Duration duration:
-                {
-                    Duration = duration.Value;
-                    break;
-                }
-                case Delay delay1:
-                {
-                    Delay = delay1.Value;
-                    break;
-                }
-                case Number usesNum:
-                {
-                    UsesCount = Max = usesNum;
-                    break;
-                }
-                case int number:
-                {
-                    UsesCount = Max = number;
-                    break;
-                }
-                case UsableFunc usable:
-                {
-                    IsUsable = usable;
-                    break;
-                }
-                case ConditionFunc condition:
-                {
-                    Condition = condition;
-                    break;
-                }
-                case CanClickAgain canClickAgain:
-                {
-                    CanClickAgain = canClickAgain.Value;
-                    break;
-                }
-                case PlayerBodyExclusion playerBody:
-                {
-                    PlayerFilter = x => !playerBody(x);
-                    BodyFilter = x => !PlayerFilter(PlayerByBody(x));
-                    break;
-                }
-                case VentExclusion vent:
-                {
-                    VentFilter = x => !vent(x);
-                    break;
-                }
-                case ConsoleExclusion console:
-                {
-                    ConsoleFilter = x => !console(x);
-                    break;
-                }
-                case string label:
-                {
-                    ButtonLabel = label;
-                    break;
-                }
-                case UColor color:
-                {
-                    TextColor = color;
-                    break;
-                }
-                case OtherDelay oDelay:
-                {
-                    OtherDelay = oDelay.Value;
-                    break;
-                }
-                case UsesDecrement usesDecrement:
-                {
-                    UseDecrement = usesDecrement.Value;
-                    break;
-                }
-                case Manual manual:
-                {
-                    IsManual = manual.Value;
-                    break;
-                }
-                case ManualUpdateVoid manualUpdate:
-                {
-                    ManualUpdate = manualUpdate;
-                    break;
-                }
-                case ClickedAgainVoid clickedAgainVoid:
-                {
-                    OnClickedAgain = new(clickedAgainVoid);
-                    break;
-                }
-                case null:
-                {
-                    Warning("Entered a null prop value"); // Achievement Get: How did we get here?
-                    break;
-                }
-                default:
-                {
-                    Warning($"Unassigned property of type {prop.GetType().Name}"); // Achievement Get: How did I manage this?
-                    break;
-                }
-            }
-        }
+        Owner = builder.Owner;
+        Type = builder.Type;
+        Keybind = builder.Keybind;
+        TextColor = builder.TextColor ?? Owner.Color;
+        TextColorFunc = builder.TextColorFunc;
 
-        UnEffect = ButtonUnEffect;
-        UnDelay = ButtonUnDelay;
-        UnOtherDelay = ButtonUnOtherDelay;
+        ButtonSprite = builder.ButtonSprite;
+        SpriteFunc = builder.SpriteFunc;
+        ButtonLabel = builder.ButtonLabel;
+        ButtonLabelFunc = builder.ButtonLabelFunc;
+
+        DoClickTargetless = builder.DoClickTargetless;
+        DoClickPlayer = builder.DoClickPlayer;
+        DoClickBody = builder.DoClickBody;
+        DoClickVent = builder.DoClickVent;
+        DoClickConsole = builder.DoClickConsole;
+        OnClickedAgain = builder.OnClickedAgain;
+
+        Effect = builder.Effect;
+        OnEffectStart = builder.OnEffectStart;
+        OnEffectEnd = builder.OnEffectEnd;
+
+        ActionDelay = builder.ActionDelay;
+        OnDelayStart = builder.OnDelayStart;
+        OnDelayEnd = builder.OnDelayEnd;
+
+        ActionOtherDelay = builder.ActionOtherDelay;
+        OnOtherDelayStart = builder.OnOtherDelayStart;
+        OnOtherDelayEnd = builder.OnOtherDelayEnd;
+
+        End = builder.End;
+
+        Cooldown = builder.Cooldown;
+        CanClickAgain = builder.CanClickAgain;
+        IsManual = builder.IsManual;
+        ManualUpdate = builder.ManualUpdate;
+        PostDeath = builder.PostDeath;
+        Duration = builder.Duration;
+        Delay = builder.Delay;
+        OtherDelay = builder.OtherDelay;
+
+        UseDecrement = builder.UseDecrement;
+        Max = builder.MaxUses;
+        UsesCount = builder.MaxUses;
+
+        Difference = builder.Difference;
+        Multiplier = builder.Multiplier;
+        IsUsable = builder.IsUsable;
+        Condition = builder.Condition;
+        PlayerFilter = builder.PlayerFilter;
+        VentFilter = builder.VentFilter;
+        ConsoleFilter = builder.ConsoleFilter;
+        BodyFilter = builder.BodyFilter;
+
+        CachedEffectStart = ButtonEffectStart;
+        CachedEffectEnd = ButtonEffectEnd;
+
+        CachedDelayStart = ButtonDelayStart;
+        CachedDelayEnd = ButtonDelayEnd;
+
+        CachedOtherDelayStart = ButtonOtherDelayStart;
+        CachedOtherDelayEnd = ButtonOtherDelayEnd;
+
         TargetFinders =
         [
-            (AbilityTypes.Console, () => Owner.Player.GetClosestConsole(predicate: ConsoleFilter)),
-            (AbilityTypes.Player, () => Owner.Player.GetClosestPlayer(predicate: PlayerFilter)),
-            (AbilityTypes.Body, () => Owner.Player.GetClosestBody(predicate: BodyFilter)),
-            (AbilityTypes.Vent, () => Owner.Player.GetClosestVent(predicate: VentFilter)),
+            (ReworkedAbilityTypes.Console, () => Owner.Player.GetClosestConsole(predicate: ConsoleFilter)),
+            (ReworkedAbilityTypes.Player, () => Owner.Player.GetClosestPlayer(predicate: PlayerFilter)),
+            (ReworkedAbilityTypes.Body, () => Owner.Player.GetClosestBody(predicate: BodyFilter)),
+            (ReworkedAbilityTypes.Vent, () => Owner.Player.GetClosestVent(predicate: VentFilter)),
         ];
 
         CooldownTime = EffectTime = DelayTime = 0f;
@@ -368,8 +203,6 @@ public sealed class CustomButton : IDisposable, INetSerializable
         CreateButton();
         AllButtons.Add(this);
     }
-
-    ~CustomButton() => InternalDispose();
 
     private void CreateButton()
     {
@@ -380,8 +213,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base.graphic.sprite = GetSprite(Sprite());
         Base.graphic.SetCooldownNormalizedUvs();
         Base.name = ID.ToString();
-        Base.buttonLabelText.SetOutlineColor(TextColor);
-        Base.usesRemainingSprite.color = TextColor;
+        UpdateColor();
         Base.GetComponent<PassiveButton>().OverrideOnClickListeners(Clicked);
         Block = Base.SetBlock();
 
@@ -446,7 +278,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 if (HasUses)
                     Uses -= UseDecrement;
 
-                if (Type.HasFlag(AbilityTypes.Targetless))
+                if (Type.HasFlagFast(ReworkedAbilityTypes.Targetless))
                     DoClickTargetless();
                 else switch (Target) // Oh how I wish we could switch expression regular methods...one can dream, right?
                 {
@@ -490,15 +322,12 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Begin();
     }
 
-    private void HandleTimedPhase(ref bool enabled, ref float time, float maxTime, Action onPhaseStart, Action duringPhase, Action onPhaseEnd, ButtonState phase)
+    private void HandleTimedPhase(ref bool enabled, ref float time, float maxTime, Action onPhaseStart, Action duringPhase, Action onPhaseEnd)
     {
         if (!enabled)
         {
             onPhaseStart();
             time = maxTime;
-            enabled = true;
-            UpdateSprite();
-            CurrentPhase = phase;
             return;
         }
 
@@ -510,6 +339,14 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
         if (time <= 0f)
             onPhaseEnd();
+    }
+
+    private void HandleTimedPhaseStart(ref bool enabled, Action onPhaseStart, ButtonState phase)
+    {
+        onPhaseStart();
+        enabled = true;
+        UpdateSprite();
+        CurrentPhase = phase;
     }
 
     private void HandleTimedPhaseEnd(ref bool enabled, Action onPhaseEnd, ButtonState phase)
@@ -564,17 +401,23 @@ public sealed class CustomButton : IDisposable, INetSerializable
         }
     }
 
-    private void ButtonEffect() => HandleTimedPhase(ref EffectEnabled, ref EffectTime, Duration, OnEffectStart, Effect, UnEffect, ButtonState.Effect);
+    private void ButtonEffect() => HandleTimedPhase(ref EffectEnabled, ref EffectTime, Duration, CachedEffectStart, Effect, CachedEffectEnd);
 
-    private void ButtonUnEffect() => HandleTimedPhaseEnd(ref EffectEnabled, OnEffectEnd, ButtonState.Effect);
+    private void ButtonEffectStart() => HandleTimedPhaseStart(ref EffectEnabled, OnEffectStart, ButtonState.Effect);
 
-    private void ButtonDelay() => HandleTimedPhase(ref DelayEnabled, ref DelayTime, Delay, OnDelayStart, ActionDelay, UnDelay, ButtonState.Delay);
+    private void ButtonEffectEnd() => HandleTimedPhaseEnd(ref EffectEnabled, OnEffectEnd, ButtonState.Effect);
 
-    private void ButtonUnDelay() => HandleTimedPhaseEnd(ref DelayEnabled, OnDelayEnd, ButtonState.Delay);
+    private void ButtonDelay() => HandleTimedPhase(ref DelayEnabled, ref DelayTime, Delay, CachedDelayStart, ActionDelay, CachedDelayEnd);
 
-    private void ButtonOtherDelay() => HandleTimedPhase(ref OtherDelayEnabled, ref OtherDelayTime, OtherDelay, OnOtherDelayStart, ActionOtherDelay, UnOtherDelay, ButtonState.OtherDelay);
+    private void ButtonDelayStart() => HandleTimedPhaseStart(ref DelayEnabled, OnDelayStart, ButtonState.Delay);
 
-    private void ButtonUnOtherDelay() => HandleTimedPhaseEnd(ref OtherDelayEnabled, OnOtherDelayEnd, ButtonState.OtherDelay);
+    private void ButtonDelayEnd() => HandleTimedPhaseEnd(ref DelayEnabled, OnDelayEnd, ButtonState.Delay);
+
+    private void ButtonOtherDelay() => HandleTimedPhase(ref OtherDelayEnabled, ref OtherDelayTime, OtherDelay, CachedOtherDelayStart, ActionOtherDelay, CachedOtherDelayEnd);
+
+    private void ButtonOtherDelayStart() => HandleTimedPhaseStart(ref OtherDelayEnabled, OnOtherDelayStart, ButtonState.OtherDelay);
+
+    private void ButtonOtherDelayEnd() => HandleTimedPhaseEnd(ref OtherDelayEnabled, OnOtherDelayEnd, ButtonState.OtherDelay);
 
     private void Timer()
     {
@@ -645,13 +488,13 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     private string Label()
     {
+        if (BlockExposed)
+            return "BLOCKED";
+
         var result = ButtonLabelFunc();
 
         if (result == "ABILITY")
             result = ButtonLabel;
-
-        if (BlockExposed)
-            result = "BLOCKED";
 
         return result;
     }
@@ -672,6 +515,13 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Base.graphic.SetCooldownNormalizedUvs();
     }
 
+    private void UpdateColor()
+    {
+        var color = TextColorFunc() ?? TextColor;
+        Base.buttonLabelText.SetOutlineColor(color);
+        Base.usesRemainingSprite.color = color;
+    }
+
     public bool Usable() => ToggleVisibility.Visible && !MapBehaviourPatches.MapActive && (!HasUses || UsesCount > 0 || (byte)CurrentPhase is not (0 or 1 or 5)) && Owner && Owner.Dead ==
         PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && IsUsable();
 
@@ -680,30 +530,36 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     private void SetTarget()
     {
-        if (Type.HasFlag(AbilityTypes.Targetless))
+        if (Type.HasFlagFast(ReworkedAbilityTypes.Targetless))
             return;
 
-        var monos = new List<MonoBehaviour>();
+        MonoBehaviour bestTarget = null;
+        var closestDistSq = float.MaxValue;
+        var myPos = Owner.Player.GetTruePosition();
 
-        foreach (var (type, finder) in TargetFinders)
+        for (var i = 0; i < TargetFinders.Count; i++)
         {
-            if (!Type.HasFlag(type))
+            var (type, finder) = TargetFinders[i];
+
+            if (!Type.HasFlagFast(type))
                 continue;
 
-            var target = finder();
+            var candidate = finder();
 
-            if (target)
-                monos.Add(target);
+            if (!candidate)
+                continue;
+
+            var distSq = (myPos - candidate.GetPos()).sqrMagnitude;
+
+            if (distSq < closestDistSq)
+            {
+                closestDistSq = distSq;
+                bestTarget = candidate;
+            }
         }
 
         var previous = Target;
-        var pos = Owner.Player.GetTruePosition();
-        Target = monos.Count switch
-        {
-            0 => null,
-            1 => monos[0],
-            _ => monos.OrderBy(x => (pos - x.GetPos()).sqrMagnitude).FirstOrDefault()
-        };
+        Target = bestTarget;
         SetOutline(previous, Target);
     }
 
@@ -739,6 +595,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             return;
 
         Base.buttonLabelText.SetText(Label());
+        UpdateColor();
 
         if (!Base.isCoolingDown && !Disabled && PostDeath == Owner.Dead)
             SetTarget();

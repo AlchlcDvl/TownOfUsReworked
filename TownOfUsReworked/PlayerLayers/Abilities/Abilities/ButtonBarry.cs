@@ -13,7 +13,7 @@ public sealed class ButtonBarry : Ability
     public override Layer Type => Layer.ButtonBarry;
     public override string Description => "- You can call a button from anywhere";
 
-    public override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,
+    public override void Init() => ButtonButton ??= new(this, "BUTTON", new SpriteName("Button"), ReworkedAbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)Call, (UsableFunc)Usable,
         new Cooldown(ButtonCd));
 
     private void Call()

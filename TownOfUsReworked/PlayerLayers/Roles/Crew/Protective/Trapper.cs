@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Trapper)]
-public sealed class Trapper : Protective
+public sealed class Trapper : Protective, ISpeedModifier
 {
     [NumberOption(0, 15, 1, zeroIsInf: true)]
     public static Number MaxTraps = 5;
@@ -34,9 +34,9 @@ public sealed class Trapper : Protective
     {
         Trapped.Clear();
         TriggeredRoles.Clear();
-        BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuilding, new Cooldown(BuildCd), MaxTraps,
+        BuildButton ??= new(this, "BUILD TRAP", new SpriteName("Build"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)StartBuilding, new Cooldown(BuildCd), MaxTraps,
             (UsableFunc)Usable, new Duration(BuildDur), (EffectEndVoid)EndBuilding, new CanClickAgain(false));
-        TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, new Cooldown(TrapCd), MaxTraps,
+        TrapButton ??= new(this, "PLACE TRAP", new SpriteName("Trap"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetTrap, new Cooldown(TrapCd), MaxTraps,
             (PlayerBodyExclusion)Exception);
         TrapsMade = TrapButton.UsesCount = 0;
     }
@@ -116,7 +116,7 @@ public sealed class Trapper : Protective
 
     public override void LocalOnMeetingStart(MeetingHud __instance)
     {
-        var message = "";
+        var message = string.Empty;
 
         if (AttackedSomeone)
             message = "Your trap attacked someone!";
@@ -131,5 +131,11 @@ public sealed class Trapper : Protective
             Run("<#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
 
         TriggeredRoles.Clear();
+    }
+
+    public void ModifySpeed(PlayerControl player, ref float result)
+    {
+        if (PlayerId == player.PlayerId)
+            result *= Building ? 0f : 1f;
     }
 }

@@ -11,7 +11,7 @@ public static class PlayerControlOnClick
         if (IsHnS())
             return true;
 
-        if (CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Clickable() && ((__instance.AmOwner && x.Type.HasFlag(AbilityTypes.Targetless)) || x.Target == __instance), out var button))
+        if (CustomButton.AllButtons.TryFinding(x => x.Owner.Local && x.Clickable() && ((__instance.AmOwner && x.Type.HasFlagFast(ReworkedAbilityTypes.Targetless)) || x.Target == __instance), out var button))
         {
             button.Clicked();
             return false;

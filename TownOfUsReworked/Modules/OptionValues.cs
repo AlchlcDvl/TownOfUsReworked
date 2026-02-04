@@ -11,15 +11,15 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// <summary>
     /// Gets or sets the underlying comma-separated string representation of enum values.
     /// </summary>
-    public string Values => Join(',', values.OrderBy(x => x));
+    public string Values => Join(',', _values.OrderBy(x => x));
 
-    private readonly HashSet<T> values = [];
+    private readonly HashSet<T> _values = [];
 
     /// <summary>
     /// Initialises a new instance of <see cref="MultiSelectValue{T}"/> with the provided values.
     /// </summary>
     /// <param name="values">One or more enum values to initialize the collection with.</param>
-    public MultiSelectValue(params T[] values) => this.values.AddRange(values ?? []);
+    public MultiSelectValue(params T[] values) => _values.AddRange(values ?? []);
 
     /// <summary>
     /// Initialises a new instance of <see cref="MultiSelectValue{T}"/>.
@@ -27,7 +27,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     public MultiSelectValue() {}
 
     /// <inheritdoc/>
-    public int Count => values.Count;
+    public int Count => _values.Count;
 
     /// <inheritdoc/>
     public bool IsReadOnly => false;
@@ -37,10 +37,10 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     ~MultiSelectValue() => InternalDispose();
 
     /// <inheritdoc/>
-    public void Add(T item) => values.Add(item);
+    public void Add(T item) => _values.Add(item);
 
     /// <inheritdoc/>
-    public bool Remove(T item) => values.Remove(item);
+    public bool Remove(T item) => _values.Remove(item);
 
     /// <summary>
     /// Adds multiple enum values to the end of the collection.
@@ -60,7 +60,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// </summary>
     /// <param name="item">The enum value to locate.</param>
     /// <returns>true if the item is found in the collection; otherwise, false.</returns>
-    public bool Contains(T item) => values.Contains(item);
+    public bool Contains(T item) => _values.Contains(item);
 
     /// <summary>
     /// Determines whether the collection contains the specified string representation of an enum value.
@@ -74,14 +74,14 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// </summary>
     /// <param name="items">The enum values to locate.</param>
     /// <returns>true if the items are found in the collection; otherwise, false.</returns>
-    public bool ContainsAny(params T[] items) => values.ContainsAny(items);
+    public bool ContainsAny(params T[] items) => _values.ContainsAny(items);
 
     /// <summary>
     /// Determines whether the collection contains all of the specified enum values.
     /// </summary>
     /// <param name="items">The enum values to locate.</param>
     /// <returns>true if the items are found in the collection; otherwise, false.</returns>
-    public bool ContainsAll(params T[] items) => values.ContainsAll(items);
+    public bool ContainsAll(params T[] items) => _values.ContainsAll(items);
 
     /// <summary>
     /// Removes all enum values that match the specified predicate condition.<br/>
@@ -89,24 +89,24 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// </summary>
     /// <param name="predicate">A function that defines the condition for removing items.</param>
     /// <returns>The number of items removed from the collection.</returns>
-    public int RemoveAll(Func<T, bool> predicate) => values.Where(predicate).Count(Remove);
+    public int RemoveAll(Func<T, bool> predicate) => _values.Where(predicate).Count(Remove);
 
     /// <summary>
     /// Removes all enum values from the collection.
     /// </summary>
-    public void Clear() => values.Clear();
+    public void Clear() => _values.Clear();
 
     /// <summary>
     /// Gets the first value in the collection.
     /// </summary>
     /// <returns>Returns the first value.</returns>
-    public T First() => values.First();
+    public T First() => _values.First();
 
     /// <inheritdoc cref="Enumerable.Select"/>
-    public IEnumerable<E> Select<E>(Func<T, E> predicate) => values.Select(predicate);
+    public IEnumerable<E> Select<E>(Func<T, E> predicate) => _values.Select(predicate);
 
     /// <inheritdoc cref="Enumerable.SelectMany"/>
-    public IEnumerable<E> SelectMany<E>(Func<T, IEnumerable<E>> predicate) => values.SelectMany(predicate);
+    public IEnumerable<E> SelectMany<E>(Func<T, IEnumerable<E>> predicate) => _values.SelectMany(predicate);
 
     /// <summary>
     /// Converts the collection to its string representation.
@@ -118,7 +118,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     public override bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
 
     /// <inheritdoc/>
-    public bool Equals(MultiSelectValue<T> other) => other is not null && values.SetEquals(other.values);
+    public bool Equals(MultiSelectValue<T> other) => other is not null && _values.SetEquals(other._values);
 
     /// <inheritdoc/>
     public override int GetHashCode() => Values.GetHashCode();
@@ -128,7 +128,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
         if (Disposed)
             return;
 
-        values.Clear();
+        _values.Clear();
         Disposed = true;
     }
 
@@ -143,11 +143,11 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     public IEnumerable<byte> GetBytes()
     {
         // All enums within the code base use byte
-        yield return (byte)values.Count;
+        yield return (byte)_values.Count;
 
         var type = typeof(byte);
 
-        foreach (var value in values)
+        foreach (var value in _values)
             yield return (byte)Convert.ChangeType(value, type);
     }
 
@@ -157,14 +157,14 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
         var count = reader.ReadByte();
 
         while (count-- > 0)
-            values.Add((T)Enum.ToObject(typeof(T), reader.ReadByte()));
+            _values.Add((T)Enum.ToObject(typeof(T), reader.ReadByte()));
     }
 
     /// <inheritdoc/>
-    public void CopyTo(T[] array, int arrayIndex) => values.CopyTo(array, arrayIndex);
+    public void CopyTo(T[] array, int arrayIndex) => _values.CopyTo(array, arrayIndex);
 
     /// <inheritdoc/>
-    public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)values).GetEnumerator();
+    public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)_values).GetEnumerator();
 
     /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -179,7 +179,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// Converts the current instance to its array representation of values.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    public static implicit operator T[](MultiSelectValue<T> value) => [ .. value.values ];
+    public static implicit operator T[](MultiSelectValue<T> value) => [ .. value._values ];
 
     /// <summary>
     /// Converts the current instance to one singular value.
@@ -188,7 +188,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// <exception cref="InvalidOperationException">Thrown if there were either no values, or more than one value.</exception>
     public static implicit operator T(MultiSelectValue<T> value) =>
         value.Count == 1
-            ? value.values.First()
+            ? value._values.First()
             : throw new InvalidOperationException($"Tried to convert multiple or no values ({value.Values}) to a singular one");
 
     /// <summary>
@@ -244,7 +244,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// <param name="right">Right.</param>
     public static MultiSelectValue<T> operator +(MultiSelectValue<T> left, IEnumerable<T> right)
     {
-        left.values.AddRange(right);
+        left._values.AddRange(right);
         return left;
     }
 
@@ -255,7 +255,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// <param name="right">Right.</param>
     public static MultiSelectValue<T> operator -(MultiSelectValue<T> left, IEnumerable<T> right)
     {
-        left.values.RemoveRange(right);
+        left._values.RemoveRange(right);
         return left;
     }
 }
@@ -263,8 +263,6 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
 [Serializable]
 public struct RoleOptionData(byte chance, byte count, bool unique, bool active, Layer layer) : INetSerializable, INetDeserializable, IEquatable<RoleOptionData>
 {
-    public RoleOptionData() : this(0, 0, false, false, Layer.None) {}
-
     public byte Chance = chance;
     public byte Count = count;
     public bool Unique = unique;
@@ -313,8 +311,6 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
 [Serializable]
 public struct Number(float num) : IComparable, IFormattable, INetSerializable, INetDeserializable, IEquatable<Number>, IComparable<Number>
 {
-    public Number() : this(0) {}
-
     /// <summary>
     /// Gets the value.
     /// </summary>

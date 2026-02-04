@@ -198,6 +198,9 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
 
         if (Local)
             EnteringLayer();
+
+        if (this is ISpeedModifier speedMod)
+            ISpeedModifier.AllModifiers.Add(speedMod);
     }
 
     /// <summary>
@@ -421,10 +424,8 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     /// </summary>
     public void GameEnd(HashSet<byte> winnerIds)
     {
-        if (!Player || !Player.Data || Disconnected || Deinitialised)
-            return;
-
-        CheckWin(winnerIds);
+        if (Player && Player.Data && !Disconnected && !Deinitialised)
+            CheckWin(winnerIds);
     }
 
     /// <summary>
@@ -459,7 +460,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     }
 
     /// <inheritdoc/>
-    public IEnumerable<byte> GetBytes() => [ PlayerId, (byte)Type ];
+    public IEnumerable<byte> GetBytes() => [PlayerId, (byte)Type];
 
     /// <summary>
     /// Equality check.
@@ -491,7 +492,7 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     public static implicit operator bool(PlayerLayer exists) => exists is not null;
 
     /// <summary>
-    /// Gets all layers of a specific type.
+    /// Gets all layers of a type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of the layer.</typeparam>
     /// <param name="includeIgnored">Flag indicating whether or not deinitialises layers should also be fetched.</param>

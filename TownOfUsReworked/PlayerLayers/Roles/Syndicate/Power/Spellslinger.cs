@@ -16,14 +16,14 @@ public sealed class Spellslinger : SHead
     public override Layer Type => Layer.Spellslinger;
     public override string StartText => "Place the <#8CFFFFFF>Crew</color> Under A Curse";
     public override string Description => $"- You can spellbind players\n- When all non-{FactionColorString}{Handler.CurrentFaction}</color> players are spelled the game ends in a " +
-        $"{FactionColorString}{Handler.CurrentFaction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n" +
+        $"{FactionColorString}{Handler.CurrentFaction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : string.Empty)}\n" +
         CommonAbilities;
 
     public override void Init()
     {
         base.Init();
         Spelled.Clear();
-        SpellButton ??= new(this, new SpriteName("Spellbind"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,
+        SpellButton ??= new(this, new SpriteName("Spellbind"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Spell, new Cooldown(SpellCd), "SPELLBIND", (DifferenceFunc)Difference,
             (PlayerBodyExclusion)Exception1);
     }
 

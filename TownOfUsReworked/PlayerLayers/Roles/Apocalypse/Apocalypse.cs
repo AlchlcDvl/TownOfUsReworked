@@ -30,7 +30,7 @@ public abstract class Apocalypse : Role
         : (BadGuysSettings.PandoricaOpens && BadGuysSettings.PandoricaMembers == PandoricaType.Apocalypse
             ? Faction.Pandorica : Faction.Apocalypse);
 
-    protected string CommonAbilities => Player.CanSabotage() ? "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : "";
+    protected string CommonAbilities => Player.CanSabotage() ? "\n- You can call sabotages to distract the <#8CFFFFFF>Crew</color>" : string.Empty;
 
     public override List<PlayerControl> Team()
     {

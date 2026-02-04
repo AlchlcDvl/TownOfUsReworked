@@ -49,7 +49,7 @@ public sealed class Whisperer : Neophyte
         base.Init();
         Objectives = () => "- Persuade or kill anyone who can oppose the <#F995FCFF>Cult</color>";
         WhisperConversion = WhisperRate;
-        WhisperButton ??= new(this, new SpriteName("Whisper"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",
+        WhisperButton ??= new(this, new SpriteName("Whisper"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Whisper, new Cooldown(WhisperCd), "WHISPER",
             (DifferenceFunc)Difference);
         PlayerConversion.Clear();
         AllPlayers().Do(x => PlayerConversion.Add(x.PlayerId, 100));

@@ -79,8 +79,8 @@ This mod is a mish mash of code and ideas from different games, mods and forks, 
   - [Bug Reports, Suggestions & Additions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#bug--suggestions--additions)
   - [Layer Explanation And Assignment](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#layer-explanation-and-assignment)
 - [**Credits & Resources**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Credits)
-- [**License**](#license)
 - [**Player Layers**](#player-layers)
+- [**License**](#license)
 
 | [Intruders](#intruder-roles)       | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Outcasts](#outcast-roles)        | [Apocalypse](#apocalypse-roles) | [Game Mode](#game-mode-roles) |
 |------------------------------------|-------------------------------|-----------------------------------|-----------------------------------|---------------------------------|-------------------------------|
@@ -310,7 +310,7 @@ The Detective can examine other players for bloody hands and footprints. If the 
 
 **Origin**: Better TOS Marshall
 
-The Dictator has the ability to call tribunals. Upon calling the first tribunal, the Dictator is revealed to all players and any and all existing shields and traps will be broken. After calling a tribunal, during the next meeting, the Dictator can choose to eject one additional person alongside the one voted to be ejected. If the chosen person is a faithful crew, the Dictator commits suicide after the meeting is over. A revealed Dictator cannot be protected, but can be revived.
+The Dictator has the ability to call tribunals. Upon calling the first tribunal, the Dictator is revealed to all players and any and all existing shields and traps on the Dictator will be broken. After calling a tribunal, during the next meeting, the Dictator can choose to eject one additional person alongside the one voted to be ejected. If the chosen person is a faithful crew, the Dictator commits suicide after the meeting is over. A revealed Dictator cannot no longer be protected, but can be revived.
 
 **Game Options**
 
@@ -341,7 +341,7 @@ The Escort can roleblock players and prevent them from doing anything for a shor
 
 **Origin**: Town Of Salem
 
-The Mayor can reveal themselves as the Mayor to other players. Upon doing so, the value of their vote increases and any and all existing shields and traps will be broken. A revealed Mayor cannot be protected, but can be revived.
+The Mayor can reveal themselves as the Mayor to other players. Upon doing so, the value of their vote increases and any and all existing shields and traps on the Mayor will be broken. A revealed Mayor can no longer be protected, but can be revived.
 
 **Game Options**
 
@@ -434,7 +434,7 @@ The Operative can place bugs around the map. When players enter the range of the
 
 **Origin**: Town Of Us Imitator
 
-The Retributionist can mimic dead crewmates. During meetings, the Retributionist can select who they are going to mimic for the following round from the dead. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
+The Retributionist can mimic the roles of dead crewmates. During meetings, the Retributionist can select who they are going to mimic for the following round from the dead. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
 
 ## Revealer <img height="17" src="./Images/Revealer.png">
 
@@ -590,7 +590,7 @@ The Actor gets a list of roles at the start of the game. Alternatively, the Acto
 
 **Origin**: Town Of Salem
 
-The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player. When there is only 4 players left, the Amnesiac becomes a [Thief](#thief).
+The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player. When there is 4 or lower players left, the Amnesiac becomes a [Thief](#thief).
 
 **Game Options**
 
@@ -607,11 +607,11 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 
 **Origin**: Town Of Salem
 
-**Attack**: Unstoppable
+**Attack**: Unstoppable when igniting
 
 **Defense**: Basic when up to 2 players are doused
 
-The Arsonist can douse players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once. Doused players have an orange Ξ next to their names. Upon igniting, the Arsonist may cremate the body, leaving behind unreportable ash that is visible to all players. The Arsonist has basic defense when they have at most 2 players doused. When trying to ignite players, if they are doused by a Cryomaniac, the douse is removed for both and the target is spared.
+The Arsonist can douse players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once. Doused players have an orange Ξ next to their names. Upon igniting, the Arsonist may cremate the body, leaving behind unreportable ash that is visible to all players. The Arsonist has basic defense when they have at most 2 players doused. When trying to ignite players, if they are doused by a Cryomaniac, the douse is removed for both and the target is spared from death.
 
 **Game Options**
 
@@ -649,36 +649,17 @@ The Bounty Hunter is assigned a target as the start of the game. Alternatively, 
 | Bounty Hunter Can Indirectly Pick Their Own Target | Whether the Bounty Hunter can choose a player to pick a target for them | Toggle | False |
 | Vigilante Kills Bounty Hunter | Whether the Vigilante is able to kill the Bounty Hunter | Toggle | False |
 
-## Cannibal <img height="17" src="./Images/Cannibal.png">
-
-**Alignment**: Outcast (Evil)
-
-**Win Condition**: Eat a certain number of bodies
-
-**Origin**: The Other Roles Vulture
-
-The Cannibal can eat the body which wipes it away, like the Janitor.
-
-**Game Options**
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Bodies Needed To Win | Self-descriptive | Number | 5 or changes to half the lobby size if not enough players |
-| Cannibal Gets Arrows | Whether the Cannibal has arrows pointing to dead bodies | Toggle | False |
-| Hunger Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
-| Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
-
 ## Cryomaniac <img height="17" src="./Images/Cryomaniac.png">
 
 **Alignment**: Outcast (Killing)
 
 **Win Condition**: Freeze anyone who can oppose them
 
-**Attack**: Unstoppable
+**Attack**: Unstoppable when freezing, Basic when directly attacking
 
 **Defense**: Basic when up to 2 players are doused
 
-The Cryomaniac can douse players in coolant and freeze them similar to the Arsonist's dousing in gasoline and ignition. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac may also directly kill. Doused players have a purple λ next to their names. The Cryomaniac has basic defense when they have at most 2 players doused. When trying to freeze players, if they are doused by an Arsonist, the douse is removed for both and the target is spared.
+The Cryomaniac can douse players in coolant and freeze them similar to the Arsonist's dousing in gasoline and ignition. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac may also directly kill. Doused players have a purple λ next to their names. The Cryomaniac has basic defense when they have at most 2 players doused. When trying to freeze players, if they are doused by an Arsonist, the douse is removed for both and the target is spared from death.
 
 **Game Options**
 
@@ -732,7 +713,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 
 **Alignment**: Outcast (Killing)
 
-**Win Condition**: Outcastise anyone who can oppose them
+**Win Condition**: Neutralise anyone who can oppose them
 
 **Origin**: Town Of Us
 
@@ -740,7 +721,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 
 **Defense**: Powerful when hacking
 
-The Glitch can mimic someone, which results in them looking exactly like the other person. They can kill normally. The Glitch can also hack a player, rendering them unable to use their ability or perform tasks and disabling their defense while gaining Powerful defense in return.
+The Glitch can mimic someone, which results in them looking exactly like the other person. They can kill normally. The Glitch can also hack a player, rendering them unable to use their ability or perform tasks and disabling their defense while the Glitch gains Powerful defense in return.
 
 ## Guardian Angel <img height="17" src="./Images/GuardianAngel.png">
 
@@ -889,7 +870,7 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 
 **Origin**: Ottomated
 
-The Phantom spawns when an Outcast player dies without accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
+The Phantom spawns when an Outcast player dies without accomplishing their objective and cannot do so postmortem. They become half-invisible and have to complete all their tasks without getting clicked on to win.
 
 **Game Options**
 
@@ -920,7 +901,7 @@ Although the Serial Killer has a kill button, they can't use it unless they are 
 
 **Origin**: Town Of Us, Town Of Salem 2 Cursed Soul
 
-The Shifter can choose to swap roles with someone. The Shifter has a 50% chance to shift with their target, or someone else.
+The Shifter can choose to swap roles with someone. The Shifter has a 50% chance to shift with their target, or someone else. They win when everyone with the Shifter role dies (excluding those who already started out the Shifter role)
 
 ## Survivor <img height="17" src="./Images/Survivor.png">
 
@@ -964,7 +945,7 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 
 **Attack**: Unstoppable
 
-The Troll just wants to be killed, but not ejected. The Troll can "interact" with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll kill their killer.
+The Troll just wants to be killed, but not ejected. The Troll can "interact" with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll attack their killer.
 
 ## Werewolf <img height="17" src="./Images/Werewolf.png">
 
@@ -1093,7 +1074,7 @@ The Consort can roleblock players and prevent them from doing anything for a sho
 
 **Origin**: Partly Town Of Salem
 
-The Disguiser can disguise other players. At the beginning of each, they can choose someone to measure. They can then disguise the next nearest person into the measured person for a limited amount of time after a short delay.
+The Disguiser can disguise other players. At the beginning of each round, they can choose someone to measure. They can then disguise the next nearest person into the measured person for a limited amount of time after a short delay.
 
 **Game Options**
 
@@ -1460,6 +1441,23 @@ Each member starts off extremely weak, but can become extremely powerful as the 
 | Deities Can Spawn Directly | Dictates whether deity roles can appear without having to complete objectives for them | Toggle | False |
 | Transformation Alerts Everyone | Dictates whether everyone is alerted when a deity role appears | Toggle | False |
 
+## Cannibal <img height="17" src="./Images/Cannibal.png">
+
+**Alignment**: Apocalypse (Harbinger)
+
+**Origin**: The Other Roles Vulture
+
+The Cannibal can eat the body which wipes it away, like the Janitor. Once the Cannibal has eaten a certain number of bodies, they evolve into [Gluttony](#gluttony).
+
+**Game Options**
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Bodies Needed To Transform | Self-descriptive | Number | 5 or changes to half the lobby size if not enough players |
+| Cannibal Gets Arrows | Whether the Cannibal has arrows pointing to dead bodies | Toggle | False |
+| Hunger Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
+| Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
+
 ## Cultist <img height="17" src="./Images/Cultist.png">
 
 **Alignment**: Apocalypse (Harbinger)
@@ -1478,7 +1476,7 @@ The Cultist is the basic Apocalypse role. They can only kill once per round and 
 
 **Defense**: Invincible
 
-When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targeting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, kill them instantly. Stacks cannot be spread to Outcast (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
+When Pestilence first emerges, every player is given one stack of a deadly plague. For every time a player interacts with someone, they will give their target a stack of the deadly plague. However, targeting Pestilence will give the interactor a stack instead. If a player gets 3 or more stacks, they succumb to the disease. Pestilence can spread the disease directly to a player, overriding their stacks and directly giving their target 4 stacks, killing them instantly. Stacks cannot be spread to Outcast (Harbinger) or (Apocalypse) roles. Stacks on players are denoted by a dark grey 米 in their names.
 
 ## Plaguebearer <img height="17" src="./Images/Plaguebearer.png">
 

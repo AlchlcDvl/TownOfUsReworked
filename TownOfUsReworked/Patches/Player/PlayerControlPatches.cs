@@ -329,7 +329,7 @@ public static class PlayerInfoPatches
             __result = outfit.ColorId.IsDefault() ? (translation[0] + translation[1..].ToLower()) : translation;
         }
         else
-            __result = "";
+            __result = string.Empty;
 
         return false;
     }

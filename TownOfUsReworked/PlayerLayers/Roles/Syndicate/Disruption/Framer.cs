@@ -23,9 +23,9 @@ public sealed class Framer : Disruption
     {
         base.Init();
         Framed.Clear();
-        FrameButton ??= new(this, new SpriteName("Frame"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
+        FrameButton ??= new(this, new SpriteName("Frame"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Frame, new Cooldown(FrameCd), "FRAME", (UsableFunc)Usable1,
             (PlayerBodyExclusion)Exception1);
-        RadialFrameButton ??= new(this, new SpriteName("RadialFrame"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)RadialFrame, new Cooldown(FrameCd), "FRAME",
+        RadialFrameButton ??= new(this, new SpriteName("RadialFrame"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)RadialFrame, new Cooldown(FrameCd), "FRAME",
             (UsableFunc)Usable2);
     }
 

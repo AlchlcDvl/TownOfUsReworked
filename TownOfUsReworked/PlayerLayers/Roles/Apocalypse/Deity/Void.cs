@@ -27,9 +27,9 @@ public sealed class Void : Deity
     public override void Init()
     {
         base.Init();
-        ExtractButton ??= new(this, new SpriteName("Extract"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Extract, (PlayerBodyExclusion)Exception, "EXTRACT",
+        ExtractButton ??= new(this, new SpriteName("Extract"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Extract, (PlayerBodyExclusion)Exception, "EXTRACT",
             new Cooldown(ExtractCd));
-        BanishButton ??= new(this, new SpriteName("Banish"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Banish, (PlayerBodyExclusion)Exception, "BANISH",
+        BanishButton ??= new(this, new SpriteName("Banish"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Banish, (PlayerBodyExclusion)Exception, "BANISH",
             new Cooldown(BanishCd));
     }
 

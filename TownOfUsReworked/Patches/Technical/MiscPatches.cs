@@ -93,7 +93,7 @@ public static class PooledMapIconPatch
         }
 
         text.transform.localPosition = new(0, 0, -20);
-        text.text = "";
+        text.text = string.Empty;
         text.gameObject.SetActive(false);
     }
 }
@@ -105,7 +105,7 @@ public static class PlayerDataPatch
     [HarmonyPatch(typeof(LegacySaveManager), nameof(LegacySaveManager.GetPrefsName))]
     [HarmonyPatch(typeof(SettingsData), nameof(SettingsData.FileName), MethodType.Getter)]
     // ReSharper disable once HeuristicUnreachableCode
-    public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : "");
+    public static void Postfix(ref string __result) => __result += "_ToU-Rew" + (TownOfUsReworked.IsDev || TownOfUsReworked.IsStream ? "D" : string.Empty);
 }
 
 [HarmonyPatch(typeof(SecurityLogger), nameof(SecurityLogger.Awake))]
@@ -351,7 +351,7 @@ public static class EmergencyMinigameUpdatePatch
             "GameMode" => "Don't call meetings",
             _ => $"{(LocalPlayer.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
         };
-        __instance.NumberText.text = "";
+        __instance.NumberText.text = string.Empty;
         __instance.ClosedLid.gameObject.SetActive(true);
         __instance.OpenLid.gameObject.SetActive(false);
         __instance.ButtonActive = false;
@@ -370,7 +370,7 @@ public static class LobbyBehaviourPatch
         Client.Instance.Page = 0;
         Client.Instance.Buttons.Clear();
         Client.Instance.CloseMenus();
-        FreeplayPatches.PreviouslySelected.Clear();
+        // FreeplayPatches.PreviouslySelected.Clear();
         var count = MciUtils.Clients.Count;
         Debugging.Instance.TestWindow.Enabled = TownOfUsReworked.MciActive && IsLocalGame();
         MciUtils.Clients.Clear();

@@ -12,7 +12,7 @@ public sealed class Fanatic : FactionChanger
     protected override UColor MainColor => CustomColorManager.Fanatic;
     public override string Symbol => "♠";
     public override Layer Type => Layer.Fanatic;
-    public override string Description => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : "";
+    public override string Description => !Turned ? "- Get attacked by either an <#FF1919FF>Intruder</color> or a <#008000FF>Syndicate</color> to join their side" : string.Empty;
     public override bool Hidden => !FanaticKnows && !Turned && !Dead;
     public override bool SnitchReveals => Snitch.SnitchSeesFanatic;
     public override bool RevealerReveals => Revealer.RevealerRevealsFanatic;

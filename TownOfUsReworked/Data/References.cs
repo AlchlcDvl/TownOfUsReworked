@@ -413,7 +413,7 @@ public static class References
         "Man I'm ded",
         "gaming",
         "WHO LET BRO COOK?",
-        "",
+        string.Empty,
         "Let me introduce you to our sponsor, Raid-",
         "Push to production is my motto. Bugs? meh public release go brr",
         "If it's not a bug, it's a feature",

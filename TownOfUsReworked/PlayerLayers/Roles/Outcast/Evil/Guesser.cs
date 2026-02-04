@@ -65,7 +65,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
 
         if (GuesserCanPickTargets || !TargetPlayer)
         {
-            TargetButton ??= new(this, new SpriteName("GuessTarget"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
+            TargetButton ??= new(this, new SpriteName("GuessTarget"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SelectTarget, (PlayerBodyExclusion)Exception, "AGONISE",
                 (UsableFunc)Usable);
         }
     }
@@ -251,7 +251,7 @@ public sealed class Guesser : Evil, IGuesser, ITargeter
         GuessMenu.GenButtons(__instance, RemainingGuesses > 0);
 
         var targetRole = TargetPlayer.GetRole();
-        var something = "";
+        var something = string.Empty;
         var newRoleName = targetRole.Name;
         var roleChanged = RoleName != newRoleName && !IsNullEmptyOrWhiteSpace(RoleName);
         RoleName = newRoleName;

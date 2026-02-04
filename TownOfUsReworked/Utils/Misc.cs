@@ -1,4 +1,6 @@
-﻿namespace TownOfUsReworked.Utils;
+﻿using System.Runtime.CompilerServices;
+
+namespace TownOfUsReworked.Utils;
 
 public static class MiscUtils
 {
@@ -322,7 +324,7 @@ public static class MiscUtils
     public static string GetRandomisedName(string chars = Everything, int maxLength = 11)
     {
         var length = URandom.RandomRangeInt(0, maxLength);
-        var name = "";
+        var name = string.Empty;
 
         while (name.Length < length)
             name += chars[URandom.RandomRangeInt(0, chars.Length)];
@@ -623,7 +625,7 @@ public static class MiscUtils
     public static string WrapTexts(IEnumerable<string> texts, int width = 90, bool overflow = true)
     {
         if (!texts.Any())
-            return "";
+            return string.Empty;
 
         var result = WrapText(texts.First(), width, overflow);
         texts.Skip(1).Do(x => result += $"\n{WrapText(x, width, overflow)}");
@@ -664,11 +666,11 @@ public static class MiscUtils
 
     public static string SanitisePath(this string path)
     {
-        path = path.ReplaceAll("", ".png", ".wav", ".txt", ".mat", ".json", ".anim", ".shader");
+        path = path.ReplaceAll(string.Empty, ".png", ".wav", ".txt", ".mat", ".json", ".anim", ".shader");
 #if ANDROID
-        path = path.Replace(".bundle_android", "");
+        path = path.Replace(".bundle_android", string.Empty);
 #elif PC
-        path = path.Replace(".bundle_pc", "");
+        path = path.Replace(".bundle_pc", string.Empty);
 #endif
         path = path.TrueSplit('/')[^1];
         path = path.TrueSplit('\\')[^1];
@@ -783,7 +785,7 @@ public static class MiscUtils
     {
         FieldInfo field => field.GetValue(obj),
         PropertyInfo prop => prop.GetValue(obj),
-        _ => throw new ArgumentException($"Either the member doesn't have a defined GetValue method, or the value can't be fetched for this member: {member.GetType().Name}")
+        _ => throw new ArgumentException($"Either the member doesn't have a defined GetValue method, or the value can't be fetched for this member: {member.Name} ({member.GetType().Name})")
     };
 
     public static void SetValue(this MemberInfo member, object obj, object value)
@@ -801,7 +803,7 @@ public static class MiscUtils
                 break;
             }
             default:
-                throw new ArgumentException($"Either the member doesn't have a defined SetValue method, or the value can't be set for this member: {member.GetType().Name}");
+                throw new ArgumentException($"Either the member doesn't have a defined SetValue method, or the value can't be set for this member: {member.Name} ({member.GetType().Name})");
         }
     }
 
@@ -837,9 +839,21 @@ public static class MiscUtils
         }
     }
 
+    private static readonly Dictionary<Type, Array> EnumValuesCache = [];
+
+    private static T[] GetValuesCached<T>() where T : struct, Enum
+    {
+        var type = typeof(T);
+
+        if (!EnumValuesCache.TryGetValue(type, out var values))
+            EnumValuesCache[type] = values = Enum.GetValues<T>();
+
+        return (T[])values;
+    }
+
     public static IEnumerable<T> GetValuesFromTo<T>(T start, T end, Func<T, bool> predicate = null, bool startInclusive = true, bool endInclusive = true) where T : struct, Enum
     {
-        var values = Enum.GetValues<T>();
+        var values = GetValuesCached<T>();
         var startIndex = values.IndexOf(start);
         var endIndex = values.IndexOf(end);
         var result = values.Where(x => values.IndexOf(x).IsInRange(startIndex, endIndex, startInclusive, endInclusive));
@@ -998,7 +1012,7 @@ public static class MiscUtils
 
         if (!killer.Is<Gluttony>())
         {
-            deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
+            // deadBody = UObject.Instantiate(GameManager.Instance.DeadBodyPrefab);
             deadBody.name = victim.name + "Body";
             deadBody.enabled = false;
             deadBody.ParentId = victim.PlayerId;
@@ -1116,15 +1130,15 @@ public static class MiscUtils
 
     // public static string Join(string separator, params object[] values) => Join<object>(separator, values);
 
-    public static string Join<T>(char separator, IEnumerable<T> items) => Join($"{separator}", items);
+    public static string Join<T>(char separator, IEnumerable<T> items) => Join(separator.ToString(), items);
 
     public static string Join<T>(string separator, IEnumerable<T> items)
     {
         if (!items.Any())
-            return "";
+            return string.Empty;
 
-        var result = "";
-        items.Do(x => result += $"{separator}{x}");
+        var result = string.Empty;
+        items.Do(x => result += separator + x);
         return result[separator.Length..];
     }
 
@@ -1159,4 +1173,46 @@ public static class MiscUtils
     }
 
     // public static float Average(params float[] values) => values.Sum() / values.Length;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool HasFlagFast<T>(this T value, T flag) where T : struct, Enum
+    {
+        switch (Unsafe.SizeOf<T>())
+        {
+            case 1:
+            {
+                var v = Unsafe.As<T, byte>(ref value);
+                var f = Unsafe.As<T, byte>(ref flag);
+                return (v & f) == f;
+            }
+            case 2:
+            {
+                var v = Unsafe.As<T, short>(ref value);
+                var f = Unsafe.As<T, short>(ref flag);
+                return (v & f) == f;
+            }
+            case 3:
+            {
+                var v = Unsafe.As<T, int>(ref value);
+                var f = Unsafe.As<T, int>(ref flag);
+                return (v & f) == f;
+            }
+            case 4:
+            {
+                var v = Unsafe.As<T, long>(ref value);
+                var f = Unsafe.As<T, long>(ref flag);
+                return (v & f) == f;
+            }
+            default:
+                throw new NotSupportedException($"Enum size of {Unsafe.SizeOf<T>()} bytes is not supported.");
+        }
+    }
+
+    public static void FullClear<T>(this List<T> list) where T : IDisposable
+    {
+        foreach (var item in list)
+            item.Dispose();
+
+        list.Clear();
+    }
 }

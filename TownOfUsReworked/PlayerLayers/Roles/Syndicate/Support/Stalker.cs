@@ -12,14 +12,14 @@ public sealed class Stalker : SSupport
     protected override UColor MainColor => CustomColorManager.Stalker;
     public override Layer Type => Layer.Stalker;
     public override string StartText => "Stalk Everyone To Monitor Their Movements";
-    public override string Description => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
+    public override string Description => "- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : string.Empty) + "\n" +
         CommonAbilities;
 
     public override void Init()
     {
         base.Init();
         StalkerArrows.Clear();
-        StalkButton ??= new(this, new SpriteName("Stalk"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
+        StalkButton ??= new(this, new SpriteName("Stalk"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Stalk, new Cooldown(StalkCd), "STALK", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception1);
     }
 

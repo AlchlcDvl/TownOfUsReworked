@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 [LayerHeaderOption(Layer.Timekeeper)]
-public sealed class Timekeeper : Disruption
+public sealed class Timekeeper : Disruption, ISpeedModifier
 {
     [NumberOption(10f, 60f, 2.5f, Format.Time)]
     private static Number TimeCd = 25;
@@ -29,7 +29,7 @@ public sealed class Timekeeper : Disruption
     public override void Init()
     {
         base.Init();
-        TimeButton ??= new(this, new SpriteName("Time"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
+        TimeButton ??= new(this, new SpriteName("Time"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)TimeControl, new Cooldown(TimeCd), (LabelFunc)Label,
             (EffectEndVoid)UnControl, new Duration(TimeDur), (EffectStartVoid)ControlStart, (UsableFunc)Usable);
         TkExists = true;
     }
@@ -58,4 +58,15 @@ public sealed class Timekeeper : Disruption
     private string Label() => HoldsDrive ? "REWIND" : "FREEZE";
 
     private bool Usable() => (!HoldsDrive || TkFaction == Faction.None) && !Handler.Rewinding;
+
+    public void ModifySpeed(PlayerControl player, ref float result)
+    {
+        if (!TimeButton.EffectActive)
+            return;
+
+        // (tk. ||
+
+        if ((Handler.CurrentFaction.IsFactionedEvil() && !Player.Is(Handler.CurrentFaction)) || (!HoldsDrive && !TimeFreezeImmunity) || (HoldsDrive && !TimeRewindImmunity))
+            result = 0f;
+    }
 }

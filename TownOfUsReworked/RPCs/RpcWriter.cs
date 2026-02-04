@@ -1,5 +1,4 @@
 using System.Buffers;
-using AmongUs.InnerNet.GameDataMessages;
 
 namespace TownOfUsReworked.RPCs;
 

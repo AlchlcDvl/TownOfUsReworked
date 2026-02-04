@@ -285,8 +285,8 @@ public sealed class LayerOption(string hexCode, Layer layer, bool noParts = fals
         return GameModeSettings.GameMode switch
         {
             Mode.Classic => $"{val.Chance}% x{val.Count}",
-            Mode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? "" : "Non-")}Unique",
-            Mode.List => $"{(val.Unique ? "" : "Non-")}Unique",
+            Mode.AllAny => $"{(val.Active ? "A" : "Ina")}ctive & {(val.Unique ? string.Empty : "Non-")}Unique",
+            Mode.List => $"{(val.Unique ? string.Empty : "Non-")}Unique",
             _ => "Invalid"
         };
     }
@@ -325,8 +325,8 @@ public sealed class LayerOption(string hexCode, Layer layer, bool noParts = fals
 
         Button.gameObject.SetActive(GroupHeader?.GroupMembers?.Any(x => x.PartiallyActive()) == true);
 
-        view.chanceText.text = SavedMode == Mode.Classic ? $"{data.Chance}%" : "";
-        view.settingText.text = SavedMode == Mode.Classic ? $"x{data.Count}" : "";
+        view.chanceText.text = SavedMode == Mode.Classic ? $"{data.Chance}%" : string.Empty;
+        view.settingText.text = SavedMode == Mode.Classic ? $"x{data.Count}" : string.Empty;
 
         CenterCheck.SetActive(SavedMode == Mode.List && data.Unique);
         CenterCross.SetActive(SavedMode == Mode.List && !data.Unique);
@@ -356,19 +356,19 @@ public sealed class LayerOption(string hexCode, Layer layer, bool noParts = fals
         CenterTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
             Mode.List => "Unique",
-            _ => ""
+            _ => string.Empty
         }));
         view.chanceTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
             Mode.Classic => "Chance",
             Mode.AllAny => "Unique",
-            _ => ""
+            _ => string.Empty
         }));
         LeftTitle.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
             Mode.Classic => "Count",
             Mode.AllAny => "Active",
-            _ => ""
+            _ => string.Empty
         }));
     }
 

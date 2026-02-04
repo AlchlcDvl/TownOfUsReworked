@@ -34,7 +34,7 @@ public sealed class Shapeshifter : Disruption
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Color, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Color, Exception2);
-        ShapeshiftButton ??= new(this, new SpriteName("Shapeshift"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd), (LabelFunc)Label,
+        ShapeshiftButton ??= new(this, new SpriteName("Shapeshift"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitShapeshift, new Cooldown(ShapeshiftCd), (LabelFunc)Label,
             (EffectEndVoid)UnShapeshift, new Duration(ShapeshiftDur), (EffectStartVoid)Shift, (EndFunc)EndEffect, (ClickedAgainVoid)OnClickedAgain);
     }
 

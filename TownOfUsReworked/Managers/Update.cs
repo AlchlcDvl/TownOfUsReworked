@@ -192,7 +192,7 @@ public static class UpdateManager
             // Check the Reworked version
             case "Reworked":
             {
-                var version = Version.Parse(data.Tag.Replace("v", ""));
+                var version = Version.Parse(data.Tag.Replace("v", string.Empty));
                 var diff = TownOfUsReworked.ModVer.CompareTo(version);
                 ReworkedUpdate = diff < 0 || (diff == 0 && TownOfUsReworked.DebugMode);
                 break;
@@ -200,7 +200,7 @@ public static class UpdateManager
             // Accounts for a broken version + checks the Submerged version
             case "Submerged" when SubLoaded:
             {
-                SubmergedUpdate = SubVersion is null || SubVersion.CompareTo(SemVer.Parse(data.Tag.Replace("v", ""))) < 0;
+                SubmergedUpdate = SubVersion is null || SubVersion.CompareTo(SemVer.Parse(data.Tag.Replace("v", string.Empty))) < 0;
                 break;
             }
         }

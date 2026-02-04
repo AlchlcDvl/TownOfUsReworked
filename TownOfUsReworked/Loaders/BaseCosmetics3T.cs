@@ -2,7 +2,6 @@
 #pragma warning disable CS0162 // Unreachable code detected
 
 using TownOfUsReworked.Patches.Cosmetics;
-using static CosmeticsLayer;
 
 namespace TownOfUsReworked.Loaders;
 

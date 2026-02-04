@@ -27,7 +27,7 @@ public sealed class Zealot : Neophyte
     {
         base.Init();
         Objectives = () => "- Convert or kill anyone who can oppose the <#917AC0FF>Followers</color>";
-        PreachButton ??= new(this, new SpriteName("Preach"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Convert, new Cooldown(PreachCd), "PREACH", (UsableFunc)Usable,
+        PreachButton ??= new(this, new SpriteName("Preach"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Convert, new Cooldown(PreachCd), "PREACH", (UsableFunc)Usable,
             (PlayerBodyExclusion)Exception);
     }
 

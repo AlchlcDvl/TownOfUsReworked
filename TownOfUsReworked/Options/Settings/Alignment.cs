@@ -144,19 +144,19 @@ public sealed class AlignmentOption(ListSlot alignment, bool noParts = false) : 
         Center.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
             Mode.List => "Unique",
-            _ => ""
+            _ => string.Empty
         }));
         Right.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
             Mode.Classic => "Chance",
             Mode.AllAny => "Unique",
-            _ => ""
+            _ => string.Empty
         }));
         Left.text = TranslationManager.Translate("RoleOption." + (SavedMode switch
         {
             Mode.Classic => "Count",
             Mode.AllAny => "Active",
-            _ => ""
+            _ => string.Empty
         }));
     }
 

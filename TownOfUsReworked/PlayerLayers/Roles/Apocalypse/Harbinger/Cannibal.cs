@@ -25,7 +25,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
     protected override UColor MainColor => CustomColorManager.Cannibal;
     public override Layer Type => Layer.Cannibal;
     public override string StartText => "Eat The Bodies Of The Dead";
-    public override string Description => "- You can consume a body, making it disappear" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" : "");
+    public override string Description => "- You can consume a body, making it disappear" + (EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" : string.Empty);
     public override bool CanVent => base.CanVent && CannibalVent;
     public override Defense Defense => EatNeed <= 2 ? Defense.None : Defense.Basic;
 
@@ -34,7 +34,7 @@ public sealed class Cannibal : Harbinger<Gluttony>
         Objectives = () => $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")} to bring forth <#A7C596FF>Gluttony</color>";
         BodyArrows.Clear();
         EatNeed = Mathf.Min(BodiesNeeded, GameData.Instance.PlayerCount / 2);
-        EatButton ??= new(this, new SpriteName("Eat"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Eat, new Cooldown(EatCd), "EAT");
+        EatButton ??= new(this, new SpriteName("Eat"), ReworkedAbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Eat, new Cooldown(EatCd), "EAT");
     }
 
     private void DestroyArrow(byte targetPlayerId)

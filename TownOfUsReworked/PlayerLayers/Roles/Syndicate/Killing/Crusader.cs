@@ -22,13 +22,13 @@ public sealed class Crusader : SKilling
     public override Layer Type => Layer.Crusader;
     public override string StartText => "Cleanse This Land Of The Unholy Filth";
     public override string Description => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
-        $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {ChaosDriveCrusadeRadius}m radius" : "")}\n{CommonAbilities}";
+        $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {ChaosDriveCrusadeRadius}m radius" : string.Empty)}\n{CommonAbilities}";
 
     public override void Init()
     {
         base.Init();
         CrusadedPlayer = null;
-        CrusadeButton ??= new(this, new SpriteName("Crusade"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(CrusadeCd), "CRUSADE", new Duration(CrusadeDur),
+        CrusadeButton ??= new(this, new SpriteName("Crusade"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Crusade, new Cooldown(CrusadeCd), "CRUSADE", new Duration(CrusadeDur),
             (EffectEndVoid)UnCrusade, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
     }
 

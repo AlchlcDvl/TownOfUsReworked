@@ -17,16 +17,16 @@ public sealed class Poisoner : SKilling
     protected override UColor MainColor => CustomColorManager.Poisoner;
     public override Layer Type => Layer.Poisoner;
     public override string StartText => "Delay A Kill To Deceive The <#8CFFFFFF>Crew</color>";
-    public override string Description => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {PoisonDur}s\n" + CommonAbilities;
+    public override string Description => $"- You can poison players{(HoldsDrive ? " from afar" : string.Empty)}\n- Poisoned players will die after {PoisonDur}s\n" + CommonAbilities;
 
     public override void Init()
     {
         base.Init();
         PoisonedPlayer = null;
         PoisonMenu = new(Player, Click, Color, Exception1);
-        PoisonButton ??= new(this, new SpriteName("Poison"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
+        PoisonButton ??= new(this, new SpriteName("Poison"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitPoison, new Cooldown(PoisonCd), "POISON", (UsableFunc)Usable1,
             new Duration(PoisonDur), (EffectEndVoid)UnPoison, (PlayerBodyExclusion)Exception1, (EndFunc)EndEffect);
-        GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGlobalPoison, (LabelFunc)Label,
+        GlobalPoisonButton ??= new(this, new SpriteName("GlobalPoison"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitGlobalPoison, (LabelFunc)Label,
             new Cooldown(PoisonCd), new Duration(PoisonDur), (EffectEndVoid)UnPoison, (UsableFunc)Usable2, (EndFunc)EndEffect);
     }
 

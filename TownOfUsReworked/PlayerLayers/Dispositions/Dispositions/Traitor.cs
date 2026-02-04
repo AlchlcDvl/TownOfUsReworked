@@ -12,7 +12,7 @@ public sealed class Traitor : FactionChanger
     protected override UColor MainColor => CustomColorManager.Traitor;
     public override string Symbol => "♣";
     public override Layer Type => Layer.Traitor;
-    public override string Description => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : "";
+    public override string Description => !Turned ? "- Finish your tasks to join either the <#FF1919FF>Intruders</color> or the <#008000FF>Syndicate</color>" : string.Empty;
     public override bool Hidden => !TraitorKnows && !Turned && !Dead;
     public override bool SnitchReveals => Snitch.SnitchSeesTraitor;
     public override bool RevealerReveals => Revealer.RevealerRevealsTraitor;

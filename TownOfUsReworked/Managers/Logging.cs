@@ -7,7 +7,7 @@ public static class LogManager
 {
     public static ManualLogSource Log;
     public static DiskLogListener DiskLog;
-    public static string SavedLogs { get; private set; } = "";
+    public static string SavedLogs { get; private set; } = string.Empty;
 
     private static void LogSomething(object message, Enum type, ManualLogSource log = null)
     {

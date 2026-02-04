@@ -42,7 +42,7 @@ public sealed class Operative : Investigative
     {
         BuggedPlayers.Clear();
         Bugs.Clear();
-        BugButton ??= new(this, "BUG", new SpriteName("Bug"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)PlaceBug, new Cooldown(BugCd), MaxBugs,
+        BugButton ??= new(this, "BUG", new SpriteName("Bug"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)PlaceBug, new Cooldown(BugCd), MaxBugs,
             (ConditionFunc)Condition);
     }
 
@@ -78,7 +78,7 @@ public sealed class Operative : Investigative
         {
             var result = BuggedPlayers[0];
             var aAn = result is Layer.Altruist or Layer.Engineer or Layer.Escort or Layer.Operative or Layer.Amnesiac or Layer.Actor or Layer.Arsonist or
-                Layer.Executioner or Layer.Ambusher or Layer.Enforcer or Layer.Impostor or Layer.Anarchist ? "n" : "";
+                Layer.Executioner or Layer.Ambusher or Layer.Enforcer or Layer.Impostor or Layer.Anarchist ? "n" : string.Empty;
             message = $"A{aAn} {result} triggered your bug.";
         }
         else if (PreciseOperativeInfo)

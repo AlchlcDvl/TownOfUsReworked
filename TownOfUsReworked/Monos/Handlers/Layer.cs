@@ -74,7 +74,7 @@ public sealed class LayerHandler : RoleBehaviour
 
     public ChatChannel Channels { get; set; }
 
-    public string KilledBy { get; set; } = "";
+    public string KilledBy { get; set; } = string.Empty;
     public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
 
     public bool Diseased { get; set; }
@@ -322,17 +322,17 @@ public sealed class LayerHandler : RoleBehaviour
 
             // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
             // {
-            //     CallButton ??= new(CurrentRole, "CALL PLATFORM", "CallPlatform", AbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
+            //     CallButton ??= new(CurrentRole, "CALL PLATFORM", "CallPlatform", ReworkedAbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
             //         (ConditionFunc)CallCondition);
             // }
 
             if (GameModeSettings.GameMode is not (Mode.HideAndSeek or Mode.TaskRace))
             {
                 if (RoleGenManager.GetSpawnItem(Layer.Enforcer).IsActive())
-                    BombKillButton ??= new(CurrentRole, "KILL", new SpriteName("BombKill"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+                    BombKillButton ??= new(CurrentRole, "KILL", new SpriteName("BombKill"), ReworkedAbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
 
                 if (BountyHunter.BountyHunterCanPickTargets && RoleGenManager.GetSpawnItem(Layer.BountyHunter).IsActive())
-                    PlaceHitButton ??= new(CurrentRole, "PLACE HIT", new SpriteName("PlaceHit"), AbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
+                    PlaceHitButton ??= new(CurrentRole, "PLACE HIT", new SpriteName("PlaceHit"), ReworkedAbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
             }
         }
         else
@@ -511,22 +511,22 @@ public sealed class LayerHandler : RoleBehaviour
 
     private const string CrewWinCon = "- Finish all tasks\n- Eject all <#FF0000FF>evildoers</color>";
 
-    private static string IntrudersWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string IntrudersWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : string.Empty) +
         "- Kill anyone who opposes the <#FF0000FF>Intruders</color>";
 
-    private static string SyndicateWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string SyndicateWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : string.Empty) +
         "- Cause chaos and kill off anyone who opposes the <#008000FF>Syndicate</color>";
 
-    private static string ApocalypseWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string ApocalypseWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : string.Empty) +
         "- Summon your deities to bring on the <#99007FFF>Apocalypse</color>";
 
-    private static string ComplianceWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string ComplianceWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : string.Empty) +
         "- Eliminate any and all opposition to the <#5A27CCFF>Compliance</color>";
 
-    private static string PandoricaWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string PandoricaWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : string.Empty) +
         "- Kill off anyone who tries to oppose the <#ECFF45FF>Pandorica</color>";
 
-    private static string IlluminatiWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : "") +
+    private static string IlluminatiWinCon(PlayerControl player) => (player.CanSabotage() ? "- Have a critical sabotage reach 0 seconds\n" : string.Empty) +
         "- Eliminate anyone who tries to oppose the <#A39389FF>Illuminati</color>";
 
     private static string CabalWinCon() => "- Kill or recruit all opposition to the <#575757FF>Cabal</color>";

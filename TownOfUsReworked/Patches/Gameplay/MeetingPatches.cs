@@ -140,7 +140,7 @@ public static class MeetingPatches
             }
         }
 
-        var message = "";
+        var message = string.Empty;
 
         if (SyndicateSettings.SyndicateCount > 0)
         {
@@ -322,7 +322,7 @@ public static class MeetingPatches
             if (player.TargetPlayerId == reportedBody.PlayerId)
                 continue;
 
-            player.Megaphone.sprite = GameManager.Instance.DeadBodyPrefab.bodyRenderers[0].sprite;
+            player.Megaphone.sprite = GameManager.Instance.GetDeadBody(RoleManager.Instance.GetRole(RoleTypes.Impostor)).bodyRenderers[0].sprite;
             player.Megaphone.transform.localScale = new(0.3f, 0.3f, 0.3f);
             player.Megaphone.transform.localPosition -= new Vector3(0.2f, 0, 0);
         }

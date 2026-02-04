@@ -760,7 +760,7 @@ public sealed class ClientHandler : MonoBehaviour
         ResultPage = 0;
         var texts = result.TrueSplit('\n');
         var pos = 0;
-        var result2 = "";
+        var result2 = string.Empty;
 
         foreach (var text in texts)
         {
@@ -770,7 +770,7 @@ public sealed class ClientHandler : MonoBehaviour
             if (pos >= 19)
             {
                 Entry.Add(result2);
-                result2 = "";
+                result2 = string.Empty;
                 pos -= 19;
             }
         }

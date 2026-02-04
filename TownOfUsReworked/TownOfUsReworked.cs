@@ -47,17 +47,17 @@ public sealed partial class TownOfUsReworked : BasePlugin
 
     public static readonly Assembly Core = typeof(TownOfUsReworked).Assembly;
 
-    private static readonly string VersionSignature = Version.Contains('+') ? Version[(Version.IndexOf('+') + 1)..] : "";
+    private static readonly string VersionSignature = Version.Contains('+') ? Version[(Version.IndexOf('+') + 1)..] : string.Empty;
     public static readonly string VersionS = Version.Contains('+') ? Version[..Version.IndexOf('+')] : Version;
-    private static readonly string DevString = IsDev ? ("-dev" + DevBuild) : "";
+    private static readonly string DevString = IsDev ? ("-dev" + DevBuild) : string.Empty;
     private const string StreamString = IsStream ? "s" : "";
     public static readonly string VersionFinal = $"v{VersionS}{DevString}{StreamString}";
     private static string VersionFull => $"{VersionFinal}+{VersionSignature}+{ModHash}";
 
     public static readonly Version ModVer = new(VersionS);
 
-    public static NormalGameOptionsV09 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
-    public static HideNSeekGameOptionsV09 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
+    public static NormalGameOptionsV10 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
+    public static HideNSeekGameOptionsV10 HnsOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
     // public static IGameOptions CurrentOptions => GameOptionsManager.Instance.CurrentGameOptions;
 
     public static bool MciActive => MciUtils.Clients.Count > 0;
@@ -155,8 +155,8 @@ public sealed partial class TownOfUsReworked : BasePlugin
         if (!File.Exists(text))
             File.WriteAllText(text, "945360");
 
-        using var hasher = MD5.Create();
-        ModHash = BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(Path.Combine(ModsFolder, "Reworked.dll")))).Replace("-", "").ToLowerInvariant();
+        using (var hasher = MD5.Create())
+            ModHash = BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(Path.Combine(ModsFolder, "Reworked.dll")))).Replace("-", string.Empty).ToLowerInvariant();
 
         SetUpConfigs();
         HarmonyInstance.PatchAll();

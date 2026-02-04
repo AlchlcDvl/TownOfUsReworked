@@ -39,8 +39,8 @@ public sealed class Coroner : Investigative
         BodyArrows.Clear();
         Reported.Clear();
         ReferenceBodies.Clear();
-        AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), AbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Autopsy, new Cooldown(AutopsyCd));
-        CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(CompareCd),
+        AutopsyButton ??= new(this, "AUTOPSY", new SpriteName("Autopsy"), ReworkedAbilityTypes.Body, KeybindType.ActionSecondary, (OnClickBody)Autopsy, new Cooldown(AutopsyCd));
+        CompareButton ??= new(this, "COMPARE", new SpriteName("Compare"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Compare, new Cooldown(CompareCd),
             (UsableFunc)ReferenceBodies.Any);
     }
 

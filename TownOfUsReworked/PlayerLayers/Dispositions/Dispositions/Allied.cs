@@ -41,5 +41,5 @@ public sealed class Allied : Disposition
     };
     public override string Symbol => "ζ";
     public override Layer Type => Layer.Allied;
-    public override string Description => Side == Faction.Outcast ? "- You are conflicted" : "";
+    public override string Description => Side == Faction.Outcast ? "- You are conflicted" : string.Empty;
 }

@@ -21,7 +21,7 @@ public sealed class Miner : ISupport
     public override void Init()
     {
         base.Init();
-        MineButton ??= new(this, new SpriteName(SpriteName), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
+        MineButton ??= new(this, new SpriteName(SpriteName), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)Mine, new Cooldown(MineCd), (LabelFunc)Label,
             (ConditionFunc)Condition);
         Vents.Clear();
 

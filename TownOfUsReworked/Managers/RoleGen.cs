@@ -430,6 +430,11 @@ public static class RoleGenManager
         if (MapPatches.CurrentMap == 4)
             BetterAirship.SpawnPoints.AddRange(Spawns.GetRandomRange(3));
 
+        if (BetterSabotages.OxySlow)
+            ISpeedModifier.AllModifiers.Add(new OxySabSpeedModifier());
+
+        ISpeedModifier.AllModifiers.Add(new BodyDraggingModifier());
+
         if (!TownOfUsReworked.MciActive)
         {
             CallRpc(MiscRpc.EndRoleGen, [SetPostmortals.Revealers, SetPostmortals.Phantoms, SetPostmortals.Banshees, SetPostmortals.Ghouls, Pure?.PlayerId ?? 255, Convertible, Retributionist.Exists,
@@ -528,9 +533,12 @@ public static class RoleGenManager
 
         DeadBodyHandler.Dragging.Clear();
 
+        Monos.Range.AllItems.ForEach(x => x?.gameObject?.Destroy());
         Monos.Range.AllItems.Clear();
 
-        PlayerLayer.AllLayers.Clear();
+        ISpeedModifier.AllModifiers.Clear();
+
+        PlayerLayer.AllLayers.FullClear();
 
         SetPostmortals.Phantoms = 0;
         SetPostmortals.Revealers = 0;
@@ -558,10 +566,10 @@ public static class RoleGenManager
 
         // Role.IsLeft = false;
 
-        CustomMeeting.AllCustomMeetings.Clear();
-        CustomArrow.AllArrows.Clear();
-        CustomMenu.AllMenus.Clear();
-        CustomButton.AllButtons.Clear();
+        CustomMeeting.AllCustomMeetings.FullClear();
+        CustomArrow.AllArrows.FullClear();
+        CustomMenu.AllMenus.FullClear();
+        CustomButton.AllButtons.FullClear();
 
         Ash.AllPiles.ForEach(x => x?.gameObject?.Destroy());
         Ash.AllPiles.Clear();

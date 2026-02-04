@@ -45,11 +45,11 @@ public sealed class Glitch : OKilling, IBlocker
     {
         Objectives = () => "- Neutralise anyone who can oppose you";
         MimicMenu = new(Player, Click, Color, Exception3);
-        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
+        NeutraliseButton ??= new(this, new SpriteName("Neutralise"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Neutralise, (PlayerBodyExclusion)Exception1, "NEUTRALISE",
             new Cooldown(NeutraliseCd));
-        HackButton ??= new(this, new SpriteName("Hack"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EndFunc)EndHack, new Duration(HackDur),
+        HackButton ??= new(this, new SpriteName("Hack"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)HitHack, new Cooldown(HackCd), (EndFunc)EndHack, new Duration(HackDur),
             (EffectEndVoid)UnHack, (PlayerBodyExclusion)Exception2, "HACK");
-        MimicButton ??= new(this, new SpriteName("Mimic"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
+        MimicButton ??= new(this, new SpriteName("Mimic"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMimic, new Cooldown(MimicCd), "MIMIC", (EffectEndVoid)UnMimic,
             new Duration(MimicDur), (EffectVoid)Mimic, (EndFunc)EndMimic, (ClickedAgainVoid)OnClickedAgain);
     }
 

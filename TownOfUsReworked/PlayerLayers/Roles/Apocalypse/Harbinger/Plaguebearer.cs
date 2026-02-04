@@ -24,7 +24,7 @@ public sealed class Plaguebearer : Harbinger<Pestilence>
     {
         Infected.Clear();
         Infected.Add(PlayerId);
-        InfectButton ??= new(this, new SpriteName("Infect"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",
+        InfectButton ??= new(this, new SpriteName("Infect"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Infect, new Cooldown(InfectCd), "INFECT",
             (PlayerBodyExclusion)Exception);
     }
 

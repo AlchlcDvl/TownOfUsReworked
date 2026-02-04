@@ -23,13 +23,13 @@ public sealed class Silencer : Disruption, IIntimidator
     public override Layer Type => Layer.Silencer;
     public override string StartText => "You Are The One Who Hushes";
     public override string Description => "- You can silence players to ensure they cannot hear what others say" + (SilenceRevealed ? "\n- Everyone will be alerted at the "  +
-        "start of the meeting that someone has been silenced " : "") + (WhispersNotPrivateS ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
+        "start of the meeting that someone has been silenced " : string.Empty) + (WhispersNotPrivateS ? "\n- You can read whispers during meetings" : string.Empty) + $"\n{CommonAbilities}";
 
     public override void Init()
     {
         base.Init();
         Target = null;
-        SilenceButton ??= new(this, new SpriteName("Silence"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
+        SilenceButton ??= new(this, new SpriteName("Silence"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)Silence, new Cooldown(SilenceCd), "SILENCE",
             (PlayerBodyExclusion)Exception1);
     }
 

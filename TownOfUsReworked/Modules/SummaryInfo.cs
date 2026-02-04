@@ -23,7 +23,7 @@ public sealed class SummaryInfo : INetSerializable, INetDeserializable, IDisposa
 
     public string Generate()
     {
-        var result = "";
+        var result = string.Empty;
         Modules.ForEach(x => result += $"{x.Summarise().FullSummary}\n");
         return result;
     }
@@ -70,7 +70,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
         foreach (var val in RpcWriter.GetBytes(PlayerName))
             yield return val;
 
-        // In an ideal game, the count wouldn't exceed 6 or 7. But since I know some people who like to see me suffer, so I've set the max limit to 2^16, good luck changing roles and factions this
+        // In an ideal game, the count wouldn't exceed 6 or 7. But since I know some people who like to see me suffer, so I've set the max limit to 2^16 - 1, good luck changing roles and factions this
             // many times
         foreach (var val in RpcWriter.GetBytes((ushort)History.Count))
             yield return val;
@@ -254,15 +254,15 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
     public readonly (string FullSummary, string Summary) Summarise()
     {
-        var full = "";
-        var summary = "";
+        var full = string.Empty;
+        var summary = string.Empty;
 
         foreach (var (role, faction) in History)
         {
             if (!LayerDictionary.TryGetValue(role, out var entry))
                 continue;
 
-            var part2 = "";
+            var part2 = string.Empty;
 
             if (FactionDictionary.TryGetValue(faction, out var entry2))
                 part2 = $"<#{entry2.Color.ToHtmlStringRGBA()}>{entry2.Name}</color>";
@@ -276,7 +276,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
 
             if (LayerDictionary.TryGetValue(role, out var entry))
             {
-                var factionName = "";
+                var factionName = string.Empty;
 
                 if (FactionDictionary.TryGetValue(faction, out var entry2))
                     factionName = $"<#{entry2.Color.ToHtmlStringRGBA()}>{entry2.Name}</color>";
@@ -285,7 +285,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
             }
         }
 
-        var part = "";
+        var part = string.Empty;
 
         foreach (var layer in OtherLayers)
         {
@@ -295,7 +295,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
             var type = layer.GetLayerType();
             var (opening, ending) = type switch
             {
-                PlayerLayerEnum.Disposition => ("", ""),
+                PlayerLayerEnum.Disposition => (string.Empty, string.Empty),
                 PlayerLayerEnum.Ability => ("(", ")"),
                 _ => ("{", "}"),
             };

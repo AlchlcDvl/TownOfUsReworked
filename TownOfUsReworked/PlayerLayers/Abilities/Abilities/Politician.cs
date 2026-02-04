@@ -21,7 +21,7 @@ public sealed class Politician : Ability
 
     protected override UColor MainColor => CustomColorManager.Politician;
     public override Layer Type => Layer.Politician;
-    public override string Description => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
+    public override string Description => $"- You can vote multiple times as long as you{(CanKill ? string.Empty : " haven't abstained or")} are the last player voting\n- You can " +
         (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 
     public override void Init()

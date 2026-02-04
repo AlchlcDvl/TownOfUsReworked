@@ -35,18 +35,18 @@ public sealed class Collider : SKilling
     public override Layer Type => Layer.Collider;
     public override string StartText => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
     public override string Description => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die together" +
-        $"{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : "")}\n{CommonAbilities}";
+        $"{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : string.Empty)}\n{CommonAbilities}";
 
     public override void Init()
     {
         base.Init();
         Positive = null;
         Negative = null;
-        PositiveButton ??= new(this, new SpriteName("Positive"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",
+        PositiveButton ??= new(this, new SpriteName("Positive"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)SetPositive, new Cooldown(CollideCd), "SET POSITIVE",
             (PlayerBodyExclusion)Exception1);
-        NegativeButton ??= new(this, new SpriteName("Negative"), AbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)SetNegative, new Cooldown(CollideCd), "SET NEGATIVE",
+        NegativeButton ??= new(this, new SpriteName("Negative"), ReworkedAbilityTypes.Player, KeybindType.Secondary, (OnClickPlayer)SetNegative, new Cooldown(CollideCd), "SET NEGATIVE",
             (PlayerBodyExclusion)Exception1);
-        ChargeButton ??= new(this, new SpriteName("Charge"), AbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Charge, new Cooldown(ChargeCd), "CHARGE", (UsableFunc)Usable,
+        ChargeButton ??= new(this, new SpriteName("Charge"), ReworkedAbilityTypes.Targetless, KeybindType.Tertiary, (OnClickTargetless)Charge, new Cooldown(ChargeCd), "CHARGE", (UsableFunc)Usable,
             new Duration(ChargeDur), (EndFunc)EndEffect);
     }
 

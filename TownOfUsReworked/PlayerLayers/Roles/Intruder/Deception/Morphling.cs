@@ -33,8 +33,8 @@ public sealed class Morphling : Deception
     {
         base.Init();
         SampledPlayer = null;
-        SampleButton ??= new(this, new SpriteName("Sample"), AbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);
-        MorphButton ??= new(this, new SpriteName("Morph"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
+        SampleButton ??= new(this, new SpriteName("Sample"), ReworkedAbilityTypes.Player, KeybindType.Tertiary, (OnClickPlayer)Sample, new Cooldown (SampleCd), "SAMPLE", (PlayerBodyExclusion)Exception1);
+        MorphButton ??= new(this, new SpriteName("Morph"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitMorph, new Cooldown(MorphCd), "MORPH", (EffectEndVoid)UnMorph,
             new Duration(MorphDur), (EndFunc)EndEffect, (UsableFunc)Usable, (ClickedAgainVoid)OnClickedAgain, (EffectStartVoid)Morph);
     }
 

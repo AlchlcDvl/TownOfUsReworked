@@ -24,7 +24,7 @@ public sealed class Banshee : SUtility, IGhosty
     {
         base.Init();
         Blocked.Clear();
-        ScreamButton ??= new(this, new SpriteName("Scream"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
+        ScreamButton ??= new(this, new SpriteName("Scream"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)HitScream, new Cooldown(ScreamCd), new PostDeath(true),
             new Duration(ScreamDur), (EffectEndVoid)UnScream, "SCREAM", (UsableFunc)Usable, (EndFunc)EndEffect, (EffectStartVoid)StartScream);
         Player.gameObject.layer = LayerMask.NameToLayer("Players");
     }

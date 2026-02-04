@@ -38,7 +38,7 @@ public static class ConfirmEjects
 
             var totalEvilsCount = AllPlayers().Count(x => !x.Is(Faction.Crew) && x.GetAlignment() is not (Alignment.Benign or Alignment.Evil) && !x.HasDied());
             var totalEvilsRemaining = IsAllAny() ? "an unknown number of" : $"{totalEvilsCount}";
-            var s = totalEvilsCount > 1 ? "s" : "";
+            var s = totalEvilsCount > 1 ? "s" : string.Empty;
             var isAre = totalEvilsCount > 1 ? "are" : "is";
             __instance.ImpostorText.text = $"There {isAre} {totalEvilsRemaining} <#FF0000FF>evil{s}</color> remaining.";
         }

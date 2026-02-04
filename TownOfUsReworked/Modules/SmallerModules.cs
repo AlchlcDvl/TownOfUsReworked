@@ -2,7 +2,7 @@
 
 namespace TownOfUsReworked.Modules;
 
-public record struct PointInTime(Vector3 Position);
+public readonly record struct PointInTime(Vector3 Position);
 
 public sealed class GitHubApiObject
 {

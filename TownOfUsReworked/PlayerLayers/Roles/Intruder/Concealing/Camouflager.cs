@@ -21,7 +21,7 @@ public sealed class Camouflager : Concealing
     public override void Init()
     {
         base.Init();
-        CamouflageButton ??= new(this, new SpriteName("Camouflage"), AbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
+        CamouflageButton ??= new(this, new SpriteName("Camouflage"), ReworkedAbilityTypes.Targetless, KeybindType.Secondary, (OnClickTargetless)HitCamouflage, (ConditionFunc)Condition, "CAMOUFLAGE",
             new Cooldown(CamouflageCd), new Duration(CamouflageDur), (EffectStartVoid)StartCamouflage, (EffectEndVoid)UnCamouflage, (ClickedAgainVoid)ClickAgain);
     }
 

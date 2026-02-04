@@ -17,7 +17,7 @@ public sealed class Seer : Investigative
     public override string Description => "- You can investigate players to see if their roles have changed\n- If all relevant players whose roles changed have died, you will become a " +
         "<#FFCC80FF>Sheriff</color>";
 
-    public override void Init() => SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(SeerCd));
+    public override void Init() => SeerButton ??= new(this, "ENVISION", new SpriteName("Seer"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)See, new Cooldown(SeerCd));
 
     private void TurnSheriff() => new Sheriff().RoleUpdate(this);
 

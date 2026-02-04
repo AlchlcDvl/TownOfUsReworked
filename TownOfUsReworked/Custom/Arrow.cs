@@ -6,11 +6,14 @@ namespace TownOfUsReworked.Custom;
 public class CustomArrow : IDisposable
 {
     public readonly PlayerControl Owner;
+
+    private readonly float Interval;
+
     protected ArrowBehaviour Arrow;
     protected Func<Vector3> Target;
+
     private SpriteRenderer Render;
     private GameObject ArrowObj;
-    private readonly float Interval;
     private SpriteRenderer Point;
     private UColor ArrowColor;
     private bool Disabled;

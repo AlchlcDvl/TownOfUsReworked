@@ -12,7 +12,7 @@ public sealed class Dwarf : Modifier
     private static bool Smol => DwarfScale < 1;
     private static bool Sped => DwarfSpeed > 1;
     private static bool Useless => !Smol && !Sped;
-    private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : ""));
+    private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : string.Empty));
 
     protected override UColor MainColor => Useless ? CustomColorManager.Modifier : CustomColorManager.Dwarf;
     public override Layer Type => Layer.Dwarf;

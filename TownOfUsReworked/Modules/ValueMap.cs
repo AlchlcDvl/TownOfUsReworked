@@ -20,16 +20,16 @@ public sealed class ValueMap<T1, T2> : IDictionary<T1, T2>, IReadOnlyDictionary<
     public bool IsReadOnly => false;
 
     /// <inheritdoc/>
-    public IEnumerable<T1> Keys => Forward.Keys;
+    public ICollection<T1> Keys => Forward.Keys;
 
     /// <inheritdoc/>
-    public IEnumerable<T2> Values => Forward.Values;
+    public ICollection<T2> Values => Forward.Values;
 
     /// <inheritdoc/>
-    ICollection<T1> IDictionary<T1, T2>.Keys => Forward.Keys;
+    IEnumerable<T1> IReadOnlyDictionary<T1, T2>.Keys => Forward.Keys;
 
     /// <inheritdoc/>
-    ICollection<T2> IDictionary<T1, T2>.Values => Forward.Values;
+    IEnumerable<T2> IReadOnlyDictionary<T1, T2>.Values => Forward.Values;
 
     /// <summary>
     /// Initializes a new instance of the ValueMap class that is empty.

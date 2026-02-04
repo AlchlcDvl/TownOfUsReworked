@@ -20,7 +20,7 @@ public sealed class Chameleon : CSupport
     public override string StartText => "Go Invisible To Stalk Players";
     public override string Description => "- You can turn invisible";
 
-    public override void Init() => SwoopButton ??= new(this, "SWOOP", new SpriteName("Swoop"), AbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Swoop, new Cooldown(SwoopCd),
+    public override void Init() => SwoopButton ??= new(this, "SWOOP", new SpriteName("Swoop"), ReworkedAbilityTypes.Targetless, KeybindType.ActionSecondary, (OnClickTargetless)Swoop, new Cooldown(SwoopCd),
         (EffectStartVoid)Invis, MaxSwoops, new Duration(SwoopDur), (EffectEndVoid)UnInvis, (EndFunc)EndEffect, (ClickedAgainVoid)ClickAgain);
 
     private void Invis() => MiscUtils.Invis(Player, SwoopDur, EndEffect);

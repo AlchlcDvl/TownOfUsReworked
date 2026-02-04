@@ -38,7 +38,7 @@ public sealed class Monarch : Sovereign
     {
         Knighted.Clear();
         ToBeKnighted.Clear();
-        KnightingButton ??= new(this, "KNIGHT", new SpriteName("Knight"), AbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Knight, new Cooldown(KnightingCd), KnightCount,
+        KnightingButton ??= new(this, "KNIGHT", new SpriteName("Knight"), ReworkedAbilityTypes.Player, KeybindType.ActionSecondary, (OnClickPlayer)Knight, new Cooldown(KnightingCd), KnightCount,
             (PlayerBodyExclusion)Exception, (UsableFunc)Usable);
     }
 
