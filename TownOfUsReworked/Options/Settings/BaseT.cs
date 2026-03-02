@@ -66,7 +66,7 @@ public abstract class Option<T>(CustomOptionType type, T defaultValue = default)
 
     public override void ReadValueRpc(RpcReader reader) => Set(reader.Read<T>(), false, receivedFromRpc: true);
 
-    public override void WriteValueRpc(RpcWriter writer) => writer.Write(Value);
+    public override void WriteValueRpc(RpcWriter writer) => writer.WriteGeneric(Value);
 
     protected virtual string ValueString() => $"{Value}";
 

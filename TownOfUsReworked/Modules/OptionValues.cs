@@ -24,7 +24,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// <summary>
     /// Initialises a new instance of <see cref="MultiSelectValue{T}"/>.
     /// </summary>
-    public MultiSelectValue() {}
+    public MultiSelectValue() { }
 
     /// <inheritdoc/>
     public int Count => _values.Count;
@@ -140,25 +140,10 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     }
 
     /// <inheritdoc/>
-    public IEnumerable<byte> GetBytes()
-    {
-        // All enums within the code base use byte
-        yield return (byte)_values.Count;
-
-        var type = typeof(byte);
-
-        foreach (var value in _values)
-            yield return (byte)Convert.ChangeType(value, type);
-    }
+    public void SerializeTo(RpcWriter writer) => writer.WriteSet(_values, RpcWriterDels.Enum<T>.Writer, CountType.Byte);
 
     /// <inheritdoc/>
-    public void FromBytes(RpcReader reader)
-    {
-        var count = reader.ReadByte();
-
-        while (count-- > 0)
-            _values.Add((T)Enum.ToObject(typeof(T), reader.ReadByte()));
-    }
+    public void DeserializeFrom(RpcReader reader) => reader.PopulateSet(_values, RpcReaderDels.Enum<T>.Reader, CountType.Byte);
 
     /// <inheritdoc/>
     public void CopyTo(T[] array, int arrayIndex) => _values.CopyTo(array, arrayIndex);
@@ -179,7 +164,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// Converts the current instance to its array representation of values.
     /// </summary>
     /// <param name="value">The value to convert.</param>
-    public static implicit operator T[](MultiSelectValue<T> value) => [ .. value._values ];
+    public static implicit operator T[](MultiSelectValue<T> value) => [.. value._values];
 
     /// <summary>
     /// Converts the current instance to one singular value.
@@ -207,7 +192,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// Converts the value string to an instance of MultiSelectValue.
     /// </summary>
     /// <param name="values">The values to convert.</param>
-    public static implicit operator MultiSelectValue<T>(string values) => new(IsNullEmptyOrWhiteSpace(values) ? [] : [ .. values.TrueSplit(',').Select(Enum.Parse<T>) ]);
+    public static implicit operator MultiSelectValue<T>(string values) => [with(IsNullEmptyOrWhiteSpace(values) ? [] : [.. values.TrueSplit(',').Select(Enum.Parse<T>)])];
 
     /// <summary>
     /// Equality comparison.
@@ -263,11 +248,11 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
 [Serializable]
 public struct RoleOptionData(byte chance, byte count, bool unique, bool active, Layer layer) : INetSerializable, INetDeserializable, IEquatable<RoleOptionData>
 {
+    public Layer ID = layer;
     public byte Chance = chance;
     public byte Count = count;
     public bool Unique = unique;
     public bool Active = active;
-    public Layer ID = layer;
 
     public override readonly string ToString() => Join(',', Chance, Count, Unique, Active, ID);
 
@@ -276,15 +261,23 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
     public readonly bool IsActive(int? relatedCount = null) => ((Chance > 0 && Count > 0 && IsClassic()) || (Active && IsAllAny()) || (IsList() && ListEntryOption.IsAdded(ID.CastToSlot()))) &&
         ID.IsValid(relatedCount);
 
-    public readonly IEnumerable<byte> GetBytes() => [ Chance, Count, (byte)(Unique ? 1 : 0), (byte)(Active ? 1 : 0), (byte)ID ];
+    public readonly void SerializeTo(RpcWriter writer)
+    {
+        writer.WriteByte(Chance);
+        writer.WriteByte(Count);
+        writer.WriteEnum(ID);
+        writer.WritePackedBool(Unique);
+        writer.WritePackedBool(Active);
+        writer.EndPackingBools();
+    }
 
-    public void FromBytes(RpcReader reader)
+    public void DeserializeFrom(RpcReader reader)
     {
         Chance = reader.ReadByte();
         Count = reader.ReadByte();
-        Unique = reader.ReadBool();
-        Active = reader.ReadBool();
-        ID = (Layer)reader.ReadByte();
+        ID = reader.ReadEnum<Layer>();
+        Unique = reader.ReadPackedBool();
+        Active = reader.ReadPackedBool();
     }
 
     public readonly bool Equals(RoleOptionData other) => other.Chance == Chance && other.Count == Count && other.Unique == Unique && other.Active == Active && other.ID == ID;
@@ -397,7 +390,7 @@ public struct Number(float num) : IComparable, IFormattable, INetSerializable, I
     public static bool operator <=(Number a, Number b) => a.Value <= b.Value;
 
     /// <inheritdoc/>
-    public readonly IEnumerable<byte> GetBytes() => RpcWriter.GetBytes(Value);
+    public readonly void SerializeTo(RpcWriter writer) => writer.WriteFloat(Value);
 
     /// <inheritdoc/>
     public override readonly int GetHashCode() => Value.GetHashCode();
@@ -425,5 +418,5 @@ public struct Number(float num) : IComparable, IFormattable, INetSerializable, I
     public readonly int CompareTo(Number other) => Value.CompareTo(other.Value);
 
     /// <inheritdoc/>
-    public void FromBytes(RpcReader reader) => Value = reader.ReadFloat();
+    public void DeserializeFrom(RpcReader reader) => Value = reader.ReadFloat();
 }

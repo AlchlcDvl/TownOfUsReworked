@@ -11,6 +11,5 @@ public static partial class Generate
     public static void GenerateAll()
     {
         GenerateOptions();
-        GenerateIDs();
     }
 }

@@ -1,6 +1,8 @@
+using TownOfUsReworked.RPCs.Messages.Misc;
+
 namespace TownOfUsReworked.Options.Settings;
 
-public abstract class Option(CustomOptionType type)
+public abstract class Option(CustomOptionType type) : INetSerializable
 {
     public static readonly List<Option> AllOptions = [];
     public static readonly List<BaseHeaderOption> SortedOptions = [];
@@ -14,7 +16,7 @@ public abstract class Option(CustomOptionType type)
     protected bool SelfMember { get; private set; }
     protected MemberInfo Member { get; private set; }
     public string Name { get; set; } // Not actually the setting text, just the member name :]
-    public KeyValuePair<byte, byte> RpcId { get; protected set; }
+    public (byte SuperId, byte Id) RpcId { get; protected set; }
     public BaseHeaderOption Header { get; set; }
 
     protected static string LastChangedSetting = string.Empty;
@@ -206,6 +208,12 @@ public abstract class Option(CustomOptionType type)
 
     public virtual void WriteValueRpc(RpcWriter writer) {}
 
+    public void SerializeTo(RpcWriter writer)
+    {
+        writer.WriteTuple(RpcId);
+        WriteValueRpc(writer);
+    }
+
     protected virtual void ReadValueString(string value) {}
 
     protected virtual bool Visible() => true;
@@ -266,7 +274,7 @@ public abstract class Option(CustomOptionType type)
         }
         else
         {
-            CallRpc(MiscRpc.LoadPreset, presetName);
+            CallRpc(new LoadPresetMessage(presetName));
             SettingsPatches.CurrentPreset = presetName;
             LoadSettings(text);
             FlashText(tmp, UColor.green);
@@ -337,7 +345,7 @@ public abstract class Option(CustomOptionType type)
         }
 
         SendOptionRPC(save: false);
-        CallRpc(MiscRpc.SyncMap, MapSettings.Map);
+        CallRpc(new SyncMapMessage());
     }
 
     public static IEnumerable<T> GetOptions<T>() where T : Option => AllOptions.OfType<T>();
@@ -348,7 +356,7 @@ public abstract class Option(CustomOptionType type)
 
     private static bool TryGetOption(string id, out Option option) => AllOptions.TryFinding(x => x.ID.IsAny($"customOption.{id}", id) || x.Name == id, out option);
 
-    public static Option GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.Key == superId && x.RpcId.Value == id);
+    public static Option GetOption(byte superId, byte id) => AllOptions.Find(x => x.RpcId.SuperId == superId && x.RpcId.Id == id);
 
     public static T GetOption<T>(string id) where T : Option => GetOption(id) as T;
 }

@@ -94,8 +94,8 @@ public sealed class Whisperer : Neophyte
 
         foreach (var (id, perc) in PlayerConversion)
         {
-            writer.Write(id);
-            writer.Write(perc);
+            writer.WriteByte(id);
+            writer.WriteByte(perc);
         }
 
         writer.Send();

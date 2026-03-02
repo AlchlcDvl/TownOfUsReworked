@@ -64,9 +64,6 @@ public sealed partial class TownOfUsReworked : BasePlugin
     public static bool DebugMode => IsDev || ClientOptions.DebugModeOn;
 
     // A bunch of config stuff to ensure value persistence
-    public static ConfigEntry<string> Ip;
-    public static ConfigEntry<ushort> Port;
-
     public static ConfigEntry<bool> BlockBaseGameLogger;
     public static ConfigEntry<bool> RedirectLogger;
     public static ConfigEntry<bool> LogFromUnity;
@@ -95,7 +92,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
         {
             ModInstance = this;
             LoadComponents();
-            Success($"Mod Loaded - {this}");
+            Success("Mod Loaded - " + ToString());
         }
         catch (Exception e)
         {
@@ -138,9 +135,6 @@ public sealed partial class TownOfUsReworked : BasePlugin
         ClientOptions.AutoPlayAgain.Config = Config.Bind("Client", "Auto Play Again", false, "Automatically calls Play Again after game ends");
         ClientOptions.DebugModeOn.Config = Config.Bind("Client", "Debug Mode", false, "Enabled Debug Mode to replicate dev mode status and provide info in the logs");
 
-        Ip = Config.Bind("Config", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
-        Port = Config.Bind("Config", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
-
         BlockBaseGameLogger = Config.Bind("Debugging", "Block Logger", false, "Block base game Logger calls from appearing in the console");
         RedirectLogger = Config.Bind("Debugging", "Redirect Logger", false, "Redirect base game Logger calls into BepInEx logging");
         LogFromUnity = Config.Bind("Debugging", "Show Unity Logs", false, "Redirect Unity Logger calls into BepInEx logging");
@@ -156,7 +150,7 @@ public sealed partial class TownOfUsReworked : BasePlugin
             File.WriteAllText(text, "945360");
 
         using (var hasher = MD5.Create())
-            ModHash = BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(Path.Combine(ModsFolder, "Reworked.dll")))).Replace("-", string.Empty).ToLowerInvariant();
+            ModHash = BitConverter.ToString(hasher.ComputeHash(File.ReadAllBytes(Path.Combine(ModsFolder, "Reworked.dll")))).Replace("-", null).ToLowerInvariant();
 
         SetUpConfigs();
         HarmonyInstance.PatchAll();

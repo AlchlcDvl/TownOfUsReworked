@@ -3,23 +3,11 @@ namespace TownOfUsReworked.Modules;
 [Serializable]
 public sealed class SummaryInfo : INetSerializable, INetDeserializable, IDisposable
 {
-    ~SummaryInfo() => Modules.Clear();
-
     public readonly List<SummaryInfoModule> Modules = [];
 
-    public IEnumerable<byte> GetBytes() => [(byte)Modules.Count, .. Modules.SelectMany(x => x.GetBytes())];
+    public void SerializeTo(RpcWriter writer) => writer.WriteList(Modules, RpcWriterDels.NetObject<SummaryInfoModule>.Writer);
 
-    public void FromBytes(RpcReader netData)
-    {
-        var count = netData.ReadByte();
-
-        while (count-- > 0)
-        {
-            var module = new SummaryInfoModule();
-            module.FromBytes(netData);
-            Modules.Add(module);
-        }
-    }
+    public void DeserializeFrom(RpcReader reader) => reader.PopulateList(Modules, RpcReaderDels.NetObject<SummaryInfoModule>.Reader);
 
     public string Generate()
     {
@@ -28,15 +16,11 @@ public sealed class SummaryInfo : INetSerializable, INetDeserializable, IDisposa
         return result;
     }
 
-    public void Dispose()
-    {
-        Modules.Clear();
-        GC.SuppressFinalize(this);
-    }
+    public void Dispose() => Modules.FullClear();
 }
 
 [Serializable]
-public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
+public sealed class SummaryInfoModule : INetSerializable, INetDeserializable, IDisposable
 {
     public string PlayerName;
 
@@ -65,126 +49,93 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
     public string VisorId;
     public Color32 Color;
 
-    public readonly IEnumerable<byte> GetBytes()
+    public void SerializeTo(RpcWriter writer)
     {
-        foreach (var val in RpcWriter.GetBytes(PlayerName))
-            yield return val;
+        writer.WriteString(PlayerName);
 
-        // In an ideal game, the count wouldn't exceed 6 or 7. But since I know some people who like to see me suffer, so I've set the max limit to 2^16 - 1, good luck changing roles and factions this
-            // many times
-        foreach (var val in RpcWriter.GetBytes((ushort)History.Count))
-            yield return val;
+        // In an ideal game, the count wouldn't exceed 6 or 7. But since I know some people who like to see me suffer, so I've set the max limit to 2^16 - 1, good luck changing roles and factions this many times
+        writer.WriteList(History, RpcWriterDels.Tuple<Layer, Faction>.Writer, CountType.UShort);
 
-        foreach (var (role, faction) in History)
-        {
-            yield return (byte)role;
-            yield return (byte)faction;
-        }
+        writer.WriteList(OtherLayers, RpcWriterDels.Enum<Layer>.Writer);
 
-        foreach (var layer in OtherLayers)
-            yield return (byte)layer;
+        writer.WritePackedBool(IsGaTarget);
+        writer.WritePackedBool(IsExeTarget);
+        writer.WritePackedBool(IsBhTarget);
+        writer.WritePackedBool(IsGuessTarget);
+        writer.WritePackedBool(IsDriveHolder);
 
-        yield return (byte)(IsGaTarget ? 1 : 0);
-        yield return (byte)(IsExeTarget ? 1 : 0);
-        yield return (byte)(IsBhTarget ? 1 : 0);
-        yield return (byte)(IsGuessTarget ? 1 : 0);
-        yield return (byte)(IsDriveHolder ? 1 : 0);
-
-        yield return (byte)(CanDoTasks ? 1 : 0);
+        writer.WritePackedBool(Disconnected);
+        writer.WritePackedBool(CanDoTasks);
 
         if (CanDoTasks)
+            writer.WritePackedBool(TasksDone);
+        else
+            writer.EndPackingBools();
+
+        if (CanDoTasks && !TasksDone)
         {
-            yield return (byte)(TasksDone ? 1 : 0);
-
-            if (!TasksDone)
-            {
-                yield return CompletedTasks;
-                yield return TotalTasks;
-            }
+            writer.WriteByte(CompletedTasks);
+            writer.WriteByte(TotalTasks);
         }
-
-        yield return (byte)(Disconnected ? 1 : 0);
 
         if (Disconnected)
-            yield break;
+            return;
 
-        yield return (byte)DeathReason;
+        writer.WriteEnum(DeathReason);
 
         if (DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Suicide or DeathReasonEnum.Ejected or DeathReasonEnum.Misfire or DeathReasonEnum.Escaped))
-        {
-            foreach (var val in RpcWriter.GetBytes(KilledBy))
-                yield return val;
-        }
+            writer.WriteString(KilledBy);
 
-        foreach (var val in RpcWriter.GetBytes(HatId))
-            yield return val;
+        writer.WriteString(HatId);
+        writer.WriteString(SkinId);
+        writer.WriteString(VisorId);
+        writer.WriteInt(ColorId);
 
-        foreach (var val in RpcWriter.GetBytes(SkinId))
-            yield return val;
-
-        foreach (var val in RpcWriter.GetBytes(VisorId))
-            yield return val;
-
-        foreach (var val in RpcWriter.GetBytes(ColorId))
-            yield return val;
-
-        if (ColorId != -2)
-            yield break;
-
-        foreach (var val in RpcWriter.GetBytes(Color))
-            yield return val;
+        if (ColorId == -2)
+            writer.WriteColor32(Color);
     }
 
-    public void FromBytes(RpcReader netData)
+    public void DeserializeFrom(RpcReader reader)
     {
-        PlayerName = netData.ReadString();
+        PlayerName = reader.ReadString();
 
-        var count = netData.ReadByte();
+        reader.PopulateList(History, RpcReaderDels.Tuple<Layer, Faction>.Reader, CountType.UShort);
 
-        while (count-- > 0)
-            History.Add((netData.Read<Layer>(), netData.Read<Faction>()));
+        reader.PopulateList(OtherLayers, RpcReaderDels.Enum<Layer>.Reader);
 
-        count = 3;
+        IsGaTarget = reader.ReadPackedBool();
+        IsExeTarget = reader.ReadPackedBool();
+        IsBhTarget = reader.ReadPackedBool();
+        IsGuessTarget = reader.ReadPackedBool();
+        IsDriveHolder = reader.ReadPackedBool();
 
-        while (count-- > 0)
-            OtherLayers.Add(netData.Read<Layer>());
-
-        IsGaTarget = netData.ReadBool();
-        IsExeTarget = netData.ReadBool();
-        IsBhTarget = netData.ReadBool();
-        IsGuessTarget = netData.ReadBool();
-        IsDriveHolder = netData.ReadBool();
-
-        CanDoTasks = netData.ReadBool();
+        Disconnected = reader.ReadPackedBool();
+        CanDoTasks = reader.ReadPackedBool();
 
         if (CanDoTasks)
-        {
-            TasksDone = netData.ReadBool();
+            TasksDone = reader.ReadPackedBool();
 
-            if (!TasksDone)
-            {
-                CompletedTasks = netData.ReadByte();
-                TotalTasks = netData.ReadByte();
-            }
+        if (CanDoTasks && !TasksDone)
+        {
+            CompletedTasks = reader.ReadByte();
+            TotalTasks = reader.ReadByte();
         }
 
-        Disconnected = netData.ReadBool();
+        if (Disconnected)
+            return;
 
-        if (!Disconnected)
-        {
-            DeathReason = netData.Read<DeathReasonEnum>();
+        DeathReason = reader.ReadEnum<DeathReasonEnum>();
 
-            if (DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Suicide or DeathReasonEnum.Ejected or DeathReasonEnum.Misfire or DeathReasonEnum.Escaped))
-                KilledBy = netData.ReadString();
-        }
+        if (DeathReason is not (DeathReasonEnum.Alive or DeathReasonEnum.Suicide or DeathReasonEnum.Ejected or DeathReasonEnum.Misfire or DeathReasonEnum.Escaped))
+            KilledBy = reader.ReadString();
 
-        HatId = netData.ReadString();
-        SkinId = netData.ReadString();
-        VisorId = netData.ReadString();
-        ColorId = netData.ReadInt();
+        HatId = reader.ReadString();
+        SkinId = reader.ReadString();
+        VisorId = reader.ReadString();
+        ColorId = reader.ReadInt();
         Color = ColorId switch
         {
-            -2 => netData.ReadColor32(),
+            -2 => reader.ReadColor32(),
             -1 => UColor.white,
             _ => ColorId.GetColor(false)
         };
@@ -252,7 +203,7 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
         Color = appearance.Default.Color;
     }
 
-    public readonly (string FullSummary, string Summary) Summarise()
+    public (string FullSummary, string Summary) Summarise()
     {
         var full = string.Empty;
         var summary = string.Empty;
@@ -334,5 +285,11 @@ public record struct SummaryInfoModule() : INetSerializable, INetDeserializable
         summary += part;
 
         return (full, summary);
+    }
+
+    public void Dispose()
+    {
+        History.Clear();
+        OtherLayers.Clear();
     }
 }

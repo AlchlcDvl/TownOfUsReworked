@@ -94,10 +94,10 @@ public sealed class Shapeshifter : Disruption
             if (writer is not null)
             {
                 if (ShapeshiftPlayer1)
-                    writer.Write(ShapeshiftPlayer1.PlayerId);
+                    writer.WriteByte(ShapeshiftPlayer1.PlayerId);
 
                 if (ShapeshiftPlayer2)
-                    writer.Write(ShapeshiftPlayer2.PlayerId);
+                    writer.WriteByte(ShapeshiftPlayer2.PlayerId);
 
                 writer.Send();
             }

@@ -1,3 +1,5 @@
+using TownOfUsReworked.RPCs.Messages.Misc;
+
 namespace TownOfUsReworked.Patches.UI;
 
 [HarmonyPatch]
@@ -596,20 +598,7 @@ public static class SettingsPatches
                 return;
 
             SendOptionRPC(targetClientId: player.OwnerId);
-            var writer = CreateWriter(MiscRpc.PlayerJoinSync, MapSettings.Map);
-            var cache = Summary is not null;
-            writer.Write(value: cache);
-
-            if (cache)
-                writer.Write(Summary);
-
-            cache = CachedFirstDead is not null;
-            writer.Write(value: cache);
-
-            if (cache)
-                writer.Write(CachedFirstDead);
-
-            writer.SendLate(player.OwnerId);
+            CallLateTargetedRpc(new PlayerJoinSyncMessage(), player.OwnerId);
         }
     }
 
@@ -671,7 +660,7 @@ public static class SettingsPatches
                     __instance.selectedButton = mapButton;
                     __instance.selectedButton.Button?.SelectButton(true);
                     __instance.SelectMap(thisVal);
-                    CallRpc(MiscRpc.SyncMap, MapSettings.Map);
+                    CallRpc(new SyncMapMessage());
                 });
 
                 if (k > 0)

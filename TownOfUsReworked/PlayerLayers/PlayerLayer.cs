@@ -173,6 +173,11 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     public static readonly List<PlayerLayer> AllLayers = [];
 
     /// <summary>
+    /// A dictionary for efficient layer lookup during heavy RPCs.
+    /// </summary>
+    public static readonly Dictionary<int, PlayerLayer> LayerLookup = [];
+
+    /// <summary>
     /// Initialises a new instance of PlayerLayer and adds to the list of all layers.
     /// </summary>
     protected PlayerLayer() => AllLayers.Add(this);
@@ -201,6 +206,8 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
 
         if (this is ISpeedModifier speedMod)
             ISpeedModifier.AllModifiers.Add(speedMod);
+
+        LayerLookup[((byte)Type << 8) | PlayerId] = this;
     }
 
     /// <summary>
@@ -460,7 +467,11 @@ public abstract class PlayerLayer : IPlayerLayer, IDisposable, INetSerializable,
     }
 
     /// <inheritdoc/>
-    public IEnumerable<byte> GetBytes() => [PlayerId, (byte)Type];
+    public void SerializeTo(RpcWriter writer)
+    {
+        writer.WriteEnum(Type);
+        writer.WriteByte(PlayerId);
+    }
 
     /// <summary>
     /// Equality check.

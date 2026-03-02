@@ -70,7 +70,7 @@ public sealed class Concealer : Disruption
             if (writer is not null)
             {
                 if (ConcealedPlayer)
-                    writer.Write(ConcealedPlayer.PlayerId);
+                    writer.WriteByte(ConcealedPlayer.PlayerId);
 
                 writer.Send();
             }

@@ -3,13 +3,12 @@ namespace TownOfUsReworked.Modules;
 public sealed class ChatCommand
 {
     private readonly string[] Aliases;
-    private readonly string[] Parameters;
+    private readonly string[]? Parameters;
     private readonly string Description;
-    private bool Disposed;
 
-    private readonly ExecuteArgsCommand ExecuteArgs;
-    private readonly ExecuteArglessCommand ExecuteArgless;
-    private readonly ExecuteArgsMessageCommand ExecuteArgsMessage;
+    private readonly ExecuteArgsCommand? ExecuteArgs;
+    private readonly ExecuteArglessCommand? ExecuteArgless;
+    private readonly ExecuteArgsMessageCommand? ExecuteArgsMessage;
 
     private delegate void ExecuteArglessCommand();
     private delegate void ExecuteArgsCommand(string[] args);
@@ -57,12 +56,12 @@ public sealed class ChatCommand
         Parameters = parameters;
     }
 
-    public string ConstructParameters(string[] parts = null)
+    public string ConstructParameters(string[] parts = null!)
     {
         if (Parameters is null || Parameters.Length == 1)
             return "<none>";
 
-        var result = "";
+        var result = string.Empty;
 
         for (var i = Parameters.Length - 1; i > (parts?.Length ?? 0) - 2 && i > -1; i--)
             result = $"<{Parameters[i]}> {result} ";
@@ -149,8 +148,8 @@ public sealed class ChatCommand
             return;
         }
 
-        var message = "";
-        PlayerControl whispered = null;
+        var message = string.Empty;
+        PlayerControl whispered = null!;
 
         if (LocalPlayer.HasDied())
             Run("<#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
@@ -235,7 +234,7 @@ public sealed class ChatCommand
             return;
         }
 
-        var arg = message.Replace(args[0], "").Trim();
+        var arg = message.Replace(args[0], string.Empty).Trim();
 
         if (Disallowed.Any(arg.Contains))
             Run("<#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
@@ -252,14 +251,14 @@ public sealed class ChatCommand
 
     private static void Summary()
     {
-        if (References.Summary == null)
+        if (References.Summary is null)
         {
-            using var data = new RpcReader(File.ReadAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary")));
-            References.Summary = new();
-            References.Summary.FromBytes(data);
+            var data = RpcReader.Borrow(File.ReadAllBytes(Path.Combine(TownOfUsReworked.Other, "Summary")));
+            References.Summary = data.ReadNetObject<SummaryInfo>();
+            RpcReader.Return(data);
         }
 
-        var summary = References.Summary?.Generate();
+        var summary = References.Summary!.Generate();
 
         if (IsNullEmptyOrWhiteSpace(summary))
             Run("<#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");
@@ -318,7 +317,7 @@ public sealed class ChatCommand
         }
 
         var allPlayers = AllPlayers();
-        PlayerControl target = null;
+        PlayerControl target = null!;
         var split = message.TrueSplit('(', ')');
 
         if (byte.TryParse(args[1], out var id))
@@ -355,9 +354,9 @@ public sealed class ChatCommand
     {
         if (args.Length == 1)
         {
-            var kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "";
-            var test = AllCommands.Any(x => x.Aliases.Contains("rpc")) ? ", /testargs, /testargless, /testargsmessage, /rpc" : "";
-            var lobby = !IsNullEmptyOrWhiteSpace(kickBan) ? $"\n\nCommands available in lobby:\n{kickBan}" : "";
+            var kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : string.Empty;
+            var test = AllCommands.Any(x => x.Aliases.Contains("rpc")) ? ", /testargs, /testargless, /testargsmessage, /rpc" : string.Empty;
+            var lobby = !IsNullEmptyOrWhiteSpace(kickBan) ? $"\n\nCommands available in lobby:\n{kickBan}" : string.Empty;
             Run("<#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n/ignore, /setname{lobby}");
         }
         else

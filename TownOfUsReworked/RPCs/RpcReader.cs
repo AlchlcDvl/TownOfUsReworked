@@ -1,481 +1,556 @@
-using System.Buffers;
+using System.Buffers.Binary;
+using System.Collections.ObjectModel;
+using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using TownOfUsReworked.Pooling;
 
 namespace TownOfUsReworked.RPCs;
 
 /// <summary>
 /// A network reader for reading from RPC messages.
 /// </summary>
-public sealed class RpcReader : IDisposable
+public sealed class RpcReader() : RpcBuffer(8)
 {
-    /// <summary>
-    /// A list of bytes written to be sent for an RPC. This is the internal buffer.
-    /// </summary>
-    private byte[] Payload;
+    public int BytesRemaining => dataSize - position;
 
-    /// <summary>
-    /// Gets or sets a flag value that indicates whether or not the writer has been disposed of.
-    /// </summary>
-    private bool Disposed;
+    public override int DataSize => dataSize;
+    private int dataSize;
 
-    /// <summary>
-    /// Gets or sets the current pointer position in the data stream.
-    /// </summary>
-    private int Position;
+    // State
 
-    /// <summary>
-    /// Gets the size of the networked payload.
-    /// </summary>
-    public int DataSize { get; }
-
-    /// <summary>
-    /// Gets the remaining unread bytes from the payload.
-    /// </summary>
-    public int BytesRemaining => DataSize - Position;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RpcReader"/> class for reading byte data from a network message.
-    /// </summary>
-    /// <param name="data">The networked byte stream containing rpc data.</param>
-    public RpcReader(Il2CppStructArray<byte> data)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void EnsureReadable(int bytesToRead)
     {
-        DataSize = data.Length;
-        Payload = ArrayPool<byte>.Shared.Rent(DataSize);
-        Buffer.BlockCopy(data, 0, Payload, 0, DataSize);
-        Position = 0;
+        ThrowIfPooled();
+        ThrowIfTooLong(bytesToRead);
+        currentBitIndex = 8;
     }
 
-    /// <summary>
-    /// RpcReader destructor.
-    /// </summary>
-    ~RpcReader() => InternalDispose();
-
-    /// <summary>
-    /// Throws errors to ensure proper flow of reading bytes.
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">Thrown if the writer has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown when either there was 0 data being attempted to be read.</exception>
-    /// <exception cref="EndOfStreamException">Thrown if there is insufficient data to read.</exception>
-    private void ThrowIfIncorrectState(int readLength)
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void ThrowIfTooLong(int bytesToRead)
     {
-        if (Disposed)
-            throw new ObjectDisposedException(nameof(RpcReader));
-
-        if (readLength == 0)
-            throw new ArgumentException($"Must gather some byte data. Pos {Position} out of {DataSize}; {(ReworkedRpc)Payload[0]} {Payload[1]}");
-
-        if ((Position + readLength) > DataSize)
-            throw new EndOfStreamException($"Tried to read more data than what was available. Pos {Position} out of {DataSize} with read length {readLength}; {(ReworkedRpc)Payload[0]} {Payload[1]}");
-
-        if (Position >= DataSize)
-            throw new EndOfStreamException($"No more data to read. Pos {Position} out of {DataSize}; {(ReworkedRpc)Payload[0]} {Payload[1]}");
+        if (position + bytesToRead > dataSize)
+            throw new EndOfStreamException($"Attempted to read {bytesToRead} bytes, but only {BytesRemaining} remain.");
     }
 
-    /// <summary>
-    /// Internal shared disposal between the destructor and the dispose method.
-    /// </summary>
-    private void InternalDispose()
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private ReadOnlySpan<byte> ReadRequest(int size)
     {
-        if (Disposed)
-            return;
+        EnsureReadable(size);
+        var span = buffer.AsSpan(position, size);
+        position += size;
+        return span;
+    }
 
-        if (BytesRemaining > 0)
-            Warning($"There were {BytesRemaining} bytes of unread data in the rpc {(ReworkedRpc)Payload[0]} {Payload[1]}");
+    public void SetBuffer(byte[] data)
+    {
+        buffer = data;
+        dataSize = data.Length;
+        Clear();
+    }
 
-        if (Payload is not null)
+    public static void Return(RpcReader reader) => RecyclePool<RpcReader>.Return(reader);
+
+    private ulong ReadVarInt(int maxShift)
+    {
+        EnsureReadable(1);
+
+        var result = 0ul;
+        var shift = 0;
+
+        while (true)
         {
-            ArrayPool<byte>.Shared.Return(Payload);
-            Payload = null;
+            if (position >= dataSize)
+                throw new EndOfStreamException("Unexpected end of stream during VarInt.");
+
+            var b = buffer[position++];
+            result |= (ulong)(b & 0x7F) << shift;
+
+            if ((b & 0x80) == 0)
+                break;
+
+            shift += 7;
+
+            if (shift >= maxShift)
+                throw new InvalidDataException("VarInt too long");
         }
 
-        Disposed = true;
-    }
-
-    /// <inheritdoc/>
-    public void Dispose()
-    {
-        InternalDispose();
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Reads a value of the specified type from the data.
-    /// </summary>
-    /// <typeparam name="T">The type of value to read.</typeparam>
-    /// <returns>The deserialized value of type <typeparamref name="T"/>.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public T Read<T>() => (T)Read(typeof(T));
-
-    // /// <summary>
-    // /// Reads a value from the data.
-    // /// </summary>
-    // /// <typeparam name="T">The type of value to read.</typeparam>
-    // /// <returns>The deserialized value of type <typeparamref name="T"/>.</returns>
-    // /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    // public T ReadFromTypeCode<T>() => (T)Read();
-
-    /// <summary>
-    /// Reads a value of the specified type from the data.
-    /// </summary>
-    /// <returns>The deserialized value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private object Read(Type type) => type switch
-    {
-        null => throw new NullReferenceException(nameof(type)),
-        _ when type == typeof(byte) => ReadByte(),
-        _ when type == typeof(char) => ReadChar(),
-        _ when type == typeof(bool) => ReadBool(),
-        _ when type == typeof(sbyte) => ReadSByte(),
-        _ when type == typeof(ushort) => ReadUShort(),
-        _ when type == typeof(short) => ReadShort(),
-        _ when type == typeof(uint) => ReadUInt(),
-        _ when type == typeof(int) => ReadInt(),
-        _ when type == typeof(ulong) => ReadULong(),
-        _ when type == typeof(long) => ReadLong(),
-        _ when type == typeof(float) => ReadFloat(),
-        _ when type == typeof(double) => ReadDouble(),
-        _ when type == typeof(decimal) => ReadDecimal(),
-        _ when type == typeof(string) => ReadString(),
-        _ when type == typeof(Half) => ReadHalf(),
-        _ when type == typeof(PlayerControl) => ReadPlayer(),
-        _ when type == typeof(PlayerVoteArea) => ReadVoteArea(),
-        _ when type == typeof(DeadBody) => ReadBody(),
-        _ when type == typeof(Vent) => ReadVent(),
-        _ when type == typeof(CustomButton) => ReadButton(),
-        _ when type == typeof(Vector2) => ReadVector2(),
-        _ when type == typeof(Type) => ReadType(),
-        _ when type == typeof(Color32) => ReadColor32(),
-        _ when type == typeof(Enum) => ReadEnum(ReadType()),
-        _ when type == typeof(IEnumerable) => ReadValues(),
-        _ when type.IsEnum => ReadEnum(type),
-        _ when typeof(IPlayerLayer).IsAssignableFrom(type) => ReadLayer(),
-        _ when typeof(INetDeserializable).IsAssignableFrom(type) => ReadDeserializable(type),
-        _ when typeof(IEnumerable).IsAssignableFrom(type) => ReadValues(type.GetGenericArguments()[0]),
-        _ => throw new NotSupportedException($"{type.Name} cannot be read")
-    };
-
-    /// <summary>
-    /// Reads a value based on its custom type code from the data.
-    /// </summary>
-    /// <returns>The deserialized value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private object Read(byte? typeId = null) => Read((typeId ?? ReadByte()).GetTypeFromId());
-
-    /// <summary>
-    /// Reads a casted collection of values from the data, prefixed by a count.
-    /// </summary>
-    /// <typeparam name="T">The type to cast the collection to.</typeparam>
-    /// <returns>A collection of values, casted to <typeparamref name="T"/>.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public IEnumerable<T> ReadValues<T>() => ReadValues(typeof(T)).Cast<T>();
-
-    /// <summary>
-    /// Reads a collection of values from the data, prefixed by a count.
-    /// </summary>
-    /// <returns>A collection of values.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private IEnumerable ReadValues(Type type)
-    {
-        var count = ReadUShort();
-
-        while (count-- > 0)
-            yield return Read(type);
-    }
-
-    /// <inheritdoc cref="ReadValues(Type)"/>
-    private IEnumerable ReadValues()
-    {
-        var count = ReadUShort();
-
-        if (ReadBool())
-        {
-            var code = ReadByte();
-
-            while (count-- > 0)
-                yield return Read(code);
-        }
-        else while (count-- > 0)
-            yield return Read();
-    }
-
-    /// <summary>
-    /// Reads a boolean value from the data.
-    /// </summary>
-    /// <returns>true if the read byte is non-zero; otherwise, false.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public bool ReadBool()
-    {
-        ThrowIfIncorrectState(1);
-        return Payload[Position++] != 0;
-    }
-
-    /// <summary>
-    /// Reads a boolean value from the data.
-    /// </summary>
-    /// <returns>true if the read byte is non-zero; otherwise, false.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private char ReadChar()
-    {
-        ThrowIfIncorrectState(2);
-        var result = BitConverter.ToChar(Payload, Position);
-        Position += 2;
         return result;
     }
 
-    /// <summary>
-    /// Reads a byte from the data.
-    /// </summary>
-    /// <returns>The deserialized byte value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    // 1 byte
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public byte ReadByte()
     {
-        ThrowIfIncorrectState(1);
-        return Payload[Position++];
+        EnsureReadable(1);
+        return buffer[position++];
     }
 
-    /// <summary>
-    /// Reads a signed byte (sbyte) from the data.
-    /// </summary>
-    /// <returns>The deserialized signed byte value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private sbyte ReadSByte()
-    {
-        ThrowIfIncorrectState(1);
-        return (sbyte)(Payload[Position++] - 128);
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool ReadBool() => ReadByte() != 0;
 
-    /// <summary>
-    /// Reads an unsigned 16-bit integer (ushort) from the data.
-    /// </summary>
-    /// <returns>The deserialized unsigned short value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private ushort ReadUShort()
-    {
-        ThrowIfIncorrectState(2);
-        var result = BitConverter.ToUInt16(Payload, Position);
-        Position += 2;
-        return result;
-    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public sbyte ReadSByte() => (sbyte)ReadByte();
 
-    /// <summary>
-    /// Reads a signed 16-bit integer (short) from the data.
-    /// </summary>
-    /// <returns>The deserialized signed short value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private short ReadShort()
-    {
-        ThrowIfIncorrectState(2);
-        var result = BitConverter.ToInt16(Payload, Position);
-        Position += 2;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads an unsigned 32-bit integer (uint) from the data.
-    /// </summary>
-    /// <returns>The deserialized unsigned int value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private uint ReadUInt()
-    {
-        ThrowIfIncorrectState(4);
-        var result = BitConverter.ToUInt32(Payload, Position);
-        Position += 4;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads a signed 32-bit integer (int) from the data.
-    /// </summary>
-    /// <returns>The deserialized signed int value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public int ReadInt()
-    {
-        ThrowIfIncorrectState(4);
-        var result = BitConverter.ToInt32(Payload, Position);
-        Position += 4;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads an unsigned 64-bit integer (ulong) from the data.
-    /// </summary>
-    /// <returns>The deserialized unsigned long value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private ulong ReadULong()
-    {
-        ThrowIfIncorrectState(8);
-        var result = BitConverter.ToUInt64(Payload, Position);
-        Position += 8;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads a signed 64-bit integer (long) from the data.
-    /// </summary>
-    /// <returns>The deserialized signed long value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private long ReadLong()
-    {
-        ThrowIfIncorrectState(8);
-        var result = BitConverter.ToInt64(Payload, Position);
-        Position += 8;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads a half floating point precision value (float) from the data.
-    /// </summary>
-    /// <returns>The deserialized float value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private Half ReadHalf()
-    {
-        ThrowIfIncorrectState(2);
-        var result = BitConverter.ToHalf(Payload, Position);
-        Position += 2;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads a single floating point precision value (float) from the data.
-    /// </summary>
-    /// <returns>The deserialized float value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public float ReadFloat()
-    {
-        ThrowIfIncorrectState(4);
-        var result = BitConverter.ToSingle(Payload, Position);
-        Position += 4;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads a double floating point precision value from the data.
-    /// </summary>
-    /// <returns>The deserialized double value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private double ReadDouble()
-    {
-        ThrowIfIncorrectState(8);
-        var result = BitConverter.ToDouble(Payload, Position);
-        Position += 8;
-        return result;
-    }
-
-    /// <summary>
-    /// Reads a decimal value from the data.
-    /// </summary>
-    /// <returns>The deserialized double value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private decimal ReadDecimal() => new([ReadInt(), ReadInt(), ReadInt(), ReadInt()]);
-
-    /// <summary>
-    /// Reads a UTF-8 encoded string from the data.
-    /// </summary>
-    /// <returns>The deserialized string.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public string ReadString()
-    {
-        var length = (int)ReadUShort();
-        ThrowIfIncorrectState(length);
-        var result = Encoding.UTF8.GetString(Payload, Position, length);
-        Position += length;
-        return result;
-    }
-
-    // No need for the ThrowIfIncorrectState for the following methods because it's nested
-
-    /// <summary>
-    /// Reads an enum value of the provided type from the data.
-    /// </summary>
-    /// <returns>The deserialized enum value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private object ReadEnum(Type type) => Enum.ToObject(type, Read(Enum.GetUnderlyingType(type)));
-
-    /// <summary>
-    /// Reads a player layer from the data by its player ID and layer type.
-    /// </summary>
-    /// <returns>The matching <see cref="IPlayerLayer"/> instance, or null if not found.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public IPlayerLayer ReadLayer()
-    {
-        var player = ReadByte();
-        var type = Read<Layer>();
-        return PlayerLayer.AllLayers.Find(x => x.PlayerId == player && x.Type == type);
-    }
-
-    /// <summary>
-    /// Reads a <see cref="PlayerControl"/> by its player ID from the data.
-    /// </summary>
-    /// <returns>The player with the deserialized ID.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PlayerControl ReadPlayer() => PlayerById(ReadByte());
 
-    /// <summary>
-    /// Reads a <see cref="PlayerVoteArea"/> by its player ID from the data.
-    /// </summary>
-    /// <returns>The vote area with the deserialized ID.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PlayerVoteArea ReadVoteArea() => VoteAreaById(ReadByte());
 
-    /// <summary>
-    /// Reads a <see cref="DeadBody"/> by its player ID from the data.
-    /// </summary>
-    /// <returns>The body with the deserialized ID.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public DeadBody ReadBody() => BodyById(ReadByte());
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public DeadBody ReadDeadBody() => BodyById(ReadByte());
 
-    /// <summary>
-    /// Reads a <see cref="Vent"/> by its ID from the data.
-    /// </summary>
-    /// <returns>The vent with the deserialized ID.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    // Technically 1 byte
+
+    public bool ReadPackedBool()
+    {
+        if (currentBitIndex >= 8)
+        {
+            currentPackedByte = ReadByte();
+            currentBitIndex = 0;
+        }
+
+        var value = (currentPackedByte & (1 << currentBitIndex)) != 0;
+        currentBitIndex++;
+        return value;
+    }
+
+    // 2 bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public short ReadShort() => BinaryPrimitives.ReadInt16LittleEndian(ReadRequest(2));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ushort ReadUShort() => BinaryPrimitives.ReadUInt16LittleEndian(ReadRequest(2));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public CustomButton ReadButton() => CustomButton.ButtonLookup[ReadUShort()];
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IPlayerLayer ReadLayer()
+    {
+        var playerId = ReadByte();
+        var type = ReadEnum<Layer>();
+        return PlayerLayer.LayerLookup[((byte)type << 8) | playerId];
+    }
+
+    // 4 bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int ReadInt() => BinaryPrimitives.ReadInt32LittleEndian(ReadRequest(4));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public uint ReadUInt() => BinaryPrimitives.ReadUInt32LittleEndian(ReadRequest(4));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vent ReadVent() => VentById(ReadInt());
 
-    /// <summary>
-    /// Reads a <see cref="CustomButton"/> by its ID from the data.
-    /// </summary>
-    /// <returns>The button with the deserialized ID.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public CustomButton ReadButton()
+    // 1 to 5 bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public int ReadPackedInt()
     {
-        var id = ReadUShort();
-        return CustomButton.AllButtons.Find(x => x.ID == id);
+        var val = ReadPackedUInt();
+        return (int)(val >> 1) ^ -(int)(val & 1);
     }
 
-    /// <summary>
-    /// Reads a <see cref="Vector2"/> from the data.
-    /// </summary>
-    /// <returns>The deserialized 2d vector.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public uint ReadPackedUInt() => (uint)ReadVarInt(35);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public float ReadFloat() => BinaryPrimitives.ReadSingleLittleEndian(ReadRequest(4));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector2 ReadVector2()
     {
-        var x = ReadUShort() / (float)ushort.MaxValue;
-        var y = ReadUShort() / (float)ushort.MaxValue;
-        return new(Generate.Lerp(x), Generate.Lerp(y));
+        var span = ReadRequest(4);
+        var xNorm = BinaryPrimitives.ReadUInt16LittleEndian(span);
+        var yNorm = BinaryPrimitives.ReadUInt16LittleEndian(span[2..]);
+        return new(Lerp(xNorm), Lerp(yNorm));
     }
 
-    /// <summary>
-    /// Reads a type from the data.
-    /// </summary>
-    /// <returns>The deserialized type value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private Type ReadType() => Type.GetType(ReadString());
-
-    /// <summary>
-    /// Creates and initialises an new deserialized object from the data.
-    /// </summary>
-    /// <returns>The deserialized summary info.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    private INetDeserializable ReadDeserializable(Type type)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Color32 ReadColor32()
     {
-        var obj = Activator.CreateInstance(type) as INetDeserializable;
-        obj!.FromBytes(this);
+        var span = ReadRequest(4);
+        return new(span[0], span[1], span[2], span[3]);
+    }
+
+    // 8 bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public long ReadLong() => BinaryPrimitives.ReadInt64LittleEndian(ReadRequest(8));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ulong ReadULong() => BinaryPrimitives.ReadUInt64LittleEndian(ReadRequest(8));
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public double ReadDouble() => BinaryPrimitives.ReadDoubleLittleEndian(ReadRequest(8));
+
+    // 1 to 10 bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public long ReadPackedLong()
+    {
+        var val = ReadPackedULong();
+        return (long)(val >> 1) ^ -(long)(val & 1);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ulong ReadPackedULong() => ReadVarInt(70);
+
+    // 12 bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ReadFloats(Span<float> values)
+    {
+        var span = ReadRequest(values.Length * 4);
+
+        for (var i = 0; i < values.Length; i++)
+            values[i] = BinaryPrimitives.ReadSingleLittleEndian(span[(i * 4)..]);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Vector3 ReadVector3()
+    {
+        Span<float> v = stackalloc float[3];
+        ReadFloats(v);
+        return new(v[0], v[1], v[2]);
+    }
+
+    // 16 bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Color ReadColor()
+    {
+        Span<float> v = stackalloc float[4];
+        ReadFloats(v);
+        return new(v[0], v[1], v[2], v[3]);
+    }
+
+    // Variable bytes
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ReadString(CountType countType = CountType.Byte) => ReadStringWithSize(ReadCount(countType))!;
+
+    public string? ReadStringWithSize(int len)
+    {
+        if (len < 0)
+            return null;
+
+        if (len == 0)
+            return string.Empty;
+
+        EnsureReadable(len);
+        var s = Encoding.UTF8.GetString(buffer.AsSpan(position, len));
+        position += len;
+        return s;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T Read<T>() => RpcReaderDels.Type<T>.Reader(this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T? ReadNullable<T>() where T : struct => ReadBool() ? Read<T>() : null;
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T ReadPackedEnum<T>() where T : struct, Enum => RpcReaderDels.PackedEnum<T>.Reader(this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T ReadEnum<T>() where T : struct, Enum => RpcReaderDels.Enum<T>.Reader(this);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T ReadNetObject<T>() where T : INetDeserializable, new()
+    {
+        var obj = RpcReaderDels.NetObjectFactory<T>.Create();
+        obj.DeserializeFrom(this);
         return obj;
     }
 
-    /// <summary>
-    /// Reads a Color32 value from the data.
-    /// </summary>
-    /// <returns>The deserialised Color32 value.</returns>
-    /// <inheritdoc cref="ThrowIfIncorrectState"/>
-    public Color32 ReadColor32() => new(ReadByte(), ReadByte(), ReadByte(), ReadByte());
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private int ReadCount(CountType countType) => countType == CountType.Byte ? ReadByte() : ReadUShort();
+
+    private TCollection ReadCollection<TCollection, T>(Func<int, TCollection> factory, Action<TCollection, T> add, Func<RpcReader, T> reader, CountType countType = CountType.Byte)
+    {
+        var count = ReadCount(countType);
+        var collection = factory(count);
+
+        for (var i = 0; i < count; i++)
+            add(collection, reader(this));
+
+        return collection;
+    }
+
+    public T[] ReadArray<T>(Func<RpcReader, T> itemReader, CountType countType = CountType.Byte)
+    {
+        var count = ReadCount(countType);
+
+        if (count == 0)
+            return [];
+
+        var array = new T[count];
+
+        for (var i = 0; i < count; i++)
+            array[i] = itemReader(this);
+
+        return array;
+    }
+
+    public List<T> ReadList<T>(Func<RpcReader, T> reader, CountType countType = CountType.Byte)
+        => ReadCollection(RpcReaderDels.ListDelegates<T>.Create, RpcReaderDels.ListDelegates<T>.Add, reader, countType);
+
+    public HashSet<T> ReadSet<T>(Func<RpcReader, T> reader, CountType countType = CountType.Byte)
+        => ReadCollection(RpcReaderDels.HashSetDelegates<T>.Create, RpcReaderDels.HashSetDelegates<T>.Add, reader, countType);
+
+    public Dictionary<TKey, TValue> ReadDictionary<TKey, TValue>(Func<RpcReader, TKey> keyReader, Func<RpcReader, TValue> valueReader, CountType countType = CountType.Byte) where TKey : notnull
+    {
+        var count = ReadCount(countType);
+
+        if (count == 0)
+            return [];
+
+        var dict = new Dictionary<TKey, TValue>(count);
+
+        while (count-- > 0)
+            dict[keyReader(this)] = valueReader(this);
+
+        return dict;
+    }
+
+    public void PopulateArray<T>(T[] array, Func<RpcReader, T> itemReader, CountType countType = CountType.Byte)
+    {
+        Array.Clear(array);
+        var count = ReadCount(countType);
+
+        if (count == 0)
+            return;
+
+        for (var i = 0; i < count; i++)
+            array[i] = itemReader(this);
+    }
+
+    private void PopulateCollection<TCollection, T>(TCollection collection, Action<TCollection> clear, Action<TCollection, T> add, Func<RpcReader, T> reader, CountType countType = CountType.Byte)
+    {
+        clear(collection);
+        var count = ReadCount(countType);
+
+        if (count == 0)
+            return;
+
+        while (count-- > 0)
+            add(collection, reader(this));
+    }
+
+    public void PopulateList<T>(List<T> list, Func<RpcReader, T> itemReader, CountType countType = CountType.Byte)
+        => PopulateCollection(list, RpcReaderDels.ListDelegates<T>.Clear, RpcReaderDels.ListDelegates<T>.Add, itemReader, countType);
+
+    public void PopulateSet<T>(HashSet<T> set, Func<RpcReader, T> itemReader, CountType countType = CountType.Byte)
+        => PopulateCollection(set, RpcReaderDels.HashSetDelegates<T>.Clear, RpcReaderDels.HashSetDelegates<T>.Add, itemReader, countType);
+
+    public void PopulateDictionary<TKey, TValue>(Dictionary<TKey, TValue> dict, Func<RpcReader, TKey> keyReader, Func<RpcReader, TValue> valueReader, CountType countType = CountType.Byte) where TKey : notnull
+    {
+        dict.Clear();
+        var count = ReadCount(countType);
+
+        if (count == 0)
+            return;
+
+        while (count-- > 0)
+            dict[keyReader(this)] = valueReader(this);
+    }
+
+    private static float Lerp(ushort t) => Mathf.Lerp(MinPos, MaxPos, t / (float)ushort.MaxValue);
+
+    public static RpcReader Borrow(byte[] data)
+    {
+        var reader = RecyclePool<RpcReader>.Borrow();
+        reader.SetBuffer(data);
+        return reader;
+    }
+}
+
+public static class RpcReaderDels
+{
+    public static class Type<T>
+    {
+        public static readonly Func<RpcReader, T> Reader = (Func<RpcReader, T>)Delegate.CreateDelegate(typeof(Func<RpcReader, T>), GetReadExpression(typeof(T)));
+    }
+
+    public static class Tuple<T1, T2>
+    {
+        public static readonly Func<RpcReader, (T1, T2)> Reader = CreateTupleReader<(T1, T2)>(typeof(T1), typeof(T2));
+    }
+
+    public static class NetObject<T> where T : INetDeserializable, new()
+    {
+        public static readonly Func<RpcReader, T> Reader = reader => reader.ReadNetObject<T>();
+    }
+
+    public static class Enum<T> where T : struct, Enum
+    {
+        public static readonly Func<RpcReader, T> Reader = CreateEnumReader();
+
+        private static Func<RpcReader, T> CreateEnumReader()
+        {
+            var size = Unsafe.SizeOf<T>();
+            return size switch
+            {
+                1 => reader =>
+                {
+                    var v = reader.ReadByte();
+                    return Unsafe.As<byte, T>(ref v);
+                },
+                2 => reader =>
+                {
+                    var v = reader.ReadUShort();
+                    return Unsafe.As<ushort, T>(ref v);
+                },
+                4 => reader =>
+                {
+                    var v = reader.ReadUInt();
+                    return Unsafe.As<uint, T>(ref v);
+                },
+                8 => reader =>
+                {
+                    var v = reader.ReadULong();
+                    return Unsafe.As<ulong, T>(ref v);
+                },
+                _ => throw new NotSupportedException($"Enum size {size} not supported")
+            };
+        }
+    }
+
+    public static class PackedEnum<T> where T : struct, Enum
+    {
+        public static readonly Func<RpcReader, T> Reader = CreateReader();
+
+        private static Func<RpcReader, T> CreateReader()
+        {
+            var size = Unsafe.SizeOf<T>();
+            var underlying = Enum.GetUnderlyingType(typeof(T));
+            return size switch
+            {
+                1 => reader =>
+                {
+                    var v = reader.ReadByte();
+                    return Unsafe.As<byte, T>(ref v);
+                },
+                2 => reader =>
+                {
+                    var v = reader.ReadUShort();
+                    return Unsafe.As<ushort, T>(ref v);
+                },
+                4 when underlying == typeof(int) => reader =>
+                {
+                    var v = reader.ReadPackedInt();
+                    return Unsafe.As<int, T>(ref v);
+                },
+                4 => reader =>
+                {
+                    var v = reader.ReadPackedUInt();
+                    return Unsafe.As<uint, T>(ref v);
+                },
+                8 when underlying == typeof(long) => reader =>
+                {
+                    var v = reader.ReadPackedLong();
+                    return Unsafe.As<long, T>(ref v);
+                },
+                8 => reader =>
+                {
+                    var v = reader.ReadPackedULong();
+                    return Unsafe.As<ulong, T>(ref v);
+                },
+                _ => throw new NotSupportedException($"Enum size {size} not supported")
+            };
+        }
+    }
+
+    private static Func<RpcReader, TTuple> CreateTupleReader<TTuple>(params Type[] componentTypes)
+    {
+        var readerParam = Expression.Parameter(typeof(RpcReader), "reader");
+        var readCalls = new Expression[componentTypes.Length];
+
+        for (var i = 0; i < componentTypes.Length; i++)
+            readCalls[i] = Expression.Call(readerParam, GetReadExpression(componentTypes[i]));
+
+        var constructor = typeof(TTuple).GetConstructor(componentTypes) ?? throw new InvalidOperationException($"Could not find constructor for tuple {typeof(TTuple)}");
+        var newTuple = Expression.New(constructor, readCalls);
+        return Expression.Lambda<Func<RpcReader, TTuple>>(newTuple, readerParam).Compile();
+    }
+
+    private static readonly Dictionary<Type, MethodInfo> TypeReadCache = [];
+    public static readonly ReadOnlyDictionary<Type, string> ReaderMethodNames = new(new Dictionary<Type, string>
+    {
+        { typeof(int), nameof(RpcReader.ReadInt) },
+        { typeof(byte), nameof(RpcReader.ReadByte) },
+        { typeof(uint), nameof(RpcReader.ReadUInt) },
+        { typeof(long), nameof(RpcReader.ReadLong) },
+        { typeof(bool), nameof(RpcReader.ReadBool) },
+        { typeof(Vent), nameof(RpcReader.ReadVent) },
+        { typeof(sbyte), nameof(RpcReader.ReadSByte) },
+        { typeof(short), nameof(RpcReader.ReadShort) },
+        { typeof(ulong), nameof(RpcReader.ReadULong) },
+        { typeof(float), nameof(RpcReader.ReadFloat) },
+        { typeof(Color), nameof(RpcReader.ReadColor) },
+        { typeof(ushort), nameof(RpcReader.ReadUShort) },
+        { typeof(double), nameof(RpcReader.ReadDouble) },
+        { typeof(string), nameof(RpcReader.ReadString) },
+        { typeof(Vector2), nameof(RpcReader.ReadVector2) },
+        { typeof(Vector3), nameof(RpcReader.ReadVector3) },
+        { typeof(Color32), nameof(RpcReader.ReadColor32) },
+        { typeof(DeadBody), nameof(RpcReader.ReadDeadBody) },
+        { typeof(CustomButton), nameof(RpcReader.ReadButton) },
+        { typeof(PlayerControl), nameof(RpcReader.ReadPlayer) },
+        { typeof(PlayerVoteArea), nameof(RpcReader.ReadVoteArea) }
+    });
+
+    private static MethodInfo GetReadExpression(Type type)
+    {
+        if (TypeReadCache.TryGetValue(type, out var method))
+            return method;
+
+        if (ReaderMethodNames.TryGetValue(type, out var name))
+            method = Method(name);
+        else if (type.IsEnum)
+            method = Method(nameof(RpcReader.ReadEnum)).MakeGenericMethod(type);
+        else if (typeof(IPlayerLayer).IsAssignableFrom(type))
+            method = Method(nameof(RpcReader.ReadLayer));
+        else if (typeof(INetDeserializable).IsAssignableFrom(type))
+            method = Method(nameof(RpcReader.ReadNetObject)).MakeGenericMethod(type);
+
+        TypeReadCache[type] = method ?? throw new NotSupportedException($"Type {type.Name} is not supported in automatic deserialization.");
+        return method;
+    }
+
+    private static MethodInfo Method(string name) =>
+        typeof(RpcReader).GetMethod(name, BindingFlags.Instance | BindingFlags.Public)
+        ?? throw new MissingMethodException($"RpcReader missing method: {name}");
+
+    public static class NetObjectFactory<T> where T : INetDeserializable, new()
+    {
+        public static readonly Func<T> Create = CreateFactory();
+
+        private static Func<T> CreateFactory()
+        {
+            var newExp = Expression.New(typeof(T));
+            var lambda = Expression.Lambda<Func<T>>(newExp);
+            return lambda.Compile();
+        }
+    }
+
+    public static class ListDelegates<T>
+    {
+        public static readonly Func<int, List<T>> Create = count => new List<T>(count);
+        public static readonly Action<List<T>, T> Add = (list, item) => list.Add(item);
+        public static readonly Action<List<T>> Clear = list => list.Clear();
+    }
+
+    public static class HashSetDelegates<T>
+    {
+        public static readonly Func<int, HashSet<T>> Create = count => new HashSet<T>(count);
+        public static readonly Action<HashSet<T>, T> Add = (set, item) => set.Add(item);
+        public static readonly Action<HashSet<T>> Clear = list => list.Clear();
+    }
 }

@@ -1,8 +1,13 @@
+using TownOfUsReworked.RPCs.Messages;
+using TownOfUsReworked.RPCs.Messages.Actions;
+using TownOfUsReworked.RPCs.Messages.Misc;
+
 namespace TownOfUsReworked.Custom;
 
 public sealed class CustomButton : IDisposable, INetSerializable
 {
     public static readonly List<CustomButton> AllButtons = [];
+    public static readonly Dictionary<ushort, CustomButton> ButtonLookup = [];
 
     // Params, required
     public readonly PlayerLayer Owner;
@@ -102,7 +107,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             Uses = Mathf.Clamp(Uses, 0, Max);
 
             if (Owner.Local)
-                CallRpc(MiscRpc.SyncMaxUses, this, value);
+                CallRpc(new SyncMaxUsesMessage(this, value));
         }
     }
     public int UsesCount = -1;
@@ -119,7 +124,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             if (!Owner.Local)
                 return;
 
-            CallRpc(MiscRpc.SyncUses, this, value);
+            CallRpc(new SyncUsesMessage(this, value));
             Base.SetUsesRemaining(UsesCount);
         }
     }
@@ -202,6 +207,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         Disabled = !Owner.Local;
         CreateButton();
         AllButtons.Add(this);
+        ButtonLookup[ID] = this;
     }
 
     private void CreateButton()
@@ -307,7 +313,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
             else if (EffectActive && CanClickAgain)
             {
                 AfterClickedAgain();
-                CallRpc(ActionsRpc.Cancel, this);
+                CallRpc(new CancelMessage(this));
             }
         }
 
@@ -316,9 +322,9 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     public void Begin() => AdvanceToNextPhase(ButtonState.Pressed);
 
-    public void TriggerRpcAndBegin(params object[] args)
+    public void TriggerRpcAndBegin(BaseDataMessage rpcData)
     {
-        CallRpc(ActionsRpc.ButtonAction, [this, ..args]);
+        CallRpc(new ButtonActionMessage(this, rpcData));
         Begin();
     }
 
@@ -721,5 +727,5 @@ public sealed class CustomButton : IDisposable, INetSerializable
         GC.SuppressFinalize(this);
     }
 
-    public IEnumerable<byte> GetBytes() => RpcWriter.GetBytes(ID);
+    public void SerializeTo(RpcWriter writer) => writer.WriteUShort(ID);
 }

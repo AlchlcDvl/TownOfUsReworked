@@ -8,5 +8,5 @@ public interface INetDeserializable
     /// <summary>
     /// Populates the internal data from a network reader.
     /// </summary>
-    void FromBytes(RpcReader reader);
+    void DeserializeFrom(RpcReader reader);
 }

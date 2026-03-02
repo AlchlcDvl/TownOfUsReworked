@@ -1,4 +1,6 @@
 using TownOfUsReworked.Patches.Player;
+using TownOfUsReworked.RPCs.Messages;
+using TownOfUsReworked.RPCs.Messages.Misc;
 
 namespace TownOfUsReworked.Managers;
 
@@ -15,94 +17,59 @@ public static class RpcManager
     /// <summary>
     /// Creates an instance of <see cref="RpcWriter"/> to potentially write more data to.
     /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
+    /// <param name="message">The message to start the rpc with.</param>
+    /// <param name="targetClientId">The owner id of the target client.</param>
     /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
-    public static RpcWriter CreateWriter(Enum rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, false, data);
+    public static RpcWriter? CreateWriter(BaseReworkedMessage message, int targetClientId = -1)
+    {
+        if (TownOfUsReworked.MciActive || !LocalPlayer)
+            return null;
 
-    // /// <summary>
-    // /// Creates an instance of <see cref="RpcWriter"/> to potentially write more data to.
-    // /// </summary>
-    // /// <param name="rpc">The main rpc header.</param>
-    // /// <param name="data">The data associated to the rpc.</param>
-    // /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
-    // private static RpcWriter CreateWriterUsingTypeCodes(CustomRPC rpc, params object[] data) => TownOfUsReworked.MciActive || !LocalPlayer ? null : new(rpc, true, data);
+        var writer = RpcWriter.Borrow();
+        writer.SetTargetId(targetClientId);
+        message.SerializeTo(writer);
+        return writer;
+    }
 
     /// <summary>
     /// Sends an RPC message to all players.
     /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallRpc(Enum rpc, params object[] data) => CallTargetedRpc(-1, rpc, data);
+    /// <param name="message">The message to send.</param>
+    /// <param name="targetClientId">The owner id of the target client.</param>
+    public static void CallRpc(BaseReworkedMessage message, int targetClientId = -1) => CallTargetedRpc(message, targetClientId);
 
     /// <summary>
     /// Sends a late RPC message to all players.
     /// </summary>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateRpc(Enum rpc, params object[] data) => CallLateTargetedRpc(-1, rpc, data);
-
-    // /// <summary>
-    // /// Sends an RPC message with type codes to all players.
-    // /// </summary>
-    // /// <param name="rpc">The main rpc header.</param>
-    // /// <param name="data">The data associated to the rpc.</param>
-    // public static void CallRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallTargetedRpcUsingTypeCodes(-1, rpc, data);
-
-    // /// <summary>
-    // /// Sends a late RPC message with type codes to all players.
-    // /// </summary>
-    // /// <param name="rpc">The main rpc header.</param>
-    // /// <param name="data">The data associated to the rpc.</param>
-    // public static void CallLateRpcUsingTypeCodes(CustomRPC rpc, params object[] data) => CallLateTargetedRpcUsingTypeCodes(-1, rpc, data);
+    /// <param name="message">The message to send.</param>
+    /// <param name="targetClientId">The owner id of the target client.</param>
+    public static void CallLateRpc(BaseReworkedMessage message, int targetClientId = -1) => CallLateTargetedRpc(message, targetClientId);
 
     /// <summary>
     /// Sends an RPC message to a specific player.
     /// </summary>
-    /// <param name="targetClientId">The player to send the data to.</param>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallTargetedRpc(int targetClientId, Enum rpc, params object[] data)
+    /// <param name="message">The message to start the rpc with.</param>
+    /// <param name="targetClientId">The owner id of the target client.</param>
+    public static void CallTargetedRpc(BaseReworkedMessage message, int targetClientId = -1)
     {
-        using var writer = CreateWriter(rpc, data);
-        writer?.Send(targetClientId);
+        var writer = CreateWriter(message, targetClientId);
+        writer?.SendImmediate();
+        RpcWriter.Return(writer!);
+        message.Dispose();
     }
 
     /// <summary>
     /// Sends a late RPC message to a specific player.
     /// </summary>
-    /// <param name="targetClientId">The player to send the data to.</param>
-    /// <param name="rpc">The main rpc header.</param>
-    /// <param name="data">The data associated to the rpc.</param>
-    public static void CallLateTargetedRpc(int targetClientId, Enum rpc, params object[] data)
+    /// <param name="message">The message to start the rpc with.</param>
+    /// <param name="targetClientId">The owner id of the target client.</param>
+    public static void CallLateTargetedRpc(BaseReworkedMessage message, int targetClientId = -1)
     {
-        using var writer = CreateWriter(rpc, data);
-        writer?.SendLate(targetClientId);
+        var writer = CreateWriter(message, targetClientId);
+        writer?.SendLate();
+        RpcWriter.Return(writer!);
+        message.Dispose();
     }
-
-    // /// <summary>
-    // /// Sends an RPC message to a specific player.
-    // /// </summary>
-    // /// <param name="targetClientId">The player to send the data to.</param>
-    // /// <param name="rpc">The main rpc header.</param>
-    // /// <param name="data">The data associated to the rpc.</param>
-    // private static void CallTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
-    // {
-    //     using var writer = CreateWriterUsingTypeCodes(rpc, data);
-    //     writer?.Send(targetClientId);
-    // }
-
-    // /// <summary>
-    // /// Sends a late RPC message with type codes to a specific player.
-    // /// </summary>
-    // /// <param name="targetClientId">The player to send the data to.</param>
-    // /// <param name="rpc">The main rpc header.</param>
-    // /// <param name="data">The data associated to the rpc.</param>
-    // private static void CallLateTargetedRpcUsingTypeCodes(int targetClientId, CustomRPC rpc, params object[] data)
-    // {
-    //     using var writer = CreateWriterUsingTypeCodes(rpc, data);
-    //     writer?.SendLate(targetClientId);
-    // }
 
     /// <summary>
     /// Closes and sends the rpc.
@@ -116,7 +83,13 @@ public static class RpcManager
             AmongUsClient.Instance.FinishRpcImmediately(writer);
     }
 
-    public static MessageWriter CreateMessageWriter(int targetClientId = -1) => AmongUsClient.Instance.StartRpcImmediately(LocalPlayer.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
+    /// <summary>
+    /// Creates an instance of the game's <see cref="MessageWriter"/>.
+    /// </summary>
+    /// <param name="targetClientId">The owner id of the target client.</param>
+    /// <returns>An instance of <see cref="MessageWriter"/>.</returns>
+    public static MessageWriter CreateMessageWriter(int targetClientId = -1)
+        => AmongUsClient.Instance.StartRpcImmediately(LocalPlayer.NetId, CustomRPCCallID, SendOption.Reliable, targetClientId);
 
     /// <summary>
     /// Sends all non-client mod settings to other players.
@@ -124,7 +97,7 @@ public static class RpcManager
     /// <param name="setting">Specific setting to sync, or <c>null</c> for all settings.</param>
     /// <param name="targetClientId">Target player ID, or <c>-1</c> for all players.</param>
     /// <param name="save">Whether to save settings after sending.</param>
-    public static void SendOptionRPC(Option setting = null, int targetClientId = -1, bool save = true)
+    public static void SendOptionRPC(Option? setting = null, int targetClientId = -1, bool save = true)
     {
         if (save)
             Option.SaveSettings("LastUsed");
@@ -137,24 +110,12 @@ public static class RpcManager
         else
             GameStartManagerPatches.PlayersReady[AllPlayers().Find(x => x.OwnerId == targetClientId).PlayerId] = false;
 
-        var options = setting is not null ? [ setting ] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption);
-        var split = options.Chunk(100);
-        Info($"Sending options split to {split.Count()} sets to {targetClientId}");
+        var options = setting is not null ? [setting] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption).ToArray();
+        var split = options.Chunk(100).ToArray();
+        Info($"Sending options split to {split.Length} sets to {targetClientId}");
 
         foreach (var list in split)
-        {
-            using var writer = CreateWriter(MiscRpc.SyncCustomSettings, (byte)list.Length);
-
-            foreach (var option in list)
-            {
-                // Info($"Sending {option.Name}");
-                writer.Write(option.RpcId.Key);
-                writer.Write(option.RpcId.Value);
-                option.WriteValueRpc(writer);
-            }
-
-            writer.SendLate(targetClientId);
-        }
+            CallLateTargetedRpc(new SyncSettingsMessage(list), targetClientId);
     }
 
     /// <summary>
@@ -196,41 +157,7 @@ public static class RpcManager
             yield return null;
 
         GameStartManagerPatches.PlayersReady[LocalPlayer.PlayerId] = true;
-        CallRpc(MiscRpc.SetPlayerReady, LocalPlayer);
-    }
-
-    /// <summary>
-    /// Fetches the id associated with the provided type.
-    /// </summary>
-    /// <param name="type">The type to fetch the id for.</param>
-    /// <returns>An id associated with the type.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if an invalid type was passed.</exception>
-    public static byte GetIdFromType(this Type type)
-    {
-        if (type.IsEnum)
-            return Generate.TypeIdMap[typeof(Enum)];
-        else if (type.GetGenericTypeDefinition() == typeof(MultiSelectValue<>))
-            return Generate.TypeIdMap[typeof(MultiSelectValue<>)];
-        else if (typeof(IEnumerable).IsAssignableFrom(type))
-            return Generate.TypeIdMap[typeof(IEnumerable)];
-        else if (Generate.TypeIdMap.TryGetKey(type, out var dynamicId))
-            return dynamicId;
-        else
-            throw new InvalidOperationException($"Type {type.Name} cannot be serialized with an assigned type code. It must be a primitive, game type, INetSerializable, or a dynamically registered type.");
-    }
-
-    /// <summary>
-    /// Fetches the type associated with the provided id.
-    /// </summary>
-    /// <param name="id">The id to fetch the type for.</param>
-    /// <returns>A type associated with the .</returns>
-    /// <exception cref="InvalidOperationException">Thrown if an invalid id was passed.</exception>
-    public static Type GetTypeFromId(this byte id)
-    {
-        if (Generate.TypeIdMap.TryGetValue(id, out var type))
-            return type;
-        else
-            throw new InvalidOperationException($"ID {id} does not have an associated type.");
+        CallRpc(new SetPlayerReadyMessage(LocalPlayer));
     }
 
     /// <summary>
@@ -285,12 +212,12 @@ public static class RpcManager
                 {
                     case MiscRpc.SyncMaxUses:
                     {
-                        reader.ReadButton().MaxUses = reader.ReadInt();
+                        reader.ReadButton().MaxUses = reader.ReadPackedInt();
                         return;
                     }
                     case MiscRpc.SyncUses:
                     {
-                        reader.ReadButton().Uses = reader.ReadInt();
+                        reader.ReadButton().Uses = reader.ReadPackedInt();
                         return;
                     }
                     case MiscRpc.SetLayer:
@@ -342,11 +269,13 @@ public static class RpcManager
                     case MiscRpc.PlayerJoinSync:
                     {
                         SettingsPatches.SetMap(reader.Read<Map>());
+                        var summary = reader.ReadPackedBool();
+                        var cachedFirstDead = reader.ReadPackedBool();
 
-                        if (reader.ReadBool())
+                        if (summary)
                             Summary = reader.Read<SummaryInfo>();
 
-                        if (reader.ReadBool())
+                        if (cachedFirstDead)
                             CachedFirstDead = reader.ReadString();
 
                         return;
@@ -444,7 +373,8 @@ public static class RpcManager
                     }
                     case MiscRpc.SetTarget:
                     {
-                        switch (reader.ReadLayer())
+                        var layer = reader.ReadLayer();
+                        switch (layer)
                         {
                             case ITargeter targeter:
                             {
@@ -453,8 +383,7 @@ public static class RpcManager
                             }
                             case Actor actor:
                             {
-                                actor.PretendRoles.Clear();
-                                actor.PretendRoles.AddRange(reader.ReadValues<Layer>());
+                                reader.PopulateList(actor.PretendRoles, RpcReaderDels.Enum<Layer>.Reader);
                                 break;
                             }
                             case Allied ally:
@@ -469,13 +398,20 @@ public static class RpcManager
                                 paired2.Other = paired1.Player;
                                 break;
                             }
+                            default:
+                            {
+                                Failure($"Received unknown layer - {layer.Type}");
+                                break;
+                            }
                         }
 
                         return;
                     }
                     case MiscRpc.ChangeRoles:
                     {
-                        switch (reader.ReadLayer())
+                        var layer = reader.ReadLayer();
+
+                        switch (layer)
                         {
                             case FactionChanger changer:
                             {
@@ -494,6 +430,11 @@ public static class RpcManager
                             case Actor act:
                             {
                                 act.TurnRole(reader.Read<Layer>());
+                                break;
+                            }
+                            default:
+                            {
+                                Failure($"Received unknown layer - {layer.Type}");
                                 break;
                             }
                         }
@@ -572,7 +513,7 @@ public static class RpcManager
                 {
                     case ActionsRpc.FadeBody:
                     {
-                        FadeBody(reader.ReadBody());
+                        FadeBody(reader.ReadDeadBody());
                         return;
                     }
                     case ActionsRpc.Convert:
@@ -601,12 +542,12 @@ public static class RpcManager
                     {
                         try
                         {
-                            var playerid = reader.ReadByte();
-                            UninteractablePlayers.TryAdd(playerid, Time.time);
-                            UninteractablePlayers2.TryAdd(playerid, reader.ReadFloat());
+                            var playerId = reader.ReadByte();
+                            UninteractablePlayers.TryAdd(playerId, Time.time);
+                            UninteractablePlayers2.TryAdd(playerId, reader.ReadFloat());
 
                             if (reader.ReadBool())
-                                PlayerById(playerid).UpdateColor(UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerid].handRenderer);
+                                PlayerById(playerId).UpdateColor(UObject.FindObjectOfType<ZiplineBehaviour>().playerIdHands[playerId].handRenderer);
                         }
                         catch (Exception e)
                         {
@@ -617,7 +558,7 @@ public static class RpcManager
                     }
                     case ActionsRpc.Drop:
                     {
-                        reader.ReadBody().GetComponent<DeadBodyHandler>().StopDrag();
+                        reader.ReadDeadBody().GetComponent<DeadBodyHandler>().StopDrag();
                         return;
                     }
                     case ActionsRpc.Burn:
@@ -639,7 +580,7 @@ public static class RpcManager
                         if (LayerHandler.Handlers.TryGetValue(reader.ReadByte(), out var handler))
                         {
                             handler.Requestor.TentativeTarget = reader.ReadPlayer();
-                            handler.Requestor = null;
+                            handler.Requestor = null!;
                         }
 
                         return;

@@ -191,12 +191,12 @@ public sealed class Warper : SSupport, IMover
 
             if (writer is not null)
             {
-                writer.Write((byte)coords.Count);
+                writer.WriteByte((byte)coords.Count);
 
                 foreach (var (id, pos) in coords)
                 {
-                    writer.Write(id);
-                    writer.Write(pos);
+                    writer.WriteByte(id);
+                    writer.WriteVector2(pos);
                 }
 
                 writer.Send();

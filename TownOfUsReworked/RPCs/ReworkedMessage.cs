@@ -1,13 +1,12 @@
+using System.Buffers;
 using AmongUs.InnerNet.GameDataMessages;
 
 namespace TownOfUsReworked.RPCs;
 
 /// <summary>
-/// Base game message entry way for the mod's late RPCs.
+/// Base game message entry way for the mod's RPCs.
 /// </summary>
-/// <param name="targetClientId">The id of the client that the message targets.</param>
-/// <param name="payload">The byte data to be networked.</param>
-public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> payload) : BaseRpcMessage(LocalPlayer.NetId)
+public sealed class ReworkedMessage : BaseRpcMessage, IDisposable
 {
     /// <summary>
     /// Value injector to ensure seamless integration with the base game.
@@ -17,17 +16,22 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     /// <summary>
     /// The custom injected enum value that indicates it's a modded rpc.
     /// </summary>
-    private static readonly RpcCalls ReworkedType = Injector.InjectAndReturn("ReworkedRpc", CustomRPCCallID); // 255 is used by Reactor
+    private static readonly RpcCalls ReworkedType = Injector.InjectAndReturn("ReworkedRpc", CustomRPCCallID); // 255 is used by Reactor, so we use 254 instead
 
     /// <summary>
     /// The id of the client that the message targets.
     /// </summary>
-    public readonly int TargetClientId = targetClientId;
+    public readonly int TargetClientId;
 
     /// <summary>
     /// The byte data to be networked.
     /// </summary>
-    private readonly Il2CppStructArray<byte> Payload = payload;
+    private byte[] Payload;
+
+    /// <summary>
+    /// The actual size of the payload because of funky ArrayPool behaviour.
+    /// </summary>
+    private readonly int PayloadSize;
 
     /// <summary>
     /// The type of the rpc.
@@ -35,8 +39,35 @@ public sealed class ReworkedMessage(int targetClientId, Il2CppStructArray<byte> 
     public override RpcCalls RpcType => ReworkedType;
 
     /// <summary>
+    /// Initialises a new message;
+    /// </summary>
+    /// <param name="targetClientId">The id of the client that the message targets.</param>
+    /// <param name="payload">The byte data to be networked.</param>
+    public ReworkedMessage(int targetClientId, Span<byte> payload) : base(LocalPlayer.NetId)
+    {
+        TargetClientId = targetClientId;
+        PayloadSize = payload.Length;
+        Payload = ArrayPool<byte>.Shared.Rent(PayloadSize);
+        payload.CopyTo(Payload.AsSpan(0, PayloadSize));
+    }
+
+    /// <summary>
     /// Serializes the rpc values to the game's message writer.
     /// </summary>
     /// <param name="msg">The network writer to serialise the data to.</param>
-    public override void SerializeRpcValues(MessageWriter msg) => msg.WriteBytesAndSize(Payload);
+    public override void SerializeRpcValues(MessageWriter msg)
+    {
+        // The bulk method causes il2cpp casting, so to avoid that I'm doing this
+        msg.WritePacked((uint)PayloadSize);
+
+        for (var i = 0; i < PayloadSize; i++)
+            msg.Write(Payload[i]);
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        ArrayPool<byte>.Shared.Return(Payload);
+        Payload = null;
+    }
 }

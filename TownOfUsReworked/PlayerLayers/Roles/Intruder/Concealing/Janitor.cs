@@ -85,7 +85,7 @@ public sealed class Janitor : Concealing
 
     private float Difference() => Last(Handler.CurrentFaction) && SoloBoost && !Dead ? -Underdog.UnderdogCdBonus : 0;
 
-    public override void ReadRPC(RpcReader reader) => reader.ReadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
+    public override void ReadRPC(RpcReader reader) => reader.ReadDeadBody().GetComponent<DeadBodyHandler>().StartDrag(Player);
 
     protected override void Kill(PlayerControl target)
     {

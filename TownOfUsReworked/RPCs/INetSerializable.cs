@@ -9,5 +9,5 @@ public interface INetSerializable
     /// Serializes the current instance to a sequence of bytes.
     /// </summary>
     /// <returns>A sequence of bytes representing the instance.</returns>
-    IEnumerable<byte> GetBytes();
+    void SerializeTo(RpcWriter writer);
 }

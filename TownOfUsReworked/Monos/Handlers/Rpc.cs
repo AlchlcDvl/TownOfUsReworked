@@ -4,15 +4,16 @@ public sealed class RpcHandler : MonoBehaviour
 {
     private readonly Queue<ReworkedMessage> LateMessages = [];
 
+    private float Timer;
+
+    private const float MinInterval = 0.1f;
+
     [HideFromIl2Cpp]
     public void QueueLateMessage(ReworkedMessage message) => LateMessages.Enqueue(message);
 
-    private const float MinInterval = 0.1f;
-    private float Timer;
-
     public void FixedUpdate()
     {
-        if (!AmongUsClient.Instance || TownOfUsReworked.MciActive || !LateMessages.Any())
+        if (!AmongUsClient.Instance || TownOfUsReworked.MciActive || LateMessages.Count == 0)
             return;
 
         Timer += Time.fixedDeltaTime;
@@ -31,5 +32,6 @@ public sealed class RpcHandler : MonoBehaviour
         var writer = CreateMessageWriter(message.TargetClientId);
         message.SerializeRpcValues(writer);
         writer.Send();
+        message.Dispose();
     }
 }

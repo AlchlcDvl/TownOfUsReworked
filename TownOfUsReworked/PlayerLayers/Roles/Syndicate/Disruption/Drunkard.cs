@@ -57,7 +57,7 @@ public sealed class Drunkard : Disruption, ISpeedModifier
             if (writer is not null)
             {
                 if (ConfusedPlayer)
-                    writer.Write(ConfusedPlayer.PlayerId);
+                    writer.WriteByte(ConfusedPlayer.PlayerId);
 
                 writer.Send();
             }
