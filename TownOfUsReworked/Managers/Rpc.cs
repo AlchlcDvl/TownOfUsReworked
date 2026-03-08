@@ -20,7 +20,7 @@ public static class RpcManager
     /// <param name="message">The message to start the rpc with.</param>
     /// <param name="targetClientId">The owner id of the target client.</param>
     /// <returns>An instance of <see cref="RpcWriter"/>.</returns>
-    public static RpcWriter? CreateWriter(BaseReworkedMessage message, int targetClientId = -1)
+    public static RpcWriter? CreateWriter(INetworkMessage message, int targetClientId = -1)
     {
         if (TownOfUsReworked.MciActive || !LocalPlayer)
             return null;
@@ -36,21 +36,21 @@ public static class RpcManager
     /// </summary>
     /// <param name="message">The message to send.</param>
     /// <param name="targetClientId">The owner id of the target client.</param>
-    public static void CallRpc(BaseReworkedMessage message, int targetClientId = -1) => CallTargetedRpc(message, targetClientId);
+    public static void CallRpc(INetworkMessage message, int targetClientId = -1) => CallTargetedRpc(message, targetClientId);
 
     /// <summary>
     /// Sends a late RPC message to all players.
     /// </summary>
     /// <param name="message">The message to send.</param>
     /// <param name="targetClientId">The owner id of the target client.</param>
-    public static void CallLateRpc(BaseReworkedMessage message, int targetClientId = -1) => CallLateTargetedRpc(message, targetClientId);
+    public static void CallLateRpc(INetworkMessage message, int targetClientId = -1) => CallLateTargetedRpc(message, targetClientId);
 
     /// <summary>
     /// Sends an RPC message to a specific player.
     /// </summary>
     /// <param name="message">The message to start the rpc with.</param>
     /// <param name="targetClientId">The owner id of the target client.</param>
-    public static void CallTargetedRpc(BaseReworkedMessage message, int targetClientId = -1)
+    public static void CallTargetedRpc(INetworkMessage message, int targetClientId = -1)
     {
         var writer = CreateWriter(message, targetClientId);
         writer?.SendImmediate();
@@ -63,7 +63,7 @@ public static class RpcManager
     /// </summary>
     /// <param name="message">The message to start the rpc with.</param>
     /// <param name="targetClientId">The owner id of the target client.</param>
-    public static void CallLateTargetedRpc(BaseReworkedMessage message, int targetClientId = -1)
+    public static void CallLateTargetedRpc(INetworkMessage message, int targetClientId = -1)
     {
         var writer = CreateWriter(message, targetClientId);
         writer?.SendLate();

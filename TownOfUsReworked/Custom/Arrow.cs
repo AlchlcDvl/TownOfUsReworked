@@ -9,12 +9,12 @@ public class CustomArrow : IDisposable
 
     private readonly float Interval;
 
-    protected ArrowBehaviour Arrow;
+    protected ArrowBehaviour? Arrow;
     protected Func<Vector3> Target;
 
-    private SpriteRenderer Render;
-    private GameObject ArrowObj;
-    private SpriteRenderer Point;
+    private SpriteRenderer? Render;
+    private GameObject? ArrowObj;
+    private SpriteRenderer? Point;
     private UColor ArrowColor;
     private bool Disabled;
     private float ArrowTime;
@@ -34,8 +34,6 @@ public class CustomArrow : IDisposable
         AllArrows.Add(this);
     }
 
-    ~CustomArrow() => InternalDispose();
-
     private void Instantiate()
     {
         if (!Owner.AmOwner || Disabled)
@@ -50,22 +48,23 @@ public class CustomArrow : IDisposable
         Render.color = ArrowColor;
         Arrow.image = Render;
         Arrow.target = Owner.GetTruePosition();
+        ArrowObj.AddComponent<CustomArrowHandler>().Arrow = this;
     }
 
     public void Update(UColor? color)
     {
         if (color.HasValue)
-            Render.color = ArrowColor = color.Value;
+            Render!.color = ArrowColor = color.Value;
     }
 
     public void Update()
     {
-        if (!ArrowObj || !Arrow || !Render || (!Owner.AmOwner && Disabled))
-            return;
-
         if (!Owner.AmOwner)
         {
-            Arrow.target = LocalPlayer.transform.position;
+            if (Disabled)
+                return;
+
+            Arrow!.target = LocalPlayer.transform.position; // Appears invisible
             Disable();
             return;
         }
@@ -76,7 +75,7 @@ public class CustomArrow : IDisposable
         if (Time.time - ArrowTime < Interval)
             return;
 
-        Arrow.target = Target();
+        Arrow!.target = Target();
         ArrowTime = Time.time;
     }
 
@@ -109,9 +108,10 @@ public class CustomArrow : IDisposable
         if (!ArrowObj || !Arrow || !Render || ArrowColor == default || Meeting() || !Owner.AmOwner)
             return;
 
-        var v = Arrow.target;
-        v /= Ship().MapScale;
-        v.x *= Mathf.Sign(Ship().transform.localScale.x);
+        var v = Arrow!.target;
+        var ship = Ship()!;
+        v /= ship.MapScale;
+        v.x *= Mathf.Sign(ship.transform.localScale.x);
         v.z = -1f;
 
         if (!Point)
@@ -120,7 +120,7 @@ public class CustomArrow : IDisposable
             Point.enabled = true;
         }
 
-        Point.transform.localPosition = v;
+        Point!.transform.localPosition = v;
         PlayerMaterial.SetColors(ArrowColor, Point);
     }
 

@@ -2,95 +2,27 @@ using static TownOfUsReworked.Managers.RoleGenManager;
 
 namespace TownOfUsReworked.RoleGen;
 
-public sealed class ModifierGen : BaseGen
+public sealed class ModifierGen : BaseNonRoleLayerGen
 {
-    private static readonly Layer[] GlobalMod = [ Layer.Dwarf, Layer.Vip, Layer.Giant, Layer.Drunk, Layer.Coward, Layer.Volatile, Layer.Astral,
-        Layer.Indomitable, Layer.Yeller, Layer.Colorblind ];
+    private static readonly Layer[] GlobalMod = [Layer.Dwarf, Layer.Vip, Layer.Giant, Layer.Drunk, Layer.Coward, Layer.Volatile, Layer.Astral, Layer.Indomitable, Layer.Yeller, Layer.Colorblind];
 
-    public override void InitList()
+    protected override PlayerLayerEnum LayerType => PlayerLayerEnum.Modifier;
+    protected override Layer MinLayer => Layer.Astral;
+    protected override Layer MaxLayer => Layer.Yeller;
+    protected override List<RoleOptionData> TargetList => AllModifiers;
+    protected override int MinSetting => ModifiersSettings.MinModifiers.Value;
+    protected override int MaxSetting => ModifiersSettings.MaxModifiers.Value;
+
+    protected override bool HasLayer(PlayerControl player) => player.GetModifier();
+
+    protected override PlayerControl? GetAssignee(Layer id, List<PlayerControl> playerList) => id switch
     {
-        if (IsList())
-            InitRlList();
-        else
-            InitRegList();
-    }
-
-    private static void InitRlList()
-    {
-        var modifiers = GetValuesFromTo(Layer.Astral, Layer.Yeller);
-
-        foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Modifier && x.Num <= GameData.Instance.PlayerCount))
-        {
-            var rateLimit = 0;
-            var cachedCount = AllModifiers.Count;
-            var bucket = entry.Value.Select(x => x.TryCastToLayer(out var layer) ? layer : modifiers.Random());
-
-            while (rateLimit < 10000 && AllModifiers.Count == cachedCount)
-            {
-                var layer2 = bucket.Random();
-
-                if (ListGen.CannotAdd(layer2, AllModifiers))
-                    rateLimit++;
-                else
-                    AllModifiers.Add(GetSpawnItem(layer2));
-            }
-        }
-    }
-
-    private static void InitRegList()
-    {
-        foreach (var spawn in GetValuesFromToAndMorph(Layer.Astral, Layer.Yeller, GetSpawnItem))
-        {
-            if (spawn.IsActive())
-                AllModifiers.AddMany(spawn.Clone, spawn.Count);
-        }
-
-        var players = GameData.Instance.PlayerCount;
-        var maxMod = Mathf.Clamp(ModifiersSettings.MaxModifiers.Value, 0, players);
-        var minMod = Mathf.Clamp(ModifiersSettings.MinModifiers.Value, 0, players);
-        ModeFilters[GameModeSettings.GameMode].Filter(AllModifiers, GameModeSettings.IgnoreLayerCaps ? players : URandom.RandomRangeInt(minMod, maxMod + 1), true);
-    }
-
-    public override void Assign()
-    {
-        var playerList = AllPlayers().ToList();
-        playerList.Shuffle();
-        AllModifiers.Shuffle();
-        var invalid = new List<Layer>();
-
-        if (TownOfUsReworked.MciActive && AllModifiers.Any())
-            Message("Modifiers in the game: " + Join(" ", AllModifiers.Select(ab => ab.ID)));
-
-        while (playerList.Any() && AllModifiers.Any())
-        {
-            var id = AllModifiers.TakeFirst().ID;
-            var assigned = id switch
-            {
-                Layer.Bait => playerList.FirstOrDefault(x => x.GetRole() is not (Thief or Troll)),
-                Layer.Diseased => playerList.FirstOrDefault(x => x.GetRole() is Troll),
-                Layer.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && !Democrat.DemocratButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() &&
-                    !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) ||
-                    (x.Is<Politician>() && !Politician.PoliticianButton) || x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) || (!Monarch.MonarchButton && x.Is<Monarch>()) ||
-                    (x.Is<Mayor>() && !Mayor.MayorButton))),
-                _ => GlobalMod.Contains(id) ? playerList.FirstOrDefault() : null
-            };
-
-            if (!assigned)
-                continue;
-
-            playerList.Remove(assigned);
-            playerList.Shuffle();
-            AllModifiers.Shuffle();
-
-            if (!assigned.GetModifier())
-                Gen(assigned, id, PlayerLayerEnum.Modifier);
-            else
-                invalid.Add(id);
-        }
-
-        if (TownOfUsReworked.MciActive && invalid.Any())
-            Message("Invalid Modifiers in the game: " + Join(" ", invalid));
-
-        AllModifiers.Clear();
-    }
+        Layer.Bait => playerList.FirstOrDefault(x => x.GetRole() is not (Thief or Troll)),
+        Layer.Diseased => playerList.FirstOrDefault(x => x.GetRole() is Troll),
+        Layer.Shy => playerList.FirstOrDefault(x => !((x.Is<Democrat>() && !Democrat.DemocratButton) || (x.Is<Jester>() && !Jester.JesterButton) || (x.Is<Swapper>() &&
+            !Swapper.SwapperButton) || (x.Is<Actor>() && !Actor.ActorButton) || (x.Is<Guesser>() && !Guesser.GuesserButton) || (x.Is<Executioner>() && !Executioner.ExecutionerButton) ||
+            (x.Is<Politician>() && !Politician.PoliticianButton) || x.Is<ButtonBarry>() || (!Dictator.DictatorButton && x.Is<Dictator>()) || (!Monarch.MonarchButton && x.Is<Monarch>()) ||
+            (x.Is<Mayor>() && !Mayor.MayorButton))),
+        _ => GlobalMod.Contains(id) ? playerList.FirstOrDefault() : null
+    };
 }

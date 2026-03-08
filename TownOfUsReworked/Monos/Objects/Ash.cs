@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Monos;
 /// </summary>
 public sealed class Ash : MonoBehaviour
 {
-    public static readonly List<Ash> AllPiles = [];
+    private static readonly List<GameObject> AllPiles = [];
 
     /// <summary>
     /// Awake event.
@@ -21,7 +21,7 @@ public sealed class Ash : MonoBehaviour
     public static void CreateAsh(DeadBody body)
     {
         var position = body.TruePosition;
-        AllPiles.Add(new GameObject($"AshPile{body.ParentId}")
+        var go = new GameObject($"AshPile{body.ParentId}")
         {
             layer = LayerMask.NameToLayer("Players"),
             transform =
@@ -29,7 +29,20 @@ public sealed class Ash : MonoBehaviour
                 position = new(position.x, position.y, (position.y / 1000f) + 0.001f),
                 localScale = Vector3.one * 0.35f
             }
-        }.AddComponent<Ash>());
+        };
+        go.AddComponent<Ash>();
+        AllPiles.Add(go);
         FadeBody(body);
+    }
+
+    public static void Clear()
+    {
+        foreach (var pile in AllPiles)
+        {
+            if (pile)
+                pile.Destroy();
+        }
+
+        AllPiles.Clear();
     }
 }

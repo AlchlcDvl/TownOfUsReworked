@@ -2,34 +2,23 @@ namespace TownOfUsReworked.Monos;
 
 public sealed class FootprintHandler : MonoBehaviour
 {
-    private PlayerControl Player;
+    private PlayerControl? Player;
     private bool IsEven;
-    private float Time2;
+    private float ElapsedTime;
 
-    public void Awake()
-    {
-        Player = GetComponent<PlayerControl>();
-        SpawnFootprint();
-    }
+    public void Awake() => Player = GetComponent<PlayerControl>();
 
     public void Update()
     {
-        if (Player.HasDied() || Meeting())
+        if (Player!.HasDied() || Meeting() || Player!.MyPhysics.body.velocity.sqrMagnitude < 0.05f)
             return;
 
-        Time2 += Time.deltaTime;
+        ElapsedTime += Time.deltaTime;
 
-        if (Time2 < Detective.FootprintInterval)
+        if (ElapsedTime < Detective.FootprintInterval)
             return;
 
-        Time2 = 0f;
-        SpawnFootprint();
-    }
-
-    private void SpawnFootprint()
-    {
-        var print = new GameObject("Footprint") { layer = LayerMask.NameToLayer("Players") }.AddComponent<Footprint>();
-        print.Player = Player;
-        print.IsEven = IsEven = !IsEven;
+        ElapsedTime = 0f;
+        Footprint.Produce(Player!, IsEven = !IsEven);
     }
 }

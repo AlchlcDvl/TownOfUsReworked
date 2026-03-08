@@ -22,7 +22,7 @@ public abstract class BaseRoleGen : BaseGen
         Outcasts = 0;
     }
 
-    public override void Assign()
+    public sealed override void Assign()
     {
         var players = AllPlayers().ToList();
         AllRoles.Shuffle();
@@ -68,16 +68,38 @@ public abstract class BaseRoleGen : BaseGen
             };
         }
 
+        List<int> tiedFactions = null!;
+
+        if (Intruders + Syndicate + Apocalypse > players)
+            tiedFactions = new(3);
+
         while (Intruders + Syndicate + Apocalypse > players)
         {
             var max = Mathf.Max(Intruders, Syndicate, Apocalypse);
 
             if (Intruders == max)
-                Intruders--;
-            else if (Syndicate == max)
-                Syndicate--;
-            else
-                Apocalypse--;
+                tiedFactions.Add(0);
+
+            if (Syndicate == max)
+                tiedFactions.Add(1);
+
+            if (Apocalypse == max)
+                tiedFactions.Add(2);
+
+            switch (tiedFactions.Random())
+            {
+                case 0:
+                    Intruders--;
+                    break;
+                case 1:
+                    Syndicate--;
+                    break;
+                case 2:
+                    Apocalypse--;
+                    break;
+            }
+
+            tiedFactions.Clear();
         }
 
         while (Outcasts > players - Intruders - Syndicate - Apocalypse)
@@ -91,17 +113,18 @@ public abstract class BaseRoleGen : BaseGen
 
     protected static Layer GetRandomBaseEvil(Faction faction)
     {
-        if (faction is < Faction.Outcast and > Faction.Crew)
+        if (faction is <= Faction.Outcast and > Faction.None)
         {
             return faction switch
             {
                 Faction.Intruder => Layer.Impostor,
                 Faction.Syndicate => Layer.Anarchist,
-                _ => Layer.Cultist,
+                Faction.Apocalypse => Layer.Cultist,
+                Faction.Outcast => Layer.Amnesiac,
+                _ => Layer.Crewmate,
             };
         }
 
-        var choices = new List<Layer>();
         string values = faction switch
         {
             Faction.Illuminati => BadGuysSettings.IlluminatiMembers,
@@ -112,6 +135,8 @@ public abstract class BaseRoleGen : BaseGen
 
         if (IsNullEmptyOrWhiteSpace(values))
             return Layer.Crewmate;
+
+        var choices = new List<Layer>(5);
 
         if (values.Contains("Intruders"))
             choices.Add(Layer.Impostor);
@@ -128,6 +153,6 @@ public abstract class BaseRoleGen : BaseGen
         if (values.Contains("Neophytes"))
             choices.Add(Layer.Zealot);
 
-        return choices.Random();
+        return choices.Count == 0 ? Layer.Crewmate : choices.Random();
     }
 }

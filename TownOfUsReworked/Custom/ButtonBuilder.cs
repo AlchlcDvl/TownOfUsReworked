@@ -17,7 +17,7 @@ public sealed class CustomButtonBuilder(PlayerLayer owner, ReworkedAbilityTypes 
 
     // State & Limits
     public float Cooldown = 1f;
-    public int MaxUses = -1;
+    public int MaxUses = -1; // -1 = Unlimited
     public int UseDecrement = 1;
     public bool CanClickAgain = true;
     public bool PostDeath = false;
@@ -143,7 +143,7 @@ public sealed class CustomButtonBuilder(PlayerLayer owner, ReworkedAbilityTypes 
         return this;
     }
 
-    public CustomButtonBuilder AsManual(bool isManual, Action manualUpdate = null)
+    public CustomButtonBuilder AsManual(bool isManual, Action? manualUpdate = null)
     {
         IsManual = isManual;
 
@@ -189,7 +189,7 @@ public sealed class CustomButtonBuilder(PlayerLayer owner, ReworkedAbilityTypes 
         return this;
     }
 
-    public CustomButtonBuilder WithEffect(Action effect, Action start = null, Action end = null)
+    public CustomButtonBuilder WithEffect(Action effect, Action? start = null, Action? end = null)
     {
         Effect = effect;
 
@@ -202,7 +202,7 @@ public sealed class CustomButtonBuilder(PlayerLayer owner, ReworkedAbilityTypes 
         return this;
     }
 
-    public CustomButtonBuilder WithDelayActions(Action delayAction, Action start = null, Action end = null)
+    public CustomButtonBuilder WithDelayActions(Action delayAction, Action? start = null, Action? end = null)
     {
         ActionDelay = delayAction;
 
@@ -215,7 +215,7 @@ public sealed class CustomButtonBuilder(PlayerLayer owner, ReworkedAbilityTypes 
         return this;
     }
 
-    public CustomButtonBuilder WithOtherDelayActions(Action otherAction, Action start = null, Action end = null)
+    public CustomButtonBuilder WithOtherDelayActions(Action otherAction, Action? start = null, Action? end = null)
     {
         ActionOtherDelay = otherAction;
 
@@ -265,7 +265,7 @@ public sealed class CustomButtonBuilder(PlayerLayer owner, ReworkedAbilityTypes 
         return this;
     }
 
-    public CustomButtonBuilder WithCooldownModifiers(Func<float> difference = null, Func<float> multiplier = null)
+    public CustomButtonBuilder WithCooldownModifiers(Func<float>? difference = null, Func<float>? multiplier = null)
     {
         if (difference != null)
             Difference = difference;

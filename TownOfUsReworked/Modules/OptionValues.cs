@@ -115,10 +115,10 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     public override string ToString() => Values;
 
     /// <inheritdoc/>
-    public override bool Equals(object obj) => obj is MultiSelectValue<T> other && Equals(other);
+    public override bool Equals(object? obj) => obj is MultiSelectValue<T> other && Equals(other);
 
     /// <inheritdoc/>
-    public bool Equals(MultiSelectValue<T> other) => other is not null && _values.SetEquals(other._values);
+    public bool Equals(MultiSelectValue<T>? other) => other is not null && _values.SetEquals(other._values);
 
     /// <inheritdoc/>
     public override int GetHashCode() => Values.GetHashCode();
@@ -192,7 +192,7 @@ public sealed class MultiSelectValue<T> : IDisposable, INetSerializable, INetDes
     /// Converts the value string to an instance of MultiSelectValue.
     /// </summary>
     /// <param name="values">The values to convert.</param>
-    public static implicit operator MultiSelectValue<T>(string values) => [with(IsNullEmptyOrWhiteSpace(values) ? [] : [.. values.TrueSplit(',').Select(Enum.Parse<T>)])];
+    public static implicit operator MultiSelectValue<T>(string values) => new(IsNullEmptyOrWhiteSpace(values) ? [] : [.. values.TrueSplit(',').Select(Enum.Parse<T>)]);
 
     /// <summary>
     /// Equality comparison.
@@ -268,7 +268,6 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
         writer.WriteEnum(ID);
         writer.WritePackedBool(Unique);
         writer.WritePackedBool(Active);
-        writer.EndPackingBools();
     }
 
     public void DeserializeFrom(RpcReader reader)
@@ -282,7 +281,7 @@ public struct RoleOptionData(byte chance, byte count, bool unique, bool active, 
 
     public readonly bool Equals(RoleOptionData other) => other.Chance == Chance && other.Count == Count && other.Unique == Unique && other.Active == Active && other.ID == ID;
 
-    public override readonly bool Equals(object obj) => obj is RoleOptionData data && Equals(data);
+    public override readonly bool Equals(object? obj) => obj is RoleOptionData data && Equals(data);
 
     public override readonly int GetHashCode() => HashCode.Combine(Chance, Count, Unique, Active, ID);
 
@@ -399,16 +398,16 @@ public struct Number(float num) : IComparable, IFormattable, INetSerializable, I
     public readonly bool Equals(Number other) => Value == other.Value;
 
     /// <inheritdoc/>
-    public override readonly bool Equals(object obj) => obj is Number number && Value == number.Value;
+    public override readonly bool Equals(object? obj) => obj is Number number && Value == number.Value;
 
     /// <inheritdoc/>
     public override readonly string ToString() => Value.ToString();
 
     /// <inheritdoc/>
-    public readonly string ToString(string format, IFormatProvider formatProvider) => Value.ToString(format, formatProvider);
+    public readonly string ToString(string? format, IFormatProvider? formatProvider) => Value.ToString(format, formatProvider);
 
     /// <inheritdoc/>
-    public readonly int CompareTo(object obj) => obj switch
+    public readonly int CompareTo(object? obj) => obj switch
     {
         Number i => CompareTo(i),
         _ => Value.CompareTo(obj)

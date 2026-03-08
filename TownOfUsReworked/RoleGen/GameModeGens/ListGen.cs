@@ -13,22 +13,15 @@ public sealed class ListGen : BaseRoleGen
 
         foreach (var entry in Option.GetOptions<ListEntryOption>().Where(x => !x.IsBan && x.EntryType == PlayerLayerEnum.Role && x.Num <= GameData.Instance.PlayerCount))
         {
-            var rateLimit = 0;
-            var cachedCount = AllRoles.Count;
-            var bucket = entry.Value.SelectMany(x => x.TryCastToLayer(out var layer) ? [layer] : GetBucket(x));
+            var bucket = entry.Value
+                .SelectMany(x => x.TryCastToLayer(out var layer) ? [layer] : GetBucket(x)!)
+                .ToList();
 
-            while (rateLimit < 10000 && AllRoles.Count == cachedCount)
-            {
-                var layer2 = bucket.Random();
+            var validLayers = bucket.Where(layer => !CannotAdd(layer, AllRoles)).ToList();
 
-                if (CannotAdd(layer2, AllRoles))
-                    rateLimit++;
-                else
-                    AllRoles.Add(GetSpawnItem(layer2));
-            }
+            if (validLayers.Count > 0)
+                AllRoles.Add(GetSpawnItem(validLayers.Random()));
         }
-
-        // Added rate limits to ensure the loops do not go on forever if roles have been set to unique
 
         while (AllRoles.Count > GameData.Instance.PlayerCount)
             AllRoles.TakeLast();
@@ -42,7 +35,7 @@ public sealed class ListGen : BaseRoleGen
         GameModeSettings.BanAnarchist) || (id == Layer.Crewmate && GameModeSettings.BanCrewmate) || (id == Layer.Impostor && GameModeSettings.BanImpostor) || (id == Layer.Murderer &&
         GameModeSettings.BanMurderer) || (id == Layer.Cultist && GameModeSettings.BanCultist) || (id == Layer.Zealot && GameModeSettings.BanZealot);
 
-    public static Layer[] GetBucket(ListSlot slot) => slot switch
+    public static Layer[]? GetBucket(ListSlot slot) => slot switch
     {
         ListSlot.CrewInvest => CI,
         ListSlot.CrewSupport => CS,

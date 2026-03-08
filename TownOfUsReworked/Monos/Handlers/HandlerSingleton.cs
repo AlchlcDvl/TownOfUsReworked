@@ -2,7 +2,7 @@
 
 public static class HandlerSingleton<T> where T : MonoBehaviour
 {
-    private static T instance;
+    private static T? instance;
     public static T Instance
     {
         get
@@ -10,7 +10,7 @@ public static class HandlerSingleton<T> where T : MonoBehaviour
             if (!instance)
                 AddInstance();
 
-            return instance;
+            return instance!;
         }
     }
 

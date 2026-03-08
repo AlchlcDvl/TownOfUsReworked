@@ -42,7 +42,7 @@ public static class RoleGenManager
     public static readonly List<RoleOptionData> AllDispositions = [];
     public static readonly List<RoleOptionData> AllRoles = [];
 
-    public static PlayerControl Pure;
+    public static PlayerControl? Pure;
     public static byte Convertible;
 
     public static readonly Layer[] CI = [ Layer.Mystic, Layer.Sheriff, Layer.Tracker, Layer.Medium, Layer.Coroner, Layer.Operative, Layer.Seer, Layer.Detective ];
@@ -355,7 +355,7 @@ public static class RoleGenManager
     public static PlayerLayer GetLayer(Layer id, PlayerLayerEnum rpc)
     {
         if (LayerDictionary.TryGetValue(id, out var dictEntry))
-            return (PlayerLayer)Activator.CreateInstance(dictEntry.LayerType);
+            return (PlayerLayer)Activator.CreateInstance(dictEntry.LayerType!)!;
 
         return rpc switch
         {
@@ -395,7 +395,7 @@ public static class RoleGenManager
         var allPlayers = AllPlayers();
 
         if (GameModifiers.PurePlayers && allPlayers.Any(x => x.Is<Neophyte>()))
-            Pure = allPlayers.Random(x => !x.Is<Neophyte>());
+            Pure = allPlayers.Random(x => !x!.Is<Neophyte>());
 
         if (gen.AllowNonRoles)
         {
@@ -533,8 +533,7 @@ public static class RoleGenManager
 
         DeadBodyHandler.Dragging.Clear();
 
-        Monos.Range.AllItems.ForEach(x => x?.gameObject?.Destroy());
-        Monos.Range.AllItems.Clear();
+        Monos.Range.Clear();
 
         ISpeedModifier.AllModifiers.Clear();
 
@@ -571,8 +570,9 @@ public static class RoleGenManager
         CustomMenu.AllMenus.FullClear();
         CustomButton.AllButtons.FullClear();
 
-        Ash.AllPiles.ForEach(x => x?.gameObject?.Destroy());
-        Ash.AllPiles.Clear();
+        CustomButton.ButtonLookup.Clear();
+
+        Ash.Clear();
 
         Client.Instance.CloseMenus();
 
@@ -606,7 +606,9 @@ public static class RoleGenManager
         Abilities.Clear();
         Dispositions.Clear();
         Targets.Clear();
-        RoleGen.Values.Do(x => x.Clear());
+
+        foreach (var gen in RoleGen.Values)
+            gen.Clear();
 
         AllModifiers.Clear();
         AllDispositions.Clear();

@@ -4,10 +4,10 @@ public sealed class DeadBodyHandler : NameHandler
 {
     public static readonly HashSet<byte> Dragging = [];
 
-    public DeadBody Body { get; private set; }
+    public DeadBody? Body { get; private set; }
 
-    private SpriteRenderer Rend;
-    private PlayerControl Dragger;
+    private SpriteRenderer? Rend;
+    private PlayerControl? Dragger;
 
     public void Awake()
     {
@@ -21,8 +21,8 @@ public sealed class DeadBodyHandler : NameHandler
         if (!Dragger)
             return;
 
-        transform.position = Vector3.Lerp(transform.position, Dragger.GetTruePosition(), 5f * Time.deltaTime);
-        Rend.flipX = Dragger.MyRend().flipX;
+        transform.position = Vector3.Lerp(transform.position, Dragger!.GetTruePosition(), 5f * Time.deltaTime);
+        Rend!.flipX = Dragger.MyRend().flipX;
     }
 
     public void StartDrag(PlayerControl player)
@@ -36,10 +36,13 @@ public sealed class DeadBodyHandler : NameHandler
 
     public void StopDrag()
     {
-        if (Dragger.Is<Janitor>(out var jani))
+        if (!Dragger)
+            return;
+
+        if (Dragger!.Is<Janitor>(out var jani))
             jani.CurrentlyDragging = null;
 
-        Dragging.Remove(Dragger.PlayerId);
+        Dragging.Remove(Dragger!.PlayerId);
         Dragger = null;
     }
 }

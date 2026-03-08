@@ -34,6 +34,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<DebuggerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<GameTimerHandler>();
         ClassInjector.RegisterTypeInIl2Cpp<RpcHandler>();
+        ClassInjector.RegisterTypeInIl2Cpp<CustomArrowHandler>();
 
         // Behaviours
         ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
@@ -66,7 +67,7 @@ public static class AllMonos
         LayerHandler.CrewmateGhost = RoleManager.Instance.GetRole(RoleTypes.CrewmateGhost);
         LayerHandler.ImpostorGhost = RoleManager.Instance.GetRole(RoleTypes.ImpostorGhost);
 
-        LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.TryCast<CrewmateGhostRole>()?.HauntMenu;
+        LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.Cast<CrewmateGhostRole>().HauntMenu;
 
         var prefab = new GameObject("LayerHandler").DontDestroy().AddComponent<LayerHandler>();
         LayerHandler.Type = prefab.Role = prefab.DefaultGhostRole = new EnumInjector<RoleTypes>(false, true).InjectAndReturn("ReworkedLayer");

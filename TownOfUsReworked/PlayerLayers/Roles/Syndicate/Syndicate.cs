@@ -44,7 +44,7 @@ public abstract class Syndicate : Role, IPromoter
 
     public static bool SyndicateHasChaosDrive { get; set; }
 
-    public static PlayerControl DriveHolder
+    public static PlayerControl? DriveHolder
     {
         get;
         set

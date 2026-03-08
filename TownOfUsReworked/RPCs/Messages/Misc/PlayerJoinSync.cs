@@ -2,7 +2,7 @@ namespace TownOfUsReworked.RPCs.Messages.Misc;
 
 public sealed class PlayerJoinSyncMessage : BaseMiscMessage
 {
-    public override MiscRpc Rpc => MiscRpc.PlayerJoinSync;
+    public override MiscRpc RpcType => MiscRpc.PlayerJoinSync;
 
     public override void SerializeValues(RpcWriter writer)
     {

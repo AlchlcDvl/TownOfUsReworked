@@ -3,9 +3,9 @@ namespace TownOfUsReworked.Custom;
 public sealed class CustomGuessingMenu(PlayerControl owner, Action<ShapeshifterPanel, PlayerControl, Layer> click) : CustomMenu(owner, MenuType.Guessing)
 {
     private readonly Action<ShapeshifterPanel, PlayerControl, Layer> Click = click;
-    private PlayerControl Selected;
+    private PlayerControl? Selected;
 
-    public ShapeshifterPanel SelectedPanel;
+    public ShapeshifterPanel? SelectedPanel;
 
     public readonly HashSet<Layer> Mapping = [];
 
@@ -54,7 +54,7 @@ public sealed class CustomGuessingMenu(PlayerControl owner, Action<ShapeshifterP
         foreach (var (i, role) in Mapping.Indexed())
         {
             var shapeshifterPanel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
-            SetRole(shapeshifterPanel, i, role, () => Clicked(shapeshifterPanel, Selected, role));
+            SetRole(shapeshifterPanel, i, role, () => Clicked(shapeshifterPanel, Selected!, role));
             Menu.potentialVictims.Add(shapeshifterPanel);
             list2.Add(shapeshifterPanel.Button);
         }

@@ -72,20 +72,36 @@ public sealed class AllAnyGen : BaseClassicAllAnyGen
 
         while (Crew == 0 && (Intruders > 0 || Syndicate > 0 || Outcasts > 0 || Apocalypse > 0) && players > 1)
         {
-            _ = URandom.RandomRangeInt(0, 4) switch
+            var successfullyDecremented = false;
+
+            while (!successfullyDecremented)
             {
-                0 when Intruders > 0 => Intruders--,
-                1 when Apocalypse > 0 => Apocalypse--,
-                2 when Syndicate > 0 => Syndicate--,
-                3 when Outcasts > 0 => Outcasts--,
-                _ => 0
-            };
+                switch (URandom.RandomRangeInt(0, 4))
+                {
+                    case 0 when Intruders > 0:
+                        Intruders--;
+                        successfullyDecremented = true;
+                        break;
+                    case 1 when Apocalypse > 0:
+                        Apocalypse--;
+                        successfullyDecremented = true;
+                        break;
+                    case 2 when Syndicate > 0:
+                        Syndicate--;
+                        successfullyDecremented = true;
+                        break;
+                    case 3 when Outcasts > 0:
+                        Outcasts--;
+                        successfullyDecremented = true;
+                        break;
+                }
+            }
 
             Crew++;
         }
 
         if (TownOfUsReworked.MciActive)
-            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Neut = {Outcasts}, Apoc = {Apocalypse}");
+            Info($"Crew = {Crew}, Int = {Intruders}, Syn = {Syndicate}, Out = {Outcasts}, Apoc = {Apocalypse}");
     }
 
     private static int GetRandomCount()

@@ -9,10 +9,15 @@ public sealed class VanillaGen : BaseRoleGen
 
     public override void InitList()
     {
-        while (AllRoles.Count < BadGuysSettings.BadGuyCount)
-            AllRoles.Add(GetSpawnItem(GetRandomBaseEvil(BadGuysSettings.MainBadGuys)));
+        var baseBad = GetSpawnItem(GetRandomBaseEvil(BadGuysSettings.MainBadGuys));
+        var safeBadGuyCount = Mathf.Clamp(BadGuysSettings.BadGuyCount, 1, GameData.Instance.PlayerCount - 1);
+
+        while (AllRoles.Count < safeBadGuyCount)
+            AllRoles.Add(baseBad);
+
+        var crew = GetSpawnItem(Layer.Crewmate);
 
         while (AllRoles.Count < GameData.Instance.PlayerCount)
-            AllRoles.Add(GetSpawnItem(Layer.Crewmate));
+            AllRoles.Add(crew);
     }
 }

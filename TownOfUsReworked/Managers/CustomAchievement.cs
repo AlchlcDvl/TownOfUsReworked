@@ -4,7 +4,7 @@ namespace TownOfUsReworked.Managers;
 
 public static class CustomAchievementManager
 {
-    private static HideAndSeekDeathPopup Prefab;
+    private static HideAndSeekDeathPopup? Prefab;
     private static Vector3? LastPosition;
 
     public static readonly List<Achievement> AllAchievements =
@@ -164,7 +164,7 @@ public static class CustomAchievementManager
 
     public static void ShowAchievement(this Achievement achievement)
     {
-        var popup = UObject.Instantiate(Prefab, HUD().transform.parent);
+        var popup = UObject.Instantiate(Prefab, HUD()?.transform.parent)!;
         popup.name = $"AchievementPopup({achievement.Name})";
         popup.nameplate.SetMaskLayer(LocalPlayer.PlayerId);
         popup.nameplate.nameText.text = TranslationManager.Translate($"Achievement.{achievement.Name}.Title");

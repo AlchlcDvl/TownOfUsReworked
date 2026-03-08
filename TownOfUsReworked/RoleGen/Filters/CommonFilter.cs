@@ -13,19 +13,31 @@ public sealed class CommonFilter : BaseFilter
         if (spawnList.Count < count)
             count = spawnList.Count;
 
-        var filtered = spawnList.Where(x => RoleGenManager.Check(x.Chance)).OrderByDescending(x => x.Chance);
-        var newList = new List<RoleOptionData>();
+        var guaranteed = new List<RoleOptionData>();
+        var optionals = new List<RoleOptionData>();
 
-        var guaranteed = filtered.Where(x => x.Chance == 100).ToList();
+        foreach (var role in spawnList)
+        {
+            if (RoleGenManager.Check(role.Chance))
+            {
+                if (role.Chance == 100)
+                    guaranteed.Add(role);
+                else
+                    optionals.Add(role);
+            }
+        }
+
         guaranteed.Shuffle();
-        newList.AddRange(guaranteed);
-
-        var optionals = filtered.Where(x => x.Chance < 100).ToList();
         optionals.Shuffle();
+
+        var newList = new List<RoleOptionData>(guaranteed.Count + optionals.Count);
+        newList.AddRange(guaranteed);
         newList.AddRange(optionals);
 
+        var finalCount = Math.Min(count, newList.Count);
+
         spawnList.Clear();
-        spawnList.AddRange(newList.GetRange(0, count));
+        spawnList.AddRange(newList.GetRange(0, finalCount));
         spawnList.Shuffle();
     }
 }

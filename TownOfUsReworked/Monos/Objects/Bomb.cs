@@ -4,12 +4,10 @@ public sealed class Bomb : Range
 {
     public void Detonate()
     {
-        var players = GetClosestPlayers(transform.position, Size);
-
-        foreach (var player in players)
+        foreach (var player in GetClosestPlayers(transform.position, Size))
         {
             if (CanAttack(Attack.Powerful, player.GetDefenseValue()))
-                Owner.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
+                Owner!.RpcMurderPlayer(player, DeathReasonEnum.Bombed, false);
         }
 
         gameObject.Destroy();
@@ -18,12 +16,10 @@ public sealed class Bomb : Range
     public static Bomb CreateBomb(PlayerControl owner, bool drived)
     {
         var range = Bomber.BombRange + (drived ? Bomber.ChaosDriveBombRange : 0f);
-        var gameObject = CreateRange(CustomColorManager.Bomber, range, "Bomb");
+        var gameObject = CreateRange(CustomColorManager.Bomber, range, "Bomb", owner.GetTruePosition());
         var bomb = gameObject.AddComponent<Bomb>();
         bomb.Owner = owner;
         bomb.Size = range;
-        var position = owner.GetTruePosition();
-        gameObject.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);
         return bomb;
     }
 }

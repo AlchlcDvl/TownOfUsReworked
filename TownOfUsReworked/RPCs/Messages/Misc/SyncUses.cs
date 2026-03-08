@@ -14,10 +14,10 @@ public abstract class BaseSyncUsesMessage(CustomButton button, int uses) : BaseM
 
 public sealed class SyncUsesMessage(CustomButton button, int uses) : BaseSyncUsesMessage(button, uses)
 {
-    public override MiscRpc Rpc => MiscRpc.SyncUses;
+    public override MiscRpc RpcType => MiscRpc.SyncUses;
 }
 
 public sealed class SyncMaxUsesMessage(CustomButton button, int uses) : BaseSyncUsesMessage(button, uses)
 {
-    public override MiscRpc Rpc => MiscRpc.SyncMaxUses;
+    public override MiscRpc RpcType => MiscRpc.SyncMaxUses;
 }

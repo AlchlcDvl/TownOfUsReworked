@@ -1,9 +1,8 @@
 namespace TownOfUsReworked.RPCs.Messages;
 
 // Special headerless message to handle pure data
-public abstract class BaseDataMessage : BaseReworkedMessage
+public abstract class BaseDataMessage : BaseReworkedMessage<ReworkedRpc>
 {
-    public override ReworkedRpc RpcCategory => RpcCategory;
-
-    public override void SerializeHeader(RpcWriter writer) => throw new NotSupportedException();
+    public sealed override ReworkedRpc RpcCategory => throw new NotSupportedException();
+    public sealed override ReworkedRpc RpcType => throw new NotSupportedException();
 }

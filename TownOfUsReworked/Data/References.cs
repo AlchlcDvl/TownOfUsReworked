@@ -13,25 +13,25 @@ public static class References
     public static PlayerControl LocalPlayer => PlayerControl.LocalPlayer;
     public static IEnumerable<DeadBody> AllBodies() => UObject.FindObjectsOfType<DeadBody>();
     public static IEnumerable<Vent> AllVents() => UObject.FindObjectsOfType<Vent>();
-    public static IEnumerable<Vent> AllMapVents() => Ship().AllVents;
+    public static IEnumerable<Vent>? AllMapVents() => Ship()?.AllVents;
     public static IEnumerable<GameObject> AllGameObjects() => UObject.FindObjectsOfType<GameObject>();
     public static IEnumerable<Console> AllConsoles() => UObject.FindObjectsOfType<Console>();
     public static IEnumerable<SystemConsole> AllSystemConsoles() => UObject.FindObjectsOfType<SystemConsole>();
-    public static IEnumerable<PlayerVoteArea> AllVoteAreas() => Meeting().playerStates;
-    public static IEnumerable<PlayerControl> AllPlayers() => PlayerControl.AllPlayerControls.ToSystem();
-    public static HudManager HUD() => HudManager.Instance;
-    public static MeetingHud Meeting() => MeetingHud.Instance;
-    public static ExileController Ejection() => ExileController.Instance;
-    public static ShipStatus Ship() => ShipStatus.Instance;
-    public static MapBehaviour Minimap() => MapBehaviour.Instance;
-    public static Minigame ActiveTask() => Minigame.Instance;
-    public static LobbyBehaviour Lobby() => LobbyBehaviour.Instance;
-    public static ChatController Chat() => HUD()?.Chat;
-    public static string FirstDead;
-    public static string CachedFirstDead;
-    public static string MostRecentKiller;
+    public static IEnumerable<PlayerVoteArea>? AllVoteAreas() => Meeting()?.playerStates;
+    public static List<PlayerControl> AllPlayers() => [..PlayerControl.AllPlayerControls.ToSystem()];
+    public static HudManager? HUD() => HudManager.Instance;
+    public static MeetingHud? Meeting() => MeetingHud.Instance;
+    public static ExileController? Ejection() => ExileController.Instance;
+    public static ShipStatus? Ship() => ShipStatus.Instance;
+    public static MapBehaviour? Minimap() => MapBehaviour.Instance;
+    public static Minigame? ActiveTask() => Minigame.Instance;
+    public static LobbyBehaviour? Lobby() => LobbyBehaviour.Instance;
+    public static ChatController? Chat() => HUD()?.Chat;
+    public static string? FirstDead;
+    public static string? CachedFirstDead;
+    public static string? MostRecentKiller;
     public static WinLose WinState = WinLose.None;
-    public static SummaryInfo Summary;
+    public static SummaryInfo? Summary;
     public static bool HiddenBlock
     {
         get;
@@ -55,11 +55,11 @@ public static class References
                 return;
 
             if (value)
-                CameraEffectHandler.AddEffect("GlitchedMaterial");
+                CameraEffectHandler.AddEffect("Glitched");
             else
-                CameraEffectHandler.RemoveEffect("GlitchedMaterial");
+                CameraEffectHandler.RemoveEffect("Glitched");
 
-            LocalPlayer.GetButtons().Do(x => x.Block.SetActive(value));
+            LocalPlayer.GetButtons().Do(x => x.Block?.SetActive(value));
             Blocked.UseBlock.SetActive(value);
             Blocked.PetBlock.SetActive(value);
             Blocked.SaboBlock.SetActive(value);

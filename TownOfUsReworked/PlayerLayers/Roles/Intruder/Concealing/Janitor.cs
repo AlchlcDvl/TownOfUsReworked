@@ -24,7 +24,7 @@ public sealed class Janitor : Concealing
     private CustomButton CleanButton;
     private CustomButton DragButton;
     private CustomButton DropButton;
-    public DeadBodyHandler CurrentlyDragging;
+    public DeadBodyHandler? CurrentlyDragging;
 
     protected override UColor MainColor => CustomColorManager.Janitor;
     public override Layer Type => Layer.Janitor;

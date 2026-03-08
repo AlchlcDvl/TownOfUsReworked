@@ -23,7 +23,7 @@ public sealed class RpcHandler : MonoBehaviour
 
         Timer = 0f;
 
-        while (LateMessages.TryDequeue(out var message))
+        if (LateMessages.TryDequeue(out var message))
             SendImmediateMessage(message);
     }
 

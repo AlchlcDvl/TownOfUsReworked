@@ -2,7 +2,7 @@ namespace TownOfUsReworked.RPCs.Messages.Misc;
 
 public sealed class SetPlayerReadyMessage(PlayerControl player) : BaseMiscMessage
 {
-    public override MiscRpc Rpc => MiscRpc.SyncCustomSettings;
+    public override MiscRpc RpcType => MiscRpc.SyncCustomSettings;
 
     private readonly byte PlayerId = player.PlayerId;
 

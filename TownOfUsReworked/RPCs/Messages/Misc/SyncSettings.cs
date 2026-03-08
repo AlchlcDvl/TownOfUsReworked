@@ -2,7 +2,7 @@ namespace TownOfUsReworked.RPCs.Messages.Misc;
 
 public sealed class SyncSettingsMessage(Option[] options) : BaseMiscMessage
 {
-    public override MiscRpc Rpc => MiscRpc.SyncCustomSettings;
+    public override MiscRpc RpcType => MiscRpc.SyncCustomSettings;
 
     private readonly Option[] Options = options;
 

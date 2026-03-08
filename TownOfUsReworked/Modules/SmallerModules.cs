@@ -7,22 +7,22 @@ public readonly record struct PointInTime(Vector3 Position);
 public sealed class GitHubApiObject
 {
     [JsonPropertyName("tag_name")]
-    public string Tag;
+    public string? Tag;
 
     [JsonPropertyName("body")]
-    public string Description;
+    public string? Description;
 
     [JsonPropertyName("assets")]
-    public GitHubApiAsset[] Assets;
+    public GitHubApiAsset?[]? Assets;
 }
 
 public sealed class GitHubApiAsset
 {
     [JsonPropertyName("browser_download_url")]
-    public string URL;
+    public string? URL;
 }
 
-public readonly record struct LayerDictionaryEntry(Type LayerType, UColor Color, Layer Layer, string Symbol = null)
+public readonly record struct LayerDictionaryEntry(Type? LayerType, UColor Color, Layer Layer, string? Symbol = null)
 {
     public readonly string Name = TranslationManager.Translate($"Layer.{Layer}");
 }
@@ -38,9 +38,13 @@ public sealed class Achievement(string name, bool unlocked = false, bool hidden 
     public readonly string Icon = icon;
     public readonly bool Hidden = hidden;
     public readonly bool EndOfGame = eog;
+
     public bool Unlocked = unlocked;
 
-    public bool IsId(string id) => id.IsAny($"Achievement.{Name}.Title", $"Achievement.{Name}.Description");
+    private readonly string TitleId = "Achievement." + name + ".Title";
+    private readonly string DescId = "Achievement." + name + ".Description";
+
+    public bool IsId(string id) => id.IsAny(TitleId, DescId);
 }
 
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class)]
@@ -83,8 +87,8 @@ public sealed class VersionData
 {
     [JsonPropertyName("gameVers")]
     // ReSharper disable once CollectionNeverUpdated.Global
-    public Dictionary<int, string> GameVersions;
+    public Dictionary<int, string>? GameVersions;
 
     [JsonPropertyName("modVers")]
-    public string[] ModVersions;
+    public string?[]? ModVersions;
 }

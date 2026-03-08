@@ -50,8 +50,8 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
         AllValues = [.. Enum.GetValues<T>().OrderBy(x => x)];
         Last = Convert.ChangeType(AllValues[^1], underlying);
         First = Convert.ChangeType(AllValues[0], underlying);
-        Min = Convert.ChangeType(AccessTools.Field(underlying, "MinValue").GetRawConstantValue(), underlying);
-        Max = Convert.ChangeType(AccessTools.Field(underlying, "MaxValue").GetRawConstantValue(), underlying);
+        Min = Convert.ChangeType(AccessTools.Field(underlying, "MinValue").GetRawConstantValue(), underlying)!;
+        Max = Convert.ChangeType(AccessTools.Field(underlying, "MaxValue").GetRawConstantValue(), underlying)!;
         MinReached = First == Min;
         MaxReached = Last == Max;
         MaxPossibleValue = (T)Enum.ToObject(Type, Max);

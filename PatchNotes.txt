@@ -77,6 +77,7 @@ Fixes!
 - Critical: Fixed Plaguebearer spawning twice
 - Critical: Greatly improved the stutter and FPS issues
 - Critical: Fixed a lot of options not being used as they should
+- Critical: Fixed the low FPS, huzzah!
 - Vanilla: Fixed the vanilla bug with being stuck in certain locations when trying to vent
 - Role: Fixed Spellslingers not ending the game when they successfully spell bind everyone
 - Role: Fixed Rebel-Framer frames not actually functioning the way they should
@@ -118,6 +119,5 @@ Fixes!
 - General: Fixed other minor bugs and issues that I can't remember
 
 Known Bugs :(
-- Critically low FPS for everyone, with the host having it the worst; a fix is in progress, and the severity has been considerably reduced since discovery
 - You can't report bodies with Submerged installed due to its own implementation of a body report system
-- Emergency meetings can't be called
+- Emergency meetings can't be called sometimes

@@ -105,7 +105,7 @@ public sealed class TargetGen : BaseGen
 
             foreach (var targeter in targeters.Where(x => x.Type == type))
             {
-                targeter.TargetPlayer = allPlayers.Random(x => x != targeter.Player && !x.IsLinkedTo(targeter.Player) && !playerCheck(x));
+                targeter.TargetPlayer = allPlayers.Random(x => x != targeter.Player && !x!.IsLinkedTo(targeter.Player) && !playerCheck(x!))!;
 
                 if (!targeter.TargetPlayer)
                     continue;
@@ -123,7 +123,7 @@ public sealed class TargetGen : BaseGen
         {
             foreach (var act in PlayerLayer.GetLayers<Actor>())
             {
-                act.FillRoles(allPlayers.Random(x => x != act.Player));
+                act.FillRoles(allPlayers.Random(x => x != act.Player)!);
                 CallRpc(MiscRpc.SetTarget, act, act.PretendRoles);
 
                 if (TownOfUsReworked.MciActive && act.PretendRoles.Count > 0)
@@ -137,12 +137,12 @@ public sealed class TargetGen : BaseGen
         {
             foreach (var jackal in PlayerLayer.GetLayers<Jackal>())
             {
-                jackal.Recruit1 = allPlayers.Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible());
+                jackal.Recruit1 = allPlayers.Random(x => x!.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x!.GetFaction().IsConvertible())!;
 
                 if (jackal.Recruit1)
                 {
-                    jackal.Recruit2 = allPlayers.Random(x => x.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x.GetFaction().IsConvertible() &&
-                        (jackal.Recruit1.GetFaction() != x.GetFaction() || (jackal.Recruit1.GetFaction().IsOk() == x.GetFaction().IsOk() && x.GetRole().Type != jackal.Recruit1.GetRole().Type)));
+                    jackal.Recruit2 = allPlayers.Random(x => x!.GetAlignment() is not (Alignment.Neophyte or Alignment.Evil or Alignment.Benign) && x!.GetFaction().IsConvertible() &&
+                        (jackal.Recruit1.GetFaction() != x!.GetFaction() || (jackal.Recruit1.GetFaction().IsOk() == x!.GetFaction().IsOk() && x!.GetRole().Type != jackal.Recruit1.GetRole().Type)))!;
                 }
 
                 if (jackal.Recruit1)

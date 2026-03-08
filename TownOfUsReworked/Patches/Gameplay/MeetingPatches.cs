@@ -27,8 +27,7 @@ public static class MeetingPatches
         Client.Instance.CloseMenus();
         LocalPlayer.DisableButtons();
 
-        Ash.AllPiles.ForEach(x => x?.gameObject?.Destroy());
-        Ash.AllPiles.Clear();
+        Ash.Clear();
 
         MeetingCount++;
 

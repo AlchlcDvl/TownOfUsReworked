@@ -18,9 +18,16 @@ public sealed class AllAnyFilter : BaseFilter
 
         while (newList.Count < count && spawnList.Any())
         {
-            spawnList.Shuffle();
-            var first = spawnList[0];
-            newList.Add(first.Unique ? spawnList.TakeFirst() : first.Clone());
+            var randomIndex = URandom.RandomRangeInt(0, spawnList.Count);
+            var selected = spawnList[randomIndex];
+
+            if (selected.Unique)
+            {
+                spawnList.RemoveAt(randomIndex);
+                newList.Add(selected);
+            }
+            else
+                newList.Add(selected.Clone());
         }
 
         spawnList.Clear();

@@ -116,7 +116,7 @@ public sealed class LayerHandler : RoleBehaviour
     public static RoleBehaviour CrewmateGhost;
     public static RoleBehaviour ImpostorGhost;
 
-    public static Minigame HauntMenu;
+    public static Minigame? HauntMenu;
 
     public bool Bombed;
     private CustomButton BombKillButton;
@@ -134,7 +134,7 @@ public sealed class LayerHandler : RoleBehaviour
     {
         target = Requestor.Player.IsLinkedTo(target) ? Player : target;
         Requestor.TentativeTarget = target;
-        Requestor = null;
+        Requestor = null!;
         CallRpc(ActionsRpc.PlaceHit, Player, target);
     }
 
@@ -146,7 +146,7 @@ public sealed class LayerHandler : RoleBehaviour
     }
 
     [HideFromIl2Cpp]
-    public T GetLayer<T>() where T : IPlayerLayer => CurrentLayers.OfType<T>().FirstOrDefault();
+    public T GetLayer<T>() where T : IPlayerLayer => CurrentLayers.OfType<T>().FirstOrDefault()!;
 
     public void UpdatePlayer()
     {
@@ -245,7 +245,7 @@ public sealed class LayerHandler : RoleBehaviour
 
         CallRpc(ActionsRpc.PlaceHit, Player, Player);
         Requestor.TentativeTarget = Player;
-        Requestor = null;
+        Requestor = null!;
     }
 
     public void OnIntroEnd()
@@ -304,7 +304,7 @@ public sealed class LayerHandler : RoleBehaviour
             CurrentDisposition.Start(Player);
         }
 
-        CurrentLayers = [ CurrentRole, CurrentModifier, CurrentAbility, CurrentDisposition ];
+        CurrentLayers = [CurrentRole, CurrentModifier, CurrentAbility, CurrentDisposition];
         CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Handler = this);
 
         Channels = ChatChannel.None;
@@ -320,19 +320,38 @@ public sealed class LayerHandler : RoleBehaviour
         {
             CurrentLayers.Do([HideFromIl2Cpp] (x) => x.Init());
 
-            // if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
+            // if (MapPatches.CurrentMap == 4 && BetterAirship.CallPlatformButton)
             // {
-            //     CallButton ??= new(CurrentRole, "CALL PLATFORM", "CallPlatform", ReworkedAbilityTypes.Targetless, KeybindType.Quarternary, (OnClickTargetless)UsePlatform, (UsableFunc)CallUsable,
-            //         (ConditionFunc)CallCondition);
+            //     CallButton ??= new CustomButtonBuilder(CurrentRole, ReworkedAbilityTypes.Targetless, KeybindType.Quarternary)
+            //         .WithLabel("CALL PLATFORM")
+            //         .WithSprite("CallPlatform")
+            //         .OnClick(UsePlatform)
+            //         .WithUsability(CallUsable)
+            //         .WithCondition(CallCondition)
+            //         .Build();
             // }
 
             if (GameModeSettings.GameMode is not (Mode.HideAndSeek or Mode.TaskRace))
             {
                 if (RoleGenManager.GetSpawnItem(Layer.Enforcer).IsActive())
-                    BombKillButton ??= new(CurrentRole, "KILL", new SpriteName("BombKill"), ReworkedAbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)BombKill, (UsableFunc)BombUsable);
+                {
+                    BombKillButton ??= new CustomButtonBuilder(CurrentRole, ReworkedAbilityTypes.Player, KeybindType.Quarternary)
+                        .WithLabel("KILL")
+                        .WithSprite("BombKill")
+                        .OnClick(BombKill)
+                        .WithUsability(BombUsable)
+                        .Build();
+                }
 
                 if (BountyHunter.BountyHunterCanPickTargets && RoleGenManager.GetSpawnItem(Layer.BountyHunter).IsActive())
-                    PlaceHitButton ??= new(CurrentRole, "PLACE HIT", new SpriteName("PlaceHit"), ReworkedAbilityTypes.Player, KeybindType.Quarternary, (OnClickPlayer)PlaceHit, (UsableFunc)RequestUsable);
+                {
+                    PlaceHitButton ??= new CustomButtonBuilder(CurrentRole, ReworkedAbilityTypes.Player, KeybindType.Quarternary)
+                        .WithLabel("PLACE HIT")
+                        .WithSprite("PlaceHit")
+                        .OnClick(PlaceHit)
+                        .WithUsability(RequestUsable)
+                        .Build();
+                }
             }
         }
         else
@@ -368,7 +387,7 @@ public sealed class LayerHandler : RoleBehaviour
     {
         try
         {
-            var hud = HUD();
+            var hud = HUD()!;
 
             hud.SabotageButton.graphic.sprite = GetSprite($"{CurrentFaction}Sabotage");
             hud.SabotageButton.graphic.SetCooldownNormalizedUvs();
@@ -387,7 +406,8 @@ public sealed class LayerHandler : RoleBehaviour
                 button.SetActive();
                 button.UpdateSprite();
             }
-        } catch {}
+        }
+        catch { }
     }
 
     private void DestroyArrowD(byte targetPlayerId)
@@ -422,7 +442,7 @@ public sealed class LayerHandler : RoleBehaviour
             PlayerTask.GetOrCreateTask<ImportantTextTask>(playerControl).Text = "Achieve your goal!\n";
     }
 
-    public override void AppendTaskHint(IStringBuilder taskStringBuilder) {}
+    public override void AppendTaskHint(IStringBuilder taskStringBuilder) { }
 
     public override void Initialize(PlayerControl player)
     {
@@ -441,7 +461,8 @@ public sealed class LayerHandler : RoleBehaviour
     public override void OnMeetingStart()
     {
         Channels |= ChatChannel.Meeting;
-        var meeting = Meeting();
+
+        var meeting = Meeting()!;
         CurrentRole.OnMeetingStart(meeting);
         CurrentAbility.OnMeetingStart(meeting);
         CurrentModifier.OnMeetingStart(meeting);
@@ -461,7 +482,7 @@ public sealed class LayerHandler : RoleBehaviour
         if (!Local)
             return;
 
-        var meeting = Meeting();
+        var meeting = Meeting()!;
         CurrentRole.VoteComplete(meeting);
         CurrentAbility.VoteComplete(meeting);
         CurrentModifier.VoteComplete(meeting);
@@ -494,15 +515,15 @@ public sealed class LayerHandler : RoleBehaviour
 
     public override void UseAbility()
     {
-        if (Chat().IsOpenOrOpening)
+        if (Chat()!.IsOpenOrOpening)
             return;
 
         if (ActiveTask() is HauntMenuMinigame)
-            ActiveTask().Close();
+            ActiveTask()!.Close();
         else if (!ActiveTask())
         {
-            var hud = HUD();
-            var minigame = Instantiate(HauntMenu, hud.AbilityButton.transform, false);
+            var hud = HUD()!;
+            var minigame = Instantiate(HauntMenu, hud.AbilityButton.transform, false)!;
             minigame.transform.SetLocalZ(-5f);
             minigame.Begin(null);
             hud.AbilityButton.SetDisabled();
@@ -539,6 +560,7 @@ public sealed class LayerHandler : RoleBehaviour
 
     private static string UndeadWinCon() => "- Kill or drain all opposition to the <#7B8968FF>Undead</color>";
 
+    // TODO: Fix this
     /*private bool CallCondition() => IsLeft == PlayerIsLeft && !PlatformIsUsed && MapPatches.CurrentMap != 4;
 
     private bool CallUsable()

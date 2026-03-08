@@ -10,14 +10,14 @@ public sealed class ColorHandler : MonoBehaviour
 
     public void SetRend(Renderer rend, UColor color) => ColorToRendHandler.SetRend(rend, color);
 
-    public void SetRend(ColorPair pair, Renderer rend) => ColorPairToRendHandler.SetRend(rend, pair);
+    public void SetRend(Renderer rend, ColorPair pair) => ColorPairToRendHandler.SetRend(rend, pair);
 
     public void Update() => IdToRendHandler.SetColors();
 }
 
 public sealed class RendHandler<T>(Action<Renderer, T> setColor)
 {
-    private readonly List<(Renderer Rend, T)> Rends = [];
+    private readonly List<(Renderer? Rend, T)> Rends = [];
     private readonly Action<Renderer, T> SetColor = setColor;
 
     public void SetRend(Renderer rend, T color)
@@ -27,5 +27,16 @@ public sealed class RendHandler<T>(Action<Renderer, T> setColor)
         SetColor(rend, color);
     }
 
-    public void SetColors() => Rends.ForEach(SetColor);
+    public void SetColors()
+    {
+        for (var i = Rends.Count - 1; i >= 0; i--)
+        {
+            var (rend, color) = Rends[i];
+
+            if (!rend)
+                Rends.RemoveAt(i);
+            else
+                SetColor(rend!, color);
+        }
+    }
 }

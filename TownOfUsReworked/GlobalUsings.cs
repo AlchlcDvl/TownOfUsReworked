@@ -96,5 +96,5 @@ global using SemVer = SemanticVersioning.Version;
 
 global using IObject = Il2CppSystem.Object;
 global using ISystem = Il2CppSystem.Collections.Generic;
-global using IStringBuilder = Il2CppSystem.Text.StringBuilder;
+global using CppStringBuilder = Il2CppSystem.Text.StringBuilder;
 global using IIEnumerator = Il2CppSystem.Collections.IEnumerator;

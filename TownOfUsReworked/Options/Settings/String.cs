@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Options.Settings;
 
-public sealed class StringOption<T>(T[] ignore = null, T[] include = null, T defaultValue = default) : Option<T>(CustomOptionType.String, defaultValue), IStringOption where T : struct, Enum
+public sealed class StringOption<T>(T[]? ignore = null, T[]? include = null, T defaultValue = default) : Option<T>(CustomOptionType.String, defaultValue), IStringOption where T : struct, Enum
 {
     private readonly T[] Values = [.. (include ?? Enum.GetValues<T>()).Except(ignore ?? [])];
     private int Index;

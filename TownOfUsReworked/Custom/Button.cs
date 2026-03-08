@@ -9,6 +9,14 @@ public sealed class CustomButton : IDisposable, INetSerializable
     public static readonly List<CustomButton> AllButtons = [];
     public static readonly Dictionary<ushort, CustomButton> ButtonLookup = [];
 
+    private static readonly List<(ReworkedAbilityTypes Type, Func<CustomButton, MonoBehaviour?> Finder)> TargetFinders =
+    [
+        (ReworkedAbilityTypes.Console, btn => btn.Owner.Player.GetClosestConsole(predicate: btn.ConsoleFilter)),
+        (ReworkedAbilityTypes.Player, btn => btn.Owner.Player.GetClosestPlayer(predicate: btn.PlayerFilter)),
+        (ReworkedAbilityTypes.Body, btn => btn.Owner.Player.GetClosestBody(predicate: btn.BodyFilter)),
+        (ReworkedAbilityTypes.Vent, btn => btn.Owner.Player.GetClosestVent(predicate: btn.VentFilter))
+    ];
+
     // Params, required
     public readonly PlayerLayer Owner;
     public readonly ReworkedAbilityTypes Type;
@@ -64,20 +72,21 @@ public sealed class CustomButton : IDisposable, INetSerializable
     public readonly ushort ID;
 
     // Other things
-    public ActionButton Base { get; private set; }
-    public MonoBehaviour Target { get; private set; }
+    public ActionButton? Base { get; private set; }
+    public MonoBehaviour? Target { get; private set; }
     public bool Disabled { get; private set; }
     private bool EffectEnabled;
     private bool DelayEnabled;
     private bool OtherDelayEnabled;
     private bool ClickedAgain;
-    public GameObject Block;
+    public GameObject? Block;
     private float EffectTime;
     public float DelayTime;
     public float OtherDelayTime;
     public float CooldownTime;
     private bool Disposed;
     private bool AlreadyDisabled;
+    private bool Interrupted;
     private ButtonState CurrentPhase;
 
     // Read-onlys (onlies?)
@@ -91,7 +100,6 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private bool CooldownActive => CooldownTime > 0f;
     private bool Targeting => Target || Type.HasFlagFast(ReworkedAbilityTypes.Targetless);
     private bool Local => Owner.Local || TownOfUsReworked.MciActive;
-    private readonly List<(ReworkedAbilityTypes, Func<MonoBehaviour>)> TargetFinders;
 
     // Special
     public int Max = -1;
@@ -125,7 +133,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
                 return;
 
             CallRpc(new SyncUsesMessage(this, value));
-            Base.SetUsesRemaining(UsesCount);
+            Base!.SetUsesRemaining(UsesCount);
         }
     }
 
@@ -194,20 +202,15 @@ public sealed class CustomButton : IDisposable, INetSerializable
         CachedOtherDelayStart = ButtonOtherDelayStart;
         CachedOtherDelayEnd = ButtonOtherDelayEnd;
 
-        TargetFinders =
-        [
-            (ReworkedAbilityTypes.Console, () => Owner.Player.GetClosestConsole(predicate: ConsoleFilter)),
-            (ReworkedAbilityTypes.Player, () => Owner.Player.GetClosestPlayer(predicate: PlayerFilter)),
-            (ReworkedAbilityTypes.Body, () => Owner.Player.GetClosestBody(predicate: BodyFilter)),
-            (ReworkedAbilityTypes.Vent, () => Owner.Player.GetClosestVent(predicate: VentFilter)),
-        ];
-
         CooldownTime = EffectTime = DelayTime = 0f;
         ID = (ushort)AllButtons.Count;
+
         Disabled = !Owner.Local;
-        CreateButton();
+
         AllButtons.Add(this);
         ButtonLookup[ID] = this;
+
+        CreateButton();
     }
 
     private void CreateButton()
@@ -341,7 +344,10 @@ public sealed class CustomButton : IDisposable, INetSerializable
         duringPhase();
 
         if (End() || Meeting() || ClickedAgain || !Local || !IsInGame() || !Owner?.Player)
+        {
+            Interrupted = true;
             time = 0f;
+        }
 
         if (time <= 0f)
             onPhaseEnd();
@@ -366,6 +372,13 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     private void AdvanceToNextPhase(ButtonState currentPhase)
     {
+        if (Interrupted)
+        {
+            Interrupted = false;
+            CurrentPhase = ButtonState.None;
+            return;
+        }
+
         switch (currentPhase)
         {
             case ButtonState.Pressed:
@@ -427,7 +440,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     private void Timer()
     {
-        if (!Owner?.Player || !Local || Owner.Player.inMovingPlat || Owner.Player.onLadder)
+        if (!Owner?.Player || !Local || Owner!.Player.inMovingPlat || Owner.Player.onLadder)
             return;
 
         if (!Owner.Player.inVent || VentingOptions.CooldownInVent)
@@ -437,16 +450,16 @@ public sealed class CustomButton : IDisposable, INetSerializable
             CurrentPhase = ButtonState.None;
     }
 
-    private void SetOutline(MonoBehaviour prevMono, MonoBehaviour newMono) // Something that Innersloth changed borked this code, and I honestly couldn't be bothered to fix it because it's a shader issue
+    private void SetOutline(MonoBehaviour? prevMono, MonoBehaviour? newMono) // Something that Innersloth changed borked this code, and I honestly couldn't be bothered to fix it because it's a shader issue
     {
         if (Owner is not Role || prevMono == newMono)
             return;
 
         SetOutline(prevMono);
-        SetOutline(prevMono, Owner.Color);
+        SetOutline(newMono, Owner.Color);
     }
 
-    private static void SetOutline(MonoBehaviour mono, UColor? color = null)
+    private static void SetOutline(MonoBehaviour? mono, UColor? color = null)
     {
         if (!mono)
             return;
@@ -517,29 +530,29 @@ public sealed class CustomButton : IDisposable, INetSerializable
 
     public void UpdateSprite()
     {
-        Base.graphic.sprite = GetSprite(Sprite());
+        Base!.graphic.sprite = GetSprite(Sprite());
         Base.graphic.SetCooldownNormalizedUvs();
     }
 
     private void UpdateColor()
     {
         var color = TextColorFunc() ?? TextColor;
-        Base.buttonLabelText.SetOutlineColor(color);
+        Base!.buttonLabelText.SetOutlineColor(color);
         Base.usesRemainingSprite.color = color;
     }
 
-    public bool Usable() => ToggleVisibility.Visible && !MapBehaviourPatches.MapActive && (!HasUses || UsesCount > 0 || (byte)CurrentPhase is not (0 or 1 or 5)) && Owner && Owner.Dead ==
+    public bool Usable() => ToggleVisibility.Visible && !MapBehaviourPatches.MapActive && (!HasUses || UsesCount > 0 || (int)CurrentPhase is not (0 or 1 or 5)) && Owner && Owner.Dead ==
         PostDeath && !Ejection() && Owner.Local && !Meeting() && !IsLobby() && !NoPlayers() && !HUD().IsIntroDisplayed && IsUsable();
 
     public bool Clickable() => Base && !Disabled && CurrentPhase == 0 && Usable() && Condition() && !Owner.Player.CannotUse() && Targeting && !CooldownActive && (!HasUses || Uses >=
-        UseDecrement) && Base.isActiveAndEnabled && !Owner.Player.IsBlocked();
+        UseDecrement) && Base!.isActiveAndEnabled && !Owner.Player.IsBlocked();
 
     private void SetTarget()
     {
         if (Type.HasFlagFast(ReworkedAbilityTypes.Targetless))
             return;
 
-        MonoBehaviour bestTarget = null;
+        MonoBehaviour? bestTarget = null;
         var closestDistSq = float.MaxValue;
         var myPos = Owner.Player.GetTruePosition();
 
@@ -550,18 +563,18 @@ public sealed class CustomButton : IDisposable, INetSerializable
             if (!Type.HasFlagFast(type))
                 continue;
 
-            var candidate = finder();
+            var candidate = finder(this);
 
             if (!candidate)
                 continue;
 
-            var distSq = (myPos - candidate.GetPos()).sqrMagnitude;
+            var distSq = (myPos - candidate!.GetPos()).sqrMagnitude;
 
-            if (distSq < closestDistSq)
-            {
-                closestDistSq = distSq;
-                bestTarget = candidate;
-            }
+            if (distSq >= closestDistSq)
+                continue;
+
+            closestDistSq = distSq;
+            bestTarget = candidate;
         }
 
         var previous = Target;
@@ -573,12 +586,12 @@ public sealed class CustomButton : IDisposable, INetSerializable
     {
         if (AlreadyDisabled && (EffectActive || DelayActive || OtherDelayActive || Clickable()))
         {
-            Base.SetEnabled();
+            Base!.SetEnabled();
             AlreadyDisabled = false;
         }
         else if (!AlreadyDisabled)
         {
-            Base.SetDisabled();
+            Base!.SetDisabled();
             AlreadyDisabled = true;
         }
     }
@@ -600,7 +613,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         if (!Base || !Owner.Player || Disabled)
             return;
 
-        Base.buttonLabelText.SetText(Label());
+        Base!.buttonLabelText.SetText(Label());
         UpdateColor();
 
         if (!Base.isCoolingDown && !Disabled && PostDeath == Owner.Dead)
@@ -626,7 +639,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
     private void DisableTarget()
     {
         if (Base)
-            Base.SetDisabled();
+            Base!.SetDisabled();
 
         if (!Targeting || !Target)
             return;
@@ -669,17 +682,17 @@ public sealed class CustomButton : IDisposable, INetSerializable
         if (!Base)
             return;
 
-        Base.enabled = false;
+        Base!.enabled = false;
         Base.ToggleVisible(false);
     }
 
     private void Enable()
     {
-        if (!Base || (!Disabled && Base.isActiveAndEnabled))
+        if (!Base || (!Disabled && Base!.isActiveAndEnabled))
             return;
 
         Disabled = false;
-        Base.enabled = true;
+        Base!.enabled = true;
         Base.ToggleVisible(true);
     }
 
@@ -691,7 +704,7 @@ public sealed class CustomButton : IDisposable, INetSerializable
         if (!Base)
             return;
 
-        Base.gameObject.Destroy();
+        Base!.gameObject.Destroy();
         Base = null;
     }
 
