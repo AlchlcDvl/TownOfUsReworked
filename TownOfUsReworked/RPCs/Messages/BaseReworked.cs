@@ -5,8 +5,6 @@ public abstract class BaseReworkedMessage<T> : INetworkMessage where T : struct,
     public abstract ReworkedRpc RpcCategory { get; }
     public abstract T RpcType { get; }
 
-    public virtual void OnDispose() { }
-
     public void Dispose()
     {
         OnDispose();
@@ -15,10 +13,12 @@ public abstract class BaseReworkedMessage<T> : INetworkMessage where T : struct,
 
     public void SerializeTo(RpcWriter writer)
     {
-        writer.WriteByte((byte)RpcCategory);
+        writer.WriteEnum(RpcCategory);
         writer.WriteEnum(RpcType);
         SerializeValues(writer);
     }
 
-    public abstract void SerializeValues(RpcWriter writer);
+    public virtual void SerializeValues(RpcWriter writer) { }
+
+    public virtual void OnDispose() { }
 }

@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace TownOfUsReworked.Custom;
 
 public abstract class CustomEnumInjector
@@ -16,60 +18,120 @@ public abstract class CustomEnumInjector
 /// <typeparam name="T">The relevant enum Type.</typeparam>
 public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
 {
+    private static readonly long Min;
+    private static readonly long Max;
+
+    private static readonly Type Type;
+    private static readonly Type UnderlyingType;
+    private static readonly bool IsUnsigned;
+
+    public static readonly T MaxPossibleValue;
+    public static readonly T MinPossibleValue;
+
+    static EnumInjector()
+    {
+        Type = typeof(T);
+        UnderlyingType = Enum.GetUnderlyingType(Type);
+        IsUnsigned = IsTypeUnsigned(UnderlyingType);
+
+        Min = Convert.ToInt64(AccessTools.Field(UnderlyingType, "MinValue").GetRawConstantValue());
+
+        var maxObj = AccessTools.Field(UnderlyingType, "MaxValue").GetRawConstantValue()!;
+        Max = IsUnsigned ? unchecked((long)Convert.ToUInt64(maxObj)) : Convert.ToInt64(maxObj);
+
+        MaxPossibleValue = LongToEnum(Max);
+        MinPossibleValue = LongToEnum(Min);
+    }
+
     private readonly List<T> AllValues;
     private readonly List<T> InjectedValues;
+
     private readonly ValueMap<string, T> NamedValues;
-    private readonly ValueMap<dynamic, T> IndexedValues;
-    // private readonly ValueMap<string, dynamic> PairedValues;
+    private readonly ValueMap<long, T> IndexedValues;
+    private readonly ValueMap<string, long> PairedValues;
 
     private readonly object Lock;
-    private readonly Type Type;
     private readonly bool Il2Cpp;
 
-    private dynamic Last;
-    private dynamic First;
-    private dynamic Min;
-    private dynamic Max;
-    private bool MinReached;
-    private bool MaxReached;
+    private long Last;
+    private long First;
 
-    public readonly T MaxPossibleValue;
-    // public readonly T MinPossibleValue;
-
-    public EnumInjector(bool il2Cpp = true, bool alreadyIl2Cpp = false)
+    public EnumInjector(Il2CppState state = Il2CppState.AlreadyInIl2Cpp)
     {
         Lock = new();
-        Type = typeof(T);
 
-        if (il2Cpp && !alreadyIl2Cpp)
+        if (state == Il2CppState.RegisterToIl2Cpp)
             EnumInjector.RegisterEnumInIl2Cpp<T>();
 
-        Il2Cpp = il2Cpp || alreadyIl2Cpp;
+        Il2Cpp = state != Il2CppState.NonIl2Cpp;
 
-        var underlying = Enum.GetUnderlyingType(Type);
         AllValues = [.. Enum.GetValues<T>().OrderBy(x => x)];
-        Last = Convert.ChangeType(AllValues[^1], underlying);
-        First = Convert.ChangeType(AllValues[0], underlying);
-        Min = Convert.ChangeType(AccessTools.Field(underlying, "MinValue").GetRawConstantValue(), underlying)!;
-        Max = Convert.ChangeType(AccessTools.Field(underlying, "MaxValue").GetRawConstantValue(), underlying)!;
-        MinReached = First == Min;
-        MaxReached = Last == Max;
-        MaxPossibleValue = (T)Enum.ToObject(Type, Max);
-        // MinPossibleValue = (T)Enum.ToObject(Type, Min);
+
+        Last = EnumToLong(AllValues[^1]);
+        First = EnumToLong(AllValues[0]);
+
         InjectedValues = [];
         IndexedValues = [];
         NamedValues = [];
-        // PairedValues = [];
+        PairedValues = [];
 
         foreach (var value in AllValues)
         {
-            IndexedValues.Add(Convert.ChangeType(value, underlying), value);
+            var valLong = EnumToLong(value);
+            IndexedValues.Add(valLong, value);
             NamedValues.Add(EnumPatches.OriginalToString(value), value);
         }
 
         lock (ThreadLock)
             Injectors[Type] = this;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsTypeUnsigned(Type t) => t == typeof(byte) || t == typeof(ushort) || t == typeof(uint) || t == typeof(ulong);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static long EnumToLong(T val) => Unsafe.SizeOf<T>() switch
+    {
+        1 => IsUnsigned ? Unsafe.As<T, byte>(ref val) : Unsafe.As<T, sbyte>(ref val),
+        2 => IsUnsigned ? Unsafe.As<T, ushort>(ref val) : Unsafe.As<T, short>(ref val),
+        4 => IsUnsigned ? Unsafe.As<T, uint>(ref val) : Unsafe.As<T, int>(ref val),
+        8 => Unsafe.As<T, long>(ref val),
+        _ => throw new NotSupportedException("Unsupported enum size.")
+    };
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static T LongToEnum(long val) => Unsafe.As<long, T>(ref val);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private bool CheckOverflow(long index, bool decrement)
+    {
+        if (IsUnsigned)
+        {
+            var uIndex = (ulong)index;
+            var uMin = (ulong)Min;
+            var uMax = (ulong)Max;
+            var uFirst = (ulong)First;
+            var uLast = (ulong)Last;
+
+            if ((uFirst == uMin && decrement) || (uLast == uMax && !decrement))
+                return true;
+
+            return uIndex < uMin || uIndex > uMax;
+        }
+        else
+        {
+            if ((First == Min && decrement) || (Last == Max && !decrement))
+                return true;
+
+            return index < Min || index > Max;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private long Increment(long val) => IsUnsigned ? (long)((ulong)val + 1) : (val + 1);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private long Decrement(long val) => IsUnsigned ? (long)((ulong)val - 1) : (val - 1);
 
     public override string ToString(Enum value)
     {
@@ -79,228 +141,238 @@ public sealed class EnumInjector<T> : CustomEnumInjector where T : struct, Enum
         return NamedValues.TryGetKey(enumVal, out var name) ? name : EnumPatches.OriginalToString(value);
     }
 
-    public override Array Values() => GetValues();
+    public override Array Values() => AllValues.ToArray();
 
-    private T[] GetValues() => [.. AllValues];
+    private string Diagnostic(object? value) => $"Min = {Min}, Max = {Max}, First = {First}, Last = {Last}, Parameter = {value ?? "None"}";
 
-    private void InsertValue(T result, string value, dynamic index)
+    public bool TryInjectAndReturn(string value, out T result, bool decrement = false)
     {
-        NamedValues[value] = result;
-        IndexedValues[index] = result;
-        // PairedValues[value] = index;
-
-        var index1 = AllValues.BinarySearch(result);
-
-        if (index1 < 0)
-            index1 = ~index1;
-
-        AllValues.Insert(index1, result);
-
-        var index2 = InjectedValues.BinarySearch(result);
-
-        if (index2 < 0)
-            index2 = ~index2;
-
-        InjectedValues.Insert(index2, result);
+        try
+        {
+            result = InjectAndReturn(value, decrement);
+            return true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or OverflowException)
+        {
+            result = default;
+            return false;
+        }
     }
-
-    private string Diagnostic(object value) => $"Min = {Min}, Max = {Max}, First = {First}, Last = {Last}, Parameter = {value ?? "None"}";
-
-    // public bool TryInjectAndReturn(string value, out T result, bool decrement = false)
-    // {
-    //     try
-    //     {
-    //         result = InjectAndReturn(value, decrement);
-    //         return true;
-    //     }
-    //     catch
-    //     {
-    //         result = default;
-    //         return false;
-    //     }
-    // }
 
     public T InjectAndReturn(string value, bool decrement = false)
     {
         lock (Lock)
         {
             if (NamedValues.ContainsKey(value))
-                throw new ArgumentException($"{value} has already been injected. {Diagnostic(decrement)}");
+                throw new ArgumentException($"{value} already injected. {Diagnostic(decrement)}");
 
-            if ((MinReached && decrement) || (MaxReached && !decrement))
-                throw new OverflowException($"Overflow for Type {Type.Name} detected for {value}. {Diagnostic(decrement)}");
+            if (CheckOverflow(decrement ? First : Last, decrement))
+                throw new OverflowException($"Overflow detected. {Diagnostic(decrement)}");
 
-            var index = decrement ? --First : ++Last;
-            MinReached = First == Min;
-            MaxReached = Last == Max;
-
-            if (IndexedValues.ContainsKey(index))
-                throw new ArgumentException($"{index} has already been injected. {Diagnostic(decrement)}");
-
-            if (Il2Cpp)
-                EnumInjector.InjectEnumValues<T>(new() { { value, (object)index } });
-
-            var result = (T)Enum.ToObject(Type, index);
-            InsertValue(result, value, index);
-            return result;
+            var index = decrement ? (First = Decrement(First)) : (Last = Increment(Last));
+            return ProcessSingleInjection(value, index, decrement);
         }
     }
 
-    // public bool TryInjectAndReturn(string[] values, out IEnumerable<T> result, bool[] decrements = null)
-    // {
-    //     try
-    //     {
-    //         result = InjectAndReturn(values, decrements);
-    //         return true;
-    //     }
-    //     catch
-    //     {
-    //         result = null;
-    //         return false;
-    //     }
-    // }
+    public bool TryInjectAndReturn(string[] values, out IEnumerable<T>? result, bool[]? decrements = null)
+    {
+        try
+        {
+            result = InjectAndReturn(values, decrements);
+            return true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or OverflowException)
+        {
+            result = null;
+            return false;
+        }
+    }
 
-    // private IEnumerable<T> InjectAndReturn(string[] values, bool[] decrements = null)
-    // {
-    //     lock (Lock)
-    //     {
-    //         decrements ??= new bool[values.Length];
+    public bool TryInjectAndReturn(string value, long index, out T result)
+    {
+        try
+        {
+            result = InjectAndReturn(value, index);
+            return true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or OverflowException)
+        {
+            result = default;
+            return false;
+        }
+    }
 
-    //         if (decrements.Length != values.Length)
-    //             Array.Resize(ref decrements, values.Length);
-
-    //         var valuesToAdd = new Dictionary<string, object>();
-
-    //         foreach (var (value, decrement) in (values, decrements).Zip())
-    //         {
-    //             if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
-    //             {
-    //                 Warning($"{value} has already been injected, skipping injection... {Diagnostic(decrement)}");
-    //                 continue;
-    //             }
-
-    //             if ((MinReached && decrement) || (MaxReached && !decrement))
-    //             {
-    //                 Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(decrement)}");
-    //                 continue;
-    //             }
-
-    //             var index = decrement ? --First : ++Last;
-    //             MinReached = First == Min;
-    //             MaxReached = Last == Max;
-
-    //             if (IndexedValues.ContainsKey(index))
-    //             {
-    //                 Warning($"{index} is already injected, skipping injection... {Diagnostic(decrement)}");
-    //                 continue;
-    //             }
-
-    //             valuesToAdd.Add(value, (object)index);
-    //         }
-
-    //         if (Il2Cpp)
-    //             EnumInjector.InjectEnumValues<T>(valuesToAdd);
-
-    //         foreach (var (value, index) in valuesToAdd)
-    //         {
-    //             var result = (T)Enum.ToObject(Type, index);
-    //             InsertValue(result, value, index);
-    //             yield return result;
-    //         }
-    //     }
-    // }
-
-    // public bool TryInjectAndReturn(string value, dynamic index , out T result)
-    // {
-    //     try
-    //     {
-    //         result = InjectAndReturn(value, index);
-    //         return true;
-    //     }
-    //     catch
-    //     {
-    //         result = default;
-    //         return false;
-    //     }
-    // }
-
-    public T InjectAndReturn(string value, dynamic index)
+    public T InjectAndReturn(string value, long index)
     {
         lock (Lock)
         {
             if (NamedValues.ContainsKey(value))
-                throw new ArgumentException($"{value} has already been injected. {Diagnostic(index)}");
+                throw new ArgumentException($"{value} already injected. {Diagnostic(index)}");
 
-            if (IndexedValues.ContainsKey(index))
-                throw new ArgumentException($"{index} has already been injected. {Diagnostic(index)}");
+            var outOfBounds = IsUnsigned
+                ? (ulong)index < (ulong)Min || (ulong)index > (ulong)Max
+                : index < Min || index > Max;
 
-            if (index < Min || index > Max)
-                throw new OverflowException($"Overflow for Type {Type.Name} detected");
+            if (outOfBounds)
+                throw new OverflowException($"Index {index} out of bounds for {Type.Name}. {Diagnostic(index)}");
 
-            if (Il2Cpp)
-                EnumInjector.InjectEnumValues<T>(new() { { value, (object)index } });
-
-            var result = (T)Enum.ToObject(Type, index);
-            InsertValue(result, value, index);
-            return result;
+            return ProcessSingleInjection(value, index, index);
         }
     }
 
-    // public bool TryInjectAndReturn(string[] values, dynamic[] indices, out IEnumerable<T> result)
-    // {
-    //     try
-    //     {
-    //         result = InjectAndReturn(values, indices);
-    //         return true;
-    //     }
-    //     catch
-    //     {
-    //         result = null;
-    //         return false;
-    //     }
-    // }
+    public bool TryInjectAndReturn(string[] values, long[] indices, out IEnumerable<T>? result)
+    {
+        try
+        {
+            result = InjectAndReturn(values, indices);
+            return true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or OverflowException)
+        {
+            result = null;
+            return false;
+        }
+    }
 
-    // private IEnumerable<T> InjectAndReturn(string[] values, dynamic[] indices)
-    // {
-    //     lock (Lock)
-    //     {
-    //         if (indices.Length != values.Length)
-    //             throw new InvalidOperationException($"Not all string names have a corresponding index. {Diagnostic(null)}");
+    private IEnumerable<T> InjectAndReturn(string[] values, long[] indices)
+    {
+        if (indices.Length != values.Length)
+            throw new InvalidOperationException($"Not all string names have a corresponding index. {Diagnostic(null)}");
 
-    //         var valuesToAdd = new Dictionary<string, object>();
+        lock (Lock)
+        {
+            foreach (var index in indices)
+            {
+                bool outOfBounds = IsUnsigned
+                    ? (ulong)index < (ulong)Min || (ulong)index > (ulong)Max
+                    : index < Min || index > Max;
 
-    //         foreach (var (value, index) in (values, indices).Zip())
-    //         {
-    //             if (NamedValues.ContainsKey(value) || valuesToAdd.ContainsKey(value))
-    //             {
-    //                 Warning($"{value} has already been injected, skipping injection... {Diagnostic(index)}");
-    //                 continue;
-    //             }
+                if (outOfBounds)
+                    throw new OverflowException($"Index {index} out of bounds for {Type.Name}. {Diagnostic(index)}");
+            }
 
-    //             if (IndexedValues.ContainsKey(index))
-    //             {
-    //                 Warning($"{index} is already injected, skipping injection... {Diagnostic(index)}");
-    //                 continue;
-    //             }
+            return ProcessBulkInjection(values, indices);
+        }
+    }
 
-    //             if (index < Min || index > Max)
-    //             {
-    //                 Warning($"Overflow detected for {value}, skipping injection... {Diagnostic(index)}");
-    //                 continue;
-    //             }
+    private IEnumerable<T> InjectAndReturn(string[] values, bool[]? decrements = null)
+    {
+        decrements ??= new bool[values.Length];
 
-    //             valuesToAdd.Add(value, (object)index);
-    //         }
+        if (decrements.Length != values.Length)
+            Array.Resize(ref decrements, values.Length);
 
-    //         if (Il2Cpp)
-    //             EnumInjector.InjectEnumValues<T>(valuesToAdd);
+        var indices = new long[values.Length];
 
-    //         foreach (var (value, index) in valuesToAdd)
-    //         {
-    //             var result = (T)Enum.ToObject(Type, index);
-    //             InsertValue(result, value, index);
-    //             yield return result;
-    //         }
-    //     }
-    // }
+        lock (Lock)
+        {
+            for (var i = 0; i < values.Length; i++)
+            {
+                var dec = decrements[i];
+
+                if (CheckOverflow(dec ? First : Last, dec))
+                    throw new OverflowException($"Overflow detected for {values[i]}. {Diagnostic(dec)}");
+
+                indices[i] = dec ? (First = Decrement(First)) : (Last = Increment(Last));
+            }
+
+            return ProcessBulkInjection(values, indices);
+        }
+    }
+
+    private T ProcessSingleInjection(string value, long index, object diagnosticState)
+    {
+        if (IndexedValues.ContainsKey(index))
+            throw new ArgumentException($"{index} already injected. {Diagnostic(diagnosticState)}");
+
+        if (Il2Cpp)
+        {
+            var boxedIl2CppVal = IsUnsigned
+                ? Convert.ChangeType((ulong)index, UnderlyingType)
+                : Convert.ChangeType(index, UnderlyingType);
+
+            EnumInjector.InjectEnumValues<T>(new() { { value, boxedIl2CppVal } });
+        }
+
+        var result = LongToEnum(index);
+
+        NamedValues[value] = result;
+        IndexedValues[index] = result;
+        PairedValues[value] = index;
+
+        InsertSorted(AllValues, result);
+        InsertSorted(InjectedValues, result);
+
+        return result;
+    }
+
+    private IEnumerable<T> ProcessBulkInjection(string[] values, long[] indices)
+    {
+        var results = new List<T>(values.Length);
+        var valuesToAdd = new Dictionary<string, object>();
+        var listsModified = false;
+
+        for (int i = 0; i < values.Length; i++)
+        {
+            var value = values[i];
+            var index = indices[i];
+
+            if (NamedValues.ContainsKey(value) || IndexedValues.ContainsKey(index) || valuesToAdd.ContainsKey(value))
+                continue;
+
+            var boxedVal = IsUnsigned
+                ? Convert.ChangeType((ulong)index, UnderlyingType)
+                : Convert.ChangeType(index, UnderlyingType);
+
+            valuesToAdd.Add(value, boxedVal);
+        }
+
+        if (valuesToAdd.Count == 0)
+            return results;
+
+        if (Il2Cpp)
+            EnumInjector.InjectEnumValues<T>(valuesToAdd);
+
+        foreach (var (name, value) in valuesToAdd)
+        {
+            var index = IsUnsigned
+                ? unchecked((long)Convert.ToUInt64(value))
+                : Convert.ToInt64(value);
+            var result = LongToEnum(index);
+
+            NamedValues[name] = result;
+            IndexedValues[index] = result;
+            PairedValues[name] = index;
+
+            AllValues.Add(result);
+            InjectedValues.Add(result);
+            results.Add(result);
+            listsModified = true;
+        }
+
+        if (listsModified)
+        {
+            AllValues.Sort();
+            InjectedValues.Sort();
+        }
+
+        return results;
+    }
+
+    private void InsertSorted(List<T> list, T item)
+    {
+        var idx = list.BinarySearch(item);
+
+        if (idx < 0)
+            idx = ~idx;
+
+        list.Insert(idx, item);
+    }
+}
+
+public enum Il2CppState : byte
+{
+    NonIl2Cpp,
+    RegisterToIl2Cpp,
+    AlreadyInIl2Cpp
 }

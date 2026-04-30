@@ -17,7 +17,7 @@ public static class ModCompatibilityManager
     /// </summary>
     public static void Initialise()
     {
-        var injector = new EnumInjector<ShipStatus.MapType>(false, true);
+        var injector = new EnumInjector<ShipStatus.MapType>();
 
         SubmergedMapType = injector.InjectAndReturn("Submerged", 6);
         // LiMapType = Injector.InjectAndReturn("LevelImpostor", 7);

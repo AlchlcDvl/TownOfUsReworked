@@ -105,6 +105,6 @@ public static class CoroutineUtils
         if (nativeData.IsCreated)
             return nativeData.ToArray();
 
-        return null;
+        return null!;
     }
 }

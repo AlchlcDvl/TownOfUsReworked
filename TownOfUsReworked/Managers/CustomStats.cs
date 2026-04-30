@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+using TownOfUsReworked.RPCs.Messages.Misc;
+
 namespace TownOfUsReworked.Managers;
 
 public static class CustomStatsManager
@@ -13,8 +16,10 @@ public static class CustomStatsManager
     private static StringNames StatsMapWins;
     private static StringNames StatsFactionGames;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public static List<StringNames> OrderedStats;
-    private static readonly List<StringNames> SupportVanillaStats =
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    private static readonly List<StringNames> SupportedVanillaStats =
     [
         StringNames.StatsBodiesReported,
         StringNames.StatsEmergenciesCalled,
@@ -41,7 +46,7 @@ public static class CustomStatsManager
     private static readonly ValueMap<StringNames, Faction> FactionMap = [];
     private static readonly ValueMap<StringNames, Layer> LayerMap = [];
 
-    private static readonly EnumInjector<StatID> Injector = new(false, true);
+    private static readonly EnumInjector<StatID> Injector = new();
 
     public static void Setup()
     {
@@ -149,7 +154,7 @@ public static class CustomStatsManager
 
     public static void IncrementStat(StringNames stat)
     {
-        var success = !(IsFreePlay() || TownOfUsReworked.MciActive) && (SupportVanillaStats.Contains(stat) || stat > 0);
+        var success = !(IsFreePlay() || TownOfUsReworked.MciActive) && (SupportedVanillaStats.Contains(stat) || stat > 0);
 
         if (!success)
             return;
@@ -174,13 +179,13 @@ public static class CustomStatsManager
         if (player.AmOwner || TownOfUsReworked.MciActive)
             IncrementStat(stat);
         else
-            CallTargetedRpc(player.OwnerId, MiscRpc.Stat, stat);
+            CallTargetedRpc(new StatMessage(stat), player.OwnerId);
     }
 
     public static IObject GetStat(StringNames stat)
     {
-        if (!SupportVanillaStats.Contains(stat) && stat >= 0)
-            return null;
+        if (!SupportedVanillaStats.Contains(stat) && stat >= 0)
+            return null!;
 
         if (LayerMap.TryGetValue(stat, out var layer))
             return GetLayerWins(layer);
@@ -310,18 +315,70 @@ public static class CustomStatsManager
         var num = reader.ReadUInt32();
 
         while (num-- > 0)
-            dict[reader.Read<T>()] = reader.ReadUInt32();
+            dict[reader.ReadEnum<T>()] = reader.ReadUInt32();
     }
 
-    private static T Read<T>(this BinaryReader reader) where T : struct, Enum
+    private static T ReadEnum<T>(this BinaryReader reader) where T : struct, Enum
     {
-        if (typeof(T).GetEnumUnderlyingType() == typeof(byte))
-            return (T)(object)reader.ReadByte();
+        var size = Unsafe.SizeOf<T>();
 
-        return (T)(object)reader.ReadInt32();
+        switch (size)
+        {
+            case 1:
+            {
+                var v = reader.ReadByte();
+                return Unsafe.As<byte, T>(ref v);
+            }
+            case 2:
+            {
+                var v = reader.ReadUInt16();
+                return Unsafe.As<ushort, T>(ref v);
+            }
+            case 4:
+            {
+                var v = reader.ReadUInt32();
+                return Unsafe.As<uint, T>(ref v);
+            }
+            case 8:
+            {
+                var v = reader.ReadUInt64();
+                return Unsafe.As<ulong, T>(ref v);
+            }
+            default:
+                throw new ArgumentException($"Enum size {size} not supported");
+        }
     }
 
-    private static void Write(this BinaryWriter writer, Enum enumVal) => writer.Write([.. RpcWriter.GetBytes(enumVal, false)]);
+    private static void Write<T>(this BinaryWriter writer, T value) where T : struct, Enum
+    {
+        var size = Unsafe.SizeOf<T>();
+
+        switch (size)
+        {
+            case 1:
+            {
+                writer.Write(Unsafe.As<T, byte>(ref value));
+                break;
+            }
+            case 2:
+            {
+                writer.Write(Unsafe.As<T, ushort>(ref value));
+                break;
+            }
+            case 4:
+            {
+                writer.Write(Unsafe.As<T, uint>(ref value));
+                break;
+            }
+            case 8:
+            {
+                writer.Write(Unsafe.As<T, ulong>(ref value));
+                break;
+            }
+            default:
+                throw new ArgumentException($"Enum size {size} not supported");
+        }
+    }
 
     private static void Write<T>(this BinaryWriter writer, Dictionary<T, uint> dict) where T : struct, Enum
     {

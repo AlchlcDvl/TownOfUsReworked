@@ -70,8 +70,8 @@ public static class AllMonos
         LayerHandler.HauntMenu = LayerHandler.CrewmateGhost.Cast<CrewmateGhostRole>().HauntMenu;
 
         var prefab = new GameObject("LayerHandler").DontDestroy().AddComponent<LayerHandler>();
-        LayerHandler.Type = prefab.Role = prefab.DefaultGhostRole = new EnumInjector<RoleTypes>(false, true).InjectAndReturn("ReworkedLayer");
-        prefab.TeamType = new EnumInjector<RoleTeamTypes>(false, true).InjectAndReturn("ReworkedTeam");
+        LayerHandler.Type = prefab.Role = prefab.DefaultGhostRole = new EnumInjector<RoleTypes>().InjectAndReturn("ReworkedLayer");
+        prefab.TeamType = new EnumInjector<RoleTeamTypes>().InjectAndReturn("ReworkedTeam");
         prefab.CanBeKilled = true;
         prefab.CanUseKillButton = false;
         prefab.CanVent = false;

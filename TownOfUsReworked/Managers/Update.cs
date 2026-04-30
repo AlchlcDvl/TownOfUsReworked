@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Managers;
 
+#nullable disable
 public static class UpdateManager
 {
     public static bool ReworkedUpdate;

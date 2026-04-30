@@ -28,6 +28,7 @@ public static class RpcManager
         var writer = RpcWriter.Borrow();
         writer.SetTargetId(targetClientId);
         message.SerializeTo(writer);
+        message.Dispose();
         return writer;
     }
 
@@ -35,27 +36,24 @@ public static class RpcManager
     /// Sends an RPC message to all players.
     /// </summary>
     /// <param name="message">The message to send.</param>
-    /// <param name="targetClientId">The owner id of the target client.</param>
-    public static void CallRpc(INetworkMessage message, int targetClientId = -1) => CallTargetedRpc(message, targetClientId);
+    public static void CallRpc(INetworkMessage message) => CallTargetedRpc(message, -1);
 
     /// <summary>
     /// Sends a late RPC message to all players.
     /// </summary>
     /// <param name="message">The message to send.</param>
-    /// <param name="targetClientId">The owner id of the target client.</param>
-    public static void CallLateRpc(INetworkMessage message, int targetClientId = -1) => CallLateTargetedRpc(message, targetClientId);
+    public static void CallLateRpc(INetworkMessage message) => CallLateTargetedRpc(message, -1);
 
     /// <summary>
     /// Sends an RPC message to a specific player.
     /// </summary>
     /// <param name="message">The message to start the rpc with.</param>
     /// <param name="targetClientId">The owner id of the target client.</param>
-    public static void CallTargetedRpc(INetworkMessage message, int targetClientId = -1)
+    public static void CallTargetedRpc(INetworkMessage message, int targetClientId)
     {
         var writer = CreateWriter(message, targetClientId);
         writer?.SendImmediate();
         RpcWriter.Return(writer!);
-        message.Dispose();
     }
 
     /// <summary>
@@ -68,7 +66,6 @@ public static class RpcManager
         var writer = CreateWriter(message, targetClientId);
         writer?.SendLate();
         RpcWriter.Return(writer!);
-        message.Dispose();
     }
 
     /// <summary>
@@ -108,7 +105,7 @@ public static class RpcManager
         if (targetClientId == -1)
             GameStartManagerPatches.PlayersReady.Keys.Do(x => GameStartManagerPatches.PlayersReady[x] = false);
         else
-            GameStartManagerPatches.PlayersReady[AllPlayers().Find(x => x.OwnerId == targetClientId).PlayerId] = false;
+            GameStartManagerPatches.PlayersReady[AllPlayers().Find(x => x.OwnerId == targetClientId)!.PlayerId] = false;
 
         var options = setting is not null ? [setting] : Option.AllOptions.Where(x => !x.ClientOnly && x is not BaseHeaderOption).ToArray();
         var split = options.Chunk(100).ToArray();
@@ -287,13 +284,13 @@ public static class RpcManager
                     }
                     case MiscRpc.FixLights:
                     {
-                        var lights = Ship().Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+                        var lights = Ship()!.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
                         lights.ActualSwitches = lights.ExpectedSwitches;
                         return;
                     }
                     case MiscRpc.FixMixup:
                     {
-                        var mixup = Ship().Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
+                        var mixup = Ship()!.Systems[SystemTypes.MushroomMixupSabotage].Cast<MushroomMixupSabotageSystem>();
                         mixup.secondsForAutoHeal = 0.1f;
                         return;
                     }
@@ -368,12 +365,13 @@ public static class RpcManager
 
                         ISpeedModifier.AllModifiers.Add(new BodyDraggingModifier());
 
-                        AmongUsClient.Instance.StartCoroutine(HUD().CoShowIntro());
+                        AmongUsClient.Instance.StartCoroutine(HUD()!.CoShowIntro());
                         return;
                     }
                     case MiscRpc.SetTarget:
                     {
                         var layer = reader.ReadLayer();
+
                         switch (layer)
                         {
                             case ITargeter targeter:

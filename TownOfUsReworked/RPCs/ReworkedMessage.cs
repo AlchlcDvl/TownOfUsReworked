@@ -11,7 +11,7 @@ public sealed class ReworkedMessage : BaseRpcMessage, IDisposable
     /// <summary>
     /// Value injector to ensure seamless integration with the base game.
     /// </summary>
-    private static readonly EnumInjector<RpcCalls> Injector = new(false, true);
+    private static readonly EnumInjector<RpcCalls> Injector = new();
 
     /// <summary>
     /// The custom injected enum value that indicates it's a modded rpc.
@@ -68,6 +68,6 @@ public sealed class ReworkedMessage : BaseRpcMessage, IDisposable
     public void Dispose()
     {
         ArrayPool<byte>.Shared.Return(Payload);
-        Payload = null;
+        Payload = null!;
     }
 }

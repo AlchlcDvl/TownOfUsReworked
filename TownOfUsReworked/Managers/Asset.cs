@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Managers;
 
+#nullable disable
 public static class AssetManager
 {
     public static Sprite[] PortalAnimation;

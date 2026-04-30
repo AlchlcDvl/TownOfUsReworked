@@ -58,17 +58,11 @@ public static class CustomColorManager
 
     public static UColor Mute(this UColor color, float val = 0.5f) => UColor.Lerp(color, UColor.grey, val);
 
-    // public static UColor Shadow(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r - val), Mathf.Clamp01(color.g - val), Mathf.Clamp01(color.b - val));
-
-    // public static UColor Light(this UColor color, float val = 0.2f) => new(Mathf.Clamp01(color.r + val), Mathf.Clamp01(color.g + val), Mathf.Clamp01(color.b + val));
-
     public static UColor Alternate(this UColor color, float val = 0.2f) => color.IsDark() ? color.Light(val) : color.Shadow(val);
 
     // public static UColor Deepen(this UColor color, float val = 0.2f) => color.IsDark() ? color.Shadow(val) : color.Light(val);
 
-    private static bool IsDark(this UColor color) => (color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f) < 0.5f;
-
-    // private static bool IsColorDark(this UColor color) => Average(color.r, color.g, color.b) < 0.5f;
+    private static bool IsDark(this UColor color) => ((color.r * 0.2126f) + (color.g * 0.7152f) + (color.b * 0.0722f)) < 0.5f;
 
     public static UColor FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
 

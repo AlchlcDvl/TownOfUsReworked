@@ -31,7 +31,7 @@ public sealed class RpcHandler : MonoBehaviour
     {
         var writer = CreateMessageWriter(message.TargetClientId);
         message.SerializeRpcValues(writer);
-        writer.Send();
         message.Dispose();
+        writer.Send();
     }
 }

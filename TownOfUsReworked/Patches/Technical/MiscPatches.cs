@@ -218,7 +218,7 @@ public static class AmongUsClientPatches
         for (var i = 1; File.Exists(filePath); i++)
             filePath = Path.Combine(TownOfUsReworked.Logs, $"ReworkedLogs{i}.log");
 
-        SaveText($"{filePath.SanitisePath()}.log", SavedLogs, TownOfUsReworked.Logs);
+        SaveText($"{filePath.SanitisePath()}.log", SavedLogs.ToString(), TownOfUsReworked.Logs);
         Option.SaveSettings("LastUsed");
     }
 
@@ -273,7 +273,7 @@ public static class AmongUsClientPatches
         pc.Puid = clientData.ProductUserId;
         clientData.Character = pc;
         __instance.UpdateCachedClients(clientData, clientData.Character);
-        var ship = Ship();
+        var ship = Ship()!;
 
         if (ship)
             ship.SpawnPlayer(pc, Palette.PlayerColors.Length, false);
@@ -697,7 +697,7 @@ public static class FuckOffModStampIWillMurderYouIfYouErrorAgain
     [HarmonyPatch(typeof(NameHandler), nameof(NameHandler.UpdateGameName))] // Patching my own code...that's a first
     [HarmonyPatch(typeof(PlayerControlHandler), nameof(PlayerControlHandler.Update))] // Patching my own code...again...that's a second
     [HarmonyPatch(typeof(PlayerControlExtensions), nameof(PlayerControlExtensions.UpdateMaterial), typeof(bool), typeof(MatProperties), typeof(SpriteRenderer), typeof(object))] // Well this is concerning
-    public static Exception Finalizer() => null; // My first use of a finalizer ong
+    public static Exception Finalizer() => null!; // My first use of a finalizer ong
 }
 
 [HarmonyPatch(typeof(Enum))]

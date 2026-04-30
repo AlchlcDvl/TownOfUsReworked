@@ -4,7 +4,7 @@ public static class ButtonUtils
 {
     public static void DisableButtons(this PlayerControl player)
     {
-        var hud = HUD();
+        var hud = HUD()!;
         player.GetButtons().Do(x => x.Disable());
         hud.SabotageButton.ToggleVisible(false);
         hud.ReportButton.ToggleVisible(false);
@@ -28,7 +28,7 @@ public static class ButtonUtils
 
     public static void EnableButtons(this PlayerControl player)
     {
-        var hud = HUD();
+        var hud = HUD()!;
         LayerHandler.Handlers[player.PlayerId].UpdateButtons();
         hud.UseButton.ToggleVisible(true);
         hud.PetButton.ToggleVisible(true);
@@ -46,7 +46,7 @@ public static class ButtonUtils
 
     public static void DisableAllButtons()
     {
-        var hud = HUD();
+        var hud = HUD()!;
         CustomButton.AllButtons.ForEach(x => x.Disable());
         hud.SabotageButton.ToggleVisible(false);
         hud.ReportButton.ToggleVisible(false);
@@ -113,7 +113,7 @@ public static class ButtonUtils
         return num;
     }
 
-    public static void Reset(CooldownType cooldown = CooldownType.Reset, PlayerControl player = null)
+    public static void Reset(CooldownType cooldown = CooldownType.Reset, PlayerControl? player = null)
     {
         if (IsHnS())
             return;
