@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Sync repositories
         run: |
-          git clone --bare https://github.com/${{ github.repository }}.git mirror.git
+          git clone --bare https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git mirror.git
           cd mirror.git
           git push --mirror https://AlchlcSystm:${{ secrets.GITLAB_TOKEN }}@gitlab.com/AlchlcSystm/${{ github.event.repository.name }}.git
           git push --mirror https://AlchlcDvl:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/AlchlcDvl/${{ github.event.repository.name }}.git
