@@ -1,0 +1,17 @@
+name: Mirror to GitLab and Codeberg
+
+on:
+  push:
+    branches: [ "*" ]
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync repositories
+        run: |
+          git clone --bare https://github.com/${{ github.repository }}.git mirror.git
+          cd mirror.git
+          git push --mirror https://AlchlcSystm:${{ secrets.GITLAB_TOKEN }}@gitlab.com/AlchlcSystm/${{ github.event.repository.name }}.git
+          git push --mirror https://AlchlcDvl:${{ secrets.CODEBERG_TOKEN }}@codeberg.org/AlchlcDvl/${{ github.event.repository.name }}.git
