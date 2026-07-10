@@ -1,6 +1,10 @@
 
 > [!NOTE]
-> This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.
+> As of July 10th, 2026, Town Of Us: Reworked is now archived. There will be no more updates made to this project.\
+> This is because not only are there real life factors are at play, the much more popular mod [Town Of Us: Mira](https://github.com/AU-Avengers/TOU-Mira) (that I'm also a dev of!) has most of the features I've implemented.
+
+> [!NOTE]
+> This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.\
 > This mod is NOT for mobile and console versions and is NOT host only either, do not ask for a port or a rewrite.
 
 -----------------------
